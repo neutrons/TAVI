@@ -1,0 +1,8 @@
+scan s2 73 66 0.25 preset mcu 20
+
+loop i=2,8,0.5
+set_temp %i
+wait 300
+scan s2 73 66 0.25 preset mcu 20
+endloop
+

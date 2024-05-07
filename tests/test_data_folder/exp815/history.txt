@@ -1,0 +1,120 @@
+6/13/2019 4:15 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
+6/13/2019 4:16 PM        ubcalc file c:\spice\user\exp758\ubconf\ub17aug2017_121657pm.ini
+6/13/2019 4:16 PM        br 1 1 0
+6/13/2019 4:18 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
+6/13/2019 4:22 PM        drive s1 90
+6/13/2019 4:24 PM        drive s1 95
+6/13/2019 4:24 PM        drive s1 96
+6/13/2019 4:24 PM        spos s1 0
+6/13/2019 4:25 PM        lowerlimit m1 -99.399984 m2 15.000000 marc -3.900000 mtrans -12.000000 mfocus -0.100000 s1 -165.000000 s2 -113.119424 sgl -5.000000 sgu -5.000000 slit_post_bt -74.800000 slit_post_lf -74.800000 slit_post_rt -74.800000 slit_post_tp -74.800000 slit_pre_bt -74.800000 slit_pre_lf -74.800000 slit_pre_rt -74.800000 slit_pre_tp -74.800000 stl -14.600000 stu -14.600000 a1 -87.813820 a2 -108.989448 
+6/13/2019 4:25 PM        upperlimit m1 250.000000 m2 51.967920 marc 3.850000 mtrans 12.000000 mfocus 290.000000 s1 90.000000 s2 25.000000 sgl 5.000000 sgu 5.000000 slit_post_bt 74.600000 slit_post_lf 74.600000 slit_post_rt 74.600000 slit_post_tp 74.600000 slit_pre_bt 74.600000 slit_pre_lf 74.600000 slit_pre_rt 74.600000 slit_pre_tp 74.800000 stl 14.600000 stu 14.600000 a1 171.462286 a2 90.000000 
+6/13/2019 4:25 PM        br 1 1 0
+6/13/2019 4:26 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
+6/13/2019 4:43 PM        scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset time 10
+6/13/2019 4:51 PM        br 1 1 0
+6/13/2019 4:52 PM        ubcalc file c:\spice\user\exp758\ubconf\ub17aug2017_23318pm.ini
+6/13/2019 4:52 PM        defcount detector
+6/13/2019 4:52 PM        count 1
+6/13/2019 4:53 PM        br 1 1 0
+6/13/2019 4:55 PM        ubcalc file "C:\SPICE\User\exp815\UBConf\tmp\UB13Jun2019_45536PM.ini"
+6/13/2019 4:55 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 1
+6/13/2019 4:57 PM        br 1 1 0
+6/18/2019 10:16 AM        driverel m2 -5
+6/18/2019 10:17 AM        driverel s1 -15
+6/18/2019 10:17 AM        driverel s1 15
+6/18/2019 10:17 AM        driverel s2 20
+6/18/2019 10:17 AM        driverel s2 -20
+6/18/2019 10:18 AM        driverel a2 -10
+6/18/2019 10:18 AM        driverel a2 10
+6/18/2019 10:29 AM        driverel s1 10
+6/18/2019 10:38 AM        br 1 1 0
+6/18/2019 2:41 PM        drive ei 20
+6/18/2019 2:55 PM        drive ei 13.5
+6/18/2019 2:56 PM        br 1 1 0
+6/18/2019 2:59 PM        br 0 0 1
+6/18/2019 3:06 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 5
+6/20/2019 9:53 AM        br 1 1 0
+6/20/2019 9:55 AM        hide focal_length 0 m1 0 m2 0 marc 0 mtrans 1 mfocus 0 s1 0 s2 0 sgl 0 sgu 0 slit_post_bt 1 slit_post_lf 1 slit_post_rt 1 slit_post_tp 1 slit_pre_bt 1 slit_pre_lf 1 slit_pre_rt 1 slit_pre_tp 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+6/20/2019 2:42 PM        drive m2 30
+6/20/2019 2:43 PM        drive s2 20
+6/20/2019 2:44 PM        drive s2 -20
+6/20/2019 2:59 PM        drive e 0
+6/20/2019 3:01 PM        br 1 1 0
+6/20/2019 3:06 PM        br 0.5 0.5 0.5 
+6/21/2019 10:16 AM        drive m2 35
+6/21/2019 10:17 AM        driverel s1 -5 5 1
+6/21/2019 10:17 AM        drive s2 -10
+6/21/2019 10:25 AM        br 1 1 0
+9/13/2019 12:46 PM        driverel s2 2
+9/13/2019 12:50 PM        init
+9/13/2019 12:51 PM        init
+9/16/2019 9:11 AM        init
+9/16/2019 9:11 AM        drive s1 40
+9/16/2019 9:12 AM        drive a2 15
+9/16/2019 9:17 AM        init
+9/16/2019 9:17 AM        drive s1 0
+9/16/2019 9:18 AM        drive s2 0
+9/16/2019 9:30 AM        drive s2 -30
+9/16/2019 9:31 AM        init
+9/16/2019 12:39 PM        drive tbguide 5
+9/16/2019 12:39 PM        init
+9/16/2019 12:46 PM        init
+9/16/2019 12:46 PM        drive tbguide 5
+9/16/2019 12:49 PM        init
+9/16/2019 12:50 PM        init
+9/16/2019 12:50 PM        drive tbguide 5
+9/16/2019 12:50 PM        drive tbguide 0
+9/16/2019 12:51 PM        drive aguide 5 bguide 5 cguide 5
+9/16/2019 12:51 PM        drive aguide 0 bguide 0 cguide 0
+9/16/2019 12:51 PM        drive hguide 5
+9/16/2019 12:51 PM        drive vguide 5
+9/16/2019 12:51 PM        drive fguide 5
+9/16/2019 12:52 PM        drive fguide 0
+9/16/2019 12:52 PM        drive vguide 0
+9/16/2019 12:52 PM        drive hguide 0
+9/16/2019 2:22 PM        admin
+9/16/2019 2:22 PM        spos m2 43
+9/16/2019 2:23 PM        hide focal_length 0 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+9/16/2019 2:23 PM        hide focal_length 1 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+9/16/2019 2:23 PM        spos a2 43
+9/16/2019 2:26 PM        guide 16 perpq
+9/16/2019 2:26 PM        guide 16 parq
+9/16/2019 2:27 PM        guide 16 perpq
+9/16/2019 2:30 PM        guide -16 parq
+9/16/2019 2:31 PM        drive s2 -10
+9/16/2019 2:31 PM        guide -16 parq
+9/16/2019 2:32 PM        drive s2 -25
+9/16/2019 2:32 PM        drive s2 -40
+9/16/2019 2:32 PM        guide -16 parq
+9/16/2019 2:32 PM        guide -16 perpqv
+9/16/2019 2:33 PM        guide -16 perpqh
+9/16/2019 2:33 PM        guide 16 perpqh
+9/16/2019 2:34 PM        guide -16 perpqh
+9/16/2019 2:38 PM        guide 16 perpqh
+9/16/2019 3:00 PM        guide 0 parq
+9/18/2019 11:30 AM        drive m2 35
+9/18/2019 11:32 AM        drive m2 25
+9/18/2019 2:27 PM        guide 16 perpq
+9/18/2019 2:28 PM        guide 16 parq
+9/18/2019 2:34 PM        guide 16 parq
+9/18/2019 2:35 PM        init
+9/18/2019 2:36 PM        init
+9/18/2019 2:36 PM        guide 16 parq
+9/18/2019 2:37 PM        guide 18 parq
+9/18/2019 2:38 PM        guide 18 perpq
+9/18/2019 2:38 PM        guide 0 parq
+9/19/2019 10:03 AM        guide 18 perpq
+9/19/2019 10:04 AM        guide 16 parq
+9/19/2019 10:05 AM        guide 16 parqh
+9/19/2019 10:05 AM        guide 16 perpqh
+9/19/2019 10:09 AM        guide 0 perpqh
+9/19/2019 2:27 PM        guide 16 perpqh
+9/19/2019 2:27 PM        guide 0 perpq
+9/19/2019 2:28 PM        guide 16 perpq
+9/19/2019 2:29 PM        guide 18 parq
+9/19/2019 2:30 PM        guide 16 parq
+9/20/2019 9:58 AM        init
+9/20/2019 10:14 AM        hide focal_length 0 m1 0 m2 0 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+9/20/2019 10:15 AM        init
+9/27/2019 9:14 AM        init
+9/27/2019 9:21 AM        begin

@@ -1,0 +1,2451 @@
+Beginning experiment # 758
+
+Proposal ID: "9865"
+
+Experiment title: "NX School"
+
+Users: "M. Matsuda"
+
+Local Contact: "M. Matsuda"
+
+Setting sample name to "BiFeO3".
+
+Setting sample type to single crystal.
+
+Setting sample mosaic to 30.000 min.
+
+Setting next scan number to 1
+
+Initializing preset/counting configuration:
+
+Preset counting mode is set to normal.
+
+Setting the default preset channel to "time".
+
+Setting the default preset value to 1.000.
+
+Setting the default counting channel to "detector".
+
+The UB matrix was successfully generated using:
+
+Scattering plane specified by:
+ h1=1.000  k1=1.000  l1=0.000     h2=0.000  k2=0.000  l2=1.000
+the single peak position:
+h=1.0000  k=1.0000  l=0.0000     s2=-40.7454     s1=-20.3727     sgl=0.0000     sgu=0.0000  Ei=13.5000  Ef=13.5000
+
+and the following lattice parameters:
+a=5.0000  b=5.0000  c=5.0000     alpha=90.0000  beta=90.0000  gamma=90.0000
+
+Results of the new UB matrix:
+
+Peak position as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -40.7454     -20.3727       0.0000       0.0000      13.5000      13.5000
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5000     -40.7454     -20.3727      -0.0000       0.0000     169.4865      43.0440      43.0440
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -40.7454     -20.3727       0.0000       0.0000      13.5000      13.5000
+
+
+Setting instrument plus-minus configuration to   +   -   +
+
+
+Initial Spectrometer configuration:
+
+The monochromator is PG002 with a d-spacing of 3.355 Angstroms.
+
+The monochromator is Pg002 with a d-spacing of 3.355 Angstroms.
+
+Collimation:  48-80-80-240
+
+The spectrometer is configured to have a fixed final energy of 13.5000 meV.
+
+
+The username/password request for web access was cancelled or the dialog box timed out.
+Web-based control will not function until these are set.  This can be accomplished using the 'webcontrol' command.
+
+
+12:06:44 PM  8/17/2017    Executing "ubcalc file c:\spice\user\exp756\ubconf\ub15aug2017_21442pm.ini"
+
+Setting the UB matrix using the configuration file "c:\spice\user\exp756\ubconf\ub15aug2017_21442pm.ini".
+
+The UB matrix was successfully generated using:
+
+The 2 reflections specified by:
+            h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.3618     -21.2386      -0.9990       0.5000      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.4366    -103.4015      -0.9990       0.5005      13.5000      13.5061
+
+
+and the following lattice constants:
+a=3.9468  b=3.9468  c=3.9302     alpha=90.0000  beta=90.0000  gamma=90.0000
+Results of the new UB matrix:
+
+Peak positions as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.3618     -21.2386      -0.9990       0.5000      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.4366    -103.4015      -0.9990       0.5005      13.5000      13.5061
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5061     -52.3324     -21.2239      -0.9990       0.5005     169.4867      43.0439      43.0338
+      0.0000       0.0000       1.0000      13.5000      13.5061     -36.4965    -103.2995      -0.9990       0.5005     169.4867      43.0439      43.0338
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0005       1.0005      -0.0000     -52.3618     -21.2386      -0.9990       0.5000      13.5000      13.5061
+     -0.0016      -0.0016       0.9984     -36.4366    -103.4015      -0.9990       0.5005      13.5000      13.5061
+
+
+The orientation information has been stored in the file 'C:\SPICE\User\exp758\UBConf\UB17Aug2017_120644PM.ini'.
+To restore the configuration to this state at a later time, type:
+
+ubcalc file=C:\SPICE\User\exp758\UBConf\UB17Aug2017_120644PM.ini
+
+
+12:06:51 PM  8/17/2017    Executing "drive h 1.000000 k 1.000000 l 0.000000 e 0.000000"
+                          Derived from "br 1 1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -52.33880
+s1              -21.24025
+sgl             -0.99904
+sgu             0.50050
+mfocus          169.48652
+
+Drive completed.
+
+
+12:08:14 PM  8/17/2017    Executing "drive stu 0 stl 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+stu             0.00000
+stl             0.00000
+
+Drive completed.
+
+
+12:08:34 PM  8/17/2017    Executing "drive s1 @(s1)+3"
+                          Derived from "driverel s1 3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -18.24038
+
+Drive completed.
+
+
+12:08:39 PM  8/17/2017    Executing "drive s1 @(s1)+-5"
+                          Derived from "driverel s1 -5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -23.24012
+
+Drive completed.
+
+
+12:08:48 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -23.54012
+
+Drive completed.
+
+
+12:08:51 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -23.83987
+
+Drive completed.
+
+
+12:08:53 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -24.13950
+
+Drive completed.
+
+
+12:08:55 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -24.43925
+
+Drive completed.
+
+
+12:08:57 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -24.73888
+
+Drive completed.
+
+
+12:08:59 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -25.03875
+
+Drive completed.
+
+
+12:09:02 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -25.33863
+
+Drive completed.
+
+
+12:09:04 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -25.63863
+
+Drive completed.
+
+
+12:09:06 PM  8/17/2017    Executing "drive s1 @(s1)+-0.3"
+                          Derived from "driverel s1 -0.3"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -25.93862
+
+Drive completed.
+
+
+12:09:34 PM  8/17/2017    Executing "drive slita_rt 7.5 slita_lf 7.5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+slita_rt        7.50000
+slita_lf        7.50000
+
+Drive completed.
+
+
+12:09:42 PM  8/17/2017    Executing "drive slitb_rt 7.5 slitb_lf 7.5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+slitb_rt        7.50000
+slitb_lf        7.50000
+
+Drive completed.
+
+
+12:10:08 PM  8/17/2017    Executing "drive slita_tp 22 slita_bt 22"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+slita_tp        22.00000
+slita_bt        22.00000
+
+Drive completed.
+
+
+12:10:14 PM  8/17/2017    Executing "drive slitb_tp 22 slitb_bt 22"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+slitb_tp        22.00000
+slitb_bt        22.00000
+
+Drive completed.
+
+
+12:10:24 PM  8/17/2017    Executing "scan s1 @(s1)+2 @(s1)+-2 0.200000"
+                          Derived from "scanrel s1 2 -2 0.2"
+
+
+# scan = 1
+# date = 8/17/2017
+# time = 12:10:24 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel s1 2 -2 0.2
+# builtin_command = scan s1 @(s1)+2 @(s1)+-2 0.200000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.946764,3.946764,3.930163,90.000000,90.000000,90.000000
+# ubmatrix = 0.181595,0.175348,0.021859,-0.013856,-0.016986,0.253488,0.176149,-0.182105,-0.002596
+# mode = 0
+# plane_normal = 0.017436,0.008734,0.999807
+# ubconf = UB17Aug2017_120644PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -23.9384      1.000   1177.000   8080.000      1.516    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9990     0.9990     0.0666    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2   -24.1386      1.000   1732.000   7939.000      1.489    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9988     0.9988     0.0715    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3   -24.3385      1.000   2749.000   7994.000      1.500    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9986     0.9986     0.0764    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4   -24.5386      1.000   4480.000   7889.000      1.480    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9984     0.9984     0.0814    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5   -24.7386      1.000   6847.000   7995.000      1.500    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9982     0.9982     0.0863    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6   -24.9386      1.000  11385.000   7815.000      1.466    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9980     0.9980     0.0912    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7   -25.1386      1.000  19529.000   7845.000      1.472    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9978     0.9978     0.0961    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8   -25.3385      1.000  34321.000   7844.000      1.472    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9975     0.9975     0.1010    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9   -25.5386      1.000  60243.000   7801.000      1.464    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9973     0.9973     0.1059    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10   -25.7386      1.000  96641.000   7989.000      1.499    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9970     0.9970     0.1108    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11   -25.9386      1.000 129068.000   8070.000      1.514    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9967     0.9967     0.1157    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     12   -26.1386      1.000 145635.000   8016.000      1.504    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9964     0.9964     0.1206    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     13   -26.3385      1.000 141562.000   7939.000      1.489    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9961     0.9961     0.1255    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     14   -26.5386      1.000 120513.000   7916.000      1.485    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9958     0.9958     0.1304    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     15   -26.7386      1.000  90160.000   8040.000      1.508    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9955     0.9955     0.1353    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     16   -26.9385      1.000  54138.000   7916.000      1.485    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9951     0.9951     0.1402    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     17   -27.1386      1.000  30490.000   7879.000      1.478    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9948     0.9948     0.1451    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     18   -27.3385      1.000  18249.000   8009.000      1.503    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9944     0.9944     0.1499    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     19   -27.5386      1.000  11218.000   7975.000      1.496    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9941     0.9941     0.1548    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     20   -27.7386      1.000   6731.000   8003.000      1.502    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9937     0.9937     0.1597    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     21   -27.9384      1.000   4150.000   7927.000      1.487    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9933     0.9933     0.1646    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 991018
+# Center of Mass = -26.210458+/-0.037239
+# Full Width Half-Maximum = 1.176576+/-0.015236
+# 12:11:10 PM  8/17/2017   scan completed.
+
+12:11:10 PM  8/17/2017    Executing "drive s1 @(s1)--2"
+                          Derived from "scanrel s1 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -25.93838
+
+Drive completed.
+
+
+12:11:16 PM  8/17/2017    Executing "drive s1 @(com)"
+                          Derived from "com s1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.21046
+
+Drive completed.
+
+
+12:11:23 PM  8/17/2017    Executing "scan sgl @(sgl)+5 @(sgl)+-5 1.000000"
+                          Derived from "scanrel sgl 5 -5 1"
+
+
+# scan = 2
+# date = 8/17/2017
+# time = 12:11:23 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel sgl 5 -5 1
+# builtin_command = scan sgl @(sgl)+5 @(sgl)+-5 1.000000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.946764,3.946764,3.930163,90.000000,90.000000,90.000000
+# ubmatrix = 0.181595,0.175348,0.021859,-0.013856,-0.016986,0.253488,0.176149,-0.182105,-0.002596
+# mode = 0
+# plane_normal = 0.017436,0.008734,0.999807
+# ubconf = UB17Aug2017_120644PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = sgl
+# def_y = detector
+# col_headers = 
+#   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1     4.0010      1.000  89446.000   7862.000      1.475    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0797     0.9054     0.1219    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2     3.0010      1.000 116120.000   7854.000      1.474    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0637     0.9241     0.1221    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3     2.0010      1.000 132813.000   7949.000      1.491    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0473     0.9426     0.1222    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4     1.0010      1.000 144726.000   8082.000      1.516    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0306     0.9608     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5     0.0010      1.000 147333.000   7908.000      1.484    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0136     0.9787     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6    -0.9990      1.000 146168.000   7721.000      1.449    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9963     0.9963     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7    -1.9990      1.000 141305.000   7943.000      1.490    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9787     1.0136     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8    -2.9990      1.000 127225.000   7860.000      1.475    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9608     1.0306     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9    -3.9990      1.000 105262.000   7936.000      1.489    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9426     1.0473     0.1222    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10    -4.9990      1.000  74142.000   8057.000      1.512    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9241     1.0637     0.1220    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11    -5.9990      1.000  35379.000   7950.000      1.492    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     0.9054     1.0797     0.1219    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 1259919
+# Center of Mass = -0.552995+/-0.002535
+# Full Width Half-Maximum = 5.472563+/-0.004476
+# 12:12:01 PM  8/17/2017   scan completed.
+
+12:12:01 PM  8/17/2017    Executing "drive sgl @(sgl)--5"
+                          Derived from "scanrel sgl 5 -5 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgl             -0.99900
+
+Drive completed.
+
+
+12:12:07 PM  8/17/2017    Executing "drive sgl 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgl             0.00000
+
+Drive completed.
+
+
+12:12:10 PM  8/17/2017    Executing "scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000"
+                          Derived from "th2th 2 -2 0.2"
+
+
+# scan = 3
+# date = 8/17/2017
+# time = 12:12:10 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = th2th 2 -2 0.2
+# builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.946764,3.946764,3.930163,90.000000,90.000000,90.000000
+# ubmatrix = 0.181595,0.175348,0.021859,-0.013856,-0.016986,0.253488,0.176149,-0.182105,-0.002596
+# mode = 0
+# plane_normal = 0.017436,0.008734,0.999807
+# ubconf = UB17Aug2017_120644PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s2
+# def_y = detector
+# col_headers = 
+#   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -50.3378   -25.2106      1.000    848.000   8153.000      1.530    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1713     0.9775     0.9438     0.1180    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2   -50.5394   -25.3102      1.000   1219.000   7901.000      1.482    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1794     0.9811     0.9473     0.1184    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3   -50.7378   -25.4103      1.000   1756.000   8019.000      1.505    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1874     0.9847     0.9508     0.1189    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4   -50.9382   -25.5102      1.000   2613.000   8112.000      1.522    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1955     0.9883     0.9543     0.1193    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5   -51.1402   -25.6103      1.000   4224.000   7884.000      1.479    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2036     0.9920     0.9578     0.1197    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6   -51.3378   -25.7102      1.000   8640.000   7909.000      1.484    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2115     0.9956     0.9613     0.1202    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7   -51.5376   -25.8102      1.000  19815.000   7947.000      1.491    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2196     0.9992     0.9648     0.1206    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8   -51.7386   -25.9101      1.000  42624.000   7875.000      1.477    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2276     1.0028     0.9683     0.1210    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9   -51.9396   -26.0099      1.000  76390.000   7913.000      1.485    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2357     1.0064     0.9718     0.1214    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10   -52.1404   -26.1103      1.000 117139.000   8054.000      1.511    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2437     1.0101     0.9753     0.1219    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11   -52.3396   -26.2101      1.000 147021.000   8130.000      1.525    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2517     1.0136     0.9788     0.1223    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     12   -52.5394   -26.3102      1.000 153544.000   8043.000      1.509    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2597     1.0172     0.9822     0.1227    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     13   -52.7390   -26.4103      1.000 130963.000   7891.000      1.480    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2677     1.0208     0.9857     0.1232    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     14   -52.9382   -26.5102      1.000  83069.000   7851.000      1.473    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2756     1.0244     0.9891     0.1236    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     15   -53.1370   -26.6101      1.000  39346.000   7891.000      1.480    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2835     1.0280     0.9926     0.1241    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     16   -53.3378   -26.7102      1.000  17740.000   8005.000      1.502    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2915     1.0316     0.9961     0.1245    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     17   -53.5376   -26.8102      1.000   8549.000   8027.000      1.506    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.2995     1.0352     0.9995     0.1249    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     18   -53.7376   -26.9100      1.000   4327.000   7989.000      1.499    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.3074     1.0387     1.0030     0.1253    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     19   -53.9380   -27.0101      1.000   2729.000   7962.000      1.494    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.3154     1.0423     1.0064     0.1258    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     20   -54.1398   -27.1104      1.000   1939.000   7838.000      1.471    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.3234     1.0459     1.0099     0.1262    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     21   -54.3396   -27.2101      1.000   1262.000   7973.000      1.496    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.3313     1.0495     1.0134     0.1266    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 865757
+# Center of Mass = -52.442369+/-0.079709
+# Full Width Half-Maximum = 0.975851+/-0.035642
+# 12:12:58 PM  8/17/2017   scan completed.
+
+12:13:13 PM  8/17/2017    Executing "drive s1 @(s1)-((@(s2)-@(com))/2) s2 @(com)"
+                          Derived from "th2th 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.26176
+s2              -52.44237
+
+Drive completed.
+
+
+12:13:34 PM  8/17/2017    Executing "lattice a 3.939520 b 3.939520 c 3.930163"
+
+
+Changing the lattice constants "a=3.939520,b=3.939520,c=3.930163".
+The lattice constants will be changed to:
+a=3.939520	b=3.939520	c=3.93016
+alpha=90.000000	beta=90.000000	gamma=90.00000
+
+12:13:50 PM  8/17/2017    Executing "ubcalc file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_121348PM.ini""
+
+Setting the UB matrix using the configuration file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_121348PM.ini".
+
+The UB matrix was successfully generated using:
+
+Scattering plane specified by:
+ h1=1.000  k1=1.000  l1=0.000     h2=0.000  k2=0.000  l2=1.000
+the single peak position:
+h=1.0000  k=1.0000  l=0.0000     s2=-52.4412     s1=-26.2613     sgl=0.0005     sgu=0.5015  Ei=13.5000  Ef=13.5061
+
+and the following lattice parameters:
+a=3.9395  b=3.9395  c=3.9302     alpha=90.0000  beta=90.0000  gamma=90.0000
+
+Results of the new UB matrix:
+
+Peak position as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4412     -26.2613       0.0005       0.5015      13.5000      13.5061
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5061     -52.4360     -26.2586       0.0005       0.5015     169.4867      43.0439      43.0338
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0001       1.0001      -0.0000     -52.4412     -26.2613       0.0005       0.5015      13.5000      13.5061
+
+
+The orientation information has been stored in the file 'C:\SPICE\User\exp758\UBConf\UB17Aug2017_121350PM.ini'.
+To restore the configuration to this state at a later time, type:
+
+ubcalc file=C:\SPICE\User\exp758\UBConf\UB17Aug2017_121350PM.ini
+
+
+12:14:02 PM  8/17/2017    Executing "drive h 0.000000 k 0.000000 l 1.000000 e 0.000000"
+                          Derived from "br 0 0 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -36.50077
+s1              -108.30417
+sgl             0.00050
+sgu             0.50150
+mfocus          169.48652
+
+Drive completed.
+
+
+12:14:56 PM  8/17/2017    Executing "scan sgu @(sgu)+5 @(sgu)+-5 1.000000"
+                          Derived from "scanrel sgu 5 -5 1"
+
+
+# scan = 4
+# date = 8/17/2017
+# time = 12:14:56 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel sgu 5 -5 1
+# builtin_command = scan sgu @(sgu)+5 @(sgu)+-5 1.000000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.930163,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000239,0.001740,-0.001403,0.254433,0.179484,-0.179484,-0.002227
+# mode = 0
+# plane_normal = -0.000009,0.008753,0.999962
+# ubconf = UB17Aug2017_121350PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = sgu
+# def_y = detector
+# col_headers = 
+#   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1     5.5025      1.000 100724.000   8059.000      1.512    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0621     0.0615     0.9962    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2     4.5015      1.000 118021.000   8001.000      1.501    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0497     0.0492     0.9976    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3     3.5015      1.000 128980.000   7948.000      1.491    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0374     0.0368     0.9987    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4     2.5015      1.000 133285.000   7947.000      1.491    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0250     0.0245     0.9994    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5     1.5015      1.000 137078.000   7891.000      1.480    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0126     0.0121     0.9999    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6     0.5015      1.000 140580.000   8006.000      1.502    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0003    -0.0003     1.0000    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7    -0.4985      1.000 139401.000   8031.000      1.507    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988     0.0121    -0.0126     0.9999    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8    -1.4985      1.000 133417.000   7896.000      1.481    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988     0.0245    -0.0250     0.9994    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9    -2.4985      1.000 123774.000   8131.000      1.526    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988     0.0368    -0.0374     0.9987    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10    -3.4985      1.000 109723.000   7902.000      1.483    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988     0.0492    -0.0497     0.9976    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11    -4.4985      1.000  87061.000   7973.000      1.496    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988     0.0615    -0.0620     0.9962    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 1352044
+# Center of Mass = 0.586289+/-0.002654
+# Full Width Half-Maximum = 5.945388+/-0.004610
+# 12:15:33 PM  8/17/2017   scan completed.
+
+12:15:33 PM  8/17/2017    Executing "drive sgu @(sgu)--5"
+                          Derived from "scanrel sgu 5 -5 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgu             0.50150
+
+Drive completed.
+
+
+12:15:39 PM  8/17/2017    Executing "drive sgu 0.5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgu             0.50000
+
+Drive completed.
+
+
+12:15:45 PM  8/17/2017    Executing "scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000"
+                          Derived from "th2th 2 -2 0.2"
+
+
+# scan = 5
+# date = 8/17/2017
+# time = 12:15:45 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = th2th 2 -2 0.2
+# builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.930163,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000239,0.001740,-0.001403,0.254433,0.179484,-0.179484,-0.002227
+# mode = 0
+# plane_normal = -0.000009,0.008753,0.999962
+# ubconf = UB17Aug2017_121350PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s2
+# def_y = detector
+# col_headers = 
+#   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -34.4959  -107.3039      1.000    126.000   7964.000      1.494    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5138    -0.0003    -0.0003     0.9469    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2   -34.6977  -107.4039      1.000    174.000   8040.000      1.508    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5224    -0.0003    -0.0002     0.9523    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3   -34.8979  -107.5039      1.000    334.000   7957.000      1.493    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5309    -0.0003    -0.0002     0.9576    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4   -35.0963  -107.6039      1.000    612.000   7880.000      1.478    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5393    -0.0003    -0.0003     0.9629    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5   -35.2973  -107.7039      1.000   1904.000   8093.000      1.518    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5479    -0.0003    -0.0002     0.9682    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6   -35.4975  -107.8039      1.000   7600.000   7975.000      1.496    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5564    -0.0003    -0.0002     0.9735    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7   -35.6967  -107.9038      1.000  27650.000   8094.000      1.519    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5648    -0.0003    -0.0003     0.9788    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8   -35.8975  -108.0041      1.000  70489.000   7834.000      1.470    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5733    -0.0003    -0.0003     0.9841    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9   -36.0975  -108.1043      1.000 121216.000   7956.000      1.493    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5818    -0.0003    -0.0003     0.9894    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10   -36.2990  -108.2041      1.000 147422.000   7964.000      1.494    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5904    -0.0003    -0.0002     0.9948    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11   -36.4990  -108.3039      1.000 140786.000   8018.000      1.504    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5988    -0.0003    -0.0002     1.0001    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     12   -36.6967  -108.4039      1.000 104891.000   8003.000      1.502    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6072    -0.0003    -0.0003     1.0053    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     13   -36.8975  -108.5039      1.000  57350.000   8090.000      1.518    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6157    -0.0003    -0.0002     1.0106    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     14   -37.0990  -108.6039      1.000  24985.000   7903.000      1.483    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6242    -0.0003    -0.0002     1.0159    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     15   -37.2985  -108.7039      1.000  10310.000   7996.000      1.500    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6326    -0.0003    -0.0002     1.0212    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     16   -37.4994  -108.8039      1.000   3913.000   7885.000      1.479    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6411    -0.0003    -0.0002     1.0265    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     17   -37.6971  -108.9036      1.000   1374.000   8033.000      1.507    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6494    -0.0003    -0.0002     1.0317    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     18   -37.8969  -109.0041      1.000    541.000   7915.000      1.485    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6578    -0.0003    -0.0003     1.0370    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     19   -38.0992  -109.1041      1.000    316.000   8002.000      1.501    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6664    -0.0003    -0.0002     1.0423    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     20   -38.2990  -109.2041      1.000    186.000   7989.000      1.499    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6748    -0.0003    -0.0002     1.0476    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     21   -38.4986  -109.3039      1.000    119.000   7972.000      1.496    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.6832    -0.0003    -0.0002     1.0528    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 722298
+# Center of Mass = -36.387725+/-0.060551
+# Full Width Half-Maximum = 0.783757+/-0.032023
+# 12:16:32 PM  8/17/2017   scan completed.
+
+12:16:32 PM  8/17/2017    Executing "drive s1 @(s1)-((@(s2)-@(com))/2) s2 @(com)"
+                          Derived from "th2th 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -108.24841
+s2              -36.38773
+
+Drive completed.
+
+
+12:16:41 PM  8/17/2017    Executing "lattice a 3.939520 b 3.939520 c 3.941957"
+
+
+Changing the lattice constants "a=3.939520,b=3.939520,c=3.941957".
+The lattice constants will be changed to:
+a=3.939520	b=3.939520	c=3.94195
+alpha=90.000000	beta=90.000000	gamma=90.00000
+
+12:16:57 PM  8/17/2017    Executing "ubcalc file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_121655PM.ini""
+
+Setting the UB matrix using the configuration file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_121655PM.ini".
+
+The UB matrix was successfully generated using:
+
+The 2 reflections specified by:
+            h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4412     -26.2613       0.0005       0.5015      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.3912    -108.2477       0.0005       0.5025      13.5000      13.5061
+
+
+and the following lattice constants:
+a=3.9395  b=3.9395  c=3.9420     alpha=90.0000  beta=90.0000  gamma=90.0000
+Results of the new UB matrix:
+
+Peak positions as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4412     -26.2613       0.0005       0.5015      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.3912    -108.2477       0.0005       0.5025      13.5000      13.5061
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5061     -52.4360     -26.2586       0.0005       0.5025     169.4867      43.0439      43.0338
+      0.0000       0.0000       1.0000      13.5000      13.5061     -36.3834    -108.2258       0.0005       0.5025     169.4867      43.0439      43.0338
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0001       1.0001      -0.0000     -52.4412     -26.2613       0.0005       0.5015      13.5000      13.5061
+     -0.0002      -0.0002       1.0002     -36.3912    -108.2477       0.0005       0.5025      13.5000      13.5061
+
+
+The orientation information has been stored in the file 'C:\SPICE\User\exp758\UBConf\UB17Aug2017_121657PM.ini'.
+To restore the configuration to this state at a later time, type:
+
+ubcalc file=C:\SPICE\User\exp758\UBConf\UB17Aug2017_121657PM.ini
+
+
+12:19:37 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 5 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 5 meV
+
+
+12:19:37 PM  8/17/2017    Executing "scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10"
+
+
+# scan = 6
+# date = 8/17/2017
+# time = 12:19:37 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 5 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.0819     0.0819     1.0926     0.3381      0.000      0.000      0.000      0.000    68.0958   -43.1512    42.4790     0.0700     0.0000   173.8376  -104.9052   -39.8536     0.0010     0.5025    21.5216    43.0336     1.7513    13.8444    13.5062     0.0000     0.0000     0.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 12:19:41 PM  8/17/2017   scan stopped!!
+
+Abort issued!!
+
+12:19:47 PM  8/17/2017    Executing "drive h 1.000000 k 1.000000 l 0.000000 e 0.000000"
+                          Derived from "br 1 1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -52.44236
+s1              -26.27496
+sgl             0.00050
+sgu             0.50250
+mfocus          169.48652
+
+Drive aborted!!
+
+Final Motor Positions:
+motor        position
+m2      43.04361
+a2      43.03356
+a1      21.52161
+s2      -52.44550
+s1      -90.62888
+sgl      0.00100
+sgu      0.50250
+mfocus      169.48587
+
+
+Abort issued!!
+
+12:19:59 PM  8/17/2017    Executing "count preset time 10"
+
+12:19:59 PM  8/17/2017   Executing count command with preset channel "time" and preset value 10.00
+
+         time     detector      monitor          mcu
+       10.000       75.000    79738.000       14.960
+
+12:20:09 PM  8/17/2017   Count command completed.
+
+
+12:20:18 PM  8/17/2017    Executing "comment "The monitor count unit was set to @(methodreal0)" title "Setting the monitor count unit""
+                          Derived from "mcu 7974"
+
+Setting the monitor count unit:
+The monitor count unit was set to 7974
+
+
+12:20:22 PM  8/17/2017    Executing "count preset mcu 10"
+
+12:20:22 PM  8/17/2017   Executing count command with preset channel "mcu" and preset value 10.00
+
+         time     detector      monitor          mcu
+       10.022       89.000    79741.000       10.000
+
+12:20:32 PM  8/17/2017   Count command completed.
+
+
+12:20:35 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 5 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 5 meV
+
+
+12:20:35 PM  8/17/2017    Executing "scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10"
+
+
+# scan = 7
+# date = 8/17/2017
+# time = 12:20:35 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 5 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.4498     0.4498     1.4501     4.9945      9.026     24.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.9604   -53.5034     0.0010     0.5025    21.5216    43.0338     2.5242    18.5006    13.5061     0.0000     0.0000     0.000
+      2     0.4598     0.4598     1.4602     4.9946      8.983     16.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.8150   -54.0666     0.0010     0.5025    21.5216    43.0338     2.5481    18.5007    13.5061     0.0000     0.0000     0.000
+      3     0.4699     0.4699     1.4703     4.9946      8.979     41.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.6790   -54.6345     0.0010     0.5025    21.5216    43.0338     2.5721    18.5007    13.5061     0.0000     0.0000     0.000
+      4     0.4799     0.4798     1.4803     4.9946      8.991    131.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.5511   -55.1977     0.0010     0.5025    21.5216    43.0338     2.5958    18.5007    13.5061     0.0000     0.0000     0.000
+      5     0.4898     0.4898     1.4902     4.9946      8.994    307.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.4314   -55.7650     0.0010     0.5025    21.5216    43.0338     2.6197    18.5007    13.5061     0.0000     0.0000     0.000
+      6     0.4999     0.4999     1.5003     4.9946      8.916    340.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.3199   -56.3386     0.0010     0.5025    21.5216    43.0338     2.6438    18.5007    13.5061     0.0000     0.0000     0.000
+      7     0.5098     0.5098     1.5102     4.9946      8.963    203.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.2173   -56.9122     0.0010     0.5025    21.5216    43.0338     2.6678    18.5007    13.5061     0.0000     0.0000     0.000
+      8     0.5198     0.5198     1.5202     4.9946      9.020     49.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.1223   -57.4902     0.0010     0.5025    21.5216    43.0338     2.6919    18.5007    13.5061     0.0000     0.0000     0.000
+      9     0.5299     0.5299     1.5303     4.9946      9.018     16.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.0349   -58.0738     0.0010     0.5025    21.5216    43.0338     2.7162    18.5007    13.5061     0.0000     0.0000     0.000
+     10     0.5399     0.5399     1.5403     4.9946      8.981     18.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -100.9554   -58.6597     0.0010     0.5025    21.5216    43.0338     2.7406    18.5007    13.5061     0.0000     0.0000     0.000
+     11     0.5498     0.5498     1.5502     4.9946      8.979     20.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -100.8839   -59.2410     0.0010     0.5025    21.5216    43.0338     2.7647    18.5007    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1165
+# Center of Mass = 0.496800+/-0.020590
+# Full Width Half-Maximum = 0.033543+/-0.010330
+# 12:23:09 PM  8/17/2017   scan completed.
+
+12:23:09 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 10 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 10 meV
+
+
+12:23:09 PM  8/17/2017    Executing "scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10"
+
+
+# scan = 8
+# date = 8/17/2017
+# time = 12:23:09 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10
+# builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 10 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.4498     0.4498     1.4501     9.9945      8.161     17.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.5406   -48.0827     0.0010     0.5025    21.5216    43.0338     2.5242    23.5006    13.5061     0.0000     0.0000     0.000
+      2     0.4599     0.4599     1.4603     9.9945      8.155     51.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.2859   -48.6258     0.0010     0.5025    21.5216    43.0338     2.5482    23.5006    13.5061     0.0000     0.0000     0.000
+      3     0.4698     0.4698     1.4702     9.9945      8.184    118.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.0429   -49.1599     0.0010     0.5025    21.5216    43.0338     2.5718    23.5006    13.5061     0.0000     0.0000     0.000
+      4     0.4798     0.4798     1.4802     9.9945      8.171    162.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -106.8094   -49.7000     0.0010     0.5025    21.5216    43.0338     2.5956    23.5006    13.5061     0.0000     0.0000     0.000
+      5     0.4898     0.4898     1.4903     9.9945      8.126    188.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -106.5854   -50.2475     0.0010     0.5025    21.5216    43.0338     2.6198    23.5006    13.5061     0.0000     0.0000     0.000
+      6     0.4998     0.4998     1.5002     9.9945      8.181    192.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -106.3701   -50.7912     0.0010     0.5025    21.5216    43.0338     2.6437    23.5006    13.5061     0.0000     0.0000     0.000
+      7     0.5098     0.5098     1.5102     9.9945      8.188    184.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -106.1647   -51.3361     0.0010     0.5025    21.5216    43.0338     2.6676    23.5006    13.5061     0.0000     0.0000     0.000
+      8     0.5198     0.5198     1.5202     9.9945      8.205    151.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -105.9679   -51.8870     0.0010     0.5025    21.5216    43.0338     2.6918    23.5006    13.5061     0.0000     0.0000     0.000
+      9     0.5299     0.5299     1.5303     9.9945      8.185     61.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -105.7802   -52.4453     0.0010     0.5025    21.5216    43.0338     2.7163    23.5006    13.5061     0.0000     0.0000     0.000
+     10     0.5398     0.5398     1.5402     9.9945      8.181     13.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -105.6009   -52.9951     0.0010     0.5025    21.5216    43.0338     2.7404    23.5006    13.5061     0.0000     0.0000     0.000
+     11     0.5498     0.5498     1.5501     9.9945      8.198     12.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -105.4301   -53.5467     0.0010     0.5025    21.5216    43.0338     2.7645    23.5006    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1149
+# Center of Mass = 0.496555+/-0.020726
+# Full Width Half-Maximum = 0.041144+/-0.012023
+# 12:25:28 PM  8/17/2017   scan completed.
+
+12:25:28 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 15 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 15 meV
+
+
+12:25:28 PM  8/17/2017    Executing "scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10"
+
+
+# scan = 9
+# date = 8/17/2017
+# time = 12:25:28 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10
+# builtin_command = scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 15 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3998     0.3998     1.4001    14.9947      7.178      6.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.9239   -40.1280     0.0010     0.5025    21.5216    43.0338     2.4069    28.5008    13.5061     0.0000     0.0000     0.000
+      2     0.4098     0.4098     1.4102    14.9948      7.236      6.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.5096   -40.6581     0.0010     0.5025    21.5216    43.0338     2.4304    28.5009    13.5061     0.0000     0.0000     0.000
+      3     0.4198     0.4198     1.4201    14.9948      7.178      7.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.1076   -41.1813     0.0010     0.5025    21.5216    43.0338     2.4536    28.5009    13.5061     0.0000     0.0000     0.000
+      4     0.4297     0.4297     1.4300    14.9948      7.203     25.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -113.7184   -41.7051     0.0010     0.5025    21.5216    43.0338     2.4768    28.5009    13.5061     0.0000     0.0000     0.000
+      5     0.4398     0.4398     1.4402    14.9948      7.200     51.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -113.3406   -42.2429     0.0010     0.5025    21.5216    43.0338     2.5007    28.5009    13.5061     0.0000     0.0000     0.000
+      6     0.4498     0.4498     1.4502    14.9948      7.196     70.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.9754   -42.7758     0.0010     0.5025    21.5216    43.0338     2.5244    28.5009    13.5061     0.0000     0.0000     0.000
+      7     0.4598     0.4598     1.4601    14.9948      7.248     80.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.6219   -43.3042     0.0010     0.5025    21.5216    43.0338     2.5479    28.5009    13.5061     0.0000     0.0000     0.000
+      8     0.4698     0.4698     1.4702    14.9948      7.246    114.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.2794   -43.8427     0.0010     0.5025    21.5216    43.0338     2.5718    28.5009    13.5061     0.0000     0.0000     0.000
+      9     0.4798     0.4798     1.4802    14.9948      7.199    112.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.9481   -44.3786     0.0010     0.5025    21.5216    43.0338     2.5957    28.5009    13.5061     0.0000     0.0000     0.000
+     10     0.4898     0.4898     1.4901    14.9948      7.207    107.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.6281   -44.9116     0.0010     0.5025    21.5216    43.0338     2.6194    28.5009    13.5061     0.0000     0.0000     0.000
+     11     0.4998     0.4998     1.5002    14.9948      7.174    110.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.3181   -45.4540     0.0010     0.5025    21.5216    43.0338     2.6436    28.5009    13.5061     0.0000     0.0000     0.000
+     12     0.5098     0.5098     1.5102    14.9948      7.235    128.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.0187   -45.9951     0.0010     0.5025    21.5216    43.0338     2.6677    28.5009    13.5061     0.0000     0.0000     0.000
+     13     0.5198     0.5198     1.5202    14.9948      7.185    103.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.7297   -46.5368     0.0010     0.5025    21.5216    43.0338     2.6918    28.5009    13.5061     0.0000     0.0000     0.000
+     14     0.5298     0.5298     1.5301    14.9948      7.199    102.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.4507   -47.0766     0.0010     0.5025    21.5216    43.0338     2.7159    28.5009    13.5061     0.0000     0.0000     0.000
+     15     0.5398     0.5398     1.5402    14.9948      7.250     77.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.1813   -47.6231     0.0010     0.5025    21.5216    43.0338     2.7402    28.5009    13.5061     0.0000     0.0000     0.000
+     16     0.5498     0.5498     1.5502    14.9948      7.218     37.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.9216   -48.1697     0.0010     0.5025    21.5216    43.0338     2.7646    28.5009    13.5061     0.0000     0.0000     0.000
+     17     0.5598     0.5598     1.5601    14.9948      7.207     24.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.6711   -48.7170     0.0010     0.5025    21.5216    43.0338     2.7890    28.5009    13.5061     0.0000     0.0000     0.000
+     18     0.5698     0.5698     1.5702    14.9948      7.221     15.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.4301   -49.2693     0.0010     0.5025    21.5216    43.0338     2.8135    28.5009    13.5061     0.0000     0.0000     0.000
+     19     0.5798     0.5798     1.5802    14.9948      7.211     11.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.1979   -49.8205     0.0010     0.5025    21.5216    43.0338     2.8381    28.5009    13.5061     0.0000     0.0000     0.000
+     20     0.5898     0.5898     1.5902    14.9948      7.181      7.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -108.9741   -50.3723     0.0010     0.5025    21.5216    43.0338     2.8626    28.5009    13.5061     0.0000     0.0000     0.000
+     21     0.5998     0.5998     1.6001    14.9948      7.191     12.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -108.7595   -50.9231     0.0010     0.5025    21.5216    43.0338     2.8871    28.5009    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1204
+# Center of Mass = 0.496966+/-0.020283
+# Full Width Half-Maximum = 0.074704+/-0.008642
+# 12:29:15 PM  8/17/2017   scan completed.
+
+12:29:15 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 20 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 20 meV
+
+
+12:29:15 PM  8/17/2017    Executing "scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10"
+
+
+# scan = 10
+# date = 8/17/2017
+# time = 12:29:15 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10
+# builtin_command = scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 20 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3998     0.3998     1.4000    19.9951      6.744      4.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -120.9755   -34.6355     0.0010     0.5025    21.5216    43.0338     2.4069    33.5012    13.5061     0.0000     0.0000     0.000
+      2     0.4098     0.4098     1.4100    19.9949      6.783     16.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -120.4449   -35.1845     0.0010     0.5025    21.5216    43.0338     2.4301    33.5011    13.5061     0.0000     0.0000     0.000
+      3     0.4198     0.4198     1.4198    19.9949      6.744     21.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -119.9296   -35.7256     0.0010     0.5025    21.5216    43.0338     2.4532    33.5011    13.5061     0.0000     0.0000     0.000
+      4     0.4298     0.4298     1.4301    19.9949      6.756     42.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -119.4294   -36.2843     0.0010     0.5025    21.5216    43.0338     2.4770    33.5011    13.5061     0.0000     0.0000     0.000
+      5     0.4398     0.4398     1.4401    19.9949      6.744     49.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -118.9434   -36.8323     0.0010     0.5025    21.5216    43.0338     2.5005    33.5011    13.5061     0.0000     0.0000     0.000
+      6     0.4498     0.4498     1.4502    19.9949      6.764     59.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -118.4721   -37.3853     0.0010     0.5025    21.5216    43.0338     2.5243    33.5011    13.5061     0.0000     0.0000     0.000
+      7     0.4598     0.4598     1.4599    19.9949      6.754     63.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -118.0139   -37.9254     0.0010     0.5025    21.5216    43.0338     2.5476    33.5011    13.5061     0.0000     0.0000     0.000
+      8     0.4698     0.4698     1.4702    19.9949      6.772     73.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -117.5700   -38.4837     0.0010     0.5025    21.5216    43.0338     2.5718    33.5011    13.5061     0.0000     0.0000     0.000
+      9     0.4798     0.4798     1.4801    19.9949      6.749     75.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -117.1386   -39.0298     0.0010     0.5025    21.5216    43.0338     2.5955    33.5011    13.5061     0.0000     0.0000     0.000
+     10     0.4898     0.4898     1.4901    19.9949      6.768     88.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -116.7205   -39.5794     0.0010     0.5025    21.5216    43.0338     2.6194    33.5011    13.5061     0.0000     0.0000     0.000
+     11     0.4998     0.4998     1.5001    19.9949      6.782     79.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -116.3143   -40.1298     0.0010     0.5025    21.5216    43.0338     2.6434    33.5011    13.5061     0.0000     0.0000     0.000
+     12     0.5098     0.5098     1.5102    19.9949      6.778     76.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.9207   -40.6835     0.0010     0.5025    21.5216    43.0338     2.6677    33.5011    13.5061     0.0000     0.0000     0.000
+     13     0.5198     0.5198     1.5201    19.9949      6.755     82.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.5392   -41.2294     0.0010     0.5025    21.5216    43.0338     2.6916    33.5011    13.5061     0.0000     0.0000     0.000
+     14     0.5298     0.5298     1.5301    19.9949      6.751     81.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.1691   -41.7813     0.0010     0.5025    21.5216    43.0338     2.7158    33.5011    13.5061     0.0000     0.0000     0.000
+     15     0.5398     0.5398     1.5401    19.9949      6.778     82.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.8105   -42.3337     0.0010     0.5025    21.5216    43.0338     2.7401    33.5011    13.5061     0.0000     0.0000     0.000
+     16     0.5498     0.5498     1.5501    19.9949      6.780     75.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.4629   -42.8864     0.0010     0.5025    21.5216    43.0338     2.7645    33.5011    13.5061     0.0000     0.0000     0.000
+     17     0.5598     0.5598     1.5603    19.9949      6.819     49.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.1259   -43.4451     0.0010     0.5025    21.5216    43.0338     2.7891    33.5011    13.5061     0.0000     0.0000     0.000
+     18     0.5698     0.5698     1.5701    19.9949      6.800     29.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -113.7999   -43.9923     0.0010     0.5025    21.5216    43.0338     2.8133    33.5011    13.5061     0.0000     0.0000     0.000
+     19     0.5798     0.5798     1.5801    19.9949      6.795     12.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -113.4841   -44.5463     0.0010     0.5025    21.5216    43.0338     2.8379    33.5011    13.5061     0.0000     0.0000     0.000
+     20     0.5898     0.5898     1.5901    19.9949      6.813     58.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -113.1784   -45.1008     0.0010     0.5025    21.5216    43.0338     2.8624    33.5011    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1113
+# Center of Mass = 0.503008+/-0.021367
+# Full Width Half-Maximum = 0.091403+/-0.009454
+# 12:32:44 PM  8/17/2017   scan completed.
+
+12:32:44 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 25 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 25 meV
+
+
+12:32:44 PM  8/17/2017    Executing "scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10"
+
+
+# scan = 11
+# date = 8/17/2017
+# time = 12:32:44 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10
+# builtin_command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3498     0.3498     1.3500    24.9954      6.363      9.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -131.1251   -25.6189     0.0010     0.5025    21.5216    43.0338     2.2919    38.5015    13.5061     0.0000     0.0000     0.000
+      2     0.3598     0.3598     1.3600    24.9954      6.406      9.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -130.3384   -26.2423     0.0010     0.5025    21.5216    43.0338     2.3146    38.5015    13.5061     0.0000     0.0000     0.000
+      3     0.3698     0.3698     1.3699    24.9954      6.371     12.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -129.5763   -26.8609     0.0010     0.5025    21.5216    43.0338     2.3374    38.5015    13.5061     0.0000     0.0000     0.000
+      4     0.3798     0.3798     1.3799    24.9954      6.365      7.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -128.8380   -27.4778     0.0010     0.5025    21.5216    43.0338     2.3605    38.5015    13.5061     0.0000     0.0000     0.000
+      5     0.3898     0.3898     1.3900    24.9954      6.363      8.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -128.1219   -28.0916     0.0010     0.5025    21.5216    43.0338     2.3836    38.5015    13.5061     0.0000     0.0000     0.000
+      6     0.3998     0.3998     1.4000    24.9954      6.373     17.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -127.4274   -28.7006     0.0010     0.5025    21.5216    43.0338     2.4068    38.5015    13.5061     0.0000     0.0000     0.000
+      7     0.4098     0.4098     1.4099    24.9954      6.376     26.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -126.7541   -29.2986     0.0010     0.5025    21.5216    43.0338     2.4299    38.5015    13.5061     0.0000     0.0000     0.000
+      8     0.4198     0.4198     1.4199    24.9954      6.392     28.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -126.1006   -29.9026     0.0010     0.5025    21.5216    43.0338     2.4533    38.5015    13.5061     0.0000     0.0000     0.000
+      9     0.4298     0.4298     1.4301    24.9954      6.361     45.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -125.4671   -30.5055     0.0010     0.5025    21.5216    43.0338     2.4770    38.5015    13.5061     0.0000     0.0000     0.000
+     10     0.4398     0.4398     1.4400    24.9954      6.375     39.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -124.8521   -31.0988     0.0010     0.5025    21.5216    43.0338     2.5004    38.5015    13.5061     0.0000     0.0000     0.000
+     11     0.4498     0.4498     1.4500    24.9954      6.390     62.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -124.2553   -31.6925     0.0010     0.5025    21.5216    43.0338     2.5241    38.5015    13.5061     0.0000     0.0000     0.000
+     12     0.4598     0.4598     1.4601    24.9954      6.360     41.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -123.6762   -32.2861     0.0010     0.5025    21.5216    43.0338     2.5479    38.5015    13.5061     0.0000     0.0000     0.000
+     13     0.4698     0.4698     1.4700    24.9954      6.406     51.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -123.1144   -32.8719     0.0010     0.5025    21.5216    43.0338     2.5716    38.5015    13.5061     0.0000     0.0000     0.000
+     14     0.4798     0.4798     1.4800    24.9954      6.356     64.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -122.5689   -33.4593     0.0010     0.5025    21.5216    43.0338     2.5954    38.5015    13.5061     0.0000     0.0000     0.000
+     15     0.4898     0.4898     1.4900    24.9954      6.403     44.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -122.0391   -34.0439     0.0010     0.5025    21.5216    43.0338     2.6194    38.5015    13.5061     0.0000     0.0000     0.000
+     16     0.4998     0.4998     1.5001    24.9954      6.373     64.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -121.5254   -34.6296     0.0010     0.5025    21.5216    43.0338     2.6435    38.5015    13.5061     0.0000     0.0000     0.000
+     17     0.5098     0.5098     1.5100    24.9954      6.342     41.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -121.0263   -35.2067     0.0010     0.5025    21.5216    43.0338     2.6674    38.5015    13.5061     0.0000     0.0000     0.000
+     18     0.5198     0.5198     1.5200    24.9954      6.369     39.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -120.5426   -35.7857     0.0010     0.5025    21.5216    43.0338     2.6915    38.5015    13.5061     0.0000     0.0000     0.000
+     19     0.5298     0.5298     1.5301    24.9954      6.348     47.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -120.0724   -36.3681     0.0010     0.5025    21.5216    43.0338     2.7158    38.5015    13.5061     0.0000     0.0000     0.000
+     20     0.5398     0.5398     1.5400    24.9954      6.349     46.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -119.6163   -36.9431     0.0010     0.5025    21.5216    43.0338     2.7400    38.5015    13.5061     0.0000     0.0000     0.000
+     21     0.5498     0.5498     1.5501    24.9954      6.381     39.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -119.1736   -37.5235     0.0010     0.5025    21.5216    43.0338     2.7645    38.5015    13.5061     0.0000     0.0000     0.000
+     22     0.5598     0.5598     1.5601    24.9954      6.390     51.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -118.7439   -38.0969     0.0010     0.5025    21.5216    43.0338     2.7888    38.5015    13.5061     0.0000     0.0000     0.000
+     23     0.5698     0.5698     1.5702    24.9954      6.371     36.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -118.3266   -38.6742     0.0010     0.5025    21.5216    43.0338     2.8134    38.5015    13.5061     0.0000     0.0000     0.000
+     24     0.5798     0.5798     1.5801    24.9954      6.363     26.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -117.9223   -39.2465     0.0010     0.5025    21.5216    43.0338     2.8379    38.5015    13.5061     0.0000     0.0000     0.000
+     25     0.5898     0.5898     1.5901    24.9954      6.367     13.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -117.5296   -39.8170     0.0010     0.5025    21.5216    43.0338     2.8623    38.5015    13.5061     0.0000     0.0000     0.000
+     26     0.5998     0.5998     1.6002    24.9954      6.375     13.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -117.1488   -40.3937     0.0010     0.5025    21.5216    43.0338     2.8872    38.5015    13.5061     0.0000     0.0000     0.000
+     27     0.6098     0.6098     1.6101    24.9954      6.423     10.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -116.7794   -40.9611     0.0010     0.5025    21.5216    43.0338     2.9117    38.5015    13.5061     0.0000     0.0000     0.000
+     28     0.6198     0.6198     1.6200    24.9954      6.363      7.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -116.4209   -41.5286     0.0010     0.5025    21.5216    43.0338     2.9362    38.5015    13.5061     0.0000     0.0000     0.000
+     29     0.6298     0.6298     1.6301    24.9954      6.408     12.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -116.0736   -42.1024     0.0010     0.5025    21.5216    43.0338     2.9612    38.5015    13.5061     0.0000     0.0000     0.000
+     30     0.6398     0.6398     1.6402    24.9954      6.348      8.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -115.7370   -42.6778     0.0010     0.5025    21.5216    43.0338     2.9862    38.5015    13.5061     0.0000     0.0000     0.000
+     31     0.6498     0.6498     1.6501    24.9954      6.360      4.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -115.4101   -43.2451     0.0010     0.5025    21.5216    43.0338     3.0110    38.5015    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 918
+# Center of Mass = 0.495541+/-0.023223
+# Full Width Half-Maximum = 0.126043+/-0.008583
+# 12:37:50 PM  8/17/2017   scan completed.
+
+12:37:50 PM  8/17/2017    Executing "drive h 1.000000 k 1.000000 l 0.000000 e 0.000000"
+                          Derived from "br 1 1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -52.44236
+s1              -26.27496
+sgl             0.00050
+sgu             0.50250
+mfocus          169.48652
+
+Drive completed.
+
+
+12:48:15 PM  8/17/2017    Executing "drive sgu 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgu             1.00000
+
+Drive completed.
+
+
+12:48:37 PM  8/17/2017    Executing "drive h 1.000000 k 1.000000 l 0.000000 e 0.000000"
+                          Derived from "br 1 1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -52.44236
+s1              -26.27496
+sgl             0.00050
+sgu             0.50250
+mfocus          169.48652
+
+Drive completed.
+
+
+12:48:43 PM  8/17/2017    Executing "drive stu 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+stu             1.00000
+
+Drive completed.
+
+
+12:48:59 PM  8/17/2017    Executing "drive stu -1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+stu             -1.00000
+
+Drive completed.
+
+
+12:49:15 PM  8/17/2017    Executing "admin" ... 
+
+Administrator password correctly entered - administrator mode is enabled.
+
+
+12:50:06 PM  8/17/2017    Executing "method stu set_motor_position d 0+@(stu.zero)"
+                          Derived from "spos stu 0"
+
+Return Code: 0
+Integer returned values:   
+Double returned values:   
+String returned values:   
+
+
+2:22:42 PM  8/17/2017    Executing "drive s1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              0.00000
+
+Drive completed.
+
+
+2:23:33 PM  8/17/2017    Executing "drive sgl 5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgl             5.00000
+
+Drive completed.
+
+
+2:25:01 PM  8/17/2017    Executing "drive s2 -70"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s2              -70.00000
+
+Drive completed.
+
+
+2:25:51 PM  8/17/2017    Executing "drive e 5"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              36.52680
+a2              43.04399
+a1              21.52199
+mfocus          200.22949
+
+Drive completed.
+
+
+2:27:28 PM  8/17/2017    Executing "drive h 1.000000 k 1.000000 l 0.000000 e 0.000000"
+                         Derived from "br 1 1 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -52.44236
+s1              -26.27496
+sgl             0.00050
+sgu             0.50250
+mfocus          169.48652
+
+Drive completed.
+
+
+2:28:41 PM  8/17/2017    Executing "scan s1 @(s1)+2 @(s1)+-2 0.200000"
+                         Derived from "scanrel s1 2 -2 0.2"
+
+
+# scan = 12
+# date = 8/17/2017
+# time = 2:28:41 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel s1 2 -2 0.2
+# builtin_command = scan s1 @(s1)+2 @(s1)+-2 0.200000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -24.2748      1.000    681.000   8011.000      1.005    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9995     0.9995    -0.0491    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2   -24.4746      1.000   1085.000   7996.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9996     0.9996    -0.0441    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3   -24.6746      1.000   1620.000   8164.000      1.024    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9997     0.9997    -0.0392    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4   -24.8746      1.000   2720.000   7900.000      0.991    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9998     0.9998    -0.0343    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5   -25.0746      1.000   4329.000   8001.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9999     0.9999    -0.0293    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6   -25.2746      1.000   6855.000   8128.000      1.019    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0000     1.0000    -0.0244    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7   -25.4746      1.000  10611.000   7940.000      0.996    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0000     1.0000    -0.0194    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8   -25.6746      1.000  17823.000   7969.000      0.999    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0000     1.0000    -0.0145    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9   -25.8747      1.000  31296.000   8056.000      1.010    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001    -0.0096    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10   -26.0746      1.000  54087.000   8043.000      1.009    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001    -0.0046    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11   -26.2746      1.000  89837.000   8067.000      1.012    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001     0.0003    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     12   -26.4746      1.000 126129.000   7899.000      0.991    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001     0.0053    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     13   -26.6746      1.000 149346.000   8002.000      1.004    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001     0.0102    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     14   -26.8746      1.000 153299.000   8005.000      1.004    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0000     1.0000     0.0151    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     15   -27.0744      1.000 136518.000   8046.000      1.009    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     1.0000     1.0000     0.0201    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     16   -27.2746      1.000 108579.000   8000.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9999     0.9999     0.0250    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     17   -27.4746      1.000  72021.000   7939.000      0.996    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9999     0.9999     0.0300    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     18   -27.6746      1.000  40007.000   8095.000      1.015    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9998     0.9998     0.0349    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     19   -27.8745      1.000  23227.000   7974.000      1.000    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9997     0.9997     0.0398    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     20   -28.0745      1.000  14314.000   8021.000      1.006    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9996     0.9996     0.0448    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     21   -28.2746      1.000   8814.000   8094.000      1.015    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9995     0.9995     0.0497    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 1053198
+# Center of Mass = -26.800064+/-0.036936
+# Full Width Half-Maximum = 1.171932+/-0.015358
+# 2:29:28 PM  8/17/2017   scan completed.
+
+2:29:28 PM  8/17/2017    Executing "drive s1 @(s1)--2"
+                         Derived from "scanrel s1 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.27463
+
+Drive completed.
+
+
+2:30:01 PM  8/17/2017    Executing "drive s1 -26.8219"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.82190
+
+Drive completed.
+
+
+2:30:28 PM  8/17/2017    Executing "scan sgl @(sgl)+5 @(sgl)+-5 1.000000"
+                         Derived from "scanrel sgl 5 -5 1"
+
+
+# scan = 13
+# date = 8/17/2017
+# time = 2:30:28 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel sgl 5 -5 1
+# builtin_command = scan sgl @(sgl)+5 @(sgl)+-5 1.000000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = sgl
+# def_y = detector
+# col_headers = 
+#   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1     5.0005      1.000  42730.000   7885.000      0.989    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0834     0.9091     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2     4.0005      1.000  83964.000   7999.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0674     0.9279     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3     3.0005      1.000 117165.000   8084.000      1.014    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0510     0.9463     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4     2.0005      1.000 136886.000   8083.000      1.014    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0343     0.9645     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5     1.0005      1.000 149550.000   8098.000      1.016    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0174     0.9824     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6     0.0005      1.000 153992.000   8085.000      1.014    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0001     1.0001     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7    -0.9995      1.000 153023.000   8009.000      1.004    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     0.9824     1.0174     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8    -1.9995      1.000 151064.000   8006.000      1.004    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     0.9645     1.0343     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9    -2.9995      1.000 138393.000   8079.000      1.013    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     0.9463     1.0510     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10    -4.0000      1.000 116594.000   8010.000      1.005    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     0.9278     1.0674     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11    -4.9995      1.000  86682.000   8071.000      1.012    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     0.9091     1.0834     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 1330043
+# Center of Mass = -0.334716+/-0.002419
+# Full Width Half-Maximum = 5.497589+/-0.004357
+# 2:31:05 PM  8/17/2017   scan completed.
+
+2:31:05 PM  8/17/2017    Executing "drive sgl @(sgl)--5"
+                         Derived from "scanrel sgl 5 -5 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgl             0.00050
+
+Drive completed.
+
+
+2:31:21 PM  8/17/2017    Executing "drive sgl -0.5791"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgl             -0.57910
+
+Drive completed.
+
+
+2:31:37 PM  8/17/2017    Executing "scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000"
+                         Derived from "th2th 2 -2 0.2"
+
+
+# scan = 14
+# date = 8/17/2017
+# time = 2:31:37 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = th2th 2 -2 0.2
+# builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.179489,0.179492,-0.000238,0.001743,-0.001406,0.253671,0.179484,-0.179484,-0.002225
+# mode = 0
+# plane_normal = -0.000009,0.008770,0.999961
+# ubconf = UB17Aug2017_121657PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s2
+# def_y = detector
+# col_headers = 
+#   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -50.4404   -25.8212      1.000   1333.000   7956.000      0.998    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1754     0.9546     0.9741     0.0134    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      2   -50.6420   -25.9216      1.000   1890.000   7970.000      0.999    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1836     0.9582     0.9778     0.0134    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      3   -50.8406   -26.0216      1.000   2599.000   8084.000      1.014    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1916     0.9617     0.9814     0.0135    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      4   -51.0425   -26.1217      1.000   3925.000   8036.000      1.008    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1997     0.9653     0.9850     0.0135    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      5   -51.2427   -26.2219      1.000   6597.000   8143.000      1.021    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2077     0.9688     0.9886     0.0135    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      6   -51.4404   -26.3219      1.000  13134.000   7913.000      0.992    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2157     0.9723     0.9921     0.0136    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      7   -51.6404   -26.4219      1.000  29082.000   8050.000      1.010    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2237     0.9758     0.9957     0.0137    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      8   -51.8427   -26.5219      1.000  57883.000   8093.000      1.015    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2318     0.9794     0.9994     0.0137    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+      9   -52.0423   -26.6219      1.000  94757.000   8024.000      1.006    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2398     0.9829     1.0030     0.0137    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     10   -52.2431   -26.7219      1.000 132640.000   8088.000      1.014    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2478     0.9864     1.0066     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     11   -52.4427   -26.8219      1.000 154086.000   8080.000      1.013    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2558     0.9899     1.0101     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     12   -52.6418   -26.9217      1.000 147041.000   8058.000      1.011    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2638     0.9934     1.0137     0.0139    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     13   -52.8416   -27.0216      1.000 110800.000   8072.000      1.012    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2717     0.9969     1.0173     0.0139    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     14   -53.0408   -27.1217      1.000  59283.000   8065.000      1.011    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2797     1.0004     1.0208     0.0140    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     15   -53.2408   -27.2219      1.000  26861.000   7860.000      0.986    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2877     1.0039     1.0244     0.0140    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     16   -53.4412   -27.3219      1.000  13227.000   7906.000      0.991    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.2956     1.0074     1.0280     0.0141    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     17   -53.6396   -27.4219      1.000   7099.000   7957.000      0.998    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.3035     1.0109     1.0315     0.0142    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     18   -53.8404   -27.5219      1.000   3913.000   7956.000      0.998    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.3115     1.0144     1.0351     0.0142    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     19   -54.0416   -27.6219      1.000   2547.000   7826.000      0.981    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.3195     1.0179     1.0386     0.0142    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     20   -54.2427   -27.7219      1.000   1706.000   8063.000      1.011    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.3275     1.0214     1.0422     0.0143    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+     21   -54.4433   -27.8219      1.000   1172.000   8023.000      1.006    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.3354     1.0249     1.0458     0.0143    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
+# Sum of Counts = 871575
+# Center of Mass = -52.451580+/-0.079457
+# Full Width Half-Maximum = 1.000254+/-0.034606
+# 2:32:24 PM  8/17/2017   scan completed.
+
+2:32:24 PM  8/17/2017    Executing "drive s1 @(s1)-((@(s2)-@(com))/2) s2 @(com)"
+                         Derived from "th2th 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.82575
+s2              -52.45158
+
+Drive completed.
+
+
+2:32:29 PM  8/17/2017    Executing "drive s2 -52.4521"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s2              -52.45210
+
+Drive completed.
+
+
+2:32:43 PM  8/17/2017    Executing "drive s1 -26.8272"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -26.82720
+
+Drive completed.
+
+
+2:33:18 PM  8/17/2017    Executing "ubcalc file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_23316PM.ini""
+
+Setting the UB matrix using the configuration file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_23316PM.ini".
+
+The UB matrix was successfully generated using:
+
+Scattering plane specified by:
+ h1=1.000  k1=1.000  l1=0.000     h2=0.000  k2=0.000  l2=1.000
+the single peak position:
+h=1.0000  k=1.0000  l=0.0000     s2=-52.4498     s1=-26.8256     sgl=-0.5785     sgu=0.5030  Ei=13.5000  Ef=13.5061
+
+and the following lattice parameters:
+a=3.9395  b=3.9395  c=3.9420     alpha=90.0000  beta=90.0000  gamma=90.0000
+
+Results of the new UB matrix:
+
+Peak position as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4498     -26.8256      -0.5785       0.5030      13.5000      13.5061
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5061     -52.4360     -26.8187      -0.5785       0.5030     169.4865      43.0440      43.0338
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0002       1.0002      -0.0000     -52.4498     -26.8256      -0.5785       0.5030      13.5000      13.5061
+
+
+The orientation information has been stored in the file 'C:\SPICE\User\exp758\UBConf\UB17Aug2017_23318PM.ini'.
+To restore the configuration to this state at a later time, type:
+
+ubcalc file=C:\SPICE\User\exp758\UBConf\UB17Aug2017_23318PM.ini
+
+
+2:33:40 PM  8/17/2017    Executing "drive h 0.000000 k 0.000000 l 1.000000 e 0.000000"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -36.38773
+s1              -108.80775
+sgl             -0.57850
+sgu             0.50300
+mfocus          169.48652
+
+Drive completed.
+
+
+2:34:43 PM  8/17/2017    Executing "scan s1 @(s1)+2 @(s1)+-2 0.200000"
+                         Derived from "scanrel s1 2 -2 0.2"
+
+
+# scan = 15
+# date = 8/17/2017
+# time = 2:34:43 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel s1 2 -2 0.2
+# builtin_command = scan s1 @(s1)+2 @(s1)+-2 0.200000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.003483,0.000331,0.253657,0.177646,-0.181303,-0.002199
+# mode = 0
+# plane_normal = 0.010097,0.008778,0.999910
+# ubconf = UB17Aug2017_23318PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1  -106.8074      1.000    789.000   7973.000      1.000    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0245     0.0245     0.9996    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      2  -107.0075      1.000   1596.000   7925.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0220     0.0220     0.9997    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      3  -107.2081      1.000   2989.000   8172.000      1.025    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0195     0.0195     0.9998    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      4  -107.4079      1.000   6023.000   8057.000      1.010    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0171     0.0171     0.9999    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      5  -107.6079      1.000  11481.000   7945.000      0.996    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0146     0.0146     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      6  -107.8079      1.000  22450.000   8049.000      1.009    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0121     0.0121     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      7  -108.0076      1.000  40426.000   7904.000      0.991    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0097     0.0097     1.0001    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      8  -108.2080      1.000  68304.000   7877.000      0.988    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0072     0.0072     1.0001    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      9  -108.4079      1.000 105421.000   8210.000      1.030    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0047     0.0047     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     10  -108.6079      1.000 136068.000   7959.000      0.998    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0022     0.0022     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     11  -108.8079      1.000 147718.000   7980.000      1.001    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0002    -0.0002     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     12  -109.0076      1.000 138839.000   8130.000      1.020    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0027    -0.0027     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     13  -109.2079      1.000 116381.000   8011.000      1.005    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0052    -0.0052     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     14  -109.4079      1.000  83652.000   7946.000      0.996    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0076    -0.0076     1.0001    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     15  -109.6079      1.000  47807.000   8045.000      1.009    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0101    -0.0101     1.0001    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     16  -109.8077      1.000  25943.000   7876.000      0.988    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0126    -0.0126     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     17  -110.0075      1.000  14670.000   8093.000      1.015    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0150    -0.0150     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     18  -110.2081      1.000   7936.000   7903.000      0.991    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0175    -0.0175     0.9999    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     19  -110.4079      1.000   4133.000   8008.000      1.004    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0200    -0.0200     0.9998    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     20  -110.6079      1.000   2261.000   8065.000      1.011    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0224    -0.0224     0.9997    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     21  -110.8077      1.000   1358.000   8125.000      1.019    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942    -0.0249    -0.0249     0.9996    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+# Sum of Counts = 986245
+# Center of Mass = -108.842534+/-0.154997
+# Full Width Half-Maximum = 1.119802+/-0.066489
+# 2:35:30 PM  8/17/2017   scan completed.
+
+2:35:30 PM  8/17/2017    Executing "drive s1 @(s1)--2"
+                         Derived from "scanrel s1 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -108.80775
+
+Drive completed.
+
+
+2:35:38 PM  8/17/2017    Executing "drive s1 -108.8399"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -108.83990
+
+Drive completed.
+
+
+2:35:48 PM  8/17/2017    Executing "scan sgu @(sgu)+5 @(sgu)+-5 1.000000"
+                         Derived from "scanrel sgu 5 -5 1"
+
+
+# scan = 16
+# date = 8/17/2017
+# time = 2:35:48 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scanrel sgu 5 -5 1
+# builtin_command = scan sgu @(sgu)+5 @(sgu)+-5 1.000000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.003483,0.000331,0.253657,0.177646,-0.181303,-0.002199
+# mode = 0
+# plane_normal = 0.010097,0.008778,0.999910
+# ubconf = UB17Aug2017_23318PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = sgu
+# def_y = detector
+# col_headers = 
+#   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1     5.5040      1.000  98633.000   8053.000      1.010    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0616     0.0616     0.9964    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      2     4.5030      1.000 118695.000   7924.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0494     0.0492     0.9978    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      3     3.5030      1.000 133253.000   8090.000      1.015    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0372     0.0367     0.9988    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      4     2.5030      1.000 141323.000   7967.000      0.999    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0250     0.0243     0.9996    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      5     1.5030      1.000 144339.000   8036.000      1.008    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0128     0.0118     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      6     0.5030      1.000 148104.000   7962.000      0.998    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0006    -0.0006     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      7    -0.4970      1.000 148545.000   7956.000      0.998    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942     0.0116    -0.0131     1.0000    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      8    -1.4970      1.000 143682.000   7887.000      0.989    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942     0.0238    -0.0255     0.9996    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      9    -2.4970      1.000 134640.000   7906.000      0.991    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942     0.0360    -0.0380     0.9988    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     10    -3.4970      1.000 124042.000   8069.000      1.012    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942     0.0482    -0.0504     0.9978    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     11    -4.4970      1.000 106271.000   7924.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942     0.0603    -0.0629     0.9964    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+# Sum of Counts = 1441527
+# Center of Mass = 0.452661+/-0.002543
+# Full Width Half-Maximum = 5.970775+/-0.004474
+# 2:36:26 PM  8/17/2017   scan completed.
+
+2:36:26 PM  8/17/2017    Executing "drive sgu @(sgu)--5"
+                         Derived from "scanrel sgu 5 -5 1"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgu             0.50300
+
+Drive completed.
+
+
+2:36:42 PM  8/17/2017    Executing "drive sgu 0.3176"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+sgu             0.31760
+
+Drive completed.
+
+
+2:36:49 PM  8/17/2017    Executing "scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000"
+                         Derived from "th2th 2 -2 0.2"
+
+
+# scan = 17
+# date = 8/17/2017
+# time = 2:36:49 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = th2th 2 -2 0.2
+# builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.003483,0.000331,0.253657,0.177646,-0.181303,-0.002199
+# mode = 0
+# plane_normal = 0.010097,0.008778,0.999910
+# ubconf = UB17Aug2017_23318PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s2
+# def_y = detector
+# col_headers = 
+#   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
+      1   -34.3927  -107.8401      1.000    198.000   8175.000      1.025    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5094     0.0016    -0.0028     0.9470    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      2   -34.5900  -107.9398      1.000    275.000   7928.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5178     0.0016    -0.0028     0.9523    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      3   -34.7904  -108.0400      1.000    441.000   8244.000      1.034    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5263     0.0016    -0.0028     0.9576    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      4   -34.9890  -108.1401      1.000    724.000   7979.000      1.001    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5348     0.0016    -0.0028     0.9629    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      5   -35.1900  -108.2400      1.000   1933.000   8034.000      1.008    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5433     0.0016    -0.0028     0.9683    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      6   -35.3892  -108.3397      1.000   5976.000   8046.000      1.009    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5518     0.0016    -0.0029     0.9736    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      7   -35.5896  -108.4398      1.000  19222.000   7989.000      1.002    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5603     0.0016    -0.0029     0.9789    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      8   -35.7896  -108.5397      1.000  51195.000   7949.000      0.997    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5688     0.0016    -0.0029     0.9842    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+      9   -35.9896  -108.6398      1.000 100215.000   7957.000      0.998    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5773     0.0016    -0.0029     0.9895    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     10   -36.1923  -108.7398      1.000 140685.000   8020.000      1.006    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5858     0.0016    -0.0029     0.9949    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     11   -36.3914  -108.8396      1.000 149633.000   8182.000      1.026    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5943     0.0017    -0.0029     1.0002    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     12   -36.5900  -108.9395      1.000 125912.000   8126.000      1.019    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6027     0.0017    -0.0029     1.0055    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     13   -36.7900  -109.0399      1.000  83434.000   7913.000      0.992    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6111     0.0017    -0.0029     1.0108    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     14   -36.9912  -109.1404      1.000  40591.000   7952.000      0.997    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6196     0.0017    -0.0030     1.0161    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     15   -37.1912  -109.2400      1.000  16852.000   8015.000      1.005    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6281     0.0017    -0.0030     1.0214    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     16   -37.3923  -109.3397      1.000   6274.000   8054.000      1.010    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6366     0.0017    -0.0030     1.0268    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     17   -37.5898  -109.4398      1.000   2075.000   8158.000      1.023    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6449     0.0017    -0.0030     1.0320    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     18   -37.7896  -109.5397      1.000    813.000   7927.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6533     0.0017    -0.0030     1.0373    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     19   -37.9902  -109.6398      1.000    425.000   7954.000      0.997    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6618     0.0017    -0.0030     1.0426    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     20   -38.1923  -109.7398      1.000    292.000   8060.000      1.011    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6703     0.0017    -0.0030     1.0479    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+     21   -38.3914  -109.8396      1.000    151.000   7916.000      0.993    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.6787     0.0018    -0.0031     1.0532    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
+# Sum of Counts = 747316
+# Center of Mass = -36.367415+/-0.059496
+# Full Width Half-Maximum = 0.809251+/-0.030766
+# 2:37:36 PM  8/17/2017   scan completed.
+
+2:37:37 PM  8/17/2017    Executing "drive s1 @(s1)-((@(s2)-@(com))/2) s2 @(com)"
+                         Derived from "th2th 2 -2 0.2"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -108.82765
+s2              -36.36742
+
+Drive completed.
+
+
+2:38:02 PM  8/17/2017    Executing "drive s2 -36.3659"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s2              -36.36590
+
+Drive completed.
+
+
+2:38:20 PM  8/17/2017    Executing "drive s1 -108.8277"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s1              -108.82770
+
+Drive completed.
+
+
+2:38:45 PM  8/17/2017    Executing "ubcalc file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_23843PM.ini""
+
+Setting the UB matrix using the configuration file "C:\SPICE\User\exp758\UBConf\tmp\UB17Aug2017_23843PM.ini".
+
+The UB matrix was successfully generated using:
+
+The 2 reflections specified by:
+            h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4498     -26.8256      -0.5785       0.3180      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.3683    -108.8273      -0.5785       0.3180      13.5002      13.5061
+
+
+and the following lattice constants:
+a=3.9395  b=3.9395  c=3.9420     alpha=90.0000  beta=90.0000  gamma=90.0000
+Results of the new UB matrix:
+
+Peak positions as input:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0000       1.0000       0.0000     -52.4498     -26.8256      -0.5785       0.3180      13.5000      13.5061
+      0.0000       0.0000       1.0000     -36.3683    -108.8273      -0.5785       0.3180      13.5002      13.5061
+
+Calculated angle positions using original h,k,l,Ei,Ef:
+           h            k            l           Ei           Ef           s2           s1          sgl          sgu           m2           a2
+      1.0000       1.0000       0.0000      13.5000      13.5061     -52.4360     -26.8187      -0.5785       0.3180     169.4865      43.0440      43.0338
+      0.0000       0.0000       1.0000      13.5002      13.5061     -36.3833    -108.7865      -0.5785       0.3180     169.4881      43.0436      43.0338
+
+Calculated h,k,l positions using original angles:
+           h            k            l           s2           s1          sgl          sgu           Ei           Ef
+      1.0002       1.0002      -0.0000     -52.4498     -26.8256      -0.5785       0.3180      13.5000      13.5061
+     -0.0006      -0.0006       0.9996     -36.3683    -108.8273      -0.5785       0.3180      13.5002      13.5061
+
+
+The orientation information has been stored in the file 'C:\SPICE\User\exp758\UBConf\UB17Aug2017_23845PM.ini'.
+To restore the configuration to this state at a later time, type:
+
+ubcalc file=C:\SPICE\User\exp758\UBConf\UB17Aug2017_23845PM.ini
+
+
+2:39:17 PM  8/17/2017    Executing "drive h 0.500000 k 0.500000 l 0.500000 e 0.000000"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -31.38964
+s1              -51.55639
+sgl             -0.57850
+sgu             0.31800
+mfocus          169.48652
+
+Drive completed.
+
+
+2:40:01 PM  8/17/2017    Executing "drive h 0.500000 k 0.500000 l 1.500000 e 0.000000"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -62.37473
+s1              -96.54818
+sgl             -0.57850
+sgu             0.31800
+mfocus          169.48652
+
+Drive completed.
+
+
+2:40:53 PM  8/17/2017    Executing "drive h 1.500000 k 1.500000 l 0.500000 e 0.000000"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -85.82728
+s1              -56.78229
+sgl             -0.57850
+sgu             0.31800
+mfocus          169.48652
+
+Drive completed.
+
+
+2:41:23 PM  8/17/2017    Executing "lowerlimit m1 -99.399984 m2 14.891969 marc -3.900000 mtrans -12.000000 mfocus -0.100000 s1 -249.900625 s2 -110.000000 sgl -20.000000 sgu -20.000000 stl -14.600000 stu -14.600000 slita_bt -74.800000 slita_lf -74.800000 slita_rt -74.800000 slita_tp -74.800000 slitb_bt -74.800000 slitb_lf -74.800000 slitb_rt -74.800000 slitb_tp -74.800000 a1 -87.813820 a2 -108.989448 temp_a 0.100000"
+
+Setting the following lower limits:
+ Motor Name     Motor Alias     Lower Limit     Previous Lower Limit
+         m1              m1        -99.4000        -99.4000
+         m2              m2         14.8920         14.8920
+         m3            marc         -3.9000         -3.9000
+         m4          mtrans        -12.0000        -12.0000
+         m5          mfocus         -0.1000         -0.1000
+         s1              s1       -249.9006       -249.9006
+         s2              s2       -110.0000        -90.0000
+         s3             sgl        -20.0000        -20.0000
+         s4             sgu        -20.0000        -20.0000
+         s5             stl        -14.6000        -14.6000
+         s6             stu        -14.6000        -14.6000
+   slitA_bt        slita_bt        -74.8000        -74.8000
+   slitA_lf        slita_lf        -74.8000        -74.8000
+   slitA_rt        slita_rt        -74.8000        -74.8000
+   slitA_tp        slita_tp        -74.8000        -74.8000
+   slitB_bt        slitb_bt        -74.8000        -74.8000
+   slitB_lf        slitb_lf        -74.8000        -74.8000
+   slitB_rt        slitb_rt        -74.8000        -74.8000
+   slitB_tp        slitb_tp        -74.8000        -74.8000
+         a1              a1        -87.8138        -87.8138
+         a2              a2       -108.9894       -108.9894
+lakeshore_336_setpoint_a          temp_a          0.1000          0.1000
+
+
+
+2:41:23 PM  8/17/2017    Executing "upperlimit m1 250.000000 m2 52.000000 marc 3.850000 mtrans 12.000000 mfocus 290.000000 s1 84.599375 s2 20.000000 sgl 20.000000 sgu 20.000000 stl 14.600000 stu 14.600000 slita_bt 74.600000 slita_lf 74.600000 slita_rt 74.600000 slita_tp 74.800000 slitb_bt 74.600000 slitb_lf 74.600000 slitb_rt 74.600000 slitb_tp 74.600000 a1 171.462286 a2 90.000000 temp_a 599.900000"
+
+Setting the following upper limits:
+ Motor Name     Motor Alias     Upper Limit     Previous Upper Limit
+         m1              m1        250.0000        250.0000
+         m2              m2         52.0000         52.0000
+         m3              m3          3.8500          3.8500
+         m4              m4         12.0000         12.0000
+         m5              m5        290.0000        290.0000
+         s1              s1         84.5994         84.5994
+         s2              s2         20.0000         20.0000
+         s3              s3         20.0000         20.0000
+         s4              s4         20.0000         20.0000
+         s5              s5         14.6000         14.6000
+         s6              s6         14.6000         14.6000
+   slitA_bt        slitA_bt         74.6000         74.6000
+   slitA_lf        slitA_lf         74.6000         74.6000
+   slitA_rt        slitA_rt         74.6000         74.6000
+   slitA_tp        slitA_tp         74.8000         74.8000
+   slitB_bt        slitB_bt         74.6000         74.6000
+   slitB_lf        slitB_lf         74.6000         74.6000
+   slitB_rt        slitB_rt         74.6000         74.6000
+   slitB_tp        slitB_tp         74.6000         74.6000
+         a1              a1        171.4623        171.4623
+         a2              a2         90.0000         90.0000
+lakeshore_336_setpoint_a     lakeshore_336_setpoint_a        599.9000        599.9000
+
+
+
+2:41:32 PM  8/17/2017    Executing "drive h 1.500000 k 1.500000 l 1.500000 e 0.000000"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+s2              -108.49337
+s1              -90.10826
+sgl             -0.57850
+sgu             0.31800
+mfocus          169.48652
+
+Drive completed.
+
+
+2:42:10 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 5 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 5 meV
+
+
+2:42:10 PM  8/17/2017    Executing "scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10"
+
+
+# scan = 18
+# date = 8/17/2017
+# time = 2:42:10 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 5 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.002909,0.000917,0.253663,0.177656,-0.181301,-0.001380
+# mode = 0
+# plane_normal = 0.010097,0.005550,0.999933
+# ubconf = UB17Aug2017_23845PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.4498     0.4498     1.4502     4.9945      9.014     16.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.5215   -53.5057    -0.5770     0.3180    21.5216    43.0338     2.5243    18.5006    13.5061     0.0000     0.0000     0.000
+      2     0.4598     0.4598     1.4602     4.9945      8.993     10.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.3749   -54.0664    -0.5770     0.3180    21.5216    43.0338     2.5481    18.5006    13.5061     0.0000     0.0000     0.000
+      3     0.4699     0.4699     1.4703     4.9945      9.071     24.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.2386   -54.6337    -0.5770     0.3190    21.5216    43.0338     2.5721    18.5006    13.5061     0.0000     0.0000     0.000
+      4     0.4799     0.4799     1.4803     4.9945      9.025    101.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.1104   -55.1992    -0.5770     0.3190    21.5216    43.0338     2.5959    18.5006    13.5061     0.0000     0.0000     0.000
+      5     0.4898     0.4898     1.4902     4.9945      8.989    282.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.9911   -55.7652    -0.5770     0.3190    21.5216    43.0338     2.6197    18.5006    13.5061     0.0000     0.0000     0.000
+      6     0.4998     0.4999     1.5002     4.9945      8.926    339.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.8800   -56.3376    -0.5770     0.3190    21.5216    43.0338     2.6437    18.5006    13.5061     0.0000     0.0000     0.000
+      7     0.5098     0.5098     1.5102     4.9945      8.995    224.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.7776   -56.9114    -0.5770     0.3190    21.5216    43.0338     2.6678    18.5006    13.5061     0.0000     0.0000     0.000
+      8     0.5198     0.5198     1.5203     4.9945      8.958     56.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.6827   -57.4906    -0.5770     0.3190    21.5216    43.0338     2.6919    18.5006    13.5061     0.0000     0.0000     0.000
+      9     0.5299     0.5299     1.5303     4.9945      8.970     22.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.5954   -58.0748    -0.5770     0.3190    21.5216    43.0338     2.7163    18.5006    13.5061     0.0000     0.0000     0.000
+     10     0.5399     0.5399     1.5403     4.9945      8.948     17.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.5161   -58.6595    -0.5770     0.3190    21.5216    43.0338     2.7406    18.5006    13.5061     0.0000     0.0000     0.000
+     11     0.5498     0.5498     1.5502     4.9945      9.016     26.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.4442   -59.2408    -0.5770     0.3190    21.5216    43.0338     2.7647    18.5006    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1117
+# Center of Mass = 0.499134+/-0.021126
+# Full Width Half-Maximum = 0.032898+/-0.010790
+# 2:44:47 PM  8/17/2017   scan completed.
+
+2:44:47 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 10 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 10 meV
+
+
+2:44:48 PM  8/17/2017    Executing "scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10"
+
+
+# scan = 19
+# date = 8/17/2017
+# time = 2:44:48 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10
+# builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 10 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 10 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.002909,0.000917,0.253663,0.177656,-0.181301,-0.001380
+# mode = 0
+# plane_normal = 0.010097,0.005550,0.999933
+# ubconf = UB17Aug2017_23845PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.4498     0.4498     1.4501     9.9945      8.156     19.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -108.1000   -48.0831    -0.5770     0.3190    21.5216    43.0338     2.5242    23.5006    13.5061     0.0000     0.0000     0.000
+      2     0.4598     0.4598     1.4603     9.9945      8.199     57.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -107.8465   -48.6250    -0.5770     0.3190    21.5216    43.0338     2.5482    23.5006    13.5061     0.0000     0.0000     0.000
+      3     0.4698     0.4698     1.4702     9.9945      8.196    109.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -107.6034   -49.1607    -0.5770     0.3190    21.5216    43.0338     2.5718    23.5006    13.5061     0.0000     0.0000     0.000
+      4     0.4798     0.4798     1.4802     9.9945      8.178    184.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -107.3693   -49.7006    -0.5770     0.3190    21.5216    43.0338     2.5957    23.5006    13.5061     0.0000     0.0000     0.000
+      5     0.4898     0.4898     1.4902     9.9945      8.202    174.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -107.1451   -50.2459    -0.5770     0.3190    21.5216    43.0338     2.6197    23.5006    13.5061     0.0000     0.0000     0.000
+      6     0.4998     0.4998     1.5002     9.9945      8.253    179.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -106.9300   -50.7912    -0.5770     0.3190    21.5216    43.0338     2.6437    23.5006    13.5061     0.0000     0.0000     0.000
+      7     0.5098     0.5098     1.5102     9.9945      8.235    184.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -106.7249   -51.3368    -0.5770     0.3190    21.5216    43.0338     2.6677    23.5006    13.5061     0.0000     0.0000     0.000
+      8     0.5198     0.5198     1.5202     9.9945      8.194    168.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -106.5284   -51.8876    -0.5770     0.3190    21.5216    43.0338     2.6918    23.5006    13.5061     0.0000     0.0000     0.000
+      9     0.5299     0.5299     1.5303     9.9945      8.182     76.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -106.3400   -52.4441    -0.5770     0.3190    21.5216    43.0338     2.7162    23.5006    13.5061     0.0000     0.0000     0.000
+     10     0.5398     0.5398     1.5402     9.9945      8.177     29.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -106.1609   -52.9955    -0.5770     0.3190    21.5216    43.0338     2.7404    23.5006    13.5061     0.0000     0.0000     0.000
+     11     0.5498     0.5498     1.5501     9.9945      8.189      9.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -105.9899   -53.5471    -0.5770     0.3190    21.5216    43.0338     2.7645    23.5006    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1188
+# Center of Mass = 0.497424+/-0.020419
+# Full Width Half-Maximum = 0.042816+/-0.011863
+# 2:47:07 PM  8/17/2017   scan completed.
+
+2:47:07 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 15 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 15 meV
+
+
+2:47:07 PM  8/17/2017    Executing "scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10"
+
+
+# scan = 20
+# date = 8/17/2017
+# time = 2:47:07 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10
+# builtin_command = scan h 0.40 0.60 0.01 k 0.40 0.60 0.01 l 1.40 1.60 0.01 e 15 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 15 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.002909,0.000917,0.253663,0.177656,-0.181301,-0.001380
+# mode = 0
+# plane_normal = 0.010097,0.005550,0.999933
+# ubconf = UB17Aug2017_23845PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3998     0.3998     1.4001    14.9947      7.255     10.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -115.4851   -40.1282    -0.5770     0.3190    21.5216    43.0338     2.4069    28.5008    13.5061     0.0000     0.0000     0.000
+      2     0.4098     0.4098     1.4102    14.9948      7.215     11.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -115.0694   -40.6577    -0.5770     0.3190    21.5216    43.0338     2.4304    28.5009    13.5061     0.0000     0.0000     0.000
+      3     0.4198     0.4198     1.4201    14.9948      7.221      9.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.6679   -41.1817    -0.5770     0.3190    21.5216    43.0338     2.4536    28.5009    13.5061     0.0000     0.0000     0.000
+      4     0.4297     0.4298     1.4299    14.9948      7.207     18.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.2782   -41.7046    -0.5770     0.3190    21.5216    43.0338     2.4768    28.5009    13.5061     0.0000     0.0000     0.000
+      5     0.4398     0.4398     1.4402    14.9948      7.262     51.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -113.9008   -42.2433    -0.5770     0.3190    21.5216    43.0338     2.5007    28.5009    13.5061     0.0000     0.0000     0.000
+      6     0.4498     0.4498     1.4502    14.9948      7.198     89.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -113.5356   -42.7752    -0.5770     0.3190    21.5216    43.0338     2.5243    28.5009    13.5061     0.0000     0.0000     0.000
+      7     0.4598     0.4598     1.4601    14.9948      7.231     87.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -113.1820   -43.3046    -0.5770     0.3190    21.5216    43.0338     2.5479    28.5009    13.5061     0.0000     0.0000     0.000
+      8     0.4698     0.4698     1.4702    14.9948      7.231     86.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.8396   -43.8427    -0.5770     0.3190    21.5216    43.0338     2.5718    28.5009    13.5061     0.0000     0.0000     0.000
+      9     0.4798     0.4798     1.4802    14.9948      7.231    105.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.5085   -44.3798    -0.5770     0.3190    21.5216    43.0338     2.5957    28.5009    13.5061     0.0000     0.0000     0.000
+     10     0.4898     0.4898     1.4901    14.9948      7.269     87.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -112.1881   -44.9105    -0.5770     0.3190    21.5216    43.0338     2.6194    28.5009    13.5061     0.0000     0.0000     0.000
+     11     0.4998     0.4998     1.5002    14.9948      7.189    138.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.8783   -45.4534    -0.5770     0.3190    21.5216    43.0338     2.6436    28.5009    13.5061     0.0000     0.0000     0.000
+     12     0.5098     0.5098     1.5102    14.9948      7.257    135.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.5791   -45.9967    -0.5770     0.3190    21.5216    43.0338     2.6678    28.5009    13.5061     0.0000     0.0000     0.000
+     13     0.5198     0.5198     1.5202    14.9948      7.241    103.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.2896   -46.5359    -0.5770     0.3190    21.5216    43.0338     2.6918    28.5009    13.5061     0.0000     0.0000     0.000
+     14     0.5298     0.5298     1.5302    14.9948      7.213    103.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -111.0106   -47.0784    -0.5770     0.3190    21.5216    43.0338     2.7160    28.5009    13.5061     0.0000     0.0000     0.000
+     15     0.5398     0.5398     1.5401    14.9948      7.249     78.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.7416   -47.6203    -0.5770     0.3190    21.5216    43.0338     2.7401    28.5009    13.5061     0.0000     0.0000     0.000
+     16     0.5498     0.5498     1.5502    14.9948      7.238     43.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.4819   -48.1703    -0.5770     0.3190    21.5216    43.0338     2.7646    28.5009    13.5061     0.0000     0.0000     0.000
+     17     0.5598     0.5598     1.5601    14.9948      7.184     16.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -110.2310   -48.7170    -0.5770     0.3190    21.5216    43.0338     2.7890    28.5009    13.5061     0.0000     0.0000     0.000
+     18     0.5698     0.5698     1.5702    14.9948      7.231     23.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.9899   -49.2697    -0.5770     0.3190    21.5216    43.0338     2.8136    28.5009    13.5061     0.0000     0.0000     0.000
+     19     0.5798     0.5798     1.5803    14.9948      7.197     21.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.7581   -49.8211    -0.5770     0.3190    21.5216    43.0338     2.8381    28.5009    13.5061     0.0000     0.0000     0.000
+     20     0.5898     0.5898     1.5902    14.9948      7.209     19.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.5345   -50.3717    -0.5770     0.3190    21.5216    43.0338     2.8626    28.5009    13.5061     0.0000     0.0000     0.000
+     21     0.5998     0.5998     1.6001    14.9948      7.187      9.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -109.3194   -50.9233    -0.5770     0.3190    21.5216    43.0338     2.8871    28.5009    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1241
+# Center of Mass = 0.498284+/-0.020035
+# Full Width Half-Maximum = 0.078954+/-0.008335
+# 2:50:54 PM  8/17/2017   scan completed.
+
+2:50:54 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 20 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 20 meV
+
+
+2:50:55 PM  8/17/2017    Executing "scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10"
+
+
+# scan = 21
+# date = 8/17/2017
+# time = 2:50:55 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10
+# builtin_command = scan h 0.40 0.59 0.01 k 0.40 0.59 0.01 l 1.40 1.59 0.01 e 20 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 20 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.002909,0.000917,0.253663,0.177656,-0.181301,-0.001380
+# mode = 0
+# plane_normal = 0.010097,0.005550,0.999933
+# ubconf = UB17Aug2017_23845PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3998     0.3998     1.4000    19.9951      6.790     15.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -121.5359   -34.6341    -0.5770     0.3190    21.5216    43.0338     2.4068    33.5012    13.5061     0.0000     0.0000     0.000
+      2     0.4098     0.4098     1.4100    19.9949      6.766     19.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -121.0048   -35.1837    -0.5770     0.3190    21.5216    43.0338     2.4301    33.5011    13.5061     0.0000     0.0000     0.000
+      3     0.4198     0.4198     1.4199    19.9949      6.781     17.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -120.4898   -35.7268    -0.5770     0.3190    21.5216    43.0338     2.4532    33.5011    13.5061     0.0000     0.0000     0.000
+      4     0.4298     0.4298     1.4301    19.9949      6.778     36.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -119.9894   -36.2835    -0.5770     0.3190    21.5216    43.0338     2.4770    33.5011    13.5061     0.0000     0.0000     0.000
+      5     0.4398     0.4398     1.4401    19.9949      6.827     42.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -119.5039   -36.8339    -0.5770     0.3190    21.5216    43.0338     2.5006    33.5011    13.5061     0.0000     0.0000     0.000
+      6     0.4498     0.4498     1.4501    19.9949      6.801     47.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -119.0319   -37.3833    -0.5770     0.3190    21.5216    43.0338     2.5242    33.5011    13.5061     0.0000     0.0000     0.000
+      7     0.4598     0.4598     1.4600    19.9949      6.776     55.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -118.5744   -37.9266    -0.5770     0.3190    21.5216    43.0338     2.5477    33.5011    13.5061     0.0000     0.0000     0.000
+      8     0.4698     0.4698     1.4702    19.9949      6.798     80.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -118.1299   -38.4837    -0.5770     0.3190    21.5216    43.0338     2.5718    33.5011    13.5061     0.0000     0.0000     0.000
+      9     0.4798     0.4798     1.4801    19.9949      6.787     70.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -117.6989   -39.0315    -0.5770     0.3190    21.5216    43.0338     2.5956    33.5011    13.5061     0.0000     0.0000     0.000
+     10     0.4898     0.4898     1.4900    19.9949      6.818     83.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -117.2801   -39.5780    -0.5770     0.3190    21.5216    43.0338     2.6194    33.5011    13.5061     0.0000     0.0000     0.000
+     11     0.4998     0.4998     1.5001    19.9949      6.809     67.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -116.8746   -40.1296    -0.5770     0.3190    21.5216    43.0338     2.6434    33.5011    13.5061     0.0000     0.0000     0.000
+     12     0.5098     0.5098     1.5102    19.9949      6.751     64.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -116.4809   -40.6845    -0.5770     0.3190    21.5216    43.0338     2.6677    33.5011    13.5061     0.0000     0.0000     0.000
+     13     0.5198     0.5198     1.5200    19.9949      6.754     61.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -116.0992   -41.2282    -0.5770     0.3190    21.5216    43.0338     2.6915    33.5011    13.5061     0.0000     0.0000     0.000
+     14     0.5298     0.5298     1.5301    19.9949      6.772     72.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.7294   -41.7809    -0.5770     0.3190    21.5216    43.0338     2.7158    33.5011    13.5061     0.0000     0.0000     0.000
+     15     0.5398     0.5398     1.5401    19.9949      6.768     68.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.3702   -42.3337    -0.5770     0.3190    21.5216    43.0338     2.7401    33.5011    13.5061     0.0000     0.0000     0.000
+     16     0.5498     0.5498     1.5501    19.9949      6.820     70.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -115.0228   -42.8872    -0.5770     0.3190    21.5216    43.0338     2.7645    33.5011    13.5061     0.0000     0.0000     0.000
+     17     0.5598     0.5598     1.5602    19.9949      6.793     57.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.6861   -43.4441    -0.5770     0.3190    21.5216    43.0338     2.7891    33.5011    13.5061     0.0000     0.0000     0.000
+     18     0.5698     0.5698     1.5701    19.9949      6.742     25.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.3599   -43.9923    -0.5770     0.3190    21.5216    43.0338     2.8133    33.5011    13.5061     0.0000     0.0000     0.000
+     19     0.5798     0.5798     1.5801    19.9949      6.813     20.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -114.0440   -44.5475    -0.5770     0.3190    21.5216    43.0338     2.8379    33.5011    13.5061     0.0000     0.0000     0.000
+     20     0.5898     0.5898     1.5901    19.9949      6.781     95.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -113.7386   -45.1004    -0.5770     0.3190    21.5216    43.0338     2.8624    33.5011    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 1063
+# Center of Mass = 0.506169+/-0.022008
+# Full Width Half-Maximum = 0.099208+/-0.010449
+# 2:54:24 PM  8/17/2017   scan completed.
+
+2:54:24 PM  8/17/2017    Executing "scantitle "BiFeO3 (0.5, 0.5, 1.5) 25 meV""
+
+Setting the scantitle to:
+BiFeO3 (0.5, 0.5, 1.5) 25 meV
+
+
+2:54:24 PM  8/17/2017    Executing "scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10"
+
+
+# scan = 22
+# date = 8/17/2017
+# time = 2:54:24 PM
+# proposal = 9865
+# experiment = NX School
+# experiment_number = 758
+# command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10
+# builtin_command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset mcu 10
+# users = M. Matsuda
+# local_contact = M. Matsuda
+# scan_title = BiFeO3 (0.5, 0.5, 1.5) 25 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-80-80-240
+# samplename = BiFeO3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.939520,3.939520,3.941957,90.000000,90.000000,90.000000
+# ubmatrix = 0.181283,0.177659,-0.002718,0.002909,0.000917,0.253663,0.177656,-0.181301,-0.001380
+# mode = 0
+# plane_normal = 0.010097,0.005550,0.999933
+# ubconf = UB17Aug2017_23845PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
+      1     0.3498     0.3498     1.3500    24.9955      6.366      7.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -131.6854   -25.6179    -0.5770     0.3190    21.5216    43.0338     2.2918    38.5017    13.5061     0.0000     0.0000     0.000
+      2     0.3598     0.3598     1.3600    24.9955      6.388      6.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -130.8984   -26.2431    -0.5770     0.3190    21.5216    43.0338     2.3146    38.5017    13.5061     0.0000     0.0000     0.000
+      3     0.3698     0.3698     1.3699    24.9955      6.372      6.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -130.1364   -26.8603    -0.5770     0.3190    21.5216    43.0338     2.3374    38.5017    13.5061     0.0000     0.0000     0.000
+      4     0.3798     0.3798     1.3799    24.9955      6.404      6.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -129.3980   -27.4774    -0.5770     0.3190    21.5216    43.0338     2.3604    38.5017    13.5061     0.0000     0.0000     0.000
+      5     0.3898     0.3898     1.3900    24.9955      6.368      7.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -128.6820   -28.0916    -0.5770     0.3190    21.5216    43.0338     2.3836    38.5017    13.5061     0.0000     0.0000     0.000
+      6     0.3998     0.3998     1.4000    24.9955      6.378     18.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -127.9875   -28.7002    -0.5770     0.3190    21.5216    43.0338     2.4068    38.5017    13.5061     0.0000     0.0000     0.000
+      7     0.4098     0.4098     1.4099    24.9955      6.405     22.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -127.3139   -29.3008    -0.5770     0.3190    21.5216    43.0338     2.4300    38.5017    13.5061     0.0000     0.0000     0.000
+      8     0.4198     0.4198     1.4199    24.9955      6.369     29.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -126.6608   -29.9006    -0.5770     0.3190    21.5216    43.0338     2.4533    38.5017    13.5061     0.0000     0.0000     0.000
+      9     0.4298     0.4298     1.4301    24.9955      6.348     31.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -126.0270   -30.5057    -0.5770     0.3190    21.5216    43.0338     2.4770    38.5017    13.5061     0.0000     0.0000     0.000
+     10     0.4398     0.4398     1.4400    24.9955      6.375     32.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -125.4124   -31.0986    -0.5770     0.3190    21.5216    43.0338     2.5004    38.5017    13.5061     0.0000     0.0000     0.000
+     11     0.4498     0.4498     1.4500    24.9955      6.387     45.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -124.8156   -31.6931    -0.5770     0.3190    21.5216    43.0338     2.5241    38.5017    13.5061     0.0000     0.0000     0.000
+     12     0.4598     0.4598     1.4601    24.9955      6.408     67.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -124.2361   -32.2849    -0.5770     0.3190    21.5216    43.0338     2.5478    38.5017    13.5061     0.0000     0.0000     0.000
+     13     0.4698     0.4698     1.4700    24.9955      6.369     47.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -123.6745   -32.8727    -0.5770     0.3190    21.5216    43.0338     2.5716    38.5017    13.5061     0.0000     0.0000     0.000
+     14     0.4798     0.4798     1.4800    24.9955      6.426     50.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -123.1290   -33.4577    -0.5770     0.3190    21.5216    43.0338     2.5954    38.5017    13.5061     0.0000     0.0000     0.000
+     15     0.4898     0.4898     1.4901    24.9955      6.399     46.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -122.5995   -34.0453    -0.5770     0.3190    21.5216    43.0338     2.6194    38.5017    13.5061     0.0000     0.0000     0.000
+     16     0.4998     0.4998     1.5001    24.9955      6.427     51.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -122.0854   -34.6298    -0.5770     0.3190    21.5216    43.0338     2.6435    38.5017    13.5061     0.0000     0.0000     0.000
+     17     0.5098     0.5098     1.5100    24.9955      6.356     31.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -121.5867   -35.2059    -0.5770     0.3190    21.5216    43.0338     2.6674    38.5017    13.5061     0.0000     0.0000     0.000
+     18     0.5198     0.5198     1.5200    24.9955      6.385     45.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -121.1024   -35.7872    -0.5770     0.3190    21.5216    43.0338     2.6915    38.5017    13.5061     0.0000     0.0000     0.000
+     19     0.5298     0.5298     1.5301    24.9955      6.350     50.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -120.6326   -36.3689    -0.5770     0.3190    21.5216    43.0338     2.7159    38.5017    13.5061     0.0000     0.0000     0.000
+     20     0.5398     0.5398     1.5400    24.9955      6.361     38.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -120.1761   -36.9416    -0.5770     0.3190    21.5216    43.0338     2.7400    38.5017    13.5061     0.0000     0.0000     0.000
+     21     0.5498     0.5498     1.5501    24.9955      6.374     45.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -119.7338   -37.5235    -0.5770     0.3190    21.5216    43.0338     2.7645    38.5017    13.5061     0.0000     0.0000     0.000
+     22     0.5598     0.5598     1.5601    24.9955      6.469     49.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -119.3039   -38.0969    -0.5770     0.3190    21.5216    43.0338     2.7888    38.5017    13.5061     0.0000     0.0000     0.000
+     23     0.5698     0.5698     1.5702    24.9955      6.410     44.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -118.8869   -38.6752    -0.5770     0.3190    21.5216    43.0338     2.8135    38.5017    13.5061     0.0000     0.0000     0.000
+     24     0.5798     0.5798     1.5801    24.9955      6.411     25.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -118.4825   -39.2439    -0.5770     0.3190    21.5216    43.0338     2.8378    38.5017    13.5061     0.0000     0.0000     0.000
+     25     0.5898     0.5898     1.5901    24.9955      6.383     22.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -118.0897   -39.8189    -0.5770     0.3190    21.5216    43.0338     2.8624    38.5017    13.5061     0.0000     0.0000     0.000
+     26     0.5998     0.5998     1.6002    24.9955      6.365      9.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -117.7090   -40.3941    -0.5770     0.3190    21.5216    43.0338     2.8872    38.5017    13.5061     0.0000     0.0000     0.000
+     27     0.6098     0.6098     1.6101    24.9955      6.395      9.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -117.3394   -40.9603    -0.5770     0.3190    21.5216    43.0338     2.9116    38.5017    13.5061     0.0000     0.0000     0.000
+     28     0.6198     0.6198     1.6200    24.9955      6.412      6.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -116.9809   -41.5288    -0.5770     0.3190    21.5216    43.0338     2.9363    38.5017    13.5061     0.0000     0.0000     0.000
+     29     0.6298     0.6298     1.6301    24.9955      6.395      8.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -116.6339   -42.1020    -0.5770     0.3190    21.5216    43.0338     2.9612    38.5017    13.5061     0.0000     0.0000     0.000
+     30     0.6398     0.6398     1.6402    24.9955      6.455      8.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -116.2966   -42.6786    -0.5770     0.3190    21.5216    43.0338     2.9863    38.5017    13.5061     0.0000     0.0000     0.000
+     31     0.6498     0.6498     1.6501    24.9955      6.372     11.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -115.9700   -43.2449    -0.5770     0.3190    21.5216    43.0338     3.0110    38.5017    13.5061     0.0000     0.0000     0.000
+# Sum of Counts = 870
+# Center of Mass = 0.500662+/-0.024099
+# Full Width Half-Maximum = 0.125741+/-0.009018
+# 2:59:31 PM  8/17/2017   scan completed.
+
+3:01:57 PM  8/17/2017    Executing "drive e 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              43.04399
+a2              43.04399
+a1              21.52199
+mfocus          169.48652
+
+Drive completed.
+
+
+3:14:09 PM  8/17/2017    Executing "drive s2 0"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+s2              0.00000
+
+Drive completed.
+
+
+3:14:35 PM  8/17/2017    Executing "drive m2 23"
+
+Driving to the following position: ""
+
+Destination Motor Positions:
+motor           position
+m2              23.00000
+mfocus          290.00000
+
+Drive completed.
+
+
+3:44:39 PM  8/17/2017    Executing "begin"
+

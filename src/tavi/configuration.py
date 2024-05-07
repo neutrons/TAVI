@@ -25,9 +25,7 @@ class Configuration:
 
         # locate the template configuration file
         project_directory = Path(__file__).resolve().parent
-        self.template_file_path = os.path.join(
-            project_directory, "configuration_template.ini"
-        )
+        self.template_file_path = os.path.join(project_directory, "configuration_template.ini")
 
         # retrieve the file path of the file
         self.config_file_path = CONFIG_PATH_FILE
@@ -52,9 +50,7 @@ class Configuration:
                 logger.error(str(err))
                 logger.error(f"Problem with the file: {self.config_file_path}")
         else:
-            logger.error(
-                f"Template configuration file: {self.template_file_path} is missing!"
-            )
+            logger.error(f"Template configuration file: {self.template_file_path} is missing!")
 
     def validate(self):
         """validates that the fields exist at the config_file_path and writes any missing fields/data
