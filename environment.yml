@@ -1,10 +1,10 @@
-name: mypythonapp
+name: tavi
 channels:
   - conda-forge
 dependencies:
   # -- Runtime dependencies
   # base: list all base dependencies here
-  - python>=3.8  # please specify the mimimum version of python here
+  - python>=3.10  # please specify the mimimum version of python here
   - versioningit
   # compute: list all compute dependencies here
   - numpy
@@ -33,7 +33,7 @@ dependencies:
   # add additional sections such as Qt, etc. if needed
   # --------------------------------------------------
   # if pakcages are not available on conda, list them here
-  - pip
-  - pip:
-    - bm3d-streak-removal # example
-    - pytest-playwright
+  # - pip
+  # - pip:
+  #   - bm3d-streak-removal # example
+  #   - pytest-playwright
