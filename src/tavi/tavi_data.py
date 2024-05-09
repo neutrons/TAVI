@@ -1,7 +1,6 @@
 import numpy as np
 import h5py
 from pathlib import Path
-import matplotlib.pylab as plt
 from scans import Scan
 
 
@@ -22,15 +21,14 @@ class TAVI_Data(object):
 
     def __init__(self):
         """Initialization"""
-        self.exp_file = None
-        self.scans = []
-        self.experiment = None
-        self.experiment_number = None
-        self.proposal = None
-        self.users = None
-        self.local_contact = None
+        self.exp_files = []
+        self.data = []
+        self.processed_data = []
+        self.fits = []
+        self.plots = []
+        self.exp_info = {}
 
-    def load_data_from_disk(self, path_to_hdf5, OVERWRITE=False):
+    def load_data_from_disk(self, path_to_hdf5, OVERWRITE=True):
         """Load hdf5 data from path_to_hdf5.
 
         Args:
@@ -40,7 +38,7 @@ class TAVI_Data(object):
         """
         pass
 
-    def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=False):
+    def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
         """Load data from ONCat based on user_credentials and ipts_info.
 
         Args:
@@ -55,7 +53,7 @@ class TAVI_Data(object):
         """Load data from spice folder.
 
         Args:
-        path_to_spice_folder (str): spice folder, ends with '/'
+            path_to_spice_folder (str): spice folder, ends with '/'
            path_to_hdf5 (str): path to hdf5 data file, ends with '.h5'
         """
         exp_info = [
@@ -69,25 +67,29 @@ class TAVI_Data(object):
         p = Path(path_to_spice_folder)
 
         with h5py.File(path_to_hdf5, "w") as f:
-            grp_data = f.create_group("data")
-            grp_pdata = f.create_group("processed_data")
-            grp_fit = f.create_group("fits")
-            grp_plot = f.create_group("plots")
 
             scans = sorted((p / "Datafiles").glob("*"))
+            instrument_str, exp_str = scans[0].parts[-1].split("_")[0:2]
 
             # read in exp_info from the first scan and save as attibutes of the file
             _, _, headers, _ = TAVI_Data.read_spice(scans[0])
+            ipts = headers["proposal"]
+
+            grp_data = f.create_group("data_IPTS" + ipts + "_" + instrument_str)
+            grp_processed_data = f.create_group("processed_data")
+            grp_fit = f.create_group("fits")
+            grp_plot = f.create_group("plots")
+
             for k, v in headers.items():
                 if k in exp_info:
-                    f.attrs[k] = v
+                    grp_data.attrs[k] = v
 
             # read scans into dataset1
             for scan in scans:  # ignoring unused keys
                 spice_data, col_headers, headers, unused = TAVI_Data.read_spice(scan)
 
-                # scan_num = ((scan.parts[-1].split("_"))[-1]).split(".")[0]
-                scan_id = (scan.parts[-1].split("."))[0]
+                scan_num = ((scan.parts[-1].split("_"))[-1]).split(".")[0]
+                scan_id = exp_str + "_" + scan_num
                 scan_entry = grp_data.create_group(scan_id)
                 scan_entry.attrs["scan_id"] = scan_id
 
@@ -203,7 +205,9 @@ class TAVI_Data(object):
 
 
 if __name__ == "__main__":
-    spice_folder = "./tests/test_data_folder/exp815/"
-    h5_file_name = "./tests/test_data_folder/tavi_exp815.h5"
+    spice_folder = "./tests/test_data_folder/exp758/"
+    h5_file_name = "./tests/test_data_folder/tavi_exp758.h5"
     data = TAVI_Data()
     data.convert_spice_to_hdf5(spice_folder, h5_file_name)
+
+    data.load_data_from_disk(h5_file_name)
