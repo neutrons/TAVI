@@ -94,6 +94,14 @@ class TAVI_Data(object):
             path_to_nexus (str): path to hdf5 data file, ends with '.h5'
         """
 
+        exp_info = [
+            "experiment",
+            "experiment_number",
+            "proposal",
+            "users",
+            "local_contact",
+        ]
+
         p = Path(path_to_spice_folder)
 
         with h5py.File(path_to_hdf5, "w") as f:
@@ -142,6 +150,42 @@ class TAVI_Data(object):
 
                 nxentry.create_dataset(name="definition", data="NXtas", maxshape=None)
                 nxentry["definition"].attrs["type"] = "NX_CHAR"
+
+                # /entry/SPICElogs
+                nxentry.create_group("SPICElogs")
+                nxentry["SPICElogs"].attrs["NX_class"] = "NXcollection"
+                # metadata to attibutes
+                for k, v in headers.items():
+                    if k not in exp_info:  # ignore common keys in single scans
+                        if "," in v and k != "scan_title":  # vectors
+                            nxentry["SPICElogs"].attrs[k] = np.array([float(v0) for v0 in v.split(",")])
+                        elif v.replace(".", "").isnumeric():  # numebrs only
+                            if v.isdigit():  # int
+                                nxentry["SPICElogs"].attrs[k] = int(v)
+                            else:  # float
+                                nxentry["SPICElogs"].attrs[k] = float(v)
+                        # separate COM/FWHM and its errorbar
+                        elif k == "Center of Mass":
+                            com, e_com = v.split("+/-")
+                            nxentry["SPICElogs"].attrs["COM"] = float(com)
+                            nxentry["SPICElogs"].attrs["COM_err"] = float(e_com)
+                        elif k == "Full Width Half-Maximum":
+                            fwhm, e_fwhm = v.split("+/-")
+                            nxentry["SPICElogs"].attrs["FWHM"] = float(fwhm)
+                            nxentry["SPICElogs"].attrs["FWHM_err"] = float(e_fwhm)
+                        else:  # other crap, keep as is
+                            if k not in exp_info:
+                                nxentry["SPICElogs"].attrs[k] = v
+                # motor position table to datasets
+                if spice_data.ndim == 1:  # empty data or 1 point only
+                    if len(spice_data):  # 1 point only
+                        for idx, col_header in enumerate(col_headers):
+                            nxentry["SPICElogs"].create_dataset(col_header, data=spice_data[idx])
+                    else:  # empty
+                        pass
+                else:  # nomarl data
+                    for idx, col_header in enumerate(col_headers):
+                        nxentry["SPICElogs"].create_dataset(col_header, data=spice_data[:, idx])
 
                 # /entry/user
 
