@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 from pathlib import Path
 from datetime import datetime
-from scans import Scan
+from tavi.scans import Scan
 
 
 class TAVI_Data(object):
@@ -24,10 +24,10 @@ class TAVI_Data(object):
         """Initialization"""
         self.file_name = None
         self.exp_id = None
-        self.data = []
-        self.processed_data = []
-        self.fits = []
-        self.plots = []
+        self.data = {}
+        self.processed_data = {}
+        self.fits = {}
+        self.plots = {}
 
     def load_data_from_disk(self, path_to_hdf5, OVERWRITE=True):
         """Load hdf5 data from path_to_hdf5.
@@ -37,7 +37,23 @@ class TAVI_Data(object):
             OVERWRITE (bool): overwrite exsiting data if Ture, oterwise append new scans in data.
                 Do not change processed_data, fit or plot
         """
-        pass
+
+        with h5py.File(path_to_hdf5, "r") as f:
+            # IPTS1234_HB3_exp567
+            ipts = f.attrs["ipts"]
+            instrument = f.attrs["instrument"]
+            exp = f.attrs["exp"]
+            data_entry_name = f"IPTS{ipts}_{instrument}_exp{exp}"
+            data_entries = []
+
+            for scan_id in f.keys():
+                # print(scan_id)
+                scan_data = f[scan_id]["SPICElogs"]
+
+                s = Scan(scan_data)
+                data_entries.append(s)
+
+        self.data.update({data_entry_name: data_entries})
 
     def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
         """Load data from ONCat based on user_credentials and ipts_info.
@@ -461,6 +477,9 @@ class TAVI_Data(object):
                 unused.append(line)
 
         return spice_data, col_headers, headers, unused
+
+    def get_selected(self):
+        return "scan0001"
 
 
 if __name__ == "__main__":

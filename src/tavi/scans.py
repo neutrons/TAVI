@@ -19,13 +19,17 @@ class Scan(object):
         if scan_id is not None:
             self.load_scan(scan_id)
 
-    def load_scan(self, scan_id):
-        """Load metadata and data in scan
+    def load_scan(self, scan_data):
+        """Unpack metadata and data from scan_data
 
         Args:
-            scan_id (str):
+            scan_data (str):
         """
-        pass
+        for attr in scan_data.attrs.keys():
+            self.metadata.update({attr: scan_data.attrs[attr]})
+
+        for dset in scan_data.keys():
+            self.data.update({dset: scan_data[dset][:]})
 
     def get_scan_info(self):
         """Return scan_info in metadata.
