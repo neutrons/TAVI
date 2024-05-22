@@ -12,24 +12,30 @@ class Scan(object):
 
     """
 
-    def __init__(self, scan_id=None):
-        """Initialze an empty scan if scan_id is None, otherwise load_scan"""
-        self.metadata = {}
+    def __init__(self):
+        """Initialze an empty scan"""
+        self.meta_data = {}
         self.data = {}
-        if scan_id is not None:
-            self.load_scan(scan_id)
 
-    def load_scan(self, scan_data):
-        """Unpack metadata and data from scan_data
+    # def load_scan(self, scan_data):
+    #     """Unpack metadata and data from scan_data
 
-        Args:
-            scan_data (str):
-        """
-        for attr in scan_data.attrs.keys():
-            self.metadata.update({attr: scan_data.attrs[attr]})
+    #     Args:
+    #         scan_data (str):
+    #     """
+    #     for attr in scan_data.attrs.keys():
+    #         self.metadata.update({attr: scan_data.attrs[attr]})
 
-        for dset in scan_data.keys():
-            self.data.update({dset: scan_data[dset][:]})
+    #     for dset in scan_data.keys():
+    #         self.data.update({dset: scan_data[dset][:]})
+
+    def set_metadata(self, meta_data):
+        """Set metadata"""
+        self.meta_data = meta_data
+
+    def set_data(self, data):
+        """Set metadata"""
+        self.data = data
 
     def get_scan_info(self):
         """Return scan_info in metadata.
@@ -90,10 +96,10 @@ class Scan(object):
             tuple: data entry"""
 
         if x_str == None:
-            x_str = self.metadata["def_x"]
+            x_str = self.meta_data["def_x"]
 
         if y_str == None:
-            y_str = self.metadata["def_y"]
+            y_str = self.meta_data["def_y"]
 
         x = self.data[x_str]
         y = self.data[y_str]
