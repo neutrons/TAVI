@@ -13,6 +13,7 @@ source = {
 
 # guide before monochromator
 guide = {
+    "in_use": False,
     "div_h": 0.0,
     "div_v": 0.0,
 }
@@ -40,6 +41,7 @@ monitor = {
     "width": 5 / np.sqrt(12),
     "height": 12 / np.sqrt(12),
 }
+
 
 analyzer = {
     "type": "Pg002",

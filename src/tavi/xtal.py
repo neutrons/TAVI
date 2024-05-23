@@ -1,7 +1,8 @@
 import numpy as np
+from tavi.utilities import *
 
 
-class Sample(object):
+class Xtal(object):
     """
     Attributes:
         a, b, c                 lattice constants in Angstrom
@@ -28,6 +29,7 @@ class Sample(object):
     """
 
     def __init__(self, lattice_params=(1, 1, 1, 90, 90, 90)):
+
         a, b, c, alpha, beta, gamma = lattice_params
         self.a = a
         self.b = b
@@ -35,7 +37,8 @@ class Sample(object):
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
-        self.v_abg = Sample.v_alpha_beta_gamma_calc(alpha, beta, gamma)
+
+        self.v_abg = Xtal.v_alpha_beta_gamma_calc(alpha, beta, gamma)
         self.a_vec, self.b_vec, self.c_vec = self.real_vec_cart()
         (
             self.a_star,
@@ -163,18 +166,12 @@ class Sample(object):
         self.u = u
         self.v = v
 
-    def set_mosaic(self, mosaic_params):
-        pass
-
-    def set_shape(self, shape_params):
-        pass
-
 
 if __name__ == "__main__":
-    sample = Sample(lattice_params=(1, 1, 1, 90, 90, 120))
-    # print(sample.a_star / 2 / np.pi)
-    # nprint(sample.b_mat() / (2 * np.pi) @ np.array([1, 0, 0]))
-    # print(sample.b_star_vec / np.pi / 2)
-    # print(sample.reciprocal_basis())
-    print(sample.b_mat() / 2 / np.pi)
-    print(sample.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)
+    xtal = Xtal(lattice_params=(1, 1, 1, 90, 90, 120))
+    # print(xtal.a_star / 2 / np.pi)
+    # nprint(xtal.b_mat() / (2 * np.pi) @ np.array([1, 0, 0]))
+    # print(xtal.b_star_vec / np.pi / 2)
+    # print(xtal.reciprocal_basis())
+    print(xtal.b_mat() / 2 / np.pi)
+    print(xtal.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)
