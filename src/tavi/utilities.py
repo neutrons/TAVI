@@ -29,3 +29,15 @@ mono_ana_xtal = {
     "Be110": 1.14280,
     "Heusler": 3.435,  # Cu2MnAl(111)
 }
+
+
+def get_angle(v1, v2, v3):
+    """return angle between v1 and v2 ni radian"""
+    return np.arccos(v1**2 + v2**2 - v3**2) / (2 * v1 * v2)
+
+
+def get_angle_Bragg(q, d_spaceing):
+    """return angle based on Bragg's law, in radian
+    2d sin(theta) = lambda = 2 pi /q
+    """
+    return np.arcsin(np.pi / (d_spaceing * q))
