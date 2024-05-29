@@ -12,6 +12,7 @@ sig2fwhm = 2.0 * np.sqrt(2.0 * np.log(2.0))
 cm2A = 1e8
 min2rad = 1.0 / 60.0 / 180.0 * np.pi
 rad2deg = 180.0 / np.pi
+
 # --------------------------------------------------------------------------
 # d_spacing table from Shirane Appendix 3, in units of Angstrom, from
 # --------------------------------------------------------------------------
@@ -49,11 +50,17 @@ def get_angle_bragg(q, d_spaceing):
 
 def rotation_matrix_2d(phi):
     """rotate the coordination system by angle of phi about z-axis
-    Not rotation of the vector!
+
+    Args:
+        phi (float): angle in radian
+
+    Note:
+        This is to rotate the coordination system, NOT the vector!
+
+
     """
-    angle = phi / 180 * np.pi
-    s = np.sin(angle)
-    c = np.cos(angle)
+    s = np.sin(phi)
+    c = np.cos(phi)
     mat = np.array(
         [
             [c, s, 0],

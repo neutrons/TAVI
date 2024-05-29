@@ -121,4 +121,5 @@ sample_params = {
     "mosaic_v": 30 * min2rad,  # vertical mosaic
     "is_xtal": True,  # True if single crystal
     "xtal": xtal,
+    "ub_matrix": np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
 }

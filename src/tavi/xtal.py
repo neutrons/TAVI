@@ -48,6 +48,7 @@ class Xtal(object):
             self.beta_star,
             self.gamma_star,
         ) = self.reciprocal_latt_params()
+
         self.a_star_vec, self.b_star_vec, self.c_star_vec = self.reciprocal_vec_cart()
         self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
 
@@ -165,6 +166,11 @@ class Xtal(object):
     def set_UB(self, u=[1, 0, 0], v=[0, 0, 1]):
         self.u = u
         self.v = v
+
+    def hkl2q(self, hkl):
+        (h, k, l) = hkl
+        q = np.linalg.norm(h * self.a_star_vec + k * self.b_star_vec + l * self.c_star_vec)
+        return q
 
 
 if __name__ == "__main__":
