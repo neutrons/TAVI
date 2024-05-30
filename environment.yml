@@ -11,6 +11,7 @@ dependencies:
   - pandas
   # plot: list all plot dependencies here, if applicable
   - matplotlib
+  - h5py
   # jupyter: list all jupyter dependencies here, if applicable
   - jupyterlab
   - ipympl

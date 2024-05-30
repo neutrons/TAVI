@@ -42,6 +42,10 @@ monitor = {
     "height": 12 / np.sqrt(12),
 }
 
+goniometer = {
+    "sense": +1,
+    "type": "TAS",  # "TAS" or "4C"
+}
 
 analyzer = {
     "type": "Pg002",
@@ -68,11 +72,11 @@ detector = {
 }
 
 distances = {
-    "src_mono": 650.0 * cm2A,
-    "mono_sample": 190.0 * cm2A,
-    "sample_ana": 160.0 * cm2A,
-    "ana_det": 60.0 * cm2A,
-    "mono_monitor": 86.0 * cm2A,
+    "src_mono": 650.0 * cm2angstrom,
+    "mono_sample": 190.0 * cm2angstrom,
+    "sample_ana": 160.0 * cm2angstrom,
+    "ana_det": 60.0 * cm2angstrom,
+    "mono_monitor": 86.0 * cm2angstrom,
 }
 
 collimators = {  # in units of mins of arc

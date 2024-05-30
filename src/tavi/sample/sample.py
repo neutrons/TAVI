@@ -5,9 +5,6 @@ from tavi.utilities import *
 class Sample(object):
     """
     Attributes:
-        a, b, c                 lattice constants in Angstrom
-        alpha, beta, gamma      angles in degrees
-
         shape (str): "cuboid" or "cylindrical"
         width (float): in units of cm
         height (float): in units of cm
@@ -16,14 +13,14 @@ class Sample(object):
         mosaic (fload): in units of minutes of arc
         mosaic_v (fload): verital mosaic if anisotropic, in units of minutes of arc
 
-
-        a_vec, b_vec, c_veßc    real sapce lattice vector
-        v_abg                   V_alpha_beta_gamma = unit_cell_volume/(abc)
+        a, b, c                 lattice constants in Angstrom
+        alpha, beta, gamma      angles in degrees
+        a_vec, b_vec, c_vec     real sapce lattice vector
+        _v_abg                  V_alpha_beta_gamma = unit_cell_volume/(abc)
         a_star, b_star, c_star  lattice constants in inverse Angstrom
         alpha_star, beta_star, gamma_star       reciprocal angles in degrees
-        i_star, j_star, k_star  bases for the reciprocal space lattice vectors
         a_star_vec, b_star_vec, c_star_vec      reciprocal lattice vector
-
+        i_star, j_star, k_star  bases for the reciprocal space lattice vectors
 
 
     Methods:
@@ -33,6 +30,7 @@ class Sample(object):
         reciprocal_basis
         b_mat
 
+
     Static Methods:
         v_alpha_beta_gamma_calc(alpha,m beta, gamma)
 
@@ -40,6 +38,19 @@ class Sample(object):
     """
 
     def __init__(self, lattice_params=(1, 1, 1, 90, 90, 90)):
+
+        # parameters for resolution calculation
+        self.shape = "cuboid"
+        self.width = 1.0 * cm2angstrom
+        self.height = 1.0 * cm2angstrom
+        self.depth = 1.0 * cm2angstrom
+        self.mosaic = 30 * min2rad  # horizontal mosaic
+        self.mosaic_v = 30 * min2rad  # vertical mosaic
+
+        self.update_lattice(lattice_params)
+
+    def update_lattice(self, lattice_params=(1, 1, 1, 90, 90, 90)):
+        """update real and reciprocal space lattice parameters and vectors"""
 
         a, b, c, alpha, beta, gamma = lattice_params
         self.a = a
@@ -49,15 +60,7 @@ class Sample(object):
         self.beta = beta
         self.gamma = gamma
 
-        self.shape = "cuboid"
-        self.width = 1.0 * cm2A
-        self.height = 1.0 * cm2A
-        self.depth = 1.0 * cm2A
-        self.mosaic = 30 * min2rad  # horizontal mosaic
-        self.mosaic_v = 30 * min2rad  # vertical mosaic
-        self.ub_matrix = None
-
-        self.v_abg = Sample.v_alpha_beta_gamma_calc(alpha, beta, gamma)
+        self._v_abg = Sample.v_alpha_beta_gamma_calc(alpha, beta, gamma)
         self.a_vec, self.b_vec, self.c_vec = self.real_vec_cart()
         (
             self.a_star,
@@ -69,7 +72,6 @@ class Sample(object):
         ) = self.reciprocal_latt_params()
 
         self.a_star_vec, self.b_star_vec, self.c_star_vec = self.reciprocal_vec_cart()
-        self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
 
     @staticmethod
     def v_alpha_beta_gamma_calc(alpha, beta, gamma):
@@ -107,7 +109,7 @@ class Sample(object):
             [
                 self.c * cos_beta,
                 self.c * (cos_alpha - cos_gamma * cos_beta) / sin_gamma,
-                self.c * self.v_abg / sin_gamma,
+                self.c * self._v_abg / sin_gamma,
             ]
         )
         ac = np.round(ac, 8)
@@ -124,9 +126,9 @@ class Sample(object):
         cos_gamma = np.cos(self.gamma / 180 * np.pi)
         sin_gamma = np.sin(self.gamma / 180 * np.pi)
 
-        a_star = sin_alpha / self.a / self.v_abg * np.pi * 2
-        b_star = sin_beta / self.b / self.v_abg * np.pi * 2
-        c_star = sin_gamma / self.c / self.v_abg * np.pi * 2
+        a_star = sin_alpha / self.a / self._v_abg * np.pi * 2
+        b_star = sin_beta / self.b / self._v_abg * np.pi * 2
+        c_star = sin_gamma / self.c / self._v_abg * np.pi * 2
         alpha_star = np.arccos((cos_beta * cos_gamma - cos_alpha) / sin_beta / sin_gamma) / np.pi * 180
         beta_star = np.arccos((cos_gamma * cos_alpha - cos_beta) / sin_alpha / sin_gamma) / np.pi * 180
         gamma_star = np.arccos((cos_alpha * cos_beta - cos_gamma) / sin_beta / sin_alpha) / np.pi * 180
@@ -143,13 +145,19 @@ class Sample(object):
         """
         Calculate the reciprocal space lattice vectors in the Cartesian coordinates
         """
-        v = self.v_abg * self.a * self.b * self.c
+        v = self._v_abg * self.a * self.b * self.c
         prefactor = 2 * np.pi / v
         a_star_vec = np.cross(self.b_vec, self.c_vec) * prefactor
         b_star_vec = np.cross(self.c_vec, self.a_vec) * prefactor
         c_star_vec = np.cross(self.a_vec, self.b_vec) * prefactor
 
         return (a_star_vec, b_star_vec, c_star_vec)
+
+    def hkl2q(self, hkl):
+        """Convert (h,k,l) to q, in units of inverse Angstrom"""
+        (h, k, l) = hkl
+        q = np.linalg.norm(h * self.a_star_vec + k * self.b_star_vec + l * self.c_star_vec)
+        return q
 
     def b_mat(self):
         """
@@ -171,7 +179,7 @@ class Sample(object):
                 [0, 0, 2 * np.pi / self.c],
             ]
         )
-        b_mat = np.round(b_mat, 8)
+        b_mat = np.round(b_mat / 2 / np.pi, 8)
         return b_mat
 
     def reciprocal_basis(self):
@@ -182,21 +190,8 @@ class Sample(object):
         k_star = np.cross(i_star, j_star)
         return (i_star, j_star, k_star)
 
-    def set_UB(self, u=[1, 0, 0], v=[0, 0, 1]):
-        self.u = u
-        self.v = v
-
-    def hkl2q(self, hkl):
-        (h, k, l) = hkl
-        q = np.linalg.norm(h * self.a_star_vec + k * self.b_star_vec + l * self.c_star_vec)
-        return q
-
 
 if __name__ == "__main__":
-    sample = Sample(lattice_params=(1, 1, 1, 90, 90, 120))
-    # print(Sample.a_star / 2 / np.pi)
-    # nprint(Sample.b_mat() / (2 * np.pi) @ np.array([1, 0, 0]))
-    # print(Sample.b_star_vec / np.pi / 2)
-    # print(Sample.reciprocal_basis())
-    print(sample.b_mat() / 2 / np.pi)
-    print(sample.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)
+    sample = Sample(lattice_params=(3.574942, 3.574942, 5.663212, 90, 90, 120))
+    print(sample.a_star / 2 / np.pi)
+    print(sample.b_mat())

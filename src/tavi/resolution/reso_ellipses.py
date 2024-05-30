@@ -1,5 +1,8 @@
 import numpy as np
 import numpy.linalg as la
+import mpl_toolkits.mplot3d as mplot3d
+import matplotlib
+import matplotlib.pyplot as plot
 from tavi.utilities import *
 
 
@@ -57,53 +60,79 @@ class Reso_Ellipsoid(object):
         # print("\nProjected row/column %d:\n%s\n->\n%s.\n" % (idx, str(quadric), str(ortho_proj)))
         return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
 
+    @property
     def coh_fwhms(self):
-        """Coherent FWHM"""
+        """Coherent FWHMs"""
         reso = self.mat
         fwhms = []
 
         for i in range(len(reso)):
             fwhms.append(sig2fwhm / np.sqrt(reso[i, i]))
+        fwhms = np.array(fwhms)
 
-        return np.array(fwhms)
+        print(f"Coherent-elastic fwhms:{fwhms}")
 
+    @property
     def incoh_fwhms(self):
-        """Incoherent FWHM"""
+        """Incoherent FWHMs"""
 
         reso = self.mat
-        Qres_proj_Qpara = Reso_Ellipsoid.quadric_proj(reso, 3)
-        Qres_proj_Qpara = Reso_Ellipsoid.quadric_proj(Qres_proj_Qpara, 2)
-        Qres_proj_Qpara = Reso_Ellipsoid.quadric_proj(Qres_proj_Qpara, 1)
+        proj_q_para = Reso_Ellipsoid.quadric_proj(reso, 3)
+        proj_q_para = Reso_Ellipsoid.quadric_proj(proj_q_para, 2)
+        proj_q_para = Reso_Ellipsoid.quadric_proj(proj_q_para, 1)
 
-        Qres_proj_Qperp = Reso_Ellipsoid.quadric_proj(reso, 3)
-        Qres_proj_Qperp = Reso_Ellipsoid.quadric_proj(Qres_proj_Qperp, 2)
-        Qres_proj_Qperp = Reso_Ellipsoid.quadric_proj(Qres_proj_Qperp, 0)
+        proj_q_perp = Reso_Ellipsoid.quadric_proj(reso, 3)
+        proj_q_perp = Reso_Ellipsoid.quadric_proj(proj_q_perp, 2)
+        proj_q_perp = Reso_Ellipsoid.quadric_proj(proj_q_perp, 0)
 
-        Qres_proj_Qup = Reso_Ellipsoid.quadric_proj(reso, 3)
-        Qres_proj_Qup = Reso_Ellipsoid.quadric_proj(Qres_proj_Qup, 1)
-        Qres_proj_Qup = Reso_Ellipsoid.quadric_proj(Qres_proj_Qup, 0)
+        proj_q_up = Reso_Ellipsoid.quadric_proj(reso, 3)
+        proj_q_up = Reso_Ellipsoid.quadric_proj(proj_q_up, 1)
+        proj_q_up = Reso_Ellipsoid.quadric_proj(proj_q_up, 0)
 
-        Qres_proj_E = Reso_Ellipsoid.quadric_proj(reso, 2)
-        Qres_proj_E = Reso_Ellipsoid.quadric_proj(Qres_proj_E, 1)
-        Qres_proj_E = Reso_Ellipsoid.quadric_proj(Qres_proj_E, 0)
+        proj_en = Reso_Ellipsoid.quadric_proj(reso, 2)
+        proj_en = Reso_Ellipsoid.quadric_proj(proj_en, 1)
+        proj_en = Reso_Ellipsoid.quadric_proj(proj_en, 0)
 
-        return np.array(
+        fwhms = np.array(
             [
-                1.0 / np.sqrt(np.abs(Qres_proj_Qpara[0, 0])) * sig2fwhm,
-                1.0 / np.sqrt(np.abs(Qres_proj_Qperp[0, 0])) * sig2fwhm,
-                1.0 / np.sqrt(np.abs(Qres_proj_Qup[0, 0])) * sig2fwhm,
-                1.0 / np.sqrt(np.abs(Qres_proj_E[0, 0])) * sig2fwhm,
+                1.0 / np.sqrt(np.abs(proj_q_para[0, 0])) * sig2fwhm,
+                1.0 / np.sqrt(np.abs(proj_q_perp[0, 0])) * sig2fwhm,
+                1.0 / np.sqrt(np.abs(proj_q_up[0, 0])) * sig2fwhm,
+                1.0 / np.sqrt(np.abs(proj_en[0, 0])) * sig2fwhm,
             ]
         )
 
-    def descr_ellipse(self):
-        """calculates the characteristics of a given ellipse by principal axis trafo"""
-        [evals, evecs] = la.eig(self.mat)
+        print(f"Incoherent-elastic fwhms: {fwhms}")
 
-        fwhms = 1.0 / np.sqrt(np.abs(evals)) * sig2fwhm
+    @property
+    def principal_fwhms(self):
+        """FWHMs are principal axes"""
 
-        angles = np.array([])
-        if len(quadric) == 2:
-            angles = np.array([np.arctan2(evecs[1][0], evecs[0][0])])
+        evals, _ = la.eig(self.mat)
+        fwhms = np.array(1.0 / np.sqrt(np.abs(evals)) * sig2fwhm)
+        print(f"Principal axes fwhms: {fwhms}")
 
-        return [fwhms, angles / np.pi * 180.0, evecs]
+    # def descr_ellipse(self):
+    #     """calculates the characteristics of a given ellipse by principal axis trafo"""
+    #     [evals, evecs] = la.eig(self.mat)
+
+    #     fwhms = 1.0 / np.sqrt(np.abs(evals)) * sig2fwhm
+
+    #     angles = np.array([])
+    #     if len(quadric) == 2:
+    #         angles = np.array([np.arctan2(evecs[1][0], evecs[0][0])])
+
+    #     return [fwhms, angles / np.pi * 180.0, evecs]
+
+    def plot_ellipses(
+        self,
+        ellis,
+        verbose=True,
+        plot_results=True,
+        file="",
+        dpi=600,
+        ellipse_points=128,
+        use_tex=False,
+    ):
+        """Plot 2D ellipses"""
+        matplotlib.rc("text", usetex=use_tex)

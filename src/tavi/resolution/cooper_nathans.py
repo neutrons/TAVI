@@ -90,8 +90,8 @@ class CN(TAS):
         else:
             print("q is not float or tupe or list.")
 
-        ki = np.sqrt(ei / ksq2E)
-        kf = np.sqrt(ef / ksq2E)
+        ki = np.sqrt(ei / ksq2eng)
+        kf = np.sqrt(ef / ksq2eng)
         en = ei - ef
 
         two_theta = get_angle(ki, kf, q) * self.goniometer["sense"]
@@ -126,8 +126,8 @@ class CN(TAS):
         mat_b = np.zeros((4, 6))
         mat_b[0:3, 0:3] = rotation_matrix_2d(phi)
         mat_b[0:3, 3:6] = rotation_matrix_2d(phi - two_theta) * (-1)
-        mat_b[3, 0] = 2 * ksq2E * ki
-        mat_b[3, 3] = -2 * ksq2E * kf
+        mat_b[3, 0] = 2 * ksq2eng * ki
+        mat_b[3, 3] = -2 * ksq2eng * kf
 
         # matrix C, constrinat between mono/ana mosaic and collimator divergence
         mat_c = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, CN.NUM_COLLS * 2))
@@ -147,8 +147,8 @@ class CN(TAS):
         mat_cov = mat_ba @ mat_hg_inv @ mat_ba.T
 
         # TODO smaple mosaic????
-        # mat_cov[1, 1] += q**2 * self.sample["mosaic"] ** 2
-        # mat_cov[2, 2] += q**2 * self.sample["mosaic_v"] ** 2
+        mat_cov[1, 1] += q**2 * self.sample.mosaic**2
+        mat_cov[2, 2] += q**2 * self.sample.mosaic_v**2
 
         mat_reso = la.inv(mat_cov) * sig2fwhm**2
 
@@ -173,24 +173,29 @@ if __name__ == "__main__":
     print(takin_instru.sample.a)
 
     # ki = kf = 1.4
-    # rez = takin_instru.cooper_nathans(
-    #     ei=1.4**2 * 2.072124855,
-    #     ef=1.4**2 * 2.072124855,
-    #     q=1.777,
-    #     R0=False,
-    #     frame="local",
-    # )
-
     rez = takin_instru.cooper_nathans(
         ei=1.4**2 * 2.072124855,
         ef=1.4**2 * 2.072124855,
-        q=(1, 1, 0),
+        q=1.777,
         R0=False,
-        frame="hkle",
+        frame="local",
     )
+
+    # rez = takin_instru.cooper_nathans(
+    #     ei=1.4**2 * 2.072124855,
+    #     ef=1.4**2 * 2.072124855,
+    #     q=(1, 1, 0),
+    #     R0=False,
+    #     frame="hkle",
+    # )
 
     print(rez.STATUS)
     print(rez.mat)
+
+    rez.coh_fwhms
+    rez.incoh_fwhms
+    rez.principal_fwhms
+
     # describe and plot ellipses
     # ellipses = reso.calc_ellipses(res["reso"], verbose)
     # reso.plot_ellipses(ellipses, verbose)

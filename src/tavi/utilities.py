@@ -6,10 +6,10 @@ import numpy as np
 
 # import scipy.constants as co
 # ksq2E = (co.Planck / co.elementary_charge / 2.0 / np.pi) ** 2.0 * co.elementary_charge / 2.0 / co.neutron_mass * 1e23
-ksq2E = 2.072124855  # calculated with scipy.constants using the formula above
+ksq2eng = 2.072124855  # calculated with scipy.constants using the formula above
 
 sig2fwhm = 2.0 * np.sqrt(2.0 * np.log(2.0))
-cm2A = 1e8
+cm2angstrom = 1e8
 min2rad = 1.0 / 60.0 / 180.0 * np.pi
 rad2deg = 180.0 / np.pi
 
@@ -31,9 +31,13 @@ mono_ana_xtal = {
     "Heusler": 3.435,  # Cu2MnAl(111)
 }
 
+
 # --------------------------------------------------------------------------
 # helper functions
 # --------------------------------------------------------------------------
+def eng2k(en):
+    """convert energy in meV to wave vector k in inverse Angstrom"""
+    return
 
 
 def get_angle(v1, v2, v3):
@@ -65,6 +69,75 @@ def rotation_matrix_2d(phi):
         [
             [c, s, 0],
             [-s, c, 0],
+            [0, 0, 1],
+        ]
+    )
+    return mat
+
+
+def rot_x(nu):
+    """rotation matrix about y-axis by angle nu
+
+    Args:
+        nu (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = nu / rad2deg
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [1, 0, 0],
+            [0, c, -s],
+            [0, s, c],
+        ]
+    )
+    return mat
+
+
+def rot_y(omega):
+    """rotation matrix about y-axis by angle omega
+
+    Args:
+        omega (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = omega / rad2deg
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [c, 0, s],
+            [0, 1, 0],
+            [-s, 0, c],
+        ]
+    )
+    return mat
+
+
+def rot_z(mu):
+    """rotation matrix about z-axis by angle mu
+
+    Args:
+        mu (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = mu / rad2deg
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [c, -s, 0],
+            [s, c, 0],
             [0, 0, 1],
         ]
     )

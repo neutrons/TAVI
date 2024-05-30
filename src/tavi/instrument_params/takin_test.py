@@ -6,8 +6,8 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 6.0 * cm2A,
-    "height": 12.0 * cm2A,
+    "width": 6.0 * cm2angstrom,
+    "height": 12.0 * cm2angstrom,
 }
 
 
@@ -26,9 +26,9 @@ monochromator = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 12.0 * cm2A,
-    "height": 8.0 * cm2A,
-    "depth": 0.15 * cm2A,
+    "width": 12.0 * cm2angstrom,
+    "height": 8.0 * cm2angstrom,
+    "depth": 0.15 * cm2angstrom,
     # horizontal focusing
     "curved_h": False,
     "curvh": 0.0,
@@ -48,7 +48,7 @@ monitor = {
 
 goniometer = {
     "sense": +1,
-    "num_axis": "TAS",  # "TAS" or "4C"
+    "type": "TAS",  # "TAS" or "4C"
 }
 
 analyzer = {
@@ -59,9 +59,9 @@ analyzer = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 12.0 * cm2A,
-    "height": 8.0 * cm2A,
-    "depth": 0.3 * cm2A,
+    "width": 12.0 * cm2angstrom,
+    "height": 8.0 * cm2angstrom,
+    "depth": 0.3 * cm2angstrom,
     # horizontal focusing
     "curved_h": False,
     "curvh": 0.0,
@@ -75,15 +75,15 @@ detector = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 1.5 * cm2A,
-    "height": 5.0 * cm2A,
+    "width": 1.5 * cm2angstrom,
+    "height": 5.0 * cm2angstrom,
 }
 
 distances = {
-    "src_mono": 10.0 * cm2A,
-    "mono_sample": 200.0 * cm2A,
-    "sample_ana": 115.0 * cm2A,
-    "ana_det": 85.0 * cm2A,
+    "src_mono": 10.0 * cm2angstrom,
+    "mono_sample": 200.0 * cm2angstrom,
+    "sample_ana": 115.0 * cm2angstrom,
+    "ana_det": 85.0 * cm2angstrom,
     # "mono_monitor": 86.0 * cm2A,
 }
 
