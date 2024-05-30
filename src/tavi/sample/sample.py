@@ -2,17 +2,28 @@ import numpy as np
 from tavi.utilities import *
 
 
-class Xtal(object):
+class Sample(object):
     """
     Attributes:
         a, b, c                 lattice constants in Angstrom
         alpha, beta, gamma      angles in degrees
+
+        shape (str): "cuboid" or "cylindrical"
+        width (float): in units of cm
+        height (float): in units of cm
+        depth (float): in units of cm
+
+        mosaic (fload): in units of minutes of arc
+        mosaic_v (fload): verital mosaic if anisotropic, in units of minutes of arc
+
+
         a_vec, b_vec, c_veßc    real sapce lattice vector
         v_abg                   V_alpha_beta_gamma = unit_cell_volume/(abc)
         a_star, b_star, c_star  lattice constants in inverse Angstrom
         alpha_star, beta_star, gamma_star       reciprocal angles in degrees
         i_star, j_star, k_star  bases for the reciprocal space lattice vectors
         a_star_vec, b_star_vec, c_star_vec      reciprocal lattice vector
+
 
 
     Methods:
@@ -38,7 +49,15 @@ class Xtal(object):
         self.beta = beta
         self.gamma = gamma
 
-        self.v_abg = Xtal.v_alpha_beta_gamma_calc(alpha, beta, gamma)
+        self.shape = "cuboid"
+        self.width = 1.0 * cm2A
+        self.height = 1.0 * cm2A
+        self.depth = 1.0 * cm2A
+        self.mosaic = 30 * min2rad  # horizontal mosaic
+        self.mosaic_v = 30 * min2rad  # vertical mosaic
+        self.ub_matrix = None
+
+        self.v_abg = Sample.v_alpha_beta_gamma_calc(alpha, beta, gamma)
         self.a_vec, self.b_vec, self.c_vec = self.real_vec_cart()
         (
             self.a_star,
@@ -174,10 +193,10 @@ class Xtal(object):
 
 
 if __name__ == "__main__":
-    xtal = Xtal(lattice_params=(1, 1, 1, 90, 90, 120))
-    # print(xtal.a_star / 2 / np.pi)
-    # nprint(xtal.b_mat() / (2 * np.pi) @ np.array([1, 0, 0]))
-    # print(xtal.b_star_vec / np.pi / 2)
-    # print(xtal.reciprocal_basis())
-    print(xtal.b_mat() / 2 / np.pi)
-    print(xtal.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)
+    sample = Sample(lattice_params=(1, 1, 1, 90, 90, 120))
+    # print(Sample.a_star / 2 / np.pi)
+    # nprint(Sample.b_mat() / (2 * np.pi) @ np.array([1, 0, 0]))
+    # print(Sample.b_star_vec / np.pi / 2)
+    # print(Sample.reciprocal_basis())
+    print(sample.b_mat() / 2 / np.pi)
+    print(sample.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)

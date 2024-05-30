@@ -60,12 +60,12 @@ class Reso_Ellipsoid(object):
     def coh_fwhms(self):
         """Coherent FWHM"""
         reso = self.mat
-        vecFwhms = []
+        fwhms = []
 
         for i in range(len(reso)):
-            vecFwhms.append(sig2fwhm / np.sqrt(reso[i, i]))
+            fwhms.append(sig2fwhm / np.sqrt(reso[i, i]))
 
-        return np.array(vecFwhms)
+        return np.array(fwhms)
 
     def incoh_fwhms(self):
         """Incoherent FWHM"""

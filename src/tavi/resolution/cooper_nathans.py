@@ -3,7 +3,8 @@ import numpy.linalg as la
 from tavi.utilities import *
 from tavi.tas import TAS
 from tavi.resolution.reso_ellipses import Reso_Ellipsoid
-from tavi.instrument_params.takin_test import instrument_params, sample_params
+from tavi.instrument_params.takin_test import instrument_params
+from tavi.sample.sample_test import test_xtal
 
 
 class CN(TAS):
@@ -78,23 +79,26 @@ class CN(TAS):
 
             self._mat_g = mat_g
 
-        if not isinstance(q, float):
+        if isinstance(q, tuple | list):
             if len(q) == 3:
                 h, k, l = q
-                if self.sample["is_xtal"]:
-                    q = self.sample["xtal"].hkl2q((h, k, l))
-                else:
-                    print("Sample info not found. is it a single crystal?")
+                q = self.sample.hkl2q((h, k, l))
+            else:
+                print("Length of q is not 3.")
+        elif isinstance(q, float):
+            pass
+        else:
+            print("q is not float or tupe or list.")
 
         ki = np.sqrt(ei / ksq2E)
         kf = np.sqrt(ef / ksq2E)
         en = ei - ef
 
-        two_theta = get_angle(ki, kf, q) * self.sample["sense"]
+        two_theta = get_angle(ki, kf, q) * self.goniometer["sense"]
         # theta_s = two_theta / 2
 
         # phi = <ki, q>, always has the oppositie sign of theta_s
-        phi = get_angle(ki, q, kf) * self.sample["sense"] * (-1)
+        phi = get_angle(ki, q, kf) * self.goniometer["sense"] * (-1)
 
         theta_m = get_angle_bragg(ki, self.monochromator["d_spacing"]) * self.monochromator["sense"]
         theta_a = get_angle_bragg(kf, self.analyzer["d_spacing"]) * self.analyzer["sense"]
@@ -162,11 +166,11 @@ class CN(TAS):
 if __name__ == "__main__":
 
     takin_instru = CN()
-    takin_instru.load_config(instrument_params, sample_params)
+    takin_instru.load_instrument(instrument_params)
+    takin_instru.load_sample(test_xtal)
 
     print(takin_instru.analyzer["type"])
-    print(takin_instru.sample["sense"])
-    print(takin_instru.sample["xtal"].a)
+    print(takin_instru.sample.a)
 
     # ki = kf = 1.4
     # rez = takin_instru.cooper_nathans(

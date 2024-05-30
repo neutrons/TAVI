@@ -1,6 +1,5 @@
 import numpy as np
 from tavi.utilities import *
-from tavi.xtal import Xtal
 
 
 source = {
@@ -47,6 +46,10 @@ monitor = {
     "height": 12 / np.sqrt(12),
 }
 
+goniometer = {
+    "sense": +1,
+    "num_axis": "TAS",  # "TAS" or "4C"
+}
 
 analyzer = {
     "type": "Pg002",
@@ -101,25 +104,9 @@ instrument_params = {
     "guide": guide,
     "monochromator": monochromator,
     "monitor": monitor,
+    "goniometer": goniometer,
     "analyzer": analyzer,
     "detector": detector,
     "distances": distances,
     "collimators": collimators,
-}
-
-
-xtal = Xtal(lattice_params=(5.3995, 5.64, 11.75, 90, 90, 90))
-
-# resolution parameters
-sample_params = {
-    "sense": +1,
-    "shape": "cylindrical",  # "cuboid" or "cylindrical"
-    "width": 1.0 * cm2A,
-    "height": 1.0 * cm2A,
-    "depth": 1.0 * cm2A,
-    "mosaic": 30 * min2rad,  # horizontal mosaic
-    "mosaic_v": 30 * min2rad,  # vertical mosaic
-    "is_xtal": True,  # True if single crystal
-    "xtal": xtal,
-    "ub_matrix": np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
 }
