@@ -51,13 +51,33 @@ class TAS(object):
         """Load sample info"""
         self.sample = sample
 
-    def _find_u_from_2peaks(self):
+    @staticmethod
+    def q_lab(two_theta, k):
+        """Momentum transfer q in lab frame.
+
+        Note:
+            Only for a single detector in the scattering plane.
+            Depends on wavevector k and two theta, phi is zero.
+        """
+        return k * np.array(
+            [
+                -np.sin(two_theta / rad2deg),
+                0,
+                1 - np.cos(two_theta / rad2deg),
+            ]
+        )
+
+    def _find_u_from_2peaks(self, peaks, angles, k):
         """Calculate UB matrix from two peaks
 
         Args:
             peaks (list)
             angles (list)
-            ei (float): incident neutron energy, in meV"""
+            ei (float): incident neutron energy, in meV
+        """
+
+        b_mat = self.sample.b_mat()
+        peak1, peak2 = peaks
         q_hkl1 = b_mat @ peak1
         q_hkl2 = b_mat @ peak2
         q_hkl3 = np.cross(q_hkl1, q_hkl2)
@@ -72,28 +92,15 @@ class TAS(object):
         ).T
 
         # find r_inv
+        angles1, angles2 = angles
+        two_theta1, _, _, _ = angles1
+        two_theta2, _, _, _ = angles2
 
-        two_theta1, omega1, sgl1, sgu1 = angles1
-        two_theta2, omega2, sgl2, sgu2 = angles2
+        q_lab1 = TAS.q_lab(two_theta1, k)
+        q_lab2 = TAS.q_lab(two_theta2, k)
 
-        q_lab1 = k * np.array(
-            [
-                -np.sin(two_theta1 / rad2deg),
-                0,
-                1 - np.cos(two_theta1 / rad2deg),
-            ]
-        )
-        q_lab2 = k * np.array(
-            [
-                -np.sin(two_theta2 / rad2deg),
-                0,
-                1 - np.cos(two_theta2 / rad2deg),
-            ]
-        )
-
-        q_sample1 = r_inv_mat1 @ q_lab1
-        q_sample2 = r_inv_mat2 @ q_lab2
-
+        q_sample1 = self.goniometer.r_mat_inv(angles1) @ q_lab1
+        q_sample2 = self.goniometer.r_mat_inv(angles2) @ q_lab2
         q_sample3 = np.cross(q_sample1, q_sample2)
         q_sample2p = np.cross(q_sample3, q_sample1)
 
@@ -110,7 +117,7 @@ class TAS(object):
 
     # TODO check goniometer order, sign convention,
     def find_ub(self, peaks, angles, ei=13.5):
-        """calculate UB matrix
+        """calculate UB matrix from peaks and motor positions
 
         Args:
             peaks (list)
@@ -127,6 +134,7 @@ class TAS(object):
         if len(peaks) == 2:
             b_mat = self.sample.b_mat()
             u_mat = self._find_u_from_2peaks(peaks, angles, k)
+            ub_matrix = u_mat @ b_mat
 
         elif len(peaks) == 3:
             pass
@@ -135,8 +143,8 @@ class TAS(object):
         else:
             print("I don't even know what you're doing.")
 
-        ub_matrix = u_mat @ b_mat
-        self.sample.ub_matrix = u_mat @ b_mat
+        self.sample.ub_matrix = ub_matrix
+        print(ub_matrix)
         return ub_matrix
 
 
@@ -149,15 +157,17 @@ if __name__ == "__main__":
     print(takin_instru.analyzer.type)
     print(takin_instru.sample.a)
 
-    peak1 = (0, 0, 2)
-    peak2 = (0, 2, 0)
-    angles1 = (-51.530388, -45.220125, -0.000500, -2.501000)
-    angles2 = (-105.358735, 17.790125, -0.000500, -2.501000)
-
-    peak_list = [peak1, peak2]
-    angles_list = [angles1, angles2]
+    peak_list = [
+        (0, 0, 2),
+        (0, 2, 0),
+    ]
+    angles_list = [
+        (-51.530388, -45.220125, -0.000500, -2.501000),
+        (-105.358735, 17.790125, -0.000500, -2.501000),
+    ]
 
     takin_instru.find_ub(peaks=peak_list, angles=angles_list, ei=13.5)
+    pass
 
     # describe and plot ellipses
     # ellipses = reso.calc_ellipses(res["reso"], verbose)

@@ -2,8 +2,8 @@ import numpy as np
 import numpy.linalg as la
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
-from tavi.resolution.reso_ellipses import Reso_Ellipsoid
-from tavi.instrument_params.takin_test import instrument_params
+from tavi.instrument.resolution.reso_ellipses import Reso_Ellipsoid
+from tavi.instrument.instrument_params.takin_test import instrument_params
 from tavi.sample.sample_test import test_xtal
 
 
@@ -45,37 +45,57 @@ class CN(TAS):
         self._mat_f = None
         self._mat_g = None
 
-    def cooper_nathans(self, ei, ef, q, R0=False, frame="local"):
-        """
-        Calculate resolution using Cooper-Nathans method
+    def cooper_nathans_hkle(self, ei, ef, hkl, angles, R0=False):
+        """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
+
+        r_mat = self.goniometer.r_mat(angles)
+        ub_mat = self.sample.ub_matrix
+        conv_mat = r_mat @ ub_mat * 2 * np.pi
+        q_lab = conv_mat @ hkl
+        q = np.linalg.norm(q_lab)
+        rez_hkle = self.cooper_nathans(ei, ef, q, R0)
+
+        ki = np.sqrt(ei / ksq2eng)
+        kf = np.sqrt(ef / ksq2eng)
+        phi = get_angle(ki, q, kf) * self.goniometer.sense + np.pi / 2
+
+        conv_mat_4d = np.eye(4)
+        conv_mat_4d[0:3, 0:3] = rot_y(phi * rad2deg) @ rot_x(90) @ conv_mat
+
+        rez_hkle.mat = conv_mat_4d.T @ rez_hkle.mat @ conv_mat_4d
+        self.frame = "HKLE"
+        return rez_hkle
+
+    def cooper_nathans(self, ei, ef, q, R0=False):
+        """Calculate resolution using Cooper-Nathans method
 
         Args:
             ei (float): incident energy, in units of meV
             ef (float): final energy, in units of meV
             q (float | tuple of floats): momentum transfer, in units of inverse angstrom
             R0 (bool): calculate normalization factor if True
-            frame (str): "local", "mod_q" for powder or "hkle" for single crystal
         """
+        self.frame = "Qlocal"
         if self._mat_f is None:
             # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
             mat_f = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, (CN.NUM_MONOS + CN.NUM_ANAS) * 2))
-            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / self.monochromator["mosaic"] ** 2
-            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / self.monochromator["mosaic_v"] ** 2
-            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / self.analyzer["mosaic"] ** 2
-            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / self.analyzer["mosaic_v"] ** 2
+            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / self.monochromator.mosaic**2
+            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / self.monochromator.mosaic_v**2
+            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / self.analyzer.mosaic**2
+            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / self.analyzer.mosaic_v**2
             self._mat_f = mat_f
 
         if self._mat_g is None:
             # matrix G, divergence of collimators, [pop75] Appendix 1
             mat_g = np.zeros((CN.NUM_COLLS * 2, CN.NUM_COLLS * 2))
-            mat_g[CN.IDX_COLL0_H, CN.IDX_COLL0_H] = 1.0 / self.collimators["h_pre_mono"] ** 2
-            mat_g[CN.IDX_COLL0_V, CN.IDX_COLL0_V] = 1.0 / self.collimators["v_pre_mono"] ** 2
-            mat_g[CN.IDX_COLL1_H, CN.IDX_COLL1_H] = 1.0 / self.collimators["h_pre_sample"] ** 2
-            mat_g[CN.IDX_COLL1_V, CN.IDX_COLL1_V] = 1.0 / self.collimators["v_pre_sample"] ** 2
-            mat_g[CN.IDX_COLL2_H, CN.IDX_COLL2_H] = 1.0 / self.collimators["h_post_sample"] ** 2
-            mat_g[CN.IDX_COLL2_V, CN.IDX_COLL2_V] = 1.0 / self.collimators["v_post_sample"] ** 2
-            mat_g[CN.IDX_COLL3_H, CN.IDX_COLL3_H] = 1.0 / self.collimators["h_post_ana"] ** 2
-            mat_g[CN.IDX_COLL3_V, CN.IDX_COLL3_V] = 1.0 / self.collimators["v_post_ana"] ** 2
+            mat_g[CN.IDX_COLL0_H, CN.IDX_COLL0_H] = 1.0 / self.collimators.h_pre_mono**2
+            mat_g[CN.IDX_COLL0_V, CN.IDX_COLL0_V] = 1.0 / self.collimators.v_pre_mono**2
+            mat_g[CN.IDX_COLL1_H, CN.IDX_COLL1_H] = 1.0 / self.collimators.h_pre_sample**2
+            mat_g[CN.IDX_COLL1_V, CN.IDX_COLL1_V] = 1.0 / self.collimators.v_pre_sample**2
+            mat_g[CN.IDX_COLL2_H, CN.IDX_COLL2_H] = 1.0 / self.collimators.h_post_sample**2
+            mat_g[CN.IDX_COLL2_V, CN.IDX_COLL2_V] = 1.0 / self.collimators.v_post_sample**2
+            mat_g[CN.IDX_COLL3_H, CN.IDX_COLL3_H] = 1.0 / self.collimators.h_post_ana**2
+            mat_g[CN.IDX_COLL3_V, CN.IDX_COLL3_V] = 1.0 / self.collimators.v_post_ana**2
 
             self._mat_g = mat_g
 
@@ -94,14 +114,14 @@ class CN(TAS):
         kf = np.sqrt(ef / ksq2eng)
         en = ei - ef
 
-        two_theta = get_angle(ki, kf, q) * self.goniometer["sense"]
+        two_theta = get_angle(ki, kf, q) * self.goniometer.sense
         # theta_s = two_theta / 2
 
         # phi = <ki, q>, always has the oppositie sign of theta_s
-        phi = get_angle(ki, q, kf) * self.goniometer["sense"] * (-1)
+        phi = get_angle(ki, q, kf) * self.goniometer.sense * (-1)
 
-        theta_m = get_angle_bragg(ki, self.monochromator["d_spacing"]) * self.monochromator["sense"]
-        theta_a = get_angle_bragg(kf, self.analyzer["d_spacing"]) * self.analyzer["sense"]
+        theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
+        theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer.sense
 
         # TODO
         # curved monochromator and analyzer
@@ -169,33 +189,28 @@ if __name__ == "__main__":
     takin_instru.load_instrument(instrument_params)
     takin_instru.load_sample(test_xtal)
 
-    print(takin_instru.analyzer["type"])
+    print(takin_instru.analyzer.type)
     print(takin_instru.sample.a)
 
     # ki = kf = 1.4
-    rez = takin_instru.cooper_nathans(
-        ei=1.4**2 * 2.072124855,
-        ef=1.4**2 * 2.072124855,
-        q=1.777,
-        R0=False,
-        frame="local",
-    )
-
     # rez = takin_instru.cooper_nathans(
     #     ei=1.4**2 * 2.072124855,
     #     ef=1.4**2 * 2.072124855,
-    #     q=(1, 1, 0),
+    #     q=np.pi / takin_instru.sample.c,
     #     R0=False,
-    #     frame="hkle",
     # )
+
+    rez = takin_instru.cooper_nathans_hkle(
+        ei=1.4**2 * 2.072124855,
+        ef=1.4**2 * 2.072124855,
+        hkl=(0, 0, 2),
+        angles=(-51.530388, -45.220125, -0.000500, -2.501000),
+        R0=False,
+    )
 
     print(rez.STATUS)
     print(rez.mat)
 
-    rez.coh_fwhms
-    rez.incoh_fwhms
-    rez.principal_fwhms
-
     # describe and plot ellipses
-    # ellipses = reso.calc_ellipses(res["reso"], verbose)
-    # reso.plot_ellipses(ellipses, verbose)
+    ellipses = rez.calc_ellipses()
+    rez.plot_ellipses(ellipses)

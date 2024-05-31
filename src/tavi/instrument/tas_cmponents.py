@@ -38,8 +38,18 @@ class Guide(object):
 
 
 class Collimators(object):
+    """collimitor divergences, in mins of arc"""
 
     def __init__(self, param_dict):
+        self.h_pre_mono = 30  # mins of arc
+        self.h_pre_sample = 30
+        self.h_post_sample = 30
+        self.h_post_ana = 30
+        self.v_pre_mono = 30
+        self.v_pre_sample = 30
+        self.v_post_sample = 30
+        self.v_post_ana = 30
+
         for key, val in param_dict.items():
             if key in (
                 "h_pre_mono",
@@ -193,13 +203,19 @@ class Goniometer(object):
         for key, val in param_dict.items():
             setattr(self, key, val)
 
-    def r_mat_inv(self):
+    def r_mat(self, angles):
+        "rotation matrix"
+        # TODO
         if self.type == "TAS":  # Y-X-Z
-
-            r_inv_mat1 = rot_y(-omega1)  # @ rot_z(-sgl1) @ rot_x(-sgu1)
-            r_inv_mat2 = rot_y(-omega2)  # @ rot_z(-sgl2) @ rot_x(-sgu2)
+            _, omega, _, _ = angles
+            r_mat = rot_y(omega)  # @ rot_x(-sgl) @ rot_z(-sgu)
 
         elif self.type == "4C":
             pass
         else:
             print("Unknow goniometer type. Needs to be TAS or 4C.")
+        return r_mat
+
+    def r_mat_inv(self, angles):
+        """inverse of rotation matrix"""
+        return np.linalg.inv(self.r_mat(angles))
