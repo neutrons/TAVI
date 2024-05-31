@@ -6,29 +6,29 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 6.0 * cm2angstrom,
-    "height": 12.0 * cm2angstrom,
+    "width": 6.0,  # in cm
+    "height": 12.0,  # in cm
 }
 
 
 # guide before monochromator
 guide = {
     "in_use": False,
-    "div_h": 15.0 * min2rad,
-    "div_v": 15.0 * min2rad,
+    "div_h": 15.0,  # min of arc
+    "div_v": 15.0,  # min of arc
 }
 
 monochromator = {
     "type": "PG002",
     "d_spacing": mono_ana_xtal["PG002"],
-    "mosaic": 45 * min2rad,  # horizontal mosaic
-    "mosaic_v": 45 * min2rad,  # vertical mosaic, if anisotropic
+    "mosaic": 45,  # horizontal mosaic
+    "mosaic_v": 45,  # vertical mosaic, if anisotropic
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 12.0 * cm2angstrom,
-    "height": 8.0 * cm2angstrom,
-    "depth": 0.15 * cm2angstrom,
+    "width": 12.0,
+    "height": 8.0,
+    "depth": 0.15,
     # horizontal focusing
     "curved_h": False,
     "curvh": 0.0,
@@ -40,6 +40,7 @@ monochromator = {
 }
 
 monitor = {
+    "shape": "rectangular",
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
     "width": 5 / np.sqrt(12),
@@ -54,14 +55,14 @@ goniometer = {
 analyzer = {
     "type": "Pg002",
     "d_spacing": mono_ana_xtal["Pg002"],
-    "mosaic": 45 * min2rad,  # horizontal mosaic
-    "mosaic_v": 45 * min2rad,  # vertical mosaic, if anisotropic
+    "mosaic": 45,  # horizontal mosaic
+    "mosaic_v": 45,  # vertical mosaic, if anisotropic
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 12.0 * cm2angstrom,
-    "height": 8.0 * cm2angstrom,
-    "depth": 0.3 * cm2angstrom,
+    "width": 12.0,
+    "height": 8.0,
+    "depth": 0.3,
     # horizontal focusing
     "curved_h": False,
     "curvh": 0.0,
@@ -75,27 +76,27 @@ detector = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 1.5 * cm2angstrom,
-    "height": 5.0 * cm2angstrom,
+    "width": 1.5,  # cm
+    "height": 5.0,  # cm
 }
 
-distances = {
-    "src_mono": 10.0 * cm2angstrom,
-    "mono_sample": 200.0 * cm2angstrom,
-    "sample_ana": 115.0 * cm2angstrom,
-    "ana_det": 85.0 * cm2angstrom,
-    # "mono_monitor": 86.0 * cm2A,
+distances = {  # in units of cm
+    "src_mono": 10.0,
+    "mono_sample": 200.0,
+    "sample_ana": 115.0,
+    "ana_det": 85.0,
+    # "mono_monitor": 86.0 ,
 }
 
 collimators = {  # in units of mins of arc
-    "h_pre_mono": 30 * min2rad,
-    "h_pre_sample": 30 * min2rad,
-    "h_post_sample": 30 * min2rad,
-    "h_post_ana": 30 * min2rad,
-    "v_pre_mono": 30 * min2rad,
-    "v_pre_sample": 30 * min2rad,
-    "v_post_sample": 30 * min2rad,
-    "v_post_ana": 30 * min2rad,
+    "h_pre_mono": 30,
+    "h_pre_sample": 30,
+    "h_post_sample": 30,
+    "h_post_ana": 30,
+    "v_pre_mono": 30,
+    "v_pre_sample": 30,
+    "v_post_sample": 30,
+    "v_post_ana": 30,
 }
 
 
