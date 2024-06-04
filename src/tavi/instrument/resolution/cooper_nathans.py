@@ -57,10 +57,20 @@ class CN(TAS):
 
         ki = np.sqrt(ei / ksq2eng)
         kf = np.sqrt(ef / ksq2eng)
-        phi = get_angle(ki, q, kf) * self.goniometer.sense + np.pi / 2
+        phi = get_angle(ki, q, kf) * self.goniometer.sense  # + np.pi / 2
 
         conv_mat_4d = np.eye(4)
-        conv_mat_4d[0:3, 0:3] = rot_y(phi * rad2deg) @ rot_x(90) @ conv_mat
+        # conv_mat_4d[0:3, 0:3] = rot_y(phi * rad2deg) @ rot_x(90) @ conv_mat
+        conv_mat_4d[0:3, 0:3] = (
+            np.array(
+                [
+                    [np.sin(phi), 0, np.cos(phi)],
+                    [np.cos(phi), 0, -np.sin(phi)],
+                    [0, 1, 0],
+                ]
+            )
+            @ conv_mat
+        )
 
         rez_hkle.mat = conv_mat_4d.T @ rez_hkle.mat @ conv_mat_4d
         self.frame = "HKLE"
@@ -196,7 +206,7 @@ if __name__ == "__main__":
     # rez = takin_instru.cooper_nathans(
     #     ei=1.4**2 * 2.072124855,
     #     ef=1.4**2 * 2.072124855,
-    #     q=np.pi / takin_instru.sample.c,
+    #     q=4 * np.pi / takin_instru.sample.c,
     #     R0=False,
     # )
 

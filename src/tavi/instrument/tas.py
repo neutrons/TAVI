@@ -136,9 +136,9 @@ class TAS(object):
             u_mat = self._find_u_from_2peaks(peaks, angles, k)
             ub_matrix = u_mat @ b_mat
 
-        elif len(peaks) == 3:
+        elif len(peaks) == 3:  # find_ub_from_3peaks
             pass
-        elif len(peaks) > 3:
+        elif len(peaks) > 3:  # find_ub_from_mulitple_peaks
             pass
         else:
             print("I don't even know what you're doing.")

@@ -207,7 +207,7 @@ class Goniometer(object):
         "rotation matrix"
         # TODO
         if self.type == "TAS":  # Y-X-Z
-            _, omega, _, _ = angles
+            _, omega, _, _ = angles  # s1, s2, sgl. sgu
             r_mat = rot_y(omega)  # @ rot_x(-sgl) @ rot_z(-sgu)
 
         elif self.type == "4C":
