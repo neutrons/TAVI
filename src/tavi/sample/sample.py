@@ -112,9 +112,9 @@ class Sample(object):
                 self.c * self._v_abg / sin_gamma,
             ]
         )
-        ac = np.round(ac, 8)
-        bc = np.round(bc, 8)
-        cc = np.round(cc, 8)
+        # ac = np.round(ac, 8)
+        # bc = np.round(bc, 8)
+        # cc = np.round(cc, 8)
         return (ac, bc, cc)
 
     def reciprocal_latt_params(self):
@@ -132,12 +132,12 @@ class Sample(object):
         alpha_star = np.arccos((cos_beta * cos_gamma - cos_alpha) / sin_beta / sin_gamma) / np.pi * 180
         beta_star = np.arccos((cos_gamma * cos_alpha - cos_beta) / sin_alpha / sin_gamma) / np.pi * 180
         gamma_star = np.arccos((cos_alpha * cos_beta - cos_gamma) / sin_beta / sin_alpha) / np.pi * 180
-        a_star = np.round(a_star, 8)
-        b_star = np.round(b_star, 8)
-        c_star = np.round(c_star, 8)
-        alpha_star = np.round(alpha_star, 8)
-        beta_star = np.round(beta_star, 8)
-        gamma_star = np.round(gamma_star, 8)
+        # a_star = np.round(a_star, 8)
+        # b_star = np.round(b_star, 8)
+        # c_star = np.round(c_star, 8)
+        # alpha_star = np.round(alpha_star, 8)
+        # beta_star = np.round(beta_star, 8)
+        # gamma_star = np.round(gamma_star, 8)
 
         return (a_star, b_star, c_star, alpha_star, beta_star, gamma_star)
 
@@ -179,7 +179,8 @@ class Sample(object):
                 [0, 0, 2 * np.pi / self.c],
             ]
         )
-        b_mat = np.round(b_mat / 2 / np.pi, 8)
+        b_mat = b_mat / 2 / np.pi
+        # b_mat = np.round(b_mat, 8)
         return b_mat
 
     def reciprocal_basis(self):
@@ -192,6 +193,6 @@ class Sample(object):
 
 
 if __name__ == "__main__":
-    sample = Sample(lattice_params=(3.574942, 3.574942, 5.663212, 90, 90, 120))
+    sample = Sample(lattice_params=(3.574924, 3.574924, 5.663212, 90, 90, 120))
     print(sample.a_star / 2 / np.pi)
     print(sample.b_mat())

@@ -189,16 +189,13 @@ class Monochromator(object):
                     setattr(self, key, val)
             self.d_spacing = mono_ana_xtal[self.type]
 
-        for key, val in param_dict.items():
-            setattr(self, key, val)
-
 
 class Goniometer(object):
     """Goniometer table, type = TAS of 4C"""
 
     def __init__(self, param_dict):
         self.type = "TAS"
-        self.sense = +1
+        self.sense = -1
 
         for key, val in param_dict.items():
             setattr(self, key, val)
@@ -206,9 +203,9 @@ class Goniometer(object):
     def r_mat(self, angles):
         "rotation matrix"
         # TODO
-        if self.type == "TAS":  # Y-X-Z
-            _, omega, _, _ = angles  # s1, s2, sgl. sgu
-            r_mat = rot_y(omega)  # @ rot_x(-sgl) @ rot_z(-sgu)
+        if self.type == "TAS":  # Y-mZ-X for HB1A
+            _, omega, sgl, sgu = angles  # s2, s1, sgl, sgu
+            r_mat = rot_y(omega) @ rot_z(-sgl) @ rot_x(sgu)
 
         elif self.type == "4C":
             pass
@@ -219,3 +216,24 @@ class Goniometer(object):
     def r_mat_inv(self, angles):
         """inverse of rotation matrix"""
         return np.linalg.inv(self.r_mat(angles))
+
+    def angles_from_r_mat(self, r_mat):
+        """Calculate goniometer angles from the R matrix"""
+
+        if self.type == "TAS":  # Y-mZ-X (s1, sgl, sgu) for HB1A
+            sgl = (-1) * np.arcsin(r_mat[1, 0]) * rad2deg
+            # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+
+            sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+
+            omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+
+            angles = (omega, sgl, sgu)
+
+        elif self.type == "4C":
+            pass
+        else:
+            print("Unknow goniometer type. Needs to be TAS or 4C.")
+
+        return angles

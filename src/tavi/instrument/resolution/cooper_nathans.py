@@ -45,19 +45,22 @@ class CN(TAS):
         self._mat_f = None
         self._mat_g = None
 
-    def cooper_nathans_hkle(self, ei, ef, hkl, angles, R0=False):
+    def cooper_nathans_hkle(self, ei, ef, hkl, R0=False):
         """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
 
         r_mat = self.goniometer.r_mat(angles)
         ub_mat = self.sample.ub_matrix
-        conv_mat = r_mat @ ub_mat * 2 * np.pi
+        conv_mat = 2 * np.pi * r_mat @ ub_mat
         q_lab = conv_mat @ hkl
         q = np.linalg.norm(q_lab)
         rez_hkle = self.cooper_nathans(ei, ef, q, R0)
 
         ki = np.sqrt(ei / ksq2eng)
         kf = np.sqrt(ef / ksq2eng)
-        phi = get_angle(ki, q, kf) * self.goniometer.sense  # + np.pi / 2
+
+        # opposite sign of s2
+        phi = get_angle(ki, q, kf) * np.sign(angles[0]) * (-1)
+        # phi = np.deg2rad(0)
 
         conv_mat_4d = np.eye(4)
         # conv_mat_4d[0:3, 0:3] = rot_y(phi * rad2deg) @ rot_x(90) @ conv_mat
@@ -73,7 +76,7 @@ class CN(TAS):
         )
 
         rez_hkle.mat = conv_mat_4d.T @ rez_hkle.mat @ conv_mat_4d
-        self.frame = "HKLE"
+        # self.frame = "HKLE"
         return rez_hkle
 
     def cooper_nathans(self, ei, ef, q, R0=False):
@@ -182,6 +185,18 @@ class CN(TAS):
 
         mat_reso = la.inv(mat_cov) * sig2fwhm**2
 
+        # mat_reso = (
+        #     np.array(
+        #         [
+        #             [1, 0, 0, 0],
+        #             [0, 1, 0, 0],
+        #             [0, 0, 1, 0],
+        #             [0, 0, 0, 1],
+        #         ]
+        #     )
+        #     * sig2fwhm**2
+        # )
+
         # TODO normalization factor
         if R0:  # calculate
             r0 = 1
@@ -201,25 +216,24 @@ if __name__ == "__main__":
 
     print(takin_instru.analyzer.type)
     print(takin_instru.sample.a)
+    print(takin_instru.monochromator.mosaic)
 
-    # ki = kf = 1.4
     # rez = takin_instru.cooper_nathans(
-    #     ei=1.4**2 * 2.072124855,
-    #     ef=1.4**2 * 2.072124855,
+    #     ei=13.5,
+    #     ef=13.5,
     #     q=4 * np.pi / takin_instru.sample.c,
     #     R0=False,
     # )
 
     rez = takin_instru.cooper_nathans_hkle(
-        ei=1.4**2 * 2.072124855,
-        ef=1.4**2 * 2.072124855,
+        ei=13.5,
+        ef=13.5,
         hkl=(0, 0, 2),
-        angles=(-51.530388, -45.220125, -0.000500, -2.501000),
         R0=False,
     )
 
     print(rez.STATUS)
-    print(rez.mat)
+    print(np.round(rez.mat, 3))
 
     # describe and plot ellipses
     ellipses = rez.calc_ellipses()

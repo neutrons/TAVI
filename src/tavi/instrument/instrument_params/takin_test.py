@@ -23,7 +23,7 @@ monochromator = {
     "d_spacing": mono_ana_xtal["PG002"],
     "mosaic": 45,  # horizontal mosaic
     "mosaic_v": 45,  # vertical mosaic, if anisotropic
-    "sense": -1,
+    "sense": +1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
     "width": 12.0,
@@ -48,7 +48,7 @@ monitor = {
 }
 
 goniometer = {
-    "sense": +1,
+    "sense": -1,
     "type": "TAS",  # "TAS" or "4C"
 }
 
@@ -57,7 +57,7 @@ analyzer = {
     "d_spacing": mono_ana_xtal["Pg002"],
     "mosaic": 45,  # horizontal mosaic
     "mosaic_v": 45,  # vertical mosaic, if anisotropic
-    "sense": -1,
+    "sense": +1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
     "width": 12.0,

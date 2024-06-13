@@ -41,7 +41,9 @@ def eng2k(en):
 
 
 def get_angle(v1, v2, v3):
-    """return angle between v1 and v2 ni radian"""
+    """return angle between v1 and v2 ni radian
+    Note:
+        return value in [0,pi]"""
     return np.arccos((v1**2 + v2**2 - v3**2) / (2 * v1 * v2))
 
 
