@@ -18,13 +18,15 @@ class Xtal(Sample):
     def __init__(self, lattice_params):
         super().__init__(lattice_params)
         self.type = "xtal"
+
+        self.ub_peaks = None
+        self.ub_angles = None
         self.ub_matrix = None
+        self.inv_ub_matrix = None
+        self.plane_normal = None
+        self.in_plane_ref = None
 
         self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
-
-    def set_UB(self, u=[1, 0, 0], v=[0, 0, 1]):
-        self.u = u
-        self.v = v
 
 
 if __name__ == "__main__":

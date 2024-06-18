@@ -80,8 +80,8 @@ class TAS(object):
 
         b_mat = self.sample.b_mat()
         peak1, peak2 = peaks
-        q_hkl1 = b_mat @ peak1
-        q_hkl2 = b_mat @ peak2
+        q_hkl1 = b_mat @ peak1 * 2 * np.pi
+        q_hkl2 = b_mat @ peak2 * 2 * np.pi
         q_hkl3 = np.cross(q_hkl1, q_hkl2)
         q_hkl_2p = np.cross(q_hkl3, q_hkl1)
 
@@ -102,31 +102,40 @@ class TAS(object):
         q_lab2 = TAS.q_lab(two_theta2, ki=ki, kf=kf)
 
         q_sample1 = self.goniometer.r_mat_inv(angles1) @ q_lab1
-        q_sample2 = self.goniometer.r_mat_inv(angles2) @ q_lab2
-        q_sample3 = np.cross(q_sample1, q_sample2)
-        q_sample2p = np.cross(q_sample3, q_sample1)
+        q_sample2p = self.goniometer.r_mat_inv(angles2) @ q_lab2
+        q_sample3 = np.cross(q_sample1, q_sample2p)
+        q_sample2 = np.cross(q_sample3, q_sample1)
+
+        in_plane_ref = q_sample1 / np.linalg.norm(q_sample1)
+        plane_normal = q_sample3 / np.linalg.norm(q_sample3)
+        if plane_normal[1] < 0:  # always along +y
+            plane_normal = -plane_normal
 
         q_sample_mat = np.array(
             [
-                q_sample1 / np.linalg.norm(q_sample1),
-                q_sample2p / np.linalg.norm(q_sample2p),
-                q_sample3 / np.linalg.norm(q_sample3),
+                in_plane_ref,
+                q_sample2 / np.linalg.norm(q_sample2),
+                plane_normal,
             ]
         ).T
 
         u_mat = q_sample_mat @ np.linalg.inv(q_hkl_mat)
-        return u_mat
 
-    # TODO check goniometer order, sign convention,
+        return u_mat, in_plane_ref, plane_normal
+
     def find_ub(self, peaks, angles, ei=13.5, ef=None):
         """calculate UB matrix from peaks and motor positions
 
         Args:
             peaks (list)
             angles (list)
-            eng (float): incident neutron energy, in meV
+            ei (float): incident neutron energy, in meV
+            ef (float): final neutron energy, in meV
 
         """
+
+        self.sample.ub_peaks = peaks
+        self.sample.ub_angles = angles
 
         ki = np.sqrt(ei / ksq2eng)
         if ef is None:
@@ -139,8 +148,15 @@ class TAS(object):
 
         if len(peaks) == 2:
             b_mat = self.sample.b_mat()
-            u_mat = self._find_u_from_2peaks(peaks, angles, ki, kf)
+            (
+                u_mat,
+                in_plane_ref,
+                plane_normal,
+            ) = self._find_u_from_2peaks(peaks, angles, ki, kf)
             ub_matrix = u_mat @ b_mat
+
+            self.sample.in_plane_ref = in_plane_ref
+            self.sample.plane_normal = plane_normal
 
         elif len(peaks) == 3:  # find_ub_from_3peaks
             pass
@@ -149,12 +165,9 @@ class TAS(object):
         else:
             print("I don't even know what you're doing.")
 
-        self.sample.ub_peaks = peaks
-        self.sample.ub_angles = angles
         self.sample.ub_matrix = ub_matrix
         self.sample.inv_ub_matrix = np.linalg.inv(ub_matrix)
         # print(np.round(ub_matrix, 6))
-        return ub_matrix
 
     def find_angles(self, peak, ei=13.5, ef=None):
         """calculate motor positions for a given peak if UB matrix has been determined
@@ -183,12 +196,27 @@ class TAS(object):
 
         q = self.sample.ub_matrix @ hkl
         t1 = q / np.linalg.norm(q)
-        t2p = np.array([t1[2], 0, -t1[0]])
-        t3 = np.cross(t1, t2p)
-        t2 = np.cross(t3, t1)
 
-        # t2 = [-0.332928, 0.014534, -0.942840]
-        # t3 = [-0.043637, 0.999047, 0.000009]
+        eps = 1e-8  # zero
+        plane_normal = self.sample.plane_normal
+        in_plane_ref = self.sample.in_plane_ref
+        # Minimal tilts
+        if np.dot(t1, plane_normal) < eps:  # t1 in plane
+            t3 = plane_normal
+            t2 = np.cross(t3, t1)
+        else:  # t1 not in plane, need to change tilts
+            if np.linalg.norm(np.cross(plane_normal, t1)) < eps:
+                # oops, t1 along plane_normal
+                t2 = in_plane_ref
+                t3 = np.cross(t1, t2)
+            else:
+                t2p = np.cross(plane_normal, t1)
+                t3 = np.cross(t1, t2p)
+                t2 = np.cross(t3, t1)
+
+        # t2p = np.array([t1[2], 0, -t1[0]])
+        # t3 = np.cross(t1, t2p)
+        # t2 = np.cross(t3, t1)
 
         t_mat = np.array(
             [t1, t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)],
@@ -197,8 +225,8 @@ class TAS(object):
         t_mat_inv = np.linalg.inv(t_mat)
 
         q_lab1 = TAS.q_lab(two_theta * rad2deg, ki, kf) / q_norm
-        q_lab2 = [q_lab1[2], 0, -q_lab1[0]]
-        q_lab3 = [0, 1, 0]
+        q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
+        q_lab3 = np.array([0, 1, 0])
 
         q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
         r_mat = q_lab_mat @ t_mat_inv
@@ -229,7 +257,7 @@ if __name__ == "__main__":
     ]
 
     takin_instru.find_ub(peaks=peak_list, angles=angles_list, ei=13.500172, ef=13.505137)
-    takin_instru.find_angles(peak=(0, 0, 2), ei=13.50172, ef=13.505137)
+    angles = takin_instru.find_angles(peak=(0, 0, 1), ei=13.50172, ef=13.505137)
 
     # describe and plot ellipses
     # ellipses = reso.calc_ellipses(res["reso"], verbose)

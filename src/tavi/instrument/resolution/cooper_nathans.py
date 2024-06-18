@@ -48,6 +48,7 @@ class CN(TAS):
     def cooper_nathans_hkle(self, ei, ef, hkl, R0=False):
         """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
 
+        angles = self.find_angles(hkl, ei, ef)
         r_mat = self.goniometer.r_mat(angles)
         ub_mat = self.sample.ub_matrix
         conv_mat = 2 * np.pi * r_mat @ ub_mat
@@ -224,6 +225,17 @@ if __name__ == "__main__":
     #     q=4 * np.pi / takin_instru.sample.c,
     #     R0=False,
     # )
+
+    peak_list = [
+        (0, 0, 2),
+        (0, 2, 0),
+    ]
+    angles_list = [
+        (-51.530388, -45.220125, -0.000500, -2.501000),
+        (-105.358735, 17.790125, -0.000500, -2.501000),
+    ]
+
+    takin_instru.find_ub(peaks=peak_list, angles=angles_list, ei=13.500172, ef=13.505137)
 
     rez = takin_instru.cooper_nathans_hkle(
         ei=13.5,
