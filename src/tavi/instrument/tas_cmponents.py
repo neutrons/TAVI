@@ -204,7 +204,7 @@ class Goniometer(object):
         "rotation matrix"
         # TODO
         if self.type == "TAS":  # Y-mZ-X for HB1A
-            _, omega, sgl, sgu = angles  # s2, s1, sgl, sgu
+            omega, sgl, sgu = angles  # s2, s1, sgl, sgu
             r_mat = rot_y(omega) @ rot_z(-sgl) @ rot_x(sgu)
 
         elif self.type == "4C":
@@ -215,7 +215,8 @@ class Goniometer(object):
 
     def r_mat_inv(self, angles):
         """inverse of rotation matrix"""
-        return np.linalg.inv(self.r_mat(angles))
+        # return np.linalg.inv(self.r_mat(angles))
+        return self.r_mat(angles).T
 
     def angles_from_r_mat(self, r_mat):
         """Calculate goniometer angles from the R matrix"""

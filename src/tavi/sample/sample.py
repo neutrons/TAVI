@@ -22,6 +22,13 @@ class Sample(object):
         a_star_vec, b_star_vec, c_star_vec      reciprocal lattice vector
         i_star, j_star, k_star  bases for the reciprocal space lattice vectors
 
+        ub_matrix
+        inv_ub_matrix
+        in_plane_ref
+        plane_normal
+        u
+        v
+
 
     Methods:
         real_vec_cart
