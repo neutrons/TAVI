@@ -16,7 +16,8 @@ class CN(TAS):
 
 
     Methods:
-        cooper_nathans
+        cooper_nathans: resolution in Q-local frame
+        cooper_nathans_hkle: resolution in (H,K,L,E) frame
 
     """
 
@@ -49,7 +50,7 @@ class CN(TAS):
         """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
 
         angles = self.find_angles(hkl, ei, ef)
-        r_mat = self.goniometer.r_mat(angles)
+        r_mat = self.goniometer.r_mat(angles[1:])
         ub_mat = self.sample.ub_matrix
         conv_mat = 2 * np.pi * r_mat @ ub_mat
         q_lab = conv_mat @ hkl
@@ -77,7 +78,7 @@ class CN(TAS):
         )
 
         rez_hkle.mat = conv_mat_4d.T @ rez_hkle.mat @ conv_mat_4d
-        # self.frame = "HKLE"
+        self.frame = "HKLE"
         return rez_hkle
 
     def cooper_nathans(self, ei, ef, q, R0=False):
@@ -185,18 +186,6 @@ class CN(TAS):
         mat_cov[2, 2] += q**2 * self.sample.mosaic_v**2
 
         mat_reso = la.inv(mat_cov) * sig2fwhm**2
-
-        # mat_reso = (
-        #     np.array(
-        #         [
-        #             [1, 0, 0, 0],
-        #             [0, 1, 0, 0],
-        #             [0, 0, 1, 0],
-        #             [0, 0, 0, 1],
-        #         ]
-        #     )
-        #     * sig2fwhm**2
-        # )
 
         # TODO normalization factor
         if R0:  # calculate

@@ -1,4 +1,4 @@
-from tavi.tavi_data import TAVI_Data
+from tavi.tavi_data.tavi_data import TAVI_Data
 
 
 # def test_load_tavi_data_from_disk():
