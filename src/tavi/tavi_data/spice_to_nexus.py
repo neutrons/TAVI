@@ -85,7 +85,7 @@ def read_spice_ub(ub_file):
 
 
 def spicelogs_to_nexus(nxentry):
-    """Format info in SPICElogs into Nexus format"""
+    """Format info from SPICElogs into Nexus format"""
     spice_logs = nxentry["SPICElogs"]
 
     # Create the GROUPS
@@ -317,6 +317,7 @@ def spicelogs_to_nexus(nxentry):
             nxslit.create_dataset(name="bat", data=spice_logs["bat"])
 
     # --------------------------- sample ---------------------------
+
     nxentry["sample"].create_dataset(name="name", data=spice_logs.attrs["samplename"], maxshape=None)
     nxentry["sample/name"].attrs["type"] = "NX_CHAR"
     nxentry["sample/name"].attrs["EX_required"] = "true"
@@ -395,33 +396,45 @@ def spicelogs_to_nexus(nxentry):
     # nxentry["sample/polar_angle"].attrs["EX_required"] = "true"
     # nxentry["sample/polar_angle"].attrs["units"] = "NX_ANGLE"
 
+    # --------------------------- monitor ---------------------------
     # Valid enumeration values for root['/entry/monitor']['mode'] are:
     # 	 monitor
     # 	 time
     #    mcu
 
-    # TODO
+    if spice_logs.attrs["preset_type"] == "normal":
 
-    nxentry["monitor"].create_dataset(name="mode", data=spice_logs.attrs["preset_channel"], maxshape=None)
-    nxentry["monitor/mode"].attrs["type"] = "NX_CHAR"
-    nxentry["monitor/mode"].attrs["EX_required"] = "true"
+        preset_channel = spice_logs.attrs["preset_channel"]
 
-    nxentry["monitor"].create_dataset(name="preset", data=1.0, maxshape=None)
-    nxentry["monitor/preset"].attrs["type"] = "NX_FLOAT"
-    nxentry["monitor/preset"].attrs["EX_required"] = "true"
+        nxentry["monitor"].create_dataset(name="mode", data=preset_channel, maxshape=None)
+        nxentry["monitor/mode"].attrs["type"] = "NX_CHAR"
+        nxentry["monitor/mode"].attrs["EX_required"] = "true"
 
-    nxentry["monitor"].create_dataset(name="data", data=spice_logs["monitor"], maxshape=None)
-    nxentry["monitor/data"].attrs["type"] = "NX_FLOAT"
-    nxentry["monitor/data"].attrs["EX_required"] = "true"
-    nxentry["monitor/data"].attrs["units"] = "NX_ANY"
+        nxentry["monitor"].create_dataset(name="preset", data=spice_logs.attrs["preset_value"], maxshape=None)
+        nxentry["monitor/preset"].attrs["type"] = "NX_FLOAT"
+        nxentry["monitor/preset"].attrs["EX_required"] = "true"
 
-    # # Create the LINKS
-    # nxentry["data/ei"] = h5py.SoftLink("/entry/instrument/monochromator/ei")
-    # nxentry["data/ei/"].attrs["target"] = "/entry/instrument/monochromator/ei"
+        nxentry["monitor"].create_dataset(name="data", data=spice_logs[preset_channel], maxshape=None)
+        nxentry["monitor/data"].attrs["type"] = "NX_FLOAT"
+        nxentry["monitor/data"].attrs["EX_required"] = "true"
+        nxentry["monitor/data"].attrs["units"] = "NX_ANY"
 
-    # # Create the LINKS
-    # nxentry["data/ef"] = h5py.SoftLink("/entry/title")
-    # nxentry["data/ef/"].attrs["target"] = "/entry/instrument/analyzer/ef"
+    # TODO polarized exp at HB1
+    elif spice_logs.attrs["preset_type"] == "countfile":
+        print("Polarized data, not yet supported.")
+
+    else:
+        print("Unrecogonized preset type. ")
+
+    # --------------------------- links ---------------------------
+
+    # Create the LINKS
+    nxentry["data/ei"] = h5py.SoftLink(nxentry.name + "/instrument/monochromator/ei")
+    nxentry["data/ei/"].attrs["target"] = nxentry.name + "/instrument/monochromator/ei"
+
+    # Create the LINKS
+    nxentry["data/ef"] = h5py.SoftLink(nxentry.name + "/instrument/analyser/ef")
+    nxentry["data/ef/"].attrs["target"] = nxentry.name + "/instrument/analyser/ef"
 
     # # Create the LINKS
     # nxentry["data/en"] = h5py.SoftLink("/entry/sample/en")
@@ -439,9 +452,9 @@ def spicelogs_to_nexus(nxentry):
     # nxentry["data/ql"] = h5py.SoftLink("/entry/sample/ql")
     # nxentry["data/ql/"].attrs["target"] = "/entry/sample/ql"
 
-    # # Create the LINKS
-    # nxentry["data/data"] = h5py.SoftLink("/entry/instrument/detector/data")
-    # nxentry["data/data/"].attrs["target"] = "/entry/instrument/detector/data"
+    # Create the LINKS
+    nxentry["data/data"] = h5py.SoftLink(nxentry.name + "/instrument/detector/data")
+    nxentry["data/data/"].attrs["target"] = nxentry.name + "/instrument/detector/data"
 
     # # Create the DOC strings
     # nxentry["definition"].attrs["EX_doc"] = "Official NeXus NXDL schema to which this file conforms "
@@ -455,7 +468,7 @@ def spicelogs_to_nexus(nxentry):
     #     "EX_doc"
     # ] = "One of the ei,ef,qh,qk,ql,en should get a primary=1 attribute to denote the main scan axis "
 
-    # # Create the ATTRIBUTES
+    # Create the ATTRIBUTES
     # root["/"].attrs["default"] = "entry"
     # root["/entry"].attrs["default"] = "data"
     # nxentry["data"].attrs["signal"] = "data"
@@ -466,51 +479,12 @@ def spicelogs_to_nexus(nxentry):
     # root.attrs["HDF5_Version"] = h5py.version.hdf5_version
 
     # --------------------------------------------------------------------------------------
-    # # /entry/monitor
-    # nxmonitor = nxentry.create_group("monitor")
-    # nxmonitor.attrs["NX_class"] = "NXmonitor"
-    # if headers["preset_type"] == "normal":
-    #     nxmonitor.attrs["mode"] = headers["preset_channel"]
-    #     nxmonitor.attrs["preset"] = float(headers["preset_value"])
-    #     # all three recorded regardless of preset channel
-    #     nxmonitor.attrs["time"] = spice_data[:, col_headers.index("time")]
-    #     nxmonitor.attrs["monitor"] = spice_data[:, col_headers.index("monitor")]
-    #     nxmonitor.attrs["mcu"] = spice_data[:, col_headers.index("mcu")]
-
-    # elif headers["preset_type"] == "countfile":
-    #     # TODO HB1 polarized experiment
-    #     pass
-    # else:  # unknown
-    #     pass
 
     # # /entry/sample
     # nxsample = nxentry.create_group("sample")
     # nxsample.attrs["name"] = headers["samplename"]
     # nxsample.attrs["type"] = headers["sampletype"]
     # nxsample.attrs["mosiac"] = headers["samplemosaic"]
-
-    # lcs = headers["latticeconstants"]
-    # nxsample.attrs["unit_cell"] = np.array([float(lc) for lc in lcs.split(",")])
-
-    # ub = headers["ubmatrix"]
-    # nxsample.attrs["ub_matrix"] = np.array([float(element) for element in ub.split(",")])
-    # pn = headers["plane_normal"]
-    # nxsample.attrs["plane_normal"] = np.array([float(element) for element in pn.split(",")])
-    # nxsample.attrs["ub_conf_file"] = headers["ubconf"]
-    # nxsample.attrs["ub_mode"] = int(headers["mode"])
-    # # TODO more UB info in the UBConf files
-
-    # nxsample.attrs["s1"] = spice_data[:, col_headers.index("s1")]
-    # nxsample.attrs["s2"] = spice_data[:, col_headers.index("s2")]
-    # nxsample.attrs["sgl"] = spice_data[:, col_headers.index("sgl")]
-    # nxsample.attrs["sgu"] = spice_data[:, col_headers.index("sgu")]
-    # nxsample.attrs["stl"] = spice_data[:, col_headers.index("stl")]
-    # nxsample.attrs["stu"] = spice_data[:, col_headers.index("stu")]
-
-    # nxsample.attrs["qh"] = spice_data[:, col_headers.index("h")]
-    # nxsample.attrs["qk"] = spice_data[:, col_headers.index("k")]
-    # nxsample.attrs["ql"] = spice_data[:, col_headers.index("l")]
-    # nxsample.attrs["en"] = spice_data[:, col_headers.index("e")]
 
     # # temperture
     # temperatue_str = [
@@ -527,12 +501,8 @@ def spicelogs_to_nexus(nxentry):
     #     if t in col_headers:
     #         nxsample.attrs[t] = spice_data[:, col_headers.index(t)]
 
-    # # TODO field
-    # # TODO pressure
-
-    # # /entry/data
-    # nxdata = nxentry.create_group("data")
-    # nxdata.attrs["NX_class"] = "NXdata"
+    # TODO field
+    # TODO pressure
 
 
 def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
