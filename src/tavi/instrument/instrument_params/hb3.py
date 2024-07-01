@@ -6,8 +6,8 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 15 / np.sqrt(12),
-    "height": 15 / np.sqrt(12),
+    "width": 15 / np.sqrt(12),  # in cm
+    "height": 15 / np.sqrt(12),  # in cm
 }
 
 
