@@ -1,5 +1,6 @@
 import numpy as np
 import h5py
+import os
 from pathlib import Path
 from datetime import datetime
 
@@ -383,6 +384,14 @@ def spicelogs_to_nexus(nxentry):
     nxentry["sample/stl"].attrs["type"] = "NX_FLOAT"
     nxentry["sample/stl"].attrs["units"] = "NX_ANGLE"
 
+    nxentry["sample"].create_dataset(name="s1", data=spice_logs["s1"], maxshape=None)
+    nxentry["sample/s1"].attrs["type"] = "NX_FLOAT"
+    nxentry["sample/s1"].attrs["units"] = "NX_ANGLE"
+
+    nxentry["sample"].create_dataset(name="s2", data=spice_logs["s2"], maxshape=None)
+    nxentry["sample/s2"].attrs["type"] = "NX_FLOAT"
+    nxentry["sample/s2"].attrs["units"] = "NX_ANGLE"
+
     # nxentry["sample"].create_dataset(name="sense", data=spice_logs.attrs["sense"][1], maxshape=None)
     # nxentry["sample"].attrs["type"] = "NX_CHAR"
 
@@ -426,35 +435,48 @@ def spicelogs_to_nexus(nxentry):
     else:
         print("Unrecogonized preset type. ")
 
-    # --------------------------- links ---------------------------
+    # --------------------------- data links ---------------------------
 
     # Create the LINKS
     nxentry["data/ei"] = h5py.SoftLink(nxentry.name + "/instrument/monochromator/ei")
     nxentry["data/ei/"].attrs["target"] = nxentry.name + "/instrument/monochromator/ei"
 
-    # Create the LINKS
+    # # Create the LINKS
     nxentry["data/ef"] = h5py.SoftLink(nxentry.name + "/instrument/analyser/ef")
     nxentry["data/ef/"].attrs["target"] = nxentry.name + "/instrument/analyser/ef"
-
-    # # Create the LINKS
-    # nxentry["data/en"] = h5py.SoftLink("/entry/sample/en")
-    # nxentry["data/en/"].attrs["target"] = "/entry/sample/en"
-
-    # # Create the LINKS
-    # nxentry["data/qh"] = h5py.SoftLink("/entry/sample/qh")
-    # nxentry["data/qh/"].attrs["target"] = "/entry/sample/qh"
-
-    # # Create the LINKS
-    # nxentry["data/qk"] = h5py.SoftLink("/entry/sample/qk")
-    # nxentry["data/qk/"].attrs["target"] = "/entry/sample/qk"
-
-    # # Create the LINKS
-    # nxentry["data/ql"] = h5py.SoftLink("/entry/sample/ql")
-    # nxentry["data/ql/"].attrs["target"] = "/entry/sample/ql"
 
     # Create the LINKS
     nxentry["data/data"] = h5py.SoftLink(nxentry.name + "/instrument/detector/data")
     nxentry["data/data/"].attrs["target"] = nxentry.name + "/instrument/detector/data"
+
+    # Create the LINKS
+    nxentry["data/s1"] = h5py.SoftLink(nxentry.name + "/sample/s1")
+    nxentry["data/s1/"].attrs["target"] = nxentry.name + "/sample/s1"
+    nxentry["data/s2"] = h5py.SoftLink(nxentry.name + "/sample/s2")
+    nxentry["data/s2/"].attrs["target"] = nxentry.name + "/sample/s2"
+    nxentry["data/sgl"] = h5py.SoftLink(nxentry.name + "/sample/sgl")
+    nxentry["data/sgl/"].attrs["target"] = nxentry.name + "/sample/sgl"
+    nxentry["data/sgu"] = h5py.SoftLink(nxentry.name + "/sample/sgu")
+    nxentry["data/sgu/"].attrs["target"] = nxentry.name + "/sample/sgu"
+    nxentry["data/en"] = h5py.SoftLink(nxentry.name + "/sample/en")
+    nxentry["data/en/"].attrs["target"] = nxentry.name + "/sample/en"
+    nxentry["data/qh"] = h5py.SoftLink(nxentry.name + "/sample/qh")
+    nxentry["data/qh/"].attrs["target"] = nxentry.name + "/sample/qh"
+    nxentry["data/qk"] = h5py.SoftLink(nxentry.name + "/sample/qk")
+    nxentry["data/qk/"].attrs["target"] = nxentry.name + "/sample/qk"
+    nxentry["data/ql"] = h5py.SoftLink(nxentry.name + "/sample/ql")
+    nxentry["data/ql/"].attrs["target"] = nxentry.name + "/sample/ql"
+
+    def_x = spice_logs.attrs["def_x"]
+    def_y = spice_logs.attrs["def_y"]
+
+    nexus_dict = {"h": "qh", "k": "qk", "l": "ql", "e": "en"}
+
+    nxentry["data"].attrs["signal"] = def_y
+    if def_x in nexus_dict:
+        nxentry["data"].attrs["axes"] = nexus_dict[def_x]
+    else:
+        nxentry["data"].attrs["axes"] = def_x
 
     # # Create the DOC strings
     # nxentry["definition"].attrs["EX_doc"] = "Official NeXus NXDL schema to which this file conforms "
@@ -473,10 +495,6 @@ def spicelogs_to_nexus(nxentry):
     # root["/entry"].attrs["default"] = "data"
     # nxentry["data"].attrs["signal"] = "data"
     # nxentry["data/data"].attrs["signal"] = "1"
-    # root.attrs["file_name"] = os.path.abspath("NXtas")
-    # root.attrs["file_time"] = datetime.datetime.now().isoformat()
-    # root.attrs["h5py_version"] = h5py.version.version
-    # root.attrs["HDF5_Version"] = h5py.version.hdf5_version
 
     # --------------------------------------------------------------------------------------
 
@@ -486,7 +504,7 @@ def spicelogs_to_nexus(nxentry):
     # nxsample.attrs["type"] = headers["sampletype"]
     # nxsample.attrs["mosiac"] = headers["samplemosaic"]
 
-    # # temperture
+    # TODO sample environment -- temperture, magnetic field, pressure
     # temperatue_str = [
     #     "coldtip",
     #     "tsample",
@@ -503,6 +521,16 @@ def spicelogs_to_nexus(nxentry):
 
     # TODO field
     # TODO pressure
+
+
+def extra_info_to_nexus(nxentry):
+    """Extra info missing in SPICE, for resolution calculation"""
+    #  --------------------------- source ---------------------------
+    # rectangular or circular
+    # divide by np.sqrt(12) if rectangular
+    #  Diameter D/4 if spherical
+    nxentry["instrument/source"].create_dataset(name="shape", data="rectangular", maxshape=None)
+    nxentry["instrument/source/shape"].attrs["type"] = "NX_CHAR"
 
 
 def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
@@ -537,12 +565,9 @@ def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
         instrument_str = scans[0].parts[-1].split("_")[0]
 
         # read in exp_info from the first scan and save as attibutes of the file
-        # _, _, headers, _ = read_spice(scans[0])
-        # ipts = headers["proposal"]
-
-        # root.attrs["ipts"] = ipts
-        # root.attrs["instrument"] = instrument_str
-        # root.attrs["exp"] = headers["experiment_number"]
+        _, _, headers, _ = read_spice(scans[0])
+        ipts = headers["proposal"]
+        exp_num = headers["experiment_number"]
 
         # root.attrs["name"] = headers["experiment"]
         # root.attrs["users"] = headers["users"]
@@ -599,11 +624,18 @@ def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
                     spice_logs.create_dataset(col_header, data=spice_data[:, idx])
 
             spicelogs_to_nexus(nxentry)
+            extra_info_to_nexus(nxentry)
+
+        # Create the ATTRIBUTES
+        root.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_exp{exp_num}")
+        root.attrs["file_time"] = datetime.now().isoformat()
+        root.attrs["h5py_version"] = h5py.version.version
+        root.attrs["HDF5_Version"] = h5py.version.hdf5_version
 
 
 if __name__ == "__main__":
-    # spice_folder = "./tests/test_data_folder/exp416/"
-    spice_folder = "./tests/test_data_folder/exp758/"
+    spice_folder = "./tests/test_data_folder/exp416/"
+    # spice_folder = "./tests/test_data_folder/exp758/"
     # h5_file_name = "./tests/test_data_folder/tavi_exp758.h5"
-    nexus_file_name = "./tests/test_data_folder/nexus_exp758.h5"
+    nexus_file_name = "./tests/test_data_folder/nexus_exp416.h5"
     convert_spice_to_nexus(spice_folder, nexus_file_name)
