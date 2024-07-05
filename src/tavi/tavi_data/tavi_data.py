@@ -177,8 +177,6 @@ class TAVI_Data(object):
         """
         pass
 
-    @staticmethod
-    def convert_spice_to_hdf5(path_to_spice_folder, path_to_hdf5):
         """Load data from spice folder.
 
         Args:

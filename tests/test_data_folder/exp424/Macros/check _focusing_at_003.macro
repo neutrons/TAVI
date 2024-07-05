@@ -1,0 +1,8 @@
+scantitle "slitscan on (0 0 3) focusing 1.4K e 0.2"
+scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.2
+
+scantitle "slitscan on (0 0 3) focusing 1.4K e 0.4"
+scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.4
+
+scantitle "slitscan on (0 0 3) focusing 1.4K e 0.6"
+scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.6
