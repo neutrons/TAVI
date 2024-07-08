@@ -284,7 +284,7 @@ def spicelogs_to_nexus(nxentry):
     nxentry["instrument/detector"].create_dataset(name="data", data=spice_logs["detector"], maxshape=None, dtype="int")
     nxentry["instrument/detector/data"].attrs["type"] = "NX_INT"
     nxentry["instrument/detector/data"].attrs["EX_required"] = "true"
-    # nxentry["instrument/detector/data"].attrs["signal"] = "1"
+    nxentry["instrument/detector/data"].attrs["units"] = "counts"
 
     # TODO HB1 polarized experiment
 
@@ -446,7 +446,7 @@ def spicelogs_to_nexus(nxentry):
         nxentry["monitor"].create_dataset(name="data", data=spice_logs[preset_channel], maxshape=None)
         nxentry["monitor/data"].attrs["type"] = "NX_FLOAT"
         nxentry["monitor/data"].attrs["EX_required"] = "true"
-        nxentry["monitor/data"].attrs["units"] = "NX_ANY"
+        nxentry["monitor/data"].attrs["units"] = "counts"
 
     # TODO polarized exp at HB1
     elif spice_logs.attrs["preset_type"] == "countfile":
@@ -483,8 +483,8 @@ def spicelogs_to_nexus(nxentry):
         path_y += "/data"
 
     # Create the LINKS
-    nxentry["data/data"] = h5py.SoftLink(nxentry.name + path_y)
-    nxentry["data/data/"].attrs["target"] = nxentry.name + path_y
+    nxentry["data/" + def_y] = h5py.SoftLink(nxentry.name + path_y)
+    nxentry["data/" + def_y + "/"].attrs["target"] = nxentry.name + path_y
     if def_y == "detector" or def_y == "monitor":
         nxentry["data"].attrs["signal"] = "data"
     else:
