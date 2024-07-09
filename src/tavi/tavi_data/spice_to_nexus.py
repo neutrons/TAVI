@@ -413,8 +413,8 @@ def spicelogs_to_nexus(nxentry):
     nxentry["sample"].create_dataset(name="type", data=spice_logs.attrs["sampletype"], maxshape=None)
     nxentry["sample/type"].attrs["type"] = "NX_CHAR"
 
-    # nxentry["sample"].create_dataset(name="sense", data=spice_logs.attrs["sense"][1], maxshape=None)
-    # nxentry["sample"].attrs["type"] = "NX_CHAR"
+    nxentry["sample"].create_dataset(name="sense", data=spice_logs.attrs["sense"][1], maxshape=None)
+    nxentry["sample"].attrs["type"] = "NX_CHAR"
 
     # nxentry["sample"].create_dataset(name="rotation_angle", data=1.0, maxshape=None)
     # nxentry["sample/rotation_angle"].attrs["type"] = "NX_FLOAT"
@@ -444,14 +444,25 @@ def spicelogs_to_nexus(nxentry):
         nxentry["monitor/preset"].attrs["type"] = "NX_FLOAT"
         nxentry["monitor/preset"].attrs["EX_required"] = "true"
 
+        nxentry["monitor"].create_dataset(name="time", data=spice_logs["time"], maxshape=None)
+        nxentry["monitor/time"].attrs["type"] = "NX_FLOAT"
+        nxentry["monitor/time"].attrs["units"] = "seconds"
+
+        nxentry["monitor"].create_dataset(name="monitor", data=spice_logs["monitor"], maxshape=None)
+        nxentry["monitor/monitor"].attrs["type"] = "NX_INT"
+        nxentry["monitor/monitor"].attrs["units"] = "counts"
+
+        nxentry["monitor"].create_dataset(name="mcu", data=spice_logs["mcu"], maxshape=None)
+        nxentry["monitor/mcu"].attrs["type"] = "NX_FLOAT"
+
         nxentry["monitor"].create_dataset(name="data", data=spice_logs[preset_channel], maxshape=None)
         nxentry["monitor/data"].attrs["type"] = "NX_FLOAT"
         nxentry["monitor/data"].attrs["EX_required"] = "true"
-        nxentry["monitor/data"].attrs["units"] = "counts"
+        # nxentry["monitor/data"].attrs["units"] = "counts"
 
     # TODO polarized exp at HB1
     elif spice_logs.attrs["preset_type"] == "countfile":
-        print("Polarized data, not yet supported.")
+        print("Polarization data, not yet supported.")
 
     else:
         print("Unrecogonized preset type. ")
@@ -532,6 +543,7 @@ def spicelogs_to_nexus(nxentry):
         "coldtip",
         "tsample",
         "temp_a",
+        "temp_2",
         "vti",
         "sample",
         "temp",

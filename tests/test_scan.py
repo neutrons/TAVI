@@ -1,19 +1,10 @@
 import numpy as np
-from tavi.scans import Scan
-
-
-def test_get_metadata():
-    s1 = Scan()
-    s1.meta_data = dict(IPTS=1234, exp=567, def_x="s1")
-    # print(s1)
-    # assert s1.metadata["def_x"] == "test"
-    md = s1.meta_data
-    assert md["def_x"] == "s1"
+from tavi.tavi_data.scans import Scan
 
 
 def test_plot_gen():
     s2 = Scan()
-    s2.meta_data = dict(def_x="s1", def_y="detector")
+    s2.scan_info = dict(def_x="s1", def_y="detector")
     s2.data = dict(s1=np.arange(0, 1, 0.2), detector=np.arange(100, 300, 40))
     x, y, xerr, yerr, _, _, _ = s2.curve_gen()
     print(x)
@@ -21,3 +12,7 @@ def test_plot_gen():
     # assert y == np.arange(100, 300, 40)
     # assert xerr == 0
     # assert yerr == 0
+
+
+if __name__ == "__main__":
+    test_plot_gen()

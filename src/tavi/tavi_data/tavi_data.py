@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 from pathlib import Path
 
-from tavi.scans import Scan
+from tavi.tavi_data.scans import Scan
 from tavi.tavi_data.spice_to_nexus import read_spice, convert_spice_to_nexus
 
 
@@ -38,7 +38,7 @@ class TAVI_Data(object):
             root.create_group("fits")
             root.create_group("plots")
 
-    def load_tavi_data_from_disk(self, path_to_hdf5, OVERWRITE=True):
+    def load_tavi_data_from_disk(self, path_to_hdf5):
         """Load hdf5 data from path_to_hdf5.
 
         Args:
@@ -57,7 +57,6 @@ class TAVI_Data(object):
 
                 if entry[0:4] == "scan":
                     s = Scan(data_file[entry])
-
                     self.data.update({entry: s})
 
     def load_spice_data_from_disk(self, path_to_spice_folder, OVERWRITE=True):
