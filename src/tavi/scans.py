@@ -12,22 +12,25 @@ class Scan(object):
 
     """
 
-    def __init__(self):
+    def __init__(self, nexus_entry=None):
         """Initialze an empty scan"""
         self.meta_data = {}
         self.data = {}
 
-    # def load_scan(self, scan_data):
-    #     """Unpack metadata and data from scan_data
+        if nexus_entry is not None:
+            self.load_scan(nexus_entry)
 
-    #     Args:
-    #         scan_data (str):
-    #     """
-    #     for attr in scan_data.attrs.keys():
-    #         self.metadata.update({attr: scan_data.attrs[attr]})
+    def load_scan(self, nexus_entry):
+        """Unpack metadata and data from scan_data
 
-    #     for dset in scan_data.keys():
-    #         self.data.update({dset: scan_data[dset][:]})
+        Args:
+            nexus_entry:
+        """
+        for attr in scan_data.attrs.keys():
+            self.metadata.update({attr: scan_data.attrs[attr]})
+
+        for dset in scan_data.keys():
+            self.data.update({dset: scan_data[dset][:]})
 
     def set_metadata(self, meta_data):
         """Set metadata"""

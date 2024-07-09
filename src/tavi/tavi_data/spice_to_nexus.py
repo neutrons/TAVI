@@ -3,7 +3,8 @@ import h5py
 import os
 from pathlib import Path
 from datetime import datetime
-from tavi.instrument.instrument_params.takin_test import instrument_params
+
+# from tavi.instrument.instrument_params.takin_test import instrument_params
 
 
 def read_spice(file_name):
@@ -208,11 +209,11 @@ def spicelogs_to_nexus(nxentry):
 
     nxmono.create_dataset(name="m1", data=spice_logs["m1"], maxshape=None)
     nxmono["m1"].attrs["type"] = "NX_FLOAT"
-    nxmono["m1"].attrs["units"] = "deg"
+    nxmono["m1"].attrs["units"] = "degrees"
 
     nxmono.create_dataset(name="m2", data=spice_logs["m2"], maxshape=None)
     nxmono["m2"].attrs["type"] = "NX_FLOAT"
-    nxmono["m2"].attrs["units"] = "deg"
+    nxmono["m2"].attrs["units"] = "degrees"
 
     if "mfocus" in spice_logs.keys():
         nxmono.create_dataset(name="mfocus", data=spice_logs["mfocus"], maxshape=None)
@@ -251,11 +252,11 @@ def spicelogs_to_nexus(nxentry):
 
     nxana.create_dataset(name="a1", data=spice_logs["a1"], maxshape=None)
     nxana["a1"].attrs["type"] = "NX_FLOAT"
-    nxana["a1"].attrs["units"] = "deg"
+    nxana["a1"].attrs["units"] = "degrees"
 
     nxana.create_dataset(name="a2", data=spice_logs["a2"], maxshape=None)
     nxana["a2"].attrs["type"] = "NX_FLOAT"
-    nxana["a2"].attrs["units"] = "deg"
+    nxana["a2"].attrs["units"] = "degrees"
 
     if "afocus" in spice_logs.keys():
         nxana.create_dataset(name="afocus", data=spice_logs["afocus"], maxshape=None)
@@ -366,12 +367,12 @@ def spicelogs_to_nexus(nxentry):
     nxentry["sample"].create_dataset(name="sgu", data=spice_logs["sgu"], maxshape=None)
     nxentry["sample/sgu"].attrs["type"] = "NX_FLOAT"
     nxentry["sample/sgu"].attrs["EX_required"] = "true"
-    nxentry["sample/sgu"].attrs["units"] = "deg"
+    nxentry["sample/sgu"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="sgl", data=spice_logs["sgl"], maxshape=None)
     nxentry["sample/sgl"].attrs["type"] = "NX_FLOAT"
     nxentry["sample/sgl"].attrs["EX_required"] = "true"
-    nxentry["sample/sgl"].attrs["units"] = "deg"
+    nxentry["sample/sgl"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="unit_cell", data=spice_logs.attrs["latticeconstants"], maxshape=None)
     nxentry["sample/unit_cell"].attrs["type"] = "NX_FLOAT"
@@ -395,19 +396,19 @@ def spicelogs_to_nexus(nxentry):
 
     nxentry["sample"].create_dataset(name="stu", data=spice_logs["stu"], maxshape=None)
     nxentry["sample/stu"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/stu"].attrs["units"] = "deg"
+    nxentry["sample/stu"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="stl", data=spice_logs["stl"], maxshape=None)
     nxentry["sample/stl"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/stl"].attrs["units"] = "deg"
+    nxentry["sample/stl"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="s1", data=spice_logs["s1"], maxshape=None)
     nxentry["sample/s1"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/s1"].attrs["units"] = "deg"
+    nxentry["sample/s1"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="s2", data=spice_logs["s2"], maxshape=None)
     nxentry["sample/s2"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/s2"].attrs["units"] = "deg"
+    nxentry["sample/s2"].attrs["units"] = "degrees"
 
     nxentry["sample"].create_dataset(name="type", data=spice_logs.attrs["sampletype"], maxshape=None)
     nxentry["sample/type"].attrs["type"] = "NX_CHAR"
@@ -485,10 +486,10 @@ def spicelogs_to_nexus(nxentry):
     # Create the LINKS
     nxentry["data/" + def_y] = h5py.SoftLink(nxentry.name + path_y)
     nxentry["data/" + def_y + "/"].attrs["target"] = nxentry.name + path_y
-    if def_y == "detector" or def_y == "monitor":
-        nxentry["data"].attrs["signal"] = "data"
-    else:
-        nxentry["data"].attrs["signal"] = def_y
+    # if def_y == "detector" or def_y == "monitor":
+    #     nxentry["data"].attrs["signal"] = "data"
+    # else:
+    nxentry["data"].attrs["signal"] = def_y
 
     # Create the LINKS
     nxentry["data/" + def_x] = h5py.SoftLink(nxentry.name + path_x)
@@ -611,12 +612,12 @@ def instrument_info_to_nexus(nxentry, instrument_params):
     # horizontal focusing
     nxentry["instrument/monochromator"].create_dataset(name="curvh", data=mono["curvh"], maxshape=None)
     nxentry["instrument/monochromator/curvh"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/curvh"].attrs["units"] = "deg"
+    nxentry["instrument/monochromator/curvh"].attrs["units"] = "degrees"
 
     # vertical focusing
     nxentry["instrument/monochromator"].create_dataset(name="curvv", data=mono["curvv"], maxshape=None)
     nxentry["instrument/monochromator/curvv"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/curvv"].attrs["units"] = "deg"
+    nxentry["instrument/monochromator/curvv"].attrs["units"] = "degrees"
 
     #  --------------------------- monitor ---------------------------
     nxentry["monitor"].create_dataset(name="width", data=monitor["width"], maxshape=None)
@@ -659,12 +660,12 @@ def instrument_info_to_nexus(nxentry, instrument_params):
     # horizontal focusing
     nxentry["instrument/analyser"].create_dataset(name="curvh", data=ana["curvh"], maxshape=None)
     nxentry["instrument/analyser/curvh"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/curvh"].attrs["units"] = "deg"
+    nxentry["instrument/analyser/curvh"].attrs["units"] = "degrees"
 
     # vertical focusing
     nxentry["instrument/analyser"].create_dataset(name="curvv", data=ana["curvv"], maxshape=None)
     nxentry["instrument/analyser/curvv"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/curvv"].attrs["units"] = "deg"
+    nxentry["instrument/analyser/curvv"].attrs["units"] = "degrees"
 
     #  --------------------------- detector ---------------------------
     # rectangular or circular
@@ -753,6 +754,8 @@ def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
         ub_files = sorted((p / "UBConf").glob("*.ini"))
         tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
         ub_entries = root.create_group("UBConf")
+        ub_entries.attrs["NX_class"] = "NXcollection"
+        ub_entries.attrs["X_required"] = "false"
 
         for ub_file in ub_files + tmp_ub_files:
             ub_entry_name = ub_file.parts[-1].split(".")[0]

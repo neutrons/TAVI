@@ -23,6 +23,6 @@ def test_load_nexus_to_new_tavi():
 
 if __name__ == "__main__":
 
-    # test_conversion(424)
+    test_conversion(424)
 
     test_load_nexus_to_new_tavi()

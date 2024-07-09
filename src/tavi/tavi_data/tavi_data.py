@@ -50,18 +50,15 @@ class TAVI_Data(object):
             # IPTS1234_HB3_exp567
             data_id = data_file.attrs["file_name"].split("/")[-1]
             grp = tavi_file["data"].create_group(data_id)
-            for entry in data_file:
-                data_file.copy(source=data_file[entry], dest=grp, expand_soft=True)
             data_entries = []
 
-            # for scan_id in f.keys():
-            #     # print(scan_id)
-            #     scan_data = f[scan_id]["SPICElogs"]
+            for entry in data_file:
+                data_file.copy(source=data_file[entry], dest=grp, expand_soft=True)
 
-            #     s = Scan(scan_data)
-            #     data_entries.append(s)
+                if entry[0:4] == "scan":
+                    s = Scan(data_file[entry])
 
-        self.data.update({data_id: data_entries})
+                    self.data.update({entry: s})
 
     def load_spice_data_from_disk(self, path_to_spice_folder, OVERWRITE=True):
         """Load hdf5 data from path_to_hdf5.
