@@ -88,14 +88,15 @@ class Scan(object):
             tuple: data entry
         """
 
-    def generate_curve(self, 
-                       x_str=None, 
-                       y_str=None,
-                       norm_channel=None, 
-                       norm_val=1,
-                       rebin_type = None, 
-                       rebin_step=0,):
-        
+    def generate_curve(
+        self,
+        x_str=None,
+        y_str=None,
+        norm_channel=None,
+        norm_val=1,
+        rebin_type=None,
+        rebin_step=0,
+    ):
         """Generate a curve from a single scan to plot, with the options to
             normalize the y-axis and rebin x-axis.
 
@@ -106,7 +107,7 @@ class Scan(object):
             norm_val (float):
             rebin_type (str): None, "tol", or "grid"
             rebin_size (float):
-           
+
         Returns:
             x:
             y:
@@ -124,16 +125,14 @@ class Scan(object):
         if y_str is None:
             y_str = self.scan_info["def_y"]
 
-
         x_raw = self.data[x_str]
         y_raw = self.data[y_str]
 
-        # xerr NOT used 
+        # xerr NOT used
         xerr = None
         yerr = None
 
-        
-        if rebin_type is None:
+        if rebin_type is None:  # no rebin
             x = x_raw
             y = y_raw
             # normalize y-axis without rebining along x-axis
@@ -141,32 +140,90 @@ class Scan(object):
                 norm = self.data[norm_channel] / norm_val
                 y = y / norm
                 if yerr is not None:
-                    yerr = yerr/norm
+                    yerr = yerr / norm
+            # errror bars for detector only
+            if "det" in y_str:
+                yerr = np.sqrt(y)
         else:
-            if rebin_step > 0: 
+            if rebin_step > 0:
                 match rebin_type:
-                    case "tol":
-                        x = x_raw
-                        y = y_raw
+                    case "tol":  # x weighted by normalization channel
+                        x_grid = np.arange(
+                            np.min(x_raw) + rebin_step / 2,
+                            np.max(x_raw) + rebin_step / 2,
+                            rebin_step,
+                        )
+                        x = np.zeros_like(x_grid)
+                        y = np.zeros_like(x_grid)
+                        cts = np.zeros_like(x_grid)
+                        wts = np.zeros_like(x_grid)
+
+                        if norm_channel is not None:  # rebin and renorm
+                            norm = self.data[norm_channel]
+                            for i, x0 in enumerate(x_raw):
+                                idx = np.nanargmax(x_grid + rebin_step / 2 >= x0)
+                                y[idx] += y_raw[i]
+                                x[idx] += x_raw[i] * norm[i]
+                                cts[idx] += norm[i]
+
+                            # errror bars for detector only
+                            if "det" in y_str:
+                                yerr = np.sqrt(y) / cts * norm_val
+                            y = y / cts * norm_val
+                            x = x / cts
+
+                        else:  # rebin, no renorm
+                            weight_channel = self.scan_info["preset_channel"]
+                            weight = self.data[weight_channel]
+                            for i, x0 in enumerate(x_raw):
+                                idx = np.nanargmax(x_grid + rebin_step / 2 >= x0)
+                                y[idx] += y_raw[i]
+                                x[idx] += x_raw[i] * weight[i]
+                                wts[idx] += weight[i]
+                                cts[idx] += 1
+
+                            # errror bars for detector only
+                            if "det" in y_str:
+                                yerr = np.sqrt(y) / cts
+                            y = y / cts
+                            x = x / wts
                     case "grid":
-                        x = np.arange(np.min(x_raw)+rebin_step/2, np.max(x_raw)+rebin_step/2,rebin_step)
-                        y = y_raw
+                        x = np.arange(
+                            np.min(x_raw) + rebin_step / 2,
+                            np.max(x_raw) + rebin_step / 2,
+                            rebin_step,
+                        )
+                        y = np.zeros_like(x)
+                        cts = np.zeros_like(x)
+
+                        if norm_channel is not None:  # rebin and renorm
+                            norm = self.data[norm_channel]
+                            for i, x0 in enumerate(x_raw):
+                                idx = np.nanargmax(x + rebin_step / 2 >= x0)
+                                y[idx] += y_raw[i]
+                                cts[idx] += norm[i]
+
+                            # errror bars for detector only
+                            if "det" in y_str:
+                                yerr = np.sqrt(y) / cts * norm_val
+                            y = y / cts * norm_val
+
+                        else:  # rebin, no renorm
+                            for i, x0 in enumerate(x_raw):
+                                idx = np.nanargmax(x + rebin_step / 2 >= x0)
+                                y[idx] += y_raw[i]
+                                cts[idx] += 1
+
+                            # errror bars for detector only
+                            if "det" in y_str:
+                                yerr = np.sqrt(y) / cts
+                            y = y / cts
+
                     case _:
-                        print("Unrecogonized rebin type. Needs to be \"tol\" or \"grid\".")
+                        print('Unrecogonized rebin type. Needs to be "tol" or "grid".')
             else:
                 print("Rebin step needs to be greater than zero.")
 
-        
-        
-
-        # errror bars for detector only
-        if "det" in y_str:
-            yerr = np.sqrt(y)
-
-        
-            
-
-       
         # generate labels and title
         if norm_channel is not None:
             if norm_channel == "time":
@@ -176,7 +233,8 @@ class Scan(object):
             else:
                 ylabel = y_str + f" / {norm_val} " + norm_channel
         else:
-            ylabel = y_str + f" / {self.scan_info["preset_value"]} " + self.scan_info["preset_channel"]
+            preset_val = self.scan_info["preset_value"]
+            ylabel = y_str + f" / {preset_val} " + self.scan_info["preset_channel"]
 
         xlabel = x_str
         label = "scan " + str(self.scan_info["scan"])
@@ -184,21 +242,17 @@ class Scan(object):
 
         return (x, y, xerr, yerr, xlabel, ylabel, title, label)
 
-    def plot_curve(self, x_str=None, y_str=None, 
-                   norm_channel=None, norm_val=1,
-                   rebin_type = None, rebin_step=0):
-        """Plot a 1D curve gnerated from a singal scan in a new window
-        
-    
-        """
+    def plot_curve(self, x_str=None, y_str=None, norm_channel=None, norm_val=1, rebin_type=None, rebin_step=0):
+        """Plot a 1D curve gnerated from a singal scan in a new window"""
 
-        x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(x_str, 
-                                                                         y_str,
-                                                                         norm_channel, 
-                                                                         norm_val,
-                                                                         rebin_type, 
-                                                                         rebin_step,
-                                                                         )
+        x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(
+            x_str,
+            y_str,
+            norm_channel,
+            norm_val,
+            rebin_type,
+            rebin_step,
+        )
 
         fig, ax = plt.subplots()
         ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="o")
@@ -208,5 +262,3 @@ class Scan(object):
         ax.grid(alpha=0.6)
 
         fig.show()
-
-       
