@@ -27,10 +27,7 @@ def test_plot_scan(tavi):
     print(len(tavi.data))
     s = tavi.data["scan0025"]
     s.plot_curve()
-    s.plot_curve(
-        norm_channel="time",
-        norm_val=60,
-    )
+    s.plot_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)
 
     plt.show()
 

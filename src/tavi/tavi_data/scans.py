@@ -54,7 +54,7 @@ class Scan(object):
         """
         return None
 
-    def get_sample_UB_info(self):
+    def get_sample_ub_info(self):
         """Return sample_UB_info in metadata.
 
         Returns:
@@ -88,9 +88,14 @@ class Scan(object):
             tuple: data entry
         """
 
-    def generate_curve(self, x_str=None, y_str=None,
-                       norm_channel=None, norm_val=1,
-                       rebin_type = None, rebin_size=0):
+    def generate_curve(self, 
+                       x_str=None, 
+                       y_str=None,
+                       norm_channel=None, 
+                       norm_val=1,
+                       rebin_type = None, 
+                       rebin_step=0,):
+        
         """Generate a curve from a single scan to plot, with the options to
             normalize the y-axis and rebin x-axis.
 
@@ -102,7 +107,6 @@ class Scan(object):
             rebin_type (str): None, "tol", or "grid"
             rebin_size (float):
            
-
         Returns:
             x:
             y:
@@ -124,25 +128,36 @@ class Scan(object):
         x_raw = self.data[x_str]
         y_raw = self.data[y_str]
 
-        xerr = None # NOT used 
+        # xerr NOT used 
+        xerr = None
         yerr = None
 
-        match rebin_type:
-            case None:
-                x = x_raw 
-                y = y_raw
-                # normalize y-axis without rebining along x-axis
-                if norm_channel is not None:
-                    norm = self.data[norm_channel] / norm_val
-                    y = y / norm
-                    if yerr is not None:
-                        yerr = yerr/norm
-            case "tol":
-                pass
-            case "grid":
-                pass
-            case _:
-                print("Unrecogonized rebin type. Needs to be \"tol\" or \"grid\".")
+        
+        if rebin_type is None:
+            x = x_raw
+            y = y_raw
+            # normalize y-axis without rebining along x-axis
+            if norm_channel is not None:
+                norm = self.data[norm_channel] / norm_val
+                y = y / norm
+                if yerr is not None:
+                    yerr = yerr/norm
+        else:
+            if rebin_step > 0: 
+                match rebin_type:
+                    case "tol":
+                        x = x_raw
+                        y = y_raw
+                    case "grid":
+                        x = np.arange(np.min(x_raw)+rebin_step/2, np.max(x_raw)+rebin_step/2,rebin_step)
+                        y = y_raw
+                    case _:
+                        print("Unrecogonized rebin type. Needs to be \"tol\" or \"grid\".")
+            else:
+                print("Rebin step needs to be greater than zero.")
+
+        
+        
 
         # errror bars for detector only
         if "det" in y_str:
@@ -171,15 +186,19 @@ class Scan(object):
 
     def plot_curve(self, x_str=None, y_str=None, 
                    norm_channel=None, norm_val=1,
-                   rebin_type = None, rebin_size=0):
+                   rebin_type = None, rebin_step=0):
         """Plot a 1D curve gnerated from a singal scan in a new window
         
     
         """
 
-        x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(x_str, y_str, \
-                                                                         norm_channel, norm_val,\
-                                                                         rebin_type, rebin_size)
+        x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(x_str, 
+                                                                         y_str,
+                                                                         norm_channel, 
+                                                                         norm_val,
+                                                                         rebin_type, 
+                                                                         rebin_step,
+                                                                         )
 
         fig, ax = plt.subplots()
         ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="o")
