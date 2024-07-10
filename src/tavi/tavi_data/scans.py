@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from tavi.tavi_data.nexus_reader import nexus_to_dict
 
 
@@ -87,35 +88,106 @@ class Scan(object):
             tuple: data entry
         """
 
-    def curve_gen(
-        self,
-        x_str=None,
-        y_str=None,
-        norm=None,
-    ):
-        """Generate a curve to plot
+    def generate_curve(self, x_str=None, y_str=None,
+                       norm_channel=None, norm_val=1,
+                       rebin_type = None, rebin_size=0):
+        """Generate a curve from a single scan to plot, with the options to
+            normalize the y-axis and rebin x-axis.
 
         Args:
             x_str (str): string of x axis
             y_str (str): string of x axis
-            norm (dict): None, "time", "monitor" or "mcu"
+            norm_channel (str):  None, "time", "monitor" or "mcu"
+            norm_val (float):
+            rebin_type (str): None, "tol", or "grid"
+            rebin_size (float):
+           
 
         Returns:
-            tuple: data entry"""
+            x:
+            y:
+            xerr: if rebin
+            yerr: if "detector"
+            xlabel:
+            ylabel:
+            title: "scan number: scan title"
+            label: run number as legend if overplotting multiple curves
+        """
 
-        if x_str == None:
+        if x_str is None:
             x_str = self.scan_info["def_x"]
 
-        if y_str == None:
+        if y_str is None:
             y_str = self.scan_info["def_y"]
 
-        x = self.data[x_str]
-        y = self.data[y_str]
-        xerr = None
-        yerr = np.sqrt(y)
+
+        x_raw = self.data[x_str]
+        y_raw = self.data[y_str]
+
+        xerr = None # NOT used 
+        yerr = None
+
+        match rebin_type:
+            case None:
+                x = x_raw 
+                y = y_raw
+                # normalize y-axis without rebining along x-axis
+                if norm_channel is not None:
+                    norm = self.data[norm_channel] / norm_val
+                    y = y / norm
+                    if yerr is not None:
+                        yerr = yerr/norm
+            case "tol":
+                pass
+            case "grid":
+                pass
+            case _:
+                print("Unrecogonized rebin type. Needs to be \"tol\" or \"grid\".")
+
+        # errror bars for detector only
+        if "det" in y_str:
+            yerr = np.sqrt(y)
+
+        
+            
+
+       
+        # generate labels and title
+        if norm_channel is not None:
+            if norm_channel == "time":
+                norm_channel = "seconds"
+            if norm_val == 1:
+                ylabel = y_str + "/ " + norm_channel
+            else:
+                ylabel = y_str + f" / {norm_val} " + norm_channel
+        else:
+            ylabel = y_str + f" / {self.scan_info["preset_value"]} " + self.scan_info["preset_channel"]
+
         xlabel = x_str
-        ylabel = y_str
         label = "scan " + str(self.scan_info["scan"])
         title = label + ": " + self.scan_info["scan_title"]
 
         return (x, y, xerr, yerr, xlabel, ylabel, title, label)
+
+    def plot_curve(self, x_str=None, y_str=None, 
+                   norm_channel=None, norm_val=1,
+                   rebin_type = None, rebin_size=0):
+        """Plot a 1D curve gnerated from a singal scan in a new window
+        
+    
+        """
+
+        x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(x_str, y_str, \
+                                                                         norm_channel, norm_val,\
+                                                                         rebin_type, rebin_size)
+
+        fig, ax = plt.subplots()
+        ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="o")
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.grid(alpha=0.6)
+
+        fig.show()
+
+       

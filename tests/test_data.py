@@ -26,14 +26,11 @@ def test_plot_scan(tavi):
 
     print(len(tavi.data))
     s = tavi.data["scan0025"]
-    x, y, xerr, yerr, xlabel, ylabel, title = s.curve_gen()
-
-    fig, ax = plt.subplots()
-    ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="o")
-    ax.set_title(title)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.grid(alpha=0.6)
+    s.plot_curve()
+    s.plot_curve(
+        norm_channel="time",
+        norm_val=60,
+    )
 
     plt.show()
 
