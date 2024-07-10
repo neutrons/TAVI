@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 from pathlib import Path
 
-from tavi.tavi_data.scans import Scan
+from tavi.tavi_data.scan import Scan
 from tavi.tavi_data.spice_to_nexus import read_spice, convert_spice_to_nexus
 
 

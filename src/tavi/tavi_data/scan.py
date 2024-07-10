@@ -13,10 +13,16 @@ class Scan(object):
         instrument_info (dict):
         data (dict): dictionary contains lists of scan data
 
+    Methods:
+        load_scan
+        generate_curve
+        plot_curve
+
     """
 
     def __init__(self, nexus_entry=None):
-        """Initialze an empty scan"""
+        """Initialze an empty scan if nexus entry not provided"""
+
         self.scan_info = None
         self.sample_ub_info = None
         self.instrument_info = None
@@ -26,7 +32,7 @@ class Scan(object):
             self.load_scan(nexus_entry)
 
     def load_scan(self, nexus_entry):
-        """Unpack metadata and data from scan_data
+        """Unpack metadata and data from nexus_entry
 
         Args:
             nexus_entry:

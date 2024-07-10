@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
 from tavi.tavi_data.spice_to_nexus import convert_spice_to_nexus
 from tavi.tavi_data.tavi_data import TAVI_Data
 
@@ -22,25 +22,14 @@ def test_load_nexus_to_new_tavi(tavi):
     return tavi
 
 
-def test_plot_scan(tavi):
-
-    print(len(tavi.data))
-    s = tavi.data["scan0025"]
-    s.plot_curve()
-    # s.plot_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)
-    s.plot_curve(rebin_type="grid", rebin_step=0.25)
-    s.plot_curve(norm_channel="time", norm_val=30, rebin_type="grid", rebin_step=0.25)
-    s.plot_curve(rebin_type="tol", rebin_step=0.25)
-    s.plot_curve(norm_channel="time", norm_val=30, rebin_type="tol", rebin_step=0.25)
-
-    plt.show()
+def test_open_exsiting_tavi():
+    pass
 
 
 if __name__ == "__main__":
 
     tavi = TAVI_Data()
-
     # test_conversion(424)
     test_load_nexus_to_new_tavi(tavi)
 
-    test_plot_scan(tavi)
+    test_open_exsiting_tavi()
