@@ -3,6 +3,7 @@ import h5py
 from pathlib import Path
 
 from tavi.tavi_data.scan import Scan
+from tavi.tavi_data.scan_group import ScanGroup
 from tavi.tavi_data.spice_to_nexus import read_spice, convert_spice_to_nexus
 
 
@@ -258,6 +259,31 @@ class TAVI_Data(object):
 
     def get_selected(self):
         return "scan0001"
+
+    def generate_scan_group(
+        self,
+        signals=None,
+        backgrounds=None,
+        signal_x=None,
+        signal_y=None,
+        signal_z=None,
+        background_x=None,
+        background_y=None,
+        background_z=None,
+    ):
+        """Generate a scan group."""
+        sg = ScanGroup(
+            signals,
+            backgrounds,
+            signal_x,
+            signal_y,
+            signal_z,
+            background_x,
+            background_y,
+            background_z,
+        )
+
+        return sg
 
 
 if __name__ == "__main__":

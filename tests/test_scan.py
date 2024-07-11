@@ -16,8 +16,17 @@ def test_plot_scan(tavi):
     plt.show()
 
 
-def test_scan_combo(tavi):
+def test_scan_group(tavi):
+
     print(len(tavi.data))
+    scan_list = [tavi.data[f"scan{i:04}"] for i in range(42, 49, 1)]
+
+    sg1 = tavi.generate_scan_group(signals=scan_list, signal_x="qh", signal_y="en", signal_z="detector")
+    sg1.plot_image()
+    sg2 = tavi.generate_scan_group(signals=scan_list, signal_y="qh", signal_x="en", signal_z="detector")
+    sg2.plot_image()
+
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -32,4 +41,4 @@ if __name__ == "__main__":
 
     # test_plot_scan(tavi)
 
-    test_scan_combo(tavi)
+    test_scan_group(tavi)
