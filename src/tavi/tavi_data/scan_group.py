@@ -20,8 +20,8 @@ class ScanGroup(object):
         plot_curve
         generate_waterfall
         plot_waterfall
-        generate_image
-        plot_image
+        generate_contour
+        plot_contour
     """
 
     def __init__(
@@ -44,33 +44,83 @@ class ScanGroup(object):
     def plot_curve(self):
         pass
 
-    def generate_waterfall(self, norm_channel=None, norm_val=1, shift=None):
-        pass
+    # TODO background subtraction
+    def generate_waterfall(
+        self,
+        rebin_type=None,
+        rebin_step=0,
+        norm_channel=None,
+        norm_val=1,
+    ):
+        curves = []
+        num_scans = np.size(self.signals)
+        signal_x, signal_y, _ = self.signal_axes
 
-    def plot_waterfall(self, norm_channel=None, norm_val=1, shift=None):
-        pass
+        if np.size(signal_x) == 1:
+            signal_x = [signal_x] * num_scans
+        xlabel = signal_x[0]
+        if np.size(signal_y) == 1:
+            signal_y = [signal_y] * num_scans
+        ylabel = signal_y[0]
+        if norm_channel is not None:
+            ylabel += f" / {norm_val} " + norm_channel
+
+        title = self.name
+
+        for i, signal in enumerate(self.signals):
+            x, y, _, yerr, _, _, _, label = signal.generate_curve(
+                x_str=signal_x[i],
+                y_str=signal_y[i],
+                norm_channel=norm_channel,
+                norm_val=norm_val,
+                rebin_type=rebin_type,
+                rebin_step=rebin_step,
+            )
+            curve = (x, y, yerr, label)
+            curves.append(curve)
+        waterfall = curves, xlabel, ylabel, title
+        return waterfall
+
+    def plot_waterfall(self, waterfall, shifts=None, ylim=None, xlim=None, fmt="o"):
+
+        curves, xlabel, ylabel, title = waterfall
+        if shifts is not None:
+            if np.size(shifts) == 1:
+                shifts = (shifts,) * len(curves)
+        else:
+            shifts = (0,) * len(curves)
+
+        fig, ax = plt.subplots()
+        shift = 0
+        for i, curve in enumerate(curves):
+            shift += shifts[i]
+            x, y, yerr, label = curve
+            ax.errorbar(x, y + shift, yerr=yerr, label=label, fmt=fmt)
+
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.legend()
+        if xlim is not None:
+            ax.set_xlim(left=xlim[0], right=xlim[1])
+        if ylim is not None:
+            ax.set_ylim(bottom=ylim[0], top=ylim[1])
+
+        fig.show()
 
     # TODO background subtraction
     # TODO non-orthogonal axes for constant E contours
 
     def generate_contour(
         self,
-        signal_axes=(None, None, None),
-        background_axes=(None, None, None),
         norm_channel=None,
         norm_val=1,
         rebin_steps=(None, None),
     ):
+        """Generate a 2D contour plot"""
 
         num_scans = np.size(self.signals)
 
-        signal_x, signal_y, signal_z = self.signal_axes
-        # overwrite axes if not None
-        for i in range(3):
-            if signal_axes[i] is not None:
-                self.signal_axes[i] = signal_axes[i]
-            if background_axes[i] is not None:
-                self.background_axes[i] = background_axes[i]
         signal_x, signal_y, signal_z = self.signal_axes
 
         if np.size(signal_x) == 1:
@@ -131,6 +181,7 @@ class ScanGroup(object):
         return (xv, yv, z, xlabel, ylabel, title)
 
     def plot_contour(self, contour_plot, cmap="turbo", vmax=100):
+        """Plot contour"""
 
         x, y, z, xlabel, ylabel, title = contour_plot
 
