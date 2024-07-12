@@ -261,27 +261,10 @@ class TAVI_Data(object):
         return "scan0001"
 
     def generate_scan_group(
-        self,
-        signals=None,
-        backgrounds=None,
-        signal_x=None,
-        signal_y=None,
-        signal_z=None,
-        background_x=None,
-        background_y=None,
-        background_z=None,
+        self, signals=None, backgrounds=None, signal_axes=(None, None, None), background_axes=(None, None, None)
     ):
         """Generate a scan group."""
-        sg = ScanGroup(
-            signals,
-            backgrounds,
-            signal_x,
-            signal_y,
-            signal_z,
-            background_x,
-            background_y,
-            background_z,
-        )
+        sg = ScanGroup(signals, backgrounds, signal_axes, background_axes)
 
         return sg
 

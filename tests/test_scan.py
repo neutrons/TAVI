@@ -19,12 +19,25 @@ def test_plot_scan(tavi):
 def test_scan_group(tavi):
 
     print(len(tavi.data))
-    scan_list = [tavi.data[f"scan{i:04}"] for i in range(42, 49, 1)]
+    scan_list = [tavi.data[f"scan{i:04}"] for i in range(42, 49, 1)] + [
+        tavi.data[f"scan{i:04}"] for i in range(70, 76, 1)
+    ]
 
-    sg1 = tavi.generate_scan_group(signals=scan_list, signal_x="qh", signal_y="en", signal_z="detector")
-    sg1.plot_image()
-    sg2 = tavi.generate_scan_group(signals=scan_list, signal_y="qh", signal_x="en", signal_z="detector")
-    sg2.plot_image()
+    sg = tavi.generate_scan_group(signals=scan_list)
+
+    contour1 = sg.generate_contour(signal_axes=("qh", "en", "detector"), rebin_steps=(0.025, 0.1))
+    sg.plot_contour(contour1, cmap="turbo", vmax=80)
+
+    contour2 = sg.generate_contour(signal_axes=("en", "qh", "detector"), rebin_steps=(0.1, 0.025))
+    sg.plot_contour(contour2, cmap="turbo", vmax=80)
+
+    contour3 = sg.generate_contour(
+        signal_axes=("qk", "ei", "detector"),
+        rebin_steps=(None, 0.1),
+        norm_channel="mcu",
+        norm_val=30,
+    )
+    sg.plot_contour(contour3, cmap="turbo", vmax=40)
 
     plt.show()
 
