@@ -48,10 +48,13 @@ def test_scan_group_waterfall(tavi):
         tavi.data[f"scan{i:04}"] for i in range(70, 76, 1)
     ]
 
-    sg = tavi.generate_scan_group(signals=scan_list, signal_axes=("en", "detector", "qh"))
+    # sg1 = tavi.generate_scan_group(signals=scan_list, signal_axes=("qh", "en", "detector"))
+    # wf1 = sg1.generate_contour(rebin_steps=(0.025, 0.1), norm_channel="mcu", norm_val=120)
+    # sg1.plot_waterfall(wf1, ylim=[0, 1.4e3], xlim=[0, 6.5], fmt="o", shifts=1e2)
 
-    wf1 = sg.generate_waterfall(norm_channel="mcu", norm_val=600)
-    sg.plot_waterfall(wf1, ylim=[0, 1.5e4], xlim=[0, 6], fmt="-o", shifts=1e3)
+    sg2 = tavi.generate_scan_group(signals=scan_list, signal_axes=("en", "qh", "detector"))
+    wf2 = sg2.generate_contour(rebin_steps=(0.1, 0.025), norm_channel="mcu", norm_val=120)
+    sg2.plot_waterfall(wf2, ylim=[0, 1.4e5], xlim=[-0.6, 0.2], fmt="-o", shifts=1e2)
 
     plt.show()
 
