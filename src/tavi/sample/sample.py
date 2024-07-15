@@ -187,7 +187,7 @@ class Sample(object):
             ]
         )
         b_mat = b_mat / 2 / np.pi
-        # b_mat = np.round(b_mat, 8)
+        b_mat = np.round(b_mat, 8)
         return b_mat
 
     def reciprocal_basis(self):

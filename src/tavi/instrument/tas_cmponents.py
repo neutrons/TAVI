@@ -194,7 +194,7 @@ class Goniometer(object):
     """Goniometer table, type = TAS of 4C"""
 
     def __init__(self, param_dict):
-        self.type = "TAS"
+        self.type = "Y-ZX"  # Y-mZ-X for Huber stage at HB1A and HB3
         self.sense = -1
 
         for key, val in param_dict.items():
@@ -202,18 +202,24 @@ class Goniometer(object):
 
     def r_mat(self, angles):
         "rotation matrix"
-        # TODO
-        if self.type == "TAS":  # Y-mZ-X for HB1A
-            omega, sgl, sgu = angles  # s2, s1, sgl, sgu
-            r_mat = rot_y(omega) @ rot_z(-sgl) @ rot_x(sgu)
 
-        elif self.type == "4C":
-            pass
-        else:
-            print("Unknow goniometer type. Needs to be TAS or 4C.")
+        omega, sgl, sgu = angles  # s2, s1, sgl, sgu
+        match self.type:
+
+            case "Y-ZX":
+                r_mat = rot_y(omega) @ rot_z(-1 * sgl) @ rot_x(sgu)
+            case "YZ-X":
+                r_mat = rot_y(omega) @ rot_z(sgl) @ rot_x(-1 * sgu)
+            case _:
+                r_mat = None
+                print("Unknow goniometer type. Curruntly support Y-ZX and YZ-X")
+
         return r_mat
 
-    def r_mat_inv(self, angles):
+    def r_mat_inv(
+        self,
+        angles,
+    ):
         """inverse of rotation matrix"""
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
@@ -221,20 +227,30 @@ class Goniometer(object):
     def angles_from_r_mat(self, r_mat):
         """Calculate goniometer angles from the R matrix"""
 
-        if self.type == "TAS":  # Y-mZ-X (s1, sgl, sgu) for HB1A
-            sgl = (-1) * np.arcsin(r_mat[1, 0]) * rad2deg
-            # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+        match self.type:
 
-            sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            case "Y-ZX":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3
 
-            omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-            # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                sgl = np.arcsin(r_mat[1, 0]) * rad2deg
+                # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
 
-            angles = (omega, sgl, sgu)
+                angles = (omega, -1 * sgl, sgu)
 
-        elif self.type == "4C":
-            pass
-        else:
-            print("Unknow goniometer type. Needs to be TAS or 4C.")
+            case "YZ-X":  # Y-Z-mX (s1, sgl, sgu) for CG4C
+
+                sgl = np.arcsin(r_mat[1, 0]) * rad2deg
+                # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+
+                angles = (omega, sgl, -1 * sgu)
+
+            case _:
+                angles = None
+                print("Unknow goniometer type.  Curruntly support Y-ZX and YZ-X.")
 
         return angles

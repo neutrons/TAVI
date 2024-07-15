@@ -1,6 +1,4 @@
 # from tavi.resolution.hb3 import config_params
-from tavi.instrument.instrument_params.takin_test import instrument_params
-from tavi.sample.sample_test import test_xtal
 from tavi.utilities import *
 from tavi.instrument.tas_cmponents import *
 
@@ -123,13 +121,14 @@ class TAS(object):
 
         u_mat = q_sample_mat @ np.linalg.inv(q_hkl_mat)
 
+        # define UP
         in_plane_ref = q_sample_mat[:, 0]
         if q_sample_mat[1, 2] < 0:
             plane_normal = -q_sample_mat[:, 2]
         else:
             plane_normal = q_sample_mat[:, 2]
 
-        return u_mat, in_plane_ref, plane_normal
+        return u_mat, np.round(in_plane_ref, 6), np.round(plane_normal, 6)
 
     def find_ub(self, peaks, angles, ei=13.5, ef=None):
         """calculate UB matrix from peaks and motor positions
@@ -261,33 +260,6 @@ class TAS(object):
         q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
         r_mat = q_lab_mat @ t_mat_inv
 
-        angles = np.round((two_theta * rad2deg,) + self.goniometer.angles_from_r_mat(r_mat), 5)
+        angles = np.round((two_theta * rad2deg,) + self.goniometer.angles_from_r_mat(r_mat), 8)
 
-        print(angles)
         return angles
-
-
-if __name__ == "__main__":
-
-    takin_instru = TAS()
-    takin_instru.load_instrument(instrument_params)
-    takin_instru.load_sample(test_xtal)
-
-    # print(takin_instru.analyzer.type)
-    # print(takin_instru.sample.a)
-
-    peak_list = [
-        (0, 0, 2),
-        (0, 2, 0),
-    ]
-    angles_list = [
-        (-51.530388, -45.220125, -0.000500, -2.501000),
-        (-105.358735, 17.790125, -0.000500, -2.501000),
-    ]
-
-    takin_instru.find_ub(peaks=peak_list, angles=angles_list, ei=13.500172, ef=13.505137)
-    angles = takin_instru.find_angles(peak=(0, 2, 2), ei=13.50172, ef=13.505137)
-
-    # describe and plot ellipses
-    # ellipses = reso.calc_ellipses(res["reso"], verbose)
-    # reso.plot_ellipses(ellipses, verbose)

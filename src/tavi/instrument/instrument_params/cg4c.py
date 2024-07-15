@@ -6,17 +6,17 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 15 / np.sqrt(12),  # in cm
+    "width": 7 / np.sqrt(12),  # in cm
     "height": 15 / np.sqrt(12),  # in cm
 }
 
 
 # guide before monochromator
-guide = {
-    "in_use": False,
-    "div_h": 0.0,
-    "div_v": 0.0,
-}
+# guide = {
+#     "in_use": False,
+#     "div_h": 0.0,
+#     "div_v": 0.0,
+# }
 
 monochromator = {
     "type": "PG002",
@@ -26,25 +26,27 @@ monochromator = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 7.62 / np.sqrt(12),
-    "height": 10.16 / np.sqrt(12),
-    "depth": 0.25 / np.sqrt(12),
+    "width": 7.0 / np.sqrt(12),  # in cm
+    "height": 15.0 / np.sqrt(12),  # in cm
+    "depth": 0.2 / np.sqrt(12),  # in cm
     # horizontal focusing
-    "curvh": 0.0,
+    "curvh": 0.0,  # in cm^-1
     # vertical focusing
-    "curvv": 0.0,
+    "curvv": 60.4,  # at Ei = 4 meV, in cm^-1
 }
 
 monitor = {
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 5 / np.sqrt(12),
-    "height": 12 / np.sqrt(12),
+    # "width": 5 / np.sqrt(12),
+    # "height": 12 / np.sqrt(12),
 }
 
 goniometer = {
     "sense": +1,
-    "type": "Y-ZX",  # "TAS" or "4C"
+    "type": "Y-ZX",
+    # CTAX's angle convention is actually YZ-X,
+    # but the UB calculation in SPICE is done using the convetion Y-ZX
 }
 
 analyzer = {
@@ -55,28 +57,28 @@ analyzer = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 7.62 / np.sqrt(12),
-    "height": 7 / np.sqrt(12),
+    "width": 20.0 / np.sqrt(12),
+    "height": 15.0 / np.sqrt(12),
     "depth": 0.2 / np.sqrt(12),
     # horizontal focusing
     "curvh": 0.0,
     # vertical focusing
-    "curvv": 0.0,
+    "curvv": 163.2,  # in cm^-1
 }
 detector = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 4 / np.sqrt(12),
-    "height": 12 / np.sqrt(12),
+    "width": 5 / np.sqrt(12),
+    "height": 10 / np.sqrt(12),
 }
 
 distances = {
-    "src_mono": 650.0 * cm2angstrom,
-    "mono_sample": 190.0 * cm2angstrom,
-    "sample_ana": 160.0 * cm2angstrom,
-    "ana_det": 60.0 * cm2angstrom,
-    "mono_monitor": 86.0 * cm2angstrom,
+    "src_mono": 530.0 * cm2angstrom,  # in cm
+    "mono_sample": 160.0 * cm2angstrom,
+    "sample_ana": 106.0 * cm2angstrom,
+    "ana_det": 50.0 * cm2angstrom,
+    # "mono_monitor": 86.0 * cm2angstrom,
 }
 
 collimators = {  # in units of mins of arc
@@ -84,16 +86,16 @@ collimators = {  # in units of mins of arc
     "h_pre_sample": 40 * min2rad,
     "h_post_sample": 40 * min2rad,
     "h_post_ana": 120 * min2rad,
-    "v_pre_mono": 150 * min2rad,
-    "v_pre_sample": 270 * min2rad,
-    "v_post_sample": 300 * min2rad,
+    "v_pre_mono": 600 * min2rad,
+    "v_pre_sample": 600 * min2rad,
+    "v_post_sample": 600 * min2rad,
     "v_post_ana": 600 * min2rad,
 }
 
 
-config_params = {
+cg4c_config_params = {
     "source": source,
-    "guide": guide,
+    # "guide": guide,
     "monochromator": monochromator,
     "goniometer": goniometer,
     "monitor": monitor,

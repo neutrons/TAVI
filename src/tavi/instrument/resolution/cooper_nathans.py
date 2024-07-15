@@ -4,7 +4,7 @@ from tavi.utilities import *
 from tavi.instrument.tas import TAS
 from tavi.instrument.resolution.reso_ellipses import Reso_Ellipsoid
 from tavi.instrument.instrument_params.takin_test import instrument_params
-from tavi.sample.sample_test import test_xtal
+from tests.test_data_folder.test_samples.sample_test import test_xtal
 
 
 class CN(TAS):
