@@ -1,0 +1,35 @@
+# scan = 1
+# date = 6/30/2021
+# time = 1:00:30 PM
+# proposal = 26411
+# experiment = Phonon Dispersion and Linewidths in Zr-doped UO2
+# experiment_number = 710
+# command = scanrel s1 4 -4 .4
+# builtin_command = scan s1 @(s1)+4 @(s1)+-4 0.400000
+# users = Matt Bryan, Hao Ma, Michael Manley
+# local_contact = Songxue Chi
+# scan_title = 
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-20-40-90
+# samplename = Zr-doped UO2
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.452900,5.452900,5.452900,90.000000,90.000000,90.000000
+# ubmatrix = -0.129675,-0.129675,0.000000,-0.000000,-0.000000,-0.183389,0.129675,-0.129675,0.000000
+# mode = 0
+# plane_normal = 0.000000,0.000000,1.000000
+# ubconf = UB30Jun2021_110609AM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 30.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e active_output e-stop_status flow_status  over_temp furnace_rate sample_temp furnace_sp     vacuum vacuum_status working_sp
+      1    24.2022     30.000      0.000      0.000      0.000    66.7975   -22.0860   -41.1659   120.1313     0.8294    -2.0000   -34.2897    35.6249     0.0003     0.0000    30.0000    20.0000    20.0000    30.0000    30.0000    20.0000    20.0000    30.0000     0.0000    -0.0100   159.4167   -41.1662     1.6295     0.9938     0.9938    -0.1574    14.7002    14.7000     0.0002     0.0000     0.0000     0.0000    41.4593     5.0000    42.2501    30.0000     0.0000     0.0000    30.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 1:00:51 PM  6/30/2021   scan stopped!!

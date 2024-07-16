@@ -309,30 +309,18 @@ def spicelogs_to_nexus(nxentry):
     #
     # --------------------------- slits ---------------------------
 
-    match spice_logs.attrs["instrument"]:
-        case "HB3":
-            nxslit.create_dataset(name="slita_bt", data=spice_logs["slita_bt"])
-            nxslit.create_dataset(name="slita_lf", data=spice_logs["slita_lf"])
-            nxslit.create_dataset(name="slita_rt", data=spice_logs["slita_rt"])
-            nxslit.create_dataset(name="slita_tp", data=spice_logs["slita_tp"])
-            nxslit.create_dataset(name="slitb_bt", data=spice_logs["slitb_bt"])
-            nxslit.create_dataset(name="slitb_lf", data=spice_logs["slitb_lf"])
-            nxslit.create_dataset(name="slitb_rt", data=spice_logs["slitb_rt"])
-            nxslit.create_dataset(name="slitb_tp", data=spice_logs["slitb_tp"])
-        case "CG4C":
-            nxslit.create_dataset(name="bbb", data=spice_logs["bbb"])
-            nxslit.create_dataset(name="bbl", data=spice_logs["bbl"])
-            nxslit.create_dataset(name="bbr", data=spice_logs["bbr"])
-            nxslit.create_dataset(name="bbt", data=spice_logs["bbt"])
-            nxslit.create_dataset(name="bab", data=spice_logs["bab"])
-            nxslit.create_dataset(name="bal", data=spice_logs["bal"])
-            nxslit.create_dataset(name="bar", data=spice_logs["bar"])
-            nxslit.create_dataset(name="bat", data=spice_logs["bat"])
-        case "HB1":
-            nxslit.create_dataset(name="slit_pre_bt", data=spice_logs["slit_pre_bt"])
-            nxslit.create_dataset(name="slit_pre_lf", data=spice_logs["slit_pre_lf"])
-            nxslit.create_dataset(name="slit_pre_rt", data=spice_logs["slit_pre_rt"])
-            nxslit.create_dataset(name="slit_pre_tp", data=spice_logs["slit_pre_tp"])
+    slits_str1 = ("bat", "bab", "bal", "bar", "bbt", "bbb", "bbl", "bbr")
+    slits_str2 = ("slita_lf", "slita_rt", "slita_tp", "slitb_bt", "slitb_lf", "slitb_rt", "slitb_tp")
+    slits_str3 = ("slit_pre_bt", "slit_pre_lf", "slit_pre_rt", "slit_pre_tp")
+
+    slits_str = (slits_str1, slits_str2, slits_str3)
+
+    for slit_str in slits_str:
+        if slit_str[0] in spice_logs.keys():
+            for st in slit_str:
+                nxslit.create_dataset(name=st, data=spice_logs[st])
+                nxslit[st].attrs["type"] = "NX_FLOAT"
+                nxslit[st].attrs["units"] = "cm"
 
     # --------------------------- sample ---------------------------
 

@@ -11,7 +11,7 @@ class ScanGroup(object):
         signals (list of Scan objects):
         backgrounds (list of Scan objects):
         signal_axes (list): Can be ["s1", "s2", "detector"],
-                            Or ["s1", "s2",[]"det_1", "det_2", "det_3"]].
+                            Or ["s1", "s2",["det_1", "det_2", "det_3"]].
                             Default is (None, None, None)
         background_axes (list): Default is (None, None, None)
 
@@ -73,11 +73,13 @@ class ScanGroup(object):
         x_array = [scan.data[signal_x[i]] for i, scan in enumerate(self.signals)]
         y_array = [scan.data[signal_y[i]] for i, scan in enumerate(self.signals)]
 
-        x_min = np.min(x_array)
-        x_max = np.max(x_array)
-        y_min = np.min(y_array)
-        y_max = np.max(y_array)
+        # TODO problem if irregular size
+        x_min = np.min([np.min(x) for x in x_array])
+        x_max = np.max([np.max(x) for x in x_array])
+        y_min = np.min([np.min(y) for y in y_array])
+        y_max = np.max([np.max(y) for y in y_array])
 
+        # TODO problem if irregular size
         x_step, y_step = rebin_steps
         if x_step is None:
             x_step = np.round(np.min(np.diff(np.unique(np.round(x_array, 3)))), 3)
@@ -118,7 +120,7 @@ class ScanGroup(object):
 
         return (xv, yv, z, xlabel, ylabel, zlabel, title)
 
-    def plot_contour(self, contour_plot, cmap="turbo", vmax=100):
+    def plot_contour(self, contour_plot, cmap="turbo", vmax=100, ylim=None, xlim=None):
         """Plot contour"""
 
         x, y, z, xlabel, ylabel, zlabel, title = contour_plot
@@ -130,6 +132,11 @@ class ScanGroup(object):
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.grid(alpha=0.6)
+
+        if xlim is not None:
+            ax.set_xlim(left=xlim[0], right=xlim[1])
+        if ylim is not None:
+            ax.set_ylim(bottom=ylim[0], top=ylim[1])
 
         fig.show()
 

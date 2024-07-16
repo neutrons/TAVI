@@ -138,7 +138,7 @@ class CN(TAS):
                 q = np.linalg.norm(q_lab)
                 if projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
                     rez.frame = "hkl"
-                else:
+                else:  # customized projection
                     p1, p2, p3 = projection
                     if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
                         print("Projection vectors need to be non-coplanar. ")

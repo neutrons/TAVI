@@ -51,19 +51,6 @@ def nexus_to_dict(nexus_entry):
 
     data = {
         "Pt.": np.arange(start=1, stop=num + 1, step=1),
-        # analyser
-        "a1": nexus_entry["instrument/analyser/a1"][...],
-        "a2": nexus_entry["instrument/analyser/a2"][...],
-        "afocus": nexus_entry["instrument/analyser/afocus"][...],
-        "ef": nexus_entry["instrument/analyser/ef"][...],
-        # monochromator
-        "m1": nexus_entry["instrument/monochromator/m1"][...],
-        "m2": nexus_entry["instrument/monochromator/m2"][...],
-        "ei": nexus_entry["instrument/monochromator/ei"][...],
-        "focal_length": nexus_entry["instrument/monochromator/focal_length"][...],
-        "mfocus": nexus_entry["instrument/monochromator/mfocus"][...],
-        "marc": nexus_entry["instrument/monochromator/marc"][...],
-        "mtrans": nexus_entry["instrument/monochromator/mtrans"][...],
         # detector
         "detector": nexus_entry["instrument/detector/data"][...],
         # monitor
@@ -84,31 +71,32 @@ def nexus_to_dict(nexus_entry):
         "en": nexus_entry["sample/en"][...],
     }
 
-    # instrument specific motors
+    # analyser
+    ana_str = (
+        ("a1", "a2", "afocus", "ef") + tuple([f"qm{i+1}" for i in range(8)]) + tuple([f"xm{i+1}" for i in range(8)])
+    )
+    nexus_ana_str = nexus_entry["instrument/analyser"].keys()
+    for key in ana_str:
+        if key in nexus_ana_str:
+            data.update({key: nexus_entry["instrument/analyser/" + key][...]})
 
-    match instrument:
-        case "CG4C":
-            # analyzer
-            for i in range(8):
-                data.update({f"qm{i+1}": nexus_entry[f"instrument/analyser/qm{i+1}"][...]})
-                data.update({f"xm{i+1}": nexus_entry[f"instrument/analyser/xm{i+1}"][...]})
-            # slits
-            data.update(
-                {
-                    "bat": nexus_entry["instrument/slit/bat"][...],
-                    "bab": nexus_entry["instrument/slit/bab"][...],
-                    "bal": nexus_entry["instrument/slit/bal"][...],
-                    "bar": nexus_entry["instrument/slit/bar"][...],
-                    "bbt": nexus_entry["instrument/slit/bbt"][...],
-                    "bbb": nexus_entry["instrument/slit/bbb"][...],
-                    "bbl": nexus_entry["instrument/slit/bbl"][...],
-                    "bbr": nexus_entry["instrument/slit/bbr"][...],
-                }
-            )
-        case "HB1":
-            pass
-        case _:
-            pass
+    # monochromator
+    mono_str = ("m1", "m2", "ei", "focal_length", "mfocus", "marc", "mtrans")
+    nexus_mono_str = nexus_entry["instrument/monochromator"].keys()
+    for key in mono_str:
+        if key in nexus_mono_str:
+            data.update({key: nexus_entry["instrument/monochromator/" + key][...]})
+
+    # slits
+    slits_str1 = ("bat", "bab", "bal", "bar", "bbt", "bbb", "bbl", "bbr")
+    slits_str2 = ("slita_lf", "slita_rt", "slita_tp", "slitb_bt", "slitb_lf", "slitb_rt", "slitb_tp")
+    slits_str3 = ("slit_pre_bt", "slit_pre_lf", "slit_pre_rt", "slit_pre_tp")
+    slit_str = slits_str1 + slits_str2 + slits_str3
+
+    nexus_slit_str = nexus_entry["instrument/slit"].keys()
+    for key in slit_str:
+        if key in nexus_slit_str:
+            data.update({key: nexus_entry["instrument/slit/" + key][...]})
 
     # temprature
     temperatue_str = (
