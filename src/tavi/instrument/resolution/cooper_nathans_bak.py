@@ -12,12 +12,12 @@ class CN(TAS):
         _mat_f
         _mat_g
 
+
     Methods:
-        cooper_nathans
+        cooper_nathans: resolution in Q-local frame
+        cooper_nathans_hkle: resolution in (H,K,L,E) frame
 
     """
-
-    g_esp = 1e-8
 
     # 4 soller slits collimators
     NUM_COLLS = 4
@@ -43,8 +43,6 @@ class CN(TAS):
         # constants independent of q and eng
         self._mat_f = None
         self._mat_g = None
-
-        self.frame = None
 
     def cooper_nathans_hkle(self, ei, ef, hkl, R0=False):
         """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
@@ -81,30 +79,16 @@ class CN(TAS):
         self.frame = "HKLE"
         return rez_hkle
 
-    def cooper_nathans(
-        self,
-        ei,
-        ef,
-        q,
-        projection=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        R0=False,
-    ):
+    def cooper_nathans(self, ei, ef, q, R0=False):
         """Calculate resolution using Cooper-Nathans method
 
         Args:
             ei (float): incident energy, in units of meV
             ef (float): final energy, in units of meV
-            q (float | tuple of floats): momentum transfer,
-                if q is a float, it's interpreted as the momentum transfer in units of inverse angstrom
-                if q is a tuple of size 3, it's interpreted as the miller indices in reciprocal lattice
-                units along the three directions specified by projection
+            q (float | tuple of floats): momentum transfer, in units of inverse angstrom
             R0 (bool): calculate normalization factor if True
-            projection (tuple): three non-coplaner vectors
-
         """
-
-        rez = ResoEllipsoid()
-
+        self.frame = "Qlocal"
         if self._mat_f is None:
             # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
             mat_f = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, (CN.NUM_MONOS + CN.NUM_ANAS) * 2))
@@ -130,30 +114,14 @@ class CN(TAS):
 
         if isinstance(q, tuple | list):
             if len(q) == 3:
-                angles = self.find_angles(q, ei, ef)  # s2, s1, sgl, sgu
-                r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
-                ub_mat = self.sample.ub_matrix
-                conv_mat = 2 * np.pi * r_mat @ ub_mat
-                q_lab = conv_mat @ q
-                q = np.linalg.norm(q_lab)
-                if projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
-                    rez.frame = "hkl"
-                else:
-                    p1, p2, p3 = projection
-                    if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
-                        print("Projection vectors need to be non-coplanar. ")
-                    else:
-                        rez.frame = "proj"
-
+                h, k, l = q
+                q = self.sample.hkl2q((h, k, l))
             else:
-                print("q needs to be a tupe of size 3.")
-                rez.STATUS = False
-
+                print("Length of q is not 3.")
         elif isinstance(q, float):
-            rez.frame = "q"
+            pass
         else:
-            print("q needs to be a float or a tupe of size 3.")
-            rez.STATUS = False
+            print("q is not float or tupe or list.")
 
         ki = np.sqrt(ei / ksq2eng)
         kf = np.sqrt(ef / ksq2eng)
@@ -223,13 +191,6 @@ class CN(TAS):
         else:
             r0 = 0
 
-        # rez = ResoEllipsoid(mat_reso, r0)
-        match rez.frame:
-            case "q":
-                rez.mat = mat_reso
-            case "hkl":
-                pass
-            case "proj":
-                pass
+        rez = ResoEllipsoid(mat_reso, r0)
 
         return rez

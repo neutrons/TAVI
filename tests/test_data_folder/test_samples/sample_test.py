@@ -21,10 +21,10 @@ ub_matrix_spice = np.array(
     ]
 )
 # ub matrix in Mantid convention
-test_xtal.ub_matrix = np.array(
-    [
-        ub_matrix_spice[0],
-        ub_matrix_spice[2],
-        -ub_matrix_spice[1],
-    ]
-)
+# test_xtal.ub_matrix = np.array(
+#     [
+#         ub_matrix_spice[0],
+#         ub_matrix_spice[2],
+#         -ub_matrix_spice[1],
+#     ]
+# )

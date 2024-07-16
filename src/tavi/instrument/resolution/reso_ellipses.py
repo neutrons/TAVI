@@ -9,11 +9,12 @@ from tavi.utilities import *
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
-class Reso_Ellipsoid(object):
+class ResoEllipsoid(object):
     """Manage the resolution ellipoid
 
     Attributs:
-        STATUS (bool): True if resolution calculation is successful
+        frame (str): "q", "hkl", or "proj"
+        STATUS (None | bool): True if resolution calculation is successful
         mat (float): 4 by 4 resolution matrix
         r0 (float | None): Normalization factor
 
@@ -23,18 +24,32 @@ class Reso_Ellipsoid(object):
 
     g_eps = 1e-8
 
-    def __init__(self, mat, r0):
+    def __init__(self):
 
-        self.mat = mat
-        self.r0 = r0
+        self.q = None
+        self.en = None
+        self.frame = None
+        self.projection = None
+
+        self.STATUS = None
+        self.mat = None
+        self.r0 = None
         self.coh_fwhms = None
         self.incoh_fwhms = None
         self.principal_fwhms = None
 
-        if np.isnan(r0) or np.isinf(r0) or np.isnan(mat.any()) or np.isinf(mat.any()):
-            self.STATUS = False
-        else:
-            self.STATUS = True
+    # def __init__(self, mat, r0):
+
+    #     self.mat = mat
+    #     self.r0 = r0
+    #     self.coh_fwhms = None
+    #     self.incoh_fwhms = None
+    #     self.principal_fwhms = None
+
+    #     if np.isnan(r0) or np.isinf(r0) or np.isnan(mat.any()) or np.isinf(mat.any()):
+    #         self.STATUS = False
+    #     else:
+    #         self.STATUS = True
 
     def ellipsoid_volume(self):
         """volume of the ellipsoid"""
@@ -44,7 +59,7 @@ class Reso_Ellipsoid(object):
     def quadric_proj(quadric, idx):
         """projects along one axis of the quadric"""
 
-        if np.abs(quadric[idx, idx]) < Reso_Ellipsoid.g_eps:
+        if np.abs(quadric[idx, idx]) < ResoEllipsoid.g_eps:
             return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
 
         # row/column along which to perform the orthogonal projection
@@ -77,21 +92,21 @@ class Reso_Ellipsoid(object):
         """Incoherent FWHMs"""
 
         reso = self.mat
-        proj_q_para = Reso_Ellipsoid.quadric_proj(reso, 3)
-        proj_q_para = Reso_Ellipsoid.quadric_proj(proj_q_para, 2)
-        proj_q_para = Reso_Ellipsoid.quadric_proj(proj_q_para, 1)
+        proj_q_para = ResoEllipsoid.quadric_proj(reso, 3)
+        proj_q_para = ResoEllipsoid.quadric_proj(proj_q_para, 2)
+        proj_q_para = ResoEllipsoid.quadric_proj(proj_q_para, 1)
 
-        proj_q_perp = Reso_Ellipsoid.quadric_proj(reso, 3)
-        proj_q_perp = Reso_Ellipsoid.quadric_proj(proj_q_perp, 2)
-        proj_q_perp = Reso_Ellipsoid.quadric_proj(proj_q_perp, 0)
+        proj_q_perp = ResoEllipsoid.quadric_proj(reso, 3)
+        proj_q_perp = ResoEllipsoid.quadric_proj(proj_q_perp, 2)
+        proj_q_perp = ResoEllipsoid.quadric_proj(proj_q_perp, 0)
 
-        proj_q_up = Reso_Ellipsoid.quadric_proj(reso, 3)
-        proj_q_up = Reso_Ellipsoid.quadric_proj(proj_q_up, 1)
-        proj_q_up = Reso_Ellipsoid.quadric_proj(proj_q_up, 0)
+        proj_q_up = ResoEllipsoid.quadric_proj(reso, 3)
+        proj_q_up = ResoEllipsoid.quadric_proj(proj_q_up, 1)
+        proj_q_up = ResoEllipsoid.quadric_proj(proj_q_up, 0)
 
-        proj_en = Reso_Ellipsoid.quadric_proj(reso, 2)
-        proj_en = Reso_Ellipsoid.quadric_proj(proj_en, 1)
-        proj_en = Reso_Ellipsoid.quadric_proj(proj_en, 0)
+        proj_en = ResoEllipsoid.quadric_proj(reso, 2)
+        proj_en = ResoEllipsoid.quadric_proj(proj_en, 1)
+        proj_en = ResoEllipsoid.quadric_proj(proj_en, 0)
 
         fwhms = np.array(
             [
@@ -128,7 +143,7 @@ class Reso_Ellipsoid(object):
             if i not in axes:
                 q_res = np.delete(np.delete(q_res, i, axis=0), i, axis=1)
 
-        fwhms, vec = Reso_Ellipsoid.descr_ellipse(q_res)
+        fwhms, vec = ResoEllipsoid.descr_ellipse(q_res)
         return (fwhms, vec)
 
     @staticmethod
@@ -138,9 +153,9 @@ class Reso_Ellipsoid(object):
         # Qres_QxE_proj = np.delete(np.delete(self.mat, 2, axis=0), 2, axis=1)
         for i in (3, 2, 1, 0):
             if i not in axes:
-                q_res = Reso_Ellipsoid.quadric_proj(q_res, i)
+                q_res = ResoEllipsoid.quadric_proj(q_res, i)
 
-        fwhms, rot = Reso_Ellipsoid.descr_ellipse(q_res)
+        fwhms, rot = ResoEllipsoid.descr_ellipse(q_res)
         return (fwhms, rot)
 
     def calc_ellipses(self, verbose=True):
@@ -156,13 +171,13 @@ class Reso_Ellipsoid(object):
 
         # 2d sliced ellipses
 
-        fwhms_QxE, rot_QxE = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(0, 3))
-        fwhms_QyE, rot_QyE = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(1, 3))
-        fwhms_QzE, rot_QzE = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(2, 3))
+        fwhms_QxE, rot_QxE = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(0, 3))
+        fwhms_QyE, rot_QyE = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(1, 3))
+        fwhms_QzE, rot_QzE = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(2, 3))
 
-        fwhms_QxQy, rot_QxQy = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(0, 1))
-        fwhms_QyQz, rot_QyQz = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(1, 2))
-        fwhms_QxQz, rot_QxQz = Reso_Ellipsoid._gen_ellipse_cut(self.mat, axes=(0, 2))
+        fwhms_QxQy, rot_QxQy = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(0, 1))
+        fwhms_QyQz, rot_QyQz = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(1, 2))
+        fwhms_QxQz, rot_QxQz = ResoEllipsoid._gen_ellipse_cut(self.mat, axes=(0, 2))
 
         if verbose:
             print(f"2d Qx,E slice fwhms and vectors: {fwhms_QxE}, {rot_QxE}")
@@ -175,12 +190,12 @@ class Reso_Ellipsoid(object):
         # 2d projected ellipses
         # Qres_QxE_proj = np.delete(np.delete(self.mat, 2, axis=0), 2, axis=1)
 
-        (fwhms_QxE_proj, rot_QxE_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(0, 3))
-        (fwhms_QyE_proj, rot_QyE_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(1, 3))
-        (fwhms_QzE_proj, rot_QzE_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(2, 3))
-        (fwhms_QxQy_proj, rot_QxQy_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(0, 1))
-        (fwhms_QyQz_proj, rot_QyQz_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(1, 2))
-        (fwhms_QxQz_proj, rot_QxQz_proj) = Reso_Ellipsoid._gen_ellipse_project(self.mat, axes=(0, 2))
+        (fwhms_QxE_proj, rot_QxE_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(0, 3))
+        (fwhms_QyE_proj, rot_QyE_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(1, 3))
+        (fwhms_QzE_proj, rot_QzE_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(2, 3))
+        (fwhms_QxQy_proj, rot_QxQy_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(0, 1))
+        (fwhms_QyQz_proj, rot_QyQz_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(1, 2))
+        (fwhms_QxQz_proj, rot_QxQz_proj) = ResoEllipsoid._gen_ellipse_project(self.mat, axes=(0, 2))
 
         if verbose:
             print(f"2d Qx,E projection fwhms and vectors: {fwhms_QxE_proj}, {rot_QxE_proj}")
