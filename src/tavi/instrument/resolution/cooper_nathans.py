@@ -128,16 +128,20 @@ class CN(TAS):
 
             self._mat_g = mat_g
 
+        # determine frame
         if isinstance(q, tuple | list):
             if len(q) == 3:
+
                 angles = self.find_angles(q, ei, ef)  # s2, s1, sgl, sgu
                 r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
                 ub_mat = self.sample.ub_matrix
                 conv_mat = 2 * np.pi * r_mat @ ub_mat
                 q_lab = conv_mat @ q
                 q = np.linalg.norm(q_lab)
+
                 if projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
                     rez.frame = "hkl"
+
                 else:  # customized projection
                     p1, p2, p3 = projection
                     if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
@@ -162,7 +166,7 @@ class CN(TAS):
         two_theta = get_angle(ki, kf, q) * self.goniometer.sense
         # theta_s = two_theta / 2
 
-        # phi = <ki, q>, always has the oppositie sign of theta_s
+        # phi = <ki, q>, always has the oppositie sign of s2
         phi = get_angle(ki, q, kf) * self.goniometer.sense * (-1)
 
         theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense

@@ -34,8 +34,13 @@ def test_scan_group_contour_exp710():
     )
 
     sg1 = tavi.generate_scan_group(signals=scan_list, signal_axes=("qh", "en", "detector"))
-    contour1 = sg1.generate_contour(rebin_steps=(0.1, 0.5))
+    # contour1 = sg1.generate_contour(rebin_steps=(0.1, 0.5))
+    contour1 = sg1.generate_contour(rebin_steps=(None, None))
     sg1.plot_contour(contour1, cmap="turbo", vmax=40, ylim=[0, 70])
+
+    sg2 = tavi.generate_scan_group(signals=scan_list, signal_axes=("ei", "qk", "detector"))
+    contour2 = sg2.generate_contour()
+    sg2.plot_contour(contour2, cmap="turbo", vmax=40)
 
     plt.show()
 
@@ -59,7 +64,7 @@ def test_scan_group_contour(tavi):
         signals=scan_list,
         signal_axes=("qk", "ei", "detector"),
     )
-    contour3 = sg3.generate_contour(rebin_steps=(None, 0.1), norm_channel="mcu", norm_val=30)
+    contour3 = sg3.generate_contour(rebin_steps=(0.025, 0.1), norm_channel="mcu", norm_val=30)
     sg3.plot_contour(contour3, cmap="turbo", vmax=40)
 
     plt.show()

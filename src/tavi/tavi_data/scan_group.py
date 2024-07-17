@@ -73,19 +73,24 @@ class ScanGroup(object):
         x_array = [scan.data[signal_x[i]] for i, scan in enumerate(self.signals)]
         y_array = [scan.data[signal_y[i]] for i, scan in enumerate(self.signals)]
 
-        # TODO problem if irregular size
-        x_min = np.min([np.min(x) for x in x_array])
-        x_max = np.max([np.max(x) for x in x_array])
-        y_min = np.min([np.min(y) for y in y_array])
-        y_max = np.max([np.max(y) for y in y_array])
+        x_min = np.min([np.min(np.round(x, 3)) for x in x_array])
+        x_max = np.max([np.max(np.round(x, 3)) for x in x_array])
+        y_min = np.min([np.min(np.round(y, 3)) for y in y_array])
+        y_max = np.max([np.max(np.round(y, 3)) for y in y_array])
 
         # TODO problem if irregular size
         x_step, y_step = rebin_steps
         if x_step is None:
-            x_step = np.round(np.min(np.diff(np.unique(np.round(x_array, 3)))), 3)
+            x_unique = np.unique(np.concatenate([np.unique(np.round(x, 1)) for x in x_array]))
+            x_diff = np.unique(np.round(np.diff(x_unique), 1))
+            x_diff = x_diff[x_diff > 0]
+            x_step = x_diff[0]
 
         if y_step is None:
-            y_step = np.round(np.min(np.diff(np.unique(np.round(y_array, 3)))), 3)
+            y_unique = np.unique(np.concatenate([np.unique(np.round(y, 1)) for y in y_array]))
+            y_diff = np.unique(np.round(np.diff(y_unique), 1))
+            y_diff = y_diff[y_diff > 0]
+            y_step = y_diff[0]
 
         x_list = np.round(np.arange(x_min, x_max + x_step / 2, x_step), 3)
         y_list = np.round(np.arange(y_min, y_max + y_step / 2, y_step), 3)
