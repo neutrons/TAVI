@@ -44,48 +44,11 @@ class CN(TAS):
         self._mat_f = None
         self._mat_g = None
 
-        self.frame = None
-
-    def cooper_nathans_hkle(self, ei, ef, hkl, R0=False):
-        """Calculate Cooper-Nathans resolution fucntion in hkle frame"""
-
-        angles = self.find_angles(hkl, ei, ef)
-        r_mat = self.goniometer.r_mat(angles[1:])
-        ub_mat = self.sample.ub_matrix
-        conv_mat = 2 * np.pi * r_mat @ ub_mat
-        q_lab = conv_mat @ hkl
-        q = np.linalg.norm(q_lab)
-        rez_hkle = self.cooper_nathans(ei, ef, q, R0)
-
-        ki = np.sqrt(ei / ksq2eng)
-        kf = np.sqrt(ef / ksq2eng)
-
-        # opposite sign of s2
-        phi = get_angle(ki, q, kf) * np.sign(angles[0]) * (-1)
-        # phi = np.deg2rad(0)
-
-        conv_mat_4d = np.eye(4)
-        # conv_mat_4d[0:3, 0:3] = rot_y(phi * rad2deg) @ rot_x(90) @ conv_mat
-        conv_mat_4d[0:3, 0:3] = (
-            np.array(
-                [
-                    [np.sin(phi), 0, np.cos(phi)],
-                    [np.cos(phi), 0, -np.sin(phi)],
-                    [0, 1, 0],
-                ]
-            )
-            @ conv_mat
-        )
-
-        rez_hkle.mat = conv_mat_4d.T @ rez_hkle.mat @ conv_mat_4d
-        self.frame = "HKLE"
-        return rez_hkle
-
     def cooper_nathans(
         self,
         ei,
         ef,
-        q,
+        hkl,
         projection=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
         R0=False,
     ):
@@ -94,16 +57,14 @@ class CN(TAS):
         Args:
             ei (float): incident energy, in units of meV
             ef (float): final energy, in units of meV
-            q (float | tuple of floats): momentum transfer,
-                if q is a float, it's interpreted as the momentum transfer in units of inverse angstrom
-                if q is a tuple of size 3, it's interpreted as the miller indices in reciprocal lattice
-                units along the three directions specified by projection
+            hkl (tuple of floats): momentum transfer, miller indices in reciprocal lattice
             R0 (bool): calculate normalization factor if True
-            projection (tuple): three non-coplaner vectors
+            projection (tuple): three non-coplaner vectors. If projection is None, the calculation is done in local Q frame
 
         """
 
         rez = ResoEllipsoid()
+        rez.projection = projection
 
         if self._mat_f is None:
             # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
@@ -129,45 +90,55 @@ class CN(TAS):
             self._mat_g = mat_g
 
         # determine frame
-        if isinstance(q, tuple | list):
-            if len(q) == 3:
+        if isinstance(hkl, tuple | list) and len(hkl) == 3:
 
-                angles = self.find_angles(q, ei, ef)  # s2, s1, sgl, sgu
-                r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
-                ub_mat = self.sample.ub_matrix
-                conv_mat = 2 * np.pi * r_mat @ ub_mat
-                q_lab = conv_mat @ q
-                q = np.linalg.norm(q_lab)
+            if projection is None:
+                rez.frame = "q"
+                rez.q = hkl
 
-                if projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
-                    rez.frame = "hkl"
+            elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
+                rez.frame = "hkl"
+                rez.q = hkl
 
-                else:  # customized projection
-                    p1, p2, p3 = projection
-                    if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
-                        print("Projection vectors need to be non-coplanar. ")
-                    else:
-                        rez.frame = "proj"
+            else:  # customized projection
+                p1, p2, p3 = projection
+                if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
+                    print("Projection vectors need to be non-coplanar. ")
+                else:
+                    mat_w = np.array([p1, p2, p3]).T
+                    mat_w_inv = np.array(
+                        [
+                            np.cross(p2, p3),
+                            np.cross(p3, p1),
+                            np.cross(p1, p2),
+                        ]
+                    ) / np.dot(p1, np.cross(p2, p3))
 
-            else:
-                print("q needs to be a tupe of size 3.")
-                rez.STATUS = False
+                    hkl_prime = mat_w_inv @ hkl
+                    rez.frame = "proj"
+                    rez.q = hkl_prime
 
-        elif isinstance(q, float):
-            rez.frame = "q"
+            angles = self.find_angles(hkl, ei, ef)  # s2, s1, sgl, sgu
+            r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
+            ub_mat = self.sample.ub_matrix
+            conv_mat = 2 * np.pi * r_mat @ ub_mat
+            q_lab = conv_mat @ hkl
+            q_mod = np.linalg.norm(q_lab)
+
         else:
-            print("q needs to be a float or a tupe of size 3.")
+            print("q needs to be a tupe of size 3.")
             rez.STATUS = False
 
         ki = np.sqrt(ei / ksq2eng)
         kf = np.sqrt(ef / ksq2eng)
         en = ei - ef
+        rez.en = en
 
-        two_theta = get_angle(ki, kf, q) * self.goniometer.sense
+        two_theta = get_angle(ki, kf, q_mod) * self.goniometer.sense
         # theta_s = two_theta / 2
 
         # phi = <ki, q>, always has the oppositie sign of s2
-        phi = get_angle(ki, q, kf) * self.goniometer.sense * (-1)
+        phi = get_angle(ki, q_mod, kf) * self.goniometer.sense * (-1)
 
         theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
         theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer.sense
@@ -216,10 +187,44 @@ class CN(TAS):
         mat_cov = mat_ba @ mat_hg_inv @ mat_ba.T
 
         # TODO smaple mosaic????
-        mat_cov[1, 1] += q**2 * self.sample.mosaic**2
-        mat_cov[2, 2] += q**2 * self.sample.mosaic_v**2
+        mat_cov[1, 1] += q_mod**2 * self.sample.mosaic**2
+        mat_cov[2, 2] += q_mod**2 * self.sample.mosaic_v**2
 
         mat_reso = la.inv(mat_cov) * sig2fwhm**2
+
+        if rez.frame == "q":
+            rez.mat = mat_reso
+
+        elif rez.frame == "hkl":
+            rez.mat = mat_reso
+            conv_mat_4d = np.eye(4)
+            conv_mat_4d[0:3, 0:3] = (
+                np.array(
+                    [
+                        [np.sin(phi), 0, np.cos(phi)],
+                        [np.cos(phi), 0, -np.sin(phi)],
+                        [0, 1, 0],
+                    ]
+                )
+                @ conv_mat
+            )
+            rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+
+        elif rez.frame == "proj":
+            rez.mat = mat_reso
+            conv_mat_4d = np.eye(4)
+            conv_mat_4d[0:3, 0:3] = (
+                np.array(
+                    [
+                        [np.sin(phi), 0, np.cos(phi)],
+                        [np.cos(phi), 0, -np.sin(phi)],
+                        [0, 1, 0],
+                    ]
+                )
+                @ conv_mat
+                @ mat_w
+            )
+            rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
         # TODO normalization factor
         if R0:  # calculate
@@ -227,13 +232,9 @@ class CN(TAS):
         else:
             r0 = 0
 
-        # rez = ResoEllipsoid(mat_reso, r0)
-        match rez.frame:
-            case "q":
-                rez.mat = mat_reso
-            case "hkl":
-                pass
-            case "proj":
-                pass
+        if np.isnan(r0) or np.isinf(r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
+            rez.STATUS = False
+        else:
+            rez.STATUS = True
 
         return rez

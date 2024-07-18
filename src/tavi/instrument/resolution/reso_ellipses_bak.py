@@ -9,23 +9,11 @@ from tavi.utilities import *
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
-class ResoEllipse(object):
-    """2D ellipses"""
-
-    def __init__(self):
-        self.center = None
-        self.fwhms = None
-        self.rot = None
-
-
 class ResoEllipsoid(object):
     """Manage the resolution ellipoid
 
     Attributs:
         frame (str): "q", "hkl", or "proj"
-        projection (tuple): three non-coplanar vectors
-        q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
-        en (float): energy transfer
         STATUS (None | bool): True if resolution calculation is successful
         mat (float): 4 by 4 resolution matrix
         r0 (float | None): Normalization factor
@@ -38,18 +26,30 @@ class ResoEllipsoid(object):
 
     def __init__(self):
 
-        self.STATUS = None
         self.q = None
         self.en = None
         self.frame = None
         self.projection = None
 
+        self.STATUS = None
         self.mat = None
         self.r0 = None
-
         self.coh_fwhms = None
         self.incoh_fwhms = None
         self.principal_fwhms = None
+
+    # def __init__(self, mat, r0):
+
+    #     self.mat = mat
+    #     self.r0 = r0
+    #     self.coh_fwhms = None
+    #     self.incoh_fwhms = None
+    #     self.principal_fwhms = None
+
+    #     if np.isnan(r0) or np.isinf(r0) or np.isnan(mat.any()) or np.isinf(mat.any()):
+    #         self.STATUS = False
+    #     else:
+    #         self.STATUS = True
 
     def ellipsoid_volume(self):
         """volume of the ellipsoid"""
@@ -158,36 +158,13 @@ class ResoEllipsoid(object):
         fwhms, rot = ResoEllipsoid.descr_ellipse(q_res)
         return (fwhms, rot)
 
-    # def gen_ellipse(self, axes=(0, 1)):
-    #     """Generate a 2D ellipse"""
-
     def calc_ellipses(self, verbose=True):
         """Calculate FWHMs and rotation angles"""
-
-        # determine frame
-        match self.frame:
-            case "q":
-                axes_labels = ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
-            case "hkl":
-                axes_labels = ("H (r.l.u.)", "K (r.l.u.)", "L (r.l.u.)", "E (meV)")
-            case "proj":
-                axes_labels = (
-                    f"{self.projection}",
-                    f"{self.projection}",
-                    f"{self.projection}",
-                    "E (meV)",
-                )
+        self.coh_fwhms_calc()
+        self.incoh_fwhms_calc()
+        self.principal_fwhms_calc()
 
         if verbose:
-            print("=" * 40)
-            if self.projection is None:
-                print("Calculating resolution ellipsoid in local-Q frame.")
-            else:
-                print(f"Calculating resolution ellipsoid with projection p={self.projection}.")
-
-            self.coh_fwhms_calc()
-            self.incoh_fwhms_calc()
-            self.principal_fwhms_calc()
             print(f"Coherent-elastic fwhms:{self.coh_fwhms}")
             print(f"Incoherent-elastic fwhms: {self.incoh_fwhms}")
             print(f"Principal axes fwhms: {self.principal_fwhms}")
@@ -255,7 +232,7 @@ class ResoEllipsoid(object):
             "rot_QxQz_proj": rot_QxQz_proj,
         }
 
-        return None
+        return results
 
     def plot_ellipses(
         self,
@@ -394,43 +371,4 @@ class ResoEllipsoid(object):
 
         # show plots
         if plot_results:
-            fig.show()
-
-
-# import matplotlib
-# import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-# from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
-# from mpl_toolkits.axisartist.grid_finder import MaxNLocator
-# from mpl_toolkits.axisartist import Subplot
-
-
-# def tr(x, y):
-#     x, y = np.asarray(x), np.asarray(y)
-#     return x + y / np.tan(recip_angle), y
-
-
-# def inv_tr(x, y):
-#     x, y = np.asarray(x), np.asarray(y)
-#     return x - y / np.tan(recip_angle), y
-
-
-# fig = plt.figure()
-# grid_helper = GridHelperCurveLinear(
-#     (tr, inv_tr),
-#     grid_locator1=MaxNLocator(integer=True, steps=[1]),
-#     grid_locator2=MaxNLocator(integer=True, steps=[1]),
-# )
-# ax_askew = Subplot(fig, 1, 1, 1, grid_helper=grid_helper)
-# fig.add_subplot(ax_askew)
-# marker_alpha = 0.6
-# plot_handles = []
-# plot_labels = []
-
-# s = ax_askew.scatter(
-#     *tr(xs_conv[i], ys_conv[i]),
-#     marker="o",
-#     label=f"domian_{i+1}",
-#     c=f"C{i}",
-#     alpha=marker_alpha,
-# )
+            plt.show()

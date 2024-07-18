@@ -123,12 +123,12 @@ class ScanGroup(object):
             zlabel += f" / {norm_val} " + norm_channel
             title += f" nomralized by {norm_val} " + norm_channel
 
-        return (xv, yv, z, xlabel, ylabel, zlabel, title)
+        return (xv, yv, z, x_step, y_step, xlabel, ylabel, zlabel, title)
 
     def plot_contour(self, contour_plot, cmap="turbo", vmax=100, ylim=None, xlim=None):
         """Plot contour"""
 
-        x, y, z, xlabel, ylabel, zlabel, title = contour_plot
+        x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
 
         fig, ax = plt.subplots()
         p = ax.pcolormesh(x, y, z, shading="auto", cmap=cmap, vmax=vmax)
@@ -152,7 +152,7 @@ class ScanGroup(object):
             Horizontal is Y-axis, vertical is Z-axis. Stacked along X-axis.
         """
 
-        x, y, z, xlabel, ylabel, zlabel, title = contour_plot
+        x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
 
         num = len(x[0])
 
