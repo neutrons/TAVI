@@ -4,49 +4,52 @@ from tavi.instrument.instrument_params.takin_test import instrument_params
 from test_data_folder.test_samples.sample_test import test_xtal
 from tavi.instrument.resolution.cooper_nathans import CN
 
+np.set_printoptions(floatmode="fixed", precision=4)
+
 
 def test_copper_nathans_localQ(tas):
 
     rez = tas.cooper_nathans(
-        ei=13.5,
+        ei=15.5,
         ef=13.5,
-        hkl=(0, 0, 2),
+        hkl=(0, 1, 2),
         projection=None,
         R0=False,
     )
 
     # describe and plot ellipses
-    rez.calc_ellipses()
-    rez.plot_ellipses()
+    # rez.calc_ellipses()
+    rez.plot()
 
 
 def test_copper_nathans_hkl(tas):
 
     rez = tas.cooper_nathans(
-        ei=13.5,
+        ei=15.5,
         ef=13.5,
-        hkl=(0, 0, 2),
+        hkl=(0, 1, 2),
         R0=False,
     )
 
     # describe and plot ellipses
-    rez.calc_ellipses()
-    rez.plot_ellipses()
+    # rez.calc_ellipses()
+    rez.plot()
 
 
 def test_copper_nathans_projection(tas):
 
     rez = tas.cooper_nathans(
-        ei=13.5,
+        ei=15.5,
         ef=13.5,
-        hkl=(0, 0, 2),
-        projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)),
+        hkl=(0, 1, 2),
+        # projection=((1, 0, 0), (-1, 2, 0), (0, 0, 1)),
+        projection=((0, 0, 1), (0, 1, 0), (-2, 1, 0)),
         R0=False,
     )
 
     # describe and plot ellipses
-    rez.calc_ellipses()
-    rez.plot_ellipses()
+    # rez.calc_ellipses()
+    rez.plot()
 
 
 if __name__ == "__main__":
@@ -64,7 +67,7 @@ if __name__ == "__main__":
         tas.find_ub(peaks=peak_list, angles=angles_list, ei=13.500172, ef=13.505137)
 
     test_copper_nathans_localQ(tas)
-    # test_copper_nathans_hkl(tas)
-    # test_copper_nathans_projection(tas)
+    test_copper_nathans_hkl(tas)
+    test_copper_nathans_projection(tas)
 
     plt.show()

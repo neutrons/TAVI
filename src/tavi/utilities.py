@@ -40,11 +40,16 @@ def eng2k(en):
     return
 
 
-def get_angle(v1, v2, v3):
-    """return angle between v1 and v2 ni radian
+def get_angle(a, b, c):
+    """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
-    return np.arccos((v1**2 + v2**2 - v3**2) / (2 * v1 * v2))
+    return np.arccos((a**2 + b**2 - c**2) / (2 * a * b))
+
+
+def get_angle_vec(v1, v2):
+    """Get the angle in degress between two vectors v1 and v2"""
+    return np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)) / np.pi * 180
 
 
 def get_angle_bragg(q, d_spaceing):

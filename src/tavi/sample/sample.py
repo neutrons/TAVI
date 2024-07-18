@@ -1,6 +1,8 @@
 import numpy as np
 from tavi.utilities import *
 
+np.set_printoptions(floatmode="fixed", precision=4)
+
 
 class Sample(object):
     """

@@ -95,15 +95,33 @@ class CN(TAS):
             if projection is None:
                 rez.frame = "q"
                 rez.q = hkl
+                rez.angles = (90, 90, 90)
 
             elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
                 rez.frame = "hkl"
                 rez.q = hkl
+                rez.angles = (
+                    self.sample.gamma_star,
+                    self.sample.alpha_star,
+                    self.sample.beta_star,
+                )
 
             else:  # customized projection
                 p1, p2, p3 = projection
-                if np.dot(p1, np.cross(p2, p3)) < CN.g_esp:
-                    print("Projection vectors need to be non-coplanar. ")
+                reciprocal_vecs = [
+                    self.sample.a_star_vec,
+                    self.sample.b_star_vec,
+                    self.sample.c_star_vec,
+                ]
+                v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+                v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+                v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+
+                if np.dot(v1, np.cross(v2, v3)) < CN.g_esp:
+                    # TODO
+                    print("Left handed!")
+                if np.abs(np.dot(v1, np.cross(v2, v3))) < CN.g_esp:
+                    print("Projection vectors need to be non-coplanar.")
                 else:
                     mat_w = np.array([p1, p2, p3]).T
                     mat_w_inv = np.array(
@@ -117,6 +135,12 @@ class CN(TAS):
                     hkl_prime = mat_w_inv @ hkl
                     rez.frame = "proj"
                     rez.q = hkl_prime
+
+                    rez.angles = (
+                        get_angle_vec(v1, v2),
+                        get_angle_vec(v2, v3),
+                        get_angle_vec(v3, v1),
+                    )
 
             angles = self.find_angles(hkl, ei, ef)  # s2, s1, sgl, sgu
             r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
@@ -237,4 +261,5 @@ class CN(TAS):
         else:
             rez.STATUS = True
 
+        rez.set_labels()
         return rez
