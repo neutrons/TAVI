@@ -157,6 +157,7 @@ class Arms(object):
 
 
 class Monochromator(object):
+    """Monochromator"""
 
     def __init__(self, param_dict):
 
@@ -191,7 +192,7 @@ class Monochromator(object):
 
 
 class Goniometer(object):
-    """Goniometer table, type = TAS of 4C"""
+    """Goniometer table, type = Y-ZX or YZ-X"""
 
     def __init__(self, param_dict):
         self.type = "Y-ZX"  # Y-mZ-X for Huber stage at HB1A and HB3
@@ -206,9 +207,9 @@ class Goniometer(object):
         omega, sgl, sgu = angles  # s2, s1, sgl, sgu
         match self.type:
 
-            case "Y-ZX":
+            case "Y-ZX":  # HB3
                 r_mat = rot_y(omega) @ rot_z(-1 * sgl) @ rot_x(sgu)
-            case "YZ-X":
+            case "YZ-X":  # CG4C
                 r_mat = rot_y(omega) @ rot_z(sgl) @ rot_x(-1 * sgu)
             case _:
                 r_mat = None

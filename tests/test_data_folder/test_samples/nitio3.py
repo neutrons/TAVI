@@ -21,10 +21,18 @@ ub_matrix_spice = np.array(
     ]
 )
 # ub matrix in Mantid convention
-# nitio3.ub_matrix = np.array(
-#     [
-#         ub_matrix_spice[0],
-#         ub_matrix_spice[2],
-#         -ub_matrix_spice[1],
-#     ]
-# )
+nitio3.ub_matrix = np.array(
+    [
+        ub_matrix_spice[0],
+        ub_matrix_spice[2],
+        -ub_matrix_spice[1],
+    ]
+)
+nitio3.plane_normal_spice = np.array([-0.04032, 0.035237, 0.998565])
+nitio3.plane_normal = np.array(
+    [
+        nitio3.plane_normal_spice[0],
+        nitio3.plane_normal_spice[2],
+        -nitio3.plane_normal_spice[1],
+    ]
+)

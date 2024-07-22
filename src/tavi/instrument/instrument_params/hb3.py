@@ -21,8 +21,8 @@ guide = {
 monochromator = {
     "type": "PG002",
     "d_spacing": mono_ana_xtal["PG002"],
-    "mosaic": 30 * min2rad,  # horizontal mosaic
-    "mosaic_v": 30 * min2rad,  # vertical mosaic, if anisotropic
+    "mosaic": 30,  # horizontal mosaic
+    "mosaic_v": 30,  # vertical mosaic, if anisotropic
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
@@ -50,8 +50,8 @@ goniometer = {
 analyzer = {
     "type": "Pg002",
     "d_spacing": mono_ana_xtal["Pg002"],
-    "mosaic": 40 * min2rad,  # horizontal mosaic
-    "mosaic_v": 40 * min2rad,  # vertical mosaic, if anisotropic
+    "mosaic": 40,  # horizontal mosaic
+    "mosaic_v": 40,  # vertical mosaic, if anisotropic
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
@@ -72,22 +72,22 @@ detector = {
 }
 
 distances = {
-    "src_mono": 650.0 * cm2angstrom,
-    "mono_sample": 190.0 * cm2angstrom,
-    "sample_ana": 160.0 * cm2angstrom,
-    "ana_det": 60.0 * cm2angstrom,
-    "mono_monitor": 86.0 * cm2angstrom,
+    "src_mono": 650.0,  # in cm
+    "mono_sample": 190.0,
+    "sample_ana": 160.0,
+    "ana_det": 60.0,
+    "mono_monitor": 86.0,
 }
 
 collimators = {  # in units of mins of arc
-    "h_pre_mono": 48 * min2rad,
-    "h_pre_sample": 40 * min2rad,
-    "h_post_sample": 40 * min2rad,
-    "h_post_ana": 120 * min2rad,
-    "v_pre_mono": 150 * min2rad,
-    "v_pre_sample": 270 * min2rad,
-    "v_post_sample": 300 * min2rad,
-    "v_post_ana": 600 * min2rad,
+    "h_pre_mono": 48,
+    "h_pre_sample": 40,
+    "h_post_sample": 40,
+    "h_post_ana": 120,
+    "v_pre_mono": 150,
+    "v_pre_sample": 270,
+    "v_post_sample": 300,
+    "v_post_ana": 600,
 }
 
 

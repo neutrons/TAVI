@@ -288,6 +288,7 @@ class ResoEllipsoid(object):
                     "E (meV)",
                 )
 
+    # TODO
     def calc_ellipses(self, verbose=True):
         """Calculate FWHMs and rotation angles"""
 
@@ -322,7 +323,8 @@ class ResoEllipsoid(object):
     def plot(self):
         """Plot all 2D ellipses"""
 
-        fig = plt.figure()
+        # fig = plt.figure()
+        fig = plt.figure(figsize=(10, 6))
         elps_qx_en = self.generate_ellipse(axes=(0, 3), PROJECTION=False)
         ax = fig.add_subplot(231, axes_class=Axes, grid_helper=elps_qx_en.grid_helper)
         elps_qx_en.generate_plot(ax, c="black", linestyle="solid")
@@ -359,4 +361,4 @@ class ResoEllipsoid(object):
         elps_proj_qx_qz = self.generate_ellipse(axes=(0, 2), PROJECTION=True)
         elps_proj_qx_qz.generate_plot(ax, c="black", linestyle="dashed")
 
-        plt.tight_layout()
+        fig.tight_layout(pad=2)
