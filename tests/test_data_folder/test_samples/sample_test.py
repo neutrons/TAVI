@@ -21,10 +21,19 @@ ub_matrix_spice = np.array(
     ]
 )
 # ub matrix in Mantid convention
-# test_xtal.ub_matrix = np.array(
-#     [
-#         ub_matrix_spice[0],
-#         ub_matrix_spice[2],
-#         -ub_matrix_spice[1],
-#     ]
-# )
+test_xtal.ub_matrix = np.array(
+    [
+        ub_matrix_spice[0],
+        ub_matrix_spice[2],
+        -ub_matrix_spice[1],
+    ]
+)
+
+test_xtal.plane_normal_spice = np.array([0.000009, -0.043637, 0.999047])
+test_xtal.plane_normal = np.array(
+    [
+        test_xtal.plane_normal_spice[0],
+        test_xtal.plane_normal_spice[2],
+        -test_xtal.plane_normal_spice[1],
+    ]
+)
