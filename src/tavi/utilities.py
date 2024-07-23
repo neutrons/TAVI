@@ -44,7 +44,12 @@ def get_angle(a, b, c):
     """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
-    return np.arccos((a**2 + b**2 - c**2) / (2 * a * b))
+    acos = (a**2 + b**2 - c**2) / (2 * a * b)
+    if acos > 1 or acos < -1:
+        angle = None
+    else:
+        angle = np.arccos(acos)
+    return angle
 
 
 def get_angle_vec(v1, v2):

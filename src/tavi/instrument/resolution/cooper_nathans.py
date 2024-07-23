@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.linalg as la
+import math
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
@@ -92,12 +93,13 @@ class CN(TAS):
         # determine frame
         if isinstance(hkl, tuple | list) and len(hkl) == 3:
 
-            if projection is None:
+            if projection is None:  # Local Q frame
                 rez.frame = "q"
                 rez.q = hkl
                 rez.angles = (90, 90, 90)
+                rez.STATUS = True
 
-            elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
+            elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 rez.frame = "hkl"
                 rez.q = hkl
                 rez.angles = (
@@ -105,6 +107,7 @@ class CN(TAS):
                     self.sample.alpha_star,
                     self.sample.beta_star,
                 )
+                rez.STATUS = True
 
             else:  # customized projection
                 p1, p2, p3 = projection
@@ -143,123 +146,127 @@ class CN(TAS):
                     )
 
             angles = self.find_angles(hkl, ei, ef)  # s2, s1, sgl, sgu
-            r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
-            ub_mat = self.sample.ub_matrix
-            conv_mat = 2 * np.pi * r_mat @ ub_mat
-            q_lab = conv_mat @ hkl
-            q_mod = np.linalg.norm(q_lab)
+            if angles is not None:
+                r_mat = self.goniometer.r_mat(angles[1:])  # s1, sgl, sgu
+                ub_mat = self.sample.ub_matrix
+                conv_mat = 2 * np.pi * r_mat @ ub_mat
+                q_lab = conv_mat @ hkl
+                q_mod = np.linalg.norm(q_lab)
+                rez.STATUS = True
+            else:
+                rez.STATUS = False
 
         else:
             print("q needs to be a tupe of size 3.")
             rez.STATUS = False
 
-        ki = np.sqrt(ei / ksq2eng)
-        kf = np.sqrt(ef / ksq2eng)
-        en = ei - ef
-        rez.en = en
+        if rez.STATUS:
+            ki = np.sqrt(ei / ksq2eng)
+            kf = np.sqrt(ef / ksq2eng)
+            en = ei - ef
+            rez.en = en
 
-        two_theta = get_angle(ki, kf, q_mod) * self.goniometer.sense
-        # theta_s = two_theta / 2
+            two_theta = get_angle(ki, kf, q_mod) * self.goniometer.sense
 
-        # phi = <ki, q>, always has the oppositie sign of s2
-        phi = get_angle(ki, q_mod, kf) * self.goniometer.sense * (-1)
+            # phi = <ki, q>, always has the oppositie sign of s2
+            phi = get_angle(ki, q_mod, kf) * self.goniometer.sense * (-1)
 
-        theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
-        theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer.sense
+            theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
+            theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer.sense
 
-        # TODO
-        # curved monochromator and analyzer
+            # TODO
+            # curved monochromator and analyzer
 
-        # TODO
-        # reflection efficiency
+            # TODO
+            # reflection efficiency
 
-        # TODO
-        # matrix A,Y=AU, tranform from collimators angular divergence to  ki-kf frame
-        mat_a = np.zeros((6, 2 * CN.NUM_COLLS))
-        mat_a[0, CN.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
-        mat_a[0, CN.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
-        mat_a[1, CN.IDX_COLL1_H] = ki
-        mat_a[2, CN.IDX_COLL1_V] = -ki
+            # TODO
+            # matrix A,Y=AU, tranform from collimators angular divergence to  ki-kf frame
+            mat_a = np.zeros((6, 2 * CN.NUM_COLLS))
+            mat_a[0, CN.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
+            mat_a[0, CN.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
+            mat_a[1, CN.IDX_COLL1_H] = ki
+            mat_a[2, CN.IDX_COLL1_V] = -ki
 
-        mat_a[3, CN.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
-        mat_a[3, CN.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
-        mat_a[4, CN.IDX_COLL2_H] = kf
-        mat_a[5, CN.IDX_COLL2_V] = kf
+            mat_a[3, CN.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
+            mat_a[3, CN.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
+            mat_a[4, CN.IDX_COLL2_H] = kf
+            mat_a[5, CN.IDX_COLL2_V] = kf
 
-        # matrix B, X=BY, transform from ki-kf frame to momentum transfer q-frame
-        mat_b = np.zeros((4, 6))
-        mat_b[0:3, 0:3] = rotation_matrix_2d(phi)
-        mat_b[0:3, 3:6] = rotation_matrix_2d(phi - two_theta) * (-1)
-        mat_b[3, 0] = 2 * ksq2eng * ki
-        mat_b[3, 3] = -2 * ksq2eng * kf
+            # matrix B, X=BY, transform from ki-kf frame to momentum transfer q-frame
+            mat_b = np.zeros((4, 6))
+            mat_b[0:3, 0:3] = rotation_matrix_2d(phi)
+            mat_b[0:3, 3:6] = rotation_matrix_2d(phi - two_theta) * (-1)
+            mat_b[3, 0] = 2 * ksq2eng * ki
+            mat_b[3, 3] = -2 * ksq2eng * kf
 
-        # matrix C, constrinat between mono/ana mosaic and collimator divergence
-        mat_c = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, CN.NUM_COLLS * 2))
-        mat_c[CN.IDX_MONO0_H, CN.IDX_COLL0_H] = 0.5
-        mat_c[CN.IDX_MONO0_H, CN.IDX_COLL1_H] = 0.5
-        mat_c[CN.IDX_MONO0_V, CN.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
-        mat_c[CN.IDX_MONO0_V, CN.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
+            # matrix C, constrinat between mono/ana mosaic and collimator divergence
+            mat_c = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, CN.NUM_COLLS * 2))
+            mat_c[CN.IDX_MONO0_H, CN.IDX_COLL0_H] = 0.5
+            mat_c[CN.IDX_MONO0_H, CN.IDX_COLL1_H] = 0.5
+            mat_c[CN.IDX_MONO0_V, CN.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
+            mat_c[CN.IDX_MONO0_V, CN.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
 
-        mat_c[CN.IDX_ANA0_H, CN.IDX_COLL2_H] = 0.5
-        mat_c[CN.IDX_ANA0_H, CN.IDX_COLL3_H] = 0.5
-        mat_c[CN.IDX_ANA0_V, CN.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
-        mat_c[CN.IDX_ANA0_V, CN.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
+            mat_c[CN.IDX_ANA0_H, CN.IDX_COLL2_H] = 0.5
+            mat_c[CN.IDX_ANA0_H, CN.IDX_COLL3_H] = 0.5
+            mat_c[CN.IDX_ANA0_V, CN.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
+            mat_c[CN.IDX_ANA0_V, CN.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
 
-        mat_h = mat_c.T @ self._mat_f @ mat_c
-        mat_hg_inv = la.inv(mat_h + self._mat_g)
-        mat_ba = mat_b @ mat_a
-        mat_cov = mat_ba @ mat_hg_inv @ mat_ba.T
+            mat_h = mat_c.T @ self._mat_f @ mat_c
+            mat_hg_inv = la.inv(mat_h + self._mat_g)
+            mat_ba = mat_b @ mat_a
+            mat_cov = mat_ba @ mat_hg_inv @ mat_ba.T
 
-        # TODO smaple mosaic????
-        mat_cov[1, 1] += q_mod**2 * self.sample.mosaic**2
-        mat_cov[2, 2] += q_mod**2 * self.sample.mosaic_v**2
+            # TODO smaple mosaic????
+            mat_cov[1, 1] += q_mod**2 * self.sample.mosaic**2
+            mat_cov[2, 2] += q_mod**2 * self.sample.mosaic_v**2
 
-        mat_reso = la.inv(mat_cov) * sig2fwhm**2
+            mat_reso = la.inv(mat_cov) * sig2fwhm**2
 
-        if rez.frame == "q":
-            rez.mat = mat_reso
+            if rez.frame == "q":
+                rez.mat = mat_reso
 
-        elif rez.frame == "hkl":
-            rez.mat = mat_reso
-            conv_mat_4d = np.eye(4)
-            conv_mat_4d[0:3, 0:3] = (
-                np.array(
-                    [
-                        [np.sin(phi), 0, np.cos(phi)],
-                        [np.cos(phi), 0, -np.sin(phi)],
-                        [0, 1, 0],
-                    ]
+            elif rez.frame == "hkl":
+                rez.mat = mat_reso
+                conv_mat_4d = np.eye(4)
+                conv_mat_4d[0:3, 0:3] = (
+                    np.array(
+                        [
+                            [np.sin(phi), 0, np.cos(phi)],
+                            [np.cos(phi), 0, -np.sin(phi)],
+                            [0, 1, 0],
+                        ]
+                    )
+                    @ conv_mat
                 )
-                @ conv_mat
-            )
-            rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+                rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
-        elif rez.frame == "proj":
-            rez.mat = mat_reso
-            conv_mat_4d = np.eye(4)
-            conv_mat_4d[0:3, 0:3] = (
-                np.array(
-                    [
-                        [np.sin(phi), 0, np.cos(phi)],
-                        [np.cos(phi), 0, -np.sin(phi)],
-                        [0, 1, 0],
-                    ]
+            elif rez.frame == "proj":
+                rez.mat = mat_reso
+                conv_mat_4d = np.eye(4)
+                conv_mat_4d[0:3, 0:3] = (
+                    np.array(
+                        [
+                            [np.sin(phi), 0, np.cos(phi)],
+                            [np.cos(phi), 0, -np.sin(phi)],
+                            [0, 1, 0],
+                        ]
+                    )
+                    @ conv_mat
+                    @ mat_w
                 )
-                @ conv_mat
-                @ mat_w
-            )
-            rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+                rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
-        # TODO normalization factor
-        if R0:  # calculate
-            r0 = 1
-        else:
-            r0 = 0
+            # TODO normalization factor
+            if R0:  # calculate
+                r0 = 1
+            else:
+                r0 = 0
 
-        if np.isnan(r0) or np.isinf(r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
-            rez.STATUS = False
-        else:
-            rez.STATUS = True
+            if np.isnan(r0) or np.isinf(r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
+                rez.STATUS = False
+            else:
+                rez.STATUS = True
 
         rez.set_labels()
         return rez

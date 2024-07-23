@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tavi.instrument.resolution.cooper_nathans import CN
 from mpl_toolkits.axisartist import Axes
 from tavi.instrument.instrument_params.takin_test import instrument_params
 from test_data_folder.test_samples.sample_test import test_xtal
+from tavi.instrument.resolution.cooper_nathans import CN
 
 
 def rez_plot_gen(instrument_params, xtal, projection, q1, q2, q3, en, ef, R0):
@@ -34,14 +34,15 @@ def rez_plot_gen(instrument_params, xtal, projection, q1, q2, q3, en, ef, R0):
                 for ei0 in qe_list[3]:
 
                     h, k, l = tuple(np.array(p1) * q1 + np.array(p2) * q2 + np.array(p3) * q3)
-                    try:
-                        rez = tas.cooper_nathans(
-                            ei=ei0,
-                            ef=ef,
-                            hkl=(h, k, l),
-                            projection=projection,
-                            R0=R0,
-                        )
+
+                    rez = tas.cooper_nathans(
+                        ei=ei0,
+                        ef=ef,
+                        hkl=(h, k, l),
+                        projection=projection,
+                        R0=R0,
+                    )
+                    if rez.STATUS:
                         elps_qx_en = rez.generate_ellipse(axes=tuple(plot_axes), PROJECTION=False)
                         if not has_axes:
                             ax = fig.add_subplot(111, axes_class=Axes, grid_helper=elps_qx_en.grid_helper)
@@ -49,14 +50,13 @@ def rez_plot_gen(instrument_params, xtal, projection, q1, q2, q3, en, ef, R0):
                         elps_qx_en.generate_plot(ax, c="black", linestyle="solid")
                         elps_proj_qx_en = rez.generate_ellipse(axes=tuple(plot_axes), PROJECTION=True)
                         elps_proj_qx_en.generate_plot(ax, c="black", linestyle="dashed")
-                    except:
-                        print(f"Resolution calculation failed at q=({h},{k},{l}) and en={ei0-ef}")
 
-    projection = projection + ("en",)
-    ax.set_title(
-        f"{projection[perp_axes[0]]}={float(qe_list[perp_axes[0]])}, "
-        + f"{projection[perp_axes[1]]}={float(qe_list[perp_axes[1]])}"
-    )
+    if has_axes:
+        projection = projection + ("en",)
+        ax.set_title(
+            f"{projection[perp_axes[0]]}={qe_list[perp_axes[0]][0]}, "
+            + f"{projection[perp_axes[1]]}={qe_list[perp_axes[1]][0]}"
+        )
 
 
 def test_l_vs_en():
@@ -64,8 +64,8 @@ def test_l_vs_en():
     projection = ((0, 0, 1), (0, -1, 0), (2, -1, 0))
 
     q1 = [0, 2, 0.5]  # start, stop, step
-    q2 = 1
-    q3 = 1
+    q2 = 0
+    q3 = 0
     en = [0, 13, 2]  # start, stop, step
 
     ef = 13.5

@@ -1,4 +1,4 @@
-# from tavi.resolution.hb3 import config_params
+import math
 from tavi.utilities import *
 from tavi.instrument.tas_cmponents import *
 
@@ -213,6 +213,8 @@ class TAS(object):
             ef (float): final neutron energy, in meV
 
         """
+        S2_MIN_DEG = 1
+
         hkl = np.array(peak)
         ki = np.sqrt(ei / ksq2eng)
         if ef is None:
@@ -224,42 +226,50 @@ class TAS(object):
 
         q_sq = 4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl
         q_norm = np.sqrt(q_sq)
-        two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf)) * self.goniometer.sense
 
-        q = self.sample.ub_matrix @ hkl
-        t1 = q / np.linalg.norm(q)
+        # two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf)) * self.goniometer.sense
+        two_theta = get_angle(ki, kf, q_norm)
+        if two_theta is None:
+            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
+            angles = None
+        elif two_theta * rad2deg < S2_MIN_DEG:
+            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
+            angles = None
+        else:
+            q = self.sample.ub_matrix @ hkl
+            t1 = q / np.linalg.norm(q)
 
-        eps = 1e-8  # zero
-        plane_normal = self.sample.plane_normal
-        in_plane_ref = self.sample.in_plane_ref
+            eps = 1e-8  # zero
+            plane_normal = self.sample.plane_normal
+            in_plane_ref = self.sample.in_plane_ref
 
-        # Minimal tilts
-        if np.dot(t1, plane_normal) < eps:  # t1 in plane
-            t3 = plane_normal
-            t2 = np.cross(t3, t1)
-        else:  # t1 not in plane, need to change tilts
-            if np.linalg.norm(np.cross(plane_normal, t1)) < eps:
-                # oops, t1 along plane_normal
-                t2 = in_plane_ref
-                t3 = np.cross(t1, t2)
-            else:
-                t2p = np.cross(plane_normal, t1)
-                t3 = np.cross(t1, t2p)
+            # Minimal tilts
+            if np.dot(t1, plane_normal) < eps:  # t1 in plane
+                t3 = plane_normal
                 t2 = np.cross(t3, t1)
+            else:  # t1 not in plane, need to change tilts
+                if np.linalg.norm(np.cross(plane_normal, t1)) < eps:
+                    # oops, t1 along plane_normal
+                    t2 = in_plane_ref
+                    t3 = np.cross(t1, t2)
+                else:
+                    t2p = np.cross(plane_normal, t1)
+                    t3 = np.cross(t1, t2p)
+                    t2 = np.cross(t3, t1)
 
-        t_mat = np.array(
-            [t1, t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)],
-        ).T
+            t_mat = np.array(
+                [t1, t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)],
+            ).T
 
-        t_mat_inv = np.linalg.inv(t_mat)
+            t_mat_inv = np.linalg.inv(t_mat)
 
-        q_lab1 = TAS.q_lab(two_theta * rad2deg, ki, kf) / q_norm
-        q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
-        q_lab3 = np.array([0, 1, 0])
+            q_lab1 = TAS.q_lab(two_theta * rad2deg, ki, kf) / q_norm
+            q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
+            q_lab3 = np.array([0, 1, 0])
 
-        q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
-        r_mat = q_lab_mat @ t_mat_inv
+            q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
+            r_mat = q_lab_mat @ t_mat_inv
 
-        angles = np.round((two_theta * rad2deg,) + self.goniometer.angles_from_r_mat(r_mat), 8)
+            angles = np.round((two_theta * rad2deg,) + self.goniometer.angles_from_r_mat(r_mat), 8)
 
         return angles
