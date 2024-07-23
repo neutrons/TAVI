@@ -24,7 +24,7 @@ def test_scan_group_contour_exp710():
     tavi.new_tavi_file(tavi_file_name)
 
     nexus_file_name = "./tests/test_data_folder/nexus_exp710.h5"
-    tavi.load_tavi_data_from_disk(nexus_file_name)
+    tavi.load_nexus_data_from_disk(nexus_file_name)
 
     scan_list = (
         [tavi.data[f"scan{i:04}"] for i in range(214, 225, 1)]
@@ -47,10 +47,10 @@ def test_scan_group_contour_exp710():
 
 def test_scan_group_contour(tavi):
 
-    print(len(tavi.data))
-    scan_list = [tavi.data[f"scan{i:04}"] for i in range(42, 49, 1)] + [
-        tavi.data[f"scan{i:04}"] for i in range(70, 76, 1)
-    ]
+    dataset = tavi.data["IPTS32124_CG4C_exp424"]
+
+    print(len(dataset))
+    scan_list = [dataset[f"scan{i:04}"] for i in range(42, 49, 1)] + [dataset[f"scan{i:04}"] for i in range(70, 76, 1)]
 
     sg1 = tavi.generate_scan_group(signals=scan_list, signal_axes=("qh", "en", "detector"))
     contour1 = sg1.generate_contour(rebin_steps=(0.025, 0.1))
@@ -88,19 +88,35 @@ def test_scan_group_waterfall(tavi):
     plt.show()
 
 
-if __name__ == "__main__":
-
-    tavi = TAVI_Data()
+def test_load_nexus_to_new_tavi_file(tavi):
 
     tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
     tavi.new_tavi_file(tavi_file_name)
 
     nexus_file_name = "./tests/test_data_folder/nexus_exp424.h5"
-    tavi.load_tavi_data_from_disk(nexus_file_name)
+    tavi.load_nexus_data_from_disk(nexus_file_name)
+
+    return tavi
+
+
+def test_open_tavi_file(tavi):
+
+    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
+    tavi.open_tavi_file(tavi_file_name)
+
+    return tavi
+
+
+if __name__ == "__main__":
+
+    tavi = TAVI_Data()
+
+    # tavi = test_load_nexus_to_new_tavi_file(tavi)
+    tavi = test_open_tavi_file(tavi)
 
     # test_plot_scan(tavi)
-    # test_scan_group_contour(tavi)
+    test_scan_group_contour(tavi)
 
     # test_scan_group_waterfall(tavi)
 
-    test_scan_group_contour_exp710()
+#  test_scan_group_contour_exp710()

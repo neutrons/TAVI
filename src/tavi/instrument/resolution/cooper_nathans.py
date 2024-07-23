@@ -102,6 +102,7 @@ class CN(TAS):
             elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 rez.frame = "hkl"
                 rez.q = hkl
+                rez.hkl = hkl
                 rez.angles = (
                     self.sample.gamma_star,
                     self.sample.alpha_star,
@@ -138,6 +139,7 @@ class CN(TAS):
                     hkl_prime = mat_w_inv @ hkl
                     rez.frame = "proj"
                     rez.q = hkl_prime
+                    rez.hkl = hkl
 
                     rez.angles = (
                         get_angle_vec(v1, v2),

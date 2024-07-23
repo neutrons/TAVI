@@ -16,7 +16,7 @@ def nexus_to_dict(nexus_entry):
         return str(ds.asstr()[...])
 
     scan_info = {
-        "scan": int(nexus_entry.name[5:]),
+        "scan": int(nexus_entry.name[-4:]),  # last 4 digits are scan number
         "time": dataset_to_string(nexus_entry["start_time"]),
         "scan_title": dataset_to_string(nexus_entry["title"]),
         # "preset_type": "normal",

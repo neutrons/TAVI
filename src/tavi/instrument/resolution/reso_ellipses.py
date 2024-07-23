@@ -1,18 +1,70 @@
 import numpy as np
 import numpy.linalg as la
-import mpl_toolkits.mplot3d as mplot3d
-import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
+from mpl_toolkits.axisartist import Subplot, Axes
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
-from mpl_toolkits.axisartist import Subplot
-from mpl_toolkits.axisartist import Axes
-
+from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 from tavi.utilities import *
 
-
 np.set_printoptions(floatmode="fixed", precision=4)
+
+
+class ResoCurve(object):
+    """1D Gaussian curve
+
+    Attributes:
+        cen (float)
+        fwhm (float)
+        xlabel
+        ylabel
+        title
+        legend
+
+    Methods:
+        generate_curve
+        generate_plot
+    """
+
+    def __init__(self):
+        self.center = None
+        self.fwhm = None
+
+        self.x = None
+        self.y = None
+        self.xlabel = None
+        self.ylabel = None
+        self.title = None
+        self.legend = None
+
+    def generate_curve(self, num_of_sigmas=3, points=100):
+        """Generate points on the Gaussian curve"""
+
+        sigma = self.fwhm / sig2fwhm
+        cen = self.cen
+        self.x = np.linspace(
+            -num_of_sigmas * sigma + cen,
+            num_of_sigmas * sigma + cen,
+            points,
+        )
+        amp = 1 / np.sqrt(2 * np.pi) / sigma
+        self.y = amp * np.exp(-((self.x - cen) ** 2) / sigma**2 / 2)
+
+    def generate_plot(self, ax, c="black", linestyle="solid"):
+        """Generate the plot"""
+        self.generate_curve()
+
+        s = ax.plot(
+            self.x,
+            self.y,
+            c=c,
+            linestyle=linestyle,
+            label=self.legend,
+        )
+        ax.set_xlabel(self.xlabel)
+        ax.set_ylabel(self.ylabel)
+        ax.set_title(self.title)
+        ax.grid(alpha=0.6)
+        ax.legend()
 
 
 class ResoEllipse(object):
@@ -20,10 +72,18 @@ class ResoEllipse(object):
 
     Attributes:
         mat(2 by 2 matrix)
-        centers (tuple): 1 by 2
-        fwhm:
+        centers (tuple): 2 by 1
+        fwhms (tuple): 2 by 1
         vecs: eigen-vectors
-        angle
+        angle: angle between the two plotting axes, in degrees
+        axes_labels (str)
+        ORIGIN (bool|None): shift the origin if True
+
+    Methods:
+        generate_ellipse(ellipse_points=128)
+        generate_axes()
+        generate_plot(ax, c="black", linestyle="solid")
+        plot()
 
     """
 
@@ -38,10 +98,6 @@ class ResoEllipse(object):
         self.ORIGIN = None
         self.grid_helper = None
 
-        # self.coh_fwhms = None
-        # self.incoh_fwhms = None
-        # self.principal_fwhms = None
-
     def generate_ellipse(self, ellipse_points=128):
         """Generate points on a ellipse"""
 
@@ -51,8 +107,8 @@ class ResoEllipse(object):
             self.vecs,
             np.array(
                 [
-                    self.fwhms[0] * np.cos(phi),
-                    self.fwhms[1] * np.sin(phi),
+                    self.fwhms[0] / 2 * np.cos(phi),
+                    self.fwhms[1] / 2 * np.sin(phi),
                 ],
             ),
         )
@@ -119,16 +175,21 @@ class ResoEllipsoid(object):
     """Manage the 4D resolution ellipoid
 
     Attributs:
+        STATUS (None | bool): True if resolution calculation is successful
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
         angles (tuple): angles between the projection vectors
         q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
+        hkl (tuple): momentum transfer (h, k, l)
         en (float): energy transfer
-        STATUS (None | bool): True if resolution calculation is successful
+
         mat (float): 4 by 4 resolution matrix
         r0 (float | None): Normalization factor
 
     Methods:
+        generate_ellipse(axes=(0, 1), PROJECTION=False, ORIGIN=True)
+        set_labels()
+        plot(): plot all six combination of axes
 
     """
 
@@ -138,6 +199,7 @@ class ResoEllipsoid(object):
 
         self.STATUS = None
         self.q = None
+        self.hkl = None
         self.en = None
         self.frame = None
         self.projection = None
@@ -151,45 +213,43 @@ class ResoEllipsoid(object):
         """volume of the ellipsoid"""
         pass
 
-    # def coh_fwhms_calc(self):
-    #     """Coherent FWHMs"""
-    #     reso = self.mat
-    #     fwhms = []
+    def coh_fwhms(self, axis=None):
+        """Coherent FWHM"""
 
-    #     for i in range(len(reso)):
-    #         fwhms.append(sig2fwhm / np.sqrt(reso[i, i]))
-    #     fwhms = np.array(fwhms)
-    #     self.coh_fwhms = fwhms
+        curve = ResoCurve()
+        idx = int(axis)
+        curve.fwhm = np.array(sig2fwhm / np.sqrt(self.mat[idx, idx]))
+        if idx == 3:
+            curve.cen = self.en
+        else:
+            curve.cen = self.q[idx]
 
-    # def incoh_fwhms_calc(self):
-    #     """Incoherent FWHMs"""
+        curve.xlabel = self.axes_labels[idx]
+        curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
+        curve.legend = f"coherent FWHM={np.round(curve.fwhm, 3)}"
+        return curve
 
-    #     reso = self.mat
-    #     proj_q_para = ResoEllipsoid.quadric_proj(reso, 3)
-    #     proj_q_para = ResoEllipsoid.quadric_proj(proj_q_para, 2)
-    #     proj_q_para = ResoEllipsoid.quadric_proj(proj_q_para, 1)
+    def incoh_fwhms(self, axis=None):
+        """Incoherent FWHMs"""
 
-    #     proj_q_perp = ResoEllipsoid.quadric_proj(reso, 3)
-    #     proj_q_perp = ResoEllipsoid.quadric_proj(proj_q_perp, 2)
-    #     proj_q_perp = ResoEllipsoid.quadric_proj(proj_q_perp, 0)
+        curve = ResoCurve()
+        idx = int(axis)
 
-    #     proj_q_up = ResoEllipsoid.quadric_proj(reso, 3)
-    #     proj_q_up = ResoEllipsoid.quadric_proj(proj_q_up, 1)
-    #     proj_q_up = ResoEllipsoid.quadric_proj(proj_q_up, 0)
+        reso = self.mat
+        for i in (3, 2, 1, 0):
+            if not i == idx:
+                reso = ResoEllipsoid.quadric_proj(reso, i)
 
-    #     proj_en = ResoEllipsoid.quadric_proj(reso, 2)
-    #     proj_en = ResoEllipsoid.quadric_proj(proj_en, 1)
-    #     proj_en = ResoEllipsoid.quadric_proj(proj_en, 0)
+        curve.fwhm = (1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm,)
+        if idx == 3:
+            curve.cen = self.en
+        else:
+            curve.cen = self.q[idx]
 
-    #     fwhms = np.array(
-    #         [
-    #             1.0 / np.sqrt(np.abs(proj_q_para[0, 0])) * sig2fwhm,
-    #             1.0 / np.sqrt(np.abs(proj_q_perp[0, 0])) * sig2fwhm,
-    #             1.0 / np.sqrt(np.abs(proj_q_up[0, 0])) * sig2fwhm,
-    #             1.0 / np.sqrt(np.abs(proj_en[0, 0])) * sig2fwhm,
-    #         ]
-    #     )
-    #     self.incoh_fwhms = fwhms
+        curve.xlabel = self.axes_labels[idx]
+        curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
+        curve.legend = f"incoherent FWHM={np.round(curve.fwhm , 3)}"
+        return curve
 
     # def principal_fwhms_calc(self):
     #     """FWHMs of principal axes in 4D"""

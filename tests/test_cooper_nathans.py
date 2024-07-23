@@ -114,6 +114,6 @@ def test_cooper_nathans_CTAX():
 
 if __name__ == "__main__":
 
-    test_cooper_nathans_compare_3()
+    # test_cooper_nathans_compare_3()
 
-    # test_cooper_nathans_CTAX()
+    test_cooper_nathans_CTAX()
