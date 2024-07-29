@@ -200,8 +200,43 @@ class Sample(object):
         k_star = np.cross(i_star, j_star)
         return (i_star, j_star, k_star)
 
+    @staticmethod
+    def ub_matrix_to_uv(ub_matrix):
+        """ "Calculate u and v vector from UB matrix"""
+        inv_ub_matrix = np.linalg.inv(ub_matrix)
+        u = inv_ub_matrix @ np.array([0, 0, 1])
+        v = inv_ub_matrix @ np.array([1, 0, 0])
+        return (u, v)
 
-if __name__ == "__main__":
-    sample = Sample(lattice_params=(3.574924, 3.574924, 5.663212, 90, 90, 120))
-    print(sample.a_star / 2 / np.pi)
-    print(sample.b_mat())
+    @staticmethod
+    def ub_matrix_to_lattice_params(ub_matrix):
+        """Calculate lattice parameters from UB matrix"""
+        g_mat = np.linalg.inv(ub_matrix.T @ ub_matrix)
+        a = np.sqrt(g_mat[0, 0])
+        b = np.sqrt(g_mat[1, 1])
+        c = np.sqrt(g_mat[2, 2])
+        alpha = np.arccos((g_mat[1, 2] + g_mat[2, 1]) / (2 * b * c)) * rad2deg
+        beta = np.arccos((g_mat[0, 2] + g_mat[2, 0]) / (2 * a * c)) * rad2deg
+        gamma = np.arccos((g_mat[0, 1] + g_mat[1, 0]) / (2 * a * b)) * rad2deg
+        return (a, b, c, alpha, beta, gamma)
+
+    def uv_to_ub_matrix(self, u, v):
+        """Calculate UB matrix from u and v vector, and lattice parameters"""
+
+        u = self.a_star_vec * u[0] + self.b_star_vec * u[1] + self.c_star_vec * u[2]
+        v = self.a_star_vec * v[0] + self.b_star_vec * v[1] + self.c_star_vec * v[2]
+        w = np.cross(u, v)
+        v_prime = np.cross(w, u)
+        v_mat = np.array(
+            [
+                u / np.linalg.norm(u),
+                v_prime / np.linalg.norm(v_prime),
+                w / np.linalg.norm(w),
+            ]
+        ).T
+        q_mat = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]).T
+        ub_matrix = q_mat @ np.linalg.inv(v_mat)
+        u_matrix = 1
+        b_matrix = 1
+
+        return u_matrix, b_matrix, ub_matrix

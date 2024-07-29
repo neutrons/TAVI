@@ -1,5 +1,3 @@
-import numpy as np
-
 from tavi.tavi_data.spice_to_nexus import convert_spice_to_nexus
 from tavi.tavi_data.tavi_data import TAVI_Data
 

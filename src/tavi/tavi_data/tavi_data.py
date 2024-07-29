@@ -45,6 +45,8 @@ class TAVI_Data(object):
             OVERWRITE (bool): overwrite exsiting data if Ture, oterwise append new scans in data.
                 Do not change processed_data, fit or plot
         """
+        # TODO check if file exsits
+
         with h5py.File(self.file_path, "a") as tavi_file, h5py.File(path_to_hdf5, "r") as data_file:
             # IPTS1234_HB3_exp567
             data_id = data_file.attrs["file_name"].split("/")[-1]
@@ -162,7 +164,7 @@ class TAVI_Data(object):
                 self.data.update({data_id: scans})
 
             # TODO
-            # load processed data and plots
+            # load processed_data fits, and plots
 
     def save_to_file(self, path_to_hdf5):
         """Save current data to a hdf5 on disk at path_to_hdf5

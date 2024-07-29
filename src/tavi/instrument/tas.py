@@ -165,8 +165,10 @@ class TAS(object):
             self.sample.in_plane_ref = in_plane_ref
             self.sample.plane_normal = plane_normal
 
+        # TODO
         elif len(peaks) == 3:  # find_ub_from_3peaks
             pass
+        # TODO
         elif len(peaks) > 3:  # find_ub_from_mulitple_peaks
             pass
         else:
@@ -175,9 +177,10 @@ class TAS(object):
         self.sample.ub_matrix = ub_matrix
         inv_ub_matrix = np.linalg.inv(ub_matrix)
         self.sample.inv_ub_matrix = inv_ub_matrix
-
-        self.sample.u = inv_ub_matrix @ np.array([0, 0, 1])
-        self.sample.v = inv_ub_matrix @ np.array([1, 0, 0])
+        (
+            self.sample.u,
+            self.sample.v,
+        ) = self.sample.ub_matrix_to_uv(ub_matrix)
 
         # print(np.round(ub_matrix, 6))
 
@@ -191,6 +194,7 @@ class TAS(object):
         Return
             two_theta: in degrees
         """
+        S2_MIN_DEG = 1
 
         hkl = np.array(peak)
         ki = np.sqrt(ei / ksq2eng)
@@ -201,8 +205,18 @@ class TAS(object):
 
         b_mat = self.sample.b_mat()
         q_sq = 4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl
-        two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf)) * self.goniometer.sense
-        return two_theta * rad2deg
+        q_norm = np.sqrt(q_sq)
+
+        # two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf))
+        two_theta = get_angle(ki, kf, q_norm)
+        if two_theta is None:
+            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
+            return None
+        elif two_theta * rad2deg < S2_MIN_DEG:
+            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
+            return None
+        else:
+            return two_theta * rad2deg * self.goniometer.sense
 
     def find_angles(self, peak, ei=13.5, ef=None):
         """calculate motor positions for a given peak if UB matrix has been determined
@@ -229,6 +243,7 @@ class TAS(object):
 
         # two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf)) * self.goniometer.sense
         two_theta = get_angle(ki, kf, q_norm)
+
         if two_theta is None:
             print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
             angles = None

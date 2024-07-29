@@ -76,3 +76,4 @@ if __name__ == "__main__":
 
     ctax = instrument_sample_setup(cg4c_config_params, nitio3)
     calc_ub_from_2_peaks_ctax(ctax)
+    pass

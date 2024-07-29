@@ -1,6 +1,5 @@
 import numpy as np
 import numpy.linalg as la
-import math
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid

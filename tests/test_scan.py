@@ -101,7 +101,7 @@ def test_load_nexus_to_new_tavi_file(tavi):
 
 def test_open_tavi_file(tavi):
 
-    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
+    tavi_file_name = "./tests/test_data_folder/tavi_exp424.h5"
     tavi.open_tavi_file(tavi_file_name)
 
     return tavi
