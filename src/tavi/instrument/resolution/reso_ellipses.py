@@ -28,7 +28,7 @@ class ResoCurve(object):
     def __init__(self):
         self.center = None
         self.fwhm = None
-
+        self.r0 = None
         self.x = None
         self.y = None
         self.xlabel = None
@@ -46,7 +46,7 @@ class ResoCurve(object):
             num_of_sigmas * sigma + cen,
             points,
         )
-        amp = 1 / np.sqrt(2 * np.pi) / sigma
+        amp = self.r0 / np.sqrt(2 * np.pi) / sigma
         self.y = amp * np.exp(-((self.x - cen) ** 2) / sigma**2 / 2)
 
     def generate_plot(self, ax, c="black", linestyle="solid"):
@@ -224,6 +224,7 @@ class ResoEllipsoid(object):
         else:
             curve.cen = self.q[idx]
 
+        curve.r0 = self.r0
         curve.xlabel = self.axes_labels[idx]
         curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
         curve.legend = f"coherent FWHM={np.round(curve.fwhm, 3)}"
@@ -246,6 +247,7 @@ class ResoEllipsoid(object):
         else:
             curve.cen = self.q[idx]
 
+        curve.r0 = self.r0
         curve.xlabel = self.axes_labels[idx]
         curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
         curve.legend = f"incoherent FWHM={np.round(curve.fwhm , 3)}"

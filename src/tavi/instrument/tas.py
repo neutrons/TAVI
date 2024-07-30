@@ -111,24 +111,21 @@ class TAS(object):
         q_sample3 = np.cross(q_sample1, q_sample2p)
         q_sample2 = np.cross(q_sample3, q_sample1)
 
-        q_sample_mat = np.array(
-            [
-                q_sample1 / np.linalg.norm(q_sample1),
-                q_sample2 / np.linalg.norm(q_sample2),
-                q_sample3 / np.linalg.norm(q_sample3),
-            ]
-        ).T
+        q_sample1 = q_sample1 / np.linalg.norm(q_sample1)
+        q_sample2 = q_sample2 / np.linalg.norm(q_sample2)
+        q_sample3 = q_sample3 / np.linalg.norm(q_sample3)
+
+        q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
 
         u_mat = q_sample_mat @ np.linalg.inv(q_hkl_mat)
 
-        # define UP
-        in_plane_ref = q_sample_mat[:, 0]
-        if q_sample_mat[1, 2] < 0:
-            plane_normal = -q_sample_mat[:, 2]
-        else:
-            plane_normal = q_sample_mat[:, 2]
+        plane_normal = q_sample3
+        if plane_normal[1] < 0:  # plane normal always up along +Y
+            plane_normal = -plane_normal
 
-        return u_mat, np.round(in_plane_ref, 6), np.round(plane_normal, 6)
+        in_plane_ref = q_sample1
+
+        return u_mat, in_plane_ref, plane_normal
 
     def find_ub(self, peaks, angles, ei=13.5, ef=None):
         """calculate UB matrix from peaks and motor positions
@@ -177,10 +174,6 @@ class TAS(object):
         self.sample.ub_matrix = ub_matrix
         inv_ub_matrix = np.linalg.inv(ub_matrix)
         self.sample.inv_ub_matrix = inv_ub_matrix
-        (
-            self.sample.u,
-            self.sample.v,
-        ) = self.sample.ub_matrix_to_uv(ub_matrix)
 
         # print(np.round(ub_matrix, 6))
 
@@ -251,6 +244,7 @@ class TAS(object):
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
             angles = None
         else:
+            two_theta = two_theta * rad2deg * self.goniometer.sense
             q = self.sample.ub_matrix @ hkl
             t1 = q / np.linalg.norm(q)
 
@@ -278,13 +272,13 @@ class TAS(object):
 
             t_mat_inv = np.linalg.inv(t_mat)
 
-            q_lab1 = TAS.q_lab(two_theta * rad2deg, ki, kf) / q_norm
+            q_lab1 = TAS.q_lab(two_theta, ki, kf) / q_norm
             q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
             q_lab3 = np.array([0, 1, 0])
 
             q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
             r_mat = q_lab_mat @ t_mat_inv
 
-            angles = np.round((two_theta * rad2deg,) + self.goniometer.angles_from_r_mat(r_mat), 8)
+            angles = np.round((two_theta,) + self.goniometer.angles_from_r_mat(r_mat), 6)
 
         return angles

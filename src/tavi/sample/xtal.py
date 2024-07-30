@@ -9,7 +9,12 @@ class Xtal(Sample):
     Attibutes:
         type (str): "xtal"
 
-
+         b_matrix
+        inv_ub_matrix
+        in_plane_ref: in plane vector in Qsample frame, goniometers at zero
+        plane_normal: normal vector in Qsample frame, goniometers at zero
+        u (tuple)
+        v (tuple)
     Methods:
 
 
@@ -23,10 +28,24 @@ class Xtal(Sample):
         self.ub_angles = None
         self.ub_matrix = None
         self.inv_ub_matrix = None
+
         self.plane_normal = None
         self.in_plane_ref = None
 
         self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
+
+    @property
+    def u(self):
+        """u vector, in reciprocal lattice unit, along beam"""
+        return self.ub_matrix_to_uv(self.ub_matrix)[0]
+
+    @property
+    def v(self):
+        """
+        v vector, in reciprocal lattice unit,
+        in the horizaontal scattering plane
+        """
+        return self.ub_matrix_to_uv(self.ub_matrix)[1]
 
     @staticmethod
     def ub_matrix_to_uv(ub_matrix):

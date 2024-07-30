@@ -44,7 +44,7 @@ monitor = {
 
 goniometer = {
     "sense": +1,
-    "type": "Y-ZX",  # "TAS" or "4C"
+    "type": "Y-ZX",  # s1-sgl-sgu
 }
 
 analyzer = {

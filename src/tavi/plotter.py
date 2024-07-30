@@ -29,6 +29,7 @@ class Plot1DManager(object):
             curve1.generate_plot(ax, c="black", linestyle="solid")
             curve2.generate_plot(ax, c="black", linestyle="dashed")
             fig.show()
+        return rez
 
 
 class Plot2DManager(object):

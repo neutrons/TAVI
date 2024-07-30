@@ -226,29 +226,45 @@ class Goniometer(object):
         return self.r_mat(angles).T
 
     def angles_from_r_mat(self, r_mat):
-        """Calculate goniometer angles from the R matrix"""
+        """Calculate goniometer angles from the R matrix
+
+        Note:
+            range of np.arcsin is -pi/2 to pi/2
+            range of np.atan2 is -pi to pi
+        """
 
         match self.type:
 
-            case "Y-ZX":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3
+            case "Y-ZX" | "YZ-X":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3, Y-Z-mX (s1, sgl, sgu) for CG4C
 
-                sgl = np.arcsin(r_mat[1, 0]) * rad2deg
+                # sgl1 = np.arcsin(r_mat[1, 0]) * rad2deg
                 # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                sgl = np.arctan2(r_mat[1, 0], np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+
+                # sgu1 = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                # sgu2 = np.arccos(r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+                sgu = (
+                    np.arctan2(
+                        -r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                        r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                    )
+                    * rad2deg
+                )
+
+                # omega1 = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
                 # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-
-                angles = (omega, -1 * sgl, sgu)
-
-            case "YZ-X":  # Y-Z-mX (s1, sgl, sgu) for CG4C
-
-                sgl = np.arcsin(r_mat[1, 0]) * rad2deg
-                # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                sgu = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                omega = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-
-                angles = (omega, sgl, -1 * sgu)
+                omega = (
+                    np.arctan2(
+                        -r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                        r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                    )
+                    * rad2deg
+                )
+                match self.type:
+                    case "Y-ZX":
+                        angles = (omega, -1 * sgl, sgu)
+                    case "YZ-X":
+                        angles = (omega, sgl, -1 * sgu)
 
             case _:
                 angles = None

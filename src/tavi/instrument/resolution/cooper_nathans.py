@@ -213,10 +213,10 @@ class CN(TAS):
             mat_c[CN.IDX_ANA0_V, CN.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
             mat_c[CN.IDX_ANA0_V, CN.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
 
-            mat_h = mat_c.T @ self._mat_f @ mat_c
-            mat_hg_inv = la.inv(mat_h + self._mat_g)
+            mat_h = mat_c.T @ self._mat_f @ mat_c + self._mat_g
+            mat_h_inv = la.inv(mat_h)
             mat_ba = mat_b @ mat_a
-            mat_cov = mat_ba @ mat_hg_inv @ mat_ba.T
+            mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
             # TODO smaple mosaic????
             mat_cov[1, 1] += q_mod**2 * self.sample.mosaic**2
@@ -258,13 +258,20 @@ class CN(TAS):
                 )
                 rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
-            # TODO normalization factor
+            # TODO check normalization factor k
+            # -------------------------------------------------------------------------
+            # - if the instruments works in kf=const mode and the scans are counted for
+            #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
+            # - if the instrument works in ki=const mode the kf^3 factor is needed.
+
             if R0:  # calculate
-                r0 = 1
+                r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
+                r0 *= np.linalg.det(self._mat_f) / np.linalg.det(mat_h)
             else:
                 r0 = 0
+            rez.r0 = r0
 
-            if np.isnan(r0) or np.isinf(r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
+            if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
                 rez.STATUS = False
             else:
                 rez.STATUS = True

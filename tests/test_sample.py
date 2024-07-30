@@ -41,11 +41,18 @@ if __name__ == "__main__":
     beta = 90
     gamma = 120
 
+    # ub_matrix = np.array(
+    #     [
+    #         [0.053821, 0.107638, 0.166485],
+    #         [0.272815, -0.013290, 0.002566],
+    #         [0.164330, 0.304247, -0.058788],
+    #     ]
+    # )
     ub_matrix = np.array(
         [
-            [0.053821, 0.107638, 0.166485],
-            [0.272815, -0.013290, 0.002566],
-            [0.164330, 0.304247, -0.058788],
+            [0.0538, 0.1076, 0.1665],
+            [0.2728, -0.0133, 0.0026],
+            [0.1643, 0.3042, -0.0588],
         ]
     )
     b_matrix = np.array(
@@ -62,6 +69,6 @@ if __name__ == "__main__":
     lattice_params = (a, b, c, alpha, beta, gamma)
 
     # test_b_matrix(lattice_params, b_matrix)
-    # test_ub_matrix_to_uv(lattice_params, ub_matrix)
+    test_ub_matrix_to_uv(lattice_params, ub_matrix)
     # test_ub_matrix_to_lattice_params(ub_matrix)
     test_uv_to_ub_matrix(u, v, lattice_params)

@@ -43,7 +43,7 @@ monitor = {
 
 goniometer = {
     "sense": +1,
-    "type": "Y-ZX",
+    "type": "Y-ZX",  # s1-sgl-sgu
     # CTAX's angle convention is actually YZ-X,
     # but the UB calculation in SPICE is done using the convetion Y-ZX
 }

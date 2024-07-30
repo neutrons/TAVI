@@ -43,12 +43,13 @@ def test_1D(tas):
     en = 6
 
     ef = 13.5
-    R0 = False
+    R0 = True
 
     axis = 1
 
     plt1d = Plot1DManager()
-    plt1d.rez_plot_1D(tas, projection, hkl, en, ef, R0, axis)
+    rez = plt1d.rez_plot_1D(tas, projection, hkl, en, ef, R0, axis)
+    print(f"renorm factor R0 = {rez.r0}")
 
 
 if __name__ == "__main__":
@@ -57,8 +58,8 @@ if __name__ == "__main__":
     tas.load_instrument(instrument_params)
     tas.load_sample(test_xtal)
 
-    # test_1D(tas)
+    test_1D(tas)
     test_l_vs_en(tas)
-    # test_h_vs_k(tas)
+    test_h_vs_k(tas)
 
     plt.show()
