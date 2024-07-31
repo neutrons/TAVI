@@ -166,14 +166,16 @@ def calc_ub_from_2_peaks_hb1():
     print(angles)
     angles = hb1.find_angles(peak=(0, 0, 1), ei=13.499993, ef=13.506112)
     print(angles)
+    angles = hb1.find_angles(peak=(1, 1, 1), ei=13.499993, ef=13.506112)
+    print(angles)
 
 
 if __name__ == "__main__":
 
-    takin = instrument_sample_setup(instrument_params, test_xtal)
-    calc_ub_from_2_peaks_hb3(takin)
+    # takin = instrument_sample_setup(instrument_params, test_xtal)
+    # calc_ub_from_2_peaks_hb3(takin)
 
     # ctax = instrument_sample_setup(cg4c_config_params, nitio3)
     # calc_ub_from_2_peaks_ctax(ctax)
 
-    # calc_ub_from_2_peaks_hb1()
+    calc_ub_from_2_peaks_hb1()

@@ -21,6 +21,8 @@ def test_copper_nathans_localQ(tas_params):
         projection=None,
         R0=R0,
     )
+    print(rez.mat)
+    print(rez.r0)
 
     # describe and plot ellipses
     # rez.calc_ellipses()
@@ -37,6 +39,7 @@ def test_copper_nathans_hkl(tas_params):
         hkl=hkl,
         R0=R0,
     )
+    print(rez.mat)
 
     # describe and plot ellipses
     # rez.calc_ellipses()
@@ -54,6 +57,7 @@ def test_copper_nathans_projection(tas_params):
         projection=projection,
         R0=R0,
     )
+    print(rez.mat)
 
     # describe and plot ellipses
     # rez.calc_ellipses()
@@ -95,13 +99,20 @@ def test_cooper_nathans_CTAX():
     tas = CN()
     tas.load_instrument(cg4c_config_params)
     tas.load_sample(nitio3)
+    print(f"u={tas.sample.u}")
+    print(f"v={tas.sample.v}")
+
+    # reset UB
+    # tas.sample.ub_matrix = tas.sample.uv_to_ub_matrix(u=[1, 1, 0], v=[0, 0, 1])
+    # print(f"u={tas.sample.u}")
+    # print(f"v={tas.sample.v}")
 
     ei = 4.8
     ef = 4.8
     hkl = (0, 0, 3)
 
-    projection = ((1, 1, 0), (0, 0, 1), (-1, 1, 0))
-    R0 = False
+    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    R0 = True
 
     tas_params = (tas, ei, ef, hkl, projection, R0)
 

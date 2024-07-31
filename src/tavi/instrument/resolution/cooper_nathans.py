@@ -94,7 +94,6 @@ class CN(TAS):
 
             if projection is None:  # Local Q frame
                 rez.frame = "q"
-                rez.q = hkl
                 rez.angles = (90, 90, 90)
                 rez.STATUS = True
 
@@ -226,9 +225,10 @@ class CN(TAS):
 
             if rez.frame == "q":
                 rez.mat = mat_reso
+                rez.q = (q_mod, 0, 0)
 
             elif rez.frame == "hkl":
-                rez.mat = mat_reso
+
                 conv_mat_4d = np.eye(4)
                 conv_mat_4d[0:3, 0:3] = (
                     np.array(
@@ -243,7 +243,7 @@ class CN(TAS):
                 rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
             elif rez.frame == "proj":
-                rez.mat = mat_reso
+
                 conv_mat_4d = np.eye(4)
                 conv_mat_4d[0:3, 0:3] = (
                     np.array(
@@ -266,9 +266,10 @@ class CN(TAS):
 
             if R0:  # calculate
                 r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-                r0 *= np.linalg.det(self._mat_f) / np.linalg.det(mat_h)
+                r0 *= np.sqrt(np.linalg.det(self._mat_f) / np.linalg.det(mat_h))
             else:
                 r0 = 0
+
             rez.r0 = r0
 
             if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):

@@ -296,12 +296,13 @@ class ResoEllipsoid(object):
         ellipse.ORIGIN = ORIGIN
         qe_list = np.concatenate((self.q, self.en), axis=None)
         # axes = np.sort(axes)
-        match tuple(np.sort(axes)):
-            case (0, 1):
+        # match tuple(np.sort(axes)):
+        match tuple(axes):
+            case (0, 1) | (1, 0):
                 ellipse.angle = np.round(self.angles[0], 2)
-            case (1, 2):
+            case (1, 2) | (2, 1):
                 ellipse.angle = np.round(self.angles[1], 2)
-            case (0, 2):
+            case (0, 2) | (2, 0):
                 ellipse.angle = np.round(self.angles[2], 2)
             case _:
                 ellipse.angle = 90
