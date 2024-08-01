@@ -258,7 +258,7 @@ class CN(TAS):
                 )
                 rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
-            # TODO check normalization factor k
+            # TODO check normalization factor
             # -------------------------------------------------------------------------
             # - if the instruments works in kf=const mode and the scans are counted for
             #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
