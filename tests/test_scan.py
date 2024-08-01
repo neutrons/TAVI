@@ -5,7 +5,9 @@ from tavi.tavi_data.tavi_data import TAVI_Data
 def test_plot_scan(tavi):
 
     print(len(tavi.data))
-    s = tavi.data["scan0025"]
+    datasets = list(tavi.data.keys())[0]
+    print(datasets)
+    s = tavi.data[datasets]["scan0042"]
     s.plot_curve()
     # s.plot_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)
     s.plot_curve(rebin_type="grid", rebin_step=0.25)
@@ -88,35 +90,17 @@ def test_scan_group_waterfall(tavi):
     plt.show()
 
 
-def test_load_nexus_to_new_tavi_file(tavi):
-
-    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
-    tavi.new_tavi_file(tavi_file_name)
-
-    nexus_file_name = "./tests/test_data_folder/nexus_exp424.h5"
-    tavi.load_nexus_data_from_disk(nexus_file_name)
-
-    return tavi
-
-
-def test_open_tavi_file(tavi):
-
-    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
-    tavi.open_tavi_file(tavi_file_name)
-
-    return tavi
-
-
 if __name__ == "__main__":
 
     tavi = TAVI_Data()
 
-    # tavi = test_load_nexus_to_new_tavi_file(tavi)
-    tavi = test_open_tavi_file(tavi)
+    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
+    tavi.open_tavi_file(tavi_file_name)
 
-    # test_plot_scan(tavi)
-    test_scan_group_contour(tavi)
+    # test_scan_group_contour(tavi)
 
     # test_scan_group_waterfall(tavi)
 
-#  test_scan_group_contour_exp710()
+    # test_scan_group_contour_exp710()
+
+    test_plot_scan(tavi)

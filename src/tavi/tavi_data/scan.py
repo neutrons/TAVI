@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 from tavi.tavi_data.nexus_reader import nexus_to_dict
 
 
@@ -44,21 +45,13 @@ class Scan(object):
         self.instrument_info = instrument_info
         self.data = data
 
-    # def set_metadata(self, meta_data):
-    #     """Set metadata"""
-    #     self.meta_data = meta_data
-
-    # def set_data(self, data):
-    #     """Set metadata"""
-    #     self.data = data
-
     def get_scan_info(self):
         """Return scan_info in metadata.
 
         Returns:
             dict: dictionay of scan_info metadata.
         """
-        return None
+        return self.scan_info
 
     def get_sample_ub_info(self):
         """Return sample_UB_info in metadata.
@@ -66,7 +59,7 @@ class Scan(object):
         Returns:
             dict: dictionay of sample_UB_info metadata.
         """
-        return None
+        return self.sample_ub_info
 
     def get_instrument_info(self):
         """Return instrument_info in metadata.
@@ -74,15 +67,15 @@ class Scan(object):
         Returns:
             dict: dictionay of instrument_info metadata.
         """
-        return None
+        return self.instrument_info
 
-    def save_metadata(self, metadata_entry):
-        """Save metadata_entry into file
+    # def save_metadata(self, metadata_entry):
+    #     """Save metadata_entry into file
 
-        Args:
-           metadata_entry (dict): {key: value}
-        """
-        pass
+    #     Args:
+    #        metadata_entry (dict): {key: value}
+    #     """
+    #     pass
 
     def get_data_entry(self, entry_name):
         """Return data entry based on entry_name
@@ -93,6 +86,7 @@ class Scan(object):
         Returns:
             tuple: data entry
         """
+        return self.data[entry_name]
 
     def generate_curve(
         self,
@@ -248,7 +242,15 @@ class Scan(object):
 
         return (x, y, xerr, yerr, xlabel, ylabel, title, label)
 
-    def plot_curve(self, x_str=None, y_str=None, norm_channel=None, norm_val=1, rebin_type=None, rebin_step=0):
+    def plot_curve(
+        self,
+        x_str=None,
+        y_str=None,
+        norm_channel=None,
+        norm_val=1,
+        rebin_type=None,
+        rebin_step=0,
+    ):
         """Plot a 1D curve gnerated from a singal scan in a new window"""
 
         x, y, xerr, yerr, xlabel, ylabel, title, _ = self.generate_curve(
