@@ -20,7 +20,7 @@ guide = {
 
 monochromator = {
     "type": "PG002",
-    "d_spacing": mono_ana_xtal["PG002"],
+    # "d_spacing": mono_ana_xtal["PG002"],
     "mosaic": 45,  # horizontal mosaic
     "mosaic_v": 45,  # vertical mosaic, if anisotropic
     "sense": +1,
@@ -43,8 +43,8 @@ monitor = {
     "shape": "rectangular",
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 5 / np.sqrt(12),
-    "height": 12 / np.sqrt(12),
+    "width": 5,  # / np.sqrt(12),
+    "height": 12,  # / np.sqrt(12),
 }
 
 goniometer = {

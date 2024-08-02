@@ -29,8 +29,9 @@ class TAS(object):
         self.arms = None
         self.sample = None
 
-    def load_instrument(self, config_params):
-        """Load a dictornary of instrument configuration"""
+    def load_instrument_from_dicts(self, config_params):
+        """Load instrument configuration from a json file"""
+
         self.source = Source(config_params["source"])
         self.collimators = Collimators(config_params["collimators"])
         # self.guide = Guide(config_params["guide"])
@@ -40,6 +41,14 @@ class TAS(object):
         self.analyzer = Analyzer(config_params["analyzer"])
         self.detector = Detector(config_params["detector"])
         self.arms = Arms(config_params["distances"])
+
+    # TODO
+    def load_instrument_from_json(self, path_to_json):
+        """Load instrument configuration from a json file"""
+
+        config_params = path_to_json
+
+        self.load_instrument_from_dicts(config_params)
 
     def save_instrument(self):
         """Save configuration into a dictionary"""

@@ -1,7 +1,9 @@
 # from tavi.resolution.hb3 import config_params
-from tavi.instrument.instrument_params.cg4c import cg4c_config_params
-from tavi.instrument.instrument_params.takin_test import instrument_params
+import json
+from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
+from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
 from test_data_folder.test_samples.nitio3 import nitio3
+
 from test_data_folder.test_samples.sample_test import test_xtal
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
@@ -11,7 +13,7 @@ from tavi.sample.xtal import Xtal
 def instrument_sample_setup(instrument_config, sample_config):
 
     tax = TAS()
-    tax.load_instrument(instrument_config)
+    tax.load_instrument_from_dicts(instrument_config)
     tax.load_sample(sample_config)
 
     print(f"analyser type is {tax.analyzer.type}")
@@ -19,6 +21,19 @@ def instrument_sample_setup(instrument_config, sample_config):
     print(f"gamma angle is {tax.sample.gamma}")
 
     return tax
+
+
+def load_instrument_from_json(instrument_config):
+
+    # convert python dictionary to json file
+    # with open("./src/tavi/instrument/instrument_params/takin_test.json", "w") as file:
+    #     json.dump(instrument_config, file)
+
+    # Retrieve JSON data from the file
+    with open("./src/tavi/instrument/instrument_params/takin_test.json", "r") as file:
+        tas_config = json.load(file)
+
+    print(tas_config)
 
 
 def calc_ub_from_2_peaks_ctax(ctax):
@@ -118,7 +133,7 @@ def calc_ub_from_2_peaks_hb3(hb3):
 def calc_ub_from_2_peaks_hb1():
 
     hb1 = TAS()
-    hb1.load_instrument(instrument_params)
+    hb1.load_instrument_from_dicts(instrument_params)
 
     lattice_params = (3.939520, 3.939520, 3.941957, 90.000000, 90.000000, 90.000000)
     xtal = Xtal(lattice_params=lattice_params)
@@ -178,4 +193,6 @@ if __name__ == "__main__":
     # ctax = instrument_sample_setup(cg4c_config_params, nitio3)
     # calc_ub_from_2_peaks_ctax(ctax)
 
-    calc_ub_from_2_peaks_hb1()
+    # calc_ub_from_2_peaks_hb1()
+
+    load_instrument_from_json(instrument_params)

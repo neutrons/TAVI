@@ -2,7 +2,7 @@ import matplotlib.pylab as plt
 from tavi.tavi_data.tavi_data import TAVI_Data
 from tavi.plotter import Plot2DManager
 from tavi.instrument.resolution.cooper_nathans import CN
-from tavi.instrument.instrument_params.cg4c import cg4c_config_params
+from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
 from test_data_folder.test_samples.nitio3 import nitio3
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # generate 2D rez plot
 
     tas = CN()
-    tas.load_instrument(cg4c_config_params)
+    tas.load_instrument_from_dicts(cg4c_config_params)
     tas.load_sample(nitio3)
 
     projection = ((1, 1, 0), (-1, 1, 0), (0, 0, 1))

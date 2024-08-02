@@ -1,5 +1,5 @@
 import matplotlib.pylab as plt
-from tavi.instrument.instrument_params.takin_test import instrument_params
+from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
 from test_data_folder.test_samples.sample_test import test_xtal
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.plotter import Plot1DManager, Plot2DManager
@@ -55,7 +55,7 @@ def test_1D(tas):
 if __name__ == "__main__":
 
     tas = CN()
-    tas.load_instrument(instrument_params)
+    tas.load_instrument_from_dicts(instrument_params)
     tas.load_sample(test_xtal)
 
     test_1D(tas)
