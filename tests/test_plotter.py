@@ -3,7 +3,7 @@ from tavi.tavi_data.tavi_data import TAVI_Data
 from tavi.plotter import Plot2DManager
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
-from test_data_folder.test_samples.nitio3 import nitio3
+from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
 
 if __name__ == "__main__":
 

@@ -2,9 +2,9 @@
 import json
 from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
 from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
-from test_data_folder.test_samples.nitio3 import nitio3
+from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
 
-from test_data_folder.test_samples.sample_test import test_xtal
+from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
 from tavi.sample.xtal import Xtal
@@ -23,17 +23,25 @@ def instrument_sample_setup(instrument_config, sample_config):
     return tax
 
 
-def load_instrument_from_json(instrument_config):
+def test_load_from_json(instrument_config_json_path, sample_json_path):
 
     # convert python dictionary to json file
     # with open("./src/tavi/instrument/instrument_params/takin_test.json", "w") as file:
     #     json.dump(instrument_config, file)
 
-    # Retrieve JSON data from the file
-    with open("./src/tavi/instrument/instrument_params/takin_test.json", "r") as file:
-        tas_config = json.load(file)
+    # with open("./tests/test_data_folder/test_samples/nitio3.json", "w") as file:
+    #     json.dump(nitio3, file)
 
-    print(tas_config)
+    tax = TAS()
+    tax.load_instrument_from_json(instrument_config_json_path)
+    tax.load_sample_from_json(sample_json_path)
+
+    print(f"analyser type is {tax.analyzer.type}")
+    print(f"analyser type is {tax.analyzer.d_spacing}")
+    print(f"a lattice parameter is {tax.sample.a}")
+    print(f"gamma angle is {tax.sample.gamma}")
+
+    return tax
 
 
 def calc_ub_from_2_peaks_ctax(ctax):
@@ -195,4 +203,7 @@ if __name__ == "__main__":
 
     # calc_ub_from_2_peaks_hb1()
 
-    load_instrument_from_json(instrument_params)
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
+    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+
+    test_load_from_json(instrument_config_json_path, sample_json_path)

@@ -1,11 +1,12 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
-from test_data_folder.test_samples.sample_test import test_xtal
 from tavi.instrument.resolution.cooper_nathans import CN
 
-from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
-from test_data_folder.test_samples.nitio3 import nitio3
+# from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
+# from test_data_folder.test_samples.python_samples.sample_test import test_xtal
+
+# from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
+# from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -67,7 +68,14 @@ def test_copper_nathans_projection(tas_params):
 def test_cooper_nathans_compare_3():
 
     tas = CN()
-    tas.load_instrument_from_dicts(instrument_params)
+
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
+    sample_json_path = "./tests/test_data_folder/test_samples/test_xtal.json"
+
+    # tas.load_instrument_from_json(instrument_config_json_path)
+    # tas.load_sample_from_json(sample_json_path)
+
+    tas.load_instrument_from_(instrument_params)
     tas.load_sample(test_xtal)
 
     if tas.sample.ub_matrix is None:
@@ -97,8 +105,15 @@ def test_cooper_nathans_compare_3():
 def test_cooper_nathans_CTAX():
 
     tas = CN()
-    tas.load_instrument_from_dicts(cg4c_config_params)
-    tas.load_sample(nitio3)
+
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
+    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+
+    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_sample_from_json(sample_json_path)
+
+    # tas.load_instrument_from_dicts(cg4c_config_params)
+    # tas.load_sample(nitio3)
     print(f"u={tas.sample.u}")
     print(f"v={tas.sample.v}")
 

@@ -8,14 +8,21 @@ class Source(object):
     def __init__(self, param_dict):
 
         self.name = None
-        self.shape = None
+        self.shape = "rectangular"
         self.width = None
         self.height = None
 
         for key, val in param_dict.items():
             match key:
                 case "width" | "height":
-                    setattr(self, key, val * cm2angstrom)
+                    # divide by np.sqrt(12) if rectangular
+                    #  Diameter D/4 if spherical
+                    if param_dict["shape"] == "rectangular":
+                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
+                    elif param_dict["shape"] == "circular":
+                        setattr(self, key, val / 4 * cm2angstrom)
+                    else:
+                        print("Source shape needs to be either rectangular or circular.")
                 case _:
                     setattr(self, key, val)
 
@@ -35,6 +42,50 @@ class Guide(object):
                     setattr(self, key, val * min2rad)
                 case _:
                     setattr(self, key, val)
+
+
+class Monochromator(object):
+    """Monochromator"""
+
+    def __init__(self, param_dict):
+
+        self.type = "PG002"
+        self.d_spacing = mono_ana_xtal["PG002"]
+        self.mosaic = 45  # horizontal mosaic, min of arc
+        self.mosaic_v = 45  # vertical mosaic, if anisotropic
+        self.sense = -1
+
+        # divide by np.sqrt(12) if rectangular
+        # Diameter D/4 if spherical
+        self.shape = "rectangular"  # or spherical
+        self.width = 12.0
+        self.height = 8.0
+        self.depth = 0.15
+        # horizontal focusing
+        self.curved_h = False
+        self.curvh = 0.0
+        self.optimally_curved_h = False
+        # vertical focusing
+        self.curved_v = False
+        self.curvv = 0.0
+        self.optimally_curved_v = False
+
+        for key, val in param_dict.items():
+            match key:
+                case "mosaic" | "mosaic_v" | "curvh" | "curvv":
+                    setattr(self, key, val * min2rad)
+                case "width" | "height" | "depth":
+                    # divide by np.sqrt(12) if rectangular
+                    # Diameter D/4 if spherical
+                    if param_dict["shape"] == "rectangular":
+                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
+                    elif param_dict["shape"] == "spherical":
+                        setattr(self, key, val / 4 * cm2angstrom)
+                    else:
+                        print("Monochromator shape needs to be either rectangular or spherical.")
+                case _:
+                    setattr(self, key, val)
+            self.d_spacing = mono_ana_xtal[self.type]
 
 
 class Collimators(object):
@@ -71,18 +122,24 @@ class Monitor(object):
 
     def __init__(self, param_dict):
 
-        self.shape = "rectangular"
-        self.width = 5
-        self.height = 12
+        self.shape = "rectangular"  # or spherical
+        self.width = 5 * cm2angstrom
+        self.height = 12 * cm2angstrom
 
         for key, val in param_dict.items():
-            setattr(self, key, val)
 
-        if self.shape == "rectangular":
-            self.width /= np.sqrt(12)
-            self.height /= np.sqrt(12)
-        elif self.shape == "spherical":
-            pass
+            match key:
+                case "width" | "height":
+                    # divide by np.sqrt(12) if rectangular
+                    # Diameter D/4 if spherical
+                    if param_dict["shape"] == "rectangular":
+                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
+                    elif param_dict["shape"] == "spherical":
+                        setattr(self, key, val / 4 * cm2angstrom)
+                    else:
+                        print("Monitor shape needs to be either rectangular or spherical.")
+                case _:
+                    setattr(self, key, val)
 
 
 class Analyzer(object):
@@ -96,6 +153,7 @@ class Analyzer(object):
         self.sense = -1
         # divide by np.sqrt(12) if rectangular
         # Diameter D/4 if spherical
+        self.shape = "rectangular"
         self.width = 12.0
         self.height = 8.0
         self.depth = 0.3
@@ -113,12 +171,22 @@ class Analyzer(object):
                 case "mosaic" | "mosaic_v" | "curvh" | "curvv":
                     setattr(self, key, val * min2rad)
                 case "width" | "height" | "depth":
+                    # divide by np.sqrt(12) if rectangular
+                    # Diameter D/4 if spherical
+                    if param_dict["shape"] == "rectangular":
+                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
+                    elif param_dict["shape"] == "spherical":
+                        setattr(self, key, val / 4 * cm2angstrom)
+                    else:
+                        print("Analyzer shape needs to be either rectangular or spherical.")
+
                     setattr(self, key, val * cm2angstrom)
                 case _:
                     setattr(self, key, val)
             self.d_spacing = mono_ana_xtal[self.type]
 
 
+# TODO
 class Detector(object):
 
     def __init__(self, param_dict):
@@ -127,18 +195,18 @@ class Detector(object):
         self.height = 5.0  # in cm
 
         for key, val in param_dict.items():
-            setattr(self, key, val)
-
-        # TODO
-        if self.shape == "rectangular":
-            self.width = self.width * cm2angstrom
-            self.height = self.height * cm2angstrom
-            # self.width /= np.sqrt(12)
-            # self.height /= np.sqrt(12)
-        elif self.shape == "spherical":
-            pass  #
-        else:
-            print("unknown detector shape.")
+            match key:
+                case "width" | "height":
+                    # divide by np.sqrt(12) if rectangular
+                    # Diameter D/4 if spherical
+                    if param_dict["shape"] == "rectangular":
+                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
+                    elif param_dict["shape"] == "spherical":
+                        setattr(self, key, val / 4 * cm2angstrom)
+                    else:
+                        print("Detector shape needs to be either rectangular or spherical.")
+                case _:
+                    setattr(self, key, val)
 
 
 class Arms(object):
@@ -154,41 +222,6 @@ class Arms(object):
 
         for key, val in param_dict.items():
             setattr(self, key, val * cm2angstrom)
-
-
-class Monochromator(object):
-    """Monochromator"""
-
-    def __init__(self, param_dict):
-
-        self.type = "PG002"
-        self.d_spacing = mono_ana_xtal["PG002"]
-        self.mosaic = 45  # horizontal mosaic, min of arc
-        self.mosaic_v = 45  # vertical mosaic, if anisotropic
-        self.sense = -1
-        # divide by np.sqrt(12) if rectangular
-        # Diameter D/4 if spherical
-        self.width = 12.0
-        self.height = 8.0
-        self.depth = 0.15
-        # horizontal focusing
-        self.curved_h = False
-        self.curvh = 0.0
-        self.optimally_curved_h = False
-        # vertical focusing
-        self.curved_v = False
-        self.curvv = 0.0
-        self.optimally_curved_v = False
-
-        for key, val in param_dict.items():
-            match key:
-                case "mosaic" | "mosaic_v" | "curvh" | "curvv":
-                    setattr(self, key, val * min2rad)
-                case "width" | "height" | "depth":
-                    setattr(self, key, val * cm2angstrom)
-                case _:
-                    setattr(self, key, val)
-            self.d_spacing = mono_ana_xtal[self.type]
 
 
 class Goniometer(object):

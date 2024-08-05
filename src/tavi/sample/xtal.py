@@ -8,8 +8,6 @@ class Xtal(Sample):
 
     Attibutes:
         type (str): "xtal"
-
-         b_matrix
         inv_ub_matrix
         in_plane_ref: in plane vector in Qsample frame, goniometers at zero
         plane_normal: normal vector in Qsample frame, goniometers at zero

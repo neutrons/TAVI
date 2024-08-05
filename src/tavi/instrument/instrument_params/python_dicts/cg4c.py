@@ -5,8 +5,8 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 7 / np.sqrt(12),  # in cm
-    "height": 15 / np.sqrt(12),  # in cm
+    "width": 7,  # / np.sqrt(12),  # in cm
+    "height": 15,  # / np.sqrt(12),  # in cm
 }
 
 
@@ -25,9 +25,9 @@ monochromator = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 7.0 / np.sqrt(12),  # in cm
-    "height": 15.0 / np.sqrt(12),  # in cm
-    "depth": 0.2 / np.sqrt(12),  # in cm
+    "width": 7.0,  # / np.sqrt(12),  # in cm
+    "height": 15.0,  # / np.sqrt(12),  # in cm
+    "depth": 0.2,  # / np.sqrt(12),  # in cm
     # horizontal focusing
     "curvh": 0.0,  # in cm^-1
     # vertical focusing

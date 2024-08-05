@@ -1,6 +1,6 @@
+# from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
+# from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 import matplotlib.pylab as plt
-from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
-from test_data_folder.test_samples.sample_test import test_xtal
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.plotter import Plot1DManager, Plot2DManager
 from tavi.utilities import *
@@ -55,8 +55,14 @@ def test_1D(tas):
 if __name__ == "__main__":
 
     tas = CN()
-    tas.load_instrument_from_dicts(instrument_params)
-    tas.load_sample(test_xtal)
+    # tas.load_instrument_from_dicts(instrument_params)
+    # tas.load_sample(test_xtal)
+
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
+    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+
+    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_sample_from_json(sample_json_path)
 
     test_1D(tas)
     test_l_vs_en(tas)

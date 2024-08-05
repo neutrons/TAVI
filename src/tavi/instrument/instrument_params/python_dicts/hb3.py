@@ -6,8 +6,8 @@ source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     #  Diameter D/4 if spherical
-    "width": 15 / np.sqrt(12),  # in cm
-    "height": 15 / np.sqrt(12),  # in cm
+    "width": 15,  # / np.sqrt(12),  # in cm
+    "height": 15,  # / np.sqrt(12),  # in cm
 }
 
 
@@ -26,9 +26,9 @@ monochromator = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 7.62 / np.sqrt(12),
-    "height": 10.16 / np.sqrt(12),
-    "depth": 0.25 / np.sqrt(12),
+    "width": 7.62,  # / np.sqrt(12),
+    "height": 10.16,  # / np.sqrt(12),
+    "depth": 0.25,  # / np.sqrt(12),
     # horizontal focusing
     "curvh": 0.0,
     # vertical focusing
@@ -55,9 +55,9 @@ analyzer = {
     "sense": -1,
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 7.62 / np.sqrt(12),
-    "height": 7 / np.sqrt(12),
-    "depth": 0.2 / np.sqrt(12),
+    "width": 7.62,  # / np.sqrt(12),
+    "height": 7,  # / np.sqrt(12),
+    "depth": 0.2,  # / np.sqrt(12),
     # horizontal focusing
     "curvh": 0.0,
     # vertical focusing
@@ -67,8 +67,8 @@ detector = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
     # Diameter D/4 if spherical
-    "width": 4 / np.sqrt(12),
-    "height": 12 / np.sqrt(12),
+    "width": 4,  # / np.sqrt(12),
+    "height": 12,  # / np.sqrt(12),
 }
 
 distances = {

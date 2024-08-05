@@ -45,11 +45,11 @@ class Sample(object):
 
         # parameters for resolution calculation
         self.shape = "cuboid"
-        self.width = 1.0 * cm2angstrom
-        self.height = 1.0 * cm2angstrom
-        self.depth = 1.0 * cm2angstrom
-        self.mosaic = 30 * min2rad  # horizontal mosaic
-        self.mosaic_v = 30 * min2rad  # vertical mosaic
+        self.width = 1.0  # * cm2angstrom
+        self.height = 1.0  # * cm2angstrom
+        self.depth = 1.0  # * cm2angstrom
+        self.mosaic = 30  # * min2rad  # horizontal mosaic
+        self.mosaic_v = 30  # * min2rad  # vertical mosaic
 
         self.update_lattice(lattice_params)
 

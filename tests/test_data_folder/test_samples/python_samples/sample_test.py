@@ -7,11 +7,11 @@ test_xtal = Xtal(lattice_params=(3.574924, 3.574924, 5.663212, 90, 90, 120))
 # test_xtal = Xtal(lattice_params=(5.663212, 5.663212, 5.663212, 90, 90, 90))
 
 test_xtal.shape = "cylindrical"
-test_xtal.width = 1.0 * cm2angstrom
-test_xtal.height = 1.0 * cm2angstrom
-test_xtal.depth = 1.0 * cm2angstrom
-test_xtal.mosaic = 30 * min2rad  # horizontal mosaic
-test_xtal.mosaic_v = 30 * min2rad  # vertical mosaic
+test_xtal.width = 1.0  # * cm2angstrom
+test_xtal.height = 1.0  # * cm2angstrom
+test_xtal.depth = 1.0  # * cm2angstrom
+test_xtal.mosaic = 30  # * min2rad  # horizontal mosaic
+test_xtal.mosaic_v = 30  # * min2rad  # vertical mosaic
 
 ub_matrix_spice = np.array(
     [

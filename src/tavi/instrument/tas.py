@@ -1,6 +1,10 @@
 import math
+import json
+import numpy as np
 from tavi.utilities import *
 from tavi.instrument.tas_cmponents import *
+from tavi.sample.xtal import Xtal
+from tavi.sample.powder import Powder
 
 
 class TAS(object):
@@ -15,7 +19,7 @@ class TAS(object):
 
     """
 
-    def __init__(self):
+    def __init__(self, path_to_json=None):
         """load default instrument configuration"""
         # TODO
         self.source = None
@@ -29,12 +33,15 @@ class TAS(object):
         self.arms = None
         self.sample = None
 
+        if path_to_json is not None:
+            self.load_instrument_from_json(path_to_json)
+
     def load_instrument_from_dicts(self, config_params):
         """Load instrument configuration from a json file"""
 
         self.source = Source(config_params["source"])
         self.collimators = Collimators(config_params["collimators"])
-        # self.guide = Guide(config_params["guide"])
+        self.guide = Guide(config_params["guide"])
         self.monochromator = Monochromator(config_params["monochromator"])
         self.monitor = Monitor(config_params["monitor"])
         self.goniometer = Goniometer(config_params["goniometer"])
@@ -42,21 +49,59 @@ class TAS(object):
         self.detector = Detector(config_params["detector"])
         self.arms = Arms(config_params["distances"])
 
-    # TODO
     def load_instrument_from_json(self, path_to_json):
         """Load instrument configuration from a json file"""
 
-        config_params = path_to_json
+        with open(path_to_json, "r", encoding="utf-8") as file:
+            config_params = json.load(file)
 
         self.load_instrument_from_dicts(config_params)
 
-    def save_instrument(self):
-        """Save configuration into a dictionary"""
-        pass
+    # def save_instrument(self):
+    #     """Save configuration into a dictionary"""
+    #     pass
 
     def load_sample(self, sample):
         """Load sample info"""
         self.sample = sample
+
+    def load_sample_from_json(self, path_to_json):
+        """Load sample info"""
+
+        with open(path_to_json, "r", encoding="utf-8") as file:
+            sample_params = json.load(file)
+            lattice_params = (
+                sample_params["a"],
+                sample_params["b"],
+                sample_params["c"],
+                sample_params["alpha"],
+                sample_params["beta"],
+                sample_params["gamma"],
+            )
+
+            if sample_params["type"] == "xtal":
+                sample = Xtal(lattice_params=lattice_params)
+                sample.ub_matrix = np.array(sample_params["ub_matrix"]).reshape(3, 3)
+                sample.plane_normal = np.array(sample_params["plane_normal"])
+            elif sample_params["type"] == "powder":
+                sample = Powder(lattice_params=lattice_params)
+            else:
+                print("Sample type needs to be either xtal or powder.")
+
+            param_dict = ("shape", "width", "height", "depth", "mosaic", "mosaic_v")
+
+            for key, val in sample_params.items():
+
+                match key:
+                    case "height" | "width" | "depth":
+                        setattr(sample, key, val * cm2angstrom)
+                    case "mosaic" | "mosaic_v":
+                        setattr(sample, key, val * min2rad)
+                    case _:
+                        if key in param_dict:
+                            setattr(sample, key, val)
+
+        self.load_sample(sample)
 
     @staticmethod
     def q_lab(two_theta, ki, kf):
