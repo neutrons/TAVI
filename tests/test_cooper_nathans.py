@@ -72,11 +72,11 @@ def test_cooper_nathans_compare_3():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
     sample_json_path = "./tests/test_data_folder/test_samples/test_xtal.json"
 
-    # tas.load_instrument_from_json(instrument_config_json_path)
-    # tas.load_sample_from_json(sample_json_path)
+    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_sample_from_json(sample_json_path)
 
-    tas.load_instrument_from_(instrument_params)
-    tas.load_sample(test_xtal)
+    # tas.load_instrument_from_(instrument_params)
+    # tas.load_sample(test_xtal)
 
     if tas.sample.ub_matrix is None:
         peak_list = [(0, 0, 2), (0, 2, 0)]

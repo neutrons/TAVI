@@ -20,7 +20,7 @@ class Fit(object):
 # if background is None:
 #     model = peak
 # else:
-#     model = peak + models.LinearModel()
+#     model = peak + models.PolynomialModel()
 
 # if std is None:
 #     pars = model.guess(y, x=x)

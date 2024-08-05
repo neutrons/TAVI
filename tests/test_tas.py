@@ -1,13 +1,13 @@
 # from tavi.resolution.hb3 import config_params
 import json
-from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
-from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
-from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
-
-from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 from tavi.utilities import *
 from tavi.instrument.tas import TAS
 from tavi.sample.xtal import Xtal
+
+from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
+from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
+from test_data_folder.test_samples.python_samples.nitio3 import nitio3
+from test_data_folder.test_samples.python_samples.sample_test import test_xtal
 
 
 def instrument_sample_setup(instrument_config, sample_config):
