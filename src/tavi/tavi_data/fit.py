@@ -5,14 +5,66 @@ from lmfit import models
 class Fit(object):
     """Save information about fits"""
 
-    fit_models = {
+    models = {
+        # ---------- peak models ---------------
         "Gaussian": models.GaussianModel(),
         "Lorentzian": models.LorentzianModel(),
         "Voigt": models.VoigtModel(),
+        "PseudoVoigt": models.PseudoVoigtModel(),
+        "DampedOscillator": models.DampedOscillatorModel(),
+        "DampedHarmonicOscillator": models.DampedHarmonicOscillatorModel(),
+        # ---------- background models ------------
+        "Constant": models.ConstantModel(),
+        "Linear": models.LinearModel(),
+        "Quadratic": models.QuadraticModel(),
+        "Polynomial": models.PolynomialModel(),
+        "Exponential": models.ExponentialModel(),
+        "PowerLaw": models.PowerLawModel(),
+        # --------- expression ---------------
+        "Expression": models.ExpressionModel,
+        "Spline": models.SplineModel,
     }
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, fit_range=None):
+
+        self.range = fit_range
+        self.x = None
+        self.y = None
+
+        self.background_model = []
+        self.signal_model = []
+        self.num_peaks = 0
+        self.FIT_STATUS = None
+        self.PLOT_SEPARATELY = False
+
+    def add_background(
+        self,
+        model="Constant",
+        p0=None,
+        min=None,
+        max=None,
+        expr=None,
+    ):
+        """Set the model for background
+
+        Args:
+            model (str): Constant, Linear, Quadratic, Polynomial, Exponential, PowerLaw
+            p0 (tuple | None): inital parameters
+            min (float | None): minimum
+            max (float | None): maximum
+            expr (str| None ): constraint expression
+        """
+        self.background_model.append(Fit.models[model])
+
+    def add_signal(
+        self,
+        model="Gaussian",
+        p0=None,
+        min=None,
+        max=None,
+        expr=None,
+    ):
+        self.signal_model.append(Fit.models[model])
 
 
 # ----------------------------

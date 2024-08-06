@@ -97,7 +97,8 @@ class Scan(object):
         rebin_type=None,
         rebin_step=0,
     ):
-        """Generate a curve from a single scan to plot, with the options to
+        """Generate a curve from a single scan to plot,
+        with the options to
             normalize the y-axis and rebin x-axis.
 
         Args:
