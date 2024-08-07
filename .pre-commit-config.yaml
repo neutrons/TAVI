@@ -1,9 +1,11 @@
+exclude: "test_data/*.*"
+
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.6.0
   hooks:
     - id: check-added-large-files
-      args: [--maxkb=8192]
+      args: [--maxkb=32000]
     - id: check-merge-conflict
     - id: check-yaml
       args: [--allow-multiple-documents]
