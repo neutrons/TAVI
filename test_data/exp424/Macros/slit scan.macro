@@ -1,0 +1,15 @@
+scantitle "slitscan on (-0.5 -0.5 0) filter out at 1.4K"
+preset time 3
+drive bab 30 bat 30 
+scan bab 0 30 2
+scan bal 0 26 2 
+scan bar 0 26 2 
+scan bat 0 30 2
+ 
+preset time 1
+br 0 0 3
+scantitle "slitscan on (0 0 3) at 1.4K"
+scan bab 0 30 2
+scan bal 0 26 2 
+scan bar 0 26 2 
+scan bat 0 30 2

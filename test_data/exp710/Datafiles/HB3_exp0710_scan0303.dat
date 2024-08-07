@@ -1,0 +1,36 @@
+# scan = 303
+# date = 7/6/2021
+# time = 1:26:42 PM
+# proposal = 26411
+# experiment = Phonon Dispersion and Linewidths in Zr-doped UO2
+# experiment_number = 710
+# command = scan h 1 k 1 l 4 e 36 15 0.5
+# builtin_command = scan h 1 k 1 l 4 e 36 15 0.5
+# users = Matt Bryan, Hao Ma, Michael Manley
+# local_contact = Songxue Chi
+# scan_title = HH0 LO1 0 0 4-->1 1 4 scan
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-20-40-90
+# samplename = Zr-doped UO2
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.456668,5.456668,5.456668,90.000000,90.000000,90.000000
+# ubmatrix = -0.127684,-0.131176,-0.008650,0.001105,0.010987,-0.182929,0.131456,-0.127504,-0.006864
+# mode = 0
+# plane_normal = 0.013473,-0.038127,0.999182
+# ubconf = UB30Jun2021_12447PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 200.000000
+# def_x = e
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei         ef active_output e-stop_status flow_status  over_temp furnace_rate sample_temp furnace_sp     vacuum vacuum_status working_sp
+      1     1.0000     1.0000     4.0000    36.0017    164.333     15.000 392801.000    200.001    35.9679   -22.0860   -21.8240   120.1313     0.8294    -2.0000   -66.7074    -9.2517    73.0158    -0.7712    -2.1845    16.0000     6.0000     8.0000    14.0000    16.0000     8.0000     9.0000    16.0000     0.0000    -0.0100   159.4167   -41.1662     4.8852    50.7017    14.7000     0.0000     0.0000     1.0000    25.1569     5.0000    25.8390    30.0000 222283.2344     1.0000    25.855
+      2     1.0000     1.0000     4.0001    35.5006      0.000      0.000      0.000    200.000    36.1466   -22.0860   -21.9340   120.1313     0.8294    -2.0000   -66.3439    -9.3373    73.4826    -0.7712    -2.1845    16.0000     6.0000     8.0000    14.0000    16.0000     8.0000     9.0000    16.0000     0.0000    -0.0100   159.4167   -41.1662     4.8853    50.2006    14.7000     0.0000     0.0000     1.0000    25.1515     5.0000    25.8543    30.0000 222276.3750     1.0000    25.862
+# Sum of Counts = 15
+# Center of Mass = 36.001700+/-13.145962
+# Full Width Half-Maximum = 0.000000+/-NaN
+# 2:06:28 PM  7/6/2021   scan stopped!!

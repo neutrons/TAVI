@@ -1,0 +1,134 @@
+4/16/2024 9:39 AM        set_temp 25
+4/16/2024 10:35 AM        drive s2 95
+4/16/2024 10:36 AM        drive s2 95
+4/16/2024 10:36 AM        drive s2 15
+4/16/2024 10:38 AM        drive s2 66
+4/16/2024 10:39 AM        preset time 10
+4/16/2024 10:39 AM        scantitle "S2 scan while cooling"
+4/16/2024 10:39 AM        scan s2 66 56 0.25
+4/16/2024 10:49 AM        drive s2 63.475
+4/16/2024 10:49 AM        preset time 30
+4/16/2024 10:49 AM        drive bal 15 bar 15
+4/16/2024 10:52 AM        scan bal 0 15 1 
+4/16/2024 11:01 AM        scan bar 0 10 1 
+4/16/2024 11:07 AM        scan bat 0 25 1
+4/16/2024 11:23 AM        scan bab 0 20 1
+4/16/2024 11:35 AM        drive bal 4 bar 4 bat 11 bab 11
+4/16/2024 11:35 AM        scan bar 0 15 1 
+4/16/2024 11:46 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(dr_tsample) K"
+4/16/2024 11:46 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(temp) K"
+4/16/2024 11:47 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(tsample) K"
+4/16/2024 11:47 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 11:47 AM        scan s2 66 56 0.25 preset time 20
+4/16/2024 12:06 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 12:06 PM        scan s2 66 56 0.25 preset time 20
+4/16/2024 12:22 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 12:22 PM        scan s2 66 56 0.25 preset time 20
+4/16/2024 12:37 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 12:37 PM        scan s2 66 56 0.25 preset time 20
+4/16/2024 12:55 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 12:55 PM        scan s2 66 56 0.25 preset time 20
+4/16/2024 1:13 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 1:13 PM        scan s2 71 56 0.25 preset time 20
+4/16/2024 1:36 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 1:36 PM        scan s2 71 56 0.25 preset time 20
+4/16/2024 2:00 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 2:00 PM        scan s2 71 56 0.25 preset time 20
+4/16/2024 2:23 PM        scantitle "Bragg peaks (1 0 0) and (0 0 2) cooling"
+4/16/2024 2:23 PM        scan s2 71 56 0.25 preset time 20
+4/16/2024 2:46 PM        scan 25 5 0.25
+4/16/2024 3:00 PM        preset time 5
+4/16/2024 3:00 PM        scan s2 25 5 0.5
+4/16/2024 3:07 PM        scan s2 71 56 0.25 preset time 20
+4/16/2024 3:50 PM        drive q 0.4 e -0.2
+4/16/2024 3:52 PM        drive bar 6
+4/16/2024 3:52 PM        drive bar 7
+4/16/2024 3:53 PM        scan q 0.4 e -0.2 0.5 0.05 preset mcu 30
+4/16/2024 4:05 PM        scan q 0.5 e 1 2 0.05 preset mcu 120
+4/16/2024 4:54 PM        drive s2 60.7
+4/16/2024 4:55 PM        drive e 0
+4/16/2024 4:59 PM        preset time 30
+4/16/2024 4:59 PM        scan bal 0 15 1 
+4/16/2024 5:06 PM        drive bal 4
+4/16/2024 5:06 PM        scan bar 0 10 1 
+4/16/2024 5:13 PM        drive bar 4
+4/16/2024 5:14 PM        drive q 0.5
+4/16/2024 5:17 PM        scantitle "Energy scan at q = 0.5, T = 1.7 K"
+4/16/2024 5:17 PM        preset mcu 600
+4/16/2024 5:17 PM        scan q 0.5 e 1 2 0.04
+4/16/2024 9:34 PM        scan q 0.5 e 1 2 0.04
+4/17/2024 1:51 AM        scantitle "Energy scan at q = 0.75, T = 1.7 K"
+4/17/2024 1:51 AM        scan q 0.75 e 1 2 0.04
+4/17/2024 6:07 AM        scan q 0.75 e 1 2 0.04
+4/17/2024 10:29 AM        ef 4.5
+4/17/2024 10:30 AM        drive e 0
+4/17/2024 10:32 AM        scan s2 71 56 0.25 preset time 20
+4/17/2024 10:34 AM        scan s2 62 50 0.25 preset time 20
+4/17/2024 10:53 AM        scan q 0.4 e -0.35 0.5 0.05 preset mcu 30
+4/17/2024 11:39 AM        scan q 0.5 e 1 2 0.05 preset mcu 180
+4/17/2024 12:46 PM        drive q 1.48 e 0
+4/17/2024 12:49 PM        count preset time 20
+4/17/2024 12:50 PM        count preset time 20
+4/17/2024 12:51 PM        scan s2 62 50 0.25 preset time 20
+4/17/2024 1:10 PM        drive bab 15 bat 15 bal 10 bar 10
+4/17/2024 1:11 PM        scan s2 62.5 50 0.25 preset time 20
+4/17/2024 1:32 PM        drive s2 52.974
+4/17/2024 1:33 PM        scantitle "slit scans no filter"
+4/17/2024 1:33 PM        preset time 30
+4/17/2024 1:33 PM        scan bal 0 15 1 
+4/17/2024 1:43 PM        scan bar 0 10 1 
+4/17/2024 1:51 PM        scan bab 0 20 1
+4/17/2024 2:04 PM        scan bat 0 20 1
+4/17/2024 2:16 PM        drive bal 4 bar 4
+4/17/2024 2:17 PM        drive bab 13
+4/17/2024 2:17 PM        drive bat 13
+4/17/2024 2:18 PM        drive bat 12
+4/17/2024 3:01 PM        scantitle "40 K low Q background scan"
+4/17/2024 3:20 PM        preset time 5
+4/17/2024 3:20 PM        scan s2 25 5 0.5
+4/17/2024 3:27 PM        scan s2 4.5 2.5 0.5
+4/17/2024 3:46 PM        scantitle "Energy scan at q = 0.6, T = 40 K"
+4/17/2024 3:46 PM        preset mcu 1980
+4/17/2024 3:46 PM        scan q 0.6 e 0.4 1.6 0.04
+4/18/2024 8:46 AM        scantitle "incoherent scans at q = 0.6"
+4/18/2024 8:46 AM        scan q 0.6 e -0.35 0.5 0.05 preset mcu 30
+4/18/2024 9:02 AM        scantitle "Energy scan at q = 0.6, T = 40 K"
+4/18/2024 9:02 AM        preset mcu 1980
+4/18/2024 9:02 AM        scan q 0.6 e 0.28 0.4 0.04
+4/18/2024 10:32 AM        ef 3.5
+4/18/2024 10:37 AM        drive ei 13
+4/18/2024 10:44 AM        set_temp 1.5
+4/18/2024 10:45 AM        ef 4.8
+4/18/2024 10:45 AM        ef 3.5
+4/18/2024 10:46 AM        drive ef 3.5
+4/18/2024 10:46 AM        drive e 0
+4/18/2024 10:47 AM        set_dr_temp 1.5
+4/18/2024 10:47 AM        drive e 0
+4/18/2024 10:53 AM        drive q 1.48 e 0
+4/18/2024 10:56 AM        scantitle "(101) while cooling"
+4/18/2024 11:09 AM        scan s2 71 56 0.25 preset mcu 20
+4/18/2024 11:13 AM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 11:24 AM        set_temp 2
+4/18/2024 11:24 AM        wait 300
+4/18/2024 11:32 AM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 11:43 AM        set_temp 2.5
+4/18/2024 11:43 AM        wait 300
+4/18/2024 11:48 AM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 11:59 AM        set_temp 3
+4/18/2024 11:59 AM        wait 300
+4/18/2024 12:04 PM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 12:15 PM        set_temp 3.5
+4/18/2024 12:15 PM        wait 300
+4/18/2024 12:20 PM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 12:31 PM        set_temp 4
+4/18/2024 12:31 PM        wait 300
+4/18/2024 12:36 PM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 12:49 PM        set_temp 4.5
+4/18/2024 12:49 PM        wait 300
+4/18/2024 12:54 PM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 1:05 PM        set_temp 5
+4/18/2024 1:05 PM        wait 300
+4/18/2024 1:10 PM        scan s2 73 66 0.25 preset mcu 20
+4/18/2024 1:21 PM        set_temp 5.5
+4/18/2024 1:21 PM        wait 300
+4/18/2024 1:26 PM        scan s2 73 66 0.25 preset mcu 20

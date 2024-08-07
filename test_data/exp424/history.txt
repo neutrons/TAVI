@@ -1,0 +1,218 @@
+7/2/2024 1:41 PM        lattice 5.044000 5.044000 13.820000 90.000000 90.000000 120.000000
+7/2/2024 1:42 PM        drive s2 53.24
+7/2/2024 1:44 PM        driverel s1 -20
+7/2/2024 1:44 PM        ef 4.8 
+7/2/2024 1:44 PM        drive e 0
+7/2/2024 1:45 PM        driverel s1 10
+7/2/2024 1:46 PM        drive sgu 0
+7/2/2024 1:46 PM        driverel s1 10
+7/2/2024 1:46 PM        driverel s1 -30
+7/2/2024 1:47 PM        driverel s1 -2
+7/2/2024 1:47 PM        driverel s1 -1
+7/2/2024 1:47 PM        scanrel s1 2 -2 .2
+7/2/2024 1:48 PM        preset time 1
+7/2/2024 1:49 PM        driverel s1 -1
+7/2/2024 1:49 PM        driverel s1 -1
+7/2/2024 1:49 PM        scanrel s1 3 -3 .15
+7/2/2024 1:51 PM        drive s1 8.1602
+7/2/2024 1:56 PM        driverel s1 17
+7/2/2024 1:56 PM        driverel s1 1
+7/2/2024 1:56 PM        driverel s1 1
+7/2/2024 1:57 PM        driverel s1 1
+7/2/2024 1:57 PM        driverel s1 1.5
+7/2/2024 1:57 PM        driverel s1 1
+7/2/2024 1:57 PM        driverel s1 1
+7/2/2024 1:57 PM        scanrel s1 3 -3 .15
+7/2/2024 1:59 PM        drive s1 32.8663
+7/2/2024 2:01 PM        drive bab 20 bat 20
+7/2/2024 2:01 PM        drive bab 18 bat 18
+7/2/2024 2:02 PM        drive bab 15 bat 15
+7/2/2024 2:02 PM        scanrel s1 3 -3 .15
+7/2/2024 2:05 PM        scanrel sgl -4 4 .5
+7/2/2024 2:07 PM        drive sgl 2.3108
+7/2/2024 2:07 PM        scanrel s1 3 -3 .15
+7/2/2024 2:10 PM        ubcalc file "C:\SPICE\User\exp424\UBConf\tmp\UB02Jul2024_21029PM.ini"
+7/2/2024 2:15 PM        br -0.5 -0.5 0
+7/2/2024 2:18 PM        scanrel s1 3 -3 .15
+7/2/2024 2:23 PM        scanrel sgu -4 4 0.5
+7/2/2024 2:26 PM        drive sgu 2.021
+7/2/2024 2:27 PM        scanrel s1 3 -3 .15
+7/2/2024 2:33 PM        th2th 2 -2 .2
+7/2/2024 2:48 PM        ubcalc file "C:\SPICE\User\exp424\UBConf\tmp\UB02Jul2024_24756PM.ini"
+7/2/2024 2:49 PM        scantitle "slitscan on (-0.5 -0.5 0) filter out at 1.4K"
+7/2/2024 2:49 PM        preset time 3
+7/2/2024 2:49 PM        drive bab 30 bat 30 
+7/2/2024 2:50 PM        scan bab 0 30 2
+7/2/2024 2:52 PM        scan bal 0 26 2 
+7/2/2024 2:54 PM        scan bar 0 26 2 
+7/2/2024 2:56 PM        scan bat 0 30 2
+7/2/2024 2:58 PM        preset time 1
+7/2/2024 2:58 PM        br 0 0 3
+7/2/2024 2:59 PM        scantitle "slitscan on (0 0 3) at 1.4K"
+7/2/2024 2:59 PM        scan bab 0 30 2
+7/2/2024 3:02 PM        scan bal 0 26 2 
+7/2/2024 3:04 PM        scan bar 0 26 2 
+7/2/2024 3:05 PM        scan bat 0 30 2
+7/2/2024 3:23 PM        drive bab 24
+7/2/2024 3:24 PM        drive bal 4
+7/2/2024 3:24 PM        drive bar 12
+7/2/2024 3:24 PM        drive bat 22
+7/2/2024 3:27 PM        th2th 2 -2 0.2
+7/2/2024 3:32 PM        lattice a 5.044000 b 5.044000 c 13.812004
+7/2/2024 3:34 PM        ubcalc file "C:\SPICE\User\exp424\UBConf\tmp\UB02Jul2024_33240PM.ini"
+7/2/2024 3:35 PM        br 0.5 0.5 0
+7/2/2024 3:37 PM        th2th 2 -2 0.2
+7/2/2024 3:39 PM        lattice a 5.034785 b 5.034785 c 13.812004
+7/2/2024 3:40 PM        ubcalc file "C:\SPICE\User\exp424\UBConf\tmp\UB02Jul2024_34000PM.ini"
+7/2/2024 3:42 PM        br 0 0 3
+7/2/2024 3:49 PM        scantitle "slitscan on (0 0 3) focusing 1.4K e 0.2"
+7/2/2024 3:49 PM        scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.2
+7/2/2024 3:54 PM        scantitle "slitscan on (0 0 3) focusing 1.4K e 0.4"
+7/2/2024 3:54 PM        scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.4
+7/2/2024 3:58 PM        scantitle "slitscan on (0 0 3) focusing 1.4K e 0.6"
+7/2/2024 3:58 PM        scan h -0.1 0.1 0.005 k -0.1 0.1 0.005 l 3 e 0.6
+7/2/2024 4:15 PM        scantitle "003 scan at Q=3.5"
+7/2/2024 4:16 PM        scantitle "003 scan at Q=[0 0 3.5]"
+7/2/2024 4:17 PM        scan h 0 k 0 l 3.5 e 0.1 4 0.1 preset mcu 60
+7/2/2024 5:11 PM        scantitle "003 scan at Q=[0 0 3.7]"
+7/2/2024 5:11 PM        scantitle "003 scan at Q=[0 0 3.7]"
+7/2/2024 5:11 PM        scan h 0 k 0 l 3.7 e 0.1 4 0.1 preset mcu 60
+7/2/2024 6:11 PM        scantitle "003 scan at Q=[0 0 2.5+0]"
+7/2/2024 6:11 PM        scan h 0 k 0 l 2.5+0 e 0.1 4 0.1 preset mcu 60
+7/2/2024 7:07 PM        scantitle "003 scan at Q=[0 0 2.5+0.1]"
+7/2/2024 7:07 PM        scan h 0 k 0 l 2.5+0.1 e 0.1 4 0.1 preset mcu 60
+7/2/2024 8:04 PM        scantitle "003 scan at Q=[0 0 2.5+0.2]"
+7/2/2024 8:04 PM        scan h 0 k 0 l 2.5+0.2 e 0.1 4 0.1 preset mcu 60
+7/2/2024 9:01 PM        scantitle "003 scan at Q=[0 0 2.5+0.3]"
+7/2/2024 9:01 PM        scan h 0 k 0 l 2.5+0.3 e 0.1 4 0.1 preset mcu 60
+7/2/2024 9:57 PM        scantitle "003 scan at Q=[0 0 2.5+0.4]"
+7/2/2024 9:57 PM        scan h 0 k 0 l 2.5+0.4 e 0.1 4 0.1 preset mcu 60
+7/2/2024 10:54 PM        scantitle "003 scan at Q=[0 0 2.5+0.5]"
+7/2/2024 10:54 PM        scan h 0 k 0 l 2.5+0.5 e 0.1 4 0.1 preset mcu 60
+7/2/2024 11:51 PM        scantitle "003 scan at Q=[0 0 2.5+0.6]"
+7/2/2024 11:51 PM        scan h 0 k 0 l 2.5+0.6 e 0.1 4 0.1 preset mcu 60
+7/3/2024 12:48 AM        scantitle "003 scan at Q=[0 0 2.5+0.7]"
+7/3/2024 12:48 AM        scan h 0 k 0 l 2.5+0.7 e 0.1 4 0.1 preset mcu 60
+7/3/2024 1:44 AM        scantitle "003 scan at Q=[0 0 2.5+0.8]"
+7/3/2024 1:44 AM        scan h 0 k 0 l 2.5+0.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 2:41 AM        scantitle "003 scan at Q=[0 0 2.5+0.9]"
+7/3/2024 2:41 AM        scan h 0 k 0 l 2.5+0.9 e 0.1 4 0.1 preset mcu 60
+7/3/2024 3:38 AM        scantitle "003 scan at Q=[0 0 2.5+1]"
+7/3/2024 3:38 AM        scan h 0 k 0 l 2.5+1 e 0.1 4 0.1 preset mcu 60
+7/3/2024 4:34 AM        scantitle "003 scan at Q=[0 0 2.5+1.1]"
+7/3/2024 4:34 AM        scan h 0 k 0 l 2.5+1.1 e 0.1 4 0.1 preset mcu 60
+7/3/2024 5:31 AM        scantitle "003 scan at Q=[0 0 2.5+1.2]"
+7/3/2024 5:31 AM        scan h 0 k 0 l 2.5+1.2 e 0.1 4 0.1 preset mcu 60
+7/3/2024 6:28 AM        scantitle "003 scan at Q=[0 0 2.5+1.3]"
+7/3/2024 6:28 AM        scan h 0 k 0 l 2.5+1.3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 7:25 AM        scantitle "003 scan at Q=[0 0 2.5+1.4]"
+7/3/2024 7:25 AM        scan h 0 k 0 l 2.5+1.4 e 0.1 4 0.1 preset mcu 60
+7/3/2024 8:20 AM        scantitle "003 scan at Q=[0 0 2.5+1.5]"
+7/3/2024 8:20 AM        scan h 0 k 0 l 2.5+1.5 e 0.1 4 0.1 preset mcu 60
+7/3/2024 9:10 AM        init
+7/3/2024 9:14 AM        drive s2 0
+7/3/2024 9:17 AM        drive s2 70.22868
+7/3/2024 9:27 AM        users "Armando Di Biase, John Schneeloch, Despina Louca, Rathnayaka Mudiyanselage Dilan Srimal Rathnayaka"
+7/3/2024 9:27 AM        contact "Songxue Chi, Bing Li"
+7/3/2024 9:46 AM        scantitle "HH3 scan at Q=[-0.5+0 -0.5+0 3] "
+7/3/2024 9:46 AM        scan h -0.5+0 k -0.5+0 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 10:39 AM        scantitle "HH3 scan at Q=[-0.5+0.1 -0.5+0.1 3] "
+7/3/2024 10:39 AM        scan h -0.5+0.1 k -0.5+0.1 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 11:34 AM        scantitle "HH3 scan at Q=[-0.5+0.2 -0.5+0.2 3] "
+7/3/2024 11:34 AM        scan h -0.5+0.2 k -0.5+0.2 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 12:30 PM        scantitle "HH3 scan at Q=[-0.5+0.3 -0.5+0.3 3] "
+7/3/2024 12:30 PM        scan h -0.5+0.3 k -0.5+0.3 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 1:26 PM        scantitle "HH3 scan at Q=[-0.5+0.4 -0.5+0.4 3] "
+7/3/2024 1:26 PM        scan h -0.5+0.4 k -0.5+0.4 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 2:22 PM        scantitle "HH3 scan at Q=[-0.5+0.5 -0.5+0.5 3] "
+7/3/2024 2:22 PM        scan h -0.5+0.5 k -0.5+0.5 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 3:17 PM        scantitle "HH3 scan at Q=[-0.5+0.6 -0.5+0.6 3] "
+7/3/2024 3:17 PM        scan h -0.5+0.6 k -0.5+0.6 l 3 e 0.1 4 0.1 preset mcu 60
+7/3/2024 4:32 PM        scantitle "HH2.8 scan at Q=[0.5+0 0.5+0 3] "
+7/3/2024 4:32 PM        scan h 0+0 k 0+0 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 4:47 PM        scantitle "HH2.8 scan new at Q=[0.5+0 0.5+0 2.8] "
+7/3/2024 4:47 PM        scan h 0+0 k 0+0 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 5:40 PM        scantitle "HH2.8 scan new at Q=[0.5+0.1 0.5+0.1 2.8] "
+7/3/2024 5:40 PM        scan h 0+0.1 k 0+0.1 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 6:36 PM        scantitle "HH2.8 scan new at Q=[0.5+0.2 0.5+0.2 2.8] "
+7/3/2024 6:36 PM        scan h 0+0.2 k 0+0.2 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 7:32 PM        scantitle "HH2.8 scan new at Q=[0.5+0.3 0.5+0.3 2.8] "
+7/3/2024 7:32 PM        scan h 0+0.3 k 0+0.3 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 8:28 PM        scantitle "HH2.8 scan new at Q=[0.5+0.4 0.5+0.4 2.8] "
+7/3/2024 8:28 PM        scan h 0+0.4 k 0+0.4 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 9:23 PM        scantitle "HH2.8 scan new at Q=[0.5+0.5 0.5+0.5 2.8] "
+7/3/2024 9:23 PM        scan h 0+0.5 k 0+0.5 l 2.8 e 0.1 4 0.1 preset mcu 60
+7/3/2024 10:18 PM        scantitle "HH3.2 scan new at Q=[0.5+0 0.5+0 3.2] "
+7/3/2024 10:18 PM        scan h 0+0 k 0+0 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/3/2024 11:14 PM        scantitle "HH3.2 scan new at Q=[0.5+0.1 0.5+0.1 3.2] "
+7/3/2024 11:14 PM        scan h 0+0.1 k 0+0.1 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 12:10 AM        scantitle "HH3.2 scan new at Q=[0.5+0.2 0.5+0.2 3.2] "
+7/4/2024 12:10 AM        scan h 0+0.2 k 0+0.2 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 1:06 AM        scantitle "HH3.2 scan new at Q=[0.5+0.3 0.5+0.3 3.2] "
+7/4/2024 1:06 AM        scan h 0+0.3 k 0+0.3 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 2:02 AM        scantitle "HH3.2 scan new at Q=[0.5+0.4 0.5+0.4 3.2] "
+7/4/2024 2:02 AM        scan h 0+0.4 k 0+0.4 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 2:57 AM        scantitle "HH3.2 scan new at Q=[0.5+0.5 0.5+0.5 3.2] "
+7/4/2024 2:57 AM        scan h 0+0.5 k 0+0.5 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 8:12 AM        init
+7/4/2024 8:13 AM        drive s2 0
+7/4/2024 8:17 AM        drive s2 70.23
+7/4/2024 8:20 AM        scan h 0+0.5 k 0+0.5 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 8:26 AM        scan h 0+0.5 k 0+0.5 l 3.2 e 0.1 4 0.1 preset mcu 60
+7/4/2024 9:38 AM        scantitle "HH2.5 scan new at Q=[0+0 0+0 2.5] "
+7/4/2024 9:38 AM        scan h 0+0 k 0+0 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 10:34 AM        scantitle "HH2.5 scan new at Q=[0+0.1 0+0.1 2.5] "
+7/4/2024 10:34 AM        scan h 0+0.1 k 0+0.1 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 11:30 AM        scantitle "HH2.5 scan new at Q=[0+0.2 0+0.2 2.5] "
+7/4/2024 11:30 AM        scan h 0+0.2 k 0+0.2 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 12:25 PM        scantitle "HH2.5 scan new at Q=[0+0.3 0+0.3 2.5] "
+7/4/2024 12:25 PM        scan h 0+0.3 k 0+0.3 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 1:21 PM        scantitle "HH2.5 scan new at Q=[0+0.4 0+0.4 2.5] "
+7/4/2024 1:21 PM        scan h 0+0.4 k 0+0.4 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 2:16 PM        scantitle "HH2.5 scan new at Q=[0+0.5 0+0.5 2.5] "
+7/4/2024 2:16 PM        scan h 0+0.5 k 0+0.5 l 2.5 e 0.1 4 0.1 preset mcu 60
+7/4/2024 3:12 PM        scantitle "HH3 scan new at Q=[0.05 0.05 3] "
+7/4/2024 3:12 PM        scan h 0.05 k 0.05 l 3 e 0.1 4 0.1 preset mcu 60
+7/4/2024 4:07 PM        scantitle "HH3 scan new at Q=[-0.05 -0.05 3] "
+7/4/2024 4:07 PM        scan h -0.05 k -0.05 l 3 e 0.1 4 0.1 preset mcu 60
+7/4/2024 5:03 PM        scantitle "HH3 scan new at Q=[0.025 0.025 3] "
+7/4/2024 5:03 PM        scan h 0.025 k 0.025 l 3 e 0.1 4 0.1 preset mcu 60
+7/4/2024 5:59 PM        scantitle "HH3 scan new at Q=[-0.025 -0.025 3] "
+7/4/2024 5:59 PM        scan h -0.025 k -0.025 l 3 e 0.1 4 0.1 preset mcu 60
+7/4/2024 6:54 PM        scantitle "HH3 scan new at Q=[0.075 0.075 3] "
+7/4/2024 6:54 PM        scan h 0.075 k 0.075 l 3 e 0.1 4 0.1 preset mcu 60
+7/4/2024 7:50 PM        scantitle "HH3 scan new at Q=[-0.075 -0.075 3] "
+7/4/2024 7:50 PM        scan h -0.075 k -0.075 l 3 e 0.1 4 0.1 preset mcu 60
+7/5/2024 12:02 AM        scantitle "HH2.9 scan new at Q=[0+0 0+0 2.9] "
+7/5/2024 12:02 AM        scan h 0+0 k 0+0 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 12:58 AM        scantitle "HH2.9 scan new at Q=[0+0.1 0+0.1 2.9] "
+7/5/2024 12:58 AM        scan h 0+0.1 k 0+0.1 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 1:54 AM        scantitle "HH2.9 scan new at Q=[0+0.2 0+0.2 2.9] "
+7/5/2024 1:54 AM        scan h 0+0.2 k 0+0.2 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 2:50 AM        scantitle "HH2.9 scan new at Q=[0+0.3 0+0.3 2.9] "
+7/5/2024 2:50 AM        scan h 0+0.3 k 0+0.3 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 3:46 AM        scantitle "HH2.9 scan new at Q=[0+0.4 0+0.4 2.9] "
+7/5/2024 3:46 AM        scan h 0+0.4 k 0+0.4 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 4:42 AM        scantitle "HH2.9 scan new at Q=[0+0.5 0+0.5 2.9] "
+7/5/2024 4:42 AM        scan h 0+0.5 k 0+0.5 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 9:34 AM        init
+7/5/2024 9:35 AM        drive s2 0
+7/5/2024 9:37 AM        drive s2 73
+7/5/2024 9:39 AM        scantitle "HH2.9 scan new at Q=[0+0.5 0+0.5 2.9]"
+7/5/2024 9:39 AM        scan h 0+0.5 k 0+0.5 l 2.9 e 0.1 4 0.1 preset mcu 60
+7/5/2024 10:07 AM        scan h 0+0.5 k 0+0.5 l 2.9 e 1.8 4 0.1 preset mcu 60
+7/5/2024 10:38 AM        scan h 0+0 k 0+0 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 11:33 AM        scan h 0+0.1 k 0+0.1 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 12:29 PM        scan h 0+0.2 k 0+0.2 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 1:25 PM        scan h 0+0.3 k 0+0.3 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 2:20 PM        scan h 0+0.4 k 0+0.4 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 3:16 PM        scan h 0+0.5 k 0+0.5 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 5:15 PM        init
+7/5/2024 5:16 PM        drive s2 0
+7/5/2024 5:18 PM        drive s2 20
+7/5/2024 5:20 PM        scantitle "HH3 scan new at Q=[0.05 0.05 3] "
+7/5/2024 5:20 PM        scan h 0+0.5 k 0+0.5 l 3.1 e 0.1 4 0.1 preset mcu 60
+7/5/2024 6:13 PM        scantitle "HH3 scan new at Q=[0.05 0.05 3] "
+7/5/2024 6:13 PM        scan h 0.05 k 0.05 l 3 e 0.1 4 0.1 preset mcu 60
+7/5/2024 7:09 PM        scan h 0+0.5 k 0+0.5 l 2.9 e 1.8 4 0.1 preset mcu 60
+7/8/2024 12:04 PM        drive sgu 0 sgl 0

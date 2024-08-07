@@ -1,0 +1,15 @@
+
+scantitle "00L LO1 1 1 5-->1 1 4 scan"
+preset mcu 120
+
+scan h 1 k 1 l 5 e 60 44 0.5
+scan h 1 k 1 l 4.9 e 60 44 0.5
+scan h 1 k 1 l 4.8 e 58 42 0.5
+scan h 1 k 1 l 4.7 e 55 39 0.5
+scan h 1 k 1 l 4.6 e 51 35 0.5
+scan h 1 k 1 l 4.5 e 48 32 0.5
+scan h 1 k 1 l 4.4 e 45 29 0.5
+scan h 1 k 1 l 4.3 e 40 24 0.5
+scan h 1 k 1 l 4.2 e 36 20 0.5
+scan h 1 k 1 l 4.1 e 33 17 0.5
+scan h 1 k 1 l 4 e 28 12 0.5

@@ -1,0 +1,9 @@
+
+scantitle "HHH TA  scan"
+preset mcu 60
+
+scan h 1.9 k 1.9 l 0.1 e 10 0 0.5
+scan h 1.8 k 1.8 l 0.2 e 16 2 0.5
+scan h 1.7 k 1.7 l 0.3 e 18 4 0.5
+scan h 1.6 k 1.6 l 0.4 e 18 4 0.5
+scan h 1.5 k 1.5 l 0.5 e 18 4 0.5

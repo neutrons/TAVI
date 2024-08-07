@@ -1,0 +1,53 @@
+scantitle "HH3 scan new at Q=[0.05 0.05 3] "
+scan h 0.05 k 0.05 l 3 e 0.1 4 0.1 preset mcu 60
+
+scantitle"HH2.9 scan new at Q=[0+0.5 0+0.5 2.9]"
+scan h 0+0.5 k 0+0.5 l 2.9 e 1.8 4 0.1 preset mcu 60
+
+scantitle "HH3 scan new at Q=[0.15 0.15 3] "
+scan h 0.15 k 3 l 0.15 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH3 scan new at Q=[0.25 0.25 3] "
+scan h 0.25 k 0.25 l 3 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH3 scan new at Q=[0.35 0.35 3] "
+scan h 0.35 k 0.35 l 3 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH3 scan new at Q=[0.45 0.45 3] "
+scan h 0.45 k 0.45 l 3 e 0.1 4 0.1 preset mcu 60
+
+
+
+scantitle "HH2.25 scan new at Q=[0.05 0.05 2.25] "
+scan h 0.05 k 0.05 l 2.25 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH2.25 scan new at Q=[0.15 0.15 2.25] "
+scan h 0.15 k 0.15 l 2.25 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH2.25 scan new at Q=[0.25 0.25 2.25] "
+scan h 0.25 k 0.25 l 2.25 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH2.25 scan new at Q=[0.35 0.35 2.25] "
+scan h 0.35 k 0.35 l 2.25 e 0.1 4 0.1 preset mcu 60
+
+scantitle "HH2.25 scan new at Q=[0.45 0.45 2.25] "
+scan h 0.45 k 0.45 l 2.25 e 0.1 4 0.1 preset mcu 60
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

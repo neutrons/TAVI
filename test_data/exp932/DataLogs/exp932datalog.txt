@@ -1,0 +1,9 @@
+Cycle: (Cycle #)
+Experiment #: 932
+Proposal ID: 9880
+Instrument: HB1
+Experiment Title: HB-1 Instrument Calibration
+Session Start Time: 04/09/2024  12:22:49 PM
+
+Parameters Logged:
+Device Name	Timestamp	Value

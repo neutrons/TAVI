@@ -1,0 +1,14 @@
+scantitle "220 LA scan"
+preset mcu 60
+
+scan h 2.1 k 2.1 l 0 e 10 0 0.5
+scan h 2.2 k 2.2 l 0 e 16 4 0.5
+scan h 2.3 k 2.3 l 0 e 22 10 0.5
+scan h 2.4 k 2.4 l 0 e 24 12 0.5
+scan h 2.5 k 2.5 l 0 e 24 12 0.5
+scan h 2.6 k 2.6 l 0 e 24 12 0.5
+scan h 2.7 k 2.7 l 0 e 24 10 0.5
+scan h 2.8 k 2.8 l 0 e 22 10 0.5
+scan h 2.9 k 2.9 l 0 e 20 9 0.5
+scan h 3.0 k 3.0 l 0 e 20 9 0.5
+

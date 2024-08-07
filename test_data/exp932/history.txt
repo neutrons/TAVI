@@ -1,0 +1,68 @@
+4/9/2024 12:25 PM        drive slit_pre_tp 25 slit_pre_bt 25 slit_pre_rt 15 slit_pre_lf 15
+4/9/2024 12:26 PM        drive a2 0
+4/9/2024 12:34 PM        drive slit_pre_tp 25 slit_pre_bt 25 slit_pre_rt 3 slit_pre_lf 3
+4/9/2024 12:35 PM        defcount monitor
+4/9/2024 12:35 PM        preset time 5
+4/9/2024 12:36 PM        scanrel m1 -0.6 0.6 0.1
+4/9/2024 12:39 PM        drive m1 -49.1828
+4/9/2024 12:40 PM        drive slit_pre_tp 25 slit_pre_bt 25 slit_pre_rt 15 slit_pre_lf 15
+4/9/2024 12:44 PM        defcount detector
+4/9/2024 12:47 PM        drive s2 -30
+4/9/2024 12:50 PM        powcalib ni 1.000000 energy 13.500000 maxpeaks 6
+4/9/2024 12:55 PM        powcalib ni 1.000000 energy 13.500000 maxpeaks 6
+4/9/2024 1:17 PM        comment "Setting zeros based on calibration file C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM"
+4/9/2024 1:17 PM        zero m2 -0.767483
+4/9/2024 1:17 PM        zero s2 0.371334
+4/9/2024 1:17 PM        drive e 0
+4/9/2024 1:18 PM        drive s2 -30
+4/9/2024 1:19 PM        drive e 0
+4/9/2024 1:34 PM        driverel a1 1
+4/9/2024 1:34 PM        driverel a1 -1.5
+4/9/2024 1:35 PM        scanrel a1 -2.5 2.5 0.25
+4/9/2024 1:37 PM        drive a1 20.5652
+4/9/2024 1:37 PM        preset time 5
+4/9/2024 1:37 PM        ta2ta -2.5 2.5 0.25
+4/9/2024 1:41 PM        drive a2 42.2318 a1 20.6986
+4/9/2024 1:42 PM        Comment "Current Analyzer setting corresponds to Ef = 13.500212 meV "
+4/9/2024 1:42 PM        nosetpos a2 41.967483
+4/9/2024 1:42 PM        nosetpos a1 20.983742
+4/9/2024 1:52 PM        lattice 3.135000 5.000000 5.000000 90.000000 90.000000 90.000000
+4/9/2024 1:52 PM        ubcalc file "C:\SPICE\User\exp932\UBConf\tmp\UB09Apr2024_15225PM.ini"
+4/9/2024 1:52 PM        drive s2 -46.233 s1 -23
+4/9/2024 1:52 PM        guide 18 perpq
+4/9/2024 1:53 PM        drive fguide 4.5
+4/9/2024 1:54 PM        driverel s1 2
+4/9/2024 1:54 PM        driverel s1 -5
+4/9/2024 1:54 PM        driverel s1 -5
+4/9/2024 1:54 PM        driverel s1 2
+4/9/2024 1:54 PM        driverel s1 0.5
+4/9/2024 1:54 PM        driverel s1 -0.1
+4/9/2024 1:54 PM        driverel s1 0.3
+4/9/2024 1:55 PM        drive sgu 2
+4/9/2024 1:55 PM        drive sgu -2
+4/9/2024 1:55 PM        drive sgu -2.5
+4/9/2024 1:55 PM        drive sgu -3
+4/9/2024 1:55 PM        drive hguide 1.8
+4/9/2024 1:57 PM        drive hguide 1.8
+4/9/2024 1:57 PM        init
+4/9/2024 1:58 PM        drive hguide 1.8
+4/9/2024 1:58 PM        drive vguide 1
+4/9/2024 1:58 PM        drive vguide 0
+4/9/2024 1:59 PM        drive vguide 3
+4/9/2024 1:59 PM        drive vguide 3
+4/9/2024 2:00 PM        drive hguide 0
+4/9/2024 2:00 PM        drive vguide 0
+4/9/2024 2:02 PM        drive hguide 1.8
+4/9/2024 2:02 PM        drive vguide 1
+4/9/2024 2:02 PM        drive vguide 2
+4/9/2024 2:02 PM        scantitle "flipper calibration with Si(111)"
+4/9/2024 2:02 PM        preset time 1
+4/9/2024 2:03 PM        scan vguide 1 4 0.1
+4/9/2024 2:05 PM        drive vguide 2.25
+4/9/2024 2:05 PM        count preset time 10
+4/9/2024 2:05 PM        floff
+4/9/2024 2:06 PM        count preset time 10
+4/9/2024 2:07 PM        flon
+4/9/2024 2:08 PM        scan fguide 2 6 0.25
+4/9/2024 2:10 PM        drive fguide 4.5
+4/9/2024 2:16 PM        begin
