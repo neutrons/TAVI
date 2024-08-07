@@ -11,10 +11,13 @@ def test_fit_scan(tavi):
     datasets = list(tavi.data.keys())[0]
     s1 = tavi.data[datasets]["scan0042"]
     curve1 = s1.generate_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)
-    # x, y, xerr, yerr, xlabel, ylabel, title, label = curve1
-    f1 = Fit(fit_range=(0.5, 4))
-    # f1.add_background()
+
+    x, y, xerr, yerr, xlabel, ylabel, title, label = curve1
+    f1 = Fit(x=x, y=y, err=yerr, fit_range=(0.5, 3))
+    f1.add_background()
+    f1.add_signal()
     # f1.add_signal()
+    f1.perform_fit()
 
     p1.plot_curve(*curve1)
 
