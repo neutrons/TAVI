@@ -26,6 +26,7 @@
         "optimally_curved_v": false
     },
     "monitor": {
+        "shape": "rectangular",
         "width": 5,
         "height": 12
     },

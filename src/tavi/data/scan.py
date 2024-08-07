@@ -1,7 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
-
-from tavi.tavi_data.nexus_reader import nexus_to_dict
+import numpy as np
+from tavi.data.nexus_reader import nexus_to_dict
 
 
 class Scan(object):

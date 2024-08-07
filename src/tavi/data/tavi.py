@@ -1,11 +1,10 @@
 import h5py
+from tavi.data.scan import Scan
+from tavi.data.scan_group import ScanGroup
+from tavi.data.spice_to_nexus import convert_spice_to_nexus
 
-from tavi.tavi_data.scan import Scan
-from tavi.tavi_data.scan_group import ScanGroup
-from tavi.tavi_data.spice_to_nexus import convert_spice_to_nexus
 
-
-class TAVI_Data(object):
+class TAVI(object):
     """TAVI data file manager.
 
     TAVI_data contains four possible categories, including
@@ -152,7 +151,6 @@ class TAVI_Data(object):
         """Open existing tavi file"""
         self.file_path = file_path
         with h5py.File(file_path, "a") as tavi_file:
-
             # load datasets in data folder
             for data_id in tavi_file["data"].keys():
                 dataset = tavi_file["data"][data_id]

@@ -1,6 +1,5 @@
 from tavi.utilities import *
 
-
 source = {
     "shape": "rectangular",  # rectangular or circular
     # divide by np.sqrt(12) if rectangular
@@ -19,6 +18,7 @@ source = {
 
 monochromator = {
     "type": "PG002",
+    "shape": "rectangular",
     "d_spacing": mono_ana_xtal["PG002"],
     "mosaic": 30,  # horizontal mosaic
     "mosaic_v": 30,  # vertical mosaic, if anisotropic

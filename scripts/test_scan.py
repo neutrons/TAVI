@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
-from tavi.tavi_data.tavi_data import TAVI_Data
+
+from tavi.data.tavi import TAVI
 
 
 def test_plot_scan(tavi):
-
     print(len(tavi.data))
     datasets = list(tavi.data.keys())[0]
     print(datasets)
@@ -19,8 +19,7 @@ def test_plot_scan(tavi):
 
 
 def test_scan_group_contour_exp710():
-
-    tavi = TAVI_Data()
+    tavi = TAVI()
 
     tavi_file_name = "./tests/test_data_folder/tavi_test_exp710.h5"
     tavi.new_tavi_file(tavi_file_name)
@@ -48,7 +47,6 @@ def test_scan_group_contour_exp710():
 
 
 def test_scan_group_contour(tavi):
-
     dataset = tavi.data["IPTS32124_CG4C_exp424"]
 
     print(len(dataset))
@@ -73,7 +71,6 @@ def test_scan_group_contour(tavi):
 
 
 def test_scan_group_waterfall(tavi):
-
     print(len(tavi.data))
     scan_list = [tavi.data[f"scan{i:04}"] for i in range(42, 49, 1)] + [
         tavi.data[f"scan{i:04}"] for i in range(70, 76, 1)
@@ -91,10 +88,9 @@ def test_scan_group_waterfall(tavi):
 
 
 if __name__ == "__main__":
+    tavi = TAVI()
 
-    tavi = TAVI_Data()
-
-    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
+    tavi_file_name = "./test_data/tavi_test_exp424.h5"
     tavi.open_tavi_file(tavi_file_name)
 
     # test_scan_group_contour(tavi)

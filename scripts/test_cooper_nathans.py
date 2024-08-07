@@ -1,5 +1,6 @@
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 from tavi.instrument.resolution.cooper_nathans import CN
 
 # from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
@@ -12,7 +13,6 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 
 def test_copper_nathans_localQ(tas_params):
-
     tas, ei, ef, hkl, _, R0 = tas_params
 
     rez = tas.cooper_nathans(
@@ -31,7 +31,6 @@ def test_copper_nathans_localQ(tas_params):
 
 
 def test_copper_nathans_hkl(tas_params):
-
     tas, ei, ef, hkl, _, R0 = tas_params
 
     rez = tas.cooper_nathans(
@@ -48,7 +47,6 @@ def test_copper_nathans_hkl(tas_params):
 
 
 def test_copper_nathans_projection(tas_params):
-
     tas, ei, ef, hkl, projection, R0 = tas_params
 
     rez = tas.cooper_nathans(
@@ -66,11 +64,10 @@ def test_copper_nathans_projection(tas_params):
 
 
 def test_cooper_nathans_compare_3():
-
     tas = CN()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
-    sample_json_path = "./tests/test_data_folder/test_samples/test_xtal.json"
+    sample_json_path = "./test_data/test_samples/test_xtal.json"
 
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
@@ -103,11 +100,10 @@ def test_cooper_nathans_compare_3():
 
 
 def test_cooper_nathans_CTAX():
-
     tas = CN()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+    sample_json_path = "./test_data/test_samples/nitio3.json"
 
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
@@ -139,7 +135,6 @@ def test_cooper_nathans_CTAX():
 
 
 if __name__ == "__main__":
-
     # test_cooper_nathans_compare_3()
 
     test_cooper_nathans_CTAX()

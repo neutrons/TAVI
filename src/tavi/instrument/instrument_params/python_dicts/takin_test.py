@@ -1,6 +1,4 @@
-import numpy as np
 from tavi.utilities import *
-
 
 source = {
     "shape": "rectangular",  # rectangular or circular
@@ -20,6 +18,7 @@ guide = {
 
 monochromator = {
     "type": "PG002",
+    "shape": "rectangular",
     # "d_spacing": mono_ana_xtal["PG002"],
     "mosaic": 45,  # horizontal mosaic
     "mosaic_v": 45,  # vertical mosaic, if anisotropic

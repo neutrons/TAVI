@@ -1,14 +1,14 @@
 import matplotlib.pylab as plt
-from tavi.tavi_data.tavi_data import TAVI_Data
-from tavi.plotter import Plot1DManager, Plot2DManager
+
+from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.plotter import Plot1DManager, Plot2DManager
 
 # from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
 # from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
 
 
 def test_plot_scan(tavi):
-
     datasets = list(tavi.data.keys())[0]
     s1 = tavi.data[datasets]["scan0042"]
     # x, y, xerr, yerr, xlabel, ylabel, title, label
@@ -25,7 +25,6 @@ def test_plot_scan(tavi):
 
 
 def test_2d_plot(tavi, tas):
-
     datasets = list(tavi.data.keys())[0]
 
     scan_list = [tavi.data[datasets][f"scan{i:04}"] for i in range(42, 49, 1)] + [
@@ -57,10 +56,9 @@ def test_2d_plot(tavi, tas):
 
 
 if __name__ == "__main__":
+    tavi = TAVI()
 
-    tavi = TAVI_Data()
-
-    tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
+    tavi_file_name = "./test_data/tavi_test_exp424.h5"
     tavi.open_tavi_file(tavi_file_name)
 
     tas = CN()
@@ -68,7 +66,7 @@ if __name__ == "__main__":
     # tas.load_sam ple(nitio3)
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+    sample_json_path = "./test_data/test_samples/nitio3.json"
 
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)

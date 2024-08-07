@@ -1,6 +1,7 @@
 import numpy as np
-from tavi.utilities import *
+
 from tavi.sample.sample import Sample
+from tavi.utilities import *
 
 
 class Xtal(Sample):

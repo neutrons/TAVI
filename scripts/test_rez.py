@@ -1,12 +1,12 @@
 # from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
 # from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 import matplotlib.pylab as plt
+
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.plotter import Plot1DManager, Plot2DManager
 
 
 def test_l_vs_en(tas):
-
     projection = ((0, 0, 1), (0, -1, 0), (2, -1, 0))
 
     q1 = [0, 2, 0.5]  # start, stop, step
@@ -22,7 +22,6 @@ def test_l_vs_en(tas):
 
 
 def test_h_vs_k(tas):
-
     projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
     q1 = [0, 2.1, 0.5]  # start, stop, step
     q2 = [0, 2.1, 0.5]  # start, stop, step
@@ -36,7 +35,6 @@ def test_h_vs_k(tas):
 
     # TODO
     def test_1D(tas):
-
         projection = ((0, 0, 1), (0, -1, 0), (2, -1, 0))
         hkl = (0, 0, 1)
         en = 6
@@ -52,13 +50,12 @@ def test_h_vs_k(tas):
 
 
 if __name__ == "__main__":
-
     tas = CN()
     # tas.load_instrument_from_dicts(instrument_params)
     # tas.load_sample(test_xtal)
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
-    sample_json_path = "./tests/test_data_folder/test_samples/nitio3.json"
+    sample_json_path = "./test_data/test_samples/nitio3.json"
 
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)

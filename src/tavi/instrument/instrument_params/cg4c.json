@@ -29,7 +29,9 @@
         "sense": 1,
         "type": "Y-ZX"
     },
-    "monitor": {},
+    "monitor": {
+        "shape": "rectangular"
+    },
     "analyzer": {
         "type": "Pg002",
         "d_spacing": 3.35416,
