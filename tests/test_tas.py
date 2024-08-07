@@ -1,8 +1,11 @@
+import pytest
+
 from tavi.instrument.tas import TAS
 from tavi.sample.xtal import Xtal
 from tavi.utilities import *
 
 
+@pytest.fixture
 def instrument_sample_setup(instrument_config, sample_config):
     tax = TAS()
     tax.load_instrument_from_dicts(instrument_config)
