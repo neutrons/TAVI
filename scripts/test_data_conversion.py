@@ -5,7 +5,6 @@ from tavi.data.tavi import TAVI
 
 def test_conversion(exp_numer):
     spice_folder = f"./test_data/exp{exp_numer}/"
-    # h5_file_name = "./tests/test_data/tavi_exp758.h5"
     nexus_file_name = f"./test_data/nexus_exp{exp_numer}.h5"
     convert_spice_to_nexus(spice_folder, nexus_file_name)
 

@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
-from tavi.tavi_data.tavi_data import TAVI_Data
-from tavi.tavi_data.fit import Fit
+from tavi.data.fit import Fit
+from tavi.data.tavi import TAVI
 from tavi.plotter import Plot1DManager
 
 
 def test_fit_scan(tavi):
-
     p1 = Plot1DManager()
 
     datasets = list(tavi.data.keys())[0]
@@ -29,8 +28,7 @@ def test_fit_scan(tavi):
 
 
 if __name__ == "__main__":
-
-    tavi = TAVI_Data()
+    tavi = TAVI()
 
     tavi_file_name = "./tests/test_data_folder/tavi_test_exp424.h5"
     tavi.open_tavi_file(tavi_file_name)

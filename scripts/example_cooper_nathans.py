@@ -1,13 +1,6 @@
 import matplotlib.pylab as plt
 import numpy as np
-
 from tavi.instrument.resolution.cooper_nathans import CN
-
-# from tavi.instrument.instrument_params.python_dicts.takin_test import instrument_params
-# from test_data_folder.test_samples.python_samples.sample_test import test_xtal
-
-# from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
-# from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -15,51 +8,22 @@ np.set_printoptions(floatmode="fixed", precision=4)
 def test_copper_nathans_localQ(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
 
-    rez = tas.cooper_nathans(
-        ei=ei,
-        ef=ef,
-        hkl=hkl,
-        projection=None,
-        R0=R0,
-    )
-    print(rez.mat)
-    print(rez.r0)
-
-    # describe and plot ellipses
-    # rez.calc_ellipses()
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, R0=R0)
     rez.plot()
 
 
 def test_copper_nathans_hkl(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
 
-    rez = tas.cooper_nathans(
-        ei=ei,
-        ef=ef,
-        hkl=hkl,
-        R0=R0,
-    )
-    print(rez.mat)
-
-    # describe and plot ellipses
-    # rez.calc_ellipses()
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, R0=R0)
     rez.plot()
 
 
 def test_copper_nathans_projection(tas_params):
     tas, ei, ef, hkl, projection, R0 = tas_params
 
-    rez = tas.cooper_nathans(
-        ei=ei,
-        ef=ef,
-        hkl=hkl,
-        projection=projection,
-        R0=R0,
-    )
-    print(rez.mat)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=projection, R0=R0)
 
-    # describe and plot ellipses
-    # rez.calc_ellipses()
     rez.plot()
 
 
@@ -67,13 +31,10 @@ def test_cooper_nathans_compare_3():
     tas = CN()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
-    sample_json_path = "./test_data/test_samples/test_xtal.json"
+    sample_json_path = "./test_data/test_samples/sample_test.json"
 
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
-
-    # tas.load_instrument_from_(instrument_params)
-    # tas.load_sample(test_xtal)
 
     if tas.sample.ub_matrix is None:
         peak_list = [(0, 0, 2), (0, 2, 0)]
@@ -96,8 +57,6 @@ def test_cooper_nathans_compare_3():
     test_copper_nathans_hkl(tas_params)
     test_copper_nathans_projection(tas_params)
 
-    plt.show()
-
 
 def test_cooper_nathans_CTAX():
     tas = CN()
@@ -108,15 +67,13 @@ def test_cooper_nathans_CTAX():
     tas.load_instrument_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
 
-    # tas.load_instrument_from_dicts(cg4c_config_params)
-    # tas.load_sample(nitio3)
-    print(f"u={tas.sample.u}")
-    print(f"v={tas.sample.v}")
-
-    # reset UB
+    # ----------- reset UB -----------------------------------
+    # print(f"u={tas.sample.u}")
+    # print(f"v={tas.sample.v}")
     # tas.sample.ub_matrix = tas.sample.uv_to_ub_matrix(u=[1, 1, 0], v=[0, 0, 1])
     # print(f"u={tas.sample.u}")
     # print(f"v={tas.sample.v}")
+    # ----------------------------------------------------------
 
     ei = 4.8
     ef = 4.8
@@ -131,10 +88,10 @@ def test_cooper_nathans_CTAX():
     test_copper_nathans_hkl(tas_params)
     test_copper_nathans_projection(tas_params)
 
-    plt.show()
-
 
 if __name__ == "__main__":
-    # test_cooper_nathans_compare_3()
+    test_cooper_nathans_compare_3()
 
     test_cooper_nathans_CTAX()
+
+    plt.show()
