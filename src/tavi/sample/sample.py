@@ -1,4 +1,5 @@
 import numpy as np
+
 from tavi.utilities import *
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -42,7 +43,6 @@ class Sample(object):
     """
 
     def __init__(self, lattice_params=(1, 1, 1, 90, 90, 90)):
-
         # parameters for resolution calculation
         self.shape = "cuboid"
         self.width = 1.0  # * cm2angstrom
@@ -52,6 +52,34 @@ class Sample(object):
         self.mosaic_v = 30  # * min2rad  # vertical mosaic
 
         self.update_lattice(lattice_params)
+
+    @classmethod
+    def from_json(cls, sample_params):
+        """Alternate constructor from json"""
+        lattice_params = (
+            sample_params["a"],
+            sample_params["b"],
+            sample_params["c"],
+            sample_params["alpha"],
+            sample_params["beta"],
+            sample_params["gamma"],
+        )
+
+        sample = cls(lattice_params=lattice_params)
+
+        param_dict = ("shape", "width", "height", "depth", "mosaic", "mosaic_v")
+
+        for key, val in sample_params.items():
+            match key:
+                case "height" | "width" | "depth":
+                    setattr(sample, key, val * cm2angstrom)
+                # case "mosaic" | "mosaic_v":
+                #     setattr(sample, key, val * min2rad)
+                case _:
+                    if key in param_dict:
+                        setattr(sample, key, val)
+        sample.update_lattice(lattice_params)
+        return sample
 
     def update_lattice(self, lattice_params=(1, 1, 1, 90, 90, 90)):
         """update real and reciprocal space lattice parameters and vectors"""

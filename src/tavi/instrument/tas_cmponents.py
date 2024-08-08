@@ -1,4 +1,5 @@
 import numpy as np
+
 from tavi.utilities import *
 
 
@@ -6,7 +7,6 @@ class Source(object):
     """Neutron source"""
 
     def __init__(self, param_dict):
-
         self.name = None
         self.shape = "rectangular"
         self.width = None
@@ -31,7 +31,6 @@ class Guide(object):
     """Guide"""
 
     def __init__(self, param_dict):
-
         self.in_use = False
         self.div_h = None
         self.div_v = None
@@ -48,7 +47,6 @@ class Monochromator(object):
     """Monochromator"""
 
     def __init__(self, param_dict):
-
         self.type = "PG002"
         self.d_spacing = mono_ana_xtal["PG002"]
         self.mosaic = 45  # horizontal mosaic, min of arc
@@ -72,8 +70,8 @@ class Monochromator(object):
 
         for key, val in param_dict.items():
             match key:
-                case "mosaic" | "mosaic_v" | "curvh" | "curvv":
-                    setattr(self, key, val * min2rad)
+                # case "mosaic" | "mosaic_v" | "curvh" | "curvv":
+                #     setattr(self, key, val * min2rad)
                 case "width" | "height" | "depth":
                     # divide by np.sqrt(12) if rectangular
                     # Diameter D/4 if spherical
@@ -102,32 +100,29 @@ class Collimators(object):
         self.v_post_ana = 30
 
         for key, val in param_dict.items():
-            if key in (
-                "h_pre_mono",
-                "h_pre_sample",
-                "h_post_sample",
-                "h_post_ana",
-                "v_pre_mono",
-                "v_pre_sample",
-                "v_post_sample",
-                "v_post_ana",
-            ):
-                setattr(self, key, val * min2rad)
-            else:
-                setattr(self, key, val)
+            # if key in (
+            #     "h_pre_mono",
+            #     "h_pre_sample",
+            #     "h_post_sample",
+            #     "h_post_ana",
+            #     "v_pre_mono",
+            #     "v_pre_sample",
+            #     "v_post_sample",
+            #     "v_post_ana",
+            # ):
+            #     setattr(self, key, val * min2rad)
+            # else:
+            setattr(self, key, val)
 
 
 # TODO
 class Monitor(object):
-
     def __init__(self, param_dict):
-
         self.shape = "rectangular"  # or spherical
         self.width = 5 * cm2angstrom
         self.height = 12 * cm2angstrom
 
         for key, val in param_dict.items():
-
             match key:
                 case "width" | "height":
                     # divide by np.sqrt(12) if rectangular
@@ -143,9 +138,7 @@ class Monitor(object):
 
 
 class Analyzer(object):
-
     def __init__(self, param_dict):
-
         self.type = "Pg002"
         self.d_spacing = mono_ana_xtal["Pg002"]
         self.mosaic = 45  # horizontal mosaic, min of arc
@@ -168,8 +161,8 @@ class Analyzer(object):
 
         for key, val in param_dict.items():
             match key:
-                case "mosaic" | "mosaic_v" | "curvh" | "curvv":
-                    setattr(self, key, val * min2rad)
+                # case "mosaic" | "mosaic_v" | "curvh" | "curvv":
+                #     setattr(self, key, val * min2rad)
                 case "width" | "height" | "depth":
                     # divide by np.sqrt(12) if rectangular
                     # Diameter D/4 if spherical
@@ -188,7 +181,6 @@ class Analyzer(object):
 
 # TODO
 class Detector(object):
-
     def __init__(self, param_dict):
         self.shape = "rectangular"
         self.width = 1.5  # in cm
@@ -239,7 +231,6 @@ class Goniometer(object):
 
         omega, sgl, sgu = angles  # s2, s1, sgl, sgu
         match self.type:
-
             case "Y-ZX":  # HB3
                 r_mat = rot_y(omega) @ rot_z(-1 * sgl) @ rot_x(sgu)
             case "YZ-X":  # CG4C
@@ -267,9 +258,7 @@ class Goniometer(object):
         """
 
         match self.type:
-
             case "Y-ZX" | "YZ-X":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3, Y-Z-mX (s1, sgl, sgu) for CG4C
-
                 # sgl1 = np.arcsin(r_mat[1, 0]) * rad2deg
                 # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
                 sgl = np.arctan2(r_mat[1, 0], np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg

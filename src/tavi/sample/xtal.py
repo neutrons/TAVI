@@ -33,6 +33,37 @@ class Xtal(Sample):
 
         self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
 
+    @classmethod
+    def from_json(cls, sample_params):
+        """Alternate constructor from json"""
+        lattice_params = (
+            sample_params["a"],
+            sample_params["b"],
+            sample_params["c"],
+            sample_params["alpha"],
+            sample_params["beta"],
+            sample_params["gamma"],
+        )
+
+        sample = cls(lattice_params=lattice_params)
+
+        sample.ub_matrix = np.array(sample_params["ub_matrix"]).reshape(3, 3)
+        sample.plane_normal = np.array(sample_params["plane_normal"])
+
+        param_dict = ("shape", "width", "height", "depth", "mosaic", "mosaic_v")
+
+        for key, val in sample_params.items():
+            match key:
+                case "height" | "width" | "depth":
+                    setattr(sample, key, val * cm2angstrom)
+                # case "mosaic" | "mosaic_v":
+                #     setattr(sample, key, val * min2rad)
+                case _:
+                    if key in param_dict:
+                        setattr(sample, key, val)
+        sample.update_lattice(lattice_params)
+        return sample
+
     @property
     def u(self):
         """u vector, in reciprocal lattice unit, along beam"""

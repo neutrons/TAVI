@@ -1,10 +1,11 @@
-import math
 import json
+
 import numpy as np
-from tavi.utilities import *
 from tavi.instrument.tas_cmponents import *
-from tavi.sample.xtal import Xtal
 from tavi.sample.powder import Powder
+from tavi.sample.sample import Sample
+from tavi.sample.xtal import Xtal
+from tavi.utilities import *
 
 
 class TAS(object):
@@ -59,7 +60,9 @@ class TAS(object):
 
     # def save_instrument(self):
     #     """Save configuration into a dictionary"""
-    #     pass
+    #     # convert python dictionary to json file
+    #   with open("./src/tavi/instrument/instrument_params/takin_test.json", "w") as file:
+    #     json.dump(instrument_config, file)
 
     def load_sample(self, sample):
         """Load sample info"""
@@ -70,36 +73,13 @@ class TAS(object):
 
         with open(path_to_json, "r", encoding="utf-8") as file:
             sample_params = json.load(file)
-            lattice_params = (
-                sample_params["a"],
-                sample_params["b"],
-                sample_params["c"],
-                sample_params["alpha"],
-                sample_params["beta"],
-                sample_params["gamma"],
-            )
 
-            if sample_params["type"] == "xtal":
-                sample = Xtal(lattice_params=lattice_params)
-                sample.ub_matrix = np.array(sample_params["ub_matrix"]).reshape(3, 3)
-                sample.plane_normal = np.array(sample_params["plane_normal"])
-            elif sample_params["type"] == "powder":
-                sample = Powder(lattice_params=lattice_params)
-            else:
-                print("Sample type needs to be either xtal or powder.")
-
-            param_dict = ("shape", "width", "height", "depth", "mosaic", "mosaic_v")
-
-            for key, val in sample_params.items():
-
-                match key:
-                    case "height" | "width" | "depth":
-                        setattr(sample, key, val * cm2angstrom)
-                    case "mosaic" | "mosaic_v":
-                        setattr(sample, key, val * min2rad)
-                    case _:
-                        if key in param_dict:
-                            setattr(sample, key, val)
+        if sample_params["type"] == "xtal":
+            sample = Xtal.from_json(sample_params)
+        elif sample_params["type"] == "powder":
+            sample = Powder.from_json(sample_params)
+        else:
+            sample = Sample.from_json(sample_params)
 
         self.load_sample(sample)
 
@@ -114,9 +94,9 @@ class TAS(object):
         """
         return np.array(
             [
-                -kf * np.sin(two_theta / rad2deg),
+                -kf * np.sin(np.deg2rad(two_theta)),
                 0,
-                ki - kf * np.cos(two_theta / rad2deg),
+                ki - kf * np.cos(np.deg2rad(two_theta)),
             ]
         )
 
@@ -259,11 +239,11 @@ class TAS(object):
         if two_theta is None:
             print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
             return None
-        elif two_theta * rad2deg < S2_MIN_DEG:
+        elif np.rad2deg(two_theta) < S2_MIN_DEG:
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
             return None
         else:
-            return two_theta * rad2deg * self.goniometer.sense
+            return np.rad2deg(two_theta) * self.goniometer.sense
 
     def find_angles(self, peak, ei=13.5, ef=None):
         """calculate motor positions for a given peak if UB matrix has been determined
@@ -294,11 +274,11 @@ class TAS(object):
         if two_theta is None:
             print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
             angles = None
-        elif two_theta * rad2deg < S2_MIN_DEG:
+        elif np.rad2deg(two_theta) < S2_MIN_DEG:
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
             angles = None
         else:
-            two_theta = two_theta * rad2deg * self.goniometer.sense
+            two_theta = np.rad2deg(two_theta) * self.goniometer.sense
             q = self.sample.ub_matrix @ hkl
             t1 = q / np.linalg.norm(q)
 

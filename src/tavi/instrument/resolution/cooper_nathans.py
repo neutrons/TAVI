@@ -1,8 +1,9 @@
 import numpy as np
 import numpy.linalg as la
-from tavi.utilities import *
-from tavi.instrument.tas import TAS
+
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
+from tavi.instrument.tas import TAS
+from tavi.utilities import *
 
 
 class CN(TAS):
@@ -67,31 +68,44 @@ class CN(TAS):
         rez.projection = projection
 
         if self._mat_f is None:
+            mono_mosaic = np.deg2rad(self.monochromator.mosaic / 60)
+            mono_mosaic_v = np.deg2rad(self.monochromator.mosaic_v / 60)
+            ana_mosaic = np.deg2rad(self.analyzer.mosaic / 60)
+            ana_mosaic_v = np.deg2rad(self.analyzer.mosaic_v / 60)
+
             # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
             mat_f = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, (CN.NUM_MONOS + CN.NUM_ANAS) * 2))
-            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / self.monochromator.mosaic**2
-            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / self.monochromator.mosaic_v**2
-            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / self.analyzer.mosaic**2
-            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / self.analyzer.mosaic_v**2
+            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / mono_mosaic**2
+            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / mono_mosaic_v**2
+            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / ana_mosaic**2
+            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / ana_mosaic_v**2
             self._mat_f = mat_f
 
         if self._mat_g is None:
+            coll_h_pre_mono = np.deg2rad(self.collimators.h_pre_mono / 60)
+            coll_v_pre_mono = np.deg2rad(self.collimators.v_pre_mono / 60)
+            coll_h_pre_sample = np.deg2rad(self.collimators.h_pre_sample / 60)
+            coll_v_pre_sample = np.deg2rad(self.collimators.v_pre_sample / 60)
+            coll_h_post_sample = np.deg2rad(self.collimators.h_post_sample / 60)
+            coll_v_post_sample = np.deg2rad(self.collimators.v_post_sample / 60)
+            coll_h_post_ana = np.deg2rad(self.collimators.h_post_ana / 60)
+            coll_v_post_ana = np.deg2rad(self.collimators.v_post_ana / 60)
+
             # matrix G, divergence of collimators, [pop75] Appendix 1
             mat_g = np.zeros((CN.NUM_COLLS * 2, CN.NUM_COLLS * 2))
-            mat_g[CN.IDX_COLL0_H, CN.IDX_COLL0_H] = 1.0 / self.collimators.h_pre_mono**2
-            mat_g[CN.IDX_COLL0_V, CN.IDX_COLL0_V] = 1.0 / self.collimators.v_pre_mono**2
-            mat_g[CN.IDX_COLL1_H, CN.IDX_COLL1_H] = 1.0 / self.collimators.h_pre_sample**2
-            mat_g[CN.IDX_COLL1_V, CN.IDX_COLL1_V] = 1.0 / self.collimators.v_pre_sample**2
-            mat_g[CN.IDX_COLL2_H, CN.IDX_COLL2_H] = 1.0 / self.collimators.h_post_sample**2
-            mat_g[CN.IDX_COLL2_V, CN.IDX_COLL2_V] = 1.0 / self.collimators.v_post_sample**2
-            mat_g[CN.IDX_COLL3_H, CN.IDX_COLL3_H] = 1.0 / self.collimators.h_post_ana**2
-            mat_g[CN.IDX_COLL3_V, CN.IDX_COLL3_V] = 1.0 / self.collimators.v_post_ana**2
+            mat_g[CN.IDX_COLL0_H, CN.IDX_COLL0_H] = 1.0 / coll_h_pre_mono**2
+            mat_g[CN.IDX_COLL0_V, CN.IDX_COLL0_V] = 1.0 / coll_v_pre_mono**2
+            mat_g[CN.IDX_COLL1_H, CN.IDX_COLL1_H] = 1.0 / coll_h_pre_sample**2
+            mat_g[CN.IDX_COLL1_V, CN.IDX_COLL1_V] = 1.0 / coll_v_pre_sample**2
+            mat_g[CN.IDX_COLL2_H, CN.IDX_COLL2_H] = 1.0 / coll_h_post_sample**2
+            mat_g[CN.IDX_COLL2_V, CN.IDX_COLL2_V] = 1.0 / coll_v_post_sample**2
+            mat_g[CN.IDX_COLL3_H, CN.IDX_COLL3_H] = 1.0 / coll_h_post_ana**2
+            mat_g[CN.IDX_COLL3_V, CN.IDX_COLL3_V] = 1.0 / coll_v_post_ana**2
 
             self._mat_g = mat_g
 
         # determine frame
         if isinstance(hkl, tuple | list) and len(hkl) == 3:
-
             if projection is None:  # Local Q frame
                 rez.frame = "q"
                 rez.angles = (90, 90, 90)
@@ -218,8 +232,10 @@ class CN(TAS):
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
             # TODO smaple mosaic????
-            mat_cov[1, 1] += q_mod**2 * self.sample.mosaic**2
-            mat_cov[2, 2] += q_mod**2 * self.sample.mosaic_v**2
+            sample_mosaic = np.deg2rad(self.sample.mosaic / 60)
+            sample_mosaic_v = np.deg2rad(self.sample.mosaic_v / 60)
+            mat_cov[1, 1] += q_mod**2 * sample_mosaic**2
+            mat_cov[2, 2] += q_mod**2 * sample_mosaic_v**2
 
             mat_reso = la.inv(mat_cov) * sig2fwhm**2
 
@@ -228,7 +244,6 @@ class CN(TAS):
                 rez.q = (q_mod, 0, 0)
 
             elif rez.frame == "hkl":
-
                 conv_mat_4d = np.eye(4)
                 conv_mat_4d[0:3, 0:3] = (
                     np.array(
@@ -243,7 +258,6 @@ class CN(TAS):
                 rez.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
             elif rez.frame == "proj":
-
                 conv_mat_4d = np.eye(4)
                 conv_mat_4d[0:3, 0:3] = (
                     np.array(

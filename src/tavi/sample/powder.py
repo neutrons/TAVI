@@ -1,7 +1,7 @@
-import numpy as np
 from tavi.sample.sample import Sample
 
 
+# TODO
 class Powder(Sample):
     """Powder sample
 
@@ -14,9 +14,18 @@ class Powder(Sample):
         super().__init__(lattice_params)
         self.type = "powder"
 
+    @classmethod
+    def from_json(cls, sample_params):
+        """Alternate constructor from json"""
+        lattice_params = (
+            sample_params["a"],
+            sample_params["b"],
+            sample_params["c"],
+            sample_params["alpha"],
+            sample_params["beta"],
+            sample_params["gamma"],
+        )
 
-if __name__ == "__main__":
-    powder = Powder(lattice_params=(1, 1, 1, 90, 90, 120))
+        sample = cls(lattice_params=lattice_params)
 
-    print(powder.b_mat() / 2 / np.pi)
-    print(powder.b_mat() @ np.array([0, 1, 0]) / 2 / np.pi)
+        return sample
