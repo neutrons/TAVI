@@ -8,7 +8,7 @@ class Plot1DManager(object):
 
     def __init__(self) -> None:
         _, self.ax = plt.subplots()
-        self.title = None
+        self.title = ""
         self.xlim = None
         self.ylim = None
         self.xlabel = None
@@ -44,7 +44,18 @@ class Plot1DManager(object):
         self.set_labels()
         return rez
 
-    def plot_curve(self, x, y, xerr=None, yerr=None, xlabel=None, ylabel=None, title=None, label=None, fmt="o"):
+    def plot_curve(
+        self,
+        x,
+        y,
+        xerr=None,
+        yerr=None,
+        xlabel=None,
+        ylabel=None,
+        title=None,
+        label=None,
+        fmt="o",
+    ):
         if title is not None:
             self.title = title
         if xlabel is not None:
@@ -61,10 +72,11 @@ class Plot2DManager(object):
     """Manage a plot"""
 
     def __init__(self, grid_helper=None) -> None:
-        self.fig = plt.figure(figsize=(10, 6))
+        # self.fig = plt.figure(figsize=(10, 6))
+        self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, axes_class=Axes, grid_helper=grid_helper)
 
-        self.title = None
+        self.title = ""
         self.xlim = None
         self.ylim = None
         self.zlim = None
@@ -84,7 +96,8 @@ class Plot2DManager(object):
         self.ax.set_xlabel(self.xlabel)
         self.ax.set_ylabel(self.ylabel)
         self.ax.grid(alpha=0.6)
-        self.ax.legend()
+
+        # self.ax.legend()
 
     def plot_contour(
         self,
@@ -104,7 +117,7 @@ class Plot2DManager(object):
         self.xlabel = xlabel
         self.ylabel = ylabel
         self.zlabel = zlabel
-        self.title = title
+        self.title += title
 
         p = self.ax.pcolormesh(
             x,

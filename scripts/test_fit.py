@@ -12,7 +12,7 @@ def test_fit_scan(tavi):
     curve1 = s1.generate_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)
 
     x, y, xerr, yerr, xlabel, ylabel, title, label = curve1
-    f1 = Fit(x=x, y=y, fit_range=(0.0, 4))
+    f1 = Fit(x=x, y=y, err=yerr, fit_range=(0.0, 4))
     f1.add_background(values=(0.7,))
     f1.add_signal(
         values=(None, 3.5, None),
@@ -28,7 +28,7 @@ def test_fit_scan(tavi):
     f1.perform_fit()
 
     p1.plot_curve(*curve1)
-    p1.plot_curve(f1.x_plot, f1.y_plot, fmt="-")
+    p1.plot_curve(f1.x_plot, f1.y_plot, fmt="-", xlabel=xlabel, ylabel=ylabel, title=title)
 
     # s2 = tavi.data[datasets]["scan0043"]
     # curve2 = s2.generate_curve(norm_channel="mcu", norm_val=30, rebin_type="grid", rebin_step=0.25)

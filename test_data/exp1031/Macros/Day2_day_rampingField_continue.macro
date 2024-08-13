@@ -1,0 +1,58 @@
+
+loop i = 2, 2.6, 0.2
+set_field mag_i %i
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 1 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 1 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+
+endloop
+
+set_field mag_i 3
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 1 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 1 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 60
+scanrel s1 0.8 -0.8 0.1

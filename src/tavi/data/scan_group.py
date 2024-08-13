@@ -80,14 +80,16 @@ class ScanGroup(object):
         # TODO problem if irregular size
         x_step, y_step = rebin_steps
         if x_step is None:
-            x_unique = np.unique(np.concatenate([np.unique(np.round(x, 1)) for x in x_array]))
-            x_diff = np.unique(np.round(np.diff(x_unique), 1))
+            x_precision = 1
+            x_unique = np.unique(np.concatenate([np.unique(np.round(x, x_precision)) for x in x_array]))
+            x_diff = np.unique(np.round(np.diff(x_unique), x_precision))
             x_diff = x_diff[x_diff > 0]
             x_step = x_diff[0]
 
         if y_step is None:
-            y_unique = np.unique(np.concatenate([np.unique(np.round(y, 1)) for y in y_array]))
-            y_diff = np.unique(np.round(np.diff(y_unique), 1))
+            y_precision = 5
+            y_unique = np.unique(np.concatenate([np.unique(np.round(y, y_precision)) for y in y_array]))
+            y_diff = np.unique(np.round(np.diff(y_unique), y_precision))
             y_diff = y_diff[y_diff > 0]
             y_step = y_diff[0]
 
@@ -124,13 +126,13 @@ class ScanGroup(object):
 
         return (xv, yv, z, x_step, y_step, xlabel, ylabel, zlabel, title)
 
-    def plot_contour(self, contour_plot, cmap="turbo", vmax=100, ylim=None, xlim=None):
+    def plot_contour(self, contour_plot, cmap="turbo", vmax=100, vmin=0, ylim=None, xlim=None):
         """Plot contour"""
 
         x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
 
         fig, ax = plt.subplots()
-        p = ax.pcolormesh(x, y, z, shading="auto", cmap=cmap, vmax=vmax)
+        p = ax.pcolormesh(x, y, z, shading="auto", cmap=cmap, vmax=vmax, vmin=vmin)
         fig.colorbar(p, ax=ax)
         ax.set_title(title)
         ax.set_xlabel(xlabel)

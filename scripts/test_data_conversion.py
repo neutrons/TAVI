@@ -28,8 +28,8 @@ def test_open_tavi_file(tavi):
 if __name__ == "__main__":
     tavi = TAVI()
     # test_conversion(424)
-    # test_conversion(710)
-    test_conversion(1031)
-    test_load_nexus_to_new_tavi(tavi)
+    test_conversion(710)
+    # test_conversion(1031)
+    # test_load_nexus_to_new_tavi(tavi)
 
     # test_open_exsiting_tavi()

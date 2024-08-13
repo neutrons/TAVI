@@ -50,6 +50,7 @@ def nexus_to_dict(nexus_entry):
     num = np.size(nexus_entry["data/" + scan_info["def_x"]])
 
     data = {
+        # "Pt.": nexus_entry["sample/Pt."][...],
         "Pt.": np.arange(start=1, stop=num + 1, step=1),
         # detector
         "detector": nexus_entry["instrument/detector/data"][...],
@@ -100,19 +101,30 @@ def nexus_to_dict(nexus_entry):
 
     # temprature
     temperatue_str = (
-        "coldtip",
-        "tsample",
-        "temp_a",
-        "temp_2",
-        "vti",
-        "sample",
-        "temp",
-        "dr_tsample",
-        "dr_temp",
+        (
+            "temp",
+            "temp_a",
+            "temp_2",
+            "coldtip",
+            "tsample",
+            "sample",
+        )
+        + (
+            "vti",
+            "dr_tsample",
+            "dr_temp",
+        )
+        + ("lt", "ht", "sorb_temp", "sorb", "sample_ht")
     )
     for t in nexus_entry["sample"].keys():
         if t in temperatue_str:
             data.update({t: nexus_entry["sample/" + t][...]})
+
+    # field
+    field_str = ("persistent_field",)
+    for f in nexus_entry["sample"].keys():
+        if f in field_str:
+            data.update({f: nexus_entry["sample/" + f][...]})
 
     return scan_info, sample_ub_info, instrument_info, data
 
