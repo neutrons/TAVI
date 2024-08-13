@@ -34,6 +34,7 @@ class Fit(object):
             y (list)
             err (list | None)
             fit_range (tuple)
+            NUM_PTS (int): number of points for the fit curve
         """
         self.NUM_PTS = 100
         self.range = fit_range
@@ -55,17 +56,16 @@ class Fit(object):
             self.x.max(),
             num=self.NUM_PTS,
         )
+        self.y_plot = None
 
         self.background_models = []
         self.signal_models = []
         self.pars = Parameters()
         self.num_backgrounds = 0
         self.num_signals = 0
-        self.FIT_STATUS = None
-        self.chisqr = 0
+        self.fit_result = None
+
         self.PLOT_SEPARATELY = False
-        self.y_plot = None
-        self.best_values = None
 
     def add_background(
         self,
@@ -95,31 +95,37 @@ class Fit(object):
         else:
             prefix = ""
         model = Fit.models[model](prefix=prefix, nan_policy="propagate")
-        num_params = len(model.param_names)
-
+        param_names = model.param_names
+        # guess initials
         pars = model.guess(self.y, x=self.x)
-        if values is None:
-            values = []
-            for idx, param in enumerate(model.param_names):
-                values.append(pars[param].value)
-        if vary is None:
-            vary = [True] * num_params
-        if mins is None:
-            mins = [None] * num_params
-        if maxs is None:
-            maxs = [None] * num_params
-        if exprs is None:
-            exprs = [None] * num_params
 
-        for idx, param in enumerate(model.param_names):
-            self.pars.add(
-                param,
-                value=pars[param].value,
-                vary=vary[idx],
-                min=mins[idx],
-                max=maxs[idx],
-                expr=exprs[idx],
-            )
+        # overwrite with user input
+        if values is not None:
+            for idx, v in enumerate(values):
+                if v is not None:
+                    pars[param_names[idx]].set(value=v)
+
+        if vary is not None:
+            for idx, v in enumerate(vary):
+                if v is not None:
+                    pars[param_names[idx]].set(vary=v)
+
+        if mins is not None:
+            for idx, v in enumerate(mins):
+                if v is not None:
+                    pars[param_names[idx]].set(min=v)
+        if maxs is not None:
+            for idx, v in enumerate(maxs):
+                if v is not None:
+                    pars[param_names[idx]].set(max=v)
+
+        if exprs is not None:
+            for idx, v in enumerate(exprs):
+                if v is not None:
+                    pars[param_names[idx]].set(expr=v)
+
+        for param_name in param_names:
+            self.pars.add(pars[param_name])
 
         self.background_models.append(model)
 
@@ -132,7 +138,7 @@ class Fit(object):
         maxs=None,
         exprs=None,
     ):
-        """Set the model for background
+        """Set the model for signal
 
         Args:
             model (str): Constant, Linear, Quadratic, Polynomial,
@@ -145,34 +151,37 @@ class Fit(object):
         self.num_signals += 1
         prefix = f"s{self.num_signals}_"
         model = Fit.models[model](prefix=prefix, nan_policy="propagate")
-
+        param_names = model.param_names
+        # guess initials
         pars = model.guess(self.y, x=self.x)
 
-        num_params = len(model.param_names)
-        if values is None:
-            values = []
-            for idx, param in enumerate(model.param_names):
-                values.append(pars[param].value)
-        if vary is None:
-            vary = [True] * num_params
-        if mins is None:
-            mins = [None] * num_params
-        if maxs is None:
-            maxs = [None] * num_params
-        if exprs is None:
-            exprs = [None] * num_params
+        # overwrite with user input
+        if values is not None:
+            for idx, v in enumerate(values):
+                if v is not None:
+                    pars[param_names[idx]].set(value=v)
 
-        # pars = model.guess(self.y, x=self.x)
-        for idx, param in enumerate(model.param_names):
-            self.pars.add(
-                param,
-                value=values[idx],
-                vary=vary[idx],
-                min=mins[idx],
-                max=maxs[idx],
-                expr=exprs[idx],
-            )
+        if vary is not None:
+            for idx, v in enumerate(vary):
+                if v is not None:
+                    pars[param_names[idx]].set(vary=v)
 
+        if mins is not None:
+            for idx, v in enumerate(mins):
+                if v is not None:
+                    pars[param_names[idx]].set(min=v)
+        if maxs is not None:
+            for idx, v in enumerate(maxs):
+                if v is not None:
+                    pars[param_names[idx]].set(max=v)
+
+        if exprs is not None:
+            for idx, v in enumerate(exprs):
+                if v is not None:
+                    pars[param_names[idx]].set(expr=v)
+
+        for param_name in param_names:
+            self.pars.add(pars[param_name])
         self.signal_models.append(model)
 
     def perform_fit(self):
@@ -186,10 +195,8 @@ class Fit(object):
         else:
             out = model.fit(self.y, self.pars, x=self.x, weights=self.err)
 
-        self.chisqr = out.chisqr
-        self.FIT_STATUS = out.success
+        self.result = out
 
         # self.y_plot = model.eval(self.pars, x=self.x_plot)
         self.y_plot = model.eval(out.params, x=self.x_plot)
-        self.best_values = out.best_values
         print(out.fit_report(min_correl=0.25))

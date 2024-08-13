@@ -1,0 +1,57 @@
+
+ 
+
+set_temp 2.8
+wait 300
+
+loop i = 0.1, 2 0.1
+set_field mag_i %i
+
+scantitle "HoV6Sn6, (0 0 L)-scan, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 5 
+scan h 0 k 0 l 1.15 1.5 0.01 
+
+br 1 0 0
+
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 1
+scanrel s1 1 -1 0.1
+
+br 1 0 0
+
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 1
+th2th 2 -2 0.2
+
+
+endloop
+
+ 
+ 
+br 1 0 0
+scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, UP"
+start_field_scan mag_i
+scan mag_i 3 2 -0.05 preset time 15
+end_field_scan mag_i
+ 
+
+for temp contro:
+
+He-3 temp range:
+vti at 1.5 K
+set_temp 1--- this change sthe vti
+set_sample_ht 0
+
+to control the temp
+
+set_sorb 0 ---condensing
+
+set_sorb 1 to control, good between 0.25 K to 1.5 K
+use lt reads the sample temp
+
+
+to go above 1.5K to 10 K
+sorb is at 35
+vti is at 1.5K
+set_sample_ht to control temp
+use ht to read sample temp

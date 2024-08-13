@@ -13,9 +13,18 @@ def test_fit_scan(tavi):
 
     x, y, xerr, yerr, xlabel, ylabel, title, label = curve1
     f1 = Fit(x=x, y=y, fit_range=(0.0, 4))
-    f1.add_background()
-    f1.add_signal()
-    f1.add_signal(model="Gaussian", values=(0, None, None), vary=(False, True, True))
+    f1.add_background(values=(0.7,))
+    f1.add_signal(
+        values=(None, 3.5, None),
+        vary=(True, True, True),
+    )
+    f1.add_signal(
+        model="Gaussian",
+        values=(None, 0, None),
+        vary=(True, False, True),
+        mins=(0, 0, 0.1),
+        maxs=(None, 0.1, 0.3),
+    )
     f1.perform_fit()
 
     p1.plot_curve(*curve1)

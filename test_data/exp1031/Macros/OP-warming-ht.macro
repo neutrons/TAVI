@@ -1,0 +1,24 @@
+defxy ht detector
+
+
+br 1 0 0
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_fileld.position) T"
+
+scanon
+
+
+
+loop i=1.5, 5 0.5
+
+set_sample_ht %i
+
+wait 120
+
+stepbegin
+count preset time 10
+stepend
+
+endloop
+
+scanoff

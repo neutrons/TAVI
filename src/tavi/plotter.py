@@ -1,13 +1,12 @@
 import matplotlib.pylab as plt
-from mpl_toolkits.axisartist import Axes
 import numpy as np
+from mpl_toolkits.axisartist import Axes
 
 
 class Plot1DManager(object):
     """Manage a plot"""
 
     def __init__(self) -> None:
-
         _, self.ax = plt.subplots()
         self.title = None
         self.xlim = None
@@ -16,7 +15,6 @@ class Plot1DManager(object):
         self.ylabel = None
 
     def set_labels(self):
-
         if self.xlim is not None:
             self.ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
         if self.ylim is not None:
@@ -29,7 +27,6 @@ class Plot1DManager(object):
         self.ax.legend()
 
     def rez_plot_1D(self, tas, projection, hkl, en, ef, R0, axis):
-
         rez = tas.cooper_nathans(
             ei=ef + en,
             ef=ef,
@@ -48,9 +45,12 @@ class Plot1DManager(object):
         return rez
 
     def plot_curve(self, x, y, xerr=None, yerr=None, xlabel=None, ylabel=None, title=None, label=None, fmt="o"):
-        self.title = title
-        self.xlabel = xlabel
-        self.ylabel = ylabel
+        if title is not None:
+            self.title = title
+        if xlabel is not None:
+            self.xlabel = xlabel
+        if ylabel is not None:
+            self.ylabel = ylabel
 
         self.ax.errorbar(x=x, y=y, xerr=xerr, yerr=yerr, label=label, fmt=fmt)
 
@@ -61,7 +61,6 @@ class Plot2DManager(object):
     """Manage a plot"""
 
     def __init__(self, grid_helper=None) -> None:
-
         self.fig = plt.figure(figsize=(10, 6))
         self.ax = self.fig.add_subplot(111, axes_class=Axes, grid_helper=grid_helper)
 
@@ -76,7 +75,6 @@ class Plot2DManager(object):
         self.cmap = "turbo"
 
     def set_labels(self):
-
         if self.xlim is not None:
             self.ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
         if self.ylim is not None:
@@ -122,7 +120,6 @@ class Plot2DManager(object):
         self.set_labels()
 
     def rez_plot(self, tas, projection, q1, q2, q3, en, ef, R0):
-
         qe_list = np.empty((4,), dtype=object)
         plot_axes = []
         perp_axes = []
@@ -142,7 +139,6 @@ class Plot2DManager(object):
             for q2 in qe_list[1]:
                 for q3 in qe_list[2]:
                     for ei0 in qe_list[3]:
-
                         h, k, l = tuple(np.array(p1) * q1 + np.array(p2) * q2 + np.array(p3) * q3)
 
                         rez = tas.cooper_nathans(

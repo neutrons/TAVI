@@ -1,0 +1,448 @@
+8/12/2024 3:01 PM        init
+8/12/2024 3:01 PM        init
+8/12/2024 3:05 PM        set_temp_2 0
+8/12/2024 3:05 PM        set_temp 20
+8/12/2024 3:10 PM        drive s1 30
+8/12/2024 3:11 PM        drive s1 -160
+8/12/2024 3:15 PM        drive s1 -20
+8/12/2024 3:19 PM        lattice 5.516000 5.516000 9.181900 90.000000 90.000000 120.000000
+8/12/2024 3:20 PM        drive s2 -30.037
+8/12/2024 3:20 PM        drive s1 0
+8/12/2024 3:21 PM        drive s1 -11.35
+8/12/2024 3:21 PM        drive s1 -11
+8/12/2024 3:22 PM        scantitle "HoV6Sn6 initial alignment cooling 002"
+8/12/2024 3:22 PM        preset time 1
+8/12/2024 3:22 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:24 PM        drive s1 -10.6968
+8/12/2024 3:24 PM        th2th 2 -2 0.2
+8/12/2024 3:27 PM        lattice a 5.516000 b 5.516000 c 9.168648
+8/12/2024 3:28 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_32826PM.ini"
+8/12/2024 3:29 PM        br 0 0 6
+8/12/2024 3:30 PM        scantitle "HoV6Sn6 initial alignment cooling 006"
+8/12/2024 3:30 PM        scanrel sgl 3 -3 1
+8/12/2024 3:32 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_33152PM.ini"
+8/12/2024 3:32 PM        scanrel sgl 4 -4 1
+8/12/2024 3:33 PM        br 0 0 6
+8/12/2024 3:34 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_33433PM.ini"
+8/12/2024 3:35 PM        br 3 0 0
+8/12/2024 3:36 PM        scantitle "HoV6Sn6 initial alignment cooling 300"
+8/12/2024 3:36 PM        scanrel sgu 4 -4 1
+8/12/2024 3:38 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:39 PM        drive s1 -134.0478
+8/12/2024 3:41 PM        br 1 0 0
+8/12/2024 3:42 PM        scantitle "HoV6Sn6 initial alignment cooling 100"
+8/12/2024 3:42 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:43 PM        drive s1 -100.1226
+8/12/2024 3:43 PM        th2th 2 -2 0.2
+8/12/2024 3:46 PM        lattice a 5.515569 b 5.515569 c 9.168648
+8/12/2024 3:47 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_34709PM.ini"
+8/12/2024 3:47 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_34732PM.ini"
+8/12/2024 3:48 PM        br 3 0 0
+8/12/2024 3:49 PM        scantitle "HoV6Sn6 initial alignment cooling 300"
+8/12/2024 3:49 PM        scan slita_bt 0 30 1
+8/12/2024 3:52 PM        scan slita_tp 0 30 1
+8/12/2024 3:54 PM        scan slita_lf 0 15 1
+8/12/2024 3:55 PM        scan slita_rt 0 15 1
+8/12/2024 3:57 PM        br 0 0 6
+8/12/2024 3:59 PM        scantitle "HoV6Sn6 initial alignment cooling 006"
+8/12/2024 3:59 PM        scan slita_bt 0 30 1
+8/12/2024 4:01 PM        scan slita_tp 0 30 1
+8/12/2024 4:04 PM        scan slita_lf 0 15 1
+8/12/2024 4:05 PM        scan slita_rt 0 15 1
+8/12/2024 4:13 PM        scanrel stl 8 -8 1
+8/12/2024 4:14 PM        scanrel stu 8 -8 1
+8/12/2024 4:15 PM        drive stl -3
+8/12/2024 4:15 PM        scan slita_lf 0 15 1
+8/12/2024 4:17 PM        scan slita_rt 0 15 1
+8/12/2024 4:18 PM        br 3 0 0
+8/12/2024 4:20 PM        scan slita_lf 0 15 1
+8/12/2024 4:21 PM        scan slita_rt 0 15 1
+8/12/2024 4:23 PM        drive slita_bt 23
+8/12/2024 4:23 PM        drive slita_tp 23
+8/12/2024 4:24 PM        drive slita_lf 3
+8/12/2024 4:24 PM        drive slita_rt 7
+8/12/2024 4:25 PM        scan slitb_bt 0 30 1
+8/12/2024 4:27 PM        scan slitb_tp 0 30 1
+8/12/2024 4:29 PM        scan slitb_lf 0 15 1
+8/12/2024 4:30 PM        scan slitb_rt 0 15 1
+8/12/2024 4:32 PM        br 0 0 6
+8/12/2024 4:34 PM        scan slitb_bt 0 30 1
+8/12/2024 4:36 PM        scan slitb_tp 0 30 1
+8/12/2024 4:38 PM        scan slitb_lf 0 15 1
+8/12/2024 4:39 PM        scan slitb_rt 0 15 1
+8/12/2024 4:42 PM        drive slitb_bt 22
+8/12/2024 4:42 PM        drive slitb_tp 22
+8/12/2024 4:42 PM        drive slitb_lf 7
+8/12/2024 4:42 PM        drive slitb_rt 8
+8/12/2024 4:43 PM        br 1 0 0
+8/12/2024 4:44 PM        scantitle "sit on [1 0 0] cooling"
+8/12/2024 4:44 PM        scan n 100 preset time 15
+8/12/2024 5:14 PM        set_temp 1
+8/12/2024 5:20 PM        scan n 200 preset time 15
+8/12/2024 5:33 PM        preset time 1
+8/12/2024 5:33 PM        br 3 0 0
+8/12/2024 5:34 PM        br 3 0 0
+8/12/2024 5:34 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, realign at T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 5:34 PM        preset time 1
+8/12/2024 5:34 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:35 PM        drive s1 -134.0304
+8/12/2024 5:36 PM        scanrel sgu 3 -3 1
+8/12/2024 5:37 PM        drive sgu 0.2
+8/12/2024 5:37 PM        th2th 2 -2 0.2
+8/12/2024 5:38 PM        br 1 0 0
+8/12/2024 5:39 PM        drive sgu 0.2
+8/12/2024 5:39 PM        th2th 2 -2 0.2
+8/12/2024 5:40 PM        lattice a 5.520013 b 5.520013 c 9.168648
+8/12/2024 5:40 PM        scanrel s1 1 -1  0.1
+8/12/2024 5:41 PM        drive s1 -100.1151
+8/12/2024 5:42 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54158PM.ini"
+8/12/2024 5:42 PM        br 0 0 6
+8/12/2024 5:43 PM        scanrel sgl 3 -3 0.5
+8/12/2024 5:44 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54414PM.ini"
+8/12/2024 5:44 PM        br 0 0 2
+8/12/2024 5:45 PM        br 0 0 2
+8/12/2024 5:45 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, realign at T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 5:45 PM        preset time 1
+8/12/2024 5:45 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:46 PM        drive s1 -10.7364
+8/12/2024 5:46 PM        th2th 2 -2 0.2
+8/12/2024 5:48 PM        lattice a 5.520013 b 5.520013 c 9.152013
+8/12/2024 5:48 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54826PM.ini"
+8/12/2024 5:48 PM        br 1 0 0
+8/12/2024 5:50 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:53 PM        scantitle "sit at [100], T = @(lt.position) K"
+8/12/2024 5:53 PM        scan n 30 preset time 30
+8/12/2024 6:09 PM        set_sorb 0
+8/12/2024 6:09 PM        scantitle "sit at [1 0 0] cooling to 0.3K"
+8/12/2024 6:09 PM        scan n 30 preset time 30
+8/12/2024 6:28 PM        br 1 0 0
+8/12/2024 6:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:29 PM        preset time 5
+8/12/2024 6:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:31 PM        br 1 0 0
+8/12/2024 6:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:31 PM        preset time 5
+8/12/2024 6:31 PM        th2th 4 -4 0.2
+8/12/2024 6:35 PM        br 2 0 0
+8/12/2024 6:36 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:36 PM        preset time 5
+8/12/2024 6:36 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:38 PM        br 2 0 0
+8/12/2024 6:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:38 PM        preset time 5
+8/12/2024 6:38 PM        th2th 4 -4 0.2
+8/12/2024 6:43 PM        br 3 0 0
+8/12/2024 6:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:44 PM        preset time 5
+8/12/2024 6:44 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:46 PM        br 3 0 0
+8/12/2024 6:46 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:46 PM        preset time 5
+8/12/2024 6:46 PM        th2th 4 -4 0.2
+8/12/2024 6:51 PM        br 1 0 1
+8/12/2024 6:52 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:52 PM        preset time 5
+8/12/2024 6:52 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:54 PM        br 1 0 1
+8/12/2024 6:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:54 PM        preset time 5
+8/12/2024 6:54 PM        th2th 4 -4 0.2
+8/12/2024 6:59 PM        br 1 0 2
+8/12/2024 6:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:59 PM        preset time 5
+8/12/2024 6:59 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:01 PM        br 1 0 2
+8/12/2024 7:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:01 PM        preset time 5
+8/12/2024 7:01 PM        th2th 4 -4 0.2
+8/12/2024 7:06 PM        br 1 0 3
+8/12/2024 7:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:07 PM        preset time 5
+8/12/2024 7:07 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:09 PM        br 1 0 3
+8/12/2024 7:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:10 PM        preset time 5
+8/12/2024 7:10 PM        th2th 4 -4 0.2
+8/12/2024 7:14 PM        br 1 0 4
+8/12/2024 7:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:15 PM        preset time 5
+8/12/2024 7:15 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:17 PM        br 1 0 4
+8/12/2024 7:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:17 PM        preset time 5
+8/12/2024 7:17 PM        th2th 4 -4 0.2
+8/12/2024 7:22 PM        br 1 0 5
+8/12/2024 7:22 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:22 PM        preset time 5
+8/12/2024 7:22 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:24 PM        br 1 0 5
+8/12/2024 7:24 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:24 PM        preset time 5
+8/12/2024 7:24 PM        th2th 4 -4 0.2
+8/12/2024 7:29 PM        br 1 0 6
+8/12/2024 7:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:29 PM        preset time 5
+8/12/2024 7:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:31 PM        br 1 0 6
+8/12/2024 7:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:31 PM        preset time 5
+8/12/2024 7:31 PM        th2th 4 -4 0.2
+8/12/2024 7:36 PM        br 2 0 1
+8/12/2024 7:37 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:37 PM        preset time 5
+8/12/2024 7:37 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:39 PM        br 2 0 1
+8/12/2024 7:39 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:39 PM        preset time 5
+8/12/2024 7:39 PM        th2th 4 -4 0.2
+8/12/2024 7:44 PM        br 2 0 2
+8/12/2024 7:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:44 PM        preset time 5
+8/12/2024 7:44 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:47 PM        br 2 0 2
+8/12/2024 7:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:47 PM        preset time 5
+8/12/2024 7:47 PM        th2th 4 -4 0.2
+8/12/2024 7:51 PM        br 2 0 3
+8/12/2024 7:52 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:52 PM        preset time 5
+8/12/2024 7:52 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:54 PM        br 2 0 3
+8/12/2024 7:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:54 PM        preset time 5
+8/12/2024 7:54 PM        th2th 4 -4 0.2
+8/12/2024 7:59 PM        br 2 0 4
+8/12/2024 7:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:59 PM        preset time 5
+8/12/2024 7:59 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:01 PM        br 2 0 4
+8/12/2024 8:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:01 PM        preset time 5
+8/12/2024 8:01 PM        th2th 4 -4 0.2
+8/12/2024 8:06 PM        br 2 0 5
+8/12/2024 8:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:06 PM        preset time 5
+8/12/2024 8:06 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:09 PM        br 2 0 5
+8/12/2024 8:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:09 PM        preset time 5
+8/12/2024 8:09 PM        th2th 4 -4 0.2
+8/12/2024 8:13 PM        br 3 0 1
+8/12/2024 8:14 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:14 PM        preset time 5
+8/12/2024 8:14 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:16 PM        br 3 0 %
+8/12/2024 8:16 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:16 PM        preset time 5
+8/12/2024 8:16 PM        th2th 4 -4 0.2
+8/12/2024 8:21 PM        br 3 0 2
+8/12/2024 8:21 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:21 PM        preset time 5
+8/12/2024 8:21 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:24 PM        br 3 0 %
+8/12/2024 8:24 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:24 PM        preset time 5
+8/12/2024 8:24 PM        th2th 4 -4 0.2
+8/12/2024 8:28 PM        br 3 0 3
+8/12/2024 8:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:29 PM        preset time 5
+8/12/2024 8:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:31 PM        br 3 0 %
+8/12/2024 8:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:31 PM        preset time 5
+8/12/2024 8:31 PM        th2th 4 -4 0.2
+8/12/2024 8:36 PM        br 0 0 1
+8/12/2024 8:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:38 PM        preset time 5
+8/12/2024 8:38 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:40 PM        br 0 0 1
+8/12/2024 8:40 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:40 PM        preset time 5
+8/12/2024 8:40 PM        th2th 4 -4 0.2
+8/12/2024 8:45 PM        br 0 0 2
+8/12/2024 8:45 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:45 PM        preset time 5
+8/12/2024 8:45 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:47 PM        br 0 0 2
+8/12/2024 8:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:47 PM        preset time 5
+8/12/2024 8:47 PM        th2th 4 -4 0.2
+8/12/2024 8:52 PM        br 0 0 3
+8/12/2024 8:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:53 PM        preset time 5
+8/12/2024 8:53 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:55 PM        br 0 0 3
+8/12/2024 8:55 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:55 PM        preset time 5
+8/12/2024 8:55 PM        th2th 4 -4 0.2
+8/12/2024 9:00 PM        br 0 0 4
+8/12/2024 9:00 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:00 PM        preset time 5
+8/12/2024 9:00 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:02 PM        br 0 0 4
+8/12/2024 9:02 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:02 PM        preset time 5
+8/12/2024 9:02 PM        th2th 4 -4 0.2
+8/12/2024 9:07 PM        br 0 0 5
+8/12/2024 9:08 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:08 PM        preset time 5
+8/12/2024 9:08 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:10 PM        br 0 0 5
+8/12/2024 9:10 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:10 PM        preset time 5
+8/12/2024 9:10 PM        th2th 4 -4 0.2
+8/12/2024 9:15 PM        br 0 0 6
+8/12/2024 9:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:15 PM        preset time 5
+8/12/2024 9:15 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:17 PM        br 0 0 6
+8/12/2024 9:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:17 PM        preset time 5
+8/12/2024 9:17 PM        th2th 4 -4 0.2
+8/12/2024 9:34 PM        set_field mag_i 0
+8/12/2024 9:34 PM        br 0 0 1
+8/12/2024 9:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:35 PM        preset time 60
+8/12/2024 9:35 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 9:52 PM        br 0 0 5
+8/12/2024 9:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:53 PM        preset time 60
+8/12/2024 9:53 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:11 PM        br 1 0 1
+8/12/2024 10:11 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:11 PM        preset time 60
+8/12/2024 10:11 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:29 PM        br 1 0 0
+8/12/2024 10:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:29 PM        preset time 60
+8/12/2024 10:29 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:47 PM        br 2 0 0
+8/12/2024 10:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:47 PM        preset time 60
+8/12/2024 10:47 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:05 PM        set_field mag_i 0.5
+8/12/2024 11:16 PM        br 0 0 1
+8/12/2024 11:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:17 PM        preset time 60
+8/12/2024 11:17 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:35 PM        br 0 0 5
+8/12/2024 11:36 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:36 PM        preset time 60
+8/12/2024 11:36 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:53 PM        br 1 0 1
+8/12/2024 11:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:54 PM        preset time 60
+8/12/2024 11:54 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:12 AM        br 1 0 0
+8/13/2024 12:12 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:12 AM        preset time 60
+8/13/2024 12:12 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:29 AM        br 2 0 0
+8/13/2024 12:30 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:30 AM        preset time 60
+8/13/2024 12:30 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:47 AM        set_field mag_i 1
+8/13/2024 12:58 AM        br 0 0 1
+8/13/2024 1:00 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:00 AM        preset time 60
+8/13/2024 1:00 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:18 AM        br 0 0 5
+8/13/2024 1:19 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:19 AM        preset time 60
+8/13/2024 1:19 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:36 AM        br 1 0 1
+8/13/2024 1:37 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:37 AM        preset time 60
+8/13/2024 1:37 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:54 AM        br 1 0 0
+8/13/2024 1:55 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:55 AM        preset time 60
+8/13/2024 1:55 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:12 AM        br 2 0 0
+8/13/2024 2:13 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:13 AM        preset time 60
+8/13/2024 2:13 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:30 AM        set_field mag_i 1.2
+8/13/2024 2:39 AM        br 0 0 1
+8/13/2024 2:41 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:41 AM        preset time 60
+8/13/2024 2:41 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:58 AM        br 0 0 5
+8/13/2024 2:59 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:59 AM        preset time 60
+8/13/2024 2:59 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:17 AM        br 1 0 1
+8/13/2024 3:18 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:18 AM        preset time 60
+8/13/2024 3:18 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:35 AM        br 1 0 0
+8/13/2024 3:36 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:36 AM        preset time 60
+8/13/2024 3:36 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:53 AM        br 2 0 0
+8/13/2024 3:53 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:53 AM        preset time 60
+8/13/2024 3:53 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:11 AM        set_field mag_i 1.4
+8/13/2024 4:19 AM        br 0 0 1
+8/13/2024 4:21 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:21 AM        preset time 60
+8/13/2024 4:21 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:39 AM        br 0 0 5
+8/13/2024 4:40 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:40 AM        preset time 60
+8/13/2024 4:40 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:57 AM        br 1 0 1
+8/13/2024 4:58 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:58 AM        preset time 60
+8/13/2024 4:58 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:16 AM        br 1 0 0
+8/13/2024 5:16 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:16 AM        preset time 60
+8/13/2024 5:16 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:33 AM        br 2 0 0
+8/13/2024 5:34 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:34 AM        preset time 60
+8/13/2024 5:34 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:51 AM        set_field mag_i 1.6
+8/13/2024 6:00 AM        br 0 0 1
+8/13/2024 6:02 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:02 AM        preset time 60
+8/13/2024 6:02 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:20 AM        br 0 0 5
+8/13/2024 6:21 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:21 AM        preset time 60
+8/13/2024 6:21 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:38 AM        br 1 0 1
+8/13/2024 6:39 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:39 AM        preset time 60
+8/13/2024 6:39 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:56 AM        br 1 0 0
+8/13/2024 6:57 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:57 AM        preset time 60
+8/13/2024 6:57 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:14 AM        br 2 0 0
+8/13/2024 7:15 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:15 AM        preset time 60
+8/13/2024 7:15 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:32 AM        set_field mag_i 1.8
+8/13/2024 7:41 AM        br 0 0 1
+8/13/2024 7:43 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:43 AM        preset time 60
+8/13/2024 7:43 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:01 AM        br 0 0 5
+8/13/2024 8:02 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:02 AM        preset time 60
+8/13/2024 8:02 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:19 AM        br 1 0 1
+8/13/2024 8:20 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:20 AM        preset time 60
+8/13/2024 8:20 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:37 AM        br 1 0 0
+8/13/2024 8:38 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:38 AM        preset time 60
+8/13/2024 8:38 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:55 AM        br 2 0 0
+8/13/2024 8:56 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:56 AM        preset time 60
+8/13/2024 8:56 AM        scanrel s1 0.8 -0.8 0.1

@@ -31,7 +31,6 @@ class ScanGroup(object):
         signal_axes=(None, None, None),
         background_axes=(None, None, None),
     ):
-
         self.signals = signals
         self.backgrounds = backgrounds
         self.signal_axes = list(signal_axes)
@@ -165,7 +164,6 @@ class ScanGroup(object):
         fig, ax = plt.subplots()
         shift = 0
         for i in range(num):
-
             if np.isnan(z[:, i]).all():  # all nan
                 continue
             else:

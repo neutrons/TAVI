@@ -1,8 +1,9 @@
-import numpy as np
-import h5py
 import os
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import h5py
+import numpy as np
 
 # from tavi.instrument.instrument_params.takin_test import instrument_params
 
@@ -207,29 +208,40 @@ def spicelogs_to_nexus(nxentry):
     nxmono.create_dataset(name="type", data=spice_logs.attrs["monochromator"], maxshape=None)
     nxmono.attrs["type"] = "NX_CHAR"
 
-    nxmono.create_dataset(name="m1", data=spice_logs["m1"], maxshape=None)
-    nxmono["m1"].attrs["type"] = "NX_FLOAT"
-    nxmono["m1"].attrs["units"] = "degrees"
+    try:
+        nxmono.create_dataset(name="m1", data=spice_logs["m1"], maxshape=None)
+        nxmono["m1"].attrs["type"] = "NX_FLOAT"
+        nxmono["m1"].attrs["units"] = "degrees"
+    except KeyError:
+        pass
 
     nxmono.create_dataset(name="m2", data=spice_logs["m2"], maxshape=None)
     nxmono["m2"].attrs["type"] = "NX_FLOAT"
     nxmono["m2"].attrs["units"] = "degrees"
 
-    if "mfocus" in spice_logs.keys():
+    try:
         nxmono.create_dataset(name="mfocus", data=spice_logs["mfocus"], maxshape=None)
         nxmono["mfocus"].attrs["type"] = "NX_FLOAT"
+    except KeyError:
+        pass
 
-    if "marc" in spice_logs.keys():
+    try:
         nxmono.create_dataset(name="marc", data=spice_logs["marc"], maxshape=None)
         nxmono["marc"].attrs["type"] = "NX_FLOAT"
+    except KeyError:
+        pass
 
-    if "mtrans" in spice_logs.keys():
+    try:
         nxmono.create_dataset(name="mtrans", data=spice_logs["mtrans"], maxshape=None)
         nxmono["mtrans"].attrs["type"] = "NX_FLOAT"
+    except KeyError:
+        pass
 
-    if "focal_length" in spice_logs.keys():
+    try:
         nxmono.create_dataset(name="focal_length", data=spice_logs["focal_length"], maxshape=None)
         nxmono["focal_length"].attrs["type"] = "NX_FLOAT"
+    except KeyError:
+        pass
 
     nxmono.create_dataset(name="sense", data=spice_logs.attrs["sense"][0], maxshape=None)
     nxmono.attrs["type"] = "NX_CHAR"
@@ -310,7 +322,16 @@ def spicelogs_to_nexus(nxentry):
     # --------------------------- slits ---------------------------
 
     slits_str1 = ("bat", "bab", "bal", "bar", "bbt", "bbb", "bbl", "bbr")
-    slits_str2 = ("slita_lf", "slita_rt", "slita_tp", "slitb_bt", "slitb_lf", "slitb_rt", "slitb_tp")
+    slits_str2 = (
+        "slita_lf",
+        "slita_rt",
+        "slita_tp",
+        "slita_bt",
+        "slitb_lf",
+        "slitb_rt",
+        "slitb_tp",
+        "slitb_bt",
+    )
     slits_str3 = ("slit_pre_bt", "slit_pre_lf", "slit_pre_rt", "slit_pre_tp")
 
     slits_str = (slits_str1, slits_str2, slits_str3)
@@ -404,6 +425,9 @@ def spicelogs_to_nexus(nxentry):
     nxentry["sample"].create_dataset(name="sense", data=spice_logs.attrs["sense"][1], maxshape=None)
     nxentry["sample"].attrs["type"] = "NX_CHAR"
 
+    nxentry["sample"].create_dataset(name="Pt.", data=spice_logs["Pt."], maxshape=None)
+    nxentry["sample"].attrs["type"] = "NX_CHAR"
+
     # nxentry["sample"].create_dataset(name="rotation_angle", data=1.0, maxshape=None)
     # nxentry["sample/rotation_angle"].attrs["type"] = "NX_FLOAT"
     # nxentry["sample/rotation_angle"].attrs["EX_required"] = "true"
@@ -421,7 +445,6 @@ def spicelogs_to_nexus(nxentry):
     #    mcu
 
     if spice_logs.attrs["preset_type"] == "normal":
-
         preset_channel = spice_logs.attrs["preset_channel"]
 
         nxentry["monitor"].create_dataset(name="mode", data=preset_channel, maxshape=None)
@@ -458,7 +481,6 @@ def spicelogs_to_nexus(nxentry):
     # --------------------------- data links ---------------------------
 
     def find_val(val, grp, prefix=""):
-
         for obj_name, obj in grp.items():
             if obj_name in ("SPICElogs", "data"):
                 continue
@@ -528,23 +550,38 @@ def spicelogs_to_nexus(nxentry):
 
     # TODO sample environment -- temperture, magnetic field, pressure
     temperatue_str = (
-        "coldtip",
-        "tsample",
-        "temp_a",
-        "temp_2",
-        "vti",
-        "sample",
-        "temp",
-        "dr_tsample",
-        "dr_temp",
+        (
+            "temp",
+            "temp_a",
+            "temp_2",
+            "coldtip",
+            "tsample",
+            "sample",
+        )
+        + (
+            "vti",
+            "dr_tsample",
+            "dr_temp",
+        )
+        + ("lt", "ht", "sorb_temp", "sorb", "sample_ht")
     )
     for t in temperatue_str:
-        if t in spice_logs.keys():
+        try:
             nxentry["sample"].create_dataset(name=t, data=spice_logs[t], maxshape=None)
             nxentry["sample/" + t].attrs["type"] = "NX_FLOAT"
             nxentry["sample/" + t].attrs["units"] = "K"
+        except KeyError:
+            pass
 
     # TODO field
+    field_str = ("persistent_field",)
+    for f in field_str:
+        try:
+            nxentry["sample"].create_dataset(name=f, data=spice_logs[f], maxshape=None)
+            nxentry["sample/" + t].attrs["type"] = "NX_FLOAT"
+            nxentry["sample/" + t].attrs["units"] = "T"
+        except KeyError:
+            pass
     # TODO pressure
 
 
@@ -749,7 +786,6 @@ def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
     p = Path(path_to_spice_folder)
 
     with h5py.File(path_to_hdf5, "w") as root:
-
         # ----------------------------- ub info ------------------------------------
         ub_files = sorted((p / "UBConf").glob("*.ini"))
         tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
@@ -797,7 +833,6 @@ def convert_spice_to_nexus(path_to_spice_folder, path_to_hdf5):
             # metadata to attibutes
             exp_str = ["scan_title", "users", "local_contact", "experiment"]
             for k, v in headers.items():
-
                 if "," in v and k not in exp_str:  # vectors
                     spice_logs.attrs[k] = np.array([float(v0) for v0 in v.split(",")])
                 elif v.replace(".", "").isnumeric():  # numebrs only
