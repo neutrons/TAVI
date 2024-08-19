@@ -31,7 +31,7 @@ class Xtal(Sample):
         self.plane_normal = None
         self.in_plane_ref = None
 
-        self.i_star, self.j_star, self.k_star = self.reciprocal_basis()
+        self.i_star, self.j_star, self.k_star = self._reciprocal_basis()
 
     @classmethod
     def from_json(cls, sample_params):
@@ -61,7 +61,7 @@ class Xtal(Sample):
                 case _:
                     if key in param_dict:
                         setattr(sample, key, val)
-        sample.update_lattice(lattice_params)
+        sample.update_lattice_parameters(lattice_params)
         return sample
 
     @property

@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+
 from tavi.instrument.tas_cmponents import *
 from tavi.sample.powder import Powder
 from tavi.sample.sample import Sample
@@ -74,11 +75,13 @@ class TAS(object):
         with open(path_to_json, "r", encoding="utf-8") as file:
             sample_params = json.load(file)
 
-        if sample_params["type"] == "xtal":
-            sample = Xtal.from_json(sample_params)
-        elif sample_params["type"] == "powder":
-            sample = Powder.from_json(sample_params)
-        else:
+        try:  # is type xtal ot powder?
+            sample_type = sample_params["type"]
+            if sample_type == "xtal":
+                sample = Xtal.from_json(sample_params)
+            elif sample_type == "powder":
+                sample = Powder.from_json(sample_params)
+        except KeyError:  # sample type is not given
             sample = Sample.from_json(sample_params)
 
         self.load_sample(sample)

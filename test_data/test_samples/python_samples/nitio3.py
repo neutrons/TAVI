@@ -1,6 +1,7 @@
 import numpy as np
-from tavi.utilities import *
+
 from tavi.sample.xtal import Xtal
+from tavi.utilities import *
 
 # test_xtal = Xtal(lattice_params=(5.3995, 5.64, 11.75, 90, 90, 90))
 nitio3 = Xtal(lattice_params=(5.034785, 5.034785, 13.812004, 90, 90, 120))
@@ -10,7 +11,7 @@ nitio3.shape = "cylindrical"
 nitio3.width = 1.0 * cm2angstrom
 nitio3.height = 1.0 * cm2angstrom
 nitio3.depth = 1.0 * cm2angstrom
-nitio3.mosaic = 30 * min2rad  # horizontal mosaic
+nitio3.mosaic_h = 30 * min2rad  # horizontal mosaic
 nitio3.mosaic_v = 30 * min2rad  # vertical mosaic
 
 ub_matrix_spice = np.array(

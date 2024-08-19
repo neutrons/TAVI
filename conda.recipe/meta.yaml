@@ -12,7 +12,7 @@
 {% set build_number = 0 %}
 
 package:
-  name: mypackagename
+  name: tavi
   version: {{ version_number }}
 
 source:

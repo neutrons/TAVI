@@ -2,14 +2,14 @@
 dependencies = [
   # list all runtime dependencies here
 ]
-description = "Example Python repo for neutrons"
+description = "Triple-Axis data Visualization"
 dynamic = ["version"]
 license = {text = "LGPL-3.0"}
 name = "examplepyapp"
 requires-python = ">=3.10"
 
 [project.urls]
-homepage = "https://github.com/neutrons/python_project_template/" # if no homepage, use repo url
+homepage = "https://github.com/neutrons/TAVI"
 
 [build-system]
 build-backend = "setuptools.build_meta"
@@ -36,7 +36,7 @@ distance = "{next_version}.dev{distance}"
 distance-dirty = "{next_version}.dev{distance}+d{build_date:%Y%m%d%H%M}"
 
 [tool.versioningit.write]
-file = "src/packagenamepy/_version.py"
+file = "src/tavi/_version.py"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*", "scripts*", "docs*", "notebooks*"]
@@ -45,11 +45,11 @@ where = ["src"]
 [tool.setuptools.package-data]
 "*" = ["*.yml", "*.yaml", "*.ini"]
 
-[project.scripts]
-packagename-cli = "packagenamepy.packagename:main"
+# [project.scripts]
+# packagename-cli = "packagenamepy.packagename:main"
 
-[project.gui-scripts]
-packagenamepy = "packagenamepy.packagename:gui"
+# [project.gui-scripts]
+# packagenamepy = "packagenamepy.packagename:gui"
 
 [tool.pytest.ini_options]
 markers = [
