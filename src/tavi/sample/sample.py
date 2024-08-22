@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-import numpy as np
+import json
 
-# from tavi.utilities import *
+import numpy as np
 
 
 class Sample(object):
     """
+    Sample class
+
     Attributes:
         shape (str): "cuboid" or "cylindrical"
         width (float): in units of cm
         height (float): in units of cm
         depth (float): in units of cm
 
-        mosaic (fload): in units of minutes of arc
+        mosaic_h (fload): in units of minutes of arc
         mosaic_v (fload): verital mosaic if anisotropic, in units of minutes of arc
 
         a, b, c                 lattice constants in Angstrom
@@ -23,9 +25,6 @@ class Sample(object):
         a_star_vec, b_star_vec, c_star_vec      reciprocal lattice vector
         i_star, j_star, k_star  bases for the reciprocal space lattice vectors
 
-
-
-
     Methods:
         real_vec_cart
         reciprocal_vec_cart
@@ -33,9 +32,11 @@ class Sample(object):
         reciprocal_basis
         b_mat
 
-
     Static Methods:
         v_alpha_beta_gamma_calc(alpha,m beta, gamma)
+
+    Class Methods:
+        from_json(path_to_json): construct sample from a json file
 
 
     """
@@ -55,9 +56,14 @@ class Sample(object):
         self.set_mosaic()  # with defalt values
         self.set_shape()  # with defalt values
 
+    # TODO
     @classmethod
-    def from_json(cls, sample_params):
+    def from_json(cls, path_to_json):
         """Alternate constructor from json"""
+
+        with open(path_to_json, "r", encoding="utf-8") as file:
+            sample_params = json.load(file)
+
         lattice_params = (
             sample_params["a"],
             sample_params["b"],
@@ -66,7 +72,29 @@ class Sample(object):
             sample_params["beta"],
             sample_params["gamma"],
         )
-        return cls(lattice_params=lattice_params)
+        sample = cls(lattice_params=lattice_params)
+
+        ub_matrix = sample_params.get("ub_matrix")
+        if ub_matrix is not None:
+            sample.ub_matrix = np.array(ub_matrix).reshape(3, 3)
+
+        plane_normal = sample_params.get("plane_normal")
+        if plane_normal is not None:
+            sample.plane_normal = np.array(plane_normal)
+
+        shape = sample_params.get("shape")
+        width = sample_params.get("width")
+        height = sample_params.get("height")
+        depth = sample_params.get("depth")
+        if all([shape, width, height, depth]):
+            sample.set_shape(shape, width, height, depth)
+
+        mosaic_h = sample_params.get("mosaic_h")
+        mosaic_v = sample_params.get("mosaic_v")
+        if all([mosaic_h, mosaic_v]):
+            sample.set_mosaic(mosaic_h, mosaic_v)
+
+        return sample
 
     def set_shape(
         self,
@@ -83,11 +111,11 @@ class Sample(object):
 
     def set_mosaic(
         self,
-        mosaic: float = 30,  # horizontal mosaic
+        mosaic_h: float = 30,  # horizontal mosaic
         mosaic_v: float = 30,  # vertical mosaic
     ) -> None:
         """Set horizontal and vertical mosaic in units of minitues of arc"""
-        self.mosaic_h = mosaic  # * min2rad
+        self.mosaic_h = mosaic_h  # * min2rad
         self.mosaic_v = mosaic_v  # * min2rad
 
     def update_lattice_parameters(
@@ -123,6 +151,12 @@ class Sample(object):
             self.b_star_vec,
             self.c_star_vec,
         ) = self._reciprocal_space_vectors()
+
+        (
+            self.i_star,
+            self.j_star,
+            self.k_star,
+        ) = self._reciprocal_basis()
 
     @staticmethod
     def v_alpha_beta_gamma_calc(alpha, beta, gamma) -> float:

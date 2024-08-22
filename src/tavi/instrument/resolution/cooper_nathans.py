@@ -2,11 +2,11 @@ import numpy as np
 import numpy.linalg as la
 
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
-from tavi.instrument.tas import TAS
+from tavi.instrument.tas import TripleAxisSpectrometer
 from tavi.utilities import *
 
 
-class CN(TAS):
+class CN(TripleAxisSpectrometer):
     """Copper-Nathans method
 
     Attibutes:
@@ -38,8 +38,9 @@ class CN(TAS):
     IDX_ANA0_H = 2
     IDX_ANA0_V = 3
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, path_to_json=None) -> None:
+        """Load instrument configuration from json if provided"""
+        super().__init__(path_to_json)
 
         # constants independent of q and eng
         self._mat_f = None
@@ -47,11 +48,11 @@ class CN(TAS):
 
     def cooper_nathans(
         self,
-        ei,
-        ef,
-        hkl,
-        projection=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        R0=False,
+        ei: float,
+        ef: float,
+        hkl: tuple[float],
+        projection: tuple[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        R0: bool = False,
     ):
         """Calculate resolution using Cooper-Nathans method
 
@@ -232,9 +233,9 @@ class CN(TAS):
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
             # TODO smaple mosaic????
-            sample_mosaic = np.deg2rad(self.sample.mosaic / 60)
+            sample_mosaic_h = np.deg2rad(self.sample.mosaic_h / 60)
             sample_mosaic_v = np.deg2rad(self.sample.mosaic_v / 60)
-            mat_cov[1, 1] += q_mod**2 * sample_mosaic**2
+            mat_cov[1, 1] += q_mod**2 * sample_mosaic_h**2
             mat_cov[2, 2] += q_mod**2 * sample_mosaic_v**2
 
             mat_reso = la.inv(mat_cov) * sig2fwhm**2

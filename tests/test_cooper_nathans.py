@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from tavi.instrument.resolution.cooper_nathans import CN
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -53,12 +54,11 @@ def test_copper_nathans_projection(tas_params):
 @pytest.fixture
 def tas_params():
     # cooper_nathans_CTAX
-    tas = CN()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    sample_json_path = "./test_data/test_samples/nitio3.json"
+    tas = CN(instrument_config_json_path)
 
-    tas.load_instrument_from_json(instrument_config_json_path)
+    sample_json_path = "./test_data/test_samples/nitio3.json"
     tas.load_sample_from_json(sample_json_path)
 
     ei = 4.8

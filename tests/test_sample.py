@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from tavi.instrument.tas import TAS
+from tavi.sample.sample import Sample
 from tavi.sample.xtal import Xtal
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -69,7 +69,15 @@ def test_uv_to_ub_matrix(xtal_info):
     assert np.allclose(ub_matrix_calc, ub_matrix, atol=1e-2)
 
 
-def test_load_sample_from_json():
+def test_load_generic_sample_from_json():
     sample_json_path = "./test_data/test_samples/sample.json"
-    tas = TAS()
-    tas.load_sample_from_json(sample_json_path)
+    sample = Sample.from_json(sample_json_path)
+    assert np.allclose(sample.a, 5.1)
+
+
+def test_load_xtal_from_json():
+    xtal_json_path = "./test_data/test_samples/nitio3.json"
+    xtal = Xtal.from_json(xtal_json_path)
+    assert xtal.type == "xtal"
+    assert np.allclose(xtal.a, 5.034785)
+    assert np.shape(xtal.ub_matrix) == (3, 3)

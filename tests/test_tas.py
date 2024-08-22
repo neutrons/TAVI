@@ -1,13 +1,14 @@
 import numpy as np
-from tavi.instrument.tas import TAS
+
+from tavi.instrument.tas import TripleAxisSpectrometer
 from tavi.sample.xtal import Xtal
 
 
 def test_load_from_json():
-    tax = TAS()
+    tax = TripleAxisSpectrometer()
     cg4c = "./src/tavi/instrument/instrument_params/cg4c.json"
     nitio3 = "./test_data/test_samples/nitio3.json"
-    tax.load_instrument_from_json(cg4c)
+    tax.load_instrument_params_from_json(cg4c)
     tax.load_sample_from_json(nitio3)
 
     assert tax.analyzer.type == "Pg002"
@@ -39,9 +40,9 @@ def test_calc_ub_from_2_peaks_hb3():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.942840, 0.014534, -0.332928]
 
-    tas = TAS()
+    tas = TripleAxisSpectrometer()
     takin = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_from_json(takin)
+    tas.load_instrument_params_from_json(takin)
     tas.load_sample(Xtal(lattice_params))
 
     peak_list = [
@@ -93,10 +94,10 @@ def test_calc_ub_from_2_peaks_ctax():
     plane_normal = [-0.04032, 0.998565, -0.035237]
     in_plane_ref = [-0.993257, -0.043892, -0.107299]
 
-    ctax = TAS()
+    ctax = TripleAxisSpectrometer()
     cg4c = "./src/tavi/instrument/instrument_params/cg4c.json"
     nitio3 = "./test_data/test_samples/nitio3.json"
-    ctax.load_instrument_from_json(cg4c)
+    ctax.load_instrument_params_from_json(cg4c)
     ctax.load_sample_from_json(nitio3)
 
     peak_list = [
@@ -126,8 +127,8 @@ def test_calc_ub_from_2_peaks_ctax():
 
 
 def test_calc_ub_from_2_peaks_hb1():
-    hb1 = TAS()
-    hb1.load_instrument_from_json("./src/tavi/instrument/instrument_params/takin_test.json")
+    hb1 = TripleAxisSpectrometer()
+    hb1.load_instrument_params_from_json("./src/tavi/instrument/instrument_params/takin_test.json")
 
     lattice_params = (3.939520, 3.939520, 3.941957, 90.0, 90.0, 90.0)
 

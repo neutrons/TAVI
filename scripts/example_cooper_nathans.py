@@ -1,5 +1,6 @@
 import matplotlib.pylab as plt
 import numpy as np
+
 from tavi.instrument.resolution.cooper_nathans import CN
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -33,7 +34,7 @@ def test_cooper_nathans_compare_3():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
     sample_json_path = "./test_data/test_samples/sample_test.json"
 
-    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
 
     if tas.sample.ub_matrix is None:
@@ -64,7 +65,7 @@ def test_cooper_nathans_CTAX():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     sample_json_path = "./test_data/test_samples/nitio3.json"
 
-    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
 
     # ----------- reset UB -----------------------------------

@@ -1,63 +1,95 @@
 import json
+from pathlib import Path
+from typing import Optional, Union
 
 import numpy as np
 
-from tavi.instrument.tas_cmponents import *
+from tavi.data.scan import Scan
+from tavi.instrument.goni import Goniometer
+from tavi.instrument.mono_ana import MonoAna
+from tavi.instrument.tas_cmponents import Arms, Collimators, Detector, Guide, Monitor, Source
 from tavi.sample.powder import Powder
 from tavi.sample.sample import Sample
 from tavi.sample.xtal import Xtal
 from tavi.utilities import *
 
 
-class TAS(object):
-    """Triple-axis instrument class. Manage instrument congigutarion parameters
+class TripleAxisSpectrometer(object):
+    """
+    Triple-axis instrument class. Manage instrument congigutarion parameters
 
     Attibutes:
+        source (Source):
+        collimators (Collimators):
+        guide (Guide):
+        monichromator (MonoAna):
+        goniometer (Goniometer):
+        analyzer (MonoAna):
+        detector (Detector):
+        arms (Arms):
+        sample (Sample | Xtal | Powder):
 
     Methods:
-        load_instrument(config_params):
-        load_sample(sample_params):
-
-
+        load_instrument_params_from_json
     """
 
-    def __init__(self, path_to_json=None):
-        """load default instrument configuration"""
-        # TODO
-        self.source = None
-        self.collimators = None
-        self.guide = None
-        self.monochromator = None
-        self.monitor = None
-        self.goniometer = None
-        self.analyzer = None
-        self.detector = None
-        self.arms = None
-        self.sample = None
+    def __init__(
+        self,
+        path_to_json: str = None,
+    ):
+        """Load instrument configuration from json if provided"""
+        self.source: Optional[Source] = None
+        self.collimators: Optional[Collimators] = None
+        self.guide: Optional[Guide] = None
+        self.monochromator: Optional[MonoAna] = None
+        self.monitor: Optional[Monitor] = None
+        self.goniometer: Optional[Goniometer] = None
+        self.analyzer: Optional[MonoAna] = None
+        self.detector: Optional[Detector] = None
+        self.arms: Optional[Arms] = None
+        self.sample: Union[Sample, Xtal, Powder, None] = None
 
         if path_to_json is not None:
-            self.load_instrument_from_json(path_to_json)
+            self.load_instrument_params_from_json(path_to_json)
 
-    def load_instrument_from_dicts(self, config_params):
+    def _load_instrument_parameters(self, config_params: dict[dict]):
+        components = {
+            "source": Source,
+            "collimators": Collimators,
+            "guide": Guide,
+            "monochromator": MonoAna,
+            "monitor": Monitor,
+            "goniometer": Goniometer,
+            "analyzer": MonoAna,
+            "detector": Detector,
+            "distances": Arms,
+        }
+
+        for component_name, component_class in components.items():
+            param = config_params.get(component_name)
+            if param is not None:
+                setattr(self, component_name, component_class(param, component_name))
+
+    def load_instrument_params_from_json(
+        self,
+        path_to_json: str,
+    ):
         """Load instrument configuration from a json file"""
 
-        self.source = Source(config_params["source"])
-        self.collimators = Collimators(config_params["collimators"])
-        self.guide = Guide(config_params["guide"])
-        self.monochromator = Monochromator(config_params["monochromator"])
-        self.monitor = Monitor(config_params["monitor"])
-        self.goniometer = Goniometer(config_params["goniometer"])
-        self.analyzer = Analyzer(config_params["analyzer"])
-        self.detector = Detector(config_params["detector"])
-        self.arms = Arms(config_params["distances"])
+        json_file = Path(path_to_json)
+        if json_file.is_file():
+            with open(json_file, "r", encoding="utf-8") as file:
+                config_params = json.load(file)
 
-    def load_instrument_from_json(self, path_to_json):
-        """Load instrument configuration from a json file"""
+            self._load_instrument_parameters(config_params)
+        else:
+            print("Invalid path for instrument configuration json file.")
 
-        with open(path_to_json, "r", encoding="utf-8") as file:
-            config_params = json.load(file)
-
-        self.load_instrument_from_dicts(config_params)
+    def load_insrument_params_from_scan(
+        self,
+        scan: Scan,
+    ):
+        pass
 
     # def save_instrument(self):
     #     """Save configuration into a dictionary"""
@@ -78,11 +110,11 @@ class TAS(object):
         try:  # is type xtal ot powder?
             sample_type = sample_params["type"]
             if sample_type == "xtal":
-                sample = Xtal.from_json(sample_params)
+                sample = Xtal.from_json(path_to_json)
             elif sample_type == "powder":
-                sample = Powder.from_json(sample_params)
+                sample = Powder.from_json(path_to_json)
         except KeyError:  # sample type is not given
-            sample = Sample.from_json(sample_params)
+            sample = Sample.from_json(path_to_json)
 
         self.load_sample(sample)
 
@@ -139,8 +171,8 @@ class TAS(object):
         two_theta1, _, _, _ = angles1
         two_theta2, _, _, _ = angles2
 
-        q_lab1 = TAS.q_lab(two_theta1, ki=ki, kf=kf)
-        q_lab2 = TAS.q_lab(two_theta2, ki=ki, kf=kf)
+        q_lab1 = TripleAxisSpectrometer.q_lab(two_theta1, ki=ki, kf=kf)
+        q_lab2 = TripleAxisSpectrometer.q_lab(two_theta2, ki=ki, kf=kf)
 
         # Goniometer angles all zeros in q_sample frame
         q_sample1 = self.goniometer.r_mat_inv(angles1[1:]) @ q_lab1
@@ -309,7 +341,7 @@ class TAS(object):
 
             t_mat_inv = np.linalg.inv(t_mat)
 
-            q_lab1 = TAS.q_lab(two_theta, ki, kf) / q_norm
+            q_lab1 = TripleAxisSpectrometer.q_lab(two_theta, ki, kf) / q_norm
             q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
             q_lab3 = np.array([0, 1, 0])
 

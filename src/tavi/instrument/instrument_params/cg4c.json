@@ -11,7 +11,7 @@
     },
     "monochromator": {
         "type": "PG002",
-        "mosaic": 30,
+        "mosaic_h": 30,
         "mosaic_v": 30,
         "sense": -1,
         "shape": "rectangular",
@@ -35,7 +35,7 @@
     "analyzer": {
         "type": "Pg002",
         "d_spacing": 3.35416,
-        "mosaic": 90,
+        "mosaic_h": 90,
         "mosaic_v": 90,
         "sense": -1,
         "shape": "rectangular",

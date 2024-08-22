@@ -1,25 +1,31 @@
 import numpy as np
 
 from tavi.sample.sample import Sample
-from tavi.utilities import *
 
 
 class Xtal(Sample):
-    """Singel crystal sample
+    """
+    Singel crystal class
 
     Attibutes:
         type (str): "xtal"
-        inv_ub_matrix
+        ub_peaks (list(tuple)): peaks used to determine UB matrix
+        ub_angles (list(tuple)): goniometer angles for the peaks used to determine UB matrix
+        ub_matrix (np.adarray): UB matrix
+        inv_ub_matrix (np.ndarray): inverse of UB matrix
         in_plane_ref: in plane vector in Qsample frame, goniometers at zero
         plane_normal: normal vector in Qsample frame, goniometers at zero
-        u (tuple)
-        v (tuple)
+        u (tuple): u vector, (h, k, l) along the beam direction when all goniometer angles are zero
+        v (tuple): v vector, (h ,k, l) in the scattering plane
     Methods:
 
 
     """
 
-    def __init__(self, lattice_params=(1, 1, 1, 90, 90, 90)):
+    def __init__(
+        self,
+        lattice_params=(1, 1, 1, 90, 90, 90),
+    ) -> None:
         super().__init__(lattice_params)
         self.type = "xtal"
 
@@ -31,46 +37,13 @@ class Xtal(Sample):
         self.plane_normal = None
         self.in_plane_ref = None
 
-        self.i_star, self.j_star, self.k_star = self._reciprocal_basis()
-
-    @classmethod
-    def from_json(cls, sample_params):
-        """Alternate constructor from json"""
-        lattice_params = (
-            sample_params["a"],
-            sample_params["b"],
-            sample_params["c"],
-            sample_params["alpha"],
-            sample_params["beta"],
-            sample_params["gamma"],
-        )
-
-        sample = cls(lattice_params=lattice_params)
-
-        sample.ub_matrix = np.array(sample_params["ub_matrix"]).reshape(3, 3)
-        sample.plane_normal = np.array(sample_params["plane_normal"])
-
-        param_dict = ("shape", "width", "height", "depth", "mosaic", "mosaic_v")
-
-        for key, val in sample_params.items():
-            match key:
-                case "height" | "width" | "depth":
-                    setattr(sample, key, val * cm2angstrom)
-                # case "mosaic" | "mosaic_v":
-                #     setattr(sample, key, val * min2rad)
-                case _:
-                    if key in param_dict:
-                        setattr(sample, key, val)
-        sample.update_lattice_parameters(lattice_params)
-        return sample
-
     @property
-    def u(self):
+    def u(self) -> np.ndarray:
         """u vector, in reciprocal lattice unit, along beam"""
         return self.ub_matrix_to_uv(self.ub_matrix)[0]
 
     @property
-    def v(self):
+    def v(self) -> np.ndarray:
         """
         v vector, in reciprocal lattice unit,
         in the horizaontal scattering plane
@@ -78,7 +51,7 @@ class Xtal(Sample):
         return self.ub_matrix_to_uv(self.ub_matrix)[1]
 
     @staticmethod
-    def ub_matrix_to_uv(ub_matrix):
+    def ub_matrix_to_uv(ub_matrix) -> tuple[np.ndarray]:
         """ "Calculate u and v vector from UB matrix"""
         inv_ub_matrix = np.linalg.inv(ub_matrix)
         u = inv_ub_matrix @ np.array([0, 0, 1])
@@ -92,12 +65,16 @@ class Xtal(Sample):
         a = np.sqrt(g_mat[0, 0])
         b = np.sqrt(g_mat[1, 1])
         c = np.sqrt(g_mat[2, 2])
-        alpha = np.arccos((g_mat[1, 2] + g_mat[2, 1]) / (2 * b * c)) * rad2deg
-        beta = np.arccos((g_mat[0, 2] + g_mat[2, 0]) / (2 * a * c)) * rad2deg
-        gamma = np.arccos((g_mat[0, 1] + g_mat[1, 0]) / (2 * a * b)) * rad2deg
+        alpha_rad = np.arccos((g_mat[1, 2] + g_mat[2, 1]) / (2 * b * c))
+        beta_rad = np.arccos((g_mat[0, 2] + g_mat[2, 0]) / (2 * a * c))
+        gamma_rad = np.arccos((g_mat[0, 1] + g_mat[1, 0]) / (2 * a * b))
+        alpha = np.rad2deg(alpha_rad)
+        beta = np.rad2deg(beta_rad)
+        gamma = np.rad2deg(gamma_rad)
+
         return (a, b, c, alpha, beta, gamma)
 
-    def uv_to_ub_matrix(self, u, v):
+    def uv_to_ub_matrix(self, u, v) -> np.ndarray:
         """Calculate UB matrix from u and v vector, and lattice parameters"""
 
         b_mat = self.b_mat()

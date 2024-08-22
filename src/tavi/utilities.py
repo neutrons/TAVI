@@ -13,24 +13,6 @@ cm2angstrom = 1e8
 min2rad = 1.0 / 60.0 / 180.0 * np.pi
 rad2deg = 180.0 / np.pi
 
-# --------------------------------------------------------------------------
-# d_spacing table from Shirane Appendix 3, in units of Angstrom, from
-# --------------------------------------------------------------------------
-mono_ana_xtal = {
-    "PG002": 3.35416,
-    "Pg002": 3.35416,
-    "PG004": 1.67708,
-    "Cu111": 2.08717,
-    "Cu220": 1.27813,
-    "Ge111": 3.26627,
-    "Ge220": 2.00018,
-    "Ge311": 1.70576,
-    "Ge331": 1.29789,
-    "Be002": 1.79160,
-    "Be110": 1.14280,
-    "Heusler": 3.435,  # Cu2MnAl(111)
-}
-
 
 # --------------------------------------------------------------------------
 # helper functions
@@ -81,75 +63,6 @@ def rotation_matrix_2d(phi):
         [
             [c, s, 0],
             [-s, c, 0],
-            [0, 0, 1],
-        ]
-    )
-    return mat
-
-
-def rot_x(nu):
-    """rotation matrix about y-axis by angle nu
-
-    Args:
-        nu (float): angle in degrees
-
-    Note:
-        Using Mantid convention, beam along z, y is up, x in plane
-    """
-
-    angle = nu / rad2deg
-    c = np.cos(angle)
-    s = np.sin(angle)
-    mat = np.array(
-        [
-            [1, 0, 0],
-            [0, c, -s],
-            [0, s, c],
-        ]
-    )
-    return mat
-
-
-def rot_y(omega):
-    """rotation matrix about y-axis by angle omega
-
-    Args:
-        omega (float): angle in degrees
-
-    Note:
-        Using Mantid convention, beam along z, y is up, x in plane
-    """
-
-    angle = omega / rad2deg
-    c = np.cos(angle)
-    s = np.sin(angle)
-    mat = np.array(
-        [
-            [c, 0, s],
-            [0, 1, 0],
-            [-s, 0, c],
-        ]
-    )
-    return mat
-
-
-def rot_z(mu):
-    """rotation matrix about z-axis by angle mu
-
-    Args:
-        mu (float): angle in degrees
-
-    Note:
-        Using Mantid convention, beam along z, y is up, x in plane
-    """
-
-    angle = mu / rad2deg
-    c = np.cos(angle)
-    s = np.sin(angle)
-    mat = np.array(
-        [
-            [c, -s, 0],
-            [s, c, 0],
             [0, 0, 1],
         ]
     )

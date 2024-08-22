@@ -68,7 +68,7 @@ if __name__ == "__main__":
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     sample_json_path = "./test_data/test_samples/nitio3.json"
 
-    tas.load_instrument_from_json(instrument_config_json_path)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
     tas.load_sample_from_json(sample_json_path)
 
     test_2d_plot(tavi, tas)
