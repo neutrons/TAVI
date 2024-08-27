@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 import h5py
+
 from tavi.data.scan import Scan
 from tavi.data.scan_group import ScanGroup
-from tavi.data.spice_to_nexus import convert_spice_to_nexus
 
 
 class TAVI(object):
@@ -289,13 +290,3 @@ class TAVI(object):
         sg = ScanGroup(signals, backgrounds, signal_axes, background_axes)
 
         return sg
-
-
-if __name__ == "__main__":
-    spice_folder = "./tests/test_data_folder/exp416/"
-    # h5_file_name = "./tests/test_data_folder/tavi_exp758.h5"
-    nexus_file_name = "./tests/test_data_folder/nexus_exp424.h5"
-    convert_spice_to_nexus(spice_folder, nexus_file_name)
-
-    # data = TAVI_Data()
-    # data.load_data_from_disk(h5_file_name)

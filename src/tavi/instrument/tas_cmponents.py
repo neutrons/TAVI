@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from typing import Literal, Optional, Union
 
 import numpy as np
@@ -50,7 +51,7 @@ class TASComponent(object):
         return np.deg2rad(angle_in_minutes / 60)
 
     @staticmethod
-    def _cm2angstrom(
+    def _cm2angstrom_given_shape(
         length_in_cm: Optional[float],
         shape: str,
         param_name: str = "Length",
@@ -74,6 +75,20 @@ class TASComponent(object):
                 print("Unrecognized shape. Needs to be rectangular or circular/spherical.")
                 return None
 
+    @staticmethod
+    def _cm2angstrom(
+        length_in_cm: Optional[float],
+        param_name: str = "Length",
+    ) -> float:
+        """
+        Convert length from centimeter to angstrom.
+        """
+        if length_in_cm is None:
+            print(f"{param_name} is None.")
+            return None
+
+        return length_in_cm * cm2angstrom
+
 
 class Source(TASComponent):
     """Neutron source"""
@@ -85,21 +100,20 @@ class Source(TASComponent):
     ):
         self.name: str = "HFIR"
         self.shape: Literal["rectangular", "circular"] = "rectangular"
-        self.width: Optional[str] = None
-        self.height: Optional[str] = None
+        self.width: Optional[float] = None
+        self.height: Optional[float] = None
 
         super().__init__(param_dict, component_name)
-        pass
 
     @property
     def _width(self):
         """width in angstrom, with correction based on shape, for resolution calculation"""
-        return TASComponent._cm2angstrom(self.width, self.shape, "Source width")
+        return TASComponent._cm2angstrom_given_shape(self.width, self.shape, "Source width")
 
     @property
     def _height(self):
         """Height in angstrom, with correction based on shape, for resolution calculation"""
-        return TASComponent._cm2angstrom(self.height, self.shape, "Source height")
+        return TASComponent._cm2angstrom_given_shape(self.height, self.shape, "Source height")
 
 
 class Guide(TASComponent):
@@ -111,8 +125,8 @@ class Guide(TASComponent):
         component_name: str = "guide",
     ):
         self.in_use: bool = False
-        self.div_h: Optional[str] = None
-        self.div_v: Optional[str] = None
+        self.div_h: Optional[float] = None
+        self.div_v: Optional[float] = None
 
         super().__init__(param_dict, component_name)
 
@@ -189,60 +203,99 @@ class Collimators(TASComponent):
 
 
 # TODO not implemented in resolution calculation
-# TODO =========================================================
-class Monitor(object):
-    def __init__(self, param_dict, component_name):
-        self.shape = "rectangular"  # or spherical
-        self.width = 5 * cm2angstrom
-        self.height = 12 * cm2angstrom
+class Monitor(TASComponent):
+    """
+    Neutron Monitor
 
-        for key, val in param_dict.items():
-            match key:
-                case "width" | "height":
-                    # divide by np.sqrt(12) if rectangular
-                    # Diameter D/4 if spherical
-                    if param_dict["shape"] == "rectangular":
-                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
-                    elif param_dict["shape"] == "spherical":
-                        setattr(self, key, val / 4 * cm2angstrom)
-                    else:
-                        print("Monitor shape needs to be either rectangular or spherical.")
-                case _:
-                    setattr(self, key, val)
+    Note:
+        Needs to think about monitor efficiency
+    """
 
+    def __init__(
+        self,
+        param_dict: Optional[dict] = None,
+        component_name: str = "monitor",
+    ):
+        self.shape: Literal["rectangular", "spherical"] = "rectangular"
+        self.width: Optional[float] = None
+        self.height: Optional[float] = None
 
-# TODO
-class Detector(object):
-    def __init__(self, param_dict, component_name):
-        self.shape = "rectangular"
-        self.width = 1.5  # in cm
-        self.height = 5.0  # in cm
+        super().__init__(param_dict, component_name)
 
-        for key, val in param_dict.items():
-            match key:
-                case "width" | "height":
-                    # divide by np.sqrt(12) if rectangular
-                    # Diameter D/4 if spherical
-                    if param_dict["shape"] == "rectangular":
-                        setattr(self, key, val / np.sqrt(12) * cm2angstrom)
-                    elif param_dict["shape"] == "spherical":
-                        setattr(self, key, val / 4 * cm2angstrom)
-                    else:
-                        print("Detector shape needs to be either rectangular or spherical.")
-                case _:
-                    setattr(self, key, val)
+    @property
+    def _width(self):
+        """width in angstrom, with correction based on shape, for resolution calculation"""
+        return TASComponent._cm2angstrom_given_shape(self.width, self.shape, "Monitor width")
+
+    @property
+    def _height(self):
+        """Height in angstrom, with correction based on shape, for resolution calculation"""
+        return TASComponent._cm2angstrom_given_shape(self.height, self.shape, "Monitor height")
 
 
-class Arms(object):
-    """lengths of arms, in units of cm"""
+# TODO not implemented in resolution calculation
+class Detector(TASComponent):
+    """
+    Neutron detector
 
-    def __init__(self, param_dict, component_name):
-        # in units of cm
-        self.src_mono = 0
-        self.mono_sample = 0
-        self.sample_ana = 0
-        self.ana_det = 0
-        self.mono_monitor = 0
+    Note:
+        Need to think about detector efficiency, saturation
+    """
 
-        for key, val in param_dict.items():
-            setattr(self, key, val * cm2angstrom)
+    def __init__(
+        self,
+        param_dict: Optional[dict] = None,
+        component_name: str = "detector",
+    ):
+        self.shape: Literal["rectangular", "spherical"] = "rectangular"
+        self.width: Optional[float] = None
+        self.height: Optional[float] = None
+
+        super().__init__(param_dict, component_name)
+
+    @property
+    def _width(self):
+        """width in angstrom, with correction based on shape, for resolution calculation"""
+        return TASComponent._cm2angstrom_given_shape(self.width, self.shape, "Detector width")
+
+    @property
+    def _height(self):
+        """Height in angstrom, with correction based on shape, for resolution calculation"""
+        return TASComponent._cm2angstrom_given_shape(self.height, self.shape, "Detector height")
+
+
+class Distances(TASComponent):
+    """Distance between components, in units of centimeters"""
+
+    def __init__(
+        self,
+        param_dict: Optional[dict] = None,
+        component_name: str = "distances",
+    ):
+        self.src_mono: Optional[float] = None
+        self.mono_sample: Optional[float] = None
+        self.sample_ana: Optional[float] = None
+        self.ana_det: Optional[float] = None
+        self.mono_monitor: Optional[float] = None
+
+        super().__init__(param_dict, component_name)
+
+    @property
+    def _src_mono(self):
+        return TASComponent._cm2angstrom(self.src_mono, "Source to monochromator distance")
+
+    @property
+    def _mono_sample(self):
+        return TASComponent._cm2angstrom(self.src_mono, "Monochromator to sample distance")
+
+    @property
+    def _sample_ana(self):
+        return TASComponent._cm2angstrom(self.src_mono, "Sample to analyzer distance")
+
+    @property
+    def _ana_det(self):
+        return TASComponent._cm2angstrom(self.src_mono, "Analyzer to detector distance")
+
+    @property
+    def _mono_monitor(self):
+        return TASComponent._cm2angstrom(self.src_mono, "Monochromator to monitor distance")

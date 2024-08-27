@@ -3,7 +3,6 @@ from typing import Literal, Optional
 import numpy as np
 
 from tavi.instrument.tas_cmponents import TASComponent
-from tavi.utilities import cm2angstrom
 
 # ---------------------------------------------------------------
 # d_spacing table from Shirane Appendix 3, in units of Angstrom
@@ -25,7 +24,12 @@ mono_ana_xtal = {
 
 
 class MonoAna(TASComponent):
-    """Monochromator and analyzer class"""
+    """
+    Monochromator and analyzer class
+
+    Note:
+        protected attributes are reserved for resolution calculation
+    """
 
     def __init__(
         self,
@@ -68,78 +72,14 @@ class MonoAna(TASComponent):
     @property
     def _width(self):
         """width in angstrom, with correction based on shape, for resolution calculation"""
-        match self.shape:
-            case "rectangular":
-                return self.width / np.sqrt(12) * cm2angstrom
-            case "spherical":
-                return self.width / 4 * cm2angstrom
-            case _:
-                print("Unrecognized monochromator shape. Needs to be rectangular or spherical.")
-                return None
+        return TASComponent._cm2angstrom_given_shape(self.width, self.shape, f"{self.component_name} width")
 
     @property
     def _height(self):
         """height in angstrom, with correction based on shape, for resolution calculation"""
-        match self.shape:
-            case "rectangular":
-                return self.height / np.sqrt(12) * cm2angstrom
-            case "spherical":
-                return self.height / 4 * cm2angstrom
-            case _:
-                print("Unrecognized monochromator shape. Needs to be rectangular or spherical.")
-                return None
+        return TASComponent._cm2angstrom_given_shape(self.height, self.shape, f"{self.component_name} height")
 
     @property
-    def depth_ang(self):
+    def _depth(self):
         """depth in angstrom, with correction based on shape, for resolution calculation"""
-        match self.shape:
-            case "rectangular":
-                return self.depth / np.sqrt(12) * cm2angstrom
-            case "spherical":
-                return self.depth / 4 * cm2angstrom
-            case _:
-                print("Unrecognized monochromator shape. Needs to be rectangular or spherical.")
-                return None
-
-
-# # TODO implement curvature
-# class Analyzer(object):
-#     def __init__(self, param_dict):
-#         self.type = "Pg002"
-#         self.d_spacing = mono_ana_xtal["Pg002"]
-#         self.mosaic = 45  # horizontal mosaic, min of arc
-#         self.mosaic_v = 45  # vertical mosaic, if anisotropic
-#         self.sense = -1
-#         # divide by np.sqrt(12) if rectangular
-#         # Diameter D/4 if spherical
-#         self.shape = "rectangular"
-#         self.width = 12.0
-#         self.height = 8.0
-#         self.depth = 0.3
-#         # horizontal focusing
-#         self.curved_h = False
-#         self.curvh = 0.0
-#         self.optimally_curved_h = False
-#         # vertical focusing
-#         self.curved_v = False
-#         self.curvv = 0.0
-#         self.optimally_curved_v = False
-
-#         for key, val in param_dict.items():
-#             match key:
-#                 # case "mosaic" | "mosaic_v" | "curvh" | "curvv":
-#                 #     setattr(self, key, val * min2rad)
-#                 case "width" | "height" | "depth":
-#                     # divide by np.sqrt(12) if rectangular
-#                     # Diameter D/4 if spherical
-#                     if param_dict["shape"] == "rectangular":
-#                         setattr(self, key, val / np.sqrt(12) * cm2angstrom)
-#                     elif param_dict["shape"] == "spherical":
-#                         setattr(self, key, val / 4 * cm2angstrom)
-#                     else:
-#                         print("Analyzer shape needs to be either rectangular or spherical.")
-
-#                     setattr(self, key, val * cm2angstrom)
-#                 case _:
-#                     setattr(self, key, val)
-#             self.d_spacing = mono_ana_xtal[self.type]
+        return TASComponent._cm2angstrom_given_shape(self.depth, self.shape, f"{self.component_name} depth")

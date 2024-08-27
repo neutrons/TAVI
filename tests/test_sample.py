@@ -41,7 +41,7 @@ def xtal_info():
 
 def test_b_matrix(xtal_info):
     xtal, b_matrix, ub_matrix, u, v = xtal_info
-    assert np.allclose(xtal.b_mat(), b_matrix, atol=1e-4)
+    assert np.allclose(xtal.b_mat_from_lattice(), b_matrix, atol=1e-4)
 
 
 def test_ub_matrix_to_uv(xtal_info):

@@ -132,7 +132,7 @@ class Plot2DManager(object):
         self.fig.colorbar(p, ax=self.ax)
         self.set_labels()
 
-    def rez_plot(self, tas, projection, q1, q2, q3, en, ef, R0):
+    def rez_plot(self, tas, projection, q1, q2, q3, en, ef, r0):
         qe_list = np.empty((4,), dtype=object)
         plot_axes = []
         perp_axes = []
@@ -159,7 +159,7 @@ class Plot2DManager(object):
                             ef=ef,
                             hkl=(h, k, l),
                             projection=projection,
-                            R0=R0,
+                            r0=r0,
                         )
                         if rez.STATUS:
                             elps = rez.generate_ellipse(axes=tuple(plot_axes), PROJECTION=False)

@@ -3,10 +3,15 @@ from typing import Literal, Optional
 import numpy as np
 
 from tavi.instrument.tas_cmponents import TASComponent
+from tavi.utilities import MotorAngles
 
 
 class Goniometer(TASComponent):
-    """Goniometer table, type = Y-ZX or YZ-X"""
+    """
+    Goniometer
+    For Huber table, use type Y-ZX or YZ-X
+    For Four-Cricle, use type ???
+    """
 
     def __init__(
         self,
@@ -15,6 +20,11 @@ class Goniometer(TASComponent):
     ):
         self.type: str = "Y-ZX"  # Y-mZ-X for Huber stage at HB1A and HB3
         self.sense: Literal[-1, +1] = -1
+        self.omega_limit: Optional[tuple]
+        self.sgl_limit: Optional[tuple] = (-10, 10)
+        self.sgu_limit: Optional[tuple] = (-10, 10)
+        self.chi_limit: Optional[tuple]
+        self.phi_limit: Optional[tuple]
 
         super().__init__(param_dict)
         self.component_name = component_name
@@ -90,16 +100,27 @@ class Goniometer(TASComponent):
 
     def r_mat(
         self,
-        angles_deg: tuple[float, float, float],
-    ):
+        angles: MotorAngles,
+    ) -> Optional[np.ndarray]:
         "Goniometer rotation matrix R"
 
-        omega, sgl, sgu = angles_deg  # s2, s1, sgl, sgu
         match self.type:
             case "Y-ZX":  # HB3
-                r_mat = Goniometer.rot_y(omega) @ Goniometer.rot_z(-1 * sgl) @ Goniometer.rot_x(sgu)
+                r_mat = np.matmul(
+                    Goniometer.rot_y(angles.omega),
+                    np.matmul(
+                        Goniometer.rot_z(-1 * angles.sgl),
+                        Goniometer.rot_x(angles.sgu),
+                    ),
+                )
             case "YZ-X":  # CG4C ??
-                r_mat = Goniometer.rot_y(omega) @ Goniometer.rot_z(sgl) @ Goniometer.rot_x(-1 * sgu)
+                r_mat = np.matmul(
+                    Goniometer.rot_y(angles.omega),
+                    np.matmul(
+                        Goniometer.rot_z(angles.sgl),
+                        Goniometer.rot_x(-1 * angles.sgu),
+                    ),
+                )
             case _:
                 r_mat = None
                 print("Unknow goniometer type. Curruntly support Y-ZX and YZ-X")
@@ -108,13 +129,16 @@ class Goniometer(TASComponent):
 
     def r_mat_inv(
         self,
-        angles: tuple[float, float, float],
-    ):
-        """inverse of rotation matrix"""
+        angles: MotorAngles,
+    ) -> Optional[np.ndarray]:
+        """inverse of rotation matrix, equivalent to transpose since R is unitary"""
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
 
-    def angles_from_r_mat(self, r_mat):
+    def angles_from_r_mat(
+        self,
+        r_mat: np.ndarray,
+    ) -> MotorAngles:
         """Calculate goniometer angles from the R matrix
 
         Note:
@@ -122,37 +146,63 @@ class Goniometer(TASComponent):
             range of np.atan2 is -pi to pi
         """
 
+        def staking_order_yzx(r_mat):
+            """Huber table, return angles in degrees"""
+            # sgl1 = np.arcsin(r_mat[1, 0]) * rad2deg
+            # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            sgl_rad = np.arctan2(r_mat[1, 0], np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2))
+            sgl = np.rad2deg(sgl_rad)
+
+            # sgu1 = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            # sgu2 = np.arccos(r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            sgu_rad = np.arctan2(
+                -r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+            )
+            sgu = np.rad2deg(sgu_rad)
+
+            # omega1 = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
+            omega_rad = np.arctan2(
+                -r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+                r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
+            )
+            omega = np.rad2deg(omega_rad)
+            return omega, sgl, sgu
+
+        # TODO four-circle is chi circle parallel to beam
+        def stacking_order_yzy(r_mat):
+            pass
+
+        # TODO four-circle is chi circle perpendicular to beam
+        def stacking_order_yxy(r_mat):
+            pass
+
         match self.type:
-            case "Y-ZX" | "YZ-X":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3, Y-Z-mX (s1, sgl, sgu) for CG4C
-                # sgl1 = np.arcsin(r_mat[1, 0]) * rad2deg
-                # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                sgl_rad = np.arctan2(r_mat[1, 0], np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2))
-                sgl = np.rad2deg(sgl_rad)
+            case "Y-ZX":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3,
+                omega, sgl, sgu = staking_order_yzx(r_mat)
+                angles = MotorAngles(None, omega, -1 * sgl, sgu, None, None)
+                self.validate_motor_positions(angles)
 
-                # sgu1 = np.arcsin(-r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                # sgu2 = np.arccos(r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                sgu_rad = np.arctan2(
-                    -r_mat[1, 2] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
-                    r_mat[1, 1] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
-                )
-                sgu = np.rad2deg(sgu_rad)
-
-                # omega1 = np.arcsin(-r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                # omega2 = np.arccos(r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
-                omega_rad = np.arctan2(
-                    -r_mat[2, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
-                    r_mat[0, 0] / np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2),
-                )
-                omega = np.rad2deg(omega_rad)
-
-                match self.type:
-                    case "Y-ZX":
-                        angles = (omega, -1 * sgl, sgu)
-                    case "YZ-X":
-                        angles = (omega, sgl, -1 * sgu)
+            case "YZ-X":  # Y-Z-mX (s1, sgl, sgu) for CG4C
+                omega, sgl, sgu = staking_order_yzx(r_mat)
+                angles = MotorAngles(None, omega, sgl, -1 * sgu, None, None)
+                self.validate_motor_positions(angles)
 
             case _:
-                angles = None
-                print("Unknow goniometer type.  Curruntly support Y-ZX and YZ-X.")
+                raise ValueError("Unknow goniometer type.  Curruntly support Y-ZX and YZ-X.")
 
         return angles
+
+    def set_limit(
+        self,
+        motor_name: Literal["omega", "sgl", "sgu", "chi", "phi"],
+        motor_range: tuple[float] = (-180, 180),
+    ):
+        "set goiometer motor limt"
+        setattr(self, motor_name + "_limit", motor_range)
+
+    # TODO
+    def validate_motor_positions(self, angles: MotorAngles):
+        "check if all goiometer motors are within the limits"
+        pass

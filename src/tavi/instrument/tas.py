@@ -1,160 +1,119 @@
-import json
-from pathlib import Path
-from typing import Optional, Union
+# -*- coding: utf-8 -*-
+from typing import Optional
 
 import numpy as np
 
-from tavi.data.scan import Scan
-from tavi.instrument.goni import Goniometer
-from tavi.instrument.mono_ana import MonoAna
-from tavi.instrument.tas_cmponents import Arms, Collimators, Detector, Guide, Monitor, Source
-from tavi.sample.powder import Powder
-from tavi.sample.sample import Sample
-from tavi.sample.xtal import Xtal
-from tavi.utilities import *
+from tavi.instrument.tas_base import TASBase
+from tavi.utilities import Peak, UBConf, en2q, get_angle_from_triangle
 
 
-class TripleAxisSpectrometer(object):
+class TAS(TASBase):
     """
-    Triple-axis instrument class. Manage instrument congigutarion parameters
-
-    Attibutes:
-        source (Source):
-        collimators (Collimators):
-        guide (Guide):
-        monichromator (MonoAna):
-        goniometer (Goniometer):
-        analyzer (MonoAna):
-        detector (Detector):
-        arms (Arms):
-        sample (Sample | Xtal | Powder):
+    Triple-axis instrument class. Handles angle and UB calculations
 
     Methods:
-        load_instrument_params_from_json
+        calculate_two_theta
+        calculate_ub_matrix
+
     """
 
-    def __init__(
-        self,
-        path_to_json: str = None,
-    ):
-        """Load instrument configuration from json if provided"""
-        self.source: Optional[Source] = None
-        self.collimators: Optional[Collimators] = None
-        self.guide: Optional[Guide] = None
-        self.monochromator: Optional[MonoAna] = None
-        self.monitor: Optional[Monitor] = None
-        self.goniometer: Optional[Goniometer] = None
-        self.analyzer: Optional[MonoAna] = None
-        self.detector: Optional[Detector] = None
-        self.arms: Optional[Arms] = None
-        self.sample: Union[Sample, Xtal, Powder, None] = None
-
-        if path_to_json is not None:
-            self.load_instrument_params_from_json(path_to_json)
-
-    def _load_instrument_parameters(self, config_params: dict[dict]):
-        components = {
-            "source": Source,
-            "collimators": Collimators,
-            "guide": Guide,
-            "monochromator": MonoAna,
-            "monitor": Monitor,
-            "goniometer": Goniometer,
-            "analyzer": MonoAna,
-            "detector": Detector,
-            "distances": Arms,
-        }
-
-        for component_name, component_class in components.items():
-            param = config_params.get(component_name)
-            if param is not None:
-                setattr(self, component_name, component_class(param, component_name))
-
-    def load_instrument_params_from_json(
-        self,
-        path_to_json: str,
-    ):
-        """Load instrument configuration from a json file"""
-
-        json_file = Path(path_to_json)
-        if json_file.is_file():
-            with open(json_file, "r", encoding="utf-8") as file:
-                config_params = json.load(file)
-
-            self._load_instrument_parameters(config_params)
-        else:
-            print("Invalid path for instrument configuration json file.")
-
-    def load_insrument_params_from_scan(
-        self,
-        scan: Scan,
-    ):
-        pass
-
-    # def save_instrument(self):
-    #     """Save configuration into a dictionary"""
-    #     # convert python dictionary to json file
-    #   with open("./src/tavi/instrument/instrument_params/takin_test.json", "w") as file:
-    #     json.dump(instrument_config, file)
-
-    def load_sample(self, sample):
-        """Load sample info"""
-        self.sample = sample
-
-    def load_sample_from_json(self, path_to_json):
-        """Load sample info"""
-
-        with open(path_to_json, "r", encoding="utf-8") as file:
-            sample_params = json.load(file)
-
-        try:  # is type xtal ot powder?
-            sample_type = sample_params["type"]
-            if sample_type == "xtal":
-                sample = Xtal.from_json(path_to_json)
-            elif sample_type == "powder":
-                sample = Powder.from_json(path_to_json)
-        except KeyError:  # sample type is not given
-            sample = Sample.from_json(path_to_json)
-
-        self.load_sample(sample)
-
     @staticmethod
-    def q_lab(two_theta, ki, kf):
-        """Momentum transfer q in lab frame.
+    def q_lab(
+        two_theta: float,
+        ei: float,
+        ef: float,
+    ):
+        """
+        Reutrn momentum transfer q in lab frame, using Mantid convention
 
         Note:
             Only for a single detector in the scattering plane.
-            Depends on inciendnt and final wavevector ki, kf
-            and two theta, phi is zero.
         """
-        return np.array(
+
+        ki = en2q(ei)
+        kf = en2q(ef)
+
+        q = np.array(
             [
                 -kf * np.sin(np.deg2rad(two_theta)),
                 0,
                 ki - kf * np.cos(np.deg2rad(two_theta)),
             ]
         )
+        return q
 
-    def _find_u_from_2peaks(self, peaks, angles, ki, kf):
-        """Calculate UB matrix from two peaks
+    def calculate_two_theta(
+        self,
+        hkl: tuple[float],
+        ei: Optional[float] = None,
+        ef: Optional[float] = None,
+    ) -> Optional[float]:
+        """find two theta angle for a given peak
 
         Args:
-            peaks (list): lists of two tuples, [(h1,k1,l1), (h2,k2,l2)]
-            angles (list): lists of goniometer angles
-            ki (float): incident neutron wavelength, in inv Ang
-            kf (float): final neutron wavelength, in inv Ang
-
+            hkl (tuple): miller indice of a peak
+            ei (float): incident neutron energy, in emV
+            ef (float): final neutron energy, in meV
         Returns:
-            u_mat: 3 by 3 unitary matrix
-            in_plane_ref: vector of peak1 in q_sample frame (zero goniometer angles)
-            plane_normal: normal vector of the scattering plane in q_sample frame,
-                            always pointing up (positive y-axis)
+            two_theta (float): two theta angle, in degrees
+
+        Note:
+            if ef is None, assume ef equals ei
         """
 
-        b_mat = self.sample.b_mat()
+        if ei is None:
+            raise ValueError("Cannot calculate two thetha without incident energy ei.")
+
+        ki = en2q(ei)
+        if ef is None:
+            ef = ei
+            kf = ki
+        else:
+            kf = en2q(ef)
+
+        b_mat = self.sample.b_mat_from_lattice()
+        qh, qk, ql = hkl
+        hkl_array = np.array([qh, qk, ql])
+        q_sq = 4 * np.pi**2 * hkl_array.T @ b_mat.T @ b_mat @ hkl_array
+        q_norm = np.sqrt(q_sq)
+        two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
+        if two_theta_radian is None:
+            print(f"Triangle cannot be closed at q=({qh}, {qk}, {ql}), en={ei-ef} meV.")
+            return None
+        # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
+        # pass
+
+        return np.rad2deg(two_theta_radian) * self.goniometer.sense
+
+    # TODO
+    def calculate_ub_matrix(
+        self,
+        peaks: tuple[Peak],
+    ) -> np.ndarray:
+        """Find UB matrix from a list of observed peaks"""
+
+        num_of_peaks = len(peaks)
+        if num_of_peaks == 2:
+            ubconf = self._find_u_from_two_peaks(peaks)
+            self.sample.set_orientation(ubconf)
+
+        elif num_of_peaks == 3:
+            ubconf = self._find_ub_from_three_peaks(peaks)
+        elif num_of_peaks > 3:
+            ubconf = self._find_ub_from_multiple_peaks(peaks)
+        else:
+            raise ValueError("Not enough peaks for UB matrix determination.")
+
+    def _find_u_from_two_peaks(
+        self,
+        peaks: tuple[Peak],
+    ) -> UBConf:
+        """Calculate UB matrix from two peaks for a given goniometer"""
+
         peak1, peak2 = peaks
-        q_hkl1 = b_mat @ peak1
-        q_hkl2p = b_mat @ peak2
+        b_mat = self.sample.b_mat_from_lattice()
+        q_hkl1 = np.matmul(b_mat, np.array(peak1.hkl))
+        q_hkl2p = np.matmul(b_mat, np.array(peak2.hkl))
         q_hkl3 = np.cross(q_hkl1, q_hkl2p)
         q_hkl_2 = np.cross(q_hkl3, q_hkl1)
 
@@ -167,16 +126,21 @@ class TripleAxisSpectrometer(object):
         ).T
 
         # find r_inv
-        angles1, angles2 = angles
-        two_theta1, _, _, _ = angles1
-        two_theta2, _, _, _ = angles2
-
-        q_lab1 = TripleAxisSpectrometer.q_lab(two_theta1, ki=ki, kf=kf)
-        q_lab2 = TripleAxisSpectrometer.q_lab(two_theta2, ki=ki, kf=kf)
+        r_mat_inv = self.goniometer.r_mat_inv
+        q_lab1 = TAS.q_lab(
+            peak1.angles.two_theta,
+            ei=peak1.ei,
+            ef=peak1.ef,
+        )
+        q_lab2 = TAS.q_lab(
+            peak2.angles.two_theta,
+            ei=peak2.ei,
+            ef=peak2.ef,
+        )
 
         # Goniometer angles all zeros in q_sample frame
-        q_sample1 = self.goniometer.r_mat_inv(angles1[1:]) @ q_lab1
-        q_sample2p = self.goniometer.r_mat_inv(angles2[1:]) @ q_lab2
+        q_sample1 = np.matmul(r_mat_inv(peak1.angles), q_lab1)
+        q_sample2p = np.matmul(r_mat_inv(peak2.angles), q_lab2)
         q_sample3 = np.cross(q_sample1, q_sample2p)
         q_sample2 = np.cross(q_sample3, q_sample1)
 
@@ -186,7 +150,7 @@ class TripleAxisSpectrometer(object):
 
         q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
 
-        u_mat = q_sample_mat @ np.linalg.inv(q_hkl_mat)
+        u_mat = np.matmul(q_sample_mat, np.linalg.inv(q_hkl_mat))
 
         plane_normal = q_sample3
         if plane_normal[1] < 0:  # plane normal always up along +Y
@@ -194,160 +158,29 @@ class TripleAxisSpectrometer(object):
 
         in_plane_ref = q_sample1
 
-        return u_mat, in_plane_ref, plane_normal
+        return UBConf(
+            peaks,
+            u_mat,
+            None,
+            np.matmul(u_mat, b_mat),
+            plane_normal,
+            in_plane_ref,
+        )
 
-    def find_ub(self, peaks, angles, ei=13.5, ef=None):
-        """calculate UB matrix from peaks and motor positions
+    # TODO
+    def _find_ub_from_three_peaks(
+        self,
+        peaks: tuple[Peak],
+    ) -> UBConf:
+        """Find UB matrix from three observed peaks for a given goniomete"""
+        ubconf = None
+        return ubconf
 
-        Args:
-            peaks (list)
-            angles (list)
-            ei (float): incident neutron energy, in meV
-            ef (float): final neutron energy, in meV
-
-        """
-
-        self.sample.ub_peaks = peaks
-        self.sample.ub_angles = angles
-
-        ki = np.sqrt(ei / ksq2eng)
-        if ef is None:
-            kf = ki
-        else:
-            kf = np.sqrt(ef / ksq2eng)
-
-        if not len(peaks) == len(angles):
-            print("Number of peaks and angles provided do not match.")
-
-        if len(peaks) == 2:
-            b_mat = self.sample.b_mat()
-            (
-                u_mat,
-                in_plane_ref,
-                plane_normal,
-            ) = self._find_u_from_2peaks(peaks, angles, ki, kf)
-            ub_matrix = u_mat @ b_mat
-
-            self.sample.in_plane_ref = in_plane_ref
-            self.sample.plane_normal = plane_normal
-
-        # TODO
-        elif len(peaks) == 3:  # find_ub_from_3peaks
-            pass
-        # TODO
-        elif len(peaks) > 3:  # find_ub_from_mulitple_peaks
-            pass
-        else:
-            print("I don't even know what you're doing.")
-
-        self.sample.ub_matrix = ub_matrix
-        inv_ub_matrix = np.linalg.inv(ub_matrix)
-        self.sample.inv_ub_matrix = inv_ub_matrix
-
-        # print(np.round(ub_matrix, 6))
-
-    def find_two_theta(self, peak, ei=13.5, ef=None):
-        """calculate two theta angle of a given peak
-
-        Args:
-            peak (tuple): (h, k, l) of a peak
-            ei (float): incident neutron energy, in meV
-            ef (float): final neutron energy, in meV
-        Return
-            two_theta: in degrees
-        """
-        S2_MIN_DEG = 1
-
-        hkl = np.array(peak)
-        ki = np.sqrt(ei / ksq2eng)
-        if ef is None:
-            kf = ki
-        else:
-            kf = np.sqrt(ef / ksq2eng)
-
-        b_mat = self.sample.b_mat()
-        q_sq = 4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl
-        q_norm = np.sqrt(q_sq)
-
-        # two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf))
-        two_theta = get_angle(ki, kf, q_norm)
-        if two_theta is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
-            return None
-        elif np.rad2deg(two_theta) < S2_MIN_DEG:
-            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
-            return None
-        else:
-            return np.rad2deg(two_theta) * self.goniometer.sense
-
-    def find_angles(self, peak, ei=13.5, ef=None):
-        """calculate motor positions for a given peak if UB matrix has been determined
-
-        Args:
-            peak (tuple): (h, k, l) of a peak
-            ei (float): incident neutron energy, in meV
-            ef (float): final neutron energy, in meV
-
-        """
-        S2_MIN_DEG = 1
-
-        hkl = np.array(peak)
-        ki = np.sqrt(ei / ksq2eng)
-        if ef is None:
-            kf = ki
-        else:
-            kf = np.sqrt(ef / ksq2eng)
-
-        b_mat = self.sample.b_mat()
-
-        q_sq = 4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl
-        q_norm = np.sqrt(q_sq)
-
-        # two_theta = np.arccos((ki**2 + kf**2 - q_sq) / (2 * ki * kf)) * self.goniometer.sense
-        two_theta = get_angle(ki, kf, q_norm)
-
-        if two_theta is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
-            angles = None
-        elif np.rad2deg(two_theta) < S2_MIN_DEG:
-            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
-            angles = None
-        else:
-            two_theta = np.rad2deg(two_theta) * self.goniometer.sense
-            q = self.sample.ub_matrix @ hkl
-            t1 = q / np.linalg.norm(q)
-
-            eps = 1e-8  # zero
-            plane_normal = self.sample.plane_normal
-            in_plane_ref = self.sample.in_plane_ref
-
-            # Minimal tilts
-            if np.dot(t1, plane_normal) < eps:  # t1 in plane
-                t3 = plane_normal
-                t2 = np.cross(t3, t1)
-            else:  # t1 not in plane, need to change tilts
-                if np.linalg.norm(np.cross(plane_normal, t1)) < eps:
-                    # oops, t1 along plane_normal
-                    t2 = in_plane_ref
-                    t3 = np.cross(t1, t2)
-                else:
-                    t2p = np.cross(plane_normal, t1)
-                    t3 = np.cross(t1, t2p)
-                    t2 = np.cross(t3, t1)
-
-            t_mat = np.array(
-                [t1, t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)],
-            ).T
-
-            t_mat_inv = np.linalg.inv(t_mat)
-
-            q_lab1 = TripleAxisSpectrometer.q_lab(two_theta, ki, kf) / q_norm
-            q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
-            q_lab3 = np.array([0, 1, 0])
-
-            q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
-            r_mat = q_lab_mat @ t_mat_inv
-
-            angles = np.round((two_theta,) + self.goniometer.angles_from_r_mat(r_mat), 6)
-
-        return angles
+    # TODO
+    def _find_ub_from_multiple_peaks(
+        self,
+        peaks: tuple[Peak],
+    ) -> UBConf:
+        """Find UB matrix from more than three observed peaks for a given goniomete"""
+        ubconf = None
+        return ubconf

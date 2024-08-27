@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from typing import Optional
 
 import numpy as np
 
@@ -9,6 +10,7 @@ class Sample(object):
     Sample class
 
     Attributes:
+        json_dict (dict): dictionary from json file
         shape (str): "cuboid" or "cylindrical"
         width (float): in units of cm
         height (float): in units of cm
@@ -26,11 +28,11 @@ class Sample(object):
         i_star, j_star, k_star  bases for the reciprocal space lattice vectors
 
     Methods:
-        real_vec_cart
-        reciprocal_vec_cart
-        reciprocal_latt_params
-        reciprocal_basis
-        b_mat
+        update_lattice_parameters: recommended method to set lattice parameters.
+                                   This method update all lattice related vectors
+        reciprocal_latt_params: returns (a_star, b_star, c_star, alpha_star, beta_star, gamma_star)
+        b_mat: B matrix for UB calculation
+        hkl2q: calculation length of q given (h, k ,l)
 
     Static Methods:
         v_alpha_beta_gamma_calc(alpha,m beta, gamma)
@@ -45,18 +47,40 @@ class Sample(object):
         self,
         lattice_params: tuple[float] = (1, 1, 1, 90, 90, 90),
     ) -> None:
-        assert len(lattice_params) == 6, "Incomplete lattice parameters."
-        for length in lattice_params[:3]:
-            assert length > 0, "Lattice parameters smaller than zero."
-        for angle in lattice_params[3:]:
-            assert 0.0 < angle < 180.0, "Lattice angles out of range."
+        """Initialization from lattice parameters"""
+        self.type = "generic"
+        self.json_dict: Optional[dict] = None
+        # lattice parameters
+        self.a: float = 1.0
+        self.b: float = 1.0
+        self.c: float = 1.0
+        self.alpha: float = 90.0
+        self.beta: float = 90.0
+        self.gamma: float = 90.0
+        self.b_mat = Optional[np.ndarray]
+        # parameters for resolution calculation
+        self.shape: str = "cuboid"
+        self.width: float = 1.0  # in cm
+        self.height: float = 1.0  # in cm
+        self.depth: float = 1.0  # in cm
+        self.mosaic_h: float = 30  # horizontal mosaic in minutes of arc
+        self.mosaic_v: float = 30  # vertical mosaic in minutes of arc
+
+        try:
+            a, b, c, alpha, beta, gamma = lattice_params
+        except ValueError:
+            print("Incomplete lattice parameters.")
+
+        for length in (a, b, c):
+            if length <= 0:
+                raise ValueError("Lattice parameters smaller than zero.")
+
+        for angle in (alpha, beta, gamma):
+            if 0.0 > angle or angle > 180.0:
+                raise ValueError("Lattice angles out of range.")
 
         self.update_lattice_parameters(lattice_params)
-        # parameters for resolution calculation
-        self.set_mosaic()  # with defalt values
-        self.set_shape()  # with defalt values
 
-    # TODO
     @classmethod
     def from_json(cls, path_to_json):
         """Alternate constructor from json"""
@@ -74,13 +98,7 @@ class Sample(object):
         )
         sample = cls(lattice_params=lattice_params)
 
-        ub_matrix = sample_params.get("ub_matrix")
-        if ub_matrix is not None:
-            sample.ub_matrix = np.array(ub_matrix).reshape(3, 3)
-
-        plane_normal = sample_params.get("plane_normal")
-        if plane_normal is not None:
-            sample.plane_normal = np.array(plane_normal)
+        sample.json_dict = sample_params
 
         shape = sample_params.get("shape")
         width = sample_params.get("width")
@@ -117,6 +135,16 @@ class Sample(object):
         """Set horizontal and vertical mosaic in units of minitues of arc"""
         self.mosaic_h = mosaic_h  # * min2rad
         self.mosaic_v = mosaic_v  # * min2rad
+
+    @property
+    def _mosaic_h(self) -> float:
+        """horizontal mosaic in radian, for resolution calculation"""
+        return np.deg2rad(self.mosaic_h / 60)
+
+    @property
+    def _mosaic_v(self) -> float:
+        """vertical mosaic in radian, for resolution calculation"""
+        return np.deg2rad(self.mosaic_v / 60)
 
     def update_lattice_parameters(
         self,
@@ -237,13 +265,16 @@ class Sample(object):
 
     def hkl2q(self, hkl: tuple[float]) -> float:
         """Convert (h,k,l) to q, in units of inverse Angstrom"""
-        assert len(hkl) == 3, "Length of (h,k,l) is not 3."
-        (qh, qk, ql) = hkl
+        try:
+            qh, qk, ql = hkl
+        except ValueError:
+            print("hkl needs to be a tuple of length 3")
+
         q_vec = qh * self.a_star_vec + qk * self.b_star_vec + ql * self.c_star_vec
         q_norm = np.linalg.norm(q_vec)
         return q_norm
 
-    def b_mat(self) -> np.ndarray:
+    def b_mat_from_lattice(self) -> np.ndarray:
         """
         Calculate the B matrix
         B * (h,k,l) gives Q in terms of i_star, j_star, k_star
@@ -269,6 +300,14 @@ class Sample(object):
         b_mat = b_mat / (2 * np.pi)
         # b_mat = np.round(b_mat, 8)
         return b_mat
+
+    # -----------------------------------------
+    # # TODO how to properly set and get b_mat
+    # @b_mat.setter
+    # def b_mat(self, value: np.ndarray) -> None:
+    #     pass
+
+    # -----------------------------------------
 
     def _reciprocal_basis(self) -> tuple[np.ndarray]:
         """Calculate the reciprocal basis vectors i_star, j_star, k_star"""

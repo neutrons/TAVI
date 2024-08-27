@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from typing import NamedTuple, Optional
+
 import numpy as np
 
 # --------------------------------------------------------------------------
@@ -14,15 +17,86 @@ min2rad = 1.0 / 60.0 / 180.0 * np.pi
 rad2deg = 180.0 / np.pi
 
 
+class MotorAngles(NamedTuple):
+    """Moter anlges
+
+     Attributes:
+        two_theta: s2 angle, in degree
+        omega: s1 angle, in degree
+        sgl: sample goniometer lower, in degree
+        sgu: sample goniometer upper, in degree
+        chi: chi angle for a four-circle goniometer, in degree
+        phi: phi angle for a four-circle goniometer, in degree
+
+    Note:
+        use angles = (two_theta, omega, sgl, sgu) for a Huber table,
+        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode"""
+
+    two_theta: Optional[float] = None
+    omega: Optional[float] = None
+    sgl: Optional[float] = None
+    sgu: Optional[float] = None
+    chi: Optional[float] = None
+    phi: Optional[float] = None
+
+
+class Peak(NamedTuple):
+    """
+    Phsical/virtual monitor positions
+
+    Attributes:
+        ei: incident energy, in meV
+        ef: final energy, in meV
+        hkl: miller indice (h,k,l)
+        angles: moter angles
+
+    Note:
+        use angles = (two_theta, omega, sgl, sgu) for a Huber table,
+        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
+
+    """
+
+    hkl: Optional[tuple] = None
+    angles: Optional[MotorAngles] = None
+    ei: Optional[float] = None
+    ef: Optional[float] = None
+
+
+class UBConf(NamedTuple):
+    "Logs for UB matrix determination"
+
+    peaks: Optional[tuple[Peak]] = None
+    u_mat: Optional[np.ndarray] = None
+    b_mat: Optional[np.ndarray] = None
+    ub_mat: Optional[np.ndarray] = None
+    plane_normal: Optional[np.ndarray] = None
+    in_plane_ref: Optional[np.ndarray] = None
+
+
 # --------------------------------------------------------------------------
 # helper functions
 # --------------------------------------------------------------------------
-def eng2k(en):
-    """convert energy in meV to wave vector k in inverse Angstrom"""
-    return
+def en2q(en: float) -> float:
+    """convert energy en in meV to momontum transfer q in inverse Angstrom"""
+    if en < 0:
+        raise ValueError(f"Cannot convert negative energy en={en} to momentum transfer q.")
+    q = np.sqrt(en / ksq2eng)
+    return q
 
 
-def get_angle(a, b, c):
+def q2en(q: float) -> float:
+    """convert momontum transfer q in inverse Angstrom to energy en in mev"""
+    if q < 0:
+        raise ValueError(f"Converting negative momentum transfer q={q} to energy.")
+    en = ksq2eng * q**2
+    return en
+
+
+def get_angle_from_triangle(
+    a: float,
+    b: float,
+    c: float,
+) -> Optional[float]:
     """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
@@ -39,11 +113,15 @@ def get_angle_vec(v1, v2):
     return np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)) / np.pi * 180
 
 
-def get_angle_bragg(q, d_spaceing):
+def get_angle_bragg(
+    neutron_momentum: float,
+    sample_d_spaceing: float,
+):
     """return angle based on Bragg's law, in radian
     2d sin(theta) = lambda = 2 pi /q
     """
-    return np.arcsin(np.pi / (d_spaceing * q))
+    theta = np.arcsin(np.pi / (sample_d_spaceing * neutron_momentum))
+    return theta
 
 
 def rotation_matrix_2d(phi):

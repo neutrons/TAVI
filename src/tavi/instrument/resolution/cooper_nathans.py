@@ -2,11 +2,11 @@ import numpy as np
 import numpy.linalg as la
 
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
-from tavi.instrument.tas import TripleAxisSpectrometer
+from tavi.instrument.tas import TAS
 from tavi.utilities import *
 
 
-class CN(TripleAxisSpectrometer):
+class CN(TAS):
     """Copper-Nathans method
 
     Attibutes:
@@ -38,9 +38,9 @@ class CN(TripleAxisSpectrometer):
     IDX_ANA0_H = 2
     IDX_ANA0_V = 3
 
-    def __init__(self, path_to_json=None) -> None:
+    def __init__(self) -> None:
         """Load instrument configuration from json if provided"""
-        super().__init__(path_to_json)
+        super().__init__()
 
         # constants independent of q and eng
         self._mat_f = None
@@ -52,7 +52,7 @@ class CN(TripleAxisSpectrometer):
         ef: float,
         hkl: tuple[float],
         projection: tuple[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        R0: bool = False,
+        r0: bool = False,
     ):
         """Calculate resolution using Cooper-Nathans method
 
@@ -69,28 +69,28 @@ class CN(TripleAxisSpectrometer):
         rez.projection = projection
 
         if self._mat_f is None:
-            mono_mosaic = np.deg2rad(self.monochromator.mosaic / 60)
-            mono_mosaic_v = np.deg2rad(self.monochromator.mosaic_v / 60)
-            ana_mosaic = np.deg2rad(self.analyzer.mosaic / 60)
-            ana_mosaic_v = np.deg2rad(self.analyzer.mosaic_v / 60)
-
             # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
             mat_f = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, (CN.NUM_MONOS + CN.NUM_ANAS) * 2))
-            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / mono_mosaic**2
-            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / mono_mosaic_v**2
-            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / ana_mosaic**2
-            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / ana_mosaic_v**2
+            mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / self.monochromator._mosaic_h**2
+            mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / self.monochromator._mosaic_v**2
+            mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / self.analyzer._mosaic_h**2
+            mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / self.analyzer._mosaic_v**2
             self._mat_f = mat_f
 
         if self._mat_g is None:
-            coll_h_pre_mono = np.deg2rad(self.collimators.h_pre_mono / 60)
-            coll_v_pre_mono = np.deg2rad(self.collimators.v_pre_mono / 60)
-            coll_h_pre_sample = np.deg2rad(self.collimators.h_pre_sample / 60)
-            coll_v_pre_sample = np.deg2rad(self.collimators.v_pre_sample / 60)
-            coll_h_post_sample = np.deg2rad(self.collimators.h_post_sample / 60)
-            coll_v_post_sample = np.deg2rad(self.collimators.v_post_sample / 60)
-            coll_h_post_ana = np.deg2rad(self.collimators.h_post_ana / 60)
-            coll_v_post_ana = np.deg2rad(self.collimators.v_post_ana / 60)
+            (
+                coll_h_pre_mono,
+                coll_h_pre_sample,
+                coll_h_post_sample,
+                coll_h_post_ana,
+            ) = self.collimators._horizontal_divergence
+
+            (
+                coll_v_pre_mono,
+                coll_v_pre_sample,
+                coll_v_post_sample,
+                coll_v_post_ana,
+            ) = self.collimators._vertical_divergence
 
             # matrix G, divergence of collimators, [pop75] Appendix 1
             mat_g = np.zeros((CN.NUM_COLLS * 2, CN.NUM_COLLS * 2))
@@ -232,11 +232,9 @@ class CN(TripleAxisSpectrometer):
             mat_ba = mat_b @ mat_a
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
-            # TODO smaple mosaic????
-            sample_mosaic_h = np.deg2rad(self.sample.mosaic_h / 60)
-            sample_mosaic_v = np.deg2rad(self.sample.mosaic_v / 60)
-            mat_cov[1, 1] += q_mod**2 * sample_mosaic_h**2
-            mat_cov[2, 2] += q_mod**2 * sample_mosaic_v**2
+            # TODO hwo to add smaple mosaic i cooper-nathans?
+            mat_cov[1, 1] += q_mod**2 * self.sample._mosaic_h**2
+            mat_cov[2, 2] += q_mod**2 * self.sample._mosaic_v**2
 
             mat_reso = la.inv(mat_cov) * sig2fwhm**2
 
@@ -279,7 +277,7 @@ class CN(TripleAxisSpectrometer):
             #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
             # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
-            if R0:  # calculate
+            if r0:  # calculate
                 r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
                 r0 *= np.sqrt(np.linalg.det(self._mat_f) / np.linalg.det(mat_h))
             else:

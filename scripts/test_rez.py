@@ -15,10 +15,10 @@ def test_l_vs_en(tas):
     en = [0, 13, 2]  # start, stop, step
 
     ef = 13.5
-    R0 = False
+    r0 = False
 
     plt2d = Plot2DManager()
-    plt2d.rez_plot(tas, projection, q1, q2, q3, en, ef, R0)
+    plt2d.rez_plot(tas, projection, q1, q2, q3, en, ef, r0)
 
 
 def test_h_vs_k(tas):
@@ -28,10 +28,10 @@ def test_h_vs_k(tas):
     q3 = 0
     en = 5
     ef = 13.5
-    R0 = False
+    r0 = False
 
     plt2d = Plot2DManager()
-    plt2d.rez_plot(tas, projection, q1, q2, q3, en, ef, R0)
+    plt2d.rez_plot(tas, projection, q1, q2, q3, en, ef, r0)
 
     # TODO
     def test_1D(tas):
@@ -40,12 +40,12 @@ def test_h_vs_k(tas):
         en = 6
 
         ef = 13.5
-        R0 = True
+        r0 = True
 
         axis = 1
 
         plt1d = Plot1DManager()
-        rez = plt1d.rez_plot_1D(tas, projection, hkl, en, ef, R0, axis)
+        rez = plt1d.rez_plot_1D(tas, projection, hkl, en, ef, r0, axis)
         print(f"renorm factor R0 = {rez.r0}")
 
 

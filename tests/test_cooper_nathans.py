@@ -2,14 +2,15 @@ import numpy as np
 import pytest
 
 from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.sample.xtal import Xtal
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
 def test_copper_nathans_localQ(tas_params):
-    tas, ei, ef, hkl, _, R0 = tas_params
+    tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, R0=R0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, r0=r0)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -22,9 +23,9 @@ def test_copper_nathans_localQ(tas_params):
 
 
 def test_copper_nathans_hkl(tas_params):
-    tas, ei, ef, hkl, _, R0 = tas_params
+    tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, R0=R0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, r0=r0)
     mat = np.array(
         [
             [33305.0843, 33224.4963, -2651.8290, -5152.9962],
@@ -37,9 +38,9 @@ def test_copper_nathans_hkl(tas_params):
 
 
 def test_copper_nathans_projection(tas_params):
-    tas, ei, ef, hkl, projection, R0 = tas_params
+    tas, ei, ef, hkl, projection, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=projection, R0=R0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=projection, r0=r0)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
@@ -59,15 +60,16 @@ def tas_params():
     tas = CN(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
-    tas.load_sample_from_json(sample_json_path)
+    sample = Xtal.from_json(sample_json_path)
+    tas.mount_sample(sample)
 
     ei = 4.8
     ef = 4.8
     hkl = (0, 0, 3)
 
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    R0 = False
+    r0 = False
 
-    tas_params = (tas, ei, ef, hkl, projection, R0)
+    tas_params = (tas, ei, ef, hkl, projection, r0)
 
     return tas_params
