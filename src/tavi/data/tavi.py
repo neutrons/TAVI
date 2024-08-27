@@ -11,12 +11,12 @@ class TAVI(object):
     TAVI_data contains four possible categories, including
     - data, a list of 1D scans, raws data.
     - process_data, including combined scan, 2D maps or dispersion plot
-    - fit, contains fitting info including model, parameters and reduced chi_squared
-    - plot, contains one or more scans and/or fits
+    - fits, contains fitting info including model, parameters and reduced chi_squared
+    - plots, contains one or more scans and/or fits
 
     Attributes:
-        hdf5_path: save path to hdf5
-        self.scans: list of Scan instances
+        file_path: path to a tavi file
+
 
     """
 
@@ -31,10 +31,13 @@ class TAVI(object):
     def new_tavi_file(self, file_path):
         """Create a new tavi file"""
         self.file_path = file_path
+        h5py.get_config().track_order = True
         with h5py.File(file_path, "w") as root:
             root.create_group("data")
             root.create_group("processed_data")
-            root.create_group("fits")
+            root.create_group(
+                "fits",
+            )
             root.create_group("plots")
 
     def load_nexus_data_from_disk(self, path_to_hdf5):
@@ -45,7 +48,7 @@ class TAVI(object):
             OVERWRITE (bool): overwrite exsiting data if Ture, oterwise append new scans in data.
                 Do not change processed_data, fit or plot
         """
-        # TODO check if file exsits
+        # TODO validate path
 
         with h5py.File(self.file_path, "a") as tavi_file, h5py.File(path_to_hdf5, "r") as data_file:
             # IPTS1234_HB3_exp567
@@ -62,7 +65,8 @@ class TAVI(object):
 
             self.data.update({data_id: scans})
 
-    def load_spice_data_from_disk(self, path_to_spice_folder, OVERWRITE=True):
+    # TODO
+    def load_spice_data_from_disk(self, path_to_spice_folder):
         """Load hdf5 data from path_to_hdf5.
 
         Args:
@@ -71,71 +75,7 @@ class TAVI(object):
                 Do not change processed_data, fit or plot
         """
 
-        # exp_info = [
-        #     "experiment",
-        #     "experiment_number",
-        #     "proposal",
-        #     "users",
-        #     "local_contact",
-        # ]
-
-        # p = Path(path_to_spice_folder)
-        # scans = sorted((p / "Datafiles").glob("*"))
-        # instrument, exp = scans[0].parts[-1].split("_")[0:2]
-
-        # # read in exp_info from the first scan and save as attibutes of the file
-        # _, _, headers, _ = read_spice(scans[0])
-        # ipts = headers["proposal"]
-        # data_id = f"IPTS{ipts}_{instrument}_{exp}"  # e.g. "IPTS1234_HB3_exp567"
-        # data_entries = []
-
-        # for scan in scans:  # ignoring unused keys
-        #     spice_data, col_headers, headers, unused = read_spice(scan)
-        #     scan_id = ((scan.parts[-1].split("_"))[-1]).split(".")[0]  # e.g. "scan0001"
-
-        #     meta_data = {"scan_id": scan_id}
-
-        #     for k, v in headers.items():
-        #         if k not in exp_info:  # ignore common keys in single scans
-        #             if "," in v and k != "scan_title":  # vectors
-        #                 meta_data.update({k: np.array([float(v0) for v0 in v.split(",")])})
-        #             elif v.replace(".", "").isnumeric():  # numebrs only
-        #                 if v.isdigit():  # int
-        #                     meta_data.update({k: int(v)})
-        #                 else:  # float
-        #                     meta_data.update({k: float(v)})
-        #             # separate COM/FWHM and its errorbar
-        #             elif k == "Center of Mass":
-        #                 com, e_com = v.split("+/-")
-        #                 meta_data.update({"COM": float(com)})
-        #                 meta_data.update({"COM_err": float(e_com)})
-        #             elif k == "Full Width Half-Maximum":
-        #                 fwhm, e_fwhm = v.split("+/-")
-        #                 meta_data.update({"FWHM": float(fwhm)})
-        #                 meta_data.update({"FWHM_err": float(e_fwhm)})
-        #             else:  # other crap, keep as is
-        #                 if k not in exp_info:
-        #                     meta_data.update({k: v})
-
-        #     data = {}
-
-        #     if spice_data.ndim == 1:  # empty data or 1 point only
-        #         if len(spice_data):  # 1 point only
-        #             for idx, col_header in enumerate(col_headers):
-        #                 data.update({col_header: spice_data[idx]})
-        #         else:  # empty
-        #             pass
-        #     else:  # nomarl data
-        #         for idx, col_header in enumerate(col_headers):
-        #             data.update({col_header: spice_data[:, idx]})
-
-        #     s = Scan()
-        #     s.set_metadata(meta_data)
-        #     s.set_data(data)
-
-        #     data_entries.append(s)
-
-        # self.data.update({data_id: data_entries})
+        pass
 
     def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
         """Load data from ONCat based on user_credentials and ipts_info.
@@ -148,10 +88,12 @@ class TAVI(object):
         """
         pass
 
-    def open_tavi_file(self, file_path):
+    def open_tavi_file(self, tavi_file_path):
         """Open existing tavi file"""
-        self.file_path = file_path
-        with h5py.File(file_path, "a") as tavi_file:
+        # TODO validate path
+        self.file_path = tavi_file_path
+
+        with h5py.File(tavi_file_path, "a") as tavi_file:
             # load datasets in data folder
             for data_id in tavi_file["data"].keys():
                 dataset = tavi_file["data"][data_id]

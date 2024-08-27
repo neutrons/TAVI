@@ -129,6 +129,7 @@ def nexus_to_dict(nexus_entry):
     return scan_info, sample_ub_info, instrument_info, data
 
 
+# TODO
 def nexus_to_SPICE(nexus_entry):
     """Reads a nexus entry, convert to a SPICE scan file
 
