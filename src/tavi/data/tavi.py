@@ -31,14 +31,15 @@ class TAVI(object):
     def new_tavi_file(self, file_path):
         """Create a new tavi file"""
         self.file_path = file_path
-        h5py.get_config().track_order = True
-        with h5py.File(file_path, "w") as root:
-            root.create_group("data")
-            root.create_group("processed_data")
-            root.create_group(
-                "fits",
-            )
-            root.create_group("plots")
+
+        try:
+            with h5py.File(file_path, "w", track_order=True) as root:
+                root.create_group("data", track_order=True)
+                root.create_group("processed_data", track_order=True)
+                root.create_group("fits", track_order=True)
+                root.create_group("plots", track_order=True)
+        except OSError:
+            print(f"Cannot create tavi file at {file_path}")
 
     def load_nexus_data_from_disk(self, path_to_hdf5):
         """Load hdf5 data from path_to_hdf5.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from tavi.data.spice_to_nexus import convert_spice_to_nexus
 from tavi.data.tavi import TAVI
 
