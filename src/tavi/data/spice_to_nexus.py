@@ -2,9 +2,26 @@
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import Literal, Optional
 
 import h5py
 import numpy as np
+
+
+def _find_val(val, grp, prefix=""):
+    """Find value in hdf5 groups"""
+    for obj_name, obj in grp.items():
+        if obj_name in ("SPICElogs", "data"):
+            continue
+        else:
+            path = f"{prefix}/{obj_name}"
+            if val == obj_name:
+                return path
+            # test for group (go down)
+            elif isinstance(obj, h5py.Group):
+                gpath = _find_val(val, obj, path)
+                if gpath:
+                    return gpath
 
 
 def _read_spice(file_name):
@@ -26,12 +43,14 @@ def _read_spice(file_name):
     index_col_name = metadata.index("# col_headers =")
     col_headers = tuple(metadata[index_col_name + 1].strip("#").split())
     metadata_list = metadata[:index_col_name]
+    error_messages = metadata[index_col_name + 2 :]
 
     index_sum_count = [i for i, header in enumerate(metadata) if header.startswith("# Sum of Counts =")]
     # in case "Sum of Counts" doesn't exist
     # happens to the last scan after beam is down
     if len(index_sum_count) != 0:
-        metadata_list += metadata[index_sum_count[0] + 1 :]
+        metadata_list += metadata[index_sum_count[0] :]
+        error_messages = tuple(error_messages[: index_sum_count[0] - len(metadata)])
 
     headers = {}
     unused = []
@@ -55,10 +74,10 @@ def _read_spice(file_name):
 
     spice_data = np.genfromtxt(file_name, comments="#")
 
-    return spice_data, col_headers, headers, unused
+    return spice_data, col_headers, headers, unused, error_messages
 
 
-def _read_spice_ub(ub_file_name: str) -> dict:
+def _read_spice_ub(ub_file_name):
     """Reads ub info from UBConf"""
     ubconf = {}
     with open(ub_file_name, encoding="utf-8") as f:
@@ -88,85 +107,44 @@ def _read_spice_ub(ub_file_name: str) -> dict:
     return ubconf
 
 
-def _format_spice_header(headers: dict) -> dict:
+def _format_spice_header(headers):
 
     formatted_headers = {}
 
     exp_str = ["scan_title", "users", "local_contact", "experiment"]
     for k, v in headers.items():
         if "," in v and k not in exp_str:  # vectors
-            formatted_headers[k] = np.array([float(v0) for v0 in v.split(",")])
+            vec = np.array([float(v0) for v0 in v.split(",")])
+            formatted_headers.update({k: vec})
         elif v.replace(".", "").isnumeric():  # numebrs only
             if v.isdigit():  # int
-                formatted_headers[k] = int(v)
+                formatted_headers.update({k: int(v)})
             else:  # float
-                formatted_headers[k] = float(v)
+                formatted_headers.update({k: float(v)})
         # separate COM/FWHM and its errorbar
         elif k == "Center of Mass":
-            com, e_com = v.split("+/-")
-            formatted_headers["COM"] = float(com)
-            formatted_headers["COM_err"] = float(e_com)
+            if v == "NaN+/-NaN":
+                formatted_headers.update({"COM": np.nan, "COM_err": np.nan})
+            else:
+                com, e_com = v.split("+/-")
+                formatted_headers.update({"COM": float(com), "COM_err": float(e_com)})
         elif k == "Full Width Half-Maximum":
-            fwhm, e_fwhm = v.split("+/-")
-            formatted_headers["FWHM"] = float(fwhm)
-            formatted_headers["FWHM_err"] = float(e_fwhm)
+            if v == "NaN+/-NaN":
+                formatted_headers.update({"FWHM": np.nan, "FWHM_err": np.nan})
+            else:
+                fwhm, e_fwhm = v.split("+/-")
+                formatted_headers.update({"FWHM": float(com), "FWHM_err": float(e_com)})
         else:  # other crap, keep as is
-            formatted_headers[k] = v
+            formatted_headers.update({k: v})
 
     return formatted_headers
 
 
-def _spicelogs_to_nexus(nxentry):
-    """Format info from SPICElogs into Nexus format"""
-    spice_logs = nxentry["SPICElogs"]
+def _nenux_entry(nxentry, das_logs):
+    """Entry containing scan info"""
 
-    # Create the GROUPS
     nxentry.attrs["NX_class"] = "NXentry"
     nxentry.attrs["EX_required"] = "true"
-
-    nxentry.create_group("instrument")
-    nxentry["instrument"].attrs["NX_class"] = "NXinstrument"
-    nxentry["instrument"].attrs["EX_required"] = "true"
-
-    nxentry["instrument/"].create_group("source")
-    nxentry["instrument/source"].attrs["NX_class"] = "NXsource"
-    nxentry["instrument/source"].attrs["EX_required"] = "true"
-
-    nxmono = nxentry["instrument/"].create_group("monochromator")
-    nxmono.attrs["NX_class"] = "NXcrystal"
-    nxmono.attrs["EX_required"] = "true"
-
-    nxana = nxentry["instrument/"].create_group("analyser")
-    nxana.attrs["NX_class"] = "NXcrystal"
-    nxana.attrs["EX_required"] = "true"
-
-    nxentry["instrument/"].create_group("detector")
-    nxentry["instrument/detector"].attrs["NX_class"] = "NXdetector"
-    nxentry["instrument/detector"].attrs["EX_required"] = "true"
-
-    nxentry.create_group("sample")
-    nxentry["sample"].attrs["NX_class"] = "NXsample"
-    nxentry["sample"].attrs["EX_required"] = "true"
-
-    nxentry.create_group("monitor")
-    nxentry["monitor"].attrs["NX_class"] = "NXmonitor"
-    nxentry["monitor"].attrs["EX_required"] = "true"
-
-    nxentry.create_group("data")
-    nxentry["data"].attrs["NX_class"] = "NXdata"
-    nxentry["data"].attrs["EX_required"] = "true"
-
-    nxentry["instrument/"].create_group("collimator")
-    nxentry["instrument/collimator"].attrs["NX_class"] = "NXcollimator"
-
-    nxslit = nxentry["instrument/"].create_group("slit")
-    nxslit.attrs["NX_class"] = "NXslit"
-
-    nxflipper = nxentry["instrument/"].create_group("flipper")
-    nxflipper.attrs["NX_class"] = "NXflipper"
-
-    # nxentry["instrument"].create_group("filter")
-    # nxentry["instrument"].attrs["NX_class"] = "NXfilter"
 
     # Valid enumeration values for root['/entry']['definition'] are:
     # NXtas
@@ -174,126 +152,136 @@ def _spicelogs_to_nexus(nxentry):
     nxentry["definition"].attrs["type"] = "NX_CHAR"
     nxentry["definition"].attrs["EX_required"] = "true"
 
-    try:  # scan info
-        nxentry.create_dataset(name="title", data=spice_logs.attrs["scan_title"], maxshape=None)
+    try:
+        nxentry.create_dataset(name="title", data=das_logs.attrs["scan_title"], maxshape=None)
         nxentry["title"].attrs["type"] = "NX_CHAR"
         nxentry["title"].attrs["EX_required"] = "true"
 
         # TODO timezone
-        start_date_time = "{} {}".format(spice_logs.attrs["date"], spice_logs.attrs["time"])
+        start_date_time = "{} {}".format(das_logs.attrs["date"], das_logs.attrs["time"])
         start_time = datetime.strptime(start_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
 
         nxentry.create_dataset(name="start_time", data=start_time, maxshape=None)
         nxentry["start_time"].attrs["type"] = "NX_DATE_TIME"
         nxentry["start_time"].attrs["EX_required"] = "true"
 
-        # if "end_time" in spice_logs.attrs:  # last scan never finished
-        end_date_time = spice_logs.attrs["end_time"]
+        # if "end_time" in das_logs.attrs:  # last scan never finished
+        end_date_time = das_logs.attrs["end_time"]
         end_time = datetime.strptime(end_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
         nxentry.create_dataset(name="end_time", data=end_time, maxshape=None)
         nxentry["end_time"].attrs["type"] = "NX_DATE_TIME"
+
     except KeyError:
         pass
 
-    #  --------------------------- instrument ---------------------------
-    nxentry["instrument"].create_dataset(name="name", data=spice_logs.attrs["instrument"], maxshape=None)
-    nxentry["instrument/name"].attrs["type"] = "NX_CHAR"
+    return nxentry
 
-    #  --------------------------- source ---------------------------
-    nxentry["instrument/source"].create_dataset(name="name", data="HFIR", maxshape=None)
-    nxentry["instrument/source/name"].attrs["type"] = "NX_CHAR"
-    nxentry["instrument/source/name"].attrs["EX_required"] = "true"
+
+def _nexus_source(nxsource, das_logs):
+    """Source"""
+
+    nxsource.attrs["NX_class"] = "NXsource"
+    nxsource.attrs["EX_required"] = "true"
+
+    nxsource.create_dataset(name="name", data="HFIR", maxshape=None)
+    nxsource["name"].attrs["type"] = "NX_CHAR"
+    nxsource["name"].attrs["EX_required"] = "true"
 
     # Valid enumeration values for root['/entry/instrument/source']['probe'] are:
-    # 	 neutron
-    # 	 x-ray
+    # neutron of x-ray
 
-    nxentry["instrument/source"].create_dataset(name="probe", data="neutron", maxshape=None)
-    nxentry["instrument/source/probe"].attrs["type"] = "NX_CHAR"
-    nxentry["instrument/source/probe"].attrs["EX_required"] = "true"
+    nxsource.create_dataset(name="probe", data="neutron", maxshape=None)
+    nxsource["probe"].attrs["type"] = "NX_CHAR"
+    nxsource["probe"].attrs["EX_required"] = "true"
 
     # Effective distance from sample Distance as seen by radiation from sample.
     # This number should be negative to signify that it is upstream of the sample.
-    # nxentry["instrument/source"].attrs["distance"] = -0.0
+    # nxsource.attrs["distance"] = -0.0
 
-    try:  # -------------------collimators-------------
-        nxentry["instrument/collimator"].create_dataset(name="type", data="Soller", maxshape=None)
-        nxentry["instrument/collimator/type"].attrs["type"] = "NX_CHAR"
+    return nxsource
 
-        div_x = [float(v) for v in list(spice_logs.attrs["collimation"].split("-"))]
-        nxentry["instrument/collimator"].create_dataset(name="divergence_x", data=div_x, maxshape=None)
-        nxentry["instrument/collimator/divergence_x"].attrs["type"] = "NX_ANGLE"
-        nxentry["instrument/collimator/divergence_x"].attrs["units"] = "min"
-    except KeyError:
-        pass
 
-    try:  # ----------------- monochromator------------
-        nxmono.create_dataset(name="ei", data=spice_logs["ei"], maxshape=None)
+def _nexus_mono(nxmono, das_logs):
+    """Monochromator"""
+
+    nxmono.attrs["NX_class"] = "NXcrystal"
+    nxmono.attrs["EX_required"] = "true"
+
+    try:
+        nxmono.create_dataset(name="ei", data=das_logs["ei"], maxshape=None)
         nxmono["ei"].attrs["type"] = "NX_FLOAT"
         nxmono["ei"].attrs["EX_required"] = "true"
         # nxmono["ei"].attrs["axis"] = "1"
         nxmono["ei"].attrs["units"] = "meV"
 
-        nxmono.create_dataset(name="type", data=spice_logs.attrs["monochromator"], maxshape=None)
+        nxmono.create_dataset(name="type", data=das_logs.attrs["monochromator"], maxshape=None)
         nxmono.attrs["type"] = "NX_CHAR"
 
-        nxmono.create_dataset(name="m1", data=spice_logs["m1"], maxshape=None)
+        nxmono.create_dataset(name="m1", data=das_logs["m1"], maxshape=None)
         nxmono["m1"].attrs["type"] = "NX_FLOAT"
         nxmono["m1"].attrs["units"] = "degrees"
 
-        nxmono.create_dataset(name="m2", data=spice_logs["m2"], maxshape=None)
+        nxmono.create_dataset(name="m2", data=das_logs["m2"], maxshape=None)
         nxmono["m2"].attrs["type"] = "NX_FLOAT"
         nxmono["m2"].attrs["units"] = "degrees"
 
-        nxmono.create_dataset(name="mfocus", data=spice_logs["mfocus"], maxshape=None)
+        nxmono.create_dataset(name="mfocus", data=das_logs["mfocus"], maxshape=None)
         nxmono["mfocus"].attrs["type"] = "NX_FLOAT"
 
-        nxmono.create_dataset(name="marc", data=spice_logs["marc"], maxshape=None)
+        nxmono.create_dataset(name="marc", data=das_logs["marc"], maxshape=None)
         nxmono["marc"].attrs["type"] = "NX_FLOAT"
 
-        nxmono.create_dataset(name="mtrans", data=spice_logs["mtrans"], maxshape=None)
+        nxmono.create_dataset(name="mtrans", data=das_logs["mtrans"], maxshape=None)
         nxmono["mtrans"].attrs["type"] = "NX_FLOAT"
 
-        nxmono.create_dataset(name="focal_length", data=spice_logs["focal_length"], maxshape=None)
+        nxmono.create_dataset(name="focal_length", data=das_logs["focal_length"], maxshape=None)
         nxmono["focal_length"].attrs["type"] = "NX_FLOAT"
 
-        nxmono.create_dataset(name="sense", data=spice_logs.attrs["sense"][0], maxshape=None)
+        nxmono.create_dataset(name="sense", data=das_logs.attrs["sense"][0], maxshape=None)
         nxmono.attrs["type"] = "NX_CHAR"
 
         # nxmono.create_dataset(name="rotation_angle", data=1.0, maxshape=None)
         # nxmono["rotation_angle"].attrs["type"] = "NX_FLOAT"
         # nxmono["rotation_angle"].attrs["EX_required"] = "true"
         # nxmono["rotation_angle"].attrs["units"] = "NX_ANGLE"
+
     except KeyError:
         pass
 
-    try:  # -------------- analyzer ---------------
+    return nxmono
 
-        nxana.create_dataset(name="ef", data=spice_logs["ef"], maxshape=None)
+
+def _nexus_ana(nxana, das_logs):
+    """Analyzer"""
+    nxana.attrs["NX_class"] = "NXcrystal"
+    nxana.attrs["EX_required"] = "true"
+
+    try:
+        nxana.create_dataset(name="ef", data=das_logs["ef"], maxshape=None)
         nxana["ef"].attrs["type"] = "NX_FLOAT"
         nxana["ef"].attrs["EX_required"] = "true"
         # nxana["ef"].attrs["axis"] = "1"
         nxana["ef"].attrs["units"] = "meV"
 
-        nxana.create_dataset(name="type", data=spice_logs.attrs["analyzer"], maxshape=None)
+        nxana.create_dataset(name="type", data=das_logs.attrs["analyzer"], maxshape=None)
         nxana.attrs["type"] = "NX_CHAR"
 
-        nxana.create_dataset(name="a1", data=spice_logs["a1"], maxshape=None)
+        nxana.create_dataset(name="a1", data=das_logs["a1"], maxshape=None)
         nxana["a1"].attrs["type"] = "NX_FLOAT"
         nxana["a1"].attrs["units"] = "degrees"
 
-        nxana.create_dataset(name="a2", data=spice_logs["a2"], maxshape=None)
+        nxana.create_dataset(name="a2", data=das_logs["a2"], maxshape=None)
         nxana["a2"].attrs["type"] = "NX_FLOAT"
         nxana["a2"].attrs["units"] = "degrees"
 
-        nxana.create_dataset(name="afocus", data=spice_logs["afocus"], maxshape=None)
+        nxana.create_dataset(name="afocus", data=das_logs["afocus"], maxshape=None)
         nxana["afocus"].attrs["type"] = "NX_FLOAT"
 
         for i in range(8):  # qm1--qm8, xm1 -- xm8
-            nxana.create_dataset(name=f"qm{i+1}", data=spice_logs[f"qm{i+1}"], maxshape=None)
-            nxana.create_dataset(name=f"xm{i+1}", data=spice_logs[f"xm{i+1}"], maxshape=None)
+            nxana.create_dataset(name=f"qm{i+1}", data=das_logs[f"qm{i+1}"], maxshape=None)
+            nxana.create_dataset(name=f"xm{i+1}", data=das_logs[f"xm{i+1}"], maxshape=None)
 
-        nxana.create_dataset(name="sense", data=spice_logs.attrs["sense"][2], maxshape=None)
+        nxana.create_dataset(name="sense", data=das_logs.attrs["sense"][2], maxshape=None)
         nxana.attrs["type"] = "NX_CHAR"
 
         # nxana.create_dataset(name="rotation_angle", data=1.0, maxshape=None)
@@ -308,182 +296,66 @@ def _spicelogs_to_nexus(nxentry):
 
     except KeyError:
         pass
+    return nxana
 
-    try:  # ------------ detector -----------
-        nxentry["instrument/detector"].create_dataset(
-            name="data", data=spice_logs["detector"], maxshape=None, dtype="int"
-        )
-        nxentry["instrument/detector/data"].attrs["type"] = "NX_INT"
-        nxentry["instrument/detector/data"].attrs["EX_required"] = "true"
-        nxentry["instrument/detector/data"].attrs["units"] = "counts"
 
-        # nxentry["instrument/detector"].create_dataset(name="polar_angle", data=1.0, maxshape=None)
-        # nxentry["instrument/detector/polar_angle"].attrs["type"] = "NX_FLOAT"
-        # nxentry["instrument/detector/polar_angle"].attrs["EX_required"] = "true"
-        # nxentry["instrument/detector/polar_angle"].attrs["units"] = "NX_ANGLE"
+def _nexus_detector(nxdetector, das_logs):
+    """Detector"""
+    nxdetector.attrs["NX_class"] = "NXdetector"
+    nxdetector.attrs["EX_required"] = "true"
 
-    except KeyError:
-        pass
+    try:
+        nxdetector.create_dataset(name="data", data=das_logs["detector"], maxshape=None, dtype="int")
+        nxdetector["data"].attrs["type"] = "NX_INT"
+        nxdetector["data"].attrs["EX_required"] = "true"
+        nxdetector["data"].attrs["units"] = "counts"
 
-    # TODO HB1 polarized experiment
-    try:  # --------------flipper ----------------
-        nxflipper.create_dataset(name="fguide", data=spice_logs["fguide"], maxshape=None)
-        nxflipper["fguide"].attrs["type"] = "NX_FLOAT"
-
-        nxflipper.create_dataset(name="hguide", data=spice_logs["hguide"], maxshape=None)
-        nxflipper["hguide"].attrs["type"] = "NX_FLOAT"
-
-        nxflipper.create_dataset(name="vguide", data=spice_logs["vguide"], maxshape=None)
-        nxflipper["vguide"].attrs["type"] = "NX_FLOAT"
+        # nxdetector.create_dataset(name="polar_angle", data=1.0, maxshape=None)
+        # nxdetector["polar_angle"].attrs["type"] = "NX_FLOAT"
+        # nxdetector["polar_angle"].attrs["EX_required"] = "true"
+        # nxdetector["polar_angle"].attrs["units"] = "NX_ANGLE"
 
     except KeyError:
         pass
+    return nxdetector
 
-    # TODO Helmohtz coils guide fields: tbguide, aguide, bguide
-    #
-    # --------------------------- slits ---------------------------
 
-    slits_str1 = ("bat", "bab", "bal", "bar", "bbt", "bbb", "bbl", "bbr")
-    slits_str2 = ("slita_lf", "slita_rt", "slita_tp", "slita_bt", "slitb_lf", "slitb_rt", "slitb_tp", "slitb_bt")
-    slits_str3 = ("slit_pre_bt", "slit_pre_lf", "slit_pre_rt", "slit_pre_tp")
-
-    slits_str = (slits_str1, slits_str2, slits_str3)
-
-    for slit_str in slits_str:
-        if slit_str[0] in spice_logs.keys():
-            for st in slit_str:
-                nxslit.create_dataset(name=st, data=spice_logs[st])
-                nxslit[st].attrs["type"] = "NX_FLOAT"
-                nxslit[st].attrs["units"] = "cm"
-
-    try:  # -----------------sample -----------------
-
-        nxentry["sample"].create_dataset(name="name", data=spice_logs.attrs["samplename"], maxshape=None)
-        nxentry["sample/name"].attrs["type"] = "NX_CHAR"
-        nxentry["sample/name"].attrs["EX_required"] = "true"
-
-        nxentry["sample"].create_dataset(name="qh", data=spice_logs["h"], maxshape=None)
-        nxentry["sample/qh"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/qh"].attrs["EX_required"] = "true"
-        # nxentry["sample/qh"].attrs["axis"] = "1"
-        # nxentry["sample/qh"].attrs["units"] = "NX_DIMENSIONLESS"
-
-        nxentry["sample"].create_dataset(name="qk", data=spice_logs["k"], maxshape=None)
-        nxentry["sample/qk"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/qk"].attrs["EX_required"] = "true"
-        # nxentry["sample/qk"].attrs["axis"] = "1"
-        # nxentry["sample/qk"].attrs["units"] = "NX_DIMENSIONLESS"
-
-        nxentry["sample"].create_dataset(name="ql", data=spice_logs["l"], maxshape=None)
-        nxentry["sample/ql"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/ql"].attrs["EX_required"] = "true"
-        # nxentry["sample/ql"].attrs["axis"] = "1"
-        # nxentry["sample/ql"].attrs["units"] = "NX_DIMENSIONLESS"
-
-        nxentry["sample"].create_dataset(name="en", data=spice_logs["e"], maxshape=None)
-        nxentry["sample/en"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/en"].attrs["EX_required"] = "true"
-        # nxentry["sample/en"].attrs["axis"] = "1"
-        nxentry["sample/en"].attrs["units"] = "meV"
-
-        nxentry["sample"].create_dataset(name="sgu", data=spice_logs["sgu"], maxshape=None)
-        nxentry["sample/sgu"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/sgu"].attrs["EX_required"] = "true"
-        nxentry["sample/sgu"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="sgl", data=spice_logs["sgl"], maxshape=None)
-        nxentry["sample/sgl"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/sgl"].attrs["EX_required"] = "true"
-        nxentry["sample/sgl"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="unit_cell", data=spice_logs.attrs["latticeconstants"], maxshape=None)
-        nxentry["sample/unit_cell"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/unit_cell"].attrs["EX_required"] = "true"
-        # nxentry["sample/unit_cell"].attrs["units"] = "NX_LENGTH"
-
-        nxentry["sample"].create_dataset(name="orientation_matrix", data=spice_logs.attrs["ubmatrix"], maxshape=None)
-        nxentry["sample/orientation_matrix"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/orientation_matrix"].attrs["EX_required"] = "true"
-        nxentry["sample/orientation_matrix"].attrs["units"] = "NX_DIMENSIONLESS"
-
-        nxentry["sample"].create_dataset(name="ub_conf", data=spice_logs.attrs["ubconf"].split(".")[0], maxshape=None)
-        nxentry["sample/ub_conf"].attrs["type"] = "NX_CHAR"
-
-        nxentry["sample"].create_dataset(name="plane_normal", data=spice_logs.attrs["plane_normal"], maxshape=None)
-        nxentry["sample/plane_normal"].attrs["type"] = "NX_FLOAT"
-
-        nxentry["sample"].create_dataset(name="q", data=spice_logs["q"], maxshape=None)
-        nxentry["sample/q"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/q"].attrs["units"] = "Angstrom^-1"
-
-        nxentry["sample"].create_dataset(name="stu", data=spice_logs["stu"], maxshape=None)
-        nxentry["sample/stu"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/stu"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="stl", data=spice_logs["stl"], maxshape=None)
-        nxentry["sample/stl"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/stl"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="s1", data=spice_logs["s1"], maxshape=None)
-        nxentry["sample/s1"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/s1"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="s2", data=spice_logs["s2"], maxshape=None)
-        nxentry["sample/s2"].attrs["type"] = "NX_FLOAT"
-        nxentry["sample/s2"].attrs["units"] = "degrees"
-
-        nxentry["sample"].create_dataset(name="type", data=spice_logs.attrs["sampletype"], maxshape=None)
-        nxentry["sample/type"].attrs["type"] = "NX_CHAR"
-
-        nxentry["sample"].create_dataset(name="sense", data=spice_logs.attrs["sense"][1], maxshape=None)
-        nxentry["sample"].attrs["type"] = "NX_CHAR"
-
-        nxentry["sample"].create_dataset(name="Pt.", data=spice_logs["Pt."], maxshape=None)
-        nxentry["sample"].attrs["type"] = "NX_CHAR"
-
-        # nxentry["sample"].create_dataset(name="rotation_angle", data=1.0, maxshape=None)
-        # nxentry["sample/rotation_angle"].attrs["type"] = "NX_FLOAT"
-        # nxentry["sample/rotation_angle"].attrs["EX_required"] = "true"
-        # nxentry["sample/rotation_angle"].attrs["units"] = "NX_ANGLE"
-
-        # nxentry["sample"].create_dataset(name="polar_angle", data=1.0, maxshape=None)
-        # nxentry["sample/polar_angle"].attrs["type"] = "NX_FLOAT"
-        # nxentry["sample/polar_angle"].attrs["EX_required"] = "true"
-        # nxentry["sample/polar_angle"].attrs["units"] = "NX_ANGLE"
-    except KeyError:
-        pass
+def _nexus_monitor(nxmonitor, das_logs):
+    """Monitor"""
+    nxmonitor.attrs["NX_class"] = "NXmonitor"
+    nxmonitor.attrs["EX_required"] = "true"
 
     try:  # --------------------------- monitor ---------------------------
         # Valid enumeration values for root['/entry/monitor']['mode'] are:monitor/time/ mcu
-        if spice_logs.attrs["preset_type"] == "normal":
-            preset_channel = spice_logs.attrs["preset_channel"]
+        if das_logs.attrs["preset_type"] == "normal":
+            preset_channel = das_logs.attrs["preset_channel"]
 
-            nxentry["monitor"].create_dataset(name="mode", data=preset_channel, maxshape=None)
-            nxentry["monitor/mode"].attrs["type"] = "NX_CHAR"
-            nxentry["monitor/mode"].attrs["EX_required"] = "true"
+            nxmonitor.create_dataset(name="mode", data=preset_channel, maxshape=None)
+            nxmonitor["mode"].attrs["type"] = "NX_CHAR"
+            nxmonitor["mode"].attrs["EX_required"] = "true"
 
-            nxentry["monitor"].create_dataset(name="preset", data=spice_logs.attrs["preset_value"], maxshape=None)
-            nxentry["monitor/preset"].attrs["type"] = "NX_FLOAT"
-            nxentry["monitor/preset"].attrs["EX_required"] = "true"
+            nxmonitor.create_dataset(name="preset", data=das_logs.attrs["preset_value"], maxshape=None)
+            nxmonitor["preset"].attrs["type"] = "NX_FLOAT"
+            nxmonitor["preset"].attrs["EX_required"] = "true"
 
-            nxentry["monitor"].create_dataset(name="time", data=spice_logs["time"], maxshape=None)
-            nxentry["monitor/time"].attrs["type"] = "NX_FLOAT"
-            nxentry["monitor/time"].attrs["units"] = "seconds"
+            nxmonitor.create_dataset(name="time", data=das_logs["time"], maxshape=None)
+            nxmonitor["time"].attrs["type"] = "NX_FLOAT"
+            nxmonitor["time"].attrs["units"] = "seconds"
 
-            nxentry["monitor"].create_dataset(name="monitor", data=spice_logs["monitor"], maxshape=None)
-            nxentry["monitor/monitor"].attrs["type"] = "NX_INT"
-            nxentry["monitor/monitor"].attrs["units"] = "counts"
+            nxmonitor.create_dataset(name="monitor", data=das_logs["monitor"], maxshape=None)
+            nxmonitor["monitor"].attrs["type"] = "NX_INT"
+            nxmonitor["monitor"].attrs["units"] = "counts"
 
-            nxentry["monitor"].create_dataset(name="mcu", data=spice_logs["mcu"], maxshape=None)
-            nxentry["monitor/mcu"].attrs["type"] = "NX_FLOAT"
+            nxmonitor.create_dataset(name="mcu", data=das_logs["mcu"], maxshape=None)
+            nxmonitor["mcu"].attrs["type"] = "NX_FLOAT"
 
-            nxentry["monitor"].create_dataset(name="data", data=spice_logs[preset_channel], maxshape=None)
-            nxentry["monitor/data"].attrs["type"] = "NX_FLOAT"
-            nxentry["monitor/data"].attrs["EX_required"] = "true"
-            # nxentry["monitor/data"].attrs["units"] = "counts"
+            nxmonitor.create_dataset(name="data", data=das_logs[preset_channel], maxshape=None)
+            nxmonitor["data"].attrs["type"] = "NX_FLOAT"
+            nxmonitor["data"].attrs["EX_required"] = "true"
+            # nxmonitor["data"].attrs["units"] = "counts"
 
         # TODO polarized exp at HB1
-        elif spice_logs.attrs["preset_type"] == "countfile":
+        elif das_logs.attrs["preset_type"] == "countfile":
             print("Polarization data, not yet supported.")
 
         else:
@@ -491,111 +363,305 @@ def _spicelogs_to_nexus(nxentry):
     except KeyError:
         pass
 
-    # --------------------------- data links ---------------------------
+    return nxmonitor
 
-    def find_val(val, grp, prefix=""):
-        for obj_name, obj in grp.items():
-            if obj_name in ("SPICElogs", "data"):
-                continue
-            else:
-                path = f"{prefix}/{obj_name}"
-                if val == obj_name:
-                    return path
-                elif isinstance(obj, h5py.Group):  # test for group (go down)
-                    gpath = find_val(val, obj, path)
-                    if gpath:
-                        return gpath
 
-    nexus_dict = {"h": "qh", "k": "qk", "l": "ql", "e": "en"}
-    def_x = spice_logs.attrs["def_x"]
-    def_y = spice_logs.attrs["def_y"]
-    if def_x in nexus_dict:
-        def_x = nexus_dict[def_x]
-
-    path_x = find_val(def_x, nxentry)
-    path_y = find_val(def_y, nxentry)
-    if def_y == "detector" or def_y == "monitor":
-        path_y += "/data"
-
-    # Create the LINKS
-    nxentry["data/" + def_y] = h5py.SoftLink(nxentry.name + path_y)
-    nxentry["data/" + def_y + "/"].attrs["target"] = nxentry.name + path_y
-    # if def_y == "detector" or def_y == "monitor":
-    #     nxentry["data"].attrs["signal"] = "data"
-    # else:
-    nxentry["data"].attrs["signal"] = def_y
-
-    # Create the LINKS
-    nxentry["data/" + def_x] = h5py.SoftLink(nxentry.name + path_x)
-    nxentry["data/" + def_x + "/"].attrs["target"] = nxentry.name + path_x
-
-    if def_x in nexus_dict:
-        nxentry["data"].attrs["axes"] = nexus_dict[def_x]
-
-    else:
-        nxentry["data"].attrs["axes"] = def_x
-
-    # # Create the DOC strings
-    # nxentry["definition"].attrs["EX_doc"] = "Official NeXus NXDL schema to which this file conforms "
-    # nxentry["sample/name"].attrs["EX_doc"] = "Descriptive name of sample "
-    # nxentry["monitor/mode"].attrs[
-    #     "EX_doc"
-    # ] = "Count to a preset value based on either clock time (timer) or received monitor counts (monitor). "
-    # nxentry["monitor/preset"].attrs["EX_doc"] = "preset value for time or monitor "
-    # nxentry["monitor/data"].attrs["EX_doc"] = "Total integral monitor counts "
-    # nxentry["data"].attrs[
-    #     "EX_doc"
-    # ] = "One of the ei,ef,qh,qk,ql,en should get a primary=1 attribute to denote the main scan axis "
-
-    # Create the ATTRIBUTES
-    # root["/"].attrs["default"] = "entry"
-    # root["/entry"].attrs["default"] = "data"
-    # nxentry["data"].attrs["signal"] = "data"
-    # nxentry["data/data"].attrs["signal"] = "1"
-
-    # --------------------------------------------------------------------------------------
-
-    # # /entry/sample
-    # nxsample = nxentry.create_group("sample")
-    # nxsample.attrs["name"] = headers["samplename"]
-    # nxsample.attrs["type"] = headers["sampletype"]
-    # nxsample.attrs["mosiac"] = headers["samplemosaic"]
-
-    # TODO sample environment -- temperture, magnetic field, pressure
+# TODO all sample environment variable names needed!
+def _nexus_sample_environment(nxsample, das_logs):
+    """Sample environment, e.g. cryostat, magnet"""
     temperatue_str = (
-        (
-            "temp",
-            "temp_a",
-            "temp_2",
-            "coldtip",
-            "tsample",
-            "sample",
-        )
-        + (
-            "vti",
-            "dr_tsample",
-            "dr_temp",
-        )
+        ("temp", "temp_a", "temp_2", "coldtip", "tsample", "sample")
+        + ("vti", "dr_tsample", "dr_temp")
         + ("lt", "ht", "sorb_temp", "sorb", "sample_ht")
     )
-    # TODO field
-    field_str = ("persistent_field",)
-    # TODO pressure
+
+    field_str = ("persistent_field", "mag_i")
+
     try:
         for t in temperatue_str:
-            nxentry["sample"].create_dataset(name=t, data=spice_logs[t], maxshape=None)
-            nxentry["sample/" + t].attrs["type"] = "NX_FLOAT"
-            nxentry["sample/" + t].attrs["units"] = "K"
+            nxsample.create_dataset(name=t, data=das_logs[t], maxshape=None)
+            nxsample["" + t].attrs["type"] = "NX_FLOAT"
+            nxsample["" + t].attrs["units"] = "K"
 
         for f in field_str:
-            nxentry["sample"].create_dataset(name=f, data=spice_logs[f], maxshape=None)
-            nxentry["sample/" + t].attrs["type"] = "NX_FLOAT"
-            nxentry["sample/" + t].attrs["units"] = "T"
+            nxsample.create_dataset(name=f, data=das_logs[f], maxshape=None)
+            nxsample["" + t].attrs["type"] = "NX_FLOAT"
+            nxsample["" + t].attrs["units"] = "T"
+
     except KeyError:
         pass
 
+    return nxsample
 
-# TODO
+
+def _nexus_sample(nxsample, das_logs):
+    "Sample and sample environment"
+    nxsample.attrs["NX_class"] = "NXsample"
+    nxsample.attrs["EX_required"] = "true"
+
+    try:
+
+        nxsample.create_dataset(name="name", data=das_logs.attrs["samplename"], maxshape=None)
+        nxsample["name"].attrs["type"] = "NX_CHAR"
+        nxsample["name"].attrs["EX_required"] = "true"
+
+        nxsample.create_dataset(name="qh", data=das_logs["h"], maxshape=None)
+        nxsample["qh"].attrs["type"] = "NX_FLOAT"
+        nxsample["qh"].attrs["EX_required"] = "true"
+        # nxsample["qh"].attrs["axis"] = "1"
+        # nxsample["qh"].attrs["units"] = "NX_DIMENSIONLESS"
+
+        nxsample.create_dataset(name="qk", data=das_logs["k"], maxshape=None)
+        nxsample["qk"].attrs["type"] = "NX_FLOAT"
+        nxsample["qk"].attrs["EX_required"] = "true"
+        # nxsample["qk"].attrs["axis"] = "1"
+        # nxsample["qk"].attrs["units"] = "NX_DIMENSIONLESS"
+
+        nxsample.create_dataset(name="ql", data=das_logs["l"], maxshape=None)
+        nxsample["ql"].attrs["type"] = "NX_FLOAT"
+        nxsample["ql"].attrs["EX_required"] = "true"
+        # nxsample["ql"].attrs["axis"] = "1"
+        # nxsample["ql"].attrs["units"] = "NX_DIMENSIONLESS"
+
+        nxsample.create_dataset(name="en", data=das_logs["e"], maxshape=None)
+        nxsample["en"].attrs["type"] = "NX_FLOAT"
+        nxsample["en"].attrs["EX_required"] = "true"
+        # nxsample["en"].attrs["axis"] = "1"
+        nxsample["en"].attrs["units"] = "meV"
+
+        nxsample.create_dataset(name="sgu", data=das_logs["sgu"], maxshape=None)
+        nxsample["sgu"].attrs["type"] = "NX_FLOAT"
+        nxsample["sgu"].attrs["EX_required"] = "true"
+        nxsample["sgu"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="sgl", data=das_logs["sgl"], maxshape=None)
+        nxsample["sgl"].attrs["type"] = "NX_FLOAT"
+        nxsample["sgl"].attrs["EX_required"] = "true"
+        nxsample["sgl"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="unit_cell", data=das_logs.attrs["latticeconstants"], maxshape=None)
+        nxsample["unit_cell"].attrs["type"] = "NX_FLOAT"
+        nxsample["unit_cell"].attrs["EX_required"] = "true"
+        # nxsample["unit_cell"].attrs["units"] = "NX_LENGTH"
+
+        nxsample.create_dataset(name="orientation_matrix", data=das_logs.attrs["ubmatrix"], maxshape=None)
+        nxsample["orientation_matrix"].attrs["type"] = "NX_FLOAT"
+        nxsample["orientation_matrix"].attrs["EX_required"] = "true"
+        nxsample["orientation_matrix"].attrs["units"] = "NX_DIMENSIONLESS"
+
+        nxsample.create_dataset(name="ub_conf", data=das_logs.attrs["ubconf"].split(".")[0], maxshape=None)
+        nxsample["ub_conf"].attrs["type"] = "NX_CHAR"
+
+        nxsample.create_dataset(name="plane_normal", data=das_logs.attrs["plane_normal"], maxshape=None)
+        nxsample["plane_normal"].attrs["type"] = "NX_FLOAT"
+
+        nxsample.create_dataset(name="q", data=das_logs["q"], maxshape=None)
+        nxsample["q"].attrs["type"] = "NX_FLOAT"
+        nxsample["q"].attrs["units"] = "Angstrom^-1"
+
+        nxsample.create_dataset(name="stu", data=das_logs["stu"], maxshape=None)
+        nxsample["stu"].attrs["type"] = "NX_FLOAT"
+        nxsample["stu"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="stl", data=das_logs["stl"], maxshape=None)
+        nxsample["stl"].attrs["type"] = "NX_FLOAT"
+        nxsample["stl"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="s1", data=das_logs["s1"], maxshape=None)
+        nxsample["s1"].attrs["type"] = "NX_FLOAT"
+        nxsample["s1"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="s2", data=das_logs["s2"], maxshape=None)
+        nxsample["s2"].attrs["type"] = "NX_FLOAT"
+        nxsample["s2"].attrs["units"] = "degrees"
+
+        nxsample.create_dataset(name="type", data=das_logs.attrs["sampletype"], maxshape=None)
+        nxsample["type"].attrs["type"] = "NX_CHAR"
+
+        nxsample.create_dataset(name="sense", data=das_logs.attrs["sense"][1], maxshape=None)
+        nxsample.attrs["type"] = "NX_CHAR"
+
+        nxsample.create_dataset(name="Pt.", data=das_logs["Pt."], maxshape=None)
+        nxsample.attrs["type"] = "NX_CHAR"
+
+        # nxsample.create_dataset(name="rotation_angle", data=1.0, maxshape=None)
+        # nxsample["rotation_angle"].attrs["type"] = "NX_FLOAT"
+        # nxsample["rotation_angle"].attrs["EX_required"] = "true"
+        # nxsample["rotation_angle"].attrs["units"] = "NX_ANGLE"
+
+        # nxsample.create_dataset(name="polar_angle", data=1.0, maxshape=None)
+        # nxsample["polar_angle"].attrs["type"] = "NX_FLOAT"
+        # nxsample["polar_angle"].attrs["EX_required"] = "true"
+        # nxsample["polar_angle"].attrs["units"] = "NX_ANGLE"
+    except KeyError:
+        pass
+
+    nxsample = _nexus_sample_environment(nxsample, das_logs)
+
+    return nxsample
+
+
+# TODO div_y
+def _nexus_coll(nxcoll, das_logs):
+    """Collimators"""
+    nxcoll.attrs["NX_class"] = "NXcollimator"
+
+    try:
+        nxcoll.create_dataset(name="type", data="Soller", maxshape=None)
+        nxcoll["type"].attrs["type"] = "NX_CHAR"
+
+        div_x = [float(v) for v in list(das_logs.attrs["collimation"].split("-"))]
+        nxcoll.create_dataset(name="divergence_x", data=div_x, maxshape=None)
+        nxcoll["divergence_x"].attrs["type"] = "NX_ANGLE"
+        nxcoll["divergence_x"].attrs["units"] = "minutes of aarc"
+
+    except KeyError:
+        pass
+    return nxcoll
+
+
+def _nexus_slits(nxslit, das_logs):
+    """motorized slits"""
+
+    nxslit.attrs["NX_class"] = "NXslit"
+
+    slits_str1 = tuple([f"b{idx}{loc}" for idx in ("a", "b") for loc in ("t", "b", "l", "r")])
+    slits_str2 = tuple([f"slit{idx}_{loc}" for idx in ("a", "b") for loc in ("lf", "rt", "tp", "bt")])
+    slits_str3 = tuple([f"slit_{idx}_{loc}" for idx in ("pre",) for loc in ("lf", "rt", "tp", "bt")])
+
+    slits_str = (slits_str1, slits_str2, slits_str3)
+
+    for slit_str in slits_str:
+        if slit_str[0] in das_logs.keys():
+            for st in slit_str:
+                nxslit.create_dataset(name=st, data=das_logs[st])
+                nxslit[st].attrs["type"] = "NX_FLOAT"
+                nxslit[st].attrs["units"] = "cm"
+
+    return nxslit
+
+
+# TODO HB1 polarized experiment, Helmohtz coils guide fields: tbguide, aguide, bguide
+def _nexus_flipper(nxflipper, das_logs):
+    nxflipper.attrs["NX_class"] = "NXflipper"
+
+    try:
+        nxflipper.create_dataset(name="fguide", data=das_logs["fguide"], maxshape=None)
+        nxflipper["fguide"].attrs["type"] = "NX_FLOAT"
+
+        nxflipper.create_dataset(name="hguide", data=das_logs["hguide"], maxshape=None)
+        nxflipper["hguide"].attrs["type"] = "NX_FLOAT"
+
+        nxflipper.create_dataset(name="vguide", data=das_logs["vguide"], maxshape=None)
+        nxflipper["vguide"].attrs["type"] = "NX_FLOAT"
+
+    except KeyError:
+        pass
+
+    return nxflipper
+
+
+def _nexus_data(nxentry, das_logs):
+    """create links to data"""
+    nxdata = nxentry.create_group("data")
+    nxdata.attrs["NX_class"] = "NXdata"
+    nxdata.attrs["EX_required"] = "true"
+
+    nexus_keywork_conversion_dict = {"h": "qh", "k": "qk", "l": "ql", "e": "en"}
+    def_x = das_logs.attrs["def_x"]
+    def_y = das_logs.attrs["def_y"]
+    if def_x in nexus_keywork_conversion_dict:
+        def_x = nexus_keywork_conversion_dict[def_x]
+
+    path_x = _find_val(def_x, nxentry)
+    path_y = _find_val(def_y, nxentry)
+    if def_y == "detector" or def_y == "monitor":
+        path_y += "/data"
+
+    if path_y is not None:
+        if nxentry.get(path_y[1:]) is not None:
+            # Create the LINKS
+            nxentry["data/" + def_y] = h5py.SoftLink(nxentry.name + path_y)
+            nxentry["data/" + def_y + "/"].attrs["target"] = nxentry.name + path_y
+            # if def_y == "detector" or def_y == "monitor":
+            #     nxentry["data"].attrs["signal"] = "data"
+            # else:
+            nxentry["data"].attrs["signal"] = def_y
+    if path_x is not None:
+        if nxentry.get(path_x[1:]) is not None:
+            nxentry["data/" + def_x] = h5py.SoftLink(nxentry.name + path_x)
+            nxentry["data/" + def_x + "/"].attrs["target"] = nxentry.name + path_x
+
+            if def_x in nexus_keywork_conversion_dict:
+                nxentry["data"].attrs["axes"] = nexus_keywork_conversion_dict[def_x]
+
+            else:
+                nxentry["data"].attrs["axes"] = def_x
+    return nxentry
+
+
+def _daslogs_to_nexus(
+    nxentry,
+    das_str: Literal["SPICElogs", "DASlogs"] = "SPICElogs",
+):
+    """Format info from SPICElogs into Nexus format"""
+
+    das_logs = nxentry[das_str]
+
+    nxentry = _nenux_entry(nxentry, das_logs)
+
+    nxentry.create_group("instrument")
+    nxentry["instrument"].attrs["NX_class"] = "NXinstrument"
+    nxentry["instrument"].attrs["EX_required"] = "true"
+    nxentry["instrument"].create_dataset(name="name", data=das_logs.attrs["instrument"], maxshape=None)
+    nxentry["instrument/name"].attrs["type"] = "NX_CHAR"
+
+    nxsource = nxentry["instrument/"].create_group("source")
+    nxsource = _nexus_source(nxsource, das_logs)
+
+    nxcoll = nxentry["instrument/"].create_group("collimator")
+    nxcoll = _nexus_coll(nxcoll, das_logs)
+
+    nxmono = nxentry["instrument/"].create_group("monochromator")
+    nxmono = _nexus_mono(nxmono, das_logs)
+
+    nxana = nxentry["instrument/"].create_group("analyser")
+    nxana = _nexus_ana(nxana, das_logs)
+
+    nxdetector = nxentry["instrument/"].create_group("detector")
+    nxdetector = _nexus_detector(nxdetector, das_logs)
+
+    nxmonitor = nxentry.create_group("monitor")
+    nxmonitor = _nexus_monitor(nxmonitor, das_logs)
+
+    nxsample = nxentry.create_group("sample")
+    nxsample = _nexus_sample(nxsample, das_logs)
+
+    nxslit = nxentry["instrument/"].create_group("slit")
+    nxslit = _nexus_slits(nxslit, das_logs)
+
+    nxflipper = nxentry["instrument/"].create_group("flipper")
+    nxflipper = _nexus_flipper(nxflipper, das_logs)
+
+    # nxentry["instrument"].create_group("filter")
+    # nxentry["instrument"].attrs["NX_class"] = "NXfilter"
+
+    nxentry = _nexus_data(nxentry, das_logs)
+
+    # Create the DOC strings
+    # nxentry["definition"].attrs["EX_doc"] = "Official NeXus NXDL schema to which this file conforms "
+    # nxsample["name"].attrs["EX_doc"] = "Descriptive name of sample "
+    # nxmonitor["mode"].attrs[ "EX_doc"] = \
+    # "Count to a preset value based on either clock time (timer) or received monitor counts (monitor). "
+    # nxmonitor["preset"].attrs["EX_doc"] = "preset value for time or monitor "
+    # nxmonitor["data"].attrs["EX_doc"] = "Total integral monitor counts "
+    # nxentry["data"].attrs["EX_doc"] = "One of the ei,ef,qh,qk,ql,en should get a primary=1 "+\
+    # "attribute to denote the main scan axis "
+
+    return nxentry
+
+
+# TODO add json to nexus
 def instrument_info_to_nexus(nxentry, instrument_params):
     """Extra info missing in SPICE, for resolution calculation
 
@@ -782,78 +848,95 @@ def instrument_info_to_nexus(nxentry, instrument_params):
     nxentry["sample/mosaic_v"].attrs["units"] = "min"
 
 
+def _convert_spice_ub_to_nexus(
+    path_to_spice_folder: str,
+    path_to_hdf5_folder: str,
+) -> None:
+    p = Path(path_to_spice_folder)
+
+    ub_files = sorted((p / "UBConf").glob("*.ini"))
+    tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
+    ub_files_all = ub_files + tmp_ub_files
+    ub_conf_dicts = {ub_file.parts[-1].split(".")[0]: _read_spice_ub(ub_file) for ub_file in ub_files_all}
+
+    with h5py.File(path_to_hdf5_folder + "UBConf.h5", "w") as root:
+
+        for ub_name, ub_data in ub_conf_dicts.items():
+            ub_entry = root.create_group(ub_name)
+            ub_entry.attrs["NX_class"] = "NXcollection"
+            ub_entry.attrs["X_required"] = "false"
+            for k, v in ub_data.items():
+                ub_entry.create_dataset(name=k, data=v, maxshape=None)
+
+
+def _convert_spice_scan_to_nexus(scan, path_to_hdf5_folder):
+
+    spice_data, col_headers, headers, unused, error_messages = _read_spice(scan)
+    ipts = headers["proposal"]
+    exp_num = headers["experiment_number"]
+    scan_num = ((scan.parts[-1].split("_"))[-1]).split(".")[0]  # e.g. "scan0001"
+    instrument_str = scan.parts[-1].split("_")[0]  # e.g. "CG4C"
+    formatted_headers = _format_spice_header(headers)
+
+    with h5py.File(path_to_hdf5_folder + scan_num + ".h5", "w") as nxentry:
+
+        # create SPICElogs
+        spice_logs = nxentry.create_group("SPICElogs")
+        spice_logs.attrs["NX_class"] = "NXcollection"
+        spice_logs.attrs["X_required"] = "false"
+        spice_logs.attrs["instrument"] = instrument_str
+
+        # write SPICElogs attributes
+        for k, v in formatted_headers.items():
+            spice_logs.attrs[k] = v
+        if len(error_messages) != 0:
+            spice_logs.attrs["Error Messages"] = error_messages
+
+        # write SPICElogs datasets
+        spice_data_shape = spice_data.shape
+
+        if len(spice_data_shape) == 1:  # 1 row ony
+            if spice_data_shape[0] != 0:
+                for idx, col_header in enumerate(col_headers):
+                    spice_logs.create_dataset(col_header, data=spice_data[idx])
+            else:  # ignore if empty
+                pass
+        elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
+            # print(scan_num)
+            # print(spice_data.shape)
+            for idx, col_header in enumerate(col_headers):
+                spice_logs.create_dataset(col_header, data=spice_data[:, idx])
+        nxentry = _daslogs_to_nexus(nxentry, das_str="SPICElogs")
+
+        # instrument_info_to_nexus(nxentry, instrument_config)
+
+        # Create the ATTRIBUTES
+        nxentry.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_exp{exp_num}")
+        nxentry.attrs["file_time"] = datetime.now().isoformat()
+        nxentry.attrs["h5py_version"] = h5py.version.version
+        nxentry.attrs["HDF5_Version"] = h5py.version.hdf5_version
+
+
 def convert_spice_to_nexus(
     path_to_spice_folder: str,
-    path_to_hdf5: str,
+    path_to_hdf5_folder: Optional[str] = None,
 ) -> None:
     """Load data from spice folder. Convert to a nexus file
 
     Args:
         path_to_spice_folder (str): spice folder, ends with '/'
-        path_to_nexus (str): path to hdf5 data file, ends with '.h5'
+        path_to_nexus (str): path to hdf5 folder, ends with '/'
     """
+    if path_to_hdf5_folder is None:
+        path_to_hdf5_folder = path_to_spice_folder[:-1] + "_nexus/"
+    if not os.path.exists(path_to_hdf5_folder):
+        os.makedirs(path_to_hdf5_folder)
 
-    print(f"Converting {path_to_spice_folder} to {path_to_hdf5}")
-
+    print(f"Converting {path_to_spice_folder} to {path_to_hdf5_folder}")
     p = Path(path_to_spice_folder)
-
-    ub_files = sorted((p / "UBConf").glob("*.ini"))
-    tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
-    ub_conf_dicts = {ub_file.parts[-1].split(".")[0]: _read_spice_ub(ub_file) for ub_file in ub_files + tmp_ub_files}
-
     scans = sorted((p / "Datafiles").glob("*.dat"))
-    instrument_str = scans[0].parts[-1].split("_")[0]
-    # read in exp_info from the first scan and save as attibutes of the file
-    _, _, headers, _ = _read_spice(scans[0])
-    ipts = headers["proposal"]
-    exp_num = headers["experiment_number"]
 
-    with h5py.File(path_to_hdf5, "w") as root:
-        # ----------------------------- ub info ------------------------------------
-        ub_entries = root.create_group("UBConf", track_order=True)
-        ub_entries.attrs["NX_class"] = "NXcollection"
-        ub_entries.attrs["X_required"] = "false"
+    for scan in scans:
+        _convert_spice_scan_to_nexus(scan, path_to_hdf5_folder)
 
-        for ub_name, ub_data in ub_conf_dicts.items():
-            ub_entry = ub_entries.create_group(ub_name, track_order=True)
-            for k, v in ub_data.items():
-                ub_entry.create_dataset(name=k, data=v, maxshape=None)
-        # --------------------------- scan info ------------------------------------
-        for scan in scans:  # ignoring unused keys
-            spice_data, col_headers, headers, unused = _read_spice(scan)
-            formatted_headers = _format_spice_header(headers)
-
-            # create SPICElogs
-            scan_num = ((scan.parts[-1].split("_"))[-1]).split(".")[0]  # e.g. "scan0001"
-            nxentry = root.create_group(scan_num)
-            spice_logs = nxentry.create_group("SPICElogs")
-            spice_logs.attrs["NX_class"] = "NXcollection"
-            spice_logs.attrs["X_required"] = "false"
-            spice_logs.attrs["instrument"] = instrument_str
-
-            # write SPICElogs attributes
-            for k, v in formatted_headers.items():
-                spice_logs.attrs[k] = v
-
-            # write SPICElogs datasets
-            spice_data_shape = spice_data.shape
-            if len(spice_data_shape) == 1:
-                if spice_data_shape[0] == 1:  # 1 row ony
-                    for idx, col_header in enumerate(col_headers):
-                        spice_logs.create_dataset(col_header, data=spice_data[idx])
-                else:  # ignore if empty
-                    pass
-            elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
-                print(scan_num)
-                print(spice_data.shape)
-                for idx, col_header in enumerate(col_headers):
-                    spice_logs.create_dataset(col_header, data=spice_data[:, idx])
-                _spicelogs_to_nexus(nxentry)
-
-            # instrument_info_to_nexus(nxentry, instrument_config)
-
-        # Create the ATTRIBUTES
-        root.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_exp{exp_num}")
-        root.attrs["file_time"] = datetime.now().isoformat()
-        root.attrs["h5py_version"] = h5py.version.version
-        root.attrs["HDF5_Version"] = h5py.version.hdf5_version
+    _convert_spice_ub_to_nexus(path_to_spice_folder, path_to_hdf5_folder)
