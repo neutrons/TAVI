@@ -43,22 +43,19 @@ def test_spice_to_nexus_conversion_regular():
     all_exp_nums = [416, 424, 710, 815, 932, 1031]
 
     # regular experiment, scan 41 hits the limit
-    exp_num = 424
-    spice_folder = f"./test_data/exp{exp_num}"
-    nexus_folder = f"./test_data/exp{exp_num}_nexus"
+    spice_folder = "./test_data/exp424"
     convert_spice_to_nexus(spice_folder, path_to_hdf5_folder=None, verbose=True)
 
+    nexus_folder = "./test_data/IPTS32124_CG4C_exp0424"
     lst = os.listdir(nexus_folder)
     assert len(lst) == 93
 
 
 def test_spice_to_nexus_conversion_empty():
     # containing empty runs
-    exp_num = 815
-    spice_folder = f"./test_data/exp{exp_num}"
-    nexus_folder = f"./test_data/exp{exp_num}_nexus"
-
+    spice_folder = "./test_data/exp815"
     convert_spice_to_nexus(spice_folder, verbose=True)
 
+    nexus_folder = "./test_data/IPTS9865_HB1_exp0815"
     lst = os.listdir(nexus_folder)
     assert len(lst) == 7

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 from datetime import datetime
 from pathlib import Path
@@ -176,7 +177,7 @@ def _nenux_entry(nxentry, das_logs):
     return nxentry
 
 
-def _nexus_source(nxsource, das_logs):
+def _nexus_source(nxsource, das_logs, instrument_config_params=None):
     """Source"""
 
     nxsource.attrs["NX_class"] = "NXsource"
@@ -200,7 +201,7 @@ def _nexus_source(nxsource, das_logs):
     return nxsource
 
 
-def _nexus_mono(nxmono, das_logs):
+def _nexus_mono(nxmono, das_logs, instrument_config_params=None):
     """Monochromator"""
 
     nxmono.attrs["NX_class"] = "NXcrystal"
@@ -250,7 +251,7 @@ def _nexus_mono(nxmono, das_logs):
     return nxmono
 
 
-def _nexus_ana(nxana, das_logs):
+def _nexus_ana(nxana, das_logs, instrument_config_params=None):
     """Analyzer"""
     nxana.attrs["NX_class"] = "NXcrystal"
     nxana.attrs["EX_required"] = "true"
@@ -298,7 +299,7 @@ def _nexus_ana(nxana, das_logs):
     return nxana
 
 
-def _nexus_detector(nxdetector, das_logs):
+def _nexus_detector(nxdetector, das_logs, instrument_config_params=None):
     """Detector"""
     nxdetector.attrs["NX_class"] = "NXdetector"
     nxdetector.attrs["EX_required"] = "true"
@@ -319,7 +320,7 @@ def _nexus_detector(nxdetector, das_logs):
     return nxdetector
 
 
-def _nexus_monitor(nxmonitor, das_logs):
+def _nexus_monitor(nxmonitor, das_logs, instrument_config_params=None):
     """Monitor"""
     nxmonitor.attrs["NX_class"] = "NXmonitor"
     nxmonitor.attrs["EX_required"] = "true"
@@ -393,7 +394,7 @@ def _nexus_sample_environment(nxsample, das_logs):
     return nxsample
 
 
-def _nexus_sample(nxsample, das_logs):
+def _nexus_sample(nxsample, das_logs, sample_config_params=None):
     "Sample and sample environment"
     nxsample.attrs["NX_class"] = "NXsample"
     nxsample.attrs["EX_required"] = "true"
@@ -501,7 +502,7 @@ def _nexus_sample(nxsample, das_logs):
 
 
 # TODO div_y
-def _nexus_coll(nxcoll, das_logs):
+def _nexus_coll(nxcoll, das_logs, instrument_config_params=None):
     """Collimators"""
     nxcoll.attrs["NX_class"] = "NXcollimator"
 
@@ -519,7 +520,7 @@ def _nexus_coll(nxcoll, das_logs):
     return nxcoll
 
 
-def _nexus_slits(nxslit, das_logs):
+def _nexus_slits(nxslit, das_logs, instrument_config_params=None):
     """motorized slits"""
 
     nxslit.attrs["NX_class"] = "NXslit"
@@ -541,7 +542,7 @@ def _nexus_slits(nxslit, das_logs):
 
 
 # TODO HB1 polarized experiment, Helmohtz coils guide fields: tbguide, aguide, bguide
-def _nexus_flipper(nxflipper, das_logs):
+def _nexus_flipper(nxflipper, das_logs, instrument_config_params=None):
     nxflipper.attrs["NX_class"] = "NXflipper"
 
     try:
@@ -602,6 +603,8 @@ def _nexus_data(nxentry, das_logs):
 def _daslogs_to_nexus(
     nxentry,
     das_str: Literal["SPICElogs", "DASlogs"] = "SPICElogs",
+    instrument_config_params: Optional[dict] = None,
+    sample_config_params: Optional[dict] = None,
 ):
     """Format info from SPICElogs into Nexus format"""
 
@@ -616,31 +619,31 @@ def _daslogs_to_nexus(
     nxentry["instrument/name"].attrs["type"] = "NX_CHAR"
 
     nxsource = nxentry["instrument/"].create_group("source")
-    nxsource = _nexus_source(nxsource, das_logs)
+    nxsource = _nexus_source(nxsource, das_logs, instrument_config_params)
 
     nxcoll = nxentry["instrument/"].create_group("collimator")
-    nxcoll = _nexus_coll(nxcoll, das_logs)
+    nxcoll = _nexus_coll(nxcoll, das_logs, instrument_config_params)
 
     nxmono = nxentry["instrument/"].create_group("monochromator")
-    nxmono = _nexus_mono(nxmono, das_logs)
+    nxmono = _nexus_mono(nxmono, das_logs, instrument_config_params)
 
     nxana = nxentry["instrument/"].create_group("analyser")
-    nxana = _nexus_ana(nxana, das_logs)
+    nxana = _nexus_ana(nxana, das_logs, instrument_config_params)
 
     nxdetector = nxentry["instrument/"].create_group("detector")
-    nxdetector = _nexus_detector(nxdetector, das_logs)
+    nxdetector = _nexus_detector(nxdetector, das_logs, instrument_config_params)
 
     nxmonitor = nxentry.create_group("monitor")
-    nxmonitor = _nexus_monitor(nxmonitor, das_logs)
+    nxmonitor = _nexus_monitor(nxmonitor, das_logs, instrument_config_params)
 
     nxsample = nxentry.create_group("sample")
-    nxsample = _nexus_sample(nxsample, das_logs)
+    nxsample = _nexus_sample(nxsample, das_logs, sample_config_params)
 
     nxslit = nxentry["instrument/"].create_group("slit")
-    nxslit = _nexus_slits(nxslit, das_logs)
+    nxslit = _nexus_slits(nxslit, das_logs, instrument_config_params)
 
     nxflipper = nxentry["instrument/"].create_group("flipper")
-    nxflipper = _nexus_flipper(nxflipper, das_logs)
+    nxflipper = _nexus_flipper(nxflipper, das_logs, instrument_config_params)
 
     # nxentry["instrument"].create_group("filter")
     # nxentry["instrument"].attrs["NX_class"] = "NXfilter"
@@ -689,25 +692,57 @@ def convert_spice_ub_to_nexus(
                 ub_entry.create_dataset(name=k, data=v, maxshape=None)
 
 
+# TODO implement parameter loading from json
 def convert_spice_scan_to_nexus(
     path_to_scan_file: str,
     path_to_hdf5_folder: str,
+    path_to_instrument_json: Optional[str] = None,
+    path_to_sample_json: Optional[str] = None,
     verbose: bool = False,
 ) -> None:
-    """Convert a SPICE scan file at path_to_scan_file to an NeXus entry in the folder of path_to_hdf5_folder"""
+    """Convert a SPICE scan file at path_to_scan_file to an NeXus entry in the folder of path_to_hdf5_folder
 
-    spice_data, col_headers, headers, unused, error_messages = _read_spice(path_to_scan_file)
+    Note:
+        path_to_instrument_json and path_to_sample_json are needed to provide extra information
+        for resolution calculation.
+    """
+
+    (
+        spice_data,
+        col_headers,
+        headers,
+        unused,
+        error_messages,
+    ) = _read_spice(path_to_scan_file)
     ipts = headers["proposal"]
-    file_name = path_to_scan_file.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
-    instrument_str, exp_num, scan_num = file_name.split("_")
+    spice_file_name = path_to_scan_file.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
+    instrument_str, exp_num, scan_num = spice_file_name.split("_")
     scan_num = scan_num.split(".")[0]  # e.g. "scan0001"
+    scan_name = path_to_hdf5_folder + scan_num + ".h5"
     formatted_headers = _format_spice_header(headers)
 
     if verbose:
-        disp_str = f"Converting SPICE data {file_name}"
+        disp_str = f"Converting SPICE data {spice_file_name}"
         print(disp_str)
 
-    with h5py.File(path_to_hdf5_folder + scan_num + ".h5", "w") as nxentry:
+    # parse instruemnt and sample json files
+    if path_to_instrument_json is not None:
+        instrument_config = Path(path_to_instrument_json)
+        if instrument_config.is_file():
+            with open(instrument_config, "r", encoding="utf-8") as file:
+                instrument_config_params = json.load(file)
+    else:
+        instrument_config_params = None
+
+    if path_to_sample_json is not None:
+        sample_config = Path(path_to_sample_json)
+        if sample_config.is_file():
+            with open(sample_config, "r", encoding="utf-8") as file:
+                sample_config_params = json.load(file)
+    else:
+        sample_config_params = None
+
+    with h5py.File(scan_name, "w") as nxentry:
 
         # create SPICElogs
         spice_logs = nxentry.create_group("SPICElogs")
@@ -735,12 +770,17 @@ def convert_spice_scan_to_nexus(
             # print(spice_data.shape)
             for idx, col_header in enumerate(col_headers):
                 spice_logs.create_dataset(col_header, data=spice_data[:, idx])
-        nxentry = _daslogs_to_nexus(nxentry, das_str="SPICElogs")
 
-        # instrument_info_to_nexus(nxentry, instrument_config)
+        # Format SPICElogs to NeXus
+        nxentry = _daslogs_to_nexus(
+            nxentry,
+            das_str="SPICElogs",
+            instrument_config_params=instrument_config_params,
+            sample_config_params=sample_config_params,
+        )
 
         # Create the ATTRIBUTES
-        nxentry.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_{exp_num}")
+        nxentry.attrs["file_name"] = os.path.abspath(scan_name)
         nxentry.attrs["file_time"] = datetime.now().isoformat()
         nxentry.attrs["h5py_version"] = h5py.version.version
         nxentry.attrs["HDF5_Version"] = h5py.version.hdf5_version
@@ -749,6 +789,8 @@ def convert_spice_scan_to_nexus(
 def convert_spice_to_nexus(
     path_to_spice_folder: str,
     path_to_hdf5_folder: Optional[str] = None,
+    path_to_instrument_json: Optional[str] = None,
+    path_to_sample_json: Optional[str] = None,
     verbose: bool = False,
 ) -> None:
     """Load data from spice folder. Convert to a nexus file
@@ -756,14 +798,32 @@ def convert_spice_to_nexus(
     Args:
         path_to_spice_folder (str): spice folder, e.g. ./exp424/
         path_to_nexus (str): path to hdf5 folder, e.g. ./exp424_nexus/
+        path_to_instrument_json (str): path to a json file containing instrument
+        configuration
+        path_to_sample_json (str): path to a json file containing instrument
+        configuration
+
     Note:
         if path_to_nexus is not given, create a folder in the same
         parent folder as path_to_spice_folder, named expXXX_nexus
     """
     if path_to_spice_folder[-1] != "/":
         path_to_spice_folder += "/"
+
+    scan_list = os.listdir(path_to_spice_folder + "Datafiles/")
+    scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(".dat")]
+    scan_list.sort()
+
+    # get IPTS number and instrument string
+    first_scan = scan_list[0]
+    (_, _, headers, _, _) = _read_spice(first_scan)
+    ipts = headers["proposal"]
+    spice_file_name = first_scan.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
+    instrument_str, exp_num, _ = spice_file_name.split("_")
+
     if path_to_hdf5_folder is None:
-        path_to_hdf5_folder = path_to_spice_folder[:-1] + "_nexus/"
+        parent_path = "/".join(path_to_spice_folder.split("/")[:-2])
+        path_to_hdf5_folder = parent_path + f"/IPTS{ipts}_{instrument_str}_{exp_num}/"
     elif path_to_hdf5_folder[-1] != "/":
         path_to_hdf5_folder += "/"
     if not os.path.exists(path_to_hdf5_folder):
@@ -772,201 +832,16 @@ def convert_spice_to_nexus(
     if verbose:
         print(f"Converting SPICE data at {path_to_spice_folder} to NeXus at {path_to_hdf5_folder}")
 
-    scan_list = os.listdir(path_to_spice_folder + "Datafiles/")
-    scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(".dat")]
-    scan_list.sort()
-
     # p = Path(path_to_spice_folder)
     # scans = sorted((p / "Datafiles").glob("*.dat"))
 
     for path_to_scan_file in scan_list:
-        convert_spice_scan_to_nexus(path_to_scan_file, path_to_hdf5_folder, verbose)
+        convert_spice_scan_to_nexus(
+            path_to_scan_file,
+            path_to_hdf5_folder,
+            path_to_instrument_json,
+            path_to_sample_json,
+            verbose,
+        )
 
     convert_spice_ub_to_nexus(path_to_spice_folder, path_to_hdf5_folder, verbose)
-
-
-# TODO add json to nexus
-def instrument_info_to_nexus(nxentry, instrument_params):
-    """Extra info missing in SPICE, for resolution calculation
-
-    Args:
-        nxentry:
-        instrument_params (dict)
-
-    Note:
-        This function does NOT overwrite exsiting parameters in SPICE,
-        it only adds extra info to the nexus file.
-    """
-    source = instrument_params["source"]
-    mono = instrument_params["monochromator"]
-    monitor = instrument_params["monitor"]
-    ana = instrument_params["analyser"]
-    detector = instrument_params["detector"]
-    collimators = instrument_params["collimators"]
-    #  --------------------------- source ---------------------------
-    # rectangular or circular
-    # divide by np.sqrt(12) if rectangular
-    # Diameter D/4 if spherical
-    nxentry["instrument/source"].create_dataset(name="shape", data=source["shape"], maxshape=None)
-    nxentry["instrument/source/shape"].attrs["type"] = "NX_CHAR"
-
-    nxentry["instrument/source"].create_dataset(name="width", data=source["width"], maxshape=None)
-    nxentry["instrument/source/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/source/width"].attrs["units"] = "cm"
-
-    nxentry["instrument/source"].create_dataset(name="height", data=source["height"], maxshape=None)
-    nxentry["instrument/source/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/source/height"].attrs["units"] = "cm"
-
-    #  --------------------------- monochromator ---------------------------
-    nxentry["instrument/monochromator"].create_dataset(name="d_spacing", data=mono["d_spacing"], maxshape=None)
-    nxentry["instrument/monochromator/d_spacing"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/d_spacing"].attrs["units"] = "Angstrom"
-
-    nxentry["instrument/monochromator"].create_dataset(name="mosaic", data=mono["mosaic"], maxshape=None)
-    nxentry["instrument/monochromator/mosaic"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/mosaic"].attrs["units"] = "min"
-
-    nxentry["instrument/monochromator"].create_dataset(name="mosaic_v", data=mono["mosaic_v"], maxshape=None)
-    nxentry["instrument/monochromator/mosaic_v"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/mosaic_v"].attrs["units"] = "min"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/monochromator"].create_dataset(name="width", data=mono["width"], maxshape=None)
-    nxentry["instrument/monochromator/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/width"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/monochromator"].create_dataset(name="height", data=mono["height"], maxshape=None)
-    nxentry["instrument/monochromator/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/height"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/monochromator"].create_dataset(name="depth", data=mono["depth"], maxshape=None)
-    nxentry["instrument/monochromator/depth"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/depth"].attrs["units"] = "cm"
-
-    # horizontal focusing
-    nxentry["instrument/monochromator"].create_dataset(name="curvh", data=mono["curvh"], maxshape=None)
-    nxentry["instrument/monochromator/curvh"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/curvh"].attrs["units"] = "degrees"
-
-    # vertical focusing
-    nxentry["instrument/monochromator"].create_dataset(name="curvv", data=mono["curvv"], maxshape=None)
-    nxentry["instrument/monochromator/curvv"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/monochromator/curvv"].attrs["units"] = "degrees"
-
-    #  --------------------------- monitor ---------------------------
-    nxentry["monitor"].create_dataset(name="width", data=monitor["width"], maxshape=None)
-    nxentry["monitor/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["monitor/width"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["monitor"].create_dataset(name="height", data=monitor["height"], maxshape=None)
-    nxentry["monitor/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["monitor/height"].attrs["units"] = "cm"
-
-    #  --------------------------- analyzer ---------------------------
-    nxentry["instrument/analyser"].create_dataset(name="d_spacing", data=ana["d_spacing"], maxshape=None)
-    nxentry["instrument/analyser/d_spacing"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/d_spacing"].attrs["units"] = "Angstrom"
-
-    nxentry["instrument/analyser"].create_dataset(name="mosaic", data=ana["mosaic"], maxshape=None)
-    nxentry["instrument/analyser/mosaic"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/mosaic"].attrs["units"] = "min"
-
-    nxentry["instrument/analyser"].create_dataset(name="mosaic_v", data=ana["mosaic_v"], maxshape=None)
-    nxentry["instrument/analyser/mosaic_v"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/mosaic_v"].attrs["units"] = "min"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/analyser"].create_dataset(name="width", data=ana["width"], maxshape=None)
-    nxentry["instrument/analyser/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/width"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/analyser"].create_dataset(name="height", data=ana["height"], maxshape=None)
-    nxentry["instrument/analyser/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/height"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/analyser"].create_dataset(name="depth", data=ana["depth"], maxshape=None)
-    nxentry["instrument/analyser/depth"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/depth"].attrs["units"] = "cm"
-
-    # horizontal focusing
-    nxentry["instrument/analyser"].create_dataset(name="curvh", data=ana["curvh"], maxshape=None)
-    nxentry["instrument/analyser/curvh"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/curvh"].attrs["units"] = "degrees"
-
-    # vertical focusing
-    nxentry["instrument/analyser"].create_dataset(name="curvv", data=ana["curvv"], maxshape=None)
-    nxentry["instrument/analyser/curvv"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/analyser/curvv"].attrs["units"] = "degrees"
-
-    #  --------------------------- detector ---------------------------
-    # rectangular or circular
-    # divide by np.sqrt(12) if rectangular
-    # Diameter D/4 if spherical
-    nxentry["instrument/detector"].create_dataset(name="shape", data=detector["shape"], maxshape=None)
-    nxentry["instrument/detector/shape"].attrs["type"] = "NX_CHAR"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/detector"].create_dataset(name="width", data=detector["width"], maxshape=None)
-    nxentry["instrument/detector/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/detector/width"].attrs["units"] = "cm"
-
-    # divide by np.sqrt(12) if rectangular
-    nxentry["instrument/detector"].create_dataset(name="height", data=detector["height"], maxshape=None)
-    nxentry["instrument/detector/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/detector/height"].attrs["units"] = "cm"
-
-    #  --------------------------- collimators ---------------------------
-    nxentry["instrument/collimator"].create_dataset(name="divergence_y", data=[150, 270, 300, 600], maxshape=None)
-    nxentry["instrument/collimator/divergence_y"].attrs["type"] = "NX_ANGLE"
-    nxentry["instrument/collimator/divergence_y"].attrs["units"] = "min"
-
-    #  --------------------------- distances ---------------------------
-    nxentry["instrument"].create_dataset(name="dist_src_mono", data=650.0, maxshape=None)
-    nxentry["instrument/dist_src_mono"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/dist_src_mono"].attrs["units"] = "cm"
-
-    nxentry["instrument"].create_dataset(name="dist_mono_sample", data=190.0, maxshape=None)
-    nxentry["instrument/dist_mono_sample"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/dist_mono_sample"].attrs["units"] = "cm"
-
-    nxentry["instrument"].create_dataset(name="dist_sample_ana", data=160.0, maxshape=None)
-    nxentry["instrument/dist_sample_ana"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/dist_sample_ana"].attrs["units"] = "cm"
-
-    nxentry["instrument"].create_dataset(name="dist_ana_det", data=60.0, maxshape=None)
-    nxentry["instrument/dist_ana_det"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/dist_ana_det"].attrs["units"] = "cm"
-
-    nxentry["instrument"].create_dataset(name="dist_mono_monitor", data=86.0, maxshape=None)
-    nxentry["instrument/dist_mono_monitor"].attrs["type"] = "NX_FLOAT"
-    nxentry["instrument/dist_mono_monitor"].attrs["units"] = "cm"
-
-    # -----------------------------------sample-------------------------------------
-    nxentry["sample"].create_dataset(name="shape", data="cylindrical", maxshape=None)
-    nxentry["sample/shape"].attrs["type"] = "NX_CHAR"
-
-    nxentry["sample"].create_dataset(name="width", data=1.0, maxshape=None)
-    nxentry["sample/width"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/width"].attrs["units"] = "cm"
-
-    nxentry["sample"].create_dataset(name="height", data=1.0, maxshape=None)
-    nxentry["sample/height"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/height"].attrs["units"] = "cm"
-
-    nxentry["sample"].create_dataset(name="depth", data=1.0, maxshape=None)
-    nxentry["sample/depth"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/depth"].attrs["units"] = "cm"
-
-    nxentry["sample"].create_dataset(name="mosaic", data=1.0, maxshape=None)
-    nxentry["sample/mosaic"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/mosaic"].attrs["units"] = "min"
-
-    nxentry["sample"].create_dataset(name="mosaic_v", data=1.0, maxshape=None)
-    nxentry["sample/mosaic_v"].attrs["type"] = "NX_FLOAT"
-    nxentry["sample/mosaic_v"].attrs["units"] = "min"

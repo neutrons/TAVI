@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+from typing import Optional
+
 import h5py
 
 from tavi.data.scan import Scan
@@ -20,20 +23,28 @@ class TAVI(object):
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialization"""
-        self.file_path = None
-        self.data = {}
-        self.processed_data = {}
-        self.fits = {}
-        self.plots = {}
+        self.file_path: Optional[str] = None
+        self.data: Optional[dict] = None
+        self.processed_data: Optional[dict] = None
+        self.fits: Optional[dict] = None
+        self.plots: Optional[dict] = None
 
-    def new_tavi_file(self, file_path):
-        """Create a new tavi file"""
-        self.file_path = file_path
+    def new_tavi_file(self, file_path: Optional[str] = None) -> None:
+        """Create a new tavi file
+        Note:
+            create at file_path if given, otherwise create a temporary
+            file named tavi_temp.h5 at the current folder.
+        """
+        if file_path is None:
+            current_path = os.getcwd()
+            self.file_path = current_path + "/tavi_temp.h5"
+        else:
+            self.file_path = file_path
 
         try:
-            with h5py.File(file_path, "w", track_order=True) as root:
+            with h5py.File(self.file_path, "w", track_order=True) as root:
                 root.create_group("data", track_order=True)
                 root.create_group("processed_data", track_order=True)
                 root.create_group("fits", track_order=True)
@@ -41,30 +52,40 @@ class TAVI(object):
         except OSError:
             print(f"Cannot create tavi file at {file_path}")
 
-    def load_nexus_data_from_disk(self, path_to_hdf5):
-        """Load hdf5 data from path_to_hdf5.
+    def load_nexus_data_from_disk(self, path_to_hdf5_folder):
+        """Load hdf5 data from path_to_hdf5_folder into memory and a new file at self.file_path.
 
         Args:
-            path_to_hdf5 (str): path to hdf5 data file
-            OVERWRITE (bool): overwrite exsiting data if Ture, oterwise append new scans in data.
-                Do not change processed_data, fit or plot
+            path_to_hdf5_folder (str): path to hdf5 data folder
+        Note:
+            hdf5 folder must have the strucutre IPTSXXXX_INSTRUMENT_expXXXX
         """
-        # TODO validate path
+        # validate path
+        folder_name_parts = path_to_hdf5_folder.split("/")[-1].split("_")
+        if folder_name_parts[0][0:4] != "IPTS" or folder_name_parts[2][0:3] != "exp":
+            print("Unrecogonized nexus folder name. Must be IPTSXXXX_INSTRUMENT_expXXXX.")
+            raise ValueError
 
-        with h5py.File(self.file_path, "a") as tavi_file, h5py.File(path_to_hdf5, "r") as data_file:
-            # IPTS1234_HB3_exp567
-            data_id = data_file.attrs["file_name"].split("/")[-1]
-            grp = tavi_file["data"].create_group(data_id)
+        if path_to_hdf5_folder[-1] != "/":
+            path_to_hdf5_folder += "/"
 
-            scans = {}
-            for entry in data_file:
-                data_file.copy(source=data_file[entry], dest=grp, expand_soft=True)
+        dataset_name = path_to_hdf5_folder.split("/")[-2]  # e.g. IPTS32124_CG4C_exp0424
+        scan_list = os.listdir(path_to_hdf5_folder)
+        scan_list = [scan for scan in scan_list if scan.startswith("scan")]
+        scan_list.sort()
 
-                if entry[0:4] == "scan":
-                    s = Scan(data_file[entry])
-                    scans.update({entry: s})
+        scans = {}
 
-            self.data.update({data_id: scans})
+        # TODO -----------------------------------------------------------
+
+        for scan in scan_list:
+            scan_name = scan.split(".")[0]  # e.g. "scan0001"
+            scan_path = path_to_hdf5_folder + scan
+
+            scan_entry = Scan.from_nexus(scan_path)
+            scans.update({scan_name: scan_entry})
+
+        self.data.update({dataset_name: scans})
 
     # TODO
     def load_spice_data_from_disk(self, path_to_spice_folder):
@@ -115,6 +136,12 @@ class TAVI(object):
             path_to_hdf5 (str): path to hdf5 data file, ends with '.h5'
         """
         pass
+        # with h5py.File(path_to_hdf5_folder, "r") as data_file:
+        #         # IPTS1234_HB3_exp567
+        #         data_id = data_file.attrs["file_name"].split("/")[-1]
+        #         grp = tavi_file["data"].create_group(data_id)
+        # for entry in data_file:
+        #     data_file.copy(source=data_file[entry], dest=grp, expand_soft=True)
 
     def delete_data_entry(self, entry_id):
         """Delete a date entry from file based on entry_id.

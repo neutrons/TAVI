@@ -1,140 +1,161 @@
+# -*- coding: utf-8 -*-
+from typing import NamedTuple, Optional
+
 import numpy as np
 
 
-def nexus_to_dict(nexus_entry):
-    """Reads a nexus entry, convert to dictionaries of data and meta_data
+class ScanInfo(NamedTuple):
+    """Metadata containing scan information"""
 
-    Args:
-        nexus entry
+    scan_num: Optional[int] = None
+    time: Optional[str] = None
+    scan_title: str = ""
+    preset_type: str = "normal"
+    preset_channel: str = "time"
+    preset_value: float = 1.0
+    def_y: str = "detector"
+    def_x: str = "s1"
 
-    Returns:
-        meta_data (dict)
-        data (dict)
-    """
 
-    def dataset_to_string(ds):
-        return str(ds.asstr()[...])
+class SampleUBInfo(NamedTuple):
+    """Metadata about sample and UB matrix"""
 
-    scan_info = {
-        "scan": int(nexus_entry.name[-4:]),  # last 4 digits are scan number
-        "time": dataset_to_string(nexus_entry["start_time"]),
-        "scan_title": dataset_to_string(nexus_entry["title"]),
-        # "preset_type": "normal",
-        "preset_channel": dataset_to_string(nexus_entry["monitor/mode"]),
-        "preset_value": float(nexus_entry["monitor/preset"][...]),
-        "def_y": nexus_entry["data"].attrs["signal"],
-        "def_x": nexus_entry["data"].attrs["axes"],
-    }
+    sample_name: Optional[str] = None
+    lattice_constants: tuple[
+        float,
+        float,
+        float,
+        float,
+        float,
+        float,
+    ] = (1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
+    ub_matrix: Optional[np.ndarray] = None
+    # mode: int = 0 # mode for UB determination in SPICE
+    plane_normal: Optional[np.ndarray] = None
+    in_plane_ref: Optional[np.ndarray] = None
+    ubconf: Optional[str] = None  # path to UB configration file
 
-    sample_ub_info = {
-        "samplename": dataset_to_string(nexus_entry["sample/name"]),
-        "lattice_constants": nexus_entry["sample/unit_cell"][...],
-        "ub_matrix": np.reshape(nexus_entry["sample/orientation_matrix"][...], (3, 3)),
-        # "mode": # UB mode
-        "palne_normal": nexus_entry["sample/plane_normal"][...],
-        "ubconf": dataset_to_string(nexus_entry["sample/ub_conf"]),
-    }
 
-    instrument = dataset_to_string(nexus_entry["instrument/name"])
+class InstrumentInfo(NamedTuple):
+    """Metadata about instrument configuration"""
 
-    instrument_info = {
-        "instrument": instrument,
-        # "monochromator":
-        # "analyzer":
-        "sense": dataset_to_string(nexus_entry["instrument/monochromator/sense"])
-        + dataset_to_string(nexus_entry["sample/sense"])
-        + dataset_to_string(nexus_entry["instrument/analyser/sense"]),
-        "collimation": nexus_entry["instrument/collimator/divergence_x"][...],
-    }
+    instrument_name: str = ""
+    # monochromator:
+    # analyzer:
+    # TODO
+    sense: int = 1
+    collimation: tuple[float, float, float, float] = (60, 60, 60, 60)
+    # TODO vertical collimation??
 
-    num = np.size(nexus_entry["data/" + scan_info["def_x"]])
 
-    data = {
-        # "Pt.": nexus_entry["sample/Pt."][...],
-        "Pt.": np.arange(start=1, stop=num + 1, step=1),
-        # detector
-        "detector": nexus_entry["instrument/detector/data"][...],
-        # monitor
-        "time": nexus_entry["monitor/time"][...],
-        "monitor": nexus_entry["monitor/monitor"][...],
-        "mcu": nexus_entry["monitor/mcu"][...],
-        # sample
-        "s1": nexus_entry["sample/s1"][...],
-        "s2": nexus_entry["sample/s2"][...],
-        "sgl": nexus_entry["sample/sgl"][...],
-        "sgu": nexus_entry["sample/sgu"][...],
-        "stl": nexus_entry["sample/stl"][...],
-        "stu": nexus_entry["sample/stu"][...],
-        "q": nexus_entry["sample/q"][...],
-        "qh": nexus_entry["sample/qh"][...],
-        "qk": nexus_entry["sample/qk"][...],
-        "ql": nexus_entry["sample/ql"][...],
-        "en": nexus_entry["sample/en"][...],
-    }
+class ScanData(NamedTuple):
+    """Data points in a measured scan"""
 
-    # analyser
-    ana_str = (
-        ("a1", "a2", "afocus", "ef") + tuple([f"qm{i+1}" for i in range(8)]) + tuple([f"xm{i+1}" for i in range(8)])
-    )
-    nexus_ana_str = nexus_entry["instrument/analyser"].keys()
-    for key in ana_str:
-        if key in nexus_ana_str:
-            data.update({key: nexus_entry["instrument/analyser/" + key][...]})
-
+    # Pt.
+    detector: Optional[tuple[int, ...]] = None
+    # monitor
+    time: Optional[tuple[float, ...]] = None
+    monitor: Optional[tuple[int, ...]] = None
+    mcu: Optional[tuple[float, ...]] = None
     # monochromator
-    mono_str = ("m1", "m2", "ei", "focal_length", "mfocus", "marc", "mtrans")
-    nexus_mono_str = nexus_entry["instrument/monochromator"].keys()
-    for key in mono_str:
-        if key in nexus_mono_str:
-            data.update({key: nexus_entry["instrument/monochromator/" + key][...]})
-
+    m1: Optional[tuple[float, ...]] = None
+    m2: Optional[tuple[float, ...]] = None
+    ei: Optional[tuple[float, ...]] = None
+    focal_length: Optional[tuple[float, ...]] = None
+    mfocus: Optional[tuple[float, ...]] = None
+    marc: Optional[tuple[float, ...]] = None
+    mtrans: Optional[tuple[float, ...]] = None
+    # analyzer
+    ef: Optional[tuple[float, ...]] = None
+    a1: Optional[tuple[float, ...]] = None
+    a2: Optional[tuple[float, ...]] = None
+    afocus: Optional[tuple[float, ...]] = None
+    # ctax double-focused analyzer
+    qm: Optional[
+        tuple[
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+        ]
+    ] = None
+    xm: Optional[
+        tuple[
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+            tuple[float, ...],
+        ]
+    ] = None
+    # goiometer motor angles
+    s1: Optional[tuple[float, ...]] = None
+    s2: Optional[tuple[float, ...]] = None
+    sgl: Optional[tuple[float, ...]] = None
+    sgu: Optional[tuple[float, ...]] = None
+    stl: Optional[tuple[float, ...]] = None
+    stu: Optional[tuple[float, ...]] = None
+    chi: Optional[tuple[float, ...]] = None
+    phi: Optional[tuple[float, ...]] = None
     # slits
-    slits_str1 = ("bat", "bab", "bal", "bar", "bbt", "bbb", "bbl", "bbr")
-    slits_str2 = ("slita_lf", "slita_rt", "slita_tp", "slitb_bt", "slitb_lf", "slitb_rt", "slitb_tp")
-    slits_str3 = ("slit_pre_bt", "slit_pre_lf", "slit_pre_rt", "slit_pre_tp")
-    slit_str = slits_str1 + slits_str2 + slits_str3
-
-    nexus_slit_str = nexus_entry["instrument/slit"].keys()
-    for key in slit_str:
-        if key in nexus_slit_str:
-            data.update({key: nexus_entry["instrument/slit/" + key][...]})
-
-    # temprature
-    temperatue_str = (
-        (
-            "temp",
-            "temp_a",
-            "temp_2",
-            "coldtip",
-            "tsample",
-            "sample",
-        )
-        + (
-            "vti",
-            "dr_tsample",
-            "dr_temp",
-        )
-        + ("lt", "ht", "sorb_temp", "sorb", "sample_ht")
-    )
-    for t in nexus_entry["sample"].keys():
-        if t in temperatue_str:
-            data.update({t: nexus_entry["sample/" + t][...]})
-
+    slit_pre_bt: Optional[tuple[float, ...]] = None
+    slit_pre_tp: Optional[tuple[float, ...]] = None
+    slit_pre_lf: Optional[tuple[float, ...]] = None
+    slit_pre_rt: Optional[tuple[float, ...]] = None
+    slit_aft_bt: Optional[tuple[float, ...]] = None
+    slit_aft_tp: Optional[tuple[float, ...]] = None
+    slit_aft_lf: Optional[tuple[float, ...]] = None
+    slit_aft_rt: Optional[tuple[float, ...]] = None
+    # Q-E space
+    q: Optional[tuple[float, ...]] = None
+    qh: Optional[tuple[float, ...]] = None
+    qk: Optional[tuple[float, ...]] = None
+    ql: Optional[tuple[float, ...]] = None
+    en: Optional[tuple[float, ...]] = None
+    # temperature
+    temp: Optional[tuple[float, ...]] = None
+    temp_a: Optional[tuple[float, ...]] = None
+    temp_2: Optional[tuple[float, ...]] = None
+    coldtip: Optional[tuple[float, ...]] = None
+    tsample: Optional[tuple[float, ...]] = None
+    sample: Optional[tuple[float, ...]] = None
+    vti: Optional[tuple[float, ...]] = None
+    dr_tsample: Optional[tuple[float, ...]] = None
+    dr_temp: Optional[tuple[float, ...]] = None
+    lt: Optional[tuple[float, ...]] = None
+    ht: Optional[tuple[float, ...]] = None
+    sorb_temp: Optional[tuple[float, ...]] = None
+    sorb: Optional[tuple[float, ...]] = None
+    sample_ht: Optional[tuple[float, ...]] = None
     # field
-    field_str = ("persistent_field",)
-    for f in nexus_entry["sample"].keys():
-        if f in field_str:
-            data.update({f: nexus_entry["sample/" + f][...]})
-
-    return scan_info, sample_ub_info, instrument_info, data
+    persistent_field: Optional[tuple[float, ...]] = None
 
 
-# TODO
-def nexus_to_SPICE(nexus_entry):
-    """Reads a nexus entry, convert to a SPICE scan file
+def dataset_to_string(ds):
+    return str(ds.asstr()[...])
 
-    Args:
-        nexus entry
 
-    """
-    pass
+def unpack_nexus(nexus_entry):
+    scan_name = nexus_entry.filename.split("/")[-1]  # e.g. "scan0001"
+    scan_info = ScanInfo(
+        scan_num=int(scan_name[4:-3]),
+        time=dataset_to_string(nexus_entry["start_time"]),
+        scan_title=dataset_to_string(nexus_entry["title"]),
+        preset_type="normal",
+        preset_channel=dataset_to_string(nexus_entry["monitor/mode"]),
+        preset_value=float(nexus_entry["monitor/preset"][...]),
+        def_y=nexus_entry["data"].attrs["signal"],
+        def_x=nexus_entry["data"].attrs["axes"],
+    )
+    sample_ub_info = SampleUBInfo()
+    instrument_info = InstrumentInfo()
+    scan_data = ScanData()
+
+    return (scan_info, sample_ub_info, instrument_info, scan_data)
