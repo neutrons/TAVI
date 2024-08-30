@@ -146,8 +146,7 @@ def _nenux_entry(nxentry, das_logs):
     nxentry.attrs["NX_class"] = "NXentry"
     nxentry.attrs["EX_required"] = "true"
 
-    # Valid enumeration values for root['/entry']['definition'] are:
-    # NXtas
+    # Valid enumeration values for root['/entry']['definition'] are: NXtas
     nxentry.create_dataset(name="definition", data="NXtas", maxshape=None)
     nxentry["definition"].attrs["type"] = "NX_CHAR"
     nxentry["definition"].attrs["EX_required"] = "true"
@@ -661,6 +660,131 @@ def _daslogs_to_nexus(
     return nxentry
 
 
+def convert_spice_ub_to_nexus(
+    path_to_spice_folder: str,
+    path_to_hdf5_folder: str,
+    verbose: bool = False,
+) -> None:
+    """Convert all UBConf files into one NeXus entry named UBConf.h5"""
+
+    if verbose:
+        disp_str = (
+            f"Converting SPICE UBConf files at {path_to_spice_folder} to an NeXus entry at {path_to_hdf5_folder}"
+        )
+        print(disp_str)
+
+    p = Path(path_to_spice_folder)
+    ub_files = sorted((p / "UBConf").glob("*.ini"))
+    tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
+    ub_files_all = ub_files + tmp_ub_files
+    ub_conf_dicts = {ub_file.parts[-1].split(".")[0]: _read_spice_ub(ub_file) for ub_file in ub_files_all}
+
+    with h5py.File(path_to_hdf5_folder + "UBConf.h5", "w") as root:
+
+        for ub_name, ub_data in ub_conf_dicts.items():
+            ub_entry = root.create_group(ub_name)
+            ub_entry.attrs["NX_class"] = "NXcollection"
+            ub_entry.attrs["X_required"] = "false"
+            for k, v in ub_data.items():
+                ub_entry.create_dataset(name=k, data=v, maxshape=None)
+
+
+def convert_spice_scan_to_nexus(
+    path_to_scan_file: str,
+    path_to_hdf5_folder: str,
+    verbose: bool = False,
+) -> None:
+    """Convert a SPICE scan file at path_to_scan_file to an NeXus entry in the folder of path_to_hdf5_folder"""
+
+    spice_data, col_headers, headers, unused, error_messages = _read_spice(path_to_scan_file)
+    ipts = headers["proposal"]
+    file_name = path_to_scan_file.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
+    instrument_str, exp_num, scan_num = file_name.split("_")
+    scan_num = scan_num.split(".")[0]  # e.g. "scan0001"
+    formatted_headers = _format_spice_header(headers)
+
+    if verbose:
+        disp_str = f"Converting SPICE data {file_name}"
+        print(disp_str)
+
+    with h5py.File(path_to_hdf5_folder + scan_num + ".h5", "w") as nxentry:
+
+        # create SPICElogs
+        spice_logs = nxentry.create_group("SPICElogs")
+        spice_logs.attrs["NX_class"] = "NXcollection"
+        spice_logs.attrs["X_required"] = "false"
+        spice_logs.attrs["instrument"] = instrument_str
+
+        # write SPICElogs attributes
+        for k, v in formatted_headers.items():
+            spice_logs.attrs[k] = v
+        if len(error_messages) != 0:
+            spice_logs.attrs["Error Messages"] = error_messages
+
+        # write SPICElogs datasets
+        spice_data_shape = spice_data.shape
+
+        if len(spice_data_shape) == 1:  # 1 row ony
+            if spice_data_shape[0] != 0:
+                for idx, col_header in enumerate(col_headers):
+                    spice_logs.create_dataset(col_header, data=spice_data[idx])
+            else:  # ignore if empty
+                pass
+        elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
+            # print(scan_num)
+            # print(spice_data.shape)
+            for idx, col_header in enumerate(col_headers):
+                spice_logs.create_dataset(col_header, data=spice_data[:, idx])
+        nxentry = _daslogs_to_nexus(nxentry, das_str="SPICElogs")
+
+        # instrument_info_to_nexus(nxentry, instrument_config)
+
+        # Create the ATTRIBUTES
+        nxentry.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_{exp_num}")
+        nxentry.attrs["file_time"] = datetime.now().isoformat()
+        nxentry.attrs["h5py_version"] = h5py.version.version
+        nxentry.attrs["HDF5_Version"] = h5py.version.hdf5_version
+
+
+def convert_spice_to_nexus(
+    path_to_spice_folder: str,
+    path_to_hdf5_folder: Optional[str] = None,
+    verbose: bool = False,
+) -> None:
+    """Load data from spice folder. Convert to a nexus file
+
+    Args:
+        path_to_spice_folder (str): spice folder, e.g. ./exp424/
+        path_to_nexus (str): path to hdf5 folder, e.g. ./exp424_nexus/
+    Note:
+        if path_to_nexus is not given, create a folder in the same
+        parent folder as path_to_spice_folder, named expXXX_nexus
+    """
+    if path_to_spice_folder[-1] != "/":
+        path_to_spice_folder += "/"
+    if path_to_hdf5_folder is None:
+        path_to_hdf5_folder = path_to_spice_folder[:-1] + "_nexus/"
+    elif path_to_hdf5_folder[-1] != "/":
+        path_to_hdf5_folder += "/"
+    if not os.path.exists(path_to_hdf5_folder):
+        os.makedirs(path_to_hdf5_folder)
+
+    if verbose:
+        print(f"Converting SPICE data at {path_to_spice_folder} to NeXus at {path_to_hdf5_folder}")
+
+    scan_list = os.listdir(path_to_spice_folder + "Datafiles/")
+    scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(".dat")]
+    scan_list.sort()
+
+    # p = Path(path_to_spice_folder)
+    # scans = sorted((p / "Datafiles").glob("*.dat"))
+
+    for path_to_scan_file in scan_list:
+        convert_spice_scan_to_nexus(path_to_scan_file, path_to_hdf5_folder, verbose)
+
+    convert_spice_ub_to_nexus(path_to_spice_folder, path_to_hdf5_folder, verbose)
+
+
 # TODO add json to nexus
 def instrument_info_to_nexus(nxentry, instrument_params):
     """Extra info missing in SPICE, for resolution calculation
@@ -846,97 +970,3 @@ def instrument_info_to_nexus(nxentry, instrument_params):
     nxentry["sample"].create_dataset(name="mosaic_v", data=1.0, maxshape=None)
     nxentry["sample/mosaic_v"].attrs["type"] = "NX_FLOAT"
     nxentry["sample/mosaic_v"].attrs["units"] = "min"
-
-
-def _convert_spice_ub_to_nexus(
-    path_to_spice_folder: str,
-    path_to_hdf5_folder: str,
-) -> None:
-    p = Path(path_to_spice_folder)
-
-    ub_files = sorted((p / "UBConf").glob("*.ini"))
-    tmp_ub_files = sorted((p / "UBConf/tmp").glob("*.ini"))
-    ub_files_all = ub_files + tmp_ub_files
-    ub_conf_dicts = {ub_file.parts[-1].split(".")[0]: _read_spice_ub(ub_file) for ub_file in ub_files_all}
-
-    with h5py.File(path_to_hdf5_folder + "UBConf.h5", "w") as root:
-
-        for ub_name, ub_data in ub_conf_dicts.items():
-            ub_entry = root.create_group(ub_name)
-            ub_entry.attrs["NX_class"] = "NXcollection"
-            ub_entry.attrs["X_required"] = "false"
-            for k, v in ub_data.items():
-                ub_entry.create_dataset(name=k, data=v, maxshape=None)
-
-
-def _convert_spice_scan_to_nexus(scan, path_to_hdf5_folder):
-
-    spice_data, col_headers, headers, unused, error_messages = _read_spice(scan)
-    ipts = headers["proposal"]
-    exp_num = headers["experiment_number"]
-    scan_num = ((scan.parts[-1].split("_"))[-1]).split(".")[0]  # e.g. "scan0001"
-    instrument_str = scan.parts[-1].split("_")[0]  # e.g. "CG4C"
-    formatted_headers = _format_spice_header(headers)
-
-    with h5py.File(path_to_hdf5_folder + scan_num + ".h5", "w") as nxentry:
-
-        # create SPICElogs
-        spice_logs = nxentry.create_group("SPICElogs")
-        spice_logs.attrs["NX_class"] = "NXcollection"
-        spice_logs.attrs["X_required"] = "false"
-        spice_logs.attrs["instrument"] = instrument_str
-
-        # write SPICElogs attributes
-        for k, v in formatted_headers.items():
-            spice_logs.attrs[k] = v
-        if len(error_messages) != 0:
-            spice_logs.attrs["Error Messages"] = error_messages
-
-        # write SPICElogs datasets
-        spice_data_shape = spice_data.shape
-
-        if len(spice_data_shape) == 1:  # 1 row ony
-            if spice_data_shape[0] != 0:
-                for idx, col_header in enumerate(col_headers):
-                    spice_logs.create_dataset(col_header, data=spice_data[idx])
-            else:  # ignore if empty
-                pass
-        elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
-            # print(scan_num)
-            # print(spice_data.shape)
-            for idx, col_header in enumerate(col_headers):
-                spice_logs.create_dataset(col_header, data=spice_data[:, idx])
-        nxentry = _daslogs_to_nexus(nxentry, das_str="SPICElogs")
-
-        # instrument_info_to_nexus(nxentry, instrument_config)
-
-        # Create the ATTRIBUTES
-        nxentry.attrs["file_name"] = os.path.abspath(f"IPTS{ipts}_{instrument_str}_exp{exp_num}")
-        nxentry.attrs["file_time"] = datetime.now().isoformat()
-        nxentry.attrs["h5py_version"] = h5py.version.version
-        nxentry.attrs["HDF5_Version"] = h5py.version.hdf5_version
-
-
-def convert_spice_to_nexus(
-    path_to_spice_folder: str,
-    path_to_hdf5_folder: Optional[str] = None,
-) -> None:
-    """Load data from spice folder. Convert to a nexus file
-
-    Args:
-        path_to_spice_folder (str): spice folder, ends with '/'
-        path_to_nexus (str): path to hdf5 folder, ends with '/'
-    """
-    if path_to_hdf5_folder is None:
-        path_to_hdf5_folder = path_to_spice_folder[:-1] + "_nexus/"
-    if not os.path.exists(path_to_hdf5_folder):
-        os.makedirs(path_to_hdf5_folder)
-
-    print(f"Converting {path_to_spice_folder} to {path_to_hdf5_folder}")
-    p = Path(path_to_spice_folder)
-    scans = sorted((p / "Datafiles").glob("*.dat"))
-
-    for scan in scans:
-        _convert_spice_scan_to_nexus(scan, path_to_hdf5_folder)
-
-    _convert_spice_ub_to_nexus(path_to_spice_folder, path_to_hdf5_folder)

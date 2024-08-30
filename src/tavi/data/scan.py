@@ -121,7 +121,6 @@ class ScanData(NamedTuple):
     en: Optional[tuple[float, ...]] = None
     # temperature
     temp: Optional[tuple[float, ...]] = None
-    temp: Optional[tuple[float, ...]] = None
     temp_a: Optional[tuple[float, ...]] = None
     temp_2: Optional[tuple[float, ...]] = None
     coldtip: Optional[tuple[float, ...]] = None

@@ -31,7 +31,7 @@ class TASBase(object):
         load_instrument_params_from_json(path_to_json)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Load instrument configuration from json if provided, otherwise leace as None"""
         self.source: Optional[Source] = None
         self.collimators: Optional[Collimators] = None
@@ -44,10 +44,10 @@ class TASBase(object):
         self.arms: Optional[Distances] = None
         self.sample: Union[Sample, Xtal, Powder, None] = None
 
-        self.json_path: str = None  # if loaded from json
-        self.scan_info: Scan = None  # if loaded from scan
+        self.json_path: Optional[str] = None  # if loaded from json
+        self.reference_scan: Optional[Scan] = None  # if loaded from scan
 
-    def _load_instrument_parameters(self, config_params: dict[dict]):
+    def _load_instrument_parameters(self, config_params: dict):
         components = {
             "source": Source,
             "collimators": Collimators,
