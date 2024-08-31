@@ -5,7 +5,14 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 
-from tavi.data.nexus_reader import InstrumentInfo, SampleUBInfo, ScanData, ScanInfo, unpack_nexus
+from tavi.data.scan_reader import (
+    InstrumentInfo,
+    SampleUBInfo,
+    ScanData,
+    ScanInfo,
+    nexus_entry_to_scan,
+    spice_entry_to_scan,
+)
 
 
 class Scan(object):
@@ -31,27 +38,18 @@ class Scan(object):
         self.instrument_info: Optional[InstrumentInfo] = instrument_info
         self.data: Optional[ScanData] = data
 
-    # TODO ------------------------------------------------------
     @classmethod
     def from_nexus(cls, nexus_path):
         with h5py.File(nexus_path, "r") as nexus_entry:
-            scan_info, sample_ub_info, instrument_info, data = unpack_nexus(nexus_entry)
+            scan_info, sample_ub_info, instrument_info, data = nexus_entry_to_scan(nexus_entry)
         return cls(scan_info, sample_ub_info, instrument_info, data)
 
-    def load_scan(self, nexus_entry):
-        """Unpack metadata and data from nexus_entry"""
-
-        # scan_info, sample_ub_info, instrument_info, data = nexus_to_dict(nexus_entry)
-        (
-            scan_info,
-            sample_ub_info,
-            instrument_info,
-            scan_data,
-        ) = Scan.unpack_nexus(nexus_entry)
-        self.scan_info = scan_info
-        self.sample_ub_info = sample_ub_info
-        self.instrument_info = instrument_info
-        self.data = scan_data
+    # TODO
+    @classmethod
+    def from_spice(cls, spice_path):
+        spice_entry = spice_path
+        scan_info, sample_ub_info, instrument_info, data = spice_entry_to_scan(spice_entry)
+        return cls(scan_info, sample_ub_info, instrument_info, data)
 
     def get_scan_info(self):
         """Return scan_info in metadata.

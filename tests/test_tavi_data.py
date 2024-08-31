@@ -2,6 +2,7 @@
 import os
 
 import h5py
+import numpy as np
 
 from tavi.data.tavi import TAVI
 
@@ -47,6 +48,9 @@ def test_load_nexus_data_from_disk():
     nexus_data_folder = "./test_data/IPTS32124_CG4C_exp0424"
 
     tavi.load_nexus_data_from_disk(nexus_data_folder)
+    assert len(tavi.data["IPTS32124_CG4C_exp0424"]) == 92
+    scan0001 = tavi.data["IPTS32124_CG4C_exp0424"]["scan0001"]
+    assert np.allclose(scan0001.data.s1, [11.305, 11.1075])
 
 
 # def test_open_tavi_file():

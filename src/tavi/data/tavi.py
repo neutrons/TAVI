@@ -26,10 +26,10 @@ class TAVI(object):
     def __init__(self) -> None:
         """Initialization"""
         self.file_path: Optional[str] = None
-        self.data: Optional[dict] = None
-        self.processed_data: Optional[dict] = None
-        self.fits: Optional[dict] = None
-        self.plots: Optional[dict] = None
+        self.data: dict = {}
+        self.processed_data: dict = {}
+        self.fits: dict = {}
+        self.plots: dict = {}
 
     def new_tavi_file(self, file_path: Optional[str] = None) -> None:
         """Create a new tavi file
@@ -61,27 +61,22 @@ class TAVI(object):
             hdf5 folder must have the strucutre IPTSXXXX_INSTRUMENT_expXXXX
         """
         # validate path
-        folder_name_parts = path_to_hdf5_folder.split("/")[-1].split("_")
+        if path_to_hdf5_folder[-1] != "/":
+            path_to_hdf5_folder += "/"
+        dataset_name = path_to_hdf5_folder.split("/")[-2]  # e.g. IPTS32124_CG4C_exp0424
+        folder_name_parts = dataset_name.split("_")
         if folder_name_parts[0][0:4] != "IPTS" or folder_name_parts[2][0:3] != "exp":
             print("Unrecogonized nexus folder name. Must be IPTSXXXX_INSTRUMENT_expXXXX.")
             raise ValueError
 
-        if path_to_hdf5_folder[-1] != "/":
-            path_to_hdf5_folder += "/"
-
-        dataset_name = path_to_hdf5_folder.split("/")[-2]  # e.g. IPTS32124_CG4C_exp0424
         scan_list = os.listdir(path_to_hdf5_folder)
         scan_list = [scan for scan in scan_list if scan.startswith("scan")]
         scan_list.sort()
 
         scans = {}
-
-        # TODO -----------------------------------------------------------
-
         for scan in scan_list:
             scan_name = scan.split(".")[0]  # e.g. "scan0001"
             scan_path = path_to_hdf5_folder + scan
-
             scan_entry = Scan.from_nexus(scan_path)
             scans.update({scan_name: scan_entry})
 
@@ -99,6 +94,7 @@ class TAVI(object):
 
         pass
 
+    # TODO
     def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
         """Load data from ONCat based on user_credentials and ipts_info.
 
