@@ -124,120 +124,119 @@ class ScanData(NamedTuple):
     persistent_field: Optional[tuple[float, ...]] = None
 
 
-def get_string(nexus_entry, entry_string):
-    try:
-        return str(nexus_entry[entry_string].asstr()[...])
-    except KeyError:
-        return None
-
-
-def get_data(nexus_entry, entry_string):
-    try:
-        return nexus_entry[entry_string][...]
-    except KeyError:
-        return None
-
-
 def nexus_entry_to_scan(nexus_entry):
+
+    def get_string(entry_string):
+        try:
+            return str(nexus_entry[entry_string].asstr()[...])
+        except KeyError:
+            return None
+
+    def get_data(entry_string):
+        try:
+            return nexus_entry[entry_string][...]
+        except KeyError:
+            return None
+
     scan_name = nexus_entry.filename.split("/")[-1]  # e.g. "scan0001"
     scan_info = ScanInfo(
         scan_num=int(scan_name[4:-3]),
-        start_time=get_string(nexus_entry, "start_time"),
-        end_time=get_string(nexus_entry, "end_time"),
-        scan_title=get_string(nexus_entry, "title"),
+        start_time=get_string("start_time"),
+        end_time=get_string("end_time"),
+        scan_title=get_string("title"),
         # preset_type="normal",
-        preset_channel=get_string(nexus_entry, "monitor/mode"),
+        preset_channel=get_string("monitor/mode"),
         preset_value=float(nexus_entry["monitor/preset"][...]),
         def_y=nexus_entry["data"].attrs["signal"],
         def_x=nexus_entry["data"].attrs["axes"],
     )
     sample_ub_info = SampleUBInfo(
-        sample_name=get_string(nexus_entry, "sample/name"),
-        lattice_constants=np.array(get_data(nexus_entry, "sample/unit_cell")),
-        ub_matrix=np.array(get_data(nexus_entry, "sample/orientation_matrix")).reshape(3, 3),
+        sample_name=get_string("sample/name"),
+        lattice_constants=np.array(get_data("sample/unit_cell")),
+        ub_matrix=np.array(get_data("sample/orientation_matrix")).reshape(3, 3),
         # ub_mode=0,
         # angle_mode=0,
-        plane_normal=get_data(nexus_entry, "sample/plane_normal"),
+        plane_normal=get_data("sample/plane_normal"),
         # in_plane_ref=None,
-        ubconf=get_string(nexus_entry, "sample/ub_conf"),
+        ubconf=get_string("sample/ub_conf"),
     )
     instrument_info = InstrumentInfo()
 
     scan_data = ScanData(
-        detector=get_data(nexus_entry, "instrument/detector/data"),
+        detector=get_data("instrument/detector/data"),
         # monitor
-        time=get_data(nexus_entry, "monitor/time"),
-        monitor=get_data(nexus_entry, "monitor/monitor"),
-        mcu=get_data(nexus_entry, "monitor/mcu"),
+        time=get_data("monitor/time"),
+        monitor=get_data("monitor/monitor"),
+        mcu=get_data("monitor/mcu"),
         # monochromator
-        m1=get_data(nexus_entry, "instrument/monochromator/m1"),
-        m2=get_data(nexus_entry, "instrument/monochromator/m2"),
-        ei=get_data(nexus_entry, "instrument/monochromator/ei"),
-        focal_length=get_data(nexus_entry, "instrument/monochromator/focal_length"),
-        mfocus=get_data(nexus_entry, "instrument/monochromator/mfocus"),
-        marc=get_data(nexus_entry, "instrument/monochromator/marc"),
-        mtrans=get_data(nexus_entry, "instrument/monochromator/mtrans"),
+        m1=get_data("instrument/monochromator/m1"),
+        m2=get_data("instrument/monochromator/m2"),
+        ei=get_data("instrument/monochromator/ei"),
+        focal_length=get_data("instrument/monochromator/focal_length"),
+        mfocus=get_data("instrument/monochromator/mfocus"),
+        marc=get_data("instrument/monochromator/marc"),
+        mtrans=get_data("instrument/monochromator/mtrans"),
         # analyzer
-        ef=get_data(nexus_entry, "instrument/analyser/ef"),
-        a1=get_data(nexus_entry, "instrument/analyser/a1"),
-        a2=get_data(nexus_entry, "instrument/analyser/a2"),
-        afocus=get_data(nexus_entry, "instrument/analyser/afocus"),
+        ef=get_data("instrument/analyser/ef"),
+        a1=get_data("instrument/analyser/a1"),
+        a2=get_data("instrument/analyser/a2"),
+        afocus=get_data("instrument/analyser/afocus"),
         # ctax double-focused analyzer
-        qm=np.array([get_data(nexus_entry, f"instrument/analyser/qm{i}") for i in range(1, 9, 1)]),
-        xm=np.array([get_data(nexus_entry, f"instrument/analyser/xm{i}") for i in range(1, 9, 1)]),
+        qm=np.array([get_data(f"instrument/analyser/qm{i}") for i in range(1, 9, 1)]),
+        xm=np.array([get_data(f"instrument/analyser/xm{i}") for i in range(1, 9, 1)]),
         # goiometer motor angles
-        s1=get_data(nexus_entry, "sample/s1"),
-        s2=get_data(nexus_entry, "sample/s2"),
-        sgl=get_data(nexus_entry, "sample/sgl"),
-        sgu=get_data(nexus_entry, "sample/sgu"),
-        stl=get_data(nexus_entry, "sample/stl"),
-        stu=get_data(nexus_entry, "sample/stu"),
-        chi=get_data(nexus_entry, "sample/chi"),
-        phi=get_data(nexus_entry, "sample/phi"),
+        s1=get_data("sample/s1"),
+        s2=get_data("sample/s2"),
+        sgl=get_data("sample/sgl"),
+        sgu=get_data("sample/sgu"),
+        stl=get_data("sample/stl"),
+        stu=get_data("sample/stu"),
+        chi=get_data("sample/chi"),
+        phi=get_data("sample/phi"),
         # slits
-        bat=get_data(nexus_entry, "instrument/slit/bat"),
-        bab=get_data(nexus_entry, "instrument/slit/bab"),
-        bal=get_data(nexus_entry, "instrument/slit/bal"),
-        bar=get_data(nexus_entry, "instrument/slit/bar"),
-        bbt=get_data(nexus_entry, "instrument/slit/bbt"),
-        bbb=get_data(nexus_entry, "instrument/slit/bbb"),
-        bbl=get_data(nexus_entry, "instrument/slit/bbl"),
-        bbr=get_data(nexus_entry, "instrument/slit/bbr"),
-        slita_bt=get_data(nexus_entry, "instrument/slit/slita_bt"),
-        slita_tp=get_data(nexus_entry, "instrument/slit/slita_tp"),
-        slita_lf=get_data(nexus_entry, "instrument/slit/slita_lf"),
-        slita_rt=get_data(nexus_entry, "instrument/slit/slita_rt"),
-        slitb_bt=get_data(nexus_entry, "instrument/slit/slitb_bt"),
-        slitb_tp=get_data(nexus_entry, "instrument/slit/slitb_tp"),
-        slitb_lf=get_data(nexus_entry, "instrument/slit/slitb_lf"),
-        slitb_rt=get_data(nexus_entry, "instrument/slit/slitb_rt"),
-        slit_pre_bt=get_data(nexus_entry, "instrument/slit/slit_pre_bt"),
-        slit_pre_tp=get_data(nexus_entry, "instrument/slit/slit_pre_tp"),
-        slit_pre_lf=get_data(nexus_entry, "instrument/slit/slit_pre_lf"),
-        slit_pre_rt=get_data(nexus_entry, "instrument/slit/slit_pre_rt"),
+        bat=get_data("instrument/slit/bat"),
+        bab=get_data("instrument/slit/bab"),
+        bal=get_data("instrument/slit/bal"),
+        bar=get_data("instrument/slit/bar"),
+        bbt=get_data("instrument/slit/bbt"),
+        bbb=get_data("instrument/slit/bbb"),
+        bbl=get_data("instrument/slit/bbl"),
+        bbr=get_data("instrument/slit/bbr"),
+        slita_bt=get_data("instrument/slit/slita_bt"),
+        slita_tp=get_data("instrument/slit/slita_tp"),
+        slita_lf=get_data("instrument/slit/slita_lf"),
+        slita_rt=get_data("instrument/slit/slita_rt"),
+        slitb_bt=get_data("instrument/slit/slitb_bt"),
+        slitb_tp=get_data("instrument/slit/slitb_tp"),
+        slitb_lf=get_data("instrument/slit/slitb_lf"),
+        slitb_rt=get_data("instrument/slit/slitb_rt"),
+        slit_pre_bt=get_data("instrument/slit/slit_pre_bt"),
+        slit_pre_tp=get_data("instrument/slit/slit_pre_tp"),
+        slit_pre_lf=get_data("instrument/slit/slit_pre_lf"),
+        slit_pre_rt=get_data("instrument/slit/slit_pre_rt"),
         # Q-E space
-        q=get_data(nexus_entry, "sample/q"),
-        qh=get_data(nexus_entry, "sample/qh"),
-        qk=get_data(nexus_entry, "sample/qk"),
-        ql=get_data(nexus_entry, "sample/ql"),
-        en=get_data(nexus_entry, "sample/en"),
+        q=get_data("sample/q"),
+        qh=get_data("sample/qh"),
+        qk=get_data("sample/qk"),
+        ql=get_data("sample/ql"),
+        en=get_data("sample/en"),
         # temperature
-        temp=get_data(nexus_entry, "sample/temp"),
-        temp_a=get_data(nexus_entry, "sample/temp_a"),
-        temp_2=get_data(nexus_entry, "sample/temp_2"),
-        coldtip=get_data(nexus_entry, "sample/coldtip"),
-        tsample=get_data(nexus_entry, "sample/tsample"),
-        sample=get_data(nexus_entry, "sample/sample"),
-        vti=get_data(nexus_entry, "sample/vti"),
-        dr_tsample=get_data(nexus_entry, "sample/dr_tsample"),
-        dr_temp=get_data(nexus_entry, "sample/dr_temp"),
-        lt=get_data(nexus_entry, "sample/lt"),
-        ht=get_data(nexus_entry, "sample/ht"),
-        sorb_temp=get_data(nexus_entry, "sample/sorb_temp"),
-        sorb=get_data(nexus_entry, "sample/sorb"),
-        sample_ht=get_data(nexus_entry, "sample/sample_ht"),
+        temp=get_data("sample/temp"),
+        temp_a=get_data("sample/temp_a"),
+        temp_2=get_data("sample/temp_2"),
+        coldtip=get_data("sample/coldtip"),
+        tsample=get_data("sample/tsample"),
+        sample=get_data("sample/sample"),
+        vti=get_data("sample/vti"),
+        dr_tsample=get_data("sample/dr_tsample"),
+        dr_temp=get_data("sample/dr_temp"),
+        lt=get_data("sample/lt"),
+        ht=get_data("sample/ht"),
+        sorb_temp=get_data("sample/sorb_temp"),
+        sorb=get_data("sample/sorb"),
+        sample_ht=get_data("sample/sample_ht"),
         # field
-        persistent_field=get_data(nexus_entry, "sample/persistent_field"),
+        persistent_field=get_data("sample/persistent_field"),
     )
 
     return (scan_info, sample_ub_info, instrument_info, scan_data)
