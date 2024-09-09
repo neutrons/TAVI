@@ -43,7 +43,7 @@ class TASComponent(object):
     def _min2rad(
         angle_in_minutes: Optional[float],
         param_name: str = "Angle",
-    ) -> float:
+    ) -> Optional[float]:
         """Convert from minutes to radian is angle is not None"""
         if angle_in_minutes is None:
             print(f"{param_name} is None.")
@@ -55,7 +55,7 @@ class TASComponent(object):
         length_in_cm: Optional[float],
         shape: str,
         param_name: str = "Length",
-    ) -> float:
+    ) -> Optional[float]:
         """
         Convert length from centimeter to angstrom.
 
@@ -79,7 +79,7 @@ class TASComponent(object):
     def _cm2angstrom(
         length_in_cm: Optional[float],
         param_name: str = "Length",
-    ) -> float:
+    ) -> Optional[float]:
         """
         Convert length from centimeter to angstrom.
         """

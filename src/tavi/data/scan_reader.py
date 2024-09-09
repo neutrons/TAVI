@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from typing import NamedTuple, Optional
+from dataclasses import dataclass
+from typing import Optional
 
+import h5py
 import numpy as np
 
 
-class ScanInfo(NamedTuple):
+@dataclass
+class ScanInfo:
     """Metadata containing scan information"""
 
     scan_num: Optional[int] = None
@@ -18,7 +21,8 @@ class ScanInfo(NamedTuple):
     def_x: str = "s1"
 
 
-class SampleUBInfo(NamedTuple):
+@dataclass
+class SampleUBInfo:
     """Metadata about sample and UB matrix"""
 
     sample_name: Optional[str] = None
@@ -32,7 +36,8 @@ class SampleUBInfo(NamedTuple):
 
 
 # TODO
-class InstrumentInfo(NamedTuple):
+@dataclass
+class InstrumentInfo:
     """Metadata about instrument configuration"""
 
     instrument_name: str = ""
@@ -44,10 +49,11 @@ class InstrumentInfo(NamedTuple):
     # TODO vertical collimation??
 
 
-class ScanData(NamedTuple):
+@dataclass
+class ScanData:
     """Data points in a measured scan"""
 
-    # Pt.
+    pt: Optional[tuple[int, ...]] = None
     detector: Optional[tuple[int, ...]] = None
     # monitor
     time: Optional[tuple[float, ...]] = None
@@ -67,8 +73,8 @@ class ScanData(NamedTuple):
     a2: Optional[tuple[float, ...]] = None
     afocus: Optional[tuple[float, ...]] = None
     # ctax double-focused analyzer
-    qm: Optional[tuple] = None  # 8 blades
-    xm: Optional[tuple] = None  # 8 blades
+    # qm: Optional[tuple] = None  # 8 blades
+    # xm: Optional[tuple] = None  # 8 blades
     # goiometer motor angles
     s1: Optional[tuple[float, ...]] = None
     s2: Optional[tuple[float, ...]] = None
@@ -123,24 +129,53 @@ class ScanData(NamedTuple):
     # field
     persistent_field: Optional[tuple[float, ...]] = None
 
+    def _visit_func(self, name, node):
+        if isinstance(node, h5py.Dataset):
+            attr_name = name.split("/")[-1]
+            if attr_name not in (
+                "sense",
+                "type",
+                "Pt.",
+                "name",
+                "orientation_matrix",
+                "plane_normal",
+                "ub_conf",
+                "unit_cell",
+            ):
+                setattr(self, attr_name, node[...])
+
+    def get_data_from(self, nexus_entry):
+        nexus_entry["instrument/monochromator"].visititems(self._visit_func)
+        nexus_entry["instrument/analyser"].visititems(self._visit_func)
+        nexus_entry["instrument/slit"].visititems(self._visit_func)
+        nexus_entry["sample"].visititems(self._visit_func)
+        # Pt.
+        self.pt = nexus_entry.get("sample/Pt.")[...]
+        # detector
+        self.detector = nexus_entry.get("instrument/detector/data")[...]
+        # monitor
+        self.time = nexus_entry.get("monitor/time")[...]
+        self.monitor = nexus_entry.get("monitor/monitor")[...]
+        self.mcu = nexus_entry.get("monitor/mcu")[...]
+        return self
+
 
 def nexus_entry_to_scan(nexus_entry):
 
     def get_string(entry_string):
-        try:
-            return str(nexus_entry[entry_string].asstr()[...])
-        except KeyError:
-            return None
+        metadata = nexus_entry.get(entry_string)
+        if metadata is not None:
+            return str(metadata.asstr()[...])
 
     def get_data(entry_string):
-        try:
-            return nexus_entry[entry_string][...]
-        except KeyError:
-            return None
+        data = nexus_entry.get(entry_string)
+        if data is not None:
+            return data[...]
 
-    scan_name = nexus_entry.filename.split("/")[-1]  # e.g. "scan0001"
+    scan_name = nexus_entry.filename.split("/")[-1]  # e.g. "scan0001.h5"
+    scan_index = scan_name.split(".")[0]  # e.g. "scan0001"
     scan_info = ScanInfo(
-        scan_num=int(scan_name[4:-3]),
+        scan_num=int(scan_index[4:]),
         start_time=get_string("start_time"),
         end_time=get_string("end_time"),
         scan_title=get_string("title"),
@@ -162,82 +197,7 @@ def nexus_entry_to_scan(nexus_entry):
     )
     instrument_info = InstrumentInfo()
 
-    scan_data = ScanData(
-        detector=get_data("instrument/detector/data"),
-        # monitor
-        time=get_data("monitor/time"),
-        monitor=get_data("monitor/monitor"),
-        mcu=get_data("monitor/mcu"),
-        # monochromator
-        m1=get_data("instrument/monochromator/m1"),
-        m2=get_data("instrument/monochromator/m2"),
-        ei=get_data("instrument/monochromator/ei"),
-        focal_length=get_data("instrument/monochromator/focal_length"),
-        mfocus=get_data("instrument/monochromator/mfocus"),
-        marc=get_data("instrument/monochromator/marc"),
-        mtrans=get_data("instrument/monochromator/mtrans"),
-        # analyzer
-        ef=get_data("instrument/analyser/ef"),
-        a1=get_data("instrument/analyser/a1"),
-        a2=get_data("instrument/analyser/a2"),
-        afocus=get_data("instrument/analyser/afocus"),
-        # ctax double-focused analyzer
-        qm=np.array([get_data(f"instrument/analyser/qm{i}") for i in range(1, 9, 1)]),
-        xm=np.array([get_data(f"instrument/analyser/xm{i}") for i in range(1, 9, 1)]),
-        # goiometer motor angles
-        s1=get_data("sample/s1"),
-        s2=get_data("sample/s2"),
-        sgl=get_data("sample/sgl"),
-        sgu=get_data("sample/sgu"),
-        stl=get_data("sample/stl"),
-        stu=get_data("sample/stu"),
-        chi=get_data("sample/chi"),
-        phi=get_data("sample/phi"),
-        # slits
-        bat=get_data("instrument/slit/bat"),
-        bab=get_data("instrument/slit/bab"),
-        bal=get_data("instrument/slit/bal"),
-        bar=get_data("instrument/slit/bar"),
-        bbt=get_data("instrument/slit/bbt"),
-        bbb=get_data("instrument/slit/bbb"),
-        bbl=get_data("instrument/slit/bbl"),
-        bbr=get_data("instrument/slit/bbr"),
-        slita_bt=get_data("instrument/slit/slita_bt"),
-        slita_tp=get_data("instrument/slit/slita_tp"),
-        slita_lf=get_data("instrument/slit/slita_lf"),
-        slita_rt=get_data("instrument/slit/slita_rt"),
-        slitb_bt=get_data("instrument/slit/slitb_bt"),
-        slitb_tp=get_data("instrument/slit/slitb_tp"),
-        slitb_lf=get_data("instrument/slit/slitb_lf"),
-        slitb_rt=get_data("instrument/slit/slitb_rt"),
-        slit_pre_bt=get_data("instrument/slit/slit_pre_bt"),
-        slit_pre_tp=get_data("instrument/slit/slit_pre_tp"),
-        slit_pre_lf=get_data("instrument/slit/slit_pre_lf"),
-        slit_pre_rt=get_data("instrument/slit/slit_pre_rt"),
-        # Q-E space
-        q=get_data("sample/q"),
-        qh=get_data("sample/qh"),
-        qk=get_data("sample/qk"),
-        ql=get_data("sample/ql"),
-        en=get_data("sample/en"),
-        # temperature
-        temp=get_data("sample/temp"),
-        temp_a=get_data("sample/temp_a"),
-        temp_2=get_data("sample/temp_2"),
-        coldtip=get_data("sample/coldtip"),
-        tsample=get_data("sample/tsample"),
-        sample=get_data("sample/sample"),
-        vti=get_data("sample/vti"),
-        dr_tsample=get_data("sample/dr_tsample"),
-        dr_temp=get_data("sample/dr_temp"),
-        lt=get_data("sample/lt"),
-        ht=get_data("sample/ht"),
-        sorb_temp=get_data("sample/sorb_temp"),
-        sorb=get_data("sample/sorb"),
-        sample_ht=get_data("sample/sample_ht"),
-        # field
-        persistent_field=get_data("sample/persistent_field"),
-    )
+    scan_data = ScanData().get_data_from(nexus_entry)
 
     return (scan_info, sample_ub_info, instrument_info, scan_data)
 
