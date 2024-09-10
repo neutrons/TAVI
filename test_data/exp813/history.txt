@@ -1,0 +1,155 @@
+9/9/2024 12:14 PM        drive ei 40
+9/9/2024 12:15 PM        drive s2 90
+9/9/2024 12:28 PM        drive e 0
+9/9/2024 12:30 PM        drive ei 20
+9/9/2024 12:31 PM        drive ei 14.7
+9/9/2024 12:32 PM        drive ei 15
+9/9/2024 12:34 PM        drive ei 14.7
+9/9/2024 12:37 PM        lattice 4.130000 4.130000 6.706600 90.000000 90.000000 120.000000
+9/9/2024 12:38 PM        drive s2 38.510
+9/9/2024 12:42 PM        drive sgu 0
+9/9/2024 12:42 PM        drive sgl 0
+9/9/2024 12:43 PM        drive bbl 30 bbr 30 bal 30 bar 30
+9/9/2024 12:44 PM        driverel s1 10
+9/9/2024 12:44 PM        driverel s1 -5
+9/9/2024 12:45 PM        driverel s1 2
+9/9/2024 12:45 PM        driverel s1 1
+9/9/2024 12:45 PM        driverel s1 1
+9/9/2024 12:45 PM        driverel s1 1
+9/9/2024 12:46 PM        driverel s1 1
+9/9/2024 12:46 PM        driverel s1 1
+9/9/2024 12:46 PM        driverel s1 -5
+9/9/2024 12:46 PM        driverel s1 -1
+9/9/2024 12:47 PM        driverel s1 -1
+9/9/2024 12:47 PM        scantitle "check 100 s1"
+9/9/2024 12:47 PM        scanrel s1 3 -3 0.3 preset 1
+9/9/2024 12:49 PM        drive s1 -57.1243
+9/9/2024 2:58 PM        driverel s1 5 
+9/9/2024 2:59 PM        driverel s1 -15 
+9/9/2024 2:59 PM        driverel s1 -5 
+9/9/2024 3:00 PM        driverel s1 1
+9/9/2024 3:00 PM        scanrel s1 3 -3 0.2
+9/9/2024 3:02 PM        drive s1 -70.6267
+9/9/2024 3:02 PM        scantitle "Check 100 th2th"
+9/9/2024 3:03 PM        th2th 3 -3 0.2 
+9/9/2024 3:08 PM        drive s2 38.6223
+9/9/2024 3:08 PM        lattice a 4.118479 b 4.118479 c 6.706600
+9/9/2024 3:10 PM        ubcalc file "C:\SPICE\User\exp813\UBConf\tmp\UB09Sep2024_31028PM.ini"
+9/9/2024 3:11 PM        drive h 0.000000 k 0.000000 l 2.000000 e 0.000000
+9/9/2024 3:12 PM        scantitle 'Find peak 002 s1' 
+9/9/2024 3:12 PM        scanrel s1 3 -3 0.2
+9/9/2024 3:15 PM        drive s1 20.7585
+9/9/2024 3:15 PM        scantitle "Th2th 002 peak "
+9/9/2024 3:16 PM        th2th 3 -3 0.3
+9/9/2024 3:18 PM        drive s2 41.5537
+9/9/2024 3:18 PM        drive s1 20.7585
+9/9/2024 3:21 PM        scantitle "002 pk sgl"
+9/9/2024 3:30 PM        scan sgl -4 4 1
+9/9/2024 3:31 PM        drive sgl 0
+9/9/2024 3:35 PM        scan sgu -4 4 1
+9/9/2024 3:36 PM        scan sgu -4 4 1
+9/9/2024 3:37 PM        drive sgu 0
+9/9/2024 3:37 PM        br 1 0 0
+9/9/2024 3:38 PM        scantitle "sgl 100 check"
+9/9/2024 3:38 PM        scan sgl -4 4 1
+9/9/2024 3:39 PM        drive sgl 0
+9/9/2024 3:40 PM        scantitle "sgu 100 check"
+9/9/2024 3:40 PM        scan sgu -4 4 1
+9/9/2024 3:41 PM        drive sgu -4
+9/9/2024 3:41 PM        scan sgu -4 4 1
+9/9/2024 3:42 PM        drive sgu 0
+9/9/2024 3:43 PM        drive s1 20
+9/9/2024 3:44 PM        br 1 0 0
+9/9/2024 4:01 PM        drive sgu -3
+9/9/2024 4:02 PM        drive sgl 1
+9/9/2024 4:10 PM        scanrel s1 2 -2 0.2
+9/9/2024 4:13 PM        drive s1 -70.5754
+9/9/2024 4:13 PM        scantitle "check 100 low T th2th"
+9/9/2024 4:14 PM        th2th 3 -3 0.3
+9/9/2024 4:16 PM        drive s2 38.5251
+9/9/2024 4:16 PM        scantitle "check 100 low T s1"
+9/9/2024 4:17 PM        scanrel s1 2 -2 0.2
+9/9/2024 4:20 PM        drive s1 -70.614
+9/9/2024 4:21 PM        lattice a 4.128474 b 4.128474 c 6.706600
+9/9/2024 4:22 PM        ubcalc file "C:\SPICE\User\exp813\UBConf\tmp\UB09Sep2024_42229PM.ini"
+9/9/2024 4:23 PM        br 0 0 2
+9/9/2024 4:24 PM        scantitle "002 check s1"
+9/9/2024 4:24 PM        scanrel s1 2 -2 0.2
+9/9/2024 4:26 PM        drive s1 20.708
+9/9/2024 4:26 PM        scantitle "002 check th2th"
+9/9/2024 4:27 PM        th2th 3 -3 0.3
+9/9/2024 4:29 PM        drive s2 41.5449
+9/9/2024 4:29 PM        scantitle "002 check s1 last"
+9/9/2024 4:29 PM        scanrel s1 2 -2 0.2
+9/9/2024 4:30 PM        lattice a 4.128474 b 4.128474 c 6.651507
+9/9/2024 4:30 PM        lattice a 4.128474 b 4.128474 c 6.651507
+9/9/2024 4:30 PM        lattice a 4.128474 b 4.128474 c 6.651507
+9/9/2024 4:31 PM        drive s1 20.8408
+9/9/2024 4:34 PM        ubcalc file "C:\SPICE\User\exp813\UBConf\tmp\UB09Sep2024_43436PM.ini"
+9/9/2024 4:37 PM        preset time 1
+9/9/2024 4:37 PM        br 0 0 2
+9/9/2024 4:37 PM        scantitle "slit scan with (002)"
+9/9/2024 4:37 PM        scan bab 0 38 2
+9/9/2024 4:41 PM        scan bal 0 38 2
+9/9/2024 4:44 PM        scan bar 0 38 2
+9/9/2024 4:46 PM        scan bat 0 38 2
+9/9/2024 4:48 PM        scan bbb 0 38 2
+9/9/2024 4:50 PM        scan bbl 0 38 2
+9/9/2024 4:52 PM        scan bbr 0 38 2
+9/9/2024 4:54 PM        scan bbt 0 38 2
+9/9/2024 4:56 PM        br 1 0 0
+9/9/2024 4:57 PM        scantitle "slit scan with (100)"
+9/9/2024 4:57 PM        scan bal 0 38 2
+9/9/2024 4:59 PM        scan bar 0 38 2
+9/9/2024 5:01 PM        scan bbl 0 38 2
+9/9/2024 5:04 PM        scan bbr 0 38 2
+9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0 
+9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0 
+9/9/2024 5:12 PM        drive bal 5 bar 10 bat 16 bab 16 bbl 10 bbr 5 bbt 14 bbb 9 
+9/9/2024 5:14 PM        br 0 0 1
+9/9/2024 5:16 PM        scanrel s1 2 -2 0.2
+9/9/2024 5:18 PM        count preset time 10
+9/9/2024 5:19 PM        mcu 2512 
+9/9/2024 5:19 PM        count preset time 1
+9/9/2024 5:20 PM        scantitle "L scan 001 magn"
+9/9/2024 5:20 PM        scan h 0 k 0 l 0.8 1.2 0.05 preset mcu 1
+9/9/2024 5:28 PM        scan h 0 k 0 l 0.8 1.2 0.01 preset mcu 1
+9/9/2024 5:48 PM        scantitle "trial run h0l scan at (0.125, 0, 1.125) constant q"
+9/9/2024 5:49 PM        scan h 0.125 k 0 l 1.125 e 14 0 0.5 ef 14.7 preset mcu 30
+9/9/2024 6:00 PM        scantitle "trial run h0l scan at 0.25 to 2.5 constant e"
+9/9/2024 6:00 PM        scan h 1.25 2.5 0.05 k 0 l 1.25 2.5 0.05 e 40 ef 14.7 preset mcu 60
+9/9/2024 6:12 PM        scan h 1.25 2.5 0.05 k 0 l 1.25 2.5 0.05 e 33 ef 14.7 preset mcu 60
+9/9/2024 6:38 PM        scantitle "trial run l = 1.33 (1.33, 0, L) energy scan from 40-20 mev"
+9/9/2024 6:38 PM        scan h 1.33 k 0 l 1.33 e 40 20 0.5 ef 14.7 preset mcu 60
+9/9/2024 7:23 PM        scantitle "zero point - 16 to 0.5 mev (101)"
+9/9/2024 7:24 PM        scan h 1.0 k 0 l 1.0 e 16 0.5 0.25 ef 14.7 preset mcu 60
+9/9/2024 8:44 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.02, mcu = 60"
+9/9/2024 8:44 PM        scan h 1.02 k 0.0 l 1.02 e 16 0.5 0.25 ef 14.7 preset mcu 60
+9/9/2024 8:50 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.05, mcu = 60"
+9/9/2024 8:50 PM        scan h 1.05 k 0.0 l 1.05 e 16 0.5 0.25 ef 14.7 preset mcu 60
+9/9/2024 9:56 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.1, mcu = 60"
+9/9/2024 9:56 PM        scan h 1.1 k 0.0 l 1.1 e 25 4 0.25 ef 14.7 preset mcu 60
+9/9/2024 10:39 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.15, mcu = 60"
+9/9/2024 10:39 PM        scan h 1.15 k 0.0 l 1.15 e 35 5 0.25 ef 14.7 preset mcu 60
+9/9/2024 10:46 PM        scantitle "Check focussing -- 1.33 0 1.3"
+9/9/2024 10:46 PM        scan h 1.33 k 0.0 l 1.3 e 38 28 0.5 ef 14.7 preset mcu 10
+9/9/2024 10:53 PM        scantitle "Check focussing -- 1.33 0 -1.3"
+9/9/2024 10:53 PM        scan h 1.33 k 0.0 l -1.3 e 38 28 0.5 ef 14.7 preset mcu 10
+9/9/2024 11:11 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.1, mcu = 60, E = 14-4, (restart:focussing check)"
+9/9/2024 11:11 PM        scan h 1.1 k 0.0 l 1.1 e 14 4 0.25 ef 14.7 preset mcu 60
+9/9/2024 11:52 PM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.15, mcu = 60"
+9/9/2024 11:52 PM        scan h 1.15 k 0.0 l 1.15 e 35 5 0.25 ef 14.7 preset mcu 60
+9/10/2024 1:48 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.2, mcu = 60"
+9/10/2024 1:48 AM        scan h 1.2 k 0.0 l 1.2 e 35 5 0.25 ef 14.7 preset mcu 60
+9/10/2024 3:44 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 90, E = 35 to 25 mev"
+9/10/2024 3:44 AM        scan h 1.25 k 0.0 l 1.25 e 35 25 0.25 ef 14.7 preset mcu 90
+9/10/2024 4:38 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 60, E = 25 to 5 mev"
+9/10/2024 4:38 AM        scan h 1.25 k 0.0 l 1.25 e 24.75 5 0.25 ef 14.7 preset mcu 60
+9/10/2024 5:55 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.3, mcu = 120, E = 40 to 25 mev"
+9/10/2024 5:55 AM        scan h 1.3 k 0.0 l 1.3 e 40 25 0.2 ef 14.7 preset mcu 120
+9/10/2024 8:10 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.3, mcu = 60, E = 25 to 5 mev"
+9/10/2024 8:10 AM        scan h 1.3 k 0.0 l 1.3 e 24.75 5 0.25 ef 14.7 preset mcu 60
+9/10/2024 9:27 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.325, mcu = 120, E = 40 to 25 mev"
+9/10/2024 9:27 AM        scan h 1.325 k 0.0 l 1.325 e 40 25 0.2 ef 14.7 preset mcu 120
+9/10/2024 11:43 AM        scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.325, mcu = 60, E = 25 to 5 mev"
+9/10/2024 11:43 AM        scan h 1.325 k 0.0 l 1.325 e 24.75 5 0.25 ef 14.7 preset mcu 60

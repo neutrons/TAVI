@@ -101,7 +101,7 @@ class Goniometer(TASComponent):
     def r_mat(
         self,
         angles: MotorAngles,
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray:
         "Goniometer rotation matrix R"
 
         match self.type:
@@ -118,19 +118,18 @@ class Goniometer(TASComponent):
                     Goniometer.rot_y(angles.omega),
                     np.matmul(
                         Goniometer.rot_z(angles.sgl),
-                        Goniometer.rot_x(-1 * angles.sgu),
+                        Goniometer.rot_x(-1.0 * angles.sgu),
                     ),
                 )
             case _:
-                r_mat = None
-                print("Unknow goniometer type. Curruntly support Y-ZX and YZ-X")
+                raise ValueError("Unknow goniometer type. Curruntly support Y-ZX and YZ-X")
 
         return r_mat
 
     def r_mat_inv(
         self,
         angles: MotorAngles,
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray:
         """inverse of rotation matrix, equivalent to transpose since R is unitary"""
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T

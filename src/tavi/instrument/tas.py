@@ -4,6 +4,7 @@ from typing import Optional
 import numpy as np
 
 from tavi.instrument.tas_base import TASBase
+from tavi.sample.xtal import Xtal
 from tavi.utilities import Peak, UBConf, en2q, get_angle_from_triangle
 
 
@@ -44,8 +45,8 @@ class TAS(TASBase):
 
     def calculate_two_theta(
         self,
-        hkl: tuple[float],
-        ei: Optional[float] = None,
+        hkl: tuple[float, float, float],
+        ei: float,
         ef: Optional[float] = None,
     ) -> Optional[float]:
         """find two theta angle for a given peak
@@ -85,15 +86,13 @@ class TAS(TASBase):
 
         return np.rad2deg(two_theta_radian) * self.goniometer.sense
 
-    # TODO
-    def calculate_ub_matrix(
-        self,
-        peaks: tuple[Peak],
-    ) -> np.ndarray:
+    # TODO complete finding UB from 3 or more peaks
+    def calculate_ub_matrix(self, peaks: tuple[Peak, ...]):
         """Find UB matrix from a list of observed peaks"""
+        if not isinstance(self.sample, Xtal):
+            raise ValueError("sample needs to be Xtal class for UB calculation.")
 
-        num_of_peaks = len(peaks)
-        if num_of_peaks == 2:
+        if (num_of_peaks := len(peaks)) == 2:
             ubconf = self._find_u_from_two_peaks(peaks)
             self.sample.set_orientation(ubconf)
 
@@ -106,7 +105,7 @@ class TAS(TASBase):
 
     def _find_u_from_two_peaks(
         self,
-        peaks: tuple[Peak],
+        peaks: tuple[Peak, Peak],
     ) -> UBConf:
         """Calculate UB matrix from two peaks for a given goniometer"""
 
@@ -127,16 +126,8 @@ class TAS(TASBase):
 
         # find r_inv
         r_mat_inv = self.goniometer.r_mat_inv
-        q_lab1 = TAS.q_lab(
-            peak1.angles.two_theta,
-            ei=peak1.ei,
-            ef=peak1.ef,
-        )
-        q_lab2 = TAS.q_lab(
-            peak2.angles.two_theta,
-            ei=peak2.ei,
-            ef=peak2.ef,
-        )
+        q_lab1 = TAS.q_lab(peak1.angles.two_theta, ei=peak1.ei, ef=peak1.ef)
+        q_lab2 = TAS.q_lab(peak2.angles.two_theta, ei=peak2.ei, ef=peak2.ef)
 
         # Goniometer angles all zeros in q_sample frame
         q_sample1 = np.matmul(r_mat_inv(peak1.angles), q_lab1)
@@ -170,17 +161,17 @@ class TAS(TASBase):
     # TODO
     def _find_ub_from_three_peaks(
         self,
-        peaks: tuple[Peak],
+        peaks: tuple[Peak, Peak, Peak],
     ) -> UBConf:
         """Find UB matrix from three observed peaks for a given goniomete"""
-        ubconf = None
+        ubconf = UBConf()
         return ubconf
 
     # TODO
     def _find_ub_from_multiple_peaks(
         self,
-        peaks: tuple[Peak],
+        peaks: tuple[Peak, ...],
     ) -> UBConf:
         """Find UB matrix from more than three observed peaks for a given goniomete"""
-        ubconf = None
+        ubconf = UBConf()
         return ubconf

@@ -54,8 +54,8 @@ def test_calc_ub_from_2_peaks_hb3():
     assert np.allclose(tas.sample.u, u, atol=1e-2)
     assert np.allclose(tas.sample.v, v, atol=1e-2)
 
-    # angles = tas.find_angles(peak=(0, 0, 2), ei=13.500172, ef=13.505137)
-    # assert np.allclose(angles_list[0], angles, atol=1e-2)
+    angles_1 = tas.find_angles(peak=(0, 0, 2), ei=13.500172)
+    assert np.allclose(angles_1, angles1, atol=1e-2)
 
     # angles = tas.find_angles(peak=(0, 2, 0), ei=13.500172, ef=13.505137)
     # assert np.allclose(angles_list[1], angles, atol=1e-1)

@@ -1,10 +1,11 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as la
-import matplotlib.pyplot as plt
-from mpl_toolkits.axisartist import Subplot, Axes
+from mpl_toolkits.axisartist import Axes, Subplot
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
-from tavi.utilities import *
+
+from tavi.utilities import get_angle_vec, sig2fwhm
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -86,6 +87,8 @@ class ResoEllipse(object):
         plot()
 
     """
+
+    g_esp = 1e-8
 
     def __init__(self):
         self.mat = None
@@ -208,6 +211,42 @@ class ResoEllipsoid(object):
 
         self.mat = None
         self.r0 = None
+
+    def determinate_frame(self, sample):
+        """determinate the frame from the projection vectors"""
+        match self.projection:
+            case None:  # Local Q frame
+                self.frame = "q"
+                self.angles = (90, 90, 90)
+                self.STATUS = True
+
+            case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+                self.frame = "hkl"
+                self.q = self.hkl
+                self.angles = (sample.gamma_star, sample.alpha_star, sample.beta_star)
+                self.STATUS = True
+
+            case _:  # customized projection
+                p1, p2, p3 = self.projection
+                reciprocal_vecs = [sample.a_star_vec, sample.b_star_vec, sample.c_star_vec]
+                v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+                v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+                v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+
+                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.g_esp:
+                    raise ValueError("Projection is left handed! Please use right-handed projection")
+                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.g_esp:
+                    raise ValueError("Projection vectors need to be non-coplanar.")
+
+                # mat_w = np.array([p1, p2, p3]).T
+                mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(
+                    p1, np.cross(p2, p3)
+                )
+                hkl_prime = mat_w_inv @ self.hkl
+                self.frame = "proj"
+                self.q = hkl_prime
+                self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
+                self.STATUS = True
 
     def volume(self):
         """volume of the ellipsoid"""

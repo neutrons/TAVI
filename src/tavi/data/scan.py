@@ -127,13 +127,13 @@ class Scan(object):
         """
 
         if x_str is None:
-            x_str = self.scan_info["def_x"]
+            x_str = self.scan_info.def_x
 
         if y_str is None:
-            y_str = self.scan_info["def_y"]
+            y_str = self.scan_info.def_y
 
-        x_raw = self.data[x_str]
-        y_raw = self.data[y_str]
+        x_raw = getattr(self.data, x_str)
+        y_raw = getattr(self.data, y_str)
 
         # xerr NOT used
         xerr = None
@@ -142,15 +142,16 @@ class Scan(object):
         if rebin_type is None:  # no rebin
             x = x_raw
             y = y_raw
+            # errror bars for detector only
+            if "detector" in y_str:
+                yerr = np.sqrt(y)
             # normalize y-axis without rebining along x-axis
             if norm_channel is not None:
-                norm = self.data[norm_channel] / norm_val
+                norm = getattr(self.data, norm_channel) / norm_val
                 y = y / norm
                 if yerr is not None:
                     yerr = yerr / norm
-            # errror bars for detector only
-            if "det" in y_str:
-                yerr = np.sqrt(y)
+
         else:
             if rebin_step > 0:
                 match rebin_type:
@@ -174,7 +175,7 @@ class Scan(object):
                                 cts[idx] += norm[i]
 
                             # errror bars for detector only
-                            if "det" in y_str:
+                            if "detector" in y_str:
                                 yerr = np.sqrt(y) / cts * norm_val
                             y = y / cts * norm_val
                             x = x / cts
@@ -190,7 +191,7 @@ class Scan(object):
                                 cts[idx] += 1
 
                             # errror bars for detector only
-                            if "det" in y_str:
+                            if "detector" in y_str:
                                 yerr = np.sqrt(y) / cts
                             y = y / cts
                             x = x / wts
@@ -211,7 +212,7 @@ class Scan(object):
                                 cts[idx] += norm[i]
 
                             # errror bars for detector only
-                            if "det" in y_str:
+                            if "detector" in y_str:
                                 yerr = np.sqrt(y) / cts * norm_val
                             y = y / cts * norm_val
 
@@ -222,7 +223,7 @@ class Scan(object):
                                 cts[idx] += 1
 
                             # errror bars for detector only
-                            if "det" in y_str:
+                            if "detector" in y_str:
                                 yerr = np.sqrt(y) / cts
                             y = y / cts
 
@@ -244,8 +245,8 @@ class Scan(object):
             ylabel = y_str + f" / {preset_val} " + self.scan_info["preset_channel"]
 
         xlabel = x_str
-        label = "scan " + str(self.scan_info["scan"])
-        title = label + ": " + self.scan_info["scan_title"]
+        label = "scan " + str(self.scan_info.scan_num)
+        title = label + ": " + self.scan_info.scan_title
 
         return (x, y, xerr, yerr, xlabel, ylabel, title, label)
 

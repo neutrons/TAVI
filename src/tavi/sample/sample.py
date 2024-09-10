@@ -45,7 +45,7 @@ class Sample(object):
 
     def __init__(
         self,
-        lattice_params: tuple[float] = (1, 1, 1, 90, 90, 90),
+        lattice_params: tuple[float, float, float, float, float, float] = (1, 1, 1, 90, 90, 90),
     ) -> None:
         """Initialization from lattice parameters"""
         self.type = "generic"
@@ -57,7 +57,7 @@ class Sample(object):
         self.alpha: float = 90.0
         self.beta: float = 90.0
         self.gamma: float = 90.0
-        self.b_mat = Optional[np.ndarray]
+        self.b_mat: Optional[np.ndarray] = None
         # parameters for resolution calculation
         self.shape: str = "cuboid"
         self.width: float = 1.0  # in cm
@@ -148,7 +148,7 @@ class Sample(object):
 
     def update_lattice_parameters(
         self,
-        lattice_params: tuple[float] = (1, 1, 1, 90, 90, 90),
+        lattice_params: tuple[float, float, float, float, float, float] = (1, 1, 1, 90, 90, 90),
     ):
         """update real and reciprocal space lattice parameters and vectors"""
 
@@ -160,31 +160,15 @@ class Sample(object):
         self.beta = beta
         self.gamma = gamma
 
-        (
-            self.a_vec,
-            self.b_vec,
-            self.c_vec,
-        ) = self._real_space_vectors()
-        (
-            self.a_star,
-            self.b_star,
-            self.c_star,
-            self.alpha_star,
-            self.beta_star,
-            self.gamma_star,
-        ) = self.reciprocal_latt_params()
+        (self.a_vec, self.b_vec, self.c_vec) = self._real_space_vectors()
+        (self.a_star, self.b_star, self.c_star, self.alpha_star, self.beta_star, self.gamma_star) = (
+            self.reciprocal_latt_params()
+        )
 
-        (
-            self.a_star_vec,
-            self.b_star_vec,
-            self.c_star_vec,
-        ) = self._reciprocal_space_vectors()
+        (self.a_star_vec, self.b_star_vec, self.c_star_vec) = self._reciprocal_space_vectors()
 
-        (
-            self.i_star,
-            self.j_star,
-            self.k_star,
-        ) = self._reciprocal_basis()
+        (self.i_star, self.j_star, self.k_star) = self._reciprocal_basis()
+        self.b_mat = self.b_mat_from_lattice()
 
     @staticmethod
     def v_alpha_beta_gamma_calc(alpha, beta, gamma) -> float:
@@ -200,7 +184,7 @@ class Sample(object):
         )
         return v_alpha_beta_gamma
 
-    def _real_space_vectors(self) -> tuple[np.ndarray]:
+    def _real_space_vectors(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Calculate the real space lattice vectors in Cartesian coordiantes
         """
@@ -250,7 +234,7 @@ class Sample(object):
 
         return (a_star, b_star, c_star, alpha_star, beta_star, gamma_star)
 
-    def _reciprocal_space_vectors(self) -> tuple[np.ndarray]:
+    def _reciprocal_space_vectors(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Calculate the reciprocal space lattice vectors in the Cartesian coordinates
         """
@@ -263,7 +247,7 @@ class Sample(object):
 
         return (a_star_vec, b_star_vec, c_star_vec)
 
-    def hkl2q(self, hkl: tuple[float]) -> float:
+    def hkl2q(self, hkl: tuple[float, float, float]) -> float:
         """Convert (h,k,l) to q, in units of inverse Angstrom"""
         try:
             qh, qk, ql = hkl
@@ -271,7 +255,7 @@ class Sample(object):
             print("hkl needs to be a tuple of length 3")
 
         q_vec = qh * self.a_star_vec + qk * self.b_star_vec + ql * self.c_star_vec
-        q_norm = np.linalg.norm(q_vec)
+        q_norm = float(np.linalg.norm(q_vec))
         return q_norm
 
     def b_mat_from_lattice(self) -> np.ndarray:
@@ -301,15 +285,7 @@ class Sample(object):
         # b_mat = np.round(b_mat, 8)
         return b_mat
 
-    # -----------------------------------------
-    # # TODO how to properly set and get b_mat
-    # @b_mat.setter
-    # def b_mat(self, value: np.ndarray) -> None:
-    #     pass
-
-    # -----------------------------------------
-
-    def _reciprocal_basis(self) -> tuple[np.ndarray]:
+    def _reciprocal_basis(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Calculate the reciprocal basis vectors i_star, j_star, k_star"""
         i_star = self.a_star_vec / np.linalg.norm(self.a_star_vec)
         a_star_perp = np.cross(

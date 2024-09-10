@@ -57,7 +57,8 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CN(instrument_config_json_path)
+    tas = CN()
+    tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
     sample = Xtal.from_json(sample_json_path)

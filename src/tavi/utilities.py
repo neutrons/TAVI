@@ -32,8 +32,8 @@ class MotorAngles(NamedTuple):
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
         angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode"""
 
-    two_theta: Optional[float] = None
-    omega: Optional[float] = None
+    two_theta: float
+    omega: float
     sgl: Optional[float] = None
     sgu: Optional[float] = None
     chi: Optional[float] = None
@@ -56,16 +56,16 @@ class Peak(NamedTuple):
 
     """
 
-    hkl: Optional[tuple] = None
-    angles: Optional[MotorAngles] = None
-    ei: Optional[float] = None
+    hkl: tuple
+    angles: MotorAngles
+    ei: float
     ef: Optional[float] = None
 
 
 class UBConf(NamedTuple):
     "Logs for UB matrix determination"
 
-    peaks: Optional[tuple[Peak]] = None
+    ub_peaks: Optional[tuple[Peak, ...]] = None
     u_mat: Optional[np.ndarray] = None
     b_mat: Optional[np.ndarray] = None
     ub_mat: Optional[np.ndarray] = None

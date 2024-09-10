@@ -31,7 +31,7 @@ class Xtal(Sample):
         super().__init__(lattice_params)
         self.type = "xtal"
 
-        self.ub_peaks: Optional[Peak] = None
+        self.ub_peaks: Optional[tuple[Peak, ...]] = None
         self.u_mat: Optional[np.ndarray] = None
         self.ub_mat: Optional[np.ndarray] = None
         # self.inv_ub_matrix: Optional[np.ndarray] = None
@@ -67,7 +67,7 @@ class Xtal(Sample):
         return self.ub_matrix_to_uv(self.ub_mat)[1]
 
     @staticmethod
-    def ub_matrix_to_uv(ub_matrix) -> tuple[np.ndarray]:
+    def ub_matrix_to_uv(ub_matrix) -> tuple[np.ndarray, np.ndarray]:
         """ "Calculate u and v vector from UB matrix"""
         inv_ub_matrix = np.linalg.inv(ub_matrix)
         u = inv_ub_matrix @ np.array([0, 0, 1])
@@ -113,15 +113,6 @@ class Xtal(Sample):
     def set_orientation(self, ubconf: UBConf) -> None:
         "Set crystal orientation from UB conf"
 
-        if ubconf.peaks is not None:
-            self.ub_peaks = ubconf.peaks
-        if ubconf.u_mat is not None:
-            self.u_mat = ubconf.u_mat
-        if ubconf.b_mat is not None:
-            self.b_mat = ubconf.b_mat
-        if ubconf.ub_mat is not None:
-            self.ub_mat = ubconf.ub_mat
-        if ubconf.plane_normal is not None:
-            self.plane_normal = ubconf.plane_normal
-        if ubconf.in_plane_ref is not None:
-            self.in_plane_ref = ubconf.in_plane_ref
+        for key, val in ubconf._asdict().items():
+            if val is not None:
+                setattr(self, key, val)

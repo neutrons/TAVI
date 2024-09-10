@@ -69,8 +69,11 @@ class ScanGroup(object):
         zlabel = signal_z[0]
 
         # shape = (num_scans, num_pts)
-        x_array = [scan.data[signal_x[i]] for i, scan in enumerate(self.signals)]
-        y_array = [scan.data[signal_y[i]] for i, scan in enumerate(self.signals)]
+        # x_array = [scan.data[signal_x[i]] for i, scan in enumerate(self.signals)]
+        # y_array = [scan.data[signal_y[i]] for i, scan in enumerate(self.signals)]
+
+        x_array = [getattr(scan.data, signal_x[i]) for i, scan in enumerate(self.signals)]
+        y_array = [getattr(scan.data, signal_y[i]) for i, scan in enumerate(self.signals)]
 
         x_min = np.min([np.min(np.round(x, 3)) for x in x_array])
         x_max = np.max([np.max(np.round(x, 3)) for x in x_array])
@@ -103,19 +106,19 @@ class ScanGroup(object):
         z = np.zeros_like(xv)
         for i in range(num_scans):
             scan = self.signals[i]
-            scan_len = np.size(scan.data[signal_z[i]])
+            scan_len = np.size(getattr(scan.data, signal_z[i]))
             for j in range(scan_len):
                 # if SCAN_ALONG_Y:
-                x0 = scan.data[signal_x[i]][j]
-                y0 = scan.data[signal_y[i]][j]
-                z0 = scan.data[signal_z[i]][j]
+                x0 = getattr(scan.data, signal_x[i])[j]
+                y0 = getattr(scan.data, signal_y[i])[j]
+                z0 = getattr(scan.data, signal_z[i])[j]
                 idx = np.nanargmax(x_list + x_step / 2 >= x0)
                 idy = np.nanargmax(y_list + y_step / 2 >= y0)
                 z[idy, idx] += z0
                 if norm_channel is None:
                     cts[idy, idx] += 1
                 else:
-                    cts[idy, idx] += scan.data[norm_channel][j] / norm_val
+                    cts[idy, idx] += getattr(scan.data, norm_channel)[j] / norm_val
 
         z = z / cts
 

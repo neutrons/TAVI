@@ -33,16 +33,17 @@ class TASBase(object):
 
     def __init__(self) -> None:
         """Load instrument configuration from json if provided, otherwise leace as None"""
+        self.monochromator: MonoAna
+        self.goniometer: Goniometer
+        self.sample: Union[Sample, Xtal, Powder]
+
         self.source: Optional[Source] = None
         self.collimators: Optional[Collimators] = None
         self.guide: Optional[Guide] = None
-        self.monochromator: Optional[MonoAna] = None
         self.monitor: Optional[Monitor] = None
-        self.goniometer: Optional[Goniometer] = None
         self.analyzer: Optional[MonoAna] = None
         self.detector: Optional[Detector] = None
         self.arms: Optional[Distances] = None
-        self.sample: Union[Sample, Xtal, Powder, None] = None
 
         self.json_path: Optional[str] = None  # if loaded from json
         self.reference_scan: Optional[Scan] = None  # if loaded from scan
