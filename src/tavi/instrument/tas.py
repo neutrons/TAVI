@@ -5,7 +5,7 @@ import numpy as np
 
 from tavi.instrument.tas_base import TASBase
 from tavi.sample.xtal import Xtal
-from tavi.utilities import Peak, UBConf, en2q, get_angle_from_triangle
+from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle, ksq2eng
 
 
 class TAS(TASBase):
@@ -92,16 +92,18 @@ class TAS(TASBase):
         if not isinstance(self.sample, Xtal):
             raise ValueError("sample needs to be Xtal class for UB calculation.")
 
-        if (num_of_peaks := len(peaks)) == 2:
-            ubconf = self._find_u_from_two_peaks(peaks)
-            self.sample.set_orientation(ubconf)
-
-        elif num_of_peaks == 3:
-            ubconf = self._find_ub_from_three_peaks(peaks)
-        elif num_of_peaks > 3:
-            ubconf = self._find_ub_from_multiple_peaks(peaks)
-        else:
-            raise ValueError("Not enough peaks for UB matrix determination.")
+        match (num_of_peaks := len(peaks)):
+            case 2:
+                ubconf = self._find_u_from_two_peaks(peaks)
+                self.sample.set_orientation(ubconf)
+            case 3:
+                ubconf = self._find_ub_from_three_peaks(peaks)
+                self.sample.set_orientation(ubconf)
+            case _ if num_of_peaks > 3:
+                ubconf = self._find_ub_from_multiple_peaks(peaks)
+                self.sample.set_orientation(ubconf)
+            case _:
+                raise ValueError("Not enough peaks for UB matrix determination.")
 
     def _find_u_from_two_peaks(
         self,
@@ -175,3 +177,96 @@ class TAS(TASBase):
         """Find UB matrix from more than three observed peaks for a given goniomete"""
         ubconf = UBConf()
         return ubconf
+
+    @staticmethod
+    def norm_mat(t1, t2, t3):
+        mat = np.array([t1 / np.linalg.norm(t1), t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)]).T
+        return mat
+
+    def _t_mat_minimal_tilt(self, hkl: np.ndarray):
+        """Build matrix T assuming minimal goniometer tilt angles"""
+
+        if not isinstance(self.sample, Xtal):
+            raise ValueError("sample needs to be Xtal class for UB calculation.")
+
+        q = self.sample.ub_mat @ hkl
+        t1 = q / np.linalg.norm(q)
+
+        EPS = 1e-8  # zero
+        if self.sample.plane_normal is None:
+            raise ValueError("Plane normal vector is not known.")
+        if self.sample.in_plane_ref is None:
+            raise ValueError("In-plnae reference vector is not known.")
+
+        plane_normal = np.array(self.sample.plane_normal)
+        in_plane_ref = np.array(self.sample.in_plane_ref)
+        if np.dot(t1, plane_normal) < EPS:  # t1 in plane
+            t3 = plane_normal
+            t2 = np.cross(t3, t1)
+            return TAS.norm_mat(t1, t2, t3)
+
+        # t1 not in plane, need to change tilts
+        if np.linalg.norm(np.cross(plane_normal, t1)) < EPS:
+            # oops, t1 along plane_normal
+            t2 = in_plane_ref
+            t3 = np.cross(t1, t2)
+            return TAS.norm_mat(t1, t2, t3)
+
+        else:
+            t2p = np.cross(plane_normal, t1)
+            t3 = np.cross(t1, t2p)
+            t2 = np.cross(t3, t1)
+            return TAS.norm_mat(t1, t2, t3)
+
+    def calculate_motor_angles(self, peak: tuple, ei: float, ef: Optional[float] = None):
+        """calculate motor positions for a given peak if UB matrix has been determined
+
+        Args:
+            peak (tuple): (h, k, l) of a peak
+            ei (float): incident neutron energy, in meV
+            ef (float): final neutron energy, in meV
+
+        """
+        S2_MIN_DEG = 1
+
+        try:
+            h, k, l = peak
+        except ValueError:
+            print("hkl should have the format (h, k, l).")
+        hkl = np.array((h, k, l))
+
+        ki = np.sqrt(ei / ksq2eng)
+        if ef is None:
+            kf = ki
+        else:
+            kf = np.sqrt(ef / ksq2eng)
+
+        if self.sample.b_mat is None:
+            b_mat = self.sample.b_mat_from_lattice()
+        else:
+            b_mat = self.sample.b_mat
+        q_norm = np.sqrt(4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl)
+
+        two_theta = get_angle_from_triangle(ki, kf, q_norm)
+
+        if two_theta is None:
+            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
+            return None
+        if np.rad2deg(two_theta) < S2_MIN_DEG:
+            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
+            return None
+
+        two_theta = np.rad2deg(two_theta) * self.goniometer.sense
+        t_mat = self._t_mat_minimal_tilt(hkl)
+        t_mat_inv = np.linalg.inv(t_mat)
+
+        q_lab1 = TAS.q_lab(two_theta, ki, kf) / q_norm
+        q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
+        q_lab3 = np.array([0, 1, 0])
+
+        q_lab_mat = TAS.norm_mat(q_lab1, q_lab2, q_lab3)
+        r_mat = q_lab_mat @ t_mat_inv
+
+        _, omega, sgl, sgu, chi, phi = self.goniometer.angles_from_r_mat(r_mat)
+
+        return MotorAngles(two_theta, omega, sgl, sgu, chi, phi)

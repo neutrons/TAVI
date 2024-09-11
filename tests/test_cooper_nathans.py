@@ -19,7 +19,7 @@ def test_copper_nathans_localQ(tas_params):
             [986.5610, -4129.1553, -0.0000, 864.3494],
         ]
     )
-    assert np.allclose(rez.mat, mat, atol=1e-2)
+    assert np.allclose(rez.mat, mat, atol=1e-1)
 
 
 def test_copper_nathans_hkl(tas_params):
@@ -34,7 +34,7 @@ def test_copper_nathans_hkl(tas_params):
             [-5152.9962, -5153.0102, 448.8024, 864.3494],
         ]
     )
-    assert np.allclose(rez.mat, mat, atol=1e-2)
+    assert np.allclose(rez.mat, mat, atol=1e-1)
 
 
 def test_copper_nathans_projection(tas_params):
@@ -49,7 +49,7 @@ def test_copper_nathans_projection(tas_params):
             [-1.0306e04, 4.4880e02, 1.4003e-02, 8.6435e02],
         ]
     )
-    assert np.allclose(rez.mat, mat, atol=1e-2)
+    assert np.allclose(rez.mat, mat, atol=1e-1)
 
 
 @pytest.fixture

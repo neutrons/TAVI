@@ -196,7 +196,7 @@ class Goniometer(TASComponent):
     def set_limit(
         self,
         motor_name: Literal["omega", "sgl", "sgu", "chi", "phi"],
-        motor_range: tuple[float] = (-180, 180),
+        motor_range: tuple[float, float] = (-180, 180),
     ):
         "set goiometer motor limt"
         setattr(self, motor_name + "_limit", motor_range)

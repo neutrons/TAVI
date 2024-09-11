@@ -145,6 +145,7 @@ def _nenux_entry(nxentry, das_logs):
     """Entry containing scan info"""
 
     nxentry.attrs["NX_class"] = "NXentry"
+    # nxentry.attrs["NX_class"] = "NXroot"
     nxentry.attrs["EX_required"] = "true"
 
     # Valid enumeration values for root['/entry']['definition'] are: NXtas

@@ -80,4 +80,4 @@ def test_load_xtal_from_json():
     xtal = Xtal.from_json(xtal_json_path)
     assert xtal.type == "xtal"
     assert np.allclose(xtal.a, 5.034785)
-    assert np.shape(xtal.ub_matrix) == (3, 3)
+    assert np.shape(xtal.ub_mat) == (3, 3)

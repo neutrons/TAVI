@@ -34,7 +34,7 @@ class Xtal(Sample):
         self.ub_peaks: Optional[tuple[Peak, ...]] = None
         self.u_mat: Optional[np.ndarray] = None
         self.ub_mat: Optional[np.ndarray] = None
-        # self.inv_ub_matrix: Optional[np.ndarray] = None
+        # self.inv_ub_mat: Optional[np.ndarray] = None
 
         self.plane_normal: Optional[np.ndarray] = None
         self.in_plane_ref: Optional[np.ndarray] = None
@@ -45,11 +45,15 @@ class Xtal(Sample):
 
         ub_matrix = xtal.json_dict.get("ub_matrix")
         if ub_matrix is not None:
-            xtal.ub_matrix = np.array(ub_matrix).reshape(3, 3)
+            xtal.ub_mat = np.array(ub_matrix).reshape(3, 3)
 
         plane_normal = xtal.json_dict.get("plane_normal")
         if plane_normal is not None:
             xtal.plane_normal = np.array(plane_normal)
+
+        in_plane_ref = xtal.json_dict.get("in_plane_ref")
+        if in_plane_ref is not None:
+            xtal.in_plane_ref = np.array(in_plane_ref)
 
         return xtal
 

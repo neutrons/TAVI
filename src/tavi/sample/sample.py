@@ -51,13 +51,13 @@ class Sample(object):
         self.type = "generic"
         self.json_dict: Optional[dict] = None
         # lattice parameters
-        self.a: float = 1.0
-        self.b: float = 1.0
-        self.c: float = 1.0
-        self.alpha: float = 90.0
-        self.beta: float = 90.0
-        self.gamma: float = 90.0
-        self.b_mat: Optional[np.ndarray] = None
+        self.a: float
+        self.b: float
+        self.c: float
+        self.alpha: float
+        self.beta: float
+        self.gamma: float
+        self.b_mat: np.ndarray
         # parameters for resolution calculation
         self.shape: str = "cuboid"
         self.width: float = 1.0  # in cm

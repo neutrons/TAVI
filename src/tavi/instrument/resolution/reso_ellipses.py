@@ -1,3 +1,5 @@
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as la
@@ -5,6 +7,7 @@ from mpl_toolkits.axisartist import Axes, Subplot
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
+from tavi.sample.xtal import Xtal
 from tavi.utilities import get_angle_vec, sig2fwhm
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -196,36 +199,38 @@ class ResoEllipsoid(object):
 
     """
 
-    g_eps = 1e-8
+    EPS = 1e-8
 
-    def __init__(self):
+    def __init__(
+        self,
+        hkl: tuple[float, float, float],
+        en: float,
+        sample: Xtal,
+        projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+    ) -> None:
 
-        self.STATUS = None
+        self.STATUS: Optional[bool] = None
         self.q = None
-        self.hkl = None
-        self.en = None
-        self.frame = None
-        self.projection = None
+        self.hkl = hkl
+        self.en = en
+
+        self.projection = projection
         self.angles = None
         self.axes_labels = None
 
         self.mat = None
         self.r0 = None
 
-    def determinate_frame(self, sample):
-        """determinate the frame from the projection vectors"""
         match self.projection:
             case None:  # Local Q frame
                 self.frame = "q"
                 self.angles = (90, 90, 90)
-                self.STATUS = True
+                self.q = (np.linalg.norm(sample.b_mat @ hkl), 0, 0)
 
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
-                self.q = self.hkl
+                self.q = hkl
                 self.angles = (sample.gamma_star, sample.alpha_star, sample.beta_star)
-                self.STATUS = True
-
             case _:  # customized projection
                 p1, p2, p3 = self.projection
                 reciprocal_vecs = [sample.a_star_vec, sample.b_star_vec, sample.c_star_vec]
@@ -233,12 +238,11 @@ class ResoEllipsoid(object):
                 v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
                 v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
 
-                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.g_esp:
+                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.EPS:
                     raise ValueError("Projection is left handed! Please use right-handed projection")
-                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.g_esp:
+                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.EPS:
                     raise ValueError("Projection vectors need to be non-coplanar.")
 
-                # mat_w = np.array([p1, p2, p3]).T
                 mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(
                     p1, np.cross(p2, p3)
                 )
@@ -246,7 +250,44 @@ class ResoEllipsoid(object):
                 self.frame = "proj"
                 self.q = hkl_prime
                 self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
-                self.STATUS = True
+
+    def project_to_frame(self, mat_reso, phi, conv_mat):
+        """determinate the frame from the projection vectors"""
+        match self.frame:
+            case "q":
+                self.mat = mat_reso
+
+            case "hkl":
+                conv_mat_4d = np.eye(4)
+                conv_mat_4d[0:3, 0:3] = (
+                    np.array(
+                        [
+                            [np.sin(phi), 0, np.cos(phi)],
+                            [np.cos(phi), 0, -np.sin(phi)],
+                            [0, 1, 0],
+                        ]
+                    )
+                    @ conv_mat
+                )
+                self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+
+            case "proj":
+                p1, p2, p3 = self.projection
+                mat_w = np.array([p1, p2, p3]).T
+
+                conv_mat_4d = np.eye(4)
+                conv_mat_4d[0:3, 0:3] = (
+                    np.array(
+                        [
+                            [np.sin(phi), 0, np.cos(phi)],
+                            [np.cos(phi), 0, -np.sin(phi)],
+                            [0, 1, 0],
+                        ]
+                    )
+                    @ conv_mat
+                    @ mat_w
+                )
+                self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
     def volume(self):
         """volume of the ellipsoid"""
@@ -303,7 +344,7 @@ class ResoEllipsoid(object):
     def quadric_proj(quadric, idx):
         """projects along one axis of the quadric"""
 
-        if np.abs(quadric[idx, idx]) < ResoEllipsoid.g_eps:
+        if np.abs(quadric[idx, idx]) < ResoEllipsoid.EPS:
             return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
 
         # row/column along which to perform the orthogonal projection

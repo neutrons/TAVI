@@ -18,7 +18,7 @@ def test_find_two_theta():
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 
-def test_calc_ub_from_2_peaks_hb3():
+def test_calc_ub_from_2_peaks_takin():
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     ub_matrix = np.array(
         [
@@ -54,11 +54,15 @@ def test_calc_ub_from_2_peaks_hb3():
     assert np.allclose(tas.sample.u, u, atol=1e-2)
     assert np.allclose(tas.sample.v, v, atol=1e-2)
 
-    angles_1 = tas.find_angles(peak=(0, 0, 2), ei=13.500172)
-    assert np.allclose(angles_1, angles1, atol=1e-2)
+    angles_1 = tas.calculate_motor_angles(peak=(0, 0, 2), ei=13.500172)
+    for name, value in angles_1._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles1, name), atol=1e-2)
 
-    # angles = tas.find_angles(peak=(0, 2, 0), ei=13.500172, ef=13.505137)
-    # assert np.allclose(angles_list[1], angles, atol=1e-1)
+    angles_2 = tas.calculate_motor_angles(peak=(0, 2, 0), ei=13.500172, ef=13.505137)
+    for name, value in angles_2._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
 
     # swap peaks and calculate again
     tas.calculate_ub_matrix(peaks=(peak2, peak1))
@@ -68,6 +72,48 @@ def test_calc_ub_from_2_peaks_hb3():
     # assert np.allclose(tas.sample.in_plane_ref, in_plane_ref, atol=1e-2)
     assert np.allclose(tas.sample.u, u, atol=1e-2)
     assert np.allclose(tas.sample.v, v, atol=1e-2)
+
+
+def test_calc_ub_from_2_peaks_hb3():
+    lattice_params = (4.128474, 4.128474, 6.651507, 90, 90, 120)
+    ub_matrix = np.array(
+        [
+            [-0.000328, -0.004396, -0.150319],
+            [-0.014647, 0.234528, -0.002614],
+            [0.279308, 0.152332, -0.000314],
+        ]
+    )
+
+    plane_normal = [-0.017470, 0.998476, 0.052341]
+    in_plane_ref = [-0.999847, -0.017385, -0.002086]
+
+    tas = TAS()
+    hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
+    tas.load_instrument_params_from_json(hb3_json)
+    tas.mount_sample(Xtal(lattice_params))
+
+    ei = 14.7
+    ef = 14.7
+    angles1 = MotorAngles(two_theta=41.545383, omega=20.840750, sgl=1.001000, sgu=-3.000750)
+    peak1 = Peak(hkl=(0, 0, 2), angles=angles1, ei=ei, ef=ef)
+    angles2 = MotorAngles(two_theta=38.526091, omega=-70.614125, sgl=1.001000, sgu=-3.000750)
+    peak2 = Peak(hkl=(1, 0, 0), angles=angles2, ei=ei, ef=ef)
+
+    tas.calculate_ub_matrix(peaks=(peak1, peak2))
+
+    assert np.allclose(tas.sample.ub_mat, ub_matrix, atol=1e-1)
+    assert np.allclose(tas.sample.plane_normal, plane_normal, atol=1e-1)
+    assert np.allclose(tas.sample.in_plane_ref, in_plane_ref, atol=1e-1)
+
+    angles_1 = tas.calculate_motor_angles(peak=(0, 0, 2), ei=ei)
+    for name, value in angles_1._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+
+    angles_2 = tas.calculate_motor_angles(peak=(1, 0, 0), ei=ei, ef=ei)
+    for name, value in angles_2._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
 
 
 def test_calc_ub_from_2_peaks_ctax():
@@ -101,10 +147,14 @@ def test_calc_ub_from_2_peaks_ctax():
     assert np.allclose(ctax.sample.plane_normal, plane_normal, atol=1e-2)
     assert np.allclose(ctax.sample.in_plane_ref, in_plane_ref, atol=1e-2)
 
-    # angles = ctax.find_angles(peak=(0, 0, 3), ei=4.799999, ef=4.799998)
-    # assert np.allclose(angles_list[0], angles, atol=1e-1)
-    # angles = ctax.find_angles(peak=(0.5, 0.5, 0), ei=4.799999, ef=4.799998)
-    # assert np.allclose(angles_list[1], angles, atol=1e-1)
+    angles = ctax.calculate_motor_angles(peak=(0, 0, 3), ei=4.799999, ef=4.799998)
+    for name, value in angles._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+    angles = ctax.calculate_motor_angles(peak=(0.5, 0.5, 0), ei=4.799999, ef=4.799998)
+    for name, value in angles._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
 
 
 def test_calc_ub_from_2_peaks_hb1():
@@ -138,10 +188,14 @@ def test_calc_ub_from_2_peaks_hb1():
     assert np.allclose(hb1.sample.plane_normal, plane_normal, atol=1e-2)
     assert np.allclose(hb1.sample.in_plane_ref, in_plane_ref, atol=1e-2)
 
-    # angles = hb1.find_angles(peak=(1, 1, 0), ei=13.499993, ef=13.506112)
-    # assert np.allclose(angles_list[0], angles, atol=1e-1)
-    # angles = hb1.find_angles(peak=(0, 0, 1), ei=13.499993, ef=13.506112)
-    # assert np.allclose(angles_list[1], angles, atol=1e-1)
+    angles = hb1.calculate_motor_angles(peak=(1, 1, 0), ei=13.499993, ef=13.506112)
+    for name, value in angles._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+    angles = hb1.calculate_motor_angles(peak=(0, 0, 1), ei=13.499993, ef=13.506112)
+    for name, value in angles._asdict().items():
+        if value is not None:
+            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
 
     # swap peaks and calculate again
     hb1.calculate_ub_matrix(peaks=(peak2, peak1))

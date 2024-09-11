@@ -1,3 +1,4 @@
+# import matplotlib.colors as colors
 import matplotlib.pylab as plt
 import numpy as np
 from mpl_toolkits.axisartist import Axes
@@ -128,6 +129,15 @@ class Plot2DManager(object):
             vmin=vmin,
             vmax=vmax,
         )
+        # LOG Y
+        # p = self.ax.pcolormesh(
+        #     x,
+        #     y,
+        #     z,
+        #     shading=self.shading,
+        #     cmap=self.cmap,
+        #     norm=colors.LogNorm(vmin=0.1, vmax=10),
+        # )
 
         self.fig.colorbar(p, ax=self.ax)
         self.set_labels()
