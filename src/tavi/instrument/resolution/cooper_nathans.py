@@ -1,7 +1,6 @@
 from typing import Optional
 
 import numpy as np
-import numpy.linalg as la
 
 from tavi.instrument.mono_ana import MonoAna
 from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
@@ -40,9 +39,9 @@ class CN(TAS):
     IDX_ANA0_H = 2
     IDX_ANA0_V = 3
 
-    def __init__(self) -> None:
+    def __init__(self, SPICE_CONVENTION: bool = True) -> None:
         """Load instrument configuration from json if provided"""
-        super().__init__()
+        super().__init__(SPICE_CONVENTION=SPICE_CONVENTION)
 
         # constants independent of q and eng
         self._mat_f: Optional[np.ndarray] = None
@@ -170,7 +169,7 @@ class CN(TAS):
         ei: float,
         ef: float,
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        r0: bool = False,
+        R0: bool = False,
     ):
         """Calculate resolution using Cooper-Nathans method
 
@@ -195,7 +194,7 @@ class CN(TAS):
 
         # q_lab = conv_mat @ hkl
         # q_mod = np.linalg.norm(q_lab)
-        q_mod = float(la.norm(self.sample.b_mat @ hkl)) * 2 * np.pi
+        q_mod = np.linalg.norm(self.sample.b_mat @ hkl) * 2 * np.pi
 
         ki = np.sqrt(ei / ksq2eng)
         kf = np.sqrt(ef / ksq2eng)
@@ -206,10 +205,10 @@ class CN(TAS):
             two_theta = get_angle_from_triangle(ki, kf, q_mod) * self.goniometer.sense
         except TypeError:
             rez.STATUS = False
-            print(f"Cannot calculate two theta for ei={ei}, ef={ef}, hkl={hkl}.")
+            print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
             return rez
 
-        # phi = <ki, q>, always has the oppositie sign of s2
+        # phi = <ki to q>, always has the oppositie sign of s2
         phi = get_angle_from_triangle(ki, q_mod, kf) * self.goniometer.sense * (-1)
 
         theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
@@ -226,7 +225,7 @@ class CN(TAS):
         mat_c = CN.calc_mat_c(theta_m, theta_a)
 
         mat_h = mat_c.T @ self._mat_f @ mat_c + self._mat_g
-        mat_h_inv = la.inv(mat_h)
+        mat_h_inv = np.linalg.inv(mat_h)
         mat_ba = mat_b @ mat_a
         mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
@@ -234,15 +233,17 @@ class CN(TAS):
         mat_cov[1, 1] += q_mod**2 * self.sample._mosaic_h**2
         mat_cov[2, 2] += q_mod**2 * self.sample._mosaic_v**2
 
-        mat_reso = la.inv(mat_cov) * sig2fwhm**2
+        mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
 
-        angles = self.calculate_motor_angles(hkl, ei, ef)
-        if angles is None:
+        motor_angles = self.calculate_motor_angles(peak=hkl, ei=ei, ef=ef)
+        if motor_angles is None:
             rez.STATUS = False
             return rez
 
-        r_mat = self.goniometer.r_mat(angles)
+        r_mat = self.goniometer.r_mat(motor_angles)
         ub_mat = self.sample.ub_mat
+        if self.SPICE_CONVENTION:
+            ub_mat = TAS.spice_to_mantid(ub_mat)
         conv_mat = 2 * np.pi * r_mat @ ub_mat
         rez.project_to_frame(mat_reso, phi, conv_mat)
 
@@ -252,7 +253,7 @@ class CN(TAS):
         #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
         # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
-        if r0:  # calculate
+        if R0:  # calculate
             r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
             r0 *= np.sqrt(np.linalg.det(self._mat_f) / np.linalg.det(mat_h))
         else:

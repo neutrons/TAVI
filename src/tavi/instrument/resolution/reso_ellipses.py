@@ -225,7 +225,7 @@ class ResoEllipsoid(object):
             case None:  # Local Q frame
                 self.frame = "q"
                 self.angles = (90, 90, 90)
-                self.q = (np.linalg.norm(sample.b_mat @ hkl), 0, 0)
+                self.q = (np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi, 0, 0)
 
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
@@ -253,22 +253,21 @@ class ResoEllipsoid(object):
 
     def project_to_frame(self, mat_reso, phi, conv_mat):
         """determinate the frame from the projection vectors"""
+
+        mat_lab_to_local = np.array(
+            [
+                [np.sin(phi), 0, np.cos(phi)],
+                [np.cos(phi), 0, -np.sin(phi)],
+                [0, 1, 0],
+            ]
+        )
         match self.frame:
             case "q":
                 self.mat = mat_reso
 
             case "hkl":
                 conv_mat_4d = np.eye(4)
-                conv_mat_4d[0:3, 0:3] = (
-                    np.array(
-                        [
-                            [np.sin(phi), 0, np.cos(phi)],
-                            [np.cos(phi), 0, -np.sin(phi)],
-                            [0, 1, 0],
-                        ]
-                    )
-                    @ conv_mat
-                )
+                conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat
                 self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
             case "proj":
@@ -276,17 +275,7 @@ class ResoEllipsoid(object):
                 mat_w = np.array([p1, p2, p3]).T
 
                 conv_mat_4d = np.eye(4)
-                conv_mat_4d[0:3, 0:3] = (
-                    np.array(
-                        [
-                            [np.sin(phi), 0, np.cos(phi)],
-                            [np.cos(phi), 0, -np.sin(phi)],
-                            [0, 1, 0],
-                        ]
-                    )
-                    @ conv_mat
-                    @ mat_w
-                )
+                conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
                 self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
 
     def volume(self):

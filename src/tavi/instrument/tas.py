@@ -5,7 +5,7 @@ import numpy as np
 
 from tavi.instrument.tas_base import TASBase
 from tavi.sample.xtal import Xtal
-from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle, ksq2eng
+from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle
 
 
 class TAS(TASBase):
@@ -18,9 +18,23 @@ class TAS(TASBase):
 
     """
 
+    def __init__(self, SPICE_CONVENTION: bool = True):
+        super().__init__()
+        self.SPICE_CONVENTION = SPICE_CONVENTION  # use coordination system defined in SPICE
+
+    @staticmethod
+    def spice_to_mantid(vec):
+        """suffle the order"""
+        return np.array([vec[0], vec[2], -vec[1]])
+
+    @staticmethod
+    def mantid_to_spice(vec):
+        """suffle the order"""
+        return np.array([vec[0], -vec[2], vec[1]])
+
     @staticmethod
     def q_lab(
-        two_theta: float,
+        two_theta_deg: float,
         ei: float,
         ef: float,
     ):
@@ -33,14 +47,8 @@ class TAS(TASBase):
 
         ki = en2q(ei)
         kf = en2q(ef)
-
-        q = np.array(
-            [
-                -kf * np.sin(np.deg2rad(two_theta)),
-                0,
-                ki - kf * np.cos(np.deg2rad(two_theta)),
-            ]
-        )
+        two_theta = np.deg2rad(two_theta_deg)
+        q = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)])
         return q
 
     def calculate_two_theta(
@@ -148,14 +156,21 @@ class TAS(TASBase):
         plane_normal = q_sample3
         if plane_normal[1] < 0:  # plane normal always up along +Y
             plane_normal = -plane_normal
-
+        # suffle the order following SPICE convention
         in_plane_ref = q_sample1
+
+        ub_mat = np.matmul(u_mat, b_mat)
+
+        if self.SPICE_CONVENTION:
+            plane_normal = TAS.mantid_to_spice(plane_normal)
+            in_plane_ref = TAS.mantid_to_spice(in_plane_ref)
+            ub_mat = TAS.mantid_to_spice(ub_mat)
 
         return UBConf(
             peaks,
             u_mat,
             None,
-            np.matmul(u_mat, b_mat),
+            ub_mat,
             plane_normal,
             in_plane_ref,
         )
@@ -187,19 +202,28 @@ class TAS(TASBase):
         """Build matrix T assuming minimal goniometer tilt angles"""
 
         if not isinstance(self.sample, Xtal):
-            raise ValueError("sample needs to be Xtal class for UB calculation.")
-
-        q = self.sample.ub_mat @ hkl
-        t1 = q / np.linalg.norm(q)
-
-        EPS = 1e-8  # zero
+            raise ValueError("Sample needs to be Xtal class for UB calculation.")
+        if self.sample.ub_mat is None:
+            raise ValueError("UB matrix is unknown.")
         if self.sample.plane_normal is None:
             raise ValueError("Plane normal vector is not known.")
         if self.sample.in_plane_ref is None:
             raise ValueError("In-plnae reference vector is not known.")
 
+        EPS = 1e-8  # zero
+
         plane_normal = np.array(self.sample.plane_normal)
         in_plane_ref = np.array(self.sample.in_plane_ref)
+        ub_mat = self.sample.ub_mat
+
+        if self.SPICE_CONVENTION:  # suffle the order following SPICE convention
+            plane_normal = TAS.spice_to_mantid(plane_normal)
+            in_plane_ref = TAS.spice_to_mantid(in_plane_ref)
+            ub_mat = TAS.spice_to_mantid(ub_mat)
+
+        q = ub_mat @ hkl
+        t1 = q / np.linalg.norm(q)
+
         if np.dot(t1, plane_normal) < EPS:  # t1 in plane
             t3 = plane_normal
             t2 = np.cross(t3, t1)
@@ -235,17 +259,18 @@ class TAS(TASBase):
             print("hkl should have the format (h, k, l).")
         hkl = np.array((h, k, l))
 
-        ki = np.sqrt(ei / ksq2eng)
+        ki = en2q(ei)
         if ef is None:
+            ef = ei
             kf = ki
         else:
-            kf = np.sqrt(ef / ksq2eng)
+            kf = en2q(ef)
 
         if self.sample.b_mat is None:
             b_mat = self.sample.b_mat_from_lattice()
         else:
             b_mat = self.sample.b_mat
-        q_norm = np.sqrt(4 * np.pi**2 * hkl.T @ b_mat.T @ b_mat @ hkl)
+        q_norm = 2 * np.pi * np.sqrt(hkl.T @ b_mat.T @ b_mat @ hkl)
 
         two_theta = get_angle_from_triangle(ki, kf, q_norm)
 
@@ -256,11 +281,11 @@ class TAS(TASBase):
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
             return None
 
-        two_theta = np.rad2deg(two_theta) * self.goniometer.sense
+        two_theta_deg = np.rad2deg(two_theta) * self.goniometer.sense
         t_mat = self._t_mat_minimal_tilt(hkl)
         t_mat_inv = np.linalg.inv(t_mat)
 
-        q_lab1 = TAS.q_lab(two_theta, ki, kf) / q_norm
+        q_lab1 = TAS.q_lab(two_theta_deg, ei, ef) / q_norm
         q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
         q_lab3 = np.array([0, 1, 0])
 
@@ -269,4 +294,4 @@ class TAS(TASBase):
 
         _, omega, sgl, sgu, chi, phi = self.goniometer.angles_from_r_mat(r_mat)
 
-        return MotorAngles(two_theta, omega, sgl, sgu, chi, phi)
+        return MotorAngles(two_theta_deg, omega, sgl, sgu, chi, phi)

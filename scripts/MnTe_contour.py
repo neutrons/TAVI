@@ -19,7 +19,7 @@ tavi.load_nexus_data_from_disk(nexus_folder)
 dataset = tavi.data["IPTS34735_HB3_exp0813"]
 
 # -------------- H0L const Q scans ------------
-scan_nums = [37, 39, 40] + list(range(44, 64))
+scan_nums = [37, 39, 40] + list(range(44, 64)) + list(range(65, 69)) + list(range(84, 97))
 scan_list1 = [dataset[f"scan{i:04}"] for i in scan_nums]
 sg1 = tavi.generate_scan_group(
     signals=scan_list1,
@@ -28,7 +28,7 @@ sg1 = tavi.generate_scan_group(
 contour1 = sg1.generate_contour(rebin_steps=(0.025, 0.25), norm_channel="mcu", norm_val=1)
 
 plt2d1 = Plot2DManager()
-plt2d1.zlim = [0, 1.5]
+plt2d1.zlim = [0, 0.5]
 plt2d1.ylim = [0, 55]
 plt2d1.title = ""
 plt2d1.plot_contour(*contour1)
@@ -46,22 +46,24 @@ hb3.mount_sample(mnte)
 # -----------------------------------------------
 # generate  rez plot for point (1.3, 0, 1.3)
 # -----------------------------------------------
-rez = hb3.cooper_nathans(
+rez_q = hb3.cooper_nathans(
     ei=35 + 14.7,
     ef=14.7,
     hkl=(1.3, 0, 1.3),
     projection=None,
-    r0=R0,
+    R0=R0,
 )
-rez.plot()
+rez_q.plot()
+print(rez_q.mat)
 # -------------------------------------
-rez = hb3.cooper_nathans(
+rez_hkl = hb3.cooper_nathans(
     ei=35 + 14.7,
     ef=14.7,
     hkl=(1.3, 0, 1.3),
-    r0=R0,
+    R0=R0,
 )
-rez.plot()
+rez_hkl.plot()
+print(rez_hkl.mat)
 # --------------------------------------
 projection = ((1, 0, 1), (-1, 2, 0), (-0.2776, 0, 0.9607))
 
@@ -70,7 +72,7 @@ rez = hb3.cooper_nathans(
     ef=14.7,
     hkl=(1.3, 0, 1.3),
     projection=projection,
-    r0=R0,
+    R0=R0,
 )
 rez.plot()
 # -----------------------------------------------
@@ -81,7 +83,7 @@ projection = ((1, 0, 1), (-1, 2, 0), (-0.2776, 0, 0.9607))
 q1 = [1, 1.5, 0.1]  # start, stop, step
 q2 = 0
 q3 = 0
-en = [2, 45, 5]  # start, stop, step
+en = [-1, 45, 5]  # start, stop, step
 
 ef = 14.7
 

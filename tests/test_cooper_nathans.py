@@ -10,7 +10,7 @@ np.set_printoptions(floatmode="fixed", precision=4)
 def test_copper_nathans_localQ(tas_params):
     tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, r0=r0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, R0=r0)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -25,7 +25,7 @@ def test_copper_nathans_localQ(tas_params):
 def test_copper_nathans_hkl(tas_params):
     tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, r0=r0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, R0=r0)
     mat = np.array(
         [
             [33305.0843, 33224.4963, -2651.8290, -5152.9962],
@@ -40,7 +40,7 @@ def test_copper_nathans_hkl(tas_params):
 def test_copper_nathans_projection(tas_params):
     tas, ei, ef, hkl, projection, r0 = tas_params
 
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=projection, r0=r0)
+    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=projection, R0=r0)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
@@ -57,7 +57,7 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CN()
+    tas = CN(SPICE_CONVENTION=False)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
@@ -69,8 +69,8 @@ def tas_params():
     hkl = (0, 0, 3)
 
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    r0 = False
+    R0 = False
 
-    tas_params = (tas, ei, ef, hkl, projection, r0)
+    tas_params = (tas, ei, ef, hkl, projection, R0)
 
     return tas_params
