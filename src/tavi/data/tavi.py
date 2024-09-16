@@ -63,11 +63,13 @@ class TAVI(object):
         # validate path
         if path_to_hdf5_folder[-1] != "/":
             path_to_hdf5_folder += "/"
-        dataset_name = path_to_hdf5_folder.split("/")[-2]  # e.g. IPTS32124_CG4C_exp0424
-        folder_name_parts = dataset_name.split("_")
-        if folder_name_parts[0][0:4] != "IPTS" or folder_name_parts[2][0:3] != "exp":
-            print("Unrecogonized nexus folder name. Must be IPTSXXXX_INSTRUMENT_expXXXX.")
-            raise ValueError
+
+        # detemine dataset_name based on path
+        # dataset_name = path_to_hdf5_folder.split("/")[-2]  # e.g. IPTS32124_CG4C_exp0424
+        # folder_name_parts = dataset_name.split("_")
+        # if folder_name_parts[0][0:4] != "IPTS" or folder_name_parts[2][0:3] != "exp":
+        #     print("Unrecogonized nexus folder name. Must be IPTSXXXX_INSTRUMENT_expXXXX.")
+        #     raise ValueError
 
         scan_list = os.listdir(path_to_hdf5_folder)
         scan_list = [scan for scan in scan_list if scan.startswith("scan")]
@@ -77,7 +79,7 @@ class TAVI(object):
         for scan in scan_list:
             scan_name = scan.split(".")[0]  # e.g. "scan0001"
             scan_path = path_to_hdf5_folder + scan
-            scan_entry = Scan.from_nexus(scan_path)
+            dataset_name, scan_entry = Scan.from_nexus(scan_path)
             scans.update({scan_name: scan_entry})
 
         self.data.update({dataset_name: scans})

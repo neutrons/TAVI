@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from tavi.instrument.mono_ana import MonoAna
-from tavi.instrument.resolution.reso_ellipses import ResoEllipsoid
+from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas import TAS
 from tavi.instrument.tas_cmponents import Collimators
 from tavi.utilities import get_angle_bragg, get_angle_from_triangle, ksq2eng, rotation_matrix_2d, sig2fwhm

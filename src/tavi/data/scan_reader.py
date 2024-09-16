@@ -163,17 +163,19 @@ class ScanData:
 def nexus_entry_to_scan(nexus_entry):
 
     def get_string(entry_string):
-        metadata = nexus_entry.get(entry_string)
+        metadata = data_entry.get(entry_string)
         if metadata is not None:
             return str(metadata.asstr()[...])
 
     def get_data(entry_string):
-        data = nexus_entry.get(entry_string)
+        data = data_entry.get(entry_string)
         if data is not None:
             return data[...]
 
     scan_name = nexus_entry.filename.split("/")[-1]  # e.g. "scan0001.h5"
     scan_index = scan_name.split(".")[0]  # e.g. "scan0001"
+    dataset_name = list(nexus_entry.keys())[0]  # e.g. "IPTS32124_CG4C_exp0424"
+    data_entry = nexus_entry[dataset_name]
     scan_info = ScanInfo(
         scan_num=int(scan_index[4:]),
         start_time=get_string("start_time"),
@@ -181,9 +183,9 @@ def nexus_entry_to_scan(nexus_entry):
         scan_title=get_string("title"),
         # preset_type="normal",
         preset_channel=get_string("monitor/mode"),
-        preset_value=float(nexus_entry["monitor/preset"][...]),
-        def_y=nexus_entry["data"].attrs["signal"],
-        def_x=nexus_entry["data"].attrs["axes"],
+        preset_value=float(data_entry["monitor/preset"][...]),
+        def_y=data_entry["data"].attrs["signal"],
+        def_x=data_entry["data"].attrs["axes"],
     )
     sample_ub_info = SampleUBInfo(
         sample_name=get_string("sample/name"),
@@ -197,9 +199,9 @@ def nexus_entry_to_scan(nexus_entry):
     )
     instrument_info = InstrumentInfo()
 
-    scan_data = ScanData().get_data_from(nexus_entry)
+    scan_data = ScanData().get_data_from(data_entry)
 
-    return (scan_info, sample_ub_info, instrument_info, scan_data)
+    return (dataset_name, scan_info, sample_ub_info, instrument_info, scan_data)
 
 
 # TODO

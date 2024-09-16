@@ -3,178 +3,13 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as la
-from mpl_toolkits.axisartist import Axes, Subplot
-from mpl_toolkits.axisartist.grid_finder import MaxNLocator
-from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
+from mpl_toolkits.axisartist import Axes
 
+from tavi.instrument.resolution.ellipse_curve import ResoCurve, ResoEllipse
 from tavi.sample.xtal import Xtal
 from tavi.utilities import get_angle_vec, sig2fwhm
 
 np.set_printoptions(floatmode="fixed", precision=4)
-
-
-class ResoCurve(object):
-    """1D Gaussian curve
-
-    Attributes:
-        cen (float)
-        fwhm (float)
-        xlabel
-        ylabel
-        title
-        legend
-
-    Methods:
-        generate_curve
-        generate_plot
-    """
-
-    def __init__(self):
-        self.center: float = None
-        self.fwhm = None
-        self.r0 = None
-        self.x = None
-        self.y = None
-        self.xlabel = None
-        self.ylabel = None
-        self.title = None
-        self.legend = None
-
-    def generate_curve(self, num_of_sigmas=3, points=100):
-        """Generate points on the Gaussian curve"""
-
-        sigma = self.fwhm / sig2fwhm
-        cen = self.cen
-        self.x = np.linspace(
-            -num_of_sigmas * sigma + cen,
-            num_of_sigmas * sigma + cen,
-            points,
-        )
-        amp = self.r0 / np.sqrt(2 * np.pi) / sigma
-        self.y = amp * np.exp(-((self.x - cen) ** 2) / sigma**2 / 2)
-
-    def generate_plot(self, ax, c="black", linestyle="solid"):
-        """Generate the plot"""
-        self.generate_curve()
-
-        s = ax.plot(
-            self.x,
-            self.y,
-            c=c,
-            linestyle=linestyle,
-            label=self.legend,
-        )
-        ax.set_xlabel(self.xlabel)
-        ax.set_ylabel(self.ylabel)
-        ax.set_title(self.title)
-        ax.grid(alpha=0.6)
-        ax.legend()
-
-
-class ResoEllipse(object):
-    """2D ellipses
-
-    Attributes:
-        mat(2 by 2 matrix)
-        centers (tuple): 2 by 1
-        fwhms (tuple): 2 by 1
-        vecs: eigen-vectors
-        angle: angle between the two plotting axes, in degrees
-        axes_labels (str)
-        ORIGIN (bool|None): shift the origin if True
-
-    Methods:
-        generate_ellipse(ellipse_points=128)
-        generate_axes()
-        generate_plot(ax, c="black", linestyle="solid")
-        plot()
-
-    """
-
-    g_esp = 1e-8
-
-    def __init__(self):
-        self.mat = None
-        self.centers = None
-        self.fwhms = None
-        self.vecs = None
-        self.angle = None
-        self.axes_labels = None
-
-        self.ORIGIN = None
-        self.grid_helper = None
-
-    def generate_ellipse(self, ellipse_points=128):
-        """Generate points on a ellipse"""
-
-        phi = np.linspace(0, 2.0 * np.pi, ellipse_points)
-
-        pts = np.dot(
-            self.vecs,
-            np.array(
-                [
-                    self.fwhms[0] / 2 * np.cos(phi),
-                    self.fwhms[1] / 2 * np.sin(phi),
-                ],
-            ),
-        )
-        if self.ORIGIN:
-            pts[0] += self.centers[0]
-            pts[1] += self.centers[1]
-        return pts
-
-    def _tr(self, x, y):
-        x, y = np.asarray(x), np.asarray(y)
-        return x + y / np.tan(self.angle / 180 * np.pi), y
-
-    def _inv_tr(self, x, y):
-        x, y = np.asarray(x), np.asarray(y)
-        return x - y / np.tan(self.angle / 180 * np.pi), y
-
-    def generate_axes(self):
-        """Generate grid helper"""
-
-        if not np.abs(self.angle - 90) < 1e-2:  # regular axes
-            self.grid_helper = GridHelperCurveLinear(
-                (self._tr, self._inv_tr),
-                grid_locator1=MaxNLocator(integer=True, steps=[1]),
-                grid_locator2=MaxNLocator(integer=True, steps=[1]),
-            )
-
-    def generate_plot(self, ax, c="black", linestyle="solid"):
-        """Gnerate the ellipse for plotting"""
-
-        pts = self.generate_ellipse()
-
-        if self.grid_helper is None:
-
-            s = ax.plot(
-                pts[0],
-                pts[1],
-                c=c,
-                linestyle=linestyle,
-            )
-        else:  # askew axes
-            s = ax.plot(
-                *self._tr(pts[0], pts[1]),
-                c=c,
-                linestyle=linestyle,
-            )
-
-        ax.set_xlabel(self.axes_labels[0])
-        ax.set_ylabel(self.axes_labels[1])
-        ax.grid(alpha=0.6)
-
-        return None
-
-    def plot(self):
-        """Plot the ellipsis."""
-
-        fig = plt.figure()
-        ax = Subplot(fig, 1, 1, 1, grid_helper=self.grid_helper)
-        fig.add_subplot(ax)
-        self.generate_plot(ax)
-        fig.show()
 
 
 class ResoEllipsoid(object):
@@ -184,12 +19,12 @@ class ResoEllipsoid(object):
         STATUS (None | bool): True if resolution calculation is successful
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
-        angles (tuple): angles between the projection vectors
         q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
         hkl (tuple): momentum transfer (h, k, l)
         en (float): energy transfer
+        agnles (tuple): angles between plotting axes
 
-        mat (float): 4 by 4 resolution matrix
+        mat (np.ndarray): 4 by 4 resolution matrix
         r0 (float | None): Normalization factor
 
     Methods:
@@ -210,12 +45,12 @@ class ResoEllipsoid(object):
     ) -> None:
 
         self.STATUS: Optional[bool] = None
-        self.q = None
-        self.hkl = hkl
-        self.en = en
+        self.q: Optional[tuple[float, float, float]] = None
+        self.hkl: tuple[float, float, float] = hkl
+        self.en: float = en
 
-        self.projection = projection
-        self.angles = None
+        self.projection: Optional[tuple] = projection
+        self.angles: tuple[float, float, float] = (90.0, 90.0, 90.0)
         self.axes_labels = None
 
         self.mat = None
@@ -224,8 +59,8 @@ class ResoEllipsoid(object):
         match self.projection:
             case None:  # Local Q frame
                 self.frame = "q"
-                self.angles = (90, 90, 90)
-                self.q = (np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi, 0, 0)
+                self.angles = (90.0, 90.0, 90.0)
+                self.q = (np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi, 0.0, 0.0)
 
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
@@ -250,6 +85,8 @@ class ResoEllipsoid(object):
                 self.frame = "proj"
                 self.q = hkl_prime
                 self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
+
+        self.set_labels()
 
     def project_to_frame(self, mat_reso, phi, conv_mat):
         """determinate the frame from the projection vectors"""
@@ -374,9 +211,9 @@ class ResoEllipsoid(object):
             case (0, 2) | (2, 0):
                 ellipse.angle = np.round(self.angles[2], 2)
             case _:
-                ellipse.angle = 90
+                ellipse.angle = 90.0
 
-        if PROJECTION:
+        if PROJECTION:  # make a projection
             q_res = self.mat
             ellipse.centers = (qe_list[axes[0]], qe_list[axes[1]])
             ellipse.axes_labels = (self.axes_labels[axes[0]], self.axes_labels[axes[1]])
@@ -406,7 +243,6 @@ class ResoEllipsoid(object):
 
     def set_labels(self):
         """Set axes labels based on the frame"""
-        # determine frame
         match self.frame:
             case "q":
                 self.axes_labels = ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
