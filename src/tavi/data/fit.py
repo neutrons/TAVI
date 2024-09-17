@@ -45,7 +45,7 @@ class Fit(object):
         # trim the range
         if fit_range is not None:
             fit_min, fit_max = fit_range
-            mask = np.bitwise_and(x > fit_min, x < fit_max)
+            mask = np.bitwise_and(x >= fit_min, x <= fit_max)
             self.x = self.x[mask]
             self.y = self.y[mask]
             if self.err is not None:
@@ -196,7 +196,7 @@ class Fit(object):
             out = model.fit(self.y, self.pars, x=self.x, weights=self.err)
 
         self.result = out
-
-        # self.y_plot = model.eval(self.pars, x=self.x_plot)
         self.y_plot = model.eval(out.params, x=self.x_plot)
-        print(out.fit_report(min_correl=0.25))
+
+        fit_report = out.fit_report(min_correl=0.25)
+        return fit_report

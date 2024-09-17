@@ -1,4 +1,6 @@
 # import matplotlib.colors as colors
+from typing import Optional
+
 import matplotlib.pylab as plt
 import numpy as np
 from mpl_toolkits.axisartist import Axes
@@ -8,12 +10,12 @@ class Plot1DManager(object):
     """Manage a plot"""
 
     def __init__(self) -> None:
-        _, self.ax = plt.subplots()
-        self.title = ""
-        self.xlim = None
-        self.ylim = None
-        self.xlabel = None
-        self.ylabel = None
+        self.fig, self.ax = plt.subplots()
+        self.title: str = ""
+        self.xlim: Optional[tuple[float, float]] = None
+        self.ylim: Optional[tuple[float, float]] = None
+        self.xlabel: Optional[str] = None
+        self.ylabel: Optional[str] = None
 
     def set_labels(self):
         if self.xlim is not None:
@@ -49,7 +51,6 @@ class Plot1DManager(object):
         self,
         x,
         y,
-        xerr=None,
         yerr=None,
         xlabel=None,
         ylabel=None,
@@ -64,7 +65,7 @@ class Plot1DManager(object):
         if ylabel is not None:
             self.ylabel = ylabel
 
-        self.ax.errorbar(x=x, y=y, xerr=xerr, yerr=yerr, label=label, fmt=fmt)
+        self.ax.errorbar(x=x, y=y, yerr=yerr, label=label, fmt=fmt)
 
         self.set_labels()
 

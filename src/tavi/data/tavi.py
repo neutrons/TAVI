@@ -63,7 +63,6 @@ class TAVI(object):
         scan_list.sort()
 
         with h5py.File(self.file_path, "r+", track_order=True) as tavi_file:
-
             for scan in scan_list:
                 scan_name = scan.split(".")[0]  # e.g. "scan0001"
                 scan_path = path_to_hdf5_folder + scan
@@ -75,6 +74,8 @@ class TAVI(object):
                         source=scan_file["/" + scan_name], dest=tavi_file["/data/" + dataset_name], expand_soft=True
                     )
 
+        self.load_data()
+
     # TODO
     def get_spice_data_from_disk(self, path_to_spice_folder):
         """Load hdf5 data from path_to_hdf5.
@@ -85,7 +86,7 @@ class TAVI(object):
                 Do not change processed_data, fit or plot
         """
 
-        pass
+        self.load_data()
 
     # TODO
     def get_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
@@ -97,7 +98,7 @@ class TAVI(object):
             OVERWRITE (bool): overwrite exsiting data if Ture, oterwise append.
                 Do not change processed_data, fit or plot
         """
-        pass
+        self.load_data()
 
     def load_data(self):
         """Load tavi data into memory"""
@@ -107,7 +108,7 @@ class TAVI(object):
                 scans = {}
                 for scan_name in (dataset := tavi_data[dataset_name]):
                     nexus_entry = dataset[scan_name]
-                    _, scan_entry = Scan.from_tavi(nexus_entry)
+                    _, scan_entry = Scan.from_nexus_entry(nexus_entry)
                     scans.update({scan_name: scan_entry})
 
                 self.data.update({dataset_name: scans})

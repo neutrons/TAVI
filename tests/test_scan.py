@@ -14,7 +14,7 @@ def test_load_scan_from_tavi():
     tavi.get_nexus_data_from_disk(nexus_data_folder)
 
     with h5py.File(tavi.file_path, "r") as tavi_file:
-        dataset_name, scan = Scan.from_tavi(tavi_file["/data/IPTS32124_CG4C_exp0424/scan0042"])
+        dataset_name, scan = Scan.from_nexus_entry(tavi_file["/data/IPTS32124_CG4C_exp0424/scan0042"])
     assert dataset_name == "IPTS32124_CG4C_exp0424"
     assert scan.scan_info.scan_num == 42
     assert len(scan.data.s1) == 40
@@ -22,7 +22,7 @@ def test_load_scan_from_tavi():
 
 def test_load_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    dataset_name, scan = Scan.from_nexus(nexus_file_name, scan_num=42)
+    dataset_name, scan = Scan.from_nexus_file(nexus_file_name, scan_num=42)
     assert dataset_name == "IPTS32124_CG4C_exp0424"
     assert scan.scan_info.scan_num == 42
     assert len(scan.data.s1) == 40
@@ -30,7 +30,7 @@ def test_load_scan_from_nexus():
 
 def test_load_single_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    dataset_name, scan = Scan.from_nexus(nexus_file_name)
+    dataset_name, scan = Scan.from_nexus_file(nexus_file_name)
     assert dataset_name == "IPTS32124_CG4C_exp0424"
     assert scan.scan_info.scan_num == 42
     assert len(scan.data.s1) == 40
@@ -38,7 +38,7 @@ def test_load_single_scan_from_nexus():
 
 def test_generate_curve():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    _, scan = Scan.from_nexus(nexus_file_name)
+    _, scan = Scan.from_nexus_file(nexus_file_name)
     (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve()
 
     x_data = np.arange(0.1, 4.1, 0.1)
@@ -65,7 +65,7 @@ def test_generate_curve():
 
 def test_generate_curve_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    _, scan = Scan.from_nexus(nexus_file_name)
+    _, scan = Scan.from_nexus_file(nexus_file_name)
     (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(norm_channel="mcu", norm_val=5)
 
     x_data = np.arange(0.1, 4.1, 0.1)
@@ -82,7 +82,7 @@ def test_generate_curve_norm():
 
 def test_generate_curve_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    _, scan = Scan.from_nexus(nexus_file_name)
+    _, scan = Scan.from_nexus_file(nexus_file_name)
     (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(rebin_type="grid", rebin_step=0.25)
 
     x_data = np.arange(0.225, 4.1, 0.25)
@@ -108,7 +108,7 @@ def test_generate_curve_rebin_grid():
 
 def test_generate_curve_rebin_grid_renorm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    _, scan = Scan.from_nexus(nexus_file_name)
+    _, scan = Scan.from_nexus_file(nexus_file_name)
     (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(
         rebin_type="grid", rebin_step=0.25, norm_channel="time", norm_val=5
     )

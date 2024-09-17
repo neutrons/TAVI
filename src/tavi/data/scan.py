@@ -39,16 +39,20 @@ class Scan(object):
         self.data: ScanData = data
 
     @classmethod
-    def from_tavi(cls, nexus_entry):
+    def from_nexus_entry(cls, nexus_entry):
+        """Load a single scan from a NeXus entry"""
         (dataset_name, *scan_data) = nexus_entry_to_scan(nexus_entry)
         (scan_info, sample_ub_info, instrument_info, data) = scan_data
         return dataset_name, cls(scan_info, sample_ub_info, instrument_info, data)
 
     @classmethod
-    def from_nexus(cls, nexus_file_name: str, scan_num: Optional[int] = None):
-        """Load a signle scan from NeXus file
+    def from_nexus_file(cls, nexus_file_name: str, scan_num: Optional[int] = None):
+        """Load a signle scan from NeXus file.
+
         Note:
-        If scan_name is None, nexus_file_name must ends with scan number e.g. scan0001.h5"""
+            If scan_name is None, nexus_file_name must ends with
+            scan number e.g. scan0001.h5
+        """
 
         if scan_num is None:
             scan_name = (nexus_file_name.split("/")[-1]).split(".")[0]
