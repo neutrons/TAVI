@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+
 from tavi.data.spice_to_nexus import convert_spice_to_nexus
 from tavi.data.tavi import TAVI
 from tavi.plotter import Plot2DManager
@@ -10,10 +11,10 @@ convert_spice_to_nexus(spice_folder, nexus_file_name)
 tavi = TAVI()
 
 tavi_file_name = "./test_data/tavi_test_exp1031.h5"
-tavi.new_tavi_file(tavi_file_name)
+tavi.new_file(tavi_file_name)
 
 nexus_file_name = "./test_data/nexus_exp1031.h5"
-tavi.load_nexus_data_from_disk(nexus_file_name)
+tavi.get_nexus_data_from_disk(nexus_file_name)
 dataset = tavi.data["IPTS32912_HB1A_exp1031"]
 
 # -------------- 001 s1 scans ------------

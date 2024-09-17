@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+
 from tavi.data.fit import Fit
 from tavi.data.tavi import TAVI
 from tavi.plotter import Plot1DManager
@@ -41,6 +42,6 @@ if __name__ == "__main__":
     tavi = TAVI()
 
     tavi_file_name = "./test_data/tavi_test_exp424.h5"
-    tavi.open_tavi_file(tavi_file_name)
+    tavi.open_file(tavi_file_name)
 
     test_fit_scan(tavi)

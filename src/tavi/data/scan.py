@@ -39,9 +39,27 @@ class Scan(object):
         self.data: ScanData = data
 
     @classmethod
-    def from_nexus(cls, nexus_path):
-        with h5py.File(nexus_path, "r") as nexus_entry:
-            (dataset_name, *scan_data) = nexus_entry_to_scan(nexus_entry)
+    def from_tavi(cls, nexus_entry):
+        (dataset_name, *scan_data) = nexus_entry_to_scan(nexus_entry)
+        (scan_info, sample_ub_info, instrument_info, data) = scan_data
+        return dataset_name, cls(scan_info, sample_ub_info, instrument_info, data)
+
+    @classmethod
+    def from_nexus(cls, nexus_file_name: str, scan_num: Optional[int] = None):
+        """Load a signle scan from NeXus file
+        Note:
+        If scan_name is None, nexus_file_name must ends with scan number e.g. scan0001.h5"""
+
+        if scan_num is None:
+            scan_name = (nexus_file_name.split("/")[-1]).split(".")[0]
+            if scan_name[0:4] != "scan":
+                raise ValueError("Unrecogonized NeXus file name. Needs to end with scan number such as scan0001.h5")
+        else:
+            scan_name = f"scan{scan_num:04}"
+
+        with h5py.File(nexus_file_name, "r") as nexus_file:
+            (dataset_name, *scan_data) = nexus_entry_to_scan(nexus_file[scan_name])
+
         (scan_info, sample_ub_info, instrument_info, data) = scan_data
         return dataset_name, cls(scan_info, sample_ub_info, instrument_info, data)
 

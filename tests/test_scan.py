@@ -1,10 +1,34 @@
 # -*- coding: utf-8 -*-
+import h5py
 import numpy as np
 
 from tavi.data.scan import Scan
+from tavi.data.tavi import TAVI
 
 
-def test_load_nexus_scan():
+def test_load_scan_from_tavi():
+    tavi = TAVI()
+    tavi_file_name = "./test_data/tavi_test_exp424.h5"
+    tavi.new_file(tavi_file_name)
+    nexus_data_folder = "./test_data/IPTS32124_CG4C_exp0424"
+    tavi.get_nexus_data_from_disk(nexus_data_folder)
+
+    with h5py.File(tavi.file_path, "r") as tavi_file:
+        dataset_name, scan = Scan.from_tavi(tavi_file["/data/IPTS32124_CG4C_exp0424/scan0042"])
+    assert dataset_name == "IPTS32124_CG4C_exp0424"
+    assert scan.scan_info.scan_num == 42
+    assert len(scan.data.s1) == 40
+
+
+def test_load_scan_from_nexus():
+    nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
+    dataset_name, scan = Scan.from_nexus(nexus_file_name, scan_num=42)
+    assert dataset_name == "IPTS32124_CG4C_exp0424"
+    assert scan.scan_info.scan_num == 42
+    assert len(scan.data.s1) == 40
+
+
+def test_load_single_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     dataset_name, scan = Scan.from_nexus(nexus_file_name)
     assert dataset_name == "IPTS32124_CG4C_exp0424"

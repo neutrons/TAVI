@@ -744,8 +744,9 @@ def convert_spice_scan_to_nexus(
         sample_config_params = None
 
     with h5py.File(scan_name, "w") as root:
-        root_name = f"IPTS{ipts}_{instrument_str}_{exp_num}"
-        nxentry = root.create_group(root_name)
+        dataset_name = f"IPTS{ipts}_{instrument_str}_{exp_num}"
+        nxentry = root.create_group(scan_num)
+        nxentry.attrs["dataset_name"] = dataset_name
         # create SPICElogs
         spice_logs = nxentry.create_group("SPICElogs")
         spice_logs.attrs["NX_class"] = "NXcollection"

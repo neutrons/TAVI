@@ -22,10 +22,10 @@ def test_scan_group_contour_exp710():
     tavi = TAVI()
 
     tavi_file_name = "./tests/test_data_folder/tavi_test_exp710.h5"
-    tavi.new_tavi_file(tavi_file_name)
+    tavi.new_file(tavi_file_name)
 
     nexus_file_name = "./tests/test_data_folder/nexus_exp710.h5"
-    tavi.load_nexus_data_from_disk(nexus_file_name)
+    tavi.get_nexus_data_from_disk(nexus_file_name)
 
     scan_list = (
         [tavi.data[f"scan{i:04}"] for i in range(214, 225, 1)]
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     tavi = TAVI()
 
     tavi_file_name = "./test_data/tavi_test_exp424.h5"
-    tavi.open_tavi_file(tavi_file_name)
+    tavi.open_file(tavi_file_name)
 
     # test_scan_group_contour(tavi)
 
