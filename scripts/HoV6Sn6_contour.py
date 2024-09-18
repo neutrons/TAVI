@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
+from tavi.data.plotter import Plot2DManager
 from tavi.data.spice_to_nexus import convert_spice_to_nexus
 from tavi.data.tavi import TAVI
-from tavi.plotter import Plot2DManager
 
 spice_folder = "./test_data/exp1031/"
 nexus_file_name = "./test_data/nexus_exp1031.h5"

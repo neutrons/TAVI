@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import h5py
+import matplotlib.pylab as plt
 import numpy as np
 
 from tavi.data.scan import Scan
@@ -39,7 +40,7 @@ def test_load_single_scan_from_nexus():
 def test_generate_curve():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, scan = Scan.from_nexus_file(nexus_file_name)
-    (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve()
+    plot = scan.generate_curve()
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -55,9 +56,9 @@ def test_generate_curve():
         + [73.738, 73.991, 74.261, 74.6, 74.638, 74.627, 75.343, 75.293, 75.183, 75.37]
     )
 
-    assert np.allclose(x, x_data)
-    assert np.allclose(y, y_data)
-    assert np.allclose(yerr, yerr_data)
+    assert np.allclose(plot.x, x_data)
+    assert np.allclose(plot.y, y_data)
+    assert np.allclose(plot.yerr, yerr_data)
     assert scan.scan_info.preset_channel == "mcu"
     assert np.allclose(scan.data.mcu, mcu_data)
     assert np.allclose(scan.data.time, time_data)
@@ -66,7 +67,7 @@ def test_generate_curve():
 def test_generate_curve_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, scan = Scan.from_nexus_file(nexus_file_name)
-    (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(norm_channel="mcu", norm_val=5)
+    plot = scan.generate_curve(norm_channel="mcu", norm_val=5)
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -75,15 +76,15 @@ def test_generate_curve_norm():
     )
     yerr_data = np.sqrt(y_data)
 
-    assert np.allclose(x, x_data)
-    assert np.allclose(y, y_data / 12)
-    assert np.allclose(yerr, yerr_data / 12)
+    assert np.allclose(plot.x, x_data)
+    assert np.allclose(plot.y, y_data / 12)
+    assert np.allclose(plot.yerr, yerr_data / 12)
 
 
 def test_generate_curve_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, scan = Scan.from_nexus_file(nexus_file_name)
-    (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(rebin_type="grid", rebin_step=0.25)
+    plot = scan.generate_curve(rebin_type="grid", rebin_step=0.25)
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -101,17 +102,15 @@ def test_generate_curve_rebin_grid():
         ]
     )
 
-    assert np.allclose(x[0:3], x_data[0:3])
-    assert np.allclose(y[0:3], y_data)
-    assert np.allclose(yerr[0:3], yerr_data)
+    assert np.allclose(plot.x[0:3], x_data[0:3])
+    assert np.allclose(plot.y[0:3], y_data)
+    assert np.allclose(plot.yerr[0:3], yerr_data)
 
 
 def test_generate_curve_rebin_grid_renorm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, scan = Scan.from_nexus_file(nexus_file_name)
-    (x, y, yerr, xlabel, ylabel, title, label) = scan.generate_curve(
-        rebin_type="grid", rebin_step=0.25, norm_channel="time", norm_val=5
-    )
+    plot = scan.generate_curve(rebin_type="grid", rebin_step=0.25, norm_channel="time", norm_val=5)
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -129,6 +128,16 @@ def test_generate_curve_rebin_grid_renorm():
         ]
     )
 
-    assert np.allclose(x[0:3], x_data[0:3])
-    assert np.allclose(y[0:3], y_data)
-    assert np.allclose(yerr[0:3], yerr_data)
+    assert np.allclose(plot.x[0:3], x_data[0:3])
+    assert np.allclose(plot.y[0:3], y_data)
+    assert np.allclose(plot.yerr[0:3], yerr_data)
+
+
+def test_plot_scan():
+    nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
+    _, s1 = Scan.from_nexus_file(nexus_file_name)
+    plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
+    assert plot1d.label == "scan 42"
+    fig, ax = plt.subplots()
+    plot1d.plot_curve(ax)
+    plt.show()

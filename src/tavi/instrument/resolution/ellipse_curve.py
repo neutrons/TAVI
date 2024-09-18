@@ -25,8 +25,8 @@ class ResoCurve(object):
         generate_plot
     """
 
-    def __init__(self):
-        self.center: float = None
+    def __init__(self) -> None:
+        self.center: float = 0.0
         self.fwhm = None
         self.r0 = None
         self.x = None

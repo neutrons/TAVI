@@ -1,9 +1,9 @@
 import matplotlib.pylab as plt
 
+from tavi.data.plotter import Plot2DManager
 from tavi.data.spice_to_nexus import convert_spice_to_nexus
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CN
-from tavi.plotter import Plot2DManager
 from tavi.sample.xtal import Xtal
 
 spice_folder = "./test_data/exp813"

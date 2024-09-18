@@ -5,6 +5,7 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 
+from tavi.data.plotter import Plot1D
 from tavi.data.scan_reader import (
     InstrumentInfo,
     SampleUBInfo,
@@ -95,13 +96,14 @@ class Scan(object):
         """Return data entry based on entry_name"""
         return self.data[entry_name]
 
-    def _set_labels(
+    def _make_labels(
         self,
+        plot1d: Plot1D,
         x_str: str,
         y_str: str,
         norm_channel: Literal["time", "monitor", "mcu", None],
         norm_val: float,
-    ):
+    ) -> Plot1D:
         """generate labels and title"""
         if norm_channel is not None:
             if norm_channel == "time":
@@ -109,18 +111,18 @@ class Scan(object):
             else:
                 norm_channel_str = norm_channel
             if norm_val == 1:
-                ylabel = y_str + "/ " + norm_channel_str
+                plot1d.ylabel = y_str + "/ " + norm_channel_str
             else:
-                ylabel = y_str + f" / {norm_val} " + norm_channel_str
+                plot1d.ylabel = y_str + f" / {norm_val} " + norm_channel_str
         else:
             preset_val = self.scan_info.preset_value
-            ylabel = y_str + f" / {preset_val} " + self.scan_info.preset_channel
+            plot1d.ylabel = y_str + f" / {preset_val} " + self.scan_info.preset_channel
 
-        xlabel = x_str
-        label = "scan " + str(self.scan_info.scan_num)
-        title = label + ": " + self.scan_info.scan_title
+        plot1d.xlabel = x_str
+        plot1d.label = "scan " + str(self.scan_info.scan_num)
+        plot1d.title = plot1d.label + ": " + self.scan_info.scan_title
 
-        return (xlabel, ylabel, title, label)
+        return plot1d
 
     def _rebin_tol(
         self,
@@ -131,11 +133,7 @@ class Scan(object):
         norm_channel: Literal["time", "monitor", "mcu", None],
         norm_val: float,
     ):
-        x_grid = np.arange(
-            np.min(x_raw) + rebin_step / 2,
-            np.max(x_raw) + rebin_step / 2,
-            rebin_step,
-        )
+        x_grid = np.arange(np.min(x_raw) + rebin_step / 2, np.max(x_raw) + rebin_step / 2, rebin_step)
         x = np.zeros_like(x_grid)
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
@@ -225,19 +223,9 @@ class Scan(object):
         norm_val: float = 1.0,
         rebin_type: Literal["tol", "grid", None] = None,
         rebin_step: float = 0.0,
-    ):
+    ) -> Plot1D:
         """Generate a curve from a single scan to plot,
-            with the options to
-            normalize the y-axis and rebin x-axis.
-
-        Returns:
-            x:
-            y:
-            yerr: if "detector"
-            xlabel:
-            ylabel:
-            title: "scan number: scan title"
-            label: run number as legend if overplotting multiple curves
+        with the options to normalize the y-axis and rebin x-axis.
         """
 
         if x_str is None:
@@ -264,9 +252,10 @@ class Scan(object):
                 if yerr is not None:
                     yerr = yerr / norm
 
-            (xlabel, ylabel, title, label) = self._set_labels(x_str, y_str, norm_channel, norm_val)
+            plot1d = Plot1D(x=x, y=y, yerr=yerr)
+            plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
 
-            return (x, y, yerr, xlabel, ylabel, title, label)
+            return plot1d
 
         if not rebin_step > 0:
             raise ValueError("Rebin step needs to be greater than zero.")
@@ -274,14 +263,16 @@ class Scan(object):
         match rebin_type:
             case "tol":  # x weighted by normalization channel
                 x, y, yerr = self._rebin_tol(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                plot1d = Plot1D(x=x, y=y, yerr=yerr)
+                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+                return plot1d
             case "grid":
                 x, y, yerr = self._rebin_grid(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                plot1d = Plot1D(x=x, y=y, yerr=yerr)
+                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+                return plot1d
             case _:
-                print('Unrecogonized rebin type. Needs to be "tol" or "grid".')
-
-        (xlabel, ylabel, title, label) = self._set_labels(x_str, y_str, norm_channel, norm_val)
-
-        return (x, y, yerr, xlabel, ylabel, title, label)
+                raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
 
     def plot_curve(
         self,
@@ -294,20 +285,8 @@ class Scan(object):
     ):
         """Plot a 1D curve gnerated from a singal scan in a new window"""
 
-        x, y, yerr, xlabel, ylabel, title, _ = self.generate_curve(
-            x_str,
-            y_str,
-            norm_channel,
-            norm_val,
-            rebin_type,
-            rebin_step,
-        )
+        plot1d = self.generate_curve(x_str, y_str, norm_channel, norm_val, rebin_type, rebin_step)
 
         fig, ax = plt.subplots()
-        ax.errorbar(x, y, yerr=yerr, fmt="o")
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.grid(alpha=0.6)
-
+        plot1d.plot_curve(ax)
         fig.show()
