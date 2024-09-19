@@ -12,7 +12,7 @@ def test_contour_plot():
     tavi_file = Path(tavi_file_name)
     if not tavi_file.is_file():
         nexus_data_folder = "./test_data/IPTS32124_CG4C_exp0424"
-        tavi.get_nexus_data_from_disk(nexus_data_folder)
+        tavi.load_nexus_data_from_disk(nexus_data_folder)
         tavi.load_data()
     else:
         tavi.open_file(tavi_file_name)

@@ -12,7 +12,7 @@ def test_load_scan_from_tavi():
     tavi_file_name = "./test_data/tavi_test_exp424.h5"
     tavi.new_file(tavi_file_name)
     nexus_data_folder = "./test_data/IPTS32124_CG4C_exp0424"
-    tavi.get_nexus_data_from_disk(nexus_data_folder)
+    tavi.load_nexus_data_from_disk(nexus_data_folder)
 
     with h5py.File(tavi.file_path, "r") as tavi_file:
         dataset_name, scan = Scan.from_nexus_entry(tavi_file["/data/IPTS32124_CG4C_exp0424/scan0042"])

@@ -14,7 +14,7 @@ tavi_file_name = "./test_data/tavi_test_exp1031.h5"
 tavi.new_file(tavi_file_name)
 
 nexus_file_name = "./test_data/nexus_exp1031.h5"
-tavi.get_nexus_data_from_disk(nexus_file_name)
+tavi.load_nexus_data_from_disk(nexus_file_name)
 dataset = tavi.data["IPTS32912_HB1A_exp1031"]
 
 # -------------- 001 s1 scans ------------

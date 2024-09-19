@@ -52,7 +52,7 @@ class TAVI(object):
         except OSError:
             print(f"Cannot create tavi file at {self.file_path}")
 
-    def get_nexus_data_from_disk(self, path_to_hdf5_folder):
+    def load_nexus_data_from_disk(self, path_to_hdf5_folder):
         """Copy hdf5 data from path_to_hdf5_folder into tavi."""
         # validate path
         if path_to_hdf5_folder[-1] != "/":
@@ -63,6 +63,7 @@ class TAVI(object):
         scan_list.sort()
 
         with h5py.File(self.file_path, "r+", track_order=True) as tavi_file:
+            scans = {}
             for scan in scan_list:
                 scan_name = scan.split(".")[0]  # e.g. "scan0001"
                 scan_path = path_to_hdf5_folder + scan
@@ -73,11 +74,13 @@ class TAVI(object):
                     scan_file.copy(
                         source=scan_file["/" + scan_name], dest=tavi_file["/data/" + dataset_name], expand_soft=True
                     )
-
-        self.load_data()
+                    nexus_entry = scan_file[scan_name]
+                    _, scan_entry = Scan.from_nexus_entry(nexus_entry)
+                scans.update({scan_name: scan_entry})
+        self.data.update({dataset_name: scans})
 
     # TODO
-    def get_spice_data_from_disk(self, path_to_spice_folder):
+    def load_spice_data_from_disk(self, path_to_spice_folder):
         """Load hdf5 data from path_to_hdf5.
 
         Args:
@@ -89,7 +92,7 @@ class TAVI(object):
         self.load_data()
 
     # TODO
-    def get_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
+    def load_data_from_oncat(self, user_credentials, ipts_info, OVERWRITE=True):
         """Load data from ONCat based on user_credentials and ipts_info.
 
         Args:
@@ -100,8 +103,9 @@ class TAVI(object):
         """
         self.load_data()
 
+    # TODO load processed_data
     def load_data(self):
-        """Load tavi data into memory"""
+        """Load data, processed_data, fits and plots in a tavi file into memory"""
 
         with h5py.File(self.file_path, "r") as tavi_file:
             for dataset_name in (tavi_data := tavi_file["data"]):
@@ -110,7 +114,6 @@ class TAVI(object):
                     nexus_entry = dataset[scan_name]
                     _, scan_entry = Scan.from_nexus_entry(nexus_entry)
                     scans.update({scan_name: scan_entry})
-
                 self.data.update({dataset_name: scans})
 
     def open_file(self, tavi_file_path):
@@ -121,7 +124,6 @@ class TAVI(object):
 
         # TODO load processed_data fits, and plots
 
-    # TODO
     def save_file(self, path_to_hdf5: Optional[str] = None):
         """Save current data to a hdf5 on disk at path_to_hdf5
 
@@ -131,37 +133,24 @@ class TAVI(object):
         if path_to_hdf5 is not None:
             self.file_path = path_to_hdf5
 
-        # TODO save processed_data fits and plots
+        try:  # mode a: Read/write if exists, create otherwise
+            with h5py.File(self.file_path, "a", track_order=True) as tavi_file:
+                if "/data" not in tavi_file:
+                    tavi_file.create_group("data", track_order=True)
+                pass
 
-    def delete_data_entry(self, entry_id):
-        """Delete a date entry from file based on entry_id.
+                if "/processed_data" not in tavi_file:
+                    tavi_file.create_group("processed_data", track_order=True)
 
-        If an data entry if deleted, also delete the fits, scan_groups, plots
-        that contains the conresponding entry.
+                # TODO save processed_data fits and plots
+                if "/fits" not in tavi_file:
+                    tavi_file.create_group("fits", track_order=True)
 
-        Args:
-            entry_id (str): ID of entry to be deteled.
-        """
-        pass
+                if "/plots" not in tavi_file:
+                    tavi_file.create_group("plots", track_order=True)
 
-    def select_entries(self, conditions):
-        """Return a list of data entry IDs which satisfis the conditions.
-
-        All data points in a scan have to satisfy all conditions.
-
-        Args:
-            conditions (dict): scan[key] equals value
-                or in the range of (vaule[0], value[1])
-                for example: {"IPTS":1234, "temperature":(2,5)}
-
-        Returns:
-            tuple: entry IDs
-
-        """
-        pass
-
-    def get_selected(self):
-        return "scan0001"
+        except OSError:
+            print(f"Cannot create tavi file at {self.file_path}")
 
     def generate_scan_group(
         self,

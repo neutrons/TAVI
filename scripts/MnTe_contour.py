@@ -15,7 +15,7 @@ tavi = TAVI()
 
 tavi_file_name = "./test_data/tavi_test_exp0813.h5"
 tavi.new_file(tavi_file_name)
-tavi.get_nexus_data_from_disk(nexus_folder)
+tavi.load_nexus_data_from_disk(nexus_folder)
 dataset = tavi.data["IPTS34735_HB3_exp0813"]
 
 # -------------- H0L const Q scans ------------

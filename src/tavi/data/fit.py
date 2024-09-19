@@ -1,9 +1,16 @@
+from typing import Optional
+
 import numpy as np
 from lmfit import Parameters, models
 
+from tavi.data.plotter import Plot1D
 
-class Fit(object):
-    """Save information about fits"""
+
+class Fit1D(object):
+    """Fit a 1d curve
+
+    Attributes:
+        NUM_PTS (int): number of points for the fit curve"""
 
     models = {
         # ---------- peak models ---------------
@@ -25,47 +32,35 @@ class Fit(object):
         "Spline": models.SplineModel,
     }
 
-    def __init__(self, x, y, err=None, fit_range=None):
-        """
-        initialize a fit model
+    def __init__(self, plot1d: Plot1D):
+        """initialize a fit model"""
+        self.NUM_PTS: int = 100
+        self.x = plot1d.x
+        self.y = plot1d.y
+        self.yerr = plot1d.yerr
 
-        Args:
-            x (list)
-            y (list)
-            err (list | None)
-            fit_range (tuple)
-            NUM_PTS (int): number of points for the fit curve
-        """
-        self.NUM_PTS = 100
-        self.range = fit_range
-        self.x = np.array(x)
-        self.y = np.array(y)
-        self.err = err
-
-        # trim the range
-        if fit_range is not None:
-            fit_min, fit_max = fit_range
-            mask = np.bitwise_and(x >= fit_min, x <= fit_max)
-            self.x = self.x[mask]
-            self.y = self.y[mask]
-            if self.err is not None:
-                self.err = self.err[mask]
-
-        self.x_plot = np.linspace(
-            self.x.min(),
-            self.x.max(),
-            num=self.NUM_PTS,
-        )
-        self.y_plot = None
-
-        self.background_models = []
-        self.signal_models = []
+        self.background_models: models = []
+        self.signal_models: models = []
         self.pars = Parameters()
         self.num_backgrounds = 0
         self.num_signals = 0
         self.fit_result = None
 
         self.PLOT_SEPARATELY = False
+        self.fit_plot: Optional[Plot1D] = None
+
+    def set_range(self, fit_min, fit_max):
+        """set the range used for fitting"""
+
+        mask = np.bitwise_and(self.x >= fit_min, self.x <= fit_max)
+        self.x = self.x[mask]
+        self.y = self.y[mask]
+        if self.yerr is not None:
+            self.yerr = self.yerr[mask]
+
+    @property
+    def x_plot(self):
+        return np.linspace(self.x.min(), self.x.max(), num=self.NUM_PTS)
 
     def add_background(
         self,
@@ -94,7 +89,7 @@ class Fit(object):
             prefix = f"b{self.num_backgrounds}_"
         else:
             prefix = ""
-        model = Fit.models[model](prefix=prefix, nan_policy="propagate")
+        model = Fit1D.models[model](prefix=prefix, nan_policy="propagate")
         param_names = model.param_names
         # guess initials
         pars = model.guess(self.y, x=self.x)
@@ -150,7 +145,7 @@ class Fit(object):
         """
         self.num_signals += 1
         prefix = f"s{self.num_signals}_"
-        model = Fit.models[model](prefix=prefix, nan_policy="propagate")
+        model = Fit1D.models[model](prefix=prefix, nan_policy="propagate")
         param_names = model.param_names
         # guess initials
         pars = model.guess(self.y, x=self.x)
@@ -184,19 +179,19 @@ class Fit(object):
             self.pars.add(pars[param_name])
         self.signal_models.append(model)
 
-    def perform_fit(self):
+    def perform_fit(self) -> None:
         model = np.sum(self.signal_models)
 
         if self.num_backgrounds > 0:
             model += np.sum(self.background_models)
 
-        if self.err is None:
+        if self.yerr is None:
             out = model.fit(self.y, self.pars, x=self.x)
         else:
-            out = model.fit(self.y, self.pars, x=self.x, weights=self.err)
+            out = model.fit(self.y, self.pars, x=self.x, weights=self.yerr)
 
         self.result = out
         self.y_plot = model.eval(out.params, x=self.x_plot)
 
-        fit_report = out.fit_report(min_correl=0.25)
-        return fit_report
+        self.fit_report = out.fit_report(min_correl=0.25)
+        self.fit_plot = Plot1D(x=self.x_plot, y=self.y_plot)

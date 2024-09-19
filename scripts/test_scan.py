@@ -25,7 +25,7 @@ def test_scan_group_contour_exp710():
     tavi.new_file(tavi_file_name)
 
     nexus_file_name = "./tests/test_data_folder/nexus_exp710.h5"
-    tavi.get_nexus_data_from_disk(nexus_file_name)
+    tavi.load_nexus_data_from_disk(nexus_file_name)
 
     scan_list = (
         [tavi.data[f"scan{i:04}"] for i in range(214, 225, 1)]
