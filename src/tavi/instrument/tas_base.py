@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Optional, Union
 
-from tavi.data.scan import Scan
+from tavi.data.scan_old.scan import Scan
 from tavi.instrument.goni import Goniometer
 from tavi.instrument.mono_ana import MonoAna
 from tavi.instrument.tas_cmponents import Collimators, Detector, Distances, Guide, Monitor, Source

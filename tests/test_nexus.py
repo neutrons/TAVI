@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from tavi.data.spice_to_nexus import _format_spice_header, _read_spice, _read_spice_ub, convert_spice_to_nexus
+from tavi.data.scan_old.spice_to_nexus import _format_spice_header, _read_spice, _read_spice_ub, convert_spice_to_nexus
 
 
 def test_read_spice():

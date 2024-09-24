@@ -47,6 +47,14 @@ def test_from_nexus():
     assert np.allclose(nexus_entry.get("instrument/analyser/a2"), np.array([242.0, 242.1, 242.2]))
 
 
+def test_from_nexus_IPTS32124_CG4C_exp0424():
+    path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
+    nexus_entry = NexusEntry.from_nexus(path_to_nexus_entry)
+    assert nexus_entry.get("definition") == "NXtas"
+    assert nexus_entry.get("end_time") == "2024-07-03T02:41:28"
+    assert np.allclose(nexus_entry.get("s1")[0:3], [36.14, 36.5025, 36.855])
+
+
 @pytest.fixture
 def nexus_entry():
 

@@ -2,6 +2,13 @@ import h5py
 
 
 class NexusEntry(dict):
+    """Read and write NeXus data files.
+
+    Methods:
+        from_nexus
+        to_nexus
+        get
+    """
 
     @staticmethod
     def _getitem_recursively(obj: dict, key: str, ATTRS: bool):
@@ -86,27 +93,51 @@ class NexusEntry(dict):
 
         return items
 
+    @classmethod
+    def from_spice(cls, path_to_spice_folder: str) -> dict:
+        """return a NexusEntry instance from loading a SPICE file
+
+        Args:
+            path_to_spice_folder (str): path to a SPICE folder
+        """
+
+        nexus_dict = {}
+        return cls([(key, val) for key, val in nexus_dict.items()])
+
+    @classmethod
+    def from_nexus(cls, path_to_nexus: str) -> dict:
+        """return a NexusEntry instance from loading a NeXus file
+
+        Args:
+            path_to_nexus (str): path to a NeXus file with the extension .h5
+        """
+        with h5py.File(path_to_nexus, "r") as nexus_file:
+            nexus_dict = NexusEntry._read_recursively(nexus_file)
+        return cls([(key, val) for key, val in nexus_dict.items()])
+
+    def to_nexus(self, path_to_nexus: str) -> None:
+        """write a NexueEntry instance to a NeXus file
+
+        Args:
+            path_to_nexus (str): path to a NeXus file with the extention .h5
+        """
+        with h5py.File(path_to_nexus, "w") as nexus_file:
+            NexusEntry._write_recursively(self, nexus_file)
+
+    # TODO need to catch errors when multiple IPTS are loaded in a tavi file
     def get(self, key, ATTRS=False, default=None):
         """
         Return dataset spicified by key regardless of the hierarchy.
         Return attributes instead if ATTRS is True.
+
+        Args:
+            key (str): keyword or path. e.g. "s1" or "detector/data"
+            ATTRS (bool): return attributes if ture, dataset if false
 
         Note:
             Unique keys like 's1' or 'm2' can be found straight forwardly.
             To find monitor or detecor data use monitor/data or detector/data
         """
         value = NexusEntry._getitem_recursively(self, key, ATTRS)
-        if value is not None:
-            return value
-        else:
-            return default
 
-    @classmethod
-    def from_nexus(cls, path_to_nexus: str) -> dict:
-        with h5py.File(path_to_nexus, "r") as nexus_file:
-            nexus_dict = NexusEntry._read_recursively(nexus_file)
-        return cls([(key, val) for key, val in nexus_dict.items()])
-
-    def to_nexus(self, path_to_nexus: str) -> None:
-        with h5py.File(path_to_nexus, "w") as nexus_file:
-            NexusEntry._write_recursively(self, nexus_file)
+        return value if value is not None else default

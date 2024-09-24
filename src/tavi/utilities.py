@@ -62,17 +62,6 @@ class Peak(NamedTuple):
     ef: Optional[float] = None
 
 
-class UBConf(NamedTuple):
-    "Logs for UB matrix determination"
-
-    ub_peaks: Optional[tuple[Peak, ...]] = None
-    u_mat: Optional[np.ndarray] = None
-    b_mat: Optional[np.ndarray] = None
-    ub_mat: Optional[np.ndarray] = None
-    plane_normal: Optional[np.ndarray] = None
-    in_plane_ref: Optional[np.ndarray] = None
-
-
 # --------------------------------------------------------------------------
 # helper functions
 # --------------------------------------------------------------------------

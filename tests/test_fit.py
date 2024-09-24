@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.fit import Fit1D
-from tavi.data.scan import Scan
+from tavi.data.scan_old.scan import Scan
 
 
 def test_fit_single_peak():

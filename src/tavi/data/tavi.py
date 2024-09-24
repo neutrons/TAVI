@@ -4,8 +4,8 @@ from typing import Optional
 
 import h5py
 
-from tavi.data.scan import Scan
 from tavi.data.scan_group import ScanGroup
+from tavi.data.scan_old.scan import Scan
 
 
 class TAVI(object):
