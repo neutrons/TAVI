@@ -1,4 +1,8 @@
+from typing import Optional
+
 import h5py
+
+from tavi.data.spice_reader import spice_data_reader
 
 
 class NexusEntry(dict):
@@ -58,14 +62,14 @@ class NexusEntry(dict):
                         dv = value["dataset"]
                         if isinstance(dv, str):
                             dv = dv.encode("utf-8")
-                        ds = nexus_entry.create_dataset(
-                            name=key,
-                            data=dv,
-                            maxshape=None,
-                        )
+                        if key in nexus_entry:
+                            ds = nexus_entry[key]
+                            ds[...] = dv
+                        else:
+                            ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
                         NexusEntry._write_recursively(value, ds)
                     else:
-                        grp = nexus_entry.create_group(key + "/")
+                        grp = nexus_entry.require_group(key + "/")
                         NexusEntry._write_recursively(value, grp)
 
     @staticmethod
@@ -93,29 +97,62 @@ class NexusEntry(dict):
 
         return items
 
+    @staticmethod
+    def _dict_to_nexus_entry(nexus_dict):
+        """convert nested dict to instances of the NexusEntry class"""
+        nexus_entries = {}
+        for scan_num, scan_content in nexus_dict.items():
+            content_list = []
+            for key, val in scan_content.items():
+                content_list.append((key, val))
+            nexus_entries.update({scan_num: NexusEntry(content_list)})
+        return nexus_entries
+
+    # TODO read in instrument and sample configuratio json files
     @classmethod
-    def from_spice(cls, path_to_spice_folder: str) -> dict:
+    def from_spice(
+        cls,
+        path_to_spice_folder: str,
+        scan_num: Optional[int] = None,
+        path_to_instrument_json: Optional[str] = None,
+        path_to_sample_json: Optional[str] = None,
+    ) -> dict:
         """return a NexusEntry instance from loading a SPICE file
 
         Args:
             path_to_spice_folder (str): path to a SPICE folder
+            scan_num (int): read all scans in folder if not None
+            path_to_instrument_json: Optional[str] = None,
+            path_to_sample_json: Optional[str] = None,
         """
+        # TODO validate path
 
-        nexus_dict = {}
-        return cls([(key, val) for key, val in nexus_dict.items()])
+        nexus_dict = spice_data_reader(
+            path_to_spice_folder,
+            scan_num,
+            path_to_instrument_json,
+            path_to_sample_json,
+        )
+
+        return NexusEntry._dict_to_nexus_entry(nexus_dict)
 
     @classmethod
-    def from_nexus(cls, path_to_nexus: str) -> dict:
+    def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None) -> dict:
         """return a NexusEntry instance from loading a NeXus file
 
         Args:
             path_to_nexus (str): path to a NeXus file with the extension .h5
+            scan_num (int): read all scans in file if not None
         """
         with h5py.File(path_to_nexus, "r") as nexus_file:
-            nexus_dict = NexusEntry._read_recursively(nexus_file)
-        return cls([(key, val) for key, val in nexus_dict.items()])
+            if scan_num is None:  # read all scans in file
+                nexus_dict = NexusEntry._read_recursively(nexus_file)
+            else:  # read one scan only
+                key = f"scan{scan_num:04}"
+                nexus_dict = {key: NexusEntry._read_recursively(nexus_file[key])}
 
-    # TODO
+        return NexusEntry._dict_to_nexus_entry(nexus_dict)
+
     def to_nexus(self, path_to_nexus: str, name="scan") -> None:
         """write a NexueEntry instance to a NeXus file
 
@@ -123,12 +160,9 @@ class NexusEntry(dict):
             path_to_nexus (str): path to a NeXus file with the extention .h5
         """
         with h5py.File(path_to_nexus, "a") as nexus_file:
-            # TODO what if a group alreay exsit??
-            pass
-            scan_grp = nexus_file.create_group(name + "/")
+            scan_grp = nexus_file.require_group(name + "/")
             NexusEntry._write_recursively(self, scan_grp)
 
-    # TODO need to catch errors when multiple IPTS are loaded in a tavi file
     def get(self, key, ATTRS=False, default=None):
         """
         Return dataset spicified by key regardless of the hierarchy.

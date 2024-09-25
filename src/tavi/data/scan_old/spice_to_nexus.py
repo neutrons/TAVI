@@ -216,7 +216,7 @@ def _nexus_mono(nxmono, das_logs, instrument_config_params=None):
         nxmono["ei"].attrs["units"] = "meV"
 
         nxmono.create_dataset(name="type", data=das_logs.attrs["monochromator"], maxshape=None)
-        nxmono.attrs["type"] = "NX_CHAR"
+        nxmono["type"].attrs["type"] = "NX_CHAR"
 
         nxmono.create_dataset(name="m1", data=das_logs["m1"], maxshape=None)
         nxmono["m1"].attrs["type"] = "NX_FLOAT"

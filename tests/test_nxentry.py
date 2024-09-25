@@ -36,29 +36,54 @@ def test_to_nexus(nexus_entries):
 
 
 def test_from_nexus():
-    # path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
     path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
-    nexus_entry = NexusEntry.from_nexus(path_to_nexus_entry)
-    assert nexus_entry.get("definition") == "NXtas"
-    assert np.allclose(nexus_entry.get("a2"), np.array([242.0, 242.1, 242.2]))
-    assert nexus_entry.get("data", ATTRS=True) == {
+    nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry)
+    scan0034 = nexus_entries["scan0034"]
+    assert scan0034.get("definition") == "NXtas"
+    assert np.allclose(scan0034.get("a2"), np.array([242.0, 242.1, 242.2]))
+    assert scan0034.get("data", ATTRS=True) == {
         "EX_required": "true",
         "NX_class": "NXdata",
         "axes": "en",
         "signal": "detector",
     }
-    assert nexus_entry.get("a3") is None
-    assert nexus_entry.get("detector") is None
-    assert nexus_entry.get("detector/data", ATTRS=True) == {"EX_required": "true", "type": "NX_INT", "units": "counts"}
-    assert np.allclose(nexus_entry.get("instrument/analyser/a2"), np.array([242.0, 242.1, 242.2]))
+    assert scan0034.get("a3") is None
+    assert scan0034.get("detector") is None
+    assert scan0034.get("detector/data", ATTRS=True) == {"EX_required": "true", "type": "NX_INT", "units": "counts"}
+    assert np.allclose(scan0034.get("instrument/analyser/a2"), np.array([242.0, 242.1, 242.2]))
+
+    scan0035 = nexus_entries["scan0035"]
+    assert scan0035.get("title") == "scan_title_35"
+
+
+def test_from_nexus_single_scan():
+    path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
+    nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry, scan_num=35)
+    scan0035 = nexus_entries["scan0035"]
+    assert scan0035.get("title") == "scan_title_35"
 
 
 def test_from_nexus_IPTS32124_CG4C_exp0424():
     path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
-    nexus_entry = NexusEntry.from_nexus(path_to_nexus_entry)
-    assert nexus_entry.get("definition") == "NXtas"
-    assert nexus_entry.get("end_time") == "2024-07-03T02:41:28"
-    assert np.allclose(nexus_entry.get("s1")[0:3], [36.14, 36.5025, 36.855])
+    nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry)
+    scan0034 = nexus_entries["scan0034"]
+    assert scan0034.get("definition") == "NXtas"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
+
+
+def test_from_spice_IPTS32124_CG4C_exp0424():
+    path_to_spice_entry = "./test_data/exp424"
+    nexus_entries = NexusEntry.from_spice(path_to_spice_entry, 34)
+
+    path_to_nexus_entry = "./test_data/spice_to_nexus_test_scan34.h5"
+    for scan_num, nexus_entry in nexus_entries.items():
+        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
+
+    # scan0034 = nexus_entries["scan0034"]
+    # assert scan0034.get("definition") == "NXtas"
+    # assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    # assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
 
 
 @pytest.fixture
@@ -100,31 +125,31 @@ def nexus_entries():
     }
 
     entries = {
-        # "scan0034": {
-        #     "attrs": {
-        #         "EX_required": "true",
-        #         "NX_class": "NXentry",
-        #         "dataset_name": "IPTS32124_CG4C_exp0424",
-        #     },
-        #     "definition": {
-        #         "attrs": {"EX_required": "true", "type": "NX_CHAR"},
-        #         "dataset": "NXtas",
-        #     },
-        #     "title": {
-        #         "attrs": {"EX_required": "true", "type": "NX_CHAR"},
-        #         "dataset": "scan_title_34",
-        #     },
-        #     "data": {
-        #         "attrs": {
-        #             "EX_required": "true",
-        #             "NX_class": "NXdata",
-        #             "axes": "en",
-        #             "signal": "detector",
-        #         }
-        #     },
-        #     "instrument": instrument,
-        #     "monitor": monitor,
-        # },
+        "scan0034": {
+            "attrs": {
+                "EX_required": "true",
+                "NX_class": "NXentry",
+                "dataset_name": "IPTS32124_CG4C_exp0424",
+            },
+            "definition": {
+                "attrs": {"EX_required": "true", "type": "NX_CHAR"},
+                "dataset": "NXtas",
+            },
+            "title": {
+                "attrs": {"EX_required": "true", "type": "NX_CHAR"},
+                "dataset": "scan_title_34",
+            },
+            "data": {
+                "attrs": {
+                    "EX_required": "true",
+                    "NX_class": "NXdata",
+                    "axes": "en",
+                    "signal": "detector",
+                }
+            },
+            "instrument": instrument,
+            "monitor": monitor,
+        },
         "scan0035": {
             "title": {
                 "attrs": {"EX_required": "true", "type": "NX_CHAR"},
@@ -133,11 +158,13 @@ def nexus_entries():
         },
     }
 
-    nexus_entres = {}
+    # convert dict to NeXus entries
+
+    nexus_entries = {}
     for scan_num, scan_content in entries.items():
         content_list = []
         for key, val in scan_content.items():
             content_list.append((key, val))
-        nexus_entres.update({scan_num: NexusEntry(content_list)})
+        nexus_entries.update({scan_num: NexusEntry(content_list)})
 
-    return nexus_entres
+    return nexus_entries
