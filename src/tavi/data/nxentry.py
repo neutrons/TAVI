@@ -115,14 +115,18 @@ class NexusEntry(dict):
             nexus_dict = NexusEntry._read_recursively(nexus_file)
         return cls([(key, val) for key, val in nexus_dict.items()])
 
-    def to_nexus(self, path_to_nexus: str) -> None:
+    # TODO
+    def to_nexus(self, path_to_nexus: str, name="scan") -> None:
         """write a NexueEntry instance to a NeXus file
 
         Args:
             path_to_nexus (str): path to a NeXus file with the extention .h5
         """
-        with h5py.File(path_to_nexus, "w") as nexus_file:
-            NexusEntry._write_recursively(self, nexus_file)
+        with h5py.File(path_to_nexus, "a") as nexus_file:
+            # TODO what if a group alreay exsit??
+            pass
+            scan_grp = nexus_file.create_group(name + "/")
+            NexusEntry._write_recursively(self, scan_grp)
 
     # TODO need to catch errors when multiple IPTS are loaded in a tavi file
     def get(self, key, ATTRS=False, default=None):
