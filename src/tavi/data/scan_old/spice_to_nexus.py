@@ -514,7 +514,7 @@ def _nexus_coll(nxcoll, das_logs, instrument_config_params=None):
         div_x = [float(v) for v in list(das_logs.attrs["collimation"].split("-"))]
         nxcoll.create_dataset(name="divergence_x", data=div_x, maxshape=None)
         nxcoll["divergence_x"].attrs["type"] = "NX_ANGLE"
-        nxcoll["divergence_x"].attrs["units"] = "minutes of aarc"
+        nxcoll["divergence_x"].attrs["units"] = "minutes of arc"
 
     except KeyError:
         pass

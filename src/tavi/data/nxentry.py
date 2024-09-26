@@ -1,6 +1,7 @@
 from typing import Optional
 
 import h5py
+import numpy as np
 
 from tavi.data.spice_reader import spice_data_reader
 
@@ -50,6 +51,27 @@ class NexusEntry(dict):
         string encoded with utf-8
         """
 
+        def format_dataset(value):
+            """format if type is given in attributes"""
+            dv = value["dataset"]
+
+            if attr := value.get("attrs"):
+                attr_type = attr.get("type")
+                match attr_type:
+                    case "NX_CHAR":
+                        dv = dv.encode("utf-8")
+                    case "NX_FLOAT":
+                        dv = np.array(dv).astype("float")
+                    case "NX_INT":
+                        dv = np.array(dv).astype("int")
+                    case "NX_DATE_TIME":
+                        pass
+                    case _:
+                        if isinstance(dv, str):
+                            dv = dv.encode("utf-8")
+            print(dv)
+            return dv
+
         for key, value in items.items():
             if key == "attrs":
                 for attr_key, attr_value in value.items():
@@ -59,13 +81,11 @@ class NexusEntry(dict):
             else:
                 if isinstance(value, dict):
                     if "dataset" in value.keys():
-                        dv = value["dataset"]
-                        if isinstance(dv, str):
-                            dv = dv.encode("utf-8")
-                        if key in nexus_entry:
+                        dv = format_dataset(value)
+                        if key in nexus_entry:  # dataset exists
                             ds = nexus_entry[key]
                             ds[...] = dv
-                        else:
+                        else:  # create dataset
                             ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
                         NexusEntry._write_recursively(value, ds)
                     else:
