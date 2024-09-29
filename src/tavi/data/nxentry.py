@@ -3,7 +3,7 @@ from typing import Optional
 import h5py
 import numpy as np
 
-from tavi.data.spice_reader import spice_data_reader
+from tavi.data.spice_reader import spice_data_to_nxdict
 
 
 class NexusEntry(dict):
@@ -55,21 +55,23 @@ class NexusEntry(dict):
             """format if type is given in attributes"""
             dv = value["dataset"]
 
-            if attr := value.get("attrs"):
-                attr_type = attr.get("type")
-                match attr_type:
-                    case "NX_CHAR":
+            if not (attr := value.get("attrs")):
+                return dv
+
+            attr_type = attr.get("type")
+            match attr_type:
+                case "NX_CHAR":
+                    dv = dv.encode("utf-8")
+                case "NX_FLOAT":
+                    dv = np.array(dv).astype("float")
+                case "NX_INT":
+                    dv = np.array(dv).astype("int")
+                case "NX_DATE_TIME":
+                    pass
+                case _:
+                    if isinstance(dv, str):
                         dv = dv.encode("utf-8")
-                    case "NX_FLOAT":
-                        dv = np.array(dv).astype("float")
-                    case "NX_INT":
-                        dv = np.array(dv).astype("int")
-                    case "NX_DATE_TIME":
-                        pass
-                    case _:
-                        if isinstance(dv, str):
-                            dv = dv.encode("utf-8")
-            print(dv)
+            # print(dv)
             return dv
 
         for key, value in items.items():
@@ -78,19 +80,18 @@ class NexusEntry(dict):
                     if isinstance(attr_value, str):
                         attr_value = attr_value.encode("utf-8")
                     nexus_entry.attrs[attr_key] = attr_value
-            else:
-                if isinstance(value, dict):
-                    if "dataset" in value.keys():
-                        dv = format_dataset(value)
-                        if key in nexus_entry:  # dataset exists
-                            ds = nexus_entry[key]
-                            ds[...] = dv
-                        else:  # create dataset
-                            ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
-                        NexusEntry._write_recursively(value, ds)
-                    else:
-                        grp = nexus_entry.require_group(key + "/")
-                        NexusEntry._write_recursively(value, grp)
+            elif isinstance(value, dict):
+                if "dataset" in value.keys():
+                    dv = format_dataset(value)
+                    if key in nexus_entry:  # dataset exists
+                        ds = nexus_entry[key]
+                        ds[...] = dv
+                    else:  # create dataset
+                        ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
+                    NexusEntry._write_recursively(value, ds)
+                else:
+                    grp = nexus_entry.require_group(key + "/")
+                    NexusEntry._write_recursively(value, grp)
 
     @staticmethod
     def _read_recursively(nexus_entry, items=None):
@@ -147,7 +148,7 @@ class NexusEntry(dict):
         """
         # TODO validate path
 
-        nexus_dict = spice_data_reader(
+        nexus_dict = spice_data_to_nxdict(
             path_to_spice_folder,
             scan_num,
             path_to_instrument_json,
@@ -187,6 +188,7 @@ class NexusEntry(dict):
         """
         Return dataset spicified by key regardless of the hierarchy.
         Return attributes instead if ATTRS is True.
+        Look only in the NeXus contents, ignore the DAS logs.
 
         Args:
             key (str): keyword or path. e.g. "s1" or "detector/data"
@@ -196,6 +198,28 @@ class NexusEntry(dict):
             Unique keys like 's1' or 'm2' can be found straight forwardly.
             To find monitor or detecor data use monitor/data or detector/data
         """
+        # remove daslogs
+        for log in ("SPICElogs", "DASlogs"):
+            if log in self.keys():
+                self.pop(log)
         value = NexusEntry._getitem_recursively(self, key, ATTRS)
 
+        return value if value is not None else default
+
+    def get_data_from_daslogs(self, key, default=None):
+        """Look up data specified by key from das logs"""
+        for log in ("SPICElogs", "DASlogs"):
+            if log in self.keys():
+                daslogs = self[log]
+                continue
+        value = daslogs.get(key)
+        return value["dataset"] if value is not None else default
+
+    def get_metadata_from_daslogs(self, key, default=None):
+        """Look up metadata specified by key from das logs"""
+        for log in ("SPICElogs", "DASlogs"):
+            if log in self.keys():
+                daslogs = self[log]
+                continue
+        value = daslogs["attrs"].get(key, None)
         return value if value is not None else default

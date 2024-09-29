@@ -80,10 +80,18 @@ def test_from_spice_IPTS32124_CG4C_exp0424():
     for scan_num, nexus_entry in nexus_entries.items():
         nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
 
-    # scan0034 = nexus_entries["scan0034"]
-    # assert scan0034.get("definition") == "NXtas"
-    # assert scan0034.get("end_time") == "2024-07-03T02:41:28"
-    # assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
+    scan0034 = NexusEntry.from_nexus(path_to_nexus_entry, 34)["scan0034"]
+
+    assert scan0034.get("definition") == "NXtas"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    # assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
+
+
+def test_get_from_daslogs():
+    path_to_nexus_entry = "./test_data/spice_to_nexus_test_scan34.h5"
+    scan0034 = NexusEntry.from_nexus(path_to_nexus_entry, 34)["scan0034"]
+    assert scan0034.get_metadata_from_daslogs("sense") == "-+-"
+    assert np.allclose(scan0034.get_data_from_daslogs("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
 
 @pytest.fixture

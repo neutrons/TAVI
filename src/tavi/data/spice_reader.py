@@ -6,7 +6,7 @@ from typing import Optional
 
 import numpy as np
 
-from tavi.data.nxdict import daslogs_to_nexus_dict
+from tavi.data.nxdict import spicelogs_to_nested_dict
 
 
 def read_spice_datafile(file_name: str):
@@ -16,52 +16,55 @@ def read_spice_datafile(file_name: str):
         file_name (str): a string containing the filename
 
     Returns:
-        spice_data (np.ndarray): an array containing all columns/rows
-        headers (dict): a dictionary containing information from the commented lines.
-        col_headers (tuple): name of each collum in spice_data
-        others (tuple): unrecogonized variables
+        data (np.ndarray): an array containing all columns/rows
+        metadata (dict): a dictionary containing information from the commented lines.
+        col_names (tuple): name of each collum in spice_data
+        others (tuple): unrecogonized lines
+        error_messages(tuple): contains line of error message such as unreachable motor positions
     """
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
-    metadata = [line.strip() for line in all_content if "#" in line]
-    index_col_name = metadata.index("# col_headers =")
-    col_headers = metadata[index_col_name + 1].strip("#").split()
-    col_headers[0] = "Pt"  # remove the dot
-    col_headers = tuple(col_headers)
-    metadata_list = metadata[:index_col_name]
-    error_messages = metadata[index_col_name + 2 :]
+    headers = [line.strip() for line in all_content if "#" in line]
+    index_col_name = headers.index("# col_headers =")
+    col_names = headers[index_col_name + 1].strip("#").split()
+    # remove the dot before it causes problem
+    # index_of_pt = col_names.index("Pt.")
+    # col_names[index_of_pt] = "Pt"
+    metadata_list = headers[:index_col_name]
+    error_messages = headers[index_col_name + 2 :]
 
-    index_sum_count = [i for i, header in enumerate(metadata) if header.startswith("# Sum of Counts =")]
+    index_sum_count = [i for i, header in enumerate(headers) if header.startswith("# Sum of Counts =")]
     # in case "Sum of Counts" doesn't exist
     # happens to the last scan after beam is down
     if len(index_sum_count) != 0:
-        metadata_list += metadata[index_sum_count[0] :]
-        error_messages = tuple(error_messages[: index_sum_count[0] - len(metadata)])
+        metadata_list += headers[index_sum_count[0] :]
+        error_messages = error_messages[: index_sum_count[0] - len(headers)]
 
-    headers = {}
-    others = ()
+    metadata = {}
+    others = []
 
     for metadata_entry in metadata_list:
         line = metadata_entry.strip("# ")
 
         if "completed" in line or "stopped" in line:  # last line
             parts = line.split(" ")
-            headers["end_time"] = parts[3] + " " + parts[0] + " " + parts[1]
+            end_time = parts[3] + " " + parts[0] + " " + parts[1]
+            metadata.update({"end_time": end_time})
         # elif line[-1] == "=":  # empty line
         #     unused.append(line[:-2])  # remove  " ="
         elif "=" in line:  # useful line
             parts = line.split("=")
             key = parts[0].strip()
             val = "=".join(parts[1:])[1:]  # remove the fisrt space charactor
-            headers[key] = val
+            metadata.update({key: val})
         else:  # how did you get here?
-            others += (line,)
+            others.append(line)
     # others = tuple(others)
 
-    spice_data = np.genfromtxt(file_name, comments="#")
+    data = np.genfromtxt(file_name, comments="#")
 
-    return (spice_data, col_headers, headers, others, error_messages)
+    return (data, tuple(col_names), metadata, tuple(others), tuple(error_messages))
 
 
 def read_spice_ubconf(ub_file_name: str):
@@ -76,26 +79,23 @@ def read_spice_ubconf(ub_file_name: str):
         elif line.strip()[0] == "[":
             continue  # skiplines like "[xx]"
 
-        ub_dict = {}
         key, val = line.strip().split("=")
         if key == "Mode":
-            if all_content[idx - 1].strip() == "[UBMode]":
-                ub_dict["UBMode"] = int(val)
-            elif all_content[idx - 1].strip() == "[AngleMode]":
-                ub_dict["AngleMode"] = int(val)
-        else:
-            if "," in line:  # vector
-                ub_dict[key] = np.array([float(v) for v in val.strip('"').split(",")])
-            else:  # float number
-                ub_dict[key] = float(val)
-
-        ubconf.update(ub_dict)
+            mode_name = all_content[idx - 1].strip()
+            if mode_name == "[UBMode]":
+                ubconf.update({"UBMode": int(val)})
+            elif mode_name == "[AngleMode]":
+                ubconf.update({"AngleMode": int(val)})
+        elif "," in line:  # vector
+            ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
+        else:  # float number
+            ubconf.update({key: float(val)})
 
     return ubconf
 
 
 def format_spice_header(headers):
-    """Convert metadata in SPICE to be approperiate format"""
+    """Convert metadata in SPICE to be appropriate format."""
 
     formatted_headers = {}
 
@@ -121,95 +121,80 @@ def format_spice_header(headers):
                 formatted_headers.update({"FWHM": np.nan, "FWHM_err": np.nan})
             else:
                 fwhm, e_fwhm = v.split("+/-")
-                formatted_headers.update({"FWHM": float(com), "FWHM_err": float(e_com)})
+                formatted_headers.update({"FWHM": float(fwhm), "FWHM_err": float(e_fwhm)})
         else:  # other crap, keep as is
             formatted_headers.update({k: v})
 
     return formatted_headers
 
 
-def create_spicelogs(path_to_scan_file: str) -> tuple[str, dict]:
-    """read in SPICE data, return a dictionary"""
-    (
-        spice_data,
-        col_headers,
-        headers,
-        others,
-        error_messages,
-    ) = read_spice_datafile(path_to_scan_file)
-    formatted_headers = format_spice_header(headers)
+def _create_spicelogs(path_to_scan_file: str) -> dict:
+    """read in SPICE data, return a dictionary containing metadata and data columns"""
+    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_scan_file)
 
-    ipts = headers["proposal"]
-    spice_file_name = path_to_scan_file.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
-    instrument_str, exp_num, scan_num = spice_file_name.split("_")
-    scan_name = scan_num.split(".")[0]  # e.g. "scan0001"
-
-    attrs_dict = {
-        "NX_class": "NXcollection",
-        "EX_required": "false",
-        "instrument": instrument_str,
-    }
     # write SPICElogs attributes
-    for k, v in formatted_headers.items():
+    attrs_dict = {"NX_class": "NXcollection", "EX_required": "false"}
+    for k, v in metadata.items():
         attrs_dict.update({k: v})
     if len(error_messages) != 0:
         attrs_dict.update({"Error Messages": error_messages})
+    if len(others) != 0:
+        attrs_dict.update({"Others": others})
 
-    dataset_dict = {}
     # write SPICElogs datasets
-    spice_data_shape = spice_data.shape
+    dataset_dict = {}
+    spice_data_shape = data.shape
     if len(spice_data_shape) == 1:  # 1 row ony
         if spice_data_shape[0] != 0:
-            for idx, col_header in enumerate(col_headers):
-                dataset_dict.update({col_header: spice_data[idx]})
+            for idx, col_header in enumerate(col_names):
+                dataset_dict.update({col_header: data[idx]})
         else:  # ignore if empty
             pass
     elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
         # print(scan_num)
         # print(spice_data.shape)
-        for idx, col_header in enumerate(col_headers):
-            dataset_dict.update({col_header: spice_data[:, idx]})
-    spicelogs = {"SPICElogs": {"attrs": attrs_dict}}
-    spicelogs["SPICElogs"].update(dataset_dict)
-    # spicelogs = {"SPICElogs": {"attrs": attrs_dict, "dataset": dataset_dict}}
-    return scan_name, spicelogs
+        for idx, col_header in enumerate(col_names):
+            dataset_dict.update({col_header: data[:, idx]})
+    spicelogs = {"metadata": attrs_dict}
+    spicelogs.update(dataset_dict)
+    return spicelogs
 
 
-def convert_spice_data_to_nexus_dict(
+def spice_scan_to_nxdict(
     path_to_scan_file: str,
-    path_to_instrument_json: Optional[str],
-    path_to_sample_json: Optional[str],
-) -> tuple[str, dict]:
+    path_to_instrument_json: Optional[str] = None,
+    path_to_sample_json: Optional[str] = None,
+) -> dict:
     """Format SPICE data in a nested dictionary format"""
 
     # parse instruemnt and sample json files
     instrument_config_params = None
     if path_to_instrument_json is not None:
         instrument_config = Path(path_to_instrument_json)
-        if instrument_config.is_file():
-            with open(instrument_config, "r", encoding="utf-8") as file:
-                instrument_config_params = json.load(file)
+        if not instrument_config.is_file():
+            raise ValueError(f"Invalid instrument json file path: {path_to_instrument_json}")
+        with open(instrument_config, "r", encoding="utf-8") as file:
+            instrument_config_params = json.load(file)
 
     sample_config_params = None
     if path_to_sample_json is not None:
         sample_config = Path(path_to_sample_json)
-        if sample_config.is_file():
-            with open(sample_config, "r", encoding="utf-8") as file:
-                sample_config_params = json.load(file)
+        if not sample_config.is_file():
+            raise ValueError(f"Invalid sample json file path: {path_to_instrument_json}")
+        with open(sample_config, "r", encoding="utf-8") as file:
+            sample_config_params = json.load(file)
 
-    scan_name, spicelogs = create_spicelogs(path_to_scan_file)
+    spicelogs = _create_spicelogs(path_to_scan_file)
 
-    # Format SPICElogs to NeXus
-    scan_dict = daslogs_to_nexus_dict(
+    nxdict = spicelogs_to_nested_dict(
         spicelogs,
-        instrument_config_params=instrument_config_params,
-        sample_config_params=sample_config_params,
+        instrument_dict=instrument_config_params,
+        sample_dict=sample_config_params,
     )
+    return nxdict
 
-    return (scan_name, scan_dict)
 
-
-def spice_data_reader(
+def spice_data_to_nxdict(
     path_to_spice_folder: str,
     scan_num: Optional[int] = None,
     path_to_instrument_json: Optional[str] = None,
@@ -219,7 +204,7 @@ def spice_data_reader(
 
     Args:
            path_to_spice_folder (str): path to a SPICE folder
-           scan_num (int): read all scans in folder if not None
+           scan_num (int): read all scans in folder if not None, otherwise read one scan only
            path_to_instrument_json: Optional[str] = None,
            path_to_sample_json: Optional[str] = None,
     """
@@ -231,6 +216,7 @@ def spice_data_reader(
         filter_keyword = ".dat"
     else:  # read one scan only
         filter_keyword = f"scan{scan_num:04}.dat"
+
     scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(filter_keyword)]
     scan_list.sort()
 
@@ -244,11 +230,14 @@ def spice_data_reader(
 
     nexus_dict = {}
     for path_to_scan_file in scan_list:
-        scan_name, scan_dict = convert_spice_data_to_nexus_dict(
+        pass
+
+        scan_name, scan_dict = spice_scan_to_nxdict(
             path_to_scan_file,
             path_to_instrument_json,
             path_to_sample_json,
         )
+
         nexus_dict.update({scan_name: scan_dict})
         nexus_dict[scan_name]["attrs"].update({"dataset_name": dataset_name})
 
