@@ -137,7 +137,7 @@ class NexusEntry(dict):
         scan_num: Optional[int] = None,
         path_to_instrument_json: Optional[str] = None,
         path_to_sample_json: Optional[str] = None,
-    ) -> dict:
+    ):
         """return a NexusEntry instance from loading a SPICE file
 
         Args:
@@ -158,7 +158,7 @@ class NexusEntry(dict):
         return NexusEntry._dict_to_nexus_entry(nexus_dict)
 
     @classmethod
-    def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None) -> dict:
+    def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None):
         """return a NexusEntry instance from loading a NeXus file
 
         Args:

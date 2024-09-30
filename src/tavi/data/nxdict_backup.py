@@ -2,12 +2,7 @@ from typing import Optional
 
 # def nxentry_dict(self):
 #     metadata = self.daslogs_dict["attrs"]
-#     # TODO timezone
-#     start_date_time = "{} {}".format(metadata["date"], metadata["time"])
-#     start_time = datetime.strptime(start_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
-#     # if "end_time" in das_logs.attrs:  # last scan never finished
-#     end_date_time = metadata["end_time"]
-#     end_time = datetime.strptime(end_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
+#
 
 
 def nxcoll(spicelogs, instrument_config_params):

@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-import json
-import os
-from pathlib import Path
-from typing import Optional
 
 import numpy as np
-
-from tavi.data.nxdict import spicelogs_to_nested_dict
 
 
 def read_spice_datafile(file_name: str):
@@ -133,7 +127,8 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_scan_file)
 
     # write SPICElogs attributes
-    attrs_dict = {"NX_class": "NXcollection", "EX_required": "false"}
+    # attrs_dict = {"NX_class": "NXcollection", "EX_required": "false"}
+    attrs_dict = {}
     for k, v in metadata.items():
         attrs_dict.update({k: v})
     if len(error_messages) != 0:
@@ -158,87 +153,3 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     spicelogs = {"metadata": attrs_dict}
     spicelogs.update(dataset_dict)
     return spicelogs
-
-
-def spice_scan_to_nxdict(
-    path_to_scan_file: str,
-    path_to_instrument_json: Optional[str] = None,
-    path_to_sample_json: Optional[str] = None,
-) -> dict:
-    """Format SPICE data in a nested dictionary format"""
-
-    # parse instruemnt and sample json files
-    instrument_config_params = None
-    if path_to_instrument_json is not None:
-        instrument_config = Path(path_to_instrument_json)
-        if not instrument_config.is_file():
-            raise ValueError(f"Invalid instrument json file path: {path_to_instrument_json}")
-        with open(instrument_config, "r", encoding="utf-8") as file:
-            instrument_config_params = json.load(file)
-
-    sample_config_params = None
-    if path_to_sample_json is not None:
-        sample_config = Path(path_to_sample_json)
-        if not sample_config.is_file():
-            raise ValueError(f"Invalid sample json file path: {path_to_instrument_json}")
-        with open(sample_config, "r", encoding="utf-8") as file:
-            sample_config_params = json.load(file)
-
-    spicelogs = _create_spicelogs(path_to_scan_file)
-
-    nxdict = spicelogs_to_nested_dict(
-        spicelogs,
-        instrument_dict=instrument_config_params,
-        sample_dict=sample_config_params,
-    )
-    return nxdict
-
-
-def spice_data_to_nxdict(
-    path_to_spice_folder: str,
-    scan_num: Optional[int] = None,
-    path_to_instrument_json: Optional[str] = None,
-    path_to_sample_json: Optional[str] = None,
-) -> dict:
-    """Read SPICE data files into nested dictionary, ready to be converted to NeXus format
-
-    Args:
-           path_to_spice_folder (str): path to a SPICE folder
-           scan_num (int): read all scans in folder if not None, otherwise read one scan only
-           path_to_instrument_json: Optional[str] = None,
-           path_to_sample_json: Optional[str] = None,
-    """
-    if path_to_spice_folder[-1] != "/":
-        path_to_spice_folder += "/"
-
-    scan_list = os.listdir(path_to_spice_folder + "Datafiles/")
-    if scan_num is None:  # read all scans in folder
-        filter_keyword = ".dat"
-    else:  # read one scan only
-        filter_keyword = f"scan{scan_num:04}.dat"
-
-    scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(filter_keyword)]
-    scan_list.sort()
-
-    # get IPTS number and instrument string
-    first_scan = scan_list[0]
-    (_, _, headers, _, _) = read_spice_datafile(first_scan)
-    ipts = headers["proposal"]
-    spice_file_name = first_scan.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
-    instrument_str, exp_num, _ = spice_file_name.split("_")
-    dataset_name = f"IPTS{ipts}_{instrument_str}_{exp_num}"
-
-    nexus_dict = {}
-    for path_to_scan_file in scan_list:
-        pass
-
-        scan_name, scan_dict = spice_scan_to_nxdict(
-            path_to_scan_file,
-            path_to_instrument_json,
-            path_to_sample_json,
-        )
-
-        nexus_dict.update({scan_name: scan_dict})
-        nexus_dict[scan_name]["attrs"].update({"dataset_name": dataset_name})
-
-    return nexus_dict
