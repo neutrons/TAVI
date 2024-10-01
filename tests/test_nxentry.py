@@ -2,6 +2,7 @@ import h5py
 import numpy as np
 import pytest
 
+from tavi.data.nxdict import spice_scan_to_nxdict
 from tavi.data.nxentry import NexusEntry
 
 
@@ -92,6 +93,23 @@ def test_get_from_daslogs():
     scan0034 = NexusEntry.from_nexus(path_to_nexus_entry, 34)["scan0034"]
     assert scan0034.get_metadata_from_daslogs("sense") == "-+-"
     assert np.allclose(scan0034.get_data_from_daslogs("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
+
+
+def test_spice_scan_to_nxdict():
+    path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
+    nxdict = spice_scan_to_nxdict(path_to_spice_data)
+
+    entries = {"scan0034": nxdict}
+    nexus_entries = {}
+    for scan_num, scan_content in entries.items():
+        content_list = []
+        for key, val in scan_content.items():
+            content_list.append((key, val))
+        nexus_entries.update({scan_num: NexusEntry(content_list)})
+
+    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
+    for scan_num, nexus_entry in nexus_entries.items():
+        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
 
 
 @pytest.fixture

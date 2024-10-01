@@ -1,4 +1,7 @@
-from tavi.data.nxdict import NXdataset, NXentry
+import numpy as np
+
+from tavi.data.nxdict import NXdataset, NXentry, spice_scan_to_nxdict
+from tavi.data.nxentry import NexusEntry
 from tavi.data.spice_reader import _create_spicelogs
 
 
@@ -68,4 +71,25 @@ def test_add_nonexisting_dataset():
 
 def test_spice_scan_to_nxdict():
     path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
-    spicelogs = _create_spicelogs(path_to_spice_data)
+    nxdict = spice_scan_to_nxdict(path_to_spice_data)
+
+    assert nxdict["SPICElogs"]["attrs"]["scan"] == "34"
+    assert nxdict["start_time"]["dataset"] == "2024-07-03T01:44:46"
+    assert np.allclose(nxdict["instrument"]["monochromator"]["ei"]["dataset"][0:3], [4.9, 5, 5.1])
+    # assert nxdict["data"]
+
+    entries = {"scan0034": nxdict}
+    nexus_entries = {}
+    for scan_num, scan_content in entries.items():
+        content_list = []
+        for key, val in scan_content.items():
+            content_list.append((key, val))
+        nexus_entries.update({scan_num: NexusEntry(content_list)})
+
+    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
+    for scan_num, nexus_entry in nexus_entries.items():
+        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
+
+
+def test_spice_data_to_nxdict():
+    pass

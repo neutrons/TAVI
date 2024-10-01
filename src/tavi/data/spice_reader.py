@@ -124,11 +124,12 @@ def format_spice_header(headers):
 
 def _create_spicelogs(path_to_scan_file: str) -> dict:
     """read in SPICE data, return a dictionary containing metadata and data columns"""
-    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_scan_file)
 
+    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_scan_file)
+    *_, file_name = path_to_scan_file.split("/")
+    instrument_str, *_ = file_name.split("_")
     # write SPICElogs attributes
-    # attrs_dict = {"NX_class": "NXcollection", "EX_required": "false"}
-    attrs_dict = {}
+    attrs_dict = {"instrument": instrument_str}
     for k, v in metadata.items():
         attrs_dict.update({k: v})
     if len(error_messages) != 0:

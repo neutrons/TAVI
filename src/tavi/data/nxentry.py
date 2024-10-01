@@ -1,9 +1,32 @@
+import os
+from datetime import datetime
 from typing import Optional
 
 import h5py
 import numpy as np
 
-from tavi.data.spice_reader import spice_data_to_nxdict
+from tavi.data.nxdict import spice_data_to_nxdict
+
+
+def _find_val_path(val, grp, prefix=""):
+    """Find value in hdf5 groups"""
+    for obj_name, obj in grp.items():
+        if obj_name in ("SPICElogs", "data"):
+            continue
+        else:
+            path = f"{prefix}/{obj_name}"
+            if val == obj_name:
+                if val == "detector":
+                    return path + "/data"
+                elif val == "monitor":
+                    return path + "/monitor"
+                else:
+                    return path
+            # test for group (go down)
+            elif isinstance(obj, h5py.Group):
+                gpath = _find_val_path(val, obj, path)
+                if gpath:
+                    return gpath
 
 
 class NexusEntry(dict):
@@ -183,6 +206,29 @@ class NexusEntry(dict):
         with h5py.File(path_to_nexus, "a") as nexus_file:
             scan_grp = nexus_file.require_group(name + "/")
             NexusEntry._write_recursively(self, scan_grp)
+            # create soft link for data
+            def_y = nexus_file["scan0034"]["data"].attrs["signal"]
+            def_x = nexus_file["scan0034"]["data"].attrs["axes"]
+            path_y = _find_val_path(def_y, nexus_file)
+            path_x = _find_val_path(def_x, nexus_file)
+            if path_y is not None:
+                def_y = "data/" + def_y
+                if isinstance(scan_grp.get(def_y), h5py.Dataset):
+                    del scan_grp[def_y]
+                scan_grp[def_y] = h5py.SoftLink(path_y)
+                scan_grp[def_y + "/"].attrs["target"] = path_y
+            if path_x is not None:
+                def_x = "data/" + def_x
+                if isinstance(scan_grp.get(def_x), h5py.Dataset):
+                    del scan_grp[def_x]
+                scan_grp[def_x] = h5py.SoftLink(path_x)
+                scan_grp[def_x + "/"].attrs["target"] = path_x
+
+            # Create the ATTRIBUTES
+            scan_grp.attrs["file_name"] = os.path.abspath(path_to_nexus)
+            scan_grp.attrs["file_time"] = datetime.now().isoformat()
+            scan_grp.attrs["h5py_version"] = h5py.version.version
+            scan_grp.attrs["HDF5_Version"] = h5py.version.hdf5_version
 
     def get(self, key, ATTRS=False, default=None):
         """

@@ -10,6 +10,42 @@ import numpy as np
 from tavi.data.spice_reader import _create_spicelogs, read_spice_datafile
 
 
+def _find_val(val, grp, prefix=""):
+    """Find value in hdf5 groups"""
+    for obj_name, obj in grp.items():
+        if obj_name in ("SPICElogs", "data"):
+            continue
+        else:
+            path = f"{prefix}/{obj_name}"
+            if val == obj_name:
+                return path
+            # test for group (go down)
+            elif isinstance(obj, h5py.Group):
+                gpath = _find_val(val, obj, path)
+                if gpath:
+                    return gpath
+
+
+def _recast_type(ds, dtype):
+    if type(ds) is str:
+        if "," in ds:  # vector
+            if dtype == "NX_FLOAT":
+                dataset = np.array([float(d) for d in ds.split(",")])
+            else:
+                dataset = np.array([int(d) for d in ds.split(",")])
+        elif ds.replace(".", "").isnumeric():  # numebrs only
+            if dtype == "NX_FLOAT":
+                dataset = float(ds)
+            else:
+                dataset = int(ds)
+    else:  # expect np.ndarray
+        if dtype == "NX_FLOAT":
+            dataset = np.array([float(d) for d in ds])
+        else:
+            dataset = np.array([int(d) for d in ds])
+    return dataset
+
+
 class NXdataset(dict):
     """Dataset in a format consistent with NeXus, containg attrs and dataset"""
 
@@ -24,10 +60,10 @@ class NXdataset(dict):
         match kwargs:
             case {"type": "NX_CHAR"}:
                 dataset = str(ds)
-            case {"type": "NX_INT"}:
-                dataset = np.array([int(d) for d in ds])
-            case {"type": "NX_FLOAT"}:
-                dataset = np.array([float(d) for d in ds])
+            case {"type": "NX_INT"} | {"type": "NX_FLOAT"}:
+                dataset = _recast_type(ds, kwargs["type"])
+            case {"type": "NX_DATE_TIME"}:
+                dataset = datetime.strptime(ds, "%m/%d/%Y %I:%M:%S %p").isoformat()
             case _:
                 dataset = ds
 
@@ -64,13 +100,36 @@ class NXentry(dict):
         else:
             self.update({key: ds})
 
+    def add_attribute(self, key: str, attr):
+        if not attr:  # ignore if empty
+            pass
+        else:
+            self["attrs"].update({key: attr})
 
+
+def _formatted_spicelogs(spicelogs: dict) -> NXentry:
+    """Format SPICE logs into NeXus dict"""
+    formatted_spicelogs = NXentry(NX_class="NXcollection", EX_required="false")
+    metadata = spicelogs.pop("metadata")
+    for attr_key, attr_entry in metadata.items():
+        formatted_spicelogs.add_attribute(attr_key, attr_entry)
+
+    for entry_key, entry_data in spicelogs.items():
+        formatted_spicelogs.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
+    return formatted_spicelogs
+
+
+# TODO json support
 def spice_scan_to_nxdict(
     path_to_scan_file: str,
     path_to_instrument_json: Optional[str] = None,
     path_to_sample_json: Optional[str] = None,
 ) -> NXentry:
-    """Format SPICE data in a nested dictionary format"""
+    """Format SPICE data in a nested dictionary format
+
+    Note:
+        json files can overwrite the parameters in SPICE
+    """
 
     # parse instruemnt and sample json files
     instrument_config_params = None
@@ -92,17 +151,20 @@ def spice_scan_to_nxdict(
     spicelogs = _create_spicelogs(path_to_scan_file)
     metadata = spicelogs["metadata"]
 
+    # ---------------------------------------- source ----------------------------------------
+
     nxsource = NXentry(
         name=NXdataset(ds="HFIR", type="NX_CHAR", EX_required="true"),
         probe=NXdataset(ds="neutron", type="NX_CHAR", EX_required="true"),
         NX_class="NXsource",
         EX_required="true",
     )
+    # ------------------------------------- monochromator ----------------------------------------
 
     nxmono = NXentry(
         ei=NXdataset(ds=spicelogs.get("ei"), type="NX_FLOAT", EX_required="true", units="meV"),
         type=NXdataset(ds=metadata.get("monochromator"), type="NX_CHAR"),
-        sense=NXdataset(ds=metadata.get["sense"][0], type="NX_CHAR"),
+        sense=NXdataset(ds=metadata["sense"][0], type="NX_CHAR"),
         m1=NXdataset(ds=spicelogs.get("m1"), type="NX_FLOAT", units="degrees"),
         m2=NXdataset(ds=spicelogs.get("m2"), type="NX_FLOAT", units="degrees"),
         NX_class="NXcrystal",
@@ -112,6 +174,8 @@ def spice_scan_to_nxdict(
     nxmono.add_dataset("marc", NXdataset(ds=spicelogs.get("marc"), type="NX_FLOAT"))
     nxmono.add_dataset("mtrans", NXdataset(ds=spicelogs.get("mtrans"), type="NX_FLOAT"))
     nxmono.add_dataset("focal_length", NXdataset(ds=spicelogs.get("focal_length"), type="NX_FLOAT"))
+
+    # ------------------------------------- analyzer ----------------------------------------
 
     nxana = NXentry(
         ef=NXdataset(ds=spicelogs.get("ef"), type="NX_FLOAT", EX_required="true", units="meV"),
@@ -123,9 +187,11 @@ def spice_scan_to_nxdict(
         NX_class="NXcrystal",
         EX_required="true",
     )
-    for i in range(8):
+    for i in range(8):  # CG4C horizontal focusing
         nxana.add_dataset(key=f"qm{i+1}", ds=NXdataset(ds=spicelogs.get(f"qm{i+1}"), type="NX_FLOAT"))
         nxana.add_dataset(key=f"xm{i+1}", ds=NXdataset(ds=spicelogs.get(f"xm{i+1}"), type="NX_FLOAT"))
+
+    # ------------------------------------- detector ----------------------------------------
 
     nxdet = NXentry(
         data=NXdataset(ds=spicelogs.get("detector"), type="NX_INT", EX_required="true", units="counts"),
@@ -133,15 +199,48 @@ def spice_scan_to_nxdict(
         EX_required="true",
     )
 
+    # ------------------------------------- collimators ----------------------------------------
+
+    div_x = [float(v) for v in list(metadata["collimation"].split("-"))]
+    nxcoll = NXentry(
+        type=NXdataset(ds="Soller", type="NX_CHAR"),
+        NX_class="NXcollimator",
+    )
+    nxcoll.add_dataset(key="divergence_x", ds=NXdataset(ds=div_x, type="NX_ANGLE", units="minutes of arc"))
+
+    # ------------------------------------- slits ----------------------------------------
+
+    nxslits = NXentry(NX_class="NXslit")
+    slits_str1 = tuple([f"b{idx}{loc}" for idx in ("a", "b") for loc in ("t", "b", "l", "r")])
+    slits_str2 = tuple([f"slit{idx}_{loc}" for idx in ("a", "b") for loc in ("lf", "rt", "tp", "bt")])
+    slits_str3 = tuple([f"slit_{idx}_{loc}" for idx in ("pre",) for loc in ("lf", "rt", "tp", "bt")])
+    slits_str = (slits_str1, slits_str2, slits_str3)
+    for slit_str in slits_str:
+        for st in slit_str:
+            nxslits.add_dataset(key=st, ds=NXdataset(ds=spicelogs.get(st), type="NX_FLOAT", units="cm"))
+    # ------------------------------------- flipper ----------------------------------------
+
+    nxflipper = NXentry(NX_class="NXflipper")
+    nxflipper.add_dataset(key="fguide", ds=NXdataset(ds=spicelogs.get("fguide"), type="NX_FLOAT"))
+    nxflipper.add_dataset(key="hguide", ds=NXdataset(ds=spicelogs.get("hguide"), type="NX_FLOAT"))
+    nxflipper.add_dataset(key="vguide", ds=NXdataset(ds=spicelogs.get("vguide"), type="NX_FLOAT"))
+
+    # ---------------------------------------- instrument ---------------------------------------------
+
     nxinstrument = NXentry(
         source=nxsource,
         monochromator=nxmono,
+        collimator=nxcoll,
         analyzer=nxana,
         detector=nxdet,
+        slits=nxslits,
+        flipper=nxflipper,
         name=NXdataset(ds=metadata.get("instrument"), type="NX_CHAR"),
         NX_class="NXinstrument",
         EX_required="true",
     )
+    # ---------------------------------------- monitor ---------------------------------------------
+
     preset_type = metadata.get("preset_type")
     if preset_type == "normal":
         preset_channel = metadata.get("preset_channel")
@@ -156,6 +255,7 @@ def spice_scan_to_nxdict(
             NX_class="NXmonitor",
             EX_required="true",
         )
+
     # TODO polarized exp at HB1
     elif preset_type == "countfile":
         print("Polarization data, not yet supported.")
@@ -164,8 +264,40 @@ def spice_scan_to_nxdict(
         print(f"Unrecogonized preset type {preset_type}.")
         nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")
 
-    # ------------------------------------------------------------------
-    nxsample = NXentry(NX_class="NXsample", EX_required="true")
+    # ---------------------------------------- sample ---------------------------------------------
+
+    nxsample = NXentry(
+        name=NXdataset(ds=metadata.get("samplename"), type="NX_CHAR", EX_required="true"),
+        type=NXdataset(ds=metadata.get("sampletype"), type="NX_CHAR", EX_required="true"),
+        unit_cell=NXdataset(ds=metadata.get("latticeconstants"), type="NX_FLOAT", EX_required="true"),
+        qh=NXdataset(ds=spicelogs.get("h"), type="NX_FLOAT", EX_required="true"),
+        qk=NXdataset(ds=spicelogs.get("k"), type="NX_FLOAT", EX_required="true"),
+        ql=NXdataset(ds=spicelogs.get("l"), type="NX_FLOAT", EX_required="true"),
+        en=NXdataset(ds=spicelogs.get("e"), type="NX_FLOAT", EX_required="true", units="meV"),
+        q=NXdataset(ds=spicelogs.get("q"), type="NX_FLOAT"),
+        sense=NXdataset(ds=metadata["sense"][1], type="NX_CHAR"),
+        NX_class="NXsample",
+        EX_required="true",
+    )
+    nxsample.add_dataset(key="Pt.", ds=NXdataset(ds=spicelogs.get("Pt."), type="NX_INT"))
+
+    # Motor angles
+    nxsample.add_dataset(key="s1", ds=NXdataset(ds=spicelogs.get("s1"), type="NX_FLOAT", units="degrees"))
+    nxsample.add_dataset(key="s2", ds=NXdataset(ds=spicelogs.get("s2"), type="NX_FLOAT", units="degrees"))
+    nxsample.add_dataset(key="sgu", ds=NXdataset(ds=spicelogs.get("sgu"), type="NX_FLOAT", units="degrees"))
+    nxsample.add_dataset(key="sgl", ds=NXdataset(ds=spicelogs.get("sgl"), type="NX_FLOAT", units="degrees"))
+    nxsample.add_dataset(key="stu", ds=NXdataset(ds=spicelogs.get("stu"), type="NX_FLOAT", units="degrees"))
+    nxsample.add_dataset(key="stl", ds=NXdataset(ds=spicelogs.get("stl"), type="NX_FLOAT", units="degrees"))
+
+    # UB info
+    nxsample.add_dataset(
+        key="orientation_matrix",
+        ds=NXdataset(ds=metadata.get("ubmatrix"), type="NX_FLOAT", EX_required="true", units="NX_DIMENSIONLESS"),
+    )
+    nxsample.add_dataset(key="ub_conf", ds=NXdataset(ds=metadata["ubconf"].split(".")[0], type="NX_CHAR"))
+    nxsample.add_dataset(key="plane_normal", ds=NXdataset(ds=metadata.get("plane_normal"), type="NX_FLOAT"))
+
+    # ---------------------------------------- sample environment ---------------------------------------------
 
     # TODO all sample environment variable names needed!
     temperatue_str = (
@@ -173,25 +305,38 @@ def spice_scan_to_nxdict(
         + ("vti", "dr_tsample", "dr_temp")
         + ("lt", "ht", "sorb_temp", "sorb", "sample_ht")
     )
+    for te in temperatue_str:
+        nxsample.add_dataset(key=te, ds=NXdataset(ds=spicelogs.get(te), type="NX_FLOAT", units="Kelvin"))
 
     field_str = ("persistent_field", "mag_i")
+    for fi in field_str:
+        nxsample.add_dataset(key=fi, ds=NXdataset(ds=spicelogs.get(fi), type="NX_FLOAT", units="Tesla"))
+    # ---------------------------------------- data ---------------------------------------------
+    nexus_keywork_conversion_dict = {"h": "qh", "k": "qk", "l": "ql", "e": "en"}
+    def_x = metadata.get("def_x")
+    def_y = metadata.get("def_y")
+    if def_x in nexus_keywork_conversion_dict:
+        def_x = nexus_keywork_conversion_dict[def_x]
+
+    nxdata = NXentry(NX_class="NXdata", EX_required="true", signal=def_y, axes=def_x)
+    # ---------------------------------------- scan ---------------------------------------------
 
     # TODO timezone
     start_date_time = "{} {}".format(metadata.get("date"), metadata.get("time"))
-    start_time = datetime.strptime(start_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
     # TODO what is last scan never finished?
     # if "end_time" in das_logs.attrs:
     end_date_time = metadata.get("end_time")
-    end_time = datetime.strptime(end_date_time, "%m/%d/%Y %I:%M:%S %p").isoformat()
 
     nxscan = NXentry(
-        SPICElogs=spicelogs,
+        SPICElogs=_formatted_spicelogs(spicelogs),
+        data=nxdata,
         definition=NXdataset(ds="NXtas", type="NX_CHAR", EX_required="true"),
         title=NXdataset(ds=metadata.get("scan_title"), type="NX_CHAR", EX_required="true"),
-        start_time=NXdataset(ds=start_time, type="NX_DATE_TIME", EX_required="true"),
-        end_time=NXdataset(ds=end_time, type="NX_DATE_TIME"),
+        start_time=NXdataset(ds=start_date_time, type="NX_DATE_TIME", EX_required="true"),
+        end_time=NXdataset(ds=end_date_time, type="NX_DATE_TIME"),
         instrument=nxinstrument,
         monitor=nxmonitor,
+        sample=nxsample,
         NX_class="NXentry",
         EX_required="true",
     )
