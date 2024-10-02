@@ -44,22 +44,28 @@ class NexusEntry(dict):
         value = None
         if key.split("/")[0] in obj:
             for key_item in key.split("/"):
-                obj = obj[key_item]
-            if ATTRS:
+                # you could be looking in the wrong folder
+                # e.g. looking for detector/data in data/detector
+                # return None when this happens
+                try:
+                    obj = obj[key_item]
+                except KeyError:
+                    return None
+            if ATTRS:  # get attributes
                 try:
                     value = obj["attrs"]
                 except KeyError:
                     print(f"Attribute of {key} does not exist.")
-            else:
+            else:  # get dataset
                 try:
                     value = obj["dataset"]
                 except KeyError:
                     print(f"Dataset of {key} does not exist.")
 
         for k, v in obj.items():
-            if value is not None:
+            if value is not None:  # value found
                 break
-            if k == "attrs" or k == "dataset":
+            if k == "attrs" or k == "dataset":  # gone too far
                 continue
 
             if isinstance(v, dict):
@@ -107,10 +113,11 @@ class NexusEntry(dict):
                 if "dataset" in value.keys():
                     dv = format_dataset(value)
                     if key in nexus_entry:  # dataset exists
-                        ds = nexus_entry[key]
-                        ds[...] = dv
-                    else:  # create dataset
-                        ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
+                        del nexus_entry[key]
+                        # ds = nexus_entry[key]
+                        # ds[...] = dv
+                    # else:  # create dataset
+                    ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
                     NexusEntry._write_recursively(value, ds)
                 else:
                     grp = nexus_entry.require_group(key + "/")
@@ -137,7 +144,10 @@ class NexusEntry(dict):
                 except TypeError:  # arrays instead
                     value = value[...]
 
-                items.update({key: {"attrs": attr_dict, "dataset": value}})
+                if not attr_dict:  # empty attributes
+                    items.update({key: {"dataset": value}})
+                else:
+                    items.update({key: {"attrs": attr_dict, "dataset": value}})
 
         return items
 
@@ -152,7 +162,7 @@ class NexusEntry(dict):
             nexus_entries.update({scan_num: NexusEntry(content_list)})
         return nexus_entries
 
-    # TODO read in instrument and sample configuratio json files
+    # TODO read in instrument and sample configuration json files
     @classmethod
     def from_spice(
         cls,
@@ -211,6 +221,7 @@ class NexusEntry(dict):
             def_x = nexus_file["scan0034"]["data"].attrs["axes"]
             path_y = _find_val_path(def_y, nexus_file)
             path_x = _find_val_path(def_x, nexus_file)
+
             if path_y is not None:
                 def_y = "data/" + def_y
                 if isinstance(scan_grp.get(def_y), h5py.Dataset):

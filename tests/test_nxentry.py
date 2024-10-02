@@ -10,17 +10,27 @@ def test_get_dataset(nexus_entries):
     scan0034 = nexus_entries["scan0034"]
     assert scan0034.get("definition") == "NXtas"
     assert scan0034.get("title") == "scan_title_34"
-    assert np.allclose(scan0034.get("a2"), np.array([242.0, 242.1, 242.2]))
+    assert np.allclose(
+        scan0034.get("a2"),
+        np.array([242.0, 242.1, 242.2]),
+    )
     assert scan0034.get("data", ATTRS=True) == {
         "EX_required": "true",
         "NX_class": "NXdata",
-        "axes": "en",
+        "axes": "a1",
         "signal": "detector",
     }
     assert scan0034.get("a3") is None
     assert scan0034.get("detector") is None
-    assert scan0034.get("detector/data", ATTRS=True) == {"EX_required": "true", "type": "NX_INT", "units": "counts"}
-    assert np.allclose(scan0034.get("instrument/analyser/a2"), np.array([242.0, 242.1, 242.2]))
+    assert scan0034.get("detector/data", ATTRS=True) == {
+        "EX_required": "true",
+        "type": "NX_INT",
+        "units": "counts",
+    }
+    assert np.allclose(
+        scan0034.get("instrument/analyser/a2"),
+        np.array([242.0, 242.1, 242.2]),
+    )
 
     scan0035 = nexus_entries["scan0035"]
     assert scan0035.get("title") == "scan_title_35"
@@ -36,24 +46,37 @@ def test_to_nexus(nexus_entries):
         assert nexus_file["scan0034"].attrs["NX_class"] == "NXentry"
 
 
-def test_from_nexus():
+def test_from_nexus(nexus_entries):
     path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
-    nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry)
-    scan0034 = nexus_entries["scan0034"]
-    assert scan0034.get("definition") == "NXtas"
+    entries = NexusEntry.from_nexus(path_to_nexus_entry)
+
+    scan0034 = entries["scan0034"]
+    assert scan0034["definition"] == nexus_entries["scan0034"]["definition"]
+    assert np.allclose(
+        scan0034["instrument"]["analyser"]["a2"]["dataset"],
+        nexus_entries["scan0034"]["instrument"]["analyser"]["a2"]["dataset"],
+    )
     assert np.allclose(scan0034.get("a2"), np.array([242.0, 242.1, 242.2]))
     assert scan0034.get("data", ATTRS=True) == {
         "EX_required": "true",
         "NX_class": "NXdata",
-        "axes": "en",
+        "axes": "a1",
         "signal": "detector",
     }
     assert scan0034.get("a3") is None
-    assert scan0034.get("detector") is None
-    assert scan0034.get("detector/data", ATTRS=True) == {"EX_required": "true", "type": "NX_INT", "units": "counts"}
-    assert np.allclose(scan0034.get("instrument/analyser/a2"), np.array([242.0, 242.1, 242.2]))
+    assert np.allclose(scan0034.get("detector"), np.array([1, 2, 3]))
+    assert scan0034.get("detector/data", ATTRS=True) == {
+        "EX_required": "true",
+        "type": "NX_INT",
+        "units": "counts",
+        "target": "/scan0034/instrument/detector/data",
+    }
+    assert np.allclose(
+        scan0034.get("instrument/analyser/a2"),
+        np.array([242.0, 242.1, 242.2]),
+    )
 
-    scan0035 = nexus_entries["scan0035"]
+    scan0035 = entries["scan0035"]
     assert scan0035.get("title") == "scan_title_35"
 
 
@@ -73,19 +96,27 @@ def test_from_nexus_IPTS32124_CG4C_exp0424():
     assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
 
 
-def test_from_spice_IPTS32124_CG4C_exp0424():
+def test_from_spice_IPTS32124_CG4C_exp0424_single_scan():
     path_to_spice_entry = "./test_data/exp424"
-    nexus_entries = NexusEntry.from_spice(path_to_spice_entry, 34)
-
-    path_to_nexus_entry = "./test_data/spice_to_nexus_test_scan34.h5"
-    for scan_num, nexus_entry in nexus_entries.items():
-        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
-
-    scan0034 = NexusEntry.from_nexus(path_to_nexus_entry, 34)["scan0034"]
+    scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)["scan0034"]
 
     assert scan0034.get("definition") == "NXtas"
     assert scan0034.get("end_time") == "2024-07-03T02:41:28"
-    # assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
+    assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
+
+
+def test_from_spice_IPTS32124_CG4C_exp0424_all_scan():
+    path_to_spice_entry = "./test_data/exp424"
+    scans = NexusEntry.from_spice(path_to_spice_entry)
+
+    scan0034 = scans["scan0034"]
+    assert scan0034.get("definition") == "NXtas"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
+
+    # scan 41 contains only one data point
+    scan0041 = scans["scan0041"]
+    assert scan0041.get("Pt.") == 3
 
 
 def test_get_from_daslogs():
@@ -132,6 +163,7 @@ def nexus_entries():
         "attrs": {"EX_required": "true", "NX_class": "NXdetector"},
         "data": {
             "attrs": {"EX_required": "true", "type": "NX_INT", "units": "counts"},
+            "dataset": np.array([1, 2, 3]),
         },
     }
 
@@ -169,7 +201,7 @@ def nexus_entries():
                 "attrs": {
                     "EX_required": "true",
                     "NX_class": "NXdata",
-                    "axes": "en",
+                    "axes": "a1",
                     "signal": "detector",
                 }
             },

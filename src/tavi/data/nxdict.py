@@ -270,11 +270,11 @@ def spice_scan_to_nxdict(
         name=NXdataset(ds=metadata.get("samplename"), type="NX_CHAR", EX_required="true"),
         type=NXdataset(ds=metadata.get("sampletype"), type="NX_CHAR", EX_required="true"),
         unit_cell=NXdataset(ds=metadata.get("latticeconstants"), type="NX_FLOAT", EX_required="true"),
-        qh=NXdataset(ds=spicelogs.get("h"), type="NX_FLOAT", EX_required="true"),
-        qk=NXdataset(ds=spicelogs.get("k"), type="NX_FLOAT", EX_required="true"),
-        ql=NXdataset(ds=spicelogs.get("l"), type="NX_FLOAT", EX_required="true"),
+        qh=NXdataset(ds=spicelogs.get("h"), type="NX_FLOAT", EX_required="true", units="r.l.u."),
+        qk=NXdataset(ds=spicelogs.get("k"), type="NX_FLOAT", EX_required="true", units="r.l.u."),
+        ql=NXdataset(ds=spicelogs.get("l"), type="NX_FLOAT", EX_required="true", units="r.l.u."),
         en=NXdataset(ds=spicelogs.get("e"), type="NX_FLOAT", EX_required="true", units="meV"),
-        q=NXdataset(ds=spicelogs.get("q"), type="NX_FLOAT"),
+        q=NXdataset(ds=spicelogs.get("q"), type="NX_FLOAT", units="Angstrom^-1"),
         sense=NXdataset(ds=metadata["sense"][1], type="NX_CHAR"),
         NX_class="NXsample",
         EX_required="true",
@@ -379,15 +379,16 @@ def spice_data_to_nxdict(
 
     nexus_dict = {}
     for path_to_scan_file in scan_list:
-        pass
+        *_, file_name = path_to_scan_file.split("/")
+        *_, scan_dat = file_name.split("_")
+        scan_num, _ = scan_dat.split(".")
 
-        scan_name, scan_dict = spice_scan_to_nxdict(
+        nxentry = spice_scan_to_nxdict(
             path_to_scan_file,
             path_to_instrument_json,
             path_to_sample_json,
         )
-
-        nexus_dict.update({scan_name: scan_dict})
-        nexus_dict[scan_name]["attrs"].update({"dataset_name": dataset_name})
+        nxentry["attrs"].update({"dataset_name": dataset_name})
+        nexus_dict.update({scan_num: nxentry})
 
     return nexus_dict

@@ -62,7 +62,12 @@ def read_spice_datafile(file_name: str):
 
 
 def read_spice_ubconf(ub_file_name: str):
-    """Reads ub info from UBConf"""
+    """Reads ub info from UBConf
+    Args:
+        ub_file_name (str): a string containing the filename
+
+    Returns:
+    """
     ubconf = {}
     with open(ub_file_name, encoding="utf-8") as f:
         all_content = f.readlines()
@@ -143,7 +148,8 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     if len(spice_data_shape) == 1:  # 1 row ony
         if spice_data_shape[0] != 0:
             for idx, col_header in enumerate(col_names):
-                dataset_dict.update({col_header: data[idx]})
+                # convert to ndarray if one point only
+                dataset_dict.update({col_header: np.array([data[idx]])})
         else:  # ignore if empty
             pass
     elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
