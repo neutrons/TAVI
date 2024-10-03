@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+from typing import Any
 
 import numpy as np
 
@@ -61,14 +63,14 @@ def read_spice_datafile(file_name: str):
     return (data, tuple(col_names), metadata, tuple(others), tuple(error_messages))
 
 
-def read_spice_ubconf(ub_file_name: str):
+def read_spice_ubconf(ub_file_name: str) -> dict:
     """Reads ub info from UBConf
     Args:
         ub_file_name (str): a string containing the filename
 
     Returns:
     """
-    ubconf = {}
+    ubconf: dict[str, Any] = {}
     with open(ub_file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
@@ -79,52 +81,19 @@ def read_spice_ubconf(ub_file_name: str):
             continue  # skiplines like "[xx]"
 
         key, val = line.strip().split("=")
+
         if key == "Mode":
             mode_name = all_content[idx - 1].strip()
             if mode_name == "[UBMode]":
                 ubconf.update({"UBMode": int(val)})
             elif mode_name == "[AngleMode]":
                 ubconf.update({"AngleMode": int(val)})
-        elif "," in line:  # vector
+        elif "," in val:  # string of vector to array
             ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
-        else:  # float number
+        else:  # float
             ubconf.update({key: float(val)})
 
     return ubconf
-
-
-def format_spice_header(headers):
-    """Convert metadata in SPICE to be appropriate format."""
-
-    formatted_headers = {}
-
-    exp_str = ["scan_title", "users", "local_contact", "experiment"]
-    for k, v in headers.items():
-        if "," in v and k not in exp_str:  # vectors
-            vec = np.array([float(v0) for v0 in v.split(",")])
-            formatted_headers.update({k: vec})
-        elif v.replace(".", "").isnumeric():  # numebrs only
-            if v.isdigit():  # int
-                formatted_headers.update({k: int(v)})
-            else:  # float
-                formatted_headers.update({k: float(v)})
-        # separate COM/FWHM and its errorbar
-        elif k == "Center of Mass":
-            if v == "NaN+/-NaN":
-                formatted_headers.update({"COM": np.nan, "COM_err": np.nan})
-            else:
-                com, e_com = v.split("+/-")
-                formatted_headers.update({"COM": float(com), "COM_err": float(e_com)})
-        elif k == "Full Width Half-Maximum":
-            if v == "NaN+/-NaN":
-                formatted_headers.update({"FWHM": np.nan, "FWHM_err": np.nan})
-            else:
-                fwhm, e_fwhm = v.split("+/-")
-                formatted_headers.update({"FWHM": float(fwhm), "FWHM_err": float(e_fwhm)})
-        else:  # other crap, keep as is
-            formatted_headers.update({k: v})
-
-    return formatted_headers
 
 
 def _create_spicelogs(path_to_scan_file: str) -> dict:
@@ -157,6 +126,15 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
         # print(spice_data.shape)
         for idx, col_header in enumerate(col_names):
             dataset_dict.update({col_header: data[:, idx]})
-    spicelogs = {"metadata": attrs_dict}
+
+    scan_path = os.path.abspath(path_to_scan_file)
+    (*folder_path, _, _) = scan_path.split("/")
+    ub_file_path = "/".join(folder_path + ["UBConf", metadata["ubconf"]])
+    ub_conf_dict = {"file_path": ub_file_path}
+    ubconf = read_spice_ubconf(ub_file_path)
+    for k, v in ubconf.items():
+        ub_conf_dict.update({k: v})
+
+    spicelogs = {"metadata": attrs_dict, "ub_conf": ub_conf_dict}
     spicelogs.update(dataset_dict)
     return spicelogs

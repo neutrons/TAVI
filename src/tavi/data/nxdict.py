@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import h5py
 import numpy as np
 
 from tavi.data.spice_reader import _create_spicelogs, read_spice_datafile
@@ -109,13 +110,21 @@ class NXentry(dict):
 
 def _formatted_spicelogs(spicelogs: dict) -> NXentry:
     """Format SPICE logs into NeXus dict"""
-    formatted_spicelogs = NXentry(NX_class="NXcollection", EX_required="false")
+    ub_conf = spicelogs.pop("ub_conf")
+    ub_file_path = ub_conf.pop("file_path")
+    formatted_ub_conf = NXentry(file_path=ub_file_path, NX_class="NXcollection", EX_required="false")
+    for entry_key, entry_data in ub_conf.items():
+        formatted_ub_conf.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
+
     metadata = spicelogs.pop("metadata")
+    formatted_spicelogs = NXentry(ub_conf=formatted_ub_conf, NX_class="NXcollection", EX_required="false")
+
     for attr_key, attr_entry in metadata.items():
         formatted_spicelogs.add_attribute(attr_key, attr_entry)
 
     for entry_key, entry_data in spicelogs.items():
         formatted_spicelogs.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
+
     return formatted_spicelogs
 
 
@@ -280,6 +289,13 @@ def spice_scan_to_nxdict(
         EX_required="true",
     )
     nxsample.add_dataset(key="Pt.", ds=NXdataset(ds=spicelogs.get("Pt."), type="NX_INT"))
+    #  UB info
+    nxsample.add_dataset(
+        key="orientation_matrix",
+        ds=NXdataset(ds=metadata.get("ubmatrix"), type="NX_FLOAT", EX_required="true", units="NX_DIMENSIONLESS"),
+    )
+    # nxsample.add_dataset(key="ub_conf", ds=NXdataset(ds=metadata["ubconf"].split(".")[0], type="NX_CHAR"))
+    nxsample.add_dataset(key="plane_normal", ds=NXdataset(ds=metadata.get("plane_normal"), type="NX_FLOAT"))
 
     # Motor angles
     nxsample.add_dataset(key="s1", ds=NXdataset(ds=spicelogs.get("s1"), type="NX_FLOAT", units="degrees"))
@@ -288,14 +304,6 @@ def spice_scan_to_nxdict(
     nxsample.add_dataset(key="sgl", ds=NXdataset(ds=spicelogs.get("sgl"), type="NX_FLOAT", units="degrees"))
     nxsample.add_dataset(key="stu", ds=NXdataset(ds=spicelogs.get("stu"), type="NX_FLOAT", units="degrees"))
     nxsample.add_dataset(key="stl", ds=NXdataset(ds=spicelogs.get("stl"), type="NX_FLOAT", units="degrees"))
-
-    # UB info
-    nxsample.add_dataset(
-        key="orientation_matrix",
-        ds=NXdataset(ds=metadata.get("ubmatrix"), type="NX_FLOAT", EX_required="true", units="NX_DIMENSIONLESS"),
-    )
-    nxsample.add_dataset(key="ub_conf", ds=NXdataset(ds=metadata["ubconf"].split(".")[0], type="NX_CHAR"))
-    nxsample.add_dataset(key="plane_normal", ds=NXdataset(ds=metadata.get("plane_normal"), type="NX_FLOAT"))
 
     # ---------------------------------------- sample environment ---------------------------------------------
 
@@ -381,7 +389,7 @@ def spice_data_to_nxdict(
     for path_to_scan_file in scan_list:
         *_, file_name = path_to_scan_file.split("/")
         *_, scan_dat = file_name.split("_")
-        scan_num, _ = scan_dat.split(".")
+        scan_name, _ = scan_dat.split(".")
 
         nxentry = spice_scan_to_nxdict(
             path_to_scan_file,
@@ -389,6 +397,6 @@ def spice_data_to_nxdict(
             path_to_sample_json,
         )
         nxentry["attrs"].update({"dataset_name": dataset_name})
-        nexus_dict.update({scan_num: nxentry})
+        nexus_dict.update({scan_name: nxentry})
 
     return nexus_dict

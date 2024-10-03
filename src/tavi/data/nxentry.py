@@ -217,8 +217,8 @@ class NexusEntry(dict):
             scan_grp = nexus_file.require_group(name + "/")
             NexusEntry._write_recursively(self, scan_grp)
             # create soft link for data
-            def_y = nexus_file["scan0034"]["data"].attrs["signal"]
-            def_x = nexus_file["scan0034"]["data"].attrs["axes"]
+            def_y = nexus_file[name]["data"].attrs["signal"]
+            def_x = nexus_file[name]["data"].attrs["axes"]
             path_y = _find_val_path(def_y, nexus_file)
             path_x = _find_val_path(def_x, nexus_file)
 

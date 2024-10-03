@@ -1,6 +1,6 @@
 import numpy as np
 
-from tavi.data.nxdict import NXdataset, NXentry, spice_scan_to_nxdict
+from tavi.data.nxdict import NXdataset, NXentry, spice_data_to_nxdict, spice_scan_to_nxdict
 from tavi.data.nxentry import NexusEntry
 from tavi.data.spice_reader import _create_spicelogs
 
@@ -76,7 +76,6 @@ def test_spice_scan_to_nxdict():
     assert nxdict["SPICElogs"]["attrs"]["scan"] == "34"
     assert nxdict["start_time"]["dataset"] == "2024-07-03T01:44:46"
     assert np.allclose(nxdict["instrument"]["monochromator"]["ei"]["dataset"][0:3], [4.9, 5, 5.1])
-    # assert nxdict["data"]
 
     entries = {"scan0034": nxdict}
     nexus_entries = {}
@@ -92,4 +91,8 @@ def test_spice_scan_to_nxdict():
 
 
 def test_spice_data_to_nxdict():
-    pass
+    path_to_spice_data = "./test_data/exp424"
+    nxdict = spice_data_to_nxdict(path_to_spice_data)
+
+    assert len(nxdict) == 92
+    assert nxdict["scan0034"]["SPICElogs"]["attrs"]["scan"] == "34"

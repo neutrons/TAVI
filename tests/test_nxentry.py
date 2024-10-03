@@ -126,9 +126,18 @@ def test_get_from_daslogs():
     assert np.allclose(scan0034.get_data_from_daslogs("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
 
-def test_spice_scan_to_nxdict():
-    path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
-    nxdict = spice_scan_to_nxdict(path_to_spice_data)
+def test_spice_scan_to_nexus():
+
+    path_to_spice_entry = "./test_data/exp424"
+    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
+    scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)
+    for scan_name, scan in scan0034.items():
+        scan.to_nexus(path_to_nexus_entry, name=scan_name)
+
+
+def test_spice_data_to_nexus():
+    path_to_spice_data = "./test_data/exp424"
+    scan_dict = spice_scan_to_nxdict(path_to_spice_data)
 
     entries = {"scan0034": nxdict}
     nexus_entries = {}
@@ -137,7 +146,7 @@ def test_spice_scan_to_nxdict():
         for key, val in scan_content.items():
             content_list.append((key, val))
         nexus_entries.update({scan_num: NexusEntry(content_list)})
-
+    # generate h5 file
     path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
     for scan_num, nexus_entry in nexus_entries.items():
         nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
