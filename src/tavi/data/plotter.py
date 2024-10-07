@@ -5,7 +5,6 @@ import numpy as np
 
 
 class Plot1D(object):
-
     def __init__(
         self,
         x: np.ndarray,
