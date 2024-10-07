@@ -1,8 +1,9 @@
+import os
+
 import h5py
 import numpy as np
 import pytest
 
-from tavi.data.nxdict import spice_scan_to_nxdict
 from tavi.data.nxentry import NexusEntry
 
 
@@ -37,19 +38,23 @@ def test_get_dataset(nexus_entries):
 
 
 def test_to_nexus(nexus_entries):
-    path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
+    path_to_nexus = "./test_data/scan_to_nexus_test.h5"
     for scan_num, nexus_entry in nexus_entries.items():
-        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
+        nexus_entry.to_nexus(path_to_nexus, scan_num)
 
-    with h5py.File(path_to_nexus_entry, "r") as nexus_file:
+    with h5py.File(path_to_nexus, "r") as nexus_file:
         assert str(nexus_file["scan0034"]["title"].asstr()[...]) == "scan_title_34"
         assert nexus_file["scan0034"].attrs["NX_class"] == "NXentry"
+    os.remove(path_to_nexus)
 
 
-def test_from_nexus(nexus_entries):
-    path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
-    entries = NexusEntry.from_nexus(path_to_nexus_entry)
+def test_from_nexus_get_all(nexus_entries):
+    # generate NeXus file
+    path_to_nexus = "./test_data/scan_to_nexus_test.h5"
+    for scan_num, nexus_entry in nexus_entries.items():
+        nexus_entry.to_nexus(path_to_nexus, scan_num)
 
+    entries = NexusEntry.from_nexus(path_to_nexus)
     scan0034 = entries["scan0034"]
     assert scan0034["definition"] == nexus_entries["scan0034"]["definition"]
     assert np.allclose(
@@ -75,28 +80,38 @@ def test_from_nexus(nexus_entries):
         scan0034.get("instrument/analyser/a2"),
         np.array([242.0, 242.1, 242.2]),
     )
+    assert np.allclose(
+        scan0034.get("data/a1"),
+        np.array([142.0, 142.1, 142.2]),
+    )
 
     scan0035 = entries["scan0035"]
     assert scan0035.get("title") == "scan_title_35"
+    os.remove(path_to_nexus)
 
 
-def test_from_nexus_single_scan():
-    path_to_nexus_entry = "./test_data/scan_to_nexus_test.h5"
-    nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry, scan_num=35)
+def test_from_nexus_get_one(nexus_entries):
+    # generate NeXus
+    path_to_nexus = "./test_data/scan_to_nexus_test.h5"
+    for scan_num, nexus_entry in nexus_entries.items():
+        nexus_entry.to_nexus(path_to_nexus, scan_num)
+
+    nexus_entries = NexusEntry.from_nexus(path_to_nexus, scan_num=35)
     scan0035 = nexus_entries["scan0035"]
     assert scan0035.get("title") == "scan_title_35"
 
 
-def test_from_nexus_IPTS32124_CG4C_exp0424():
+def test_from_nexus_real_data():
     path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
     nexus_entries = NexusEntry.from_nexus(path_to_nexus_entry)
+
     scan0034 = nexus_entries["scan0034"]
     assert scan0034.get("definition") == "NXtas"
     assert scan0034.get("end_time") == "2024-07-03T02:41:28"
     assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
 
 
-def test_from_spice_IPTS32124_CG4C_exp0424_single_scan():
+def test_from_spice_get_one():
     path_to_spice_entry = "./test_data/exp424"
     scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)["scan0034"]
 
@@ -105,7 +120,7 @@ def test_from_spice_IPTS32124_CG4C_exp0424_single_scan():
     assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
 
-def test_from_spice_IPTS32124_CG4C_exp0424_all_scan():
+def test_from_spice_get_all():
     path_to_spice_entry = "./test_data/exp424"
     scans = NexusEntry.from_spice(path_to_spice_entry)
 
@@ -120,36 +135,35 @@ def test_from_spice_IPTS32124_CG4C_exp0424_all_scan():
 
 
 def test_get_from_daslogs():
-    path_to_nexus_entry = "./test_data/spice_to_nexus_test_scan34.h5"
+    path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
     scan0034 = NexusEntry.from_nexus(path_to_nexus_entry, 34)["scan0034"]
     assert scan0034.get_metadata_from_daslogs("sense") == "-+-"
     assert np.allclose(scan0034.get_data_from_daslogs("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
 
-def test_spice_scan_to_nexus():
+def test_spice_to_nexus_one():
 
-    path_to_spice_entry = "./test_data/exp424"
-    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
-    scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)
+    path_to_spice_folder = "./test_data/exp424"
+    path_to_nexus = "./test_data/spice_to_nxdict_test_scan0034.h5"
+    scan0034 = NexusEntry.from_spice(path_to_spice_folder, 34)
     for scan_name, scan in scan0034.items():
-        scan.to_nexus(path_to_nexus_entry, name=scan_name)
+        scan.to_nexus(path_to_nexus, name=scan_name)
+
+    with h5py.File(path_to_nexus, "r") as nexus_file:
+        assert len(nexus_file) == 1
+    os.remove(path_to_nexus)
 
 
-def test_spice_data_to_nexus():
-    path_to_spice_data = "./test_data/exp424"
-    scan_dict = spice_scan_to_nxdict(path_to_spice_data)
+def test_spice_to_nexus_all():
+    path_to_spice_folder = "./test_data/exp424"
+    path_to_nexus = "./test_data/spice_to_nxdict_test_all.h5"
+    scan_dict = NexusEntry.from_spice(path_to_spice_folder)
 
-    entries = {"scan0034": nxdict}
-    nexus_entries = {}
-    for scan_num, scan_content in entries.items():
-        content_list = []
-        for key, val in scan_content.items():
-            content_list.append((key, val))
-        nexus_entries.update({scan_num: NexusEntry(content_list)})
-    # generate h5 file
-    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
-    for scan_num, nexus_entry in nexus_entries.items():
-        nexus_entry.to_nexus(path_to_nexus_entry, scan_num)
+    for scan_name, scan in scan_dict.items():
+        scan.to_nexus(path_to_nexus, name=scan_name)
+    with h5py.File(path_to_nexus, "r") as nexus_file:
+        assert len(nexus_file) == 92
+    os.remove(path_to_nexus)
 
 
 @pytest.fixture

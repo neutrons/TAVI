@@ -12,14 +12,14 @@ class ScanInfo:
     """Metadata containing scan information"""
 
     scan_num: Optional[int] = None
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
     scan_title: str = ""
-    # preset_type: str = "normal"
-    preset_channel: str = "time"
-    preset_value: float = 1.0
     def_y: str = "detector"
     def_x: str = "s1"
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
+    preset_type: str = "normal"
+    preset_channel: str = "time"
+    preset_value: float = 1.0
 
 
 @dataclass
@@ -29,6 +29,8 @@ class SampleUBInfo:
     sample_name: str = ""
     lattice_constants: tuple = (1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
     ub_matrix: Optional[np.ndarray] = None
+    u: Optional[np.ndarray] = None
+    v: Optional[np.ndarray] = None
     # ub_mode: int = 0  # mode for UB determination in SPICE
     # angle_mode: int = 0  # mode for goni angle calculation in SPICE
     plane_normal: Optional[np.ndarray] = None

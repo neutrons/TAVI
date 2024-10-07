@@ -71,7 +71,7 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
     Returns:
     """
     ubconf: dict[str, Any] = {}
-    with open(ub_file_name, encoding="utf-8") as f:
+    with open(ub_file_name, 'r', encoding="utf-8") as f:
         all_content = f.readlines()
 
     for idx, line in enumerate(all_content):
@@ -129,8 +129,16 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
 
     scan_path = os.path.abspath(path_to_scan_file)
     (*folder_path, _, _) = scan_path.split("/")
-    ub_file_path = "/".join(folder_path + ["UBConf", metadata["ubconf"]])
-    ub_conf_dict = {"file_path": ub_file_path}
+    ub_file_path = os.path.join('/',*folder_path,"UBConf", metadata["ubconf"])
+    ub_temp_file_path = os.path.join('/',*folder_path,"UBConf", "temp", metadata["ubconf"])
+
+    if os.path.isfile(ub_file_path):
+        ub_conf_dict = {"file_path": ub_file_path}
+    elif os.path.isfile(ub_temp_file_path):
+        ub_conf_dict = {"file_path": ub_temp_file_path}
+    else:
+        ub_conf_dict = {"file_path": ""}
+        print(f"Cannot find UB file {metadata["ubconf"]}")
     ubconf = read_spice_ubconf(ub_file_path)
     for k, v in ubconf.items():
         ub_conf_dict.update({k: v})

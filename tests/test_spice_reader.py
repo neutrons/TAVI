@@ -55,4 +55,7 @@ def test_create_spicelogs():
 def test_create_spicelogs_single_point():
     path_to_spice_data = "./test_data/exp815/Datafiles/HB1_exp0815_scan0001.dat"
     spicelogs = _create_spicelogs(path_to_spice_data)
-    assert len(spicelogs.keys()) == 1  # metadata only, no data columns
+    # metadata and ubconf only, no data columns
+    assert "metadata" in spicelogs
+    assert "ub_conf" in spicelogs
+    assert len(spicelogs) == 2
