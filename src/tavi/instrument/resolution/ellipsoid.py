@@ -43,7 +43,6 @@ class ResoEllipsoid(object):
         sample: Xtal,
         projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
     ) -> None:
-
         self.STATUS: Optional[bool] = None
         self.q: Optional[tuple[float, float, float]] = None
         self.hkl: tuple[float, float, float] = hkl
