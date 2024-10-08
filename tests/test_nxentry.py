@@ -22,7 +22,8 @@ def test_get_dataset(nexus_entries):
         "signal": "detector",
     }
     assert scan0034.get("a3") is None
-    assert scan0034.get("detector") is None
+    assert np.allclose(scan0034.get("detector"), [1, 2, 3])
+    assert np.allclose(scan0034.get("detector/data"), [1, 2, 3])
     assert scan0034.get("detector/data", ATTRS=True) == {
         "EX_required": "true",
         "type": "NX_INT",
@@ -151,7 +152,7 @@ def test_spice_to_nexus_one():
 
     with h5py.File(path_to_nexus, "r") as nexus_file:
         assert len(nexus_file) == 1
-    os.remove(path_to_nexus)
+    # os.remove(path_to_nexus)
 
 
 def test_spice_to_nexus_all():
@@ -163,7 +164,15 @@ def test_spice_to_nexus_all():
         scan.to_nexus(path_to_nexus, name=scan_name)
     with h5py.File(path_to_nexus, "r") as nexus_file:
         assert len(nexus_file) == 92
-    os.remove(path_to_nexus)
+    # os.remove(path_to_nexus)
+
+
+def test_get_dataset_names():
+    path_to_spice_entry = "./test_data/exp424"
+    scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)["scan0034"]
+
+    names = scan0034.get_dataset_names()
+    assert len(names) == 55
 
 
 @pytest.fixture

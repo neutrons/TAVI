@@ -120,7 +120,7 @@ class NexusEntry(dict):
                     ds = nexus_entry.create_dataset(name=key, data=dv, maxshape=None)
                     NexusEntry._write_recursively(value, ds)
                 else:
-                    grp = nexus_entry.require_group(key + "/")
+                    grp = nexus_entry.require_group(name=key + "/")
                     NexusEntry._write_recursively(value, grp)
 
     @staticmethod
@@ -188,7 +188,7 @@ class NexusEntry(dict):
             path_to_sample_json,
         )
 
-        return NexusEntry._dict_to_nexus_entry(nexus_dict)
+        return cls._dict_to_nexus_entry(nexus_dict)
 
     @classmethod
     def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None):
@@ -200,12 +200,12 @@ class NexusEntry(dict):
         """
         with h5py.File(path_to_nexus, "r") as nexus_file:
             if scan_num is None:  # read all scans in file
-                nexus_dict = NexusEntry._read_recursively(nexus_file)
+                nexus_dict = cls._read_recursively(nexus_file)
             else:  # read one scan only
                 key = f"scan{scan_num:04}"
-                nexus_dict = {key: NexusEntry._read_recursively(nexus_file[key])}
+                nexus_dict = {key: cls._read_recursively(nexus_file[key])}
 
-        return NexusEntry._dict_to_nexus_entry(nexus_dict)
+        return cls._dict_to_nexus_entry(nexus_dict)
 
     def to_nexus(self, path_to_nexus: str, name="scan") -> None:
         """write a NexueEntry instance to a NeXus file
@@ -214,6 +214,7 @@ class NexusEntry(dict):
             path_to_nexus (str): path to a NeXus file with the extention .h5
         """
         with h5py.File(path_to_nexus, "a") as nexus_file:
+            h5py.get_config().track_order = True
             scan_grp = nexus_file.require_group(name + "/")
             NexusEntry._write_recursively(self, scan_grp)
             if "data" in scan_grp:  # create soft link for data
@@ -259,6 +260,8 @@ class NexusEntry(dict):
         for log in ("SPICElogs", "DASlogs"):
             if log in self.keys():
                 self.pop(log)
+        if (key == "detector") and (not ATTRS):
+            key = "detector/data"
         value = NexusEntry._getitem_recursively(self, key, ATTRS)
 
         return value if value is not None else default
@@ -280,3 +283,38 @@ class NexusEntry(dict):
                 continue
         value = daslogs["attrs"].get(key, None)
         return value if value is not None else default
+
+    def get_dataset_names(self) -> list:
+        """return the list of dataset names"""
+
+        def _get_name(val_dict):
+            for key, val in val_dict.items():
+                if "dataset" not in val:
+                    continue
+                if type(val["dataset"]) is not np.ndarray:
+                    continue
+                if np.size(val["dataset"]) == num_pts:
+                    dataset_names.append(key)
+
+        dataset_names = []
+        num_pts = len(self.get("Pt."))
+        instru = self["instrument"]
+
+        for component, val_dict in instru.items():
+            if component == "attrs":
+                continue
+            if component == "detector":
+                dataset_names.append("detector")
+                continue
+            _get_name(val_dict)
+
+        monitor = self["monitor"]
+
+        if self.get("monitor/data") is not None:
+            monitor.pop("data")
+        _get_name(monitor)
+
+        sample = self["sample"]
+        _get_name(sample)
+
+        return dataset_names

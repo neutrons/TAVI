@@ -240,7 +240,7 @@ def spice_scan_to_nxdict(
         source=nxsource,
         monochromator=nxmono,
         collimator=nxcoll,
-        analyzer=nxana,
+        analyser=nxana,
         detector=nxdet,
         slits=nxslits,
         flipper=nxflipper,

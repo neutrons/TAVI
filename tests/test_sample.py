@@ -32,27 +32,41 @@ def xtal_info():
             [0.1643, 0.3042, -0.0588],
         ]
     )
+    spice_ub_matrix = np.array(
+        [
+            [0.0538, 0.1076, 0.1665],
+            [-0.1643, -0.3042, 0.0588],
+            [0.2728, -0.0133, 0.0026],
+        ]
+    )
 
     u = [0.15623, 2.83819, -1.88465]
     v = [-0.00060, 1.03219, 5.33915]
 
-    return (xtal, b_matrix, ub_matrix, u, v)
+    return (xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v)
 
 
 def test_b_matrix(xtal_info):
-    xtal, b_matrix, ub_matrix, u, v = xtal_info
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
     assert np.allclose(xtal.b_mat_from_lattice(), b_matrix, atol=1e-4)
 
 
 def test_ub_matrix_to_uv(xtal_info):
-    xtal, b_matrix, ub_matrix, u, v = xtal_info
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
     (u_calc, v_calc) = xtal.ub_matrix_to_uv(ub_matrix)
     assert np.allclose(u_calc, u, atol=1e-3)
     assert np.allclose(v_calc, v, atol=1e-3)
 
 
+def test_spice_ub_matrix_to_uv(xtal_info):
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
+    (u_calc, v_calc) = xtal.spice_ub_matrix_to_uv(spice_ub_matrix)
+    assert np.allclose(u_calc, u, atol=1e-3)
+    assert np.allclose(v_calc, v, atol=1e-3)
+
+
 def test_ub_matrix_to_lattice_params(xtal_info):
-    xtal, b_matrix, ub_matrix, u, v = xtal_info
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
     (a, b, c, alpha, beta, gamma) = xtal.ub_matrix_to_lattice_params(ub_matrix)
     assert np.allclose(a, xtal.a, atol=1e-2)
     assert np.allclose(b, xtal.b, atol=1e-2)
@@ -63,7 +77,7 @@ def test_ub_matrix_to_lattice_params(xtal_info):
 
 
 def test_uv_to_ub_matrix(xtal_info):
-    xtal, b_matrix, ub_matrix, u, v = xtal_info
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
     ub_matrix_calc = xtal.uv_to_ub_matrix(u, v)
 
     assert np.allclose(ub_matrix_calc, ub_matrix, atol=1e-2)

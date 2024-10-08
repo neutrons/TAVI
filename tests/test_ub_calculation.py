@@ -14,6 +14,13 @@ def test_calc_ub_from_2_peaks_takin():
             [0.164330, 0.304247, -0.058788],
         ]
     )
+    spice_ub_matrix = np.array(
+        [
+            [0.053821, 0.107638, 0.166485],
+            [-0.164330, -0.304247, 0.058788],
+            [0.272815, -0.013290, 0.002566],
+        ]
+    )
 
     u = [0.15623, 2.83819, -1.88465]
     v = [-0.00060, 1.03219, 5.33915]
@@ -34,12 +41,17 @@ def test_calc_ub_from_2_peaks_takin():
     peak2 = Peak(hkl=(0, 2, 0), angles=angles2, ei=ei, ef=ef)
 
     tas.calculate_ub_matrix(peaks=(peak1, peak2))
+    u_cal, v_cal = tas.sample.ub_matrix_to_uv(tas.sample.ub_mat)
 
     assert np.allclose(tas.sample.ub_mat, ub_matrix, atol=1e-2)
     assert np.allclose(tas.sample.plane_normal, plane_normal, atol=1e-2)
     assert np.allclose(tas.sample.in_plane_ref, in_plane_ref, atol=1e-2)
-    assert np.allclose(tas.sample.u, u, atol=1e-2)
-    assert np.allclose(tas.sample.v, v, atol=1e-2)
+    assert np.allclose(u_cal, u, atol=1e-2)
+    assert np.allclose(v_cal, v, atol=1e-2)
+
+    u_cal, v_cal = tas.sample.spice_ub_matrix_to_uv(spice_ub_matrix)
+    assert np.allclose(u_cal, u, atol=1e-2)
+    assert np.allclose(v_cal, v, atol=1e-2)
 
     angles_1 = tas.calculate_motor_angles(peak=(0, 0, 2), ei=13.500172)
     for name, value in angles_1._asdict().items():
@@ -53,12 +65,13 @@ def test_calc_ub_from_2_peaks_takin():
 
     # swap peaks and calculate again
     tas.calculate_ub_matrix(peaks=(peak2, peak1))
+    u_cal, v_cal = tas.sample.ub_matrix_to_uv(tas.sample.ub_mat)
 
     assert np.allclose(tas.sample.ub_mat, ub_matrix, atol=1e-2)
     assert np.allclose(tas.sample.plane_normal, plane_normal, atol=1e-2)
     # assert np.allclose(tas.sample.in_plane_ref, in_plane_ref, atol=1e-2)
-    assert np.allclose(tas.sample.u, u, atol=1e-2)
-    assert np.allclose(tas.sample.v, v, atol=1e-2)
+    assert np.allclose(u_cal, u, atol=1e-2)
+    assert np.allclose(v_cal, v, atol=1e-2)
 
 
 def test_calc_ub_from_2_peaks_hb3():
