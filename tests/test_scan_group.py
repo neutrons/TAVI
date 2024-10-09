@@ -15,7 +15,7 @@ def test_contour_plot():
         tavi.load_nexus_data_from_disk(nexus_data_folder)
         tavi.load_data()
     else:
-        tavi.open_file(tavi_file_name)
+        tavi.open(tavi_file_name)
     dataset = tavi.data["IPTS32124_CG4C_exp0424"]
 
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))

@@ -11,7 +11,7 @@ convert_spice_to_nexus(spice_folder, nexus_file_name)
 tavi = TAVI()
 
 tavi_file_name = "./test_data/tavi_test_exp1031.h5"
-tavi.new_file(tavi_file_name)
+tavi.new(tavi_file_name)
 
 nexus_file_name = "./test_data/nexus_exp1031.h5"
 tavi.load_nexus_data_from_disk(nexus_file_name)

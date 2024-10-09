@@ -191,14 +191,22 @@ class NexusEntry(dict):
         return cls._dict_to_nexus_entry(nexus_dict)
 
     @classmethod
-    def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None):
+    def from_nexus(
+        cls,
+        path_to_nexus: str,
+        scan_num: Optional[int] = None,
+        prefix: Optional[str] = None,
+    ):
         """return a NexusEntry instance from loading a NeXus file
 
         Args:
             path_to_nexus (str): path to a NeXus file with the extension .h5
             scan_num (int): read all scans in file if not None
+            prefix (str)
         """
         with h5py.File(path_to_nexus, "r") as nexus_file:
+            if prefix is not None:
+                nexus_file = nexus_file[prefix]
             if scan_num is None:  # read all scans in file
                 nexus_dict = cls._read_recursively(nexus_file)
             else:  # read one scan only

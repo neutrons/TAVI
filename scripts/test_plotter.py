@@ -59,7 +59,7 @@ if __name__ == "__main__":
     tavi = TAVI()
 
     tavi_file_name = "./test_data/tavi_test_exp424.h5"
-    tavi.open_file(tavi_file_name)
+    tavi.open(tavi_file_name)
 
     tas = CN()
     # tas.load_instrument_from_dicts(cg4c_config_params)
