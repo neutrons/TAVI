@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.nxentry import NexusEntry
+from tavi.data.plotter import Plot1D
 from tavi.sample.xtal import Xtal
 
 
@@ -69,6 +71,7 @@ class Scan(object):
     def __init__(self, name: str, nexus_dict: NexusEntry) -> None:
         self.name: str = name
         self.nexus_dict: NexusEntry = nexus_dict
+        self.data: dict = self.get_data()
         # always using spice convention
         self.SPICE_CONVENTION = True
 
@@ -153,10 +156,206 @@ class Scan(object):
         )
         return instru_info
 
-    @property
-    def data(self):
+    def get_data(self):
         data_dict = {}
         names = self.nexus_dict.get_dataset_names()
         for name in names:
             data_dict.update({name: self.nexus_dict.get(name)})
         return data_dict
+
+    def _make_labels(
+        self,
+        plot1d: Plot1D,
+        x_str: str,
+        y_str: str,
+        norm_channel: Literal["time", "monitor", "mcu", None],
+        norm_val: float,
+    ) -> Plot1D:
+        """generate labels and title"""
+        if norm_channel is not None:
+            if norm_channel == "time":
+                norm_channel_str = "seconds"
+            else:
+                norm_channel_str = norm_channel
+            if norm_val == 1:
+                plot1d.ylabel = y_str + "/ " + norm_channel_str
+            else:
+                plot1d.ylabel = y_str + f" / {norm_val} " + norm_channel_str
+        else:
+            preset_val = self.scan_info.preset_value
+            plot1d.ylabel = y_str + f" / {preset_val} " + self.scan_info.preset_channel
+
+        plot1d.xlabel = x_str
+        plot1d.label = "scan " + str(self.scan_info.scan_num)
+        plot1d.title = plot1d.label + ": " + self.scan_info.scan_title
+
+        return plot1d
+
+    def _rebin_tol(
+        self,
+        x_raw: np.ndarray,
+        y_raw: np.ndarray,
+        y_str: str,
+        rebin_step: float,
+        norm_channel: Literal["time", "monitor", "mcu", None],
+        norm_val: float,
+    ):
+        """Rebin with tolerance"""
+        x_grid = np.arange(np.min(x_raw) + rebin_step / 2, np.max(x_raw) + rebin_step / 2, rebin_step)
+        x = np.zeros_like(x_grid)
+        y = np.zeros_like(x_grid)
+        counts = np.zeros_like(x_grid)
+        weights = np.zeros_like(x_grid)
+        yerr = None
+
+        if norm_channel is None:  # rebin, no renorm
+            weight_channel = self.scan_info.preset_channel
+            weight = self.data[weight_channel]
+            for i, x0 in enumerate(x_raw):
+                idx = np.nanargmax(x_grid + rebin_step / 2 >= x0)
+                y[idx] += y_raw[i]
+                x[idx] += x_raw[i] * weight[i]
+                weights[idx] += weight[i]
+                counts[idx] += 1
+
+            # errror bars for detector only
+            if "detector" in y_str:
+                yerr = np.sqrt(y) / counts
+            y = y / counts
+            x = x / weights
+            return (x, y, yerr)
+
+        # rebin and renorm
+        norm = self.data[norm_channel]
+        for i, x0 in enumerate(x_raw):
+            idx = np.nanargmax(x_grid + rebin_step / 2 >= x0)
+            y[idx] += y_raw[i]
+            x[idx] += x_raw[i] * norm[i]
+            counts[idx] += norm[i]
+
+        # errror bars for detector only
+        if "detector" in y_str:
+            yerr = np.sqrt(y) / counts * norm_val
+        y = y / counts * norm_val
+        x = x / counts
+        return (x, y, yerr)
+
+    def _rebin_grid(
+        self,
+        x_raw: np.ndarray,
+        y_raw: np.ndarray,
+        y_str: str,
+        rebin_step: float,
+        norm_channel: Literal["time", "monitor", "mcu", None],
+        norm_val: float,
+    ):
+        """Rebin with a regular grid"""
+        x = np.arange(
+            np.min(x_raw) + rebin_step / 2,
+            np.max(x_raw) + rebin_step / 2,
+            rebin_step,
+        )
+        y = np.zeros_like(x)
+        cts = np.zeros_like(x)
+        yerr = None
+        # rebin, no renorm
+        if norm_channel is None:
+            for i, x0 in enumerate(x_raw):
+                idx = np.nanargmax(x + rebin_step / 2 >= x0)
+                y[idx] += y_raw[i]
+                cts[idx] += 1
+
+            # errror bars for detector only
+            if "detector" in y_str:
+                yerr = np.sqrt(y) / cts
+                y = y / cts
+            return (x, y, yerr)
+
+        # rebin and renorm
+        norm = self.data[norm_channel]
+        for i, x0 in enumerate(x_raw):
+            idx = np.nanargmax(x + rebin_step / 2 >= x0)
+            y[idx] += y_raw[i]
+            cts[idx] += norm[i]
+
+        # errror bars for detector only
+        if "detector" in y_str:
+            yerr = np.sqrt(y) / cts * norm_val
+        y = y / cts * norm_val
+        return (x, y, yerr)
+
+    def generate_curve(
+        self,
+        x_str: Optional[str] = None,
+        y_str: Optional[str] = None,
+        norm_channel: Literal["time", "monitor", "mcu", None] = None,
+        norm_val: float = 1.0,
+        rebin_type: Literal["tol", "grid", None] = None,
+        rebin_step: float = 0.0,
+    ) -> Plot1D:
+        """Generate a curve from a single scan to plot,
+        with the options to normalize the y-axis and rebin x-axis.
+        """
+
+        if x_str is None:
+            x_str = self.scan_info.def_x
+
+        if y_str is None:
+            y_str = self.scan_info.def_y
+
+        x_raw = self.data[x_str]
+        y_raw = self.data[y_str]
+
+        yerr = None
+
+        if rebin_type is None:  # no rebin
+            x = x_raw
+            y = y_raw
+            # errror bars for detector only
+            if "detector" in y_str:
+                yerr = np.sqrt(y)
+            # normalize y-axis without rebining along x-axis
+            if norm_channel is not None:
+                norm = self.data[norm_channel] / norm_val
+                y = y / norm
+                if yerr is not None:
+                    yerr = yerr / norm
+
+            plot1d = Plot1D(x=x, y=y, yerr=yerr)
+            plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+
+            return plot1d
+
+        if not rebin_step > 0:
+            raise ValueError("Rebin step needs to be greater than zero.")
+
+        match rebin_type:
+            case "tol":  # x weighted by normalization channel
+                x, y, yerr = self._rebin_tol(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                plot1d = Plot1D(x=x, y=y, yerr=yerr)
+                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+                return plot1d
+            case "grid":
+                x, y, yerr = self._rebin_grid(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                plot1d = Plot1D(x=x, y=y, yerr=yerr)
+                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+                return plot1d
+            case _:
+                raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
+
+    def plot_curve(
+        self,
+        x_str: Optional[str] = None,
+        y_str: Optional[str] = None,
+        norm_channel: Literal["time", "monitor", "mcu", None] = None,
+        norm_val: float = 1.0,
+        rebin_type: Literal["tol", "grid", None] = None,
+        rebin_step: float = 0.0,
+    ):
+        """Plot a 1D curve gnerated from a singal scan in a new window"""
+
+        plot1d = self.generate_curve(x_str, y_str, norm_channel, norm_val, rebin_type, rebin_step)
+
+        fig, ax = plt.subplots()
+        plot1d.plot_curve(ax)
+        fig.show()

@@ -155,6 +155,19 @@ def test_spice_to_nexus_one():
     # os.remove(path_to_nexus)
 
 
+def test_spice_to_nexus_empty():
+
+    path_to_spice_folder = "./test_data/exp815"
+    path_to_nexus = "./test_data/spice_to_nxdict_test_empty.h5"
+    scan0002 = NexusEntry.from_spice(path_to_spice_folder, 2)
+    for scan_name, scan in scan0002.items():
+        scan.to_nexus(path_to_nexus, name=scan_name)
+
+    with h5py.File(path_to_nexus, "r") as nexus_file:
+        assert len(nexus_file) == 1
+    # os.remove(path_to_nexus)
+
+
 def test_spice_to_nexus_all():
     path_to_spice_folder = "./test_data/exp424"
     path_to_nexus = "./test_data/spice_to_nxdict_test_all.h5"
