@@ -226,23 +226,26 @@ class NexusEntry(dict):
             scan_grp = nexus_file.require_group(name + "/")
             NexusEntry._write_recursively(self, scan_grp)
             if "data" in scan_grp:  # create soft link for data
-                def_y = scan_grp["data"].attrs["signal"]
-                def_x = scan_grp["data"].attrs["axes"]
-                path_y = _find_val_path(def_y, nexus_file)
-                path_x = _find_val_path(def_x, nexus_file)
+                scan_grp_data = scan_grp["data"]
+                def_y = scan_grp_data.attrs["signal"]
+                def_x = scan_grp_data.attrs["axes"]
+                path_y = _find_val_path(def_y, scan_grp)
+                path_x = _find_val_path(def_x, scan_grp)
 
-                if (path_y is not None) and (scan_grp.get(path_y) is not None):
-                    def_y = "data/" + def_y
-                    if isinstance(scan_grp.get(def_y), h5py.Dataset):
-                        del scan_grp[def_y]
-                    scan_grp[def_y] = h5py.SoftLink(path_y)
-                    scan_grp[def_y + "/"].attrs["target"] = path_y
-                if (path_x is not None) and (scan_grp.get(path_x) is not None):
-                    def_x = "data/" + def_x
-                    if isinstance(scan_grp.get(def_x), h5py.Dataset):
-                        del scan_grp[def_x]
-                    scan_grp[def_x] = h5py.SoftLink(path_x)
-                    scan_grp[def_x + "/"].attrs["target"] = path_x
+                if path_y is not None:
+                    if scan_grp.get(path_y[1:]) is not None:  # remove the first "/"
+                        if isinstance(scan_grp_data.get(def_y), h5py.Dataset):
+                            del scan_grp_data[def_y]
+                        path_y = "/" + name + path_y
+                        scan_grp_data[def_y] = h5py.SoftLink(path_y)
+                        scan_grp_data[def_y].attrs["target"] = path_y
+                if path_x is not None:
+                    if scan_grp.get(path_x[1:]) is not None:  # remove the first "/"
+                        if isinstance(scan_grp_data.get(def_x), h5py.Dataset):
+                            del scan_grp_data[def_x]
+                        path_x = "/" + name + path_x
+                        scan_grp_data[def_x] = h5py.SoftLink(path_x)
+                        scan_grp_data[def_x].attrs["target"] = path_x
 
             # Create the ATTRIBUTES
             scan_grp.attrs["file_name"] = os.path.abspath(path_to_nexus)

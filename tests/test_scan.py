@@ -2,6 +2,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.scan import Scan
+from tavi.data.tavi import TAVI
+
+
+def test_scan_from_tavi():
+    tavi = TAVI("./test_data/tavi_exp424.h5")
+    scan = Scan.from_tavi(tavi, scan_num=34)
+    assert scan.name == "scan0034"
+    assert scan.scan_info.scan_num == 34
 
 
 def test_scan_from_spice():
@@ -22,9 +30,8 @@ def test_scan_from_spice():
 
 
 def test_scan_from_nexus():
-    path_to_nexus_entry = "./test_data/spice_to_nxdict_test_scan0034.h5"
+    path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
     scan = Scan.from_nexus(path_to_nexus_entry)
-    assert scan.name == "scan0034"
     assert scan.name == "scan0034"
     assert scan.scan_info.scan_num == 34
     assert scan.scan_info.scan_title == "003 scan at Q=[0 0 2.5+0.8]"
@@ -135,11 +142,21 @@ def test_generate_curve_rebin_grid_renorm():
     assert np.allclose(plot.yerr[0:3], yerr_data)
 
 
-def test_plot_scan():
+def test_plot_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     s1 = Scan.from_nexus(nexus_file_name)
     plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
     assert plot1d.label == "scan 42"
+    fig, ax = plt.subplots()
+    plot1d.plot_curve(ax)
+    plt.show()
+
+
+def test_plot_scan_from_tavi():
+    tavi = TAVI("./test_data/tavi_exp424.h5")
+    s1 = Scan.from_tavi(tavi, scan_num=34)
+    plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
+
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)
     plt.show()

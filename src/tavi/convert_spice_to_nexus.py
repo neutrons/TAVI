@@ -33,5 +33,5 @@ def convert_spice_to_nexus(
 if __name__ == "__main__":
     path_to_spice_folder = "./test_data/exp424"
     path_to_spice_folder = "./test_data/exp815"  # empty runs in exp815
-    path_to_spice_folder = "./test_data/exp813"
+    # path_to_spice_folder = "./test_data/exp813"
     convert_spice_to_nexus(path_to_spice_folder)

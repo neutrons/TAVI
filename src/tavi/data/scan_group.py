@@ -1,3 +1,5 @@
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -18,16 +20,14 @@ class ScanGroup(object):
     Methods:
         generate_curve
         plot_curve
-        generate_waterfall
-        plot_waterfall
         generate_contour
         plot_contour
     """
 
     def __init__(
         self,
-        signals,
-        backgrounds=None,
+        signals: list[int],
+        backgrounds=Optional[list[int]],
         signal_axes=(None, None, None),
         background_axes=(None, None, None),
     ):
@@ -149,47 +149,47 @@ class ScanGroup(object):
 
         fig.show()
 
-    def plot_waterfall(self, contour_plot, shifts=None, ylim=None, xlim=None, fmt="o"):
-        """Plot waterfall plot.
+    # def plot_waterfall(self, contour_plot, shifts=None, ylim=None, xlim=None, fmt="o"):
+    #     """Plot waterfall plot.
 
-        Note:
-            Horizontal is Y-axis, vertical is Z-axis. Stacked along X-axis.
-        """
+    #     Note:
+    #         Horizontal is Y-axis, vertical is Z-axis. Stacked along X-axis.
+    #     """
 
-        x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
+    #     x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
 
-        num = len(x[0])
+    #     num = len(x[0])
 
-        if shifts is not None:
-            if np.size(shifts) == 1:
-                shifts = (shifts,) * num
-        else:
-            shifts = (0,) * num
+    #     if shifts is not None:
+    #         if np.size(shifts) == 1:
+    #             shifts = (shifts,) * num
+    #     else:
+    #         shifts = (0,) * num
 
-        fig, ax = plt.subplots()
-        shift = 0
-        for i in range(num):
-            if np.isnan(z[:, i]).all():  # all nan
-                continue
-            else:
-                p = ax.errorbar(
-                    x=y[:, i],
-                    y=z[:, i] + shift,
-                    fmt=fmt,
-                    label=f"{xlabel}={np.round(x[0,i],3)}, shift={shift}",
-                )
-            shift += shifts[i]
+    #     fig, ax = plt.subplots()
+    #     shift = 0
+    #     for i in range(num):
+    #         if np.isnan(z[:, i]).all():  # all nan
+    #             continue
+    #         else:
+    #             p = ax.errorbar(
+    #                 x=y[:, i],
+    #                 y=z[:, i] + shift,
+    #                 fmt=fmt,
+    #                 label=f"{xlabel}={np.round(x[0,i],3)}, shift={shift}",
+    #             )
+    #         shift += shifts[i]
 
-        ax.set_title(title)
-        ax.set_xlabel(ylabel)
-        ax.set_ylabel(zlabel)
-        ax.grid(alpha=0.6)
-        ax.legend()
-        if xlim is not None:
-            ax.set_xlim(left=xlim[0], right=xlim[1])
-        if ylim is not None:
-            ax.set_ylim(bottom=ylim[0], top=ylim[1])
-        fig.show()
+    #     ax.set_title(title)
+    #     ax.set_xlabel(ylabel)
+    #     ax.set_ylabel(zlabel)
+    #     ax.grid(alpha=0.6)
+    #     ax.legend()
+    #     if xlim is not None:
+    #         ax.set_xlim(left=xlim[0], right=xlim[1])
+    #     if ylim is not None:
+    #         ax.set_ylim(bottom=ylim[0], top=ylim[1])
+    #     fig.show()
 
     # def generate_waterfall_scans(
     #     self,

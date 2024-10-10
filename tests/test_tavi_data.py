@@ -3,6 +3,7 @@ import os
 
 import h5py
 
+from tavi.data.nxentry import NexusEntry
 from tavi.data.tavi import TAVI
 
 
@@ -35,14 +36,16 @@ def test_new_tavi_file_without_path():
 
 def test_load_spice_data_from_disk():
     tavi = TAVI()
-    tavi.load_spice_data_from_disk("./test_data/exp424/")
+    tavi.load_spice_data_from_disk("./test_data/exp424")
     assert len(tavi.data["IPTS32124_CG4C_exp0424"]) == 92
+    assert type(tavi.data["IPTS32124_CG4C_exp0424"]["scan0001"]) is NexusEntry
 
 
 def test_load_nexus_data_from_disk():
     tavi = TAVI()
-    tavi.load_nexus_data_from_disk("./test_data/IPTS32124_CG4C_exp0424/")
+    tavi.load_nexus_data_from_disk("./test_data/IPTS32124_CG4C_exp0424")
     assert len(tavi.data["IPTS32124_CG4C_exp0424"]) == 92
+    assert type(tavi.data["IPTS32124_CG4C_exp0424"]["scan0001"]) is NexusEntry
 
 
 def test_save():
@@ -52,8 +55,10 @@ def test_save():
     tavi.save("./test_data/tavi_test_exp424.h5")
 
     with h5py.File(tavi.file_path, "r") as f:
-        len(f["/data/IPTS32124_CG4C_exp0424"]) == 92
-
+        exp0424 = f["/data/IPTS32124_CG4C_exp0424"]
+        assert len(exp0424) == 92
+        assert "detector" in exp0424["scan0034/data"].keys()
+        assert exp0424["scan0034/data/en"].attrs["target"] == "/data/IPTS32124_CG4C_exp0424/scan0034/sample/en"
     # os.remove(tavi.file_path)
 
 

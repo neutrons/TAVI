@@ -46,6 +46,7 @@ def test_to_nexus(nexus_entries):
     with h5py.File(path_to_nexus, "r") as nexus_file:
         assert str(nexus_file["scan0034"]["title"].asstr()[...]) == "scan_title_34"
         assert nexus_file["scan0034"].attrs["NX_class"] == "NXentry"
+        assert np.allclose(nexus_file["scan0034"]["instrument"]["detector"]["data"][...], [1, 2, 3])
     os.remove(path_to_nexus)
 
 

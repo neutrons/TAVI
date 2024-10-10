@@ -7,6 +7,7 @@ import numpy as np
 
 from tavi.data.nxentry import NexusEntry
 from tavi.data.plotter import Plot1D
+from tavi.data.tavi import TAVI
 from tavi.sample.xtal import Xtal
 
 
@@ -69,11 +70,19 @@ class Scan(object):
     """
 
     def __init__(self, name: str, nexus_dict: NexusEntry) -> None:
+
         self.name: str = name
         self.nexus_dict: NexusEntry = nexus_dict
         self.data: dict = self.get_data()
         # always using spice convention
         self.SPICE_CONVENTION = True
+
+    @classmethod
+    def from_tavi(cls, tavi: TAVI, scan_num: int, exp_id: Optional[str] = None):
+        if exp_id is None:
+            exp_id = next(iter(tavi.data))
+        scan_name = f"scan{scan_num:04}"
+        return cls(scan_name, tavi.data[exp_id].get(scan_name))
 
     @classmethod
     def from_spice(
@@ -162,34 +171,6 @@ class Scan(object):
         for name in names:
             data_dict.update({name: self.nexus_dict.get(name)})
         return data_dict
-
-    def _make_labels(
-        self,
-        plot1d: Plot1D,
-        x_str: str,
-        y_str: str,
-        norm_channel: Literal["time", "monitor", "mcu", None],
-        norm_val: float,
-    ) -> Plot1D:
-        """generate labels and title"""
-        if norm_channel is not None:
-            if norm_channel == "time":
-                norm_channel_str = "seconds"
-            else:
-                norm_channel_str = norm_channel
-            if norm_val == 1:
-                plot1d.ylabel = y_str + "/ " + norm_channel_str
-            else:
-                plot1d.ylabel = y_str + f" / {norm_val} " + norm_channel_str
-        else:
-            preset_val = self.scan_info.preset_value
-            plot1d.ylabel = y_str + f" / {preset_val} " + self.scan_info.preset_channel
-
-        plot1d.xlabel = x_str
-        plot1d.label = "scan " + str(self.scan_info.scan_num)
-        plot1d.title = plot1d.label + ": " + self.scan_info.scan_title
-
-        return plot1d
 
     def _rebin_tol(
         self,
@@ -322,7 +303,7 @@ class Scan(object):
                     yerr = yerr / norm
 
             plot1d = Plot1D(x=x, y=y, yerr=yerr)
-            plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
+            plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
 
             return plot1d
 
@@ -332,16 +313,14 @@ class Scan(object):
         match rebin_type:
             case "tol":  # x weighted by normalization channel
                 x, y, yerr = self._rebin_tol(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
-                plot1d = Plot1D(x=x, y=y, yerr=yerr)
-                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
-                return plot1d
             case "grid":
                 x, y, yerr = self._rebin_grid(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
-                plot1d = Plot1D(x=x, y=y, yerr=yerr)
-                plot1d = self._make_labels(plot1d, x_str, y_str, norm_channel, norm_val)
-                return plot1d
             case _:
                 raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
+
+        plot1d = Plot1D(x=x, y=y, yerr=yerr)
+        plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
+        return plot1d
 
     def plot_curve(
         self,

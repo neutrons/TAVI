@@ -23,13 +23,16 @@ class TAVI(object):
 
     """
 
-    def __init__(self) -> None:
+    def __init__(self, tavi_file_path: Optional[str] = None) -> None:
         """Initialization"""
         self.file_path: Optional[str] = None
         self.data: dict = {}
         self.processed_data: dict = {}
         self.fits: dict = {}
         self.plots: dict = {}
+
+        if tavi_file_path is not None:
+            self.open_file(tavi_file_path)
 
     @staticmethod
     def load_data(scan_dict: dict):
@@ -78,7 +81,7 @@ class TAVI(object):
         pass
 
     def get_exp_id(self) -> list[str]:
-        "return a list of exp id"
+        "return a list of exp id from a tavi file"
         exp_id_list = []
         with h5py.File(self.file_path, "r") as tavi_file:
             for exp_id in tavi_file["data"].keys():
@@ -97,8 +100,8 @@ class TAVI(object):
         data_dict = {}
         exp_id_list = self.get_exp_id()
         for exp_id in exp_id_list:
-            scans = NexusEntry.from_nexus(tavi_file_path, prefix=f"/data/{exp_id}")
-            data_dict.update({exp_id: scans})
+            nxentries = NexusEntry.from_nexus(tavi_file_path, prefix=f"/data/{exp_id}")
+            data_dict.update({exp_id: nxentries})
         self.data = data_dict
         # TODO load processed_data fits, and plots
 
@@ -120,8 +123,8 @@ class TAVI(object):
                 grp_data = root.create_group("data", track_order=True)
                 for exp_id, scans in self.data.items():
                     grp_data.create_group(name=exp_id, track_order=True)
-                    for scan_name, nxentry in scans.items():
-                        name = f"/data/{exp_id}/{scan_name}"
+                    for entry_name, nxentry in scans.items():
+                        name = f"data/{exp_id}/{entry_name}"
                         nxentry.to_nexus(file_path, name=name)
                 # TODO save pdata, fits and plots
                 grp_pdata = root.create_group("processed_data", track_order=True)

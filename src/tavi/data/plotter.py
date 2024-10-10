@@ -5,6 +5,18 @@ import numpy as np
 
 
 class Plot1D(object):
+    """1D Plot class
+
+    Attributes:
+        x (np.ndarray): x values
+        y (np.ndarray): y values
+        xerr (np.ndarray | None): x error bars
+        yerr (np.ndarray | None): y error bars
+
+
+    Methods:
+
+    """
 
     def __init__(
         self,
@@ -20,16 +32,41 @@ class Plot1D(object):
         self.yerr = yerr
 
         self.title: str = ""
-        self.xlim: Optional[tuple[float, float]] = None
-        self.ylim: Optional[tuple[float, float]] = None
         self.xlabel: Optional[str] = None
         self.ylabel: Optional[str] = None
         self.label: Optional[str] = None
-
+        # plot specifications
+        self.xlim: Optional[tuple[float, float]] = None
+        self.ylim: Optional[tuple[float, float]] = None
         self.color = "C0"
         self.fmt = "o"
         self.LOG_X = False
         self.LOG_Y = False
+
+    def make_labels(
+        self,
+        x_str: str,
+        y_str: str,
+        norm_channel: Optional[str],
+        norm_val: float,
+        scan_info,
+    ):
+        """Create axes labels, plot title and curve label"""
+        if norm_channel is not None:
+            if norm_channel == "time":
+                norm_channel_str = "seconds"
+            else:
+                norm_channel_str = norm_channel
+            if norm_val == 1:
+                self.ylabel = y_str + "/ " + norm_channel_str
+            else:
+                self.ylabel = y_str + f" / {norm_val} " + norm_channel_str
+        else:
+            self.ylabel = f"{y_str} / {scan_info.preset_value} {scan_info.preset_channel}"
+
+        self.xlabel = x_str
+        self.label = "scan " + str(scan_info.scan_num)
+        self.title = self.label + ": " + scan_info.scan_title
 
     def set_labels(self, ax):
         """Set labels, limits and legneds"""
