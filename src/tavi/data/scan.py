@@ -7,7 +7,6 @@ import numpy as np
 
 from tavi.data.nxentry import NexusEntry
 from tavi.data.plotter import Plot1D
-from tavi.data.tavi import TAVI
 from tavi.sample.xtal import Xtal
 
 
@@ -78,11 +77,11 @@ class Scan(object):
         self.SPICE_CONVENTION = True
 
     @classmethod
-    def from_tavi(cls, tavi: TAVI, scan_num: int, exp_id: Optional[str] = None):
+    def from_tavi(cls, tavi_data: dict, scan_num: int, exp_id: Optional[str] = None):
         if exp_id is None:
-            exp_id = next(iter(tavi.data))
+            exp_id = next(iter(tavi_data))
         scan_name = f"scan{scan_num:04}"
-        return cls(scan_name, tavi.data[exp_id].get(scan_name))
+        return cls(scan_name, tavi_data[exp_id].get(scan_name))
 
     @classmethod
     def from_spice(

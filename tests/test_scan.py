@@ -154,8 +154,10 @@ def test_plot_scan_from_nexus():
 
 def test_plot_scan_from_tavi():
     tavi = TAVI("./test_data/tavi_exp424.h5")
-    s1 = Scan.from_tavi(tavi, scan_num=34)
+    s1 = Scan.from_tavi(tavi.data, scan_num=42)
     plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
+    assert plot1d.xlabel == "en"
+    assert plot1d.ylabel == "detector / 30 mcu"
 
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)

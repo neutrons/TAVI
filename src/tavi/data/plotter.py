@@ -68,8 +68,11 @@ class Plot1D(object):
         self.label = "scan " + str(scan_info.scan_num)
         self.title = self.label + ": " + scan_info.scan_title
 
-    def set_labels(self, ax):
-        """Set labels, limits and legneds"""
+    def plot_curve(self, ax):
+        if self.yerr is None:
+            ax.plot(self.x, self.y, label=self.label)
+        else:
+            ax.errorbar(x=self.x, y=self.y, yerr=self.yerr, fmt=self.fmt, label=self.label)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -81,10 +84,3 @@ class Plot1D(object):
         ax.set_ylabel(self.ylabel)
         ax.grid(alpha=0.6)
         ax.legend()
-
-    def plot_curve(self, ax):
-        if self.yerr is None:
-            ax.plot(self.x, self.y, label=self.label)
-        else:
-            ax.errorbar(x=self.x, y=self.y, yerr=self.yerr, fmt=self.fmt, label=self.label)
-        self.set_labels(ax)
