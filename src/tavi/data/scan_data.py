@@ -5,11 +5,9 @@ import numpy as np
 
 
 class ScanData1D(object):
-
     ZERO = 1e-6
 
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
-
         self.ind = np.argsort(x)
         self.x = x[self.ind]
         self.y = y[self.ind]

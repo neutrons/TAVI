@@ -73,7 +73,6 @@ class Scan(object):
     """
 
     def __init__(self, name: str, nexus_dict: NexusEntry) -> None:
-
         self.name: str = name
         self._nexus_dict: NexusEntry = nexus_dict
         self.data: dict = self.get_data()
