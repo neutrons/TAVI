@@ -7,7 +7,6 @@ from tavi.data.scan import Scan
 
 
 def test_fit_single_peak():
-
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, s1 = Scan.from_nexus_file(nexus_file_name)
 
@@ -26,7 +25,6 @@ def test_fit_single_peak():
 
 
 def test_fit_two_peak():
-
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     _, s1 = Scan.from_nexus_file(nexus_file_name)
 

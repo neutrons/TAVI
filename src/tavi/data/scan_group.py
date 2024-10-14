@@ -17,7 +17,6 @@ class ScanGroup(object):
     def __init__(
         self,
     ):
-
         self.name = ""
 
     # TODO non-orthogonal axes for constant E contours
