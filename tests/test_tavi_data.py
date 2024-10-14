@@ -63,7 +63,19 @@ def test_save():
 
 
 def test_open_tavi_file():
-    tavi = TAVI()
-    tavi.open_file("./test_data/tavi_test_exp424.h5")
+    tavi_method1 = TAVI()
+    tavi_method1.open_file("./test_data/tavi_test_exp424.h5")
+    assert len(tavi_method1.data["IPTS32124_CG4C_exp0424"]) == 92
 
-    assert len(tavi.data["IPTS32124_CG4C_exp0424"]) == 92
+    tavi_method2 = TAVI("./test_data/tavi_exp424.h5")
+    assert len(tavi_method2.data["IPTS32124_CG4C_exp0424"]) == 92
+
+
+def test_get_scan():
+    tavi = TAVI("./test_data/tavi_exp424.h5")
+    scan0034 = tavi.get_scan(scan_num=34, exp_id="IPTS32124_CG4C_exp0424")
+    assert scan0034.name == "scan0034"
+    assert scan0034.scan_info.scan_num == 34
+    # works only if loaded data from one experiment
+    scan0035 = tavi.get_scan(scan_num=35)
+    assert scan0035.scan_info.scan_num == 35

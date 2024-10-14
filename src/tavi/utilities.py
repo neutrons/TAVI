@@ -145,3 +145,13 @@ def rotation_matrix_2d(phi):
         ]
     )
     return mat
+
+
+def spice_to_mantid(vec):
+    """suffle the order from spice convention to mantid convention"""
+    return np.array([vec[0], vec[2], -vec[1]])
+
+
+def mantid_to_spice(vec):
+    """suffle the order from mantid convention to spice convention"""
+    return np.array([vec[0], -vec[2], vec[1]])

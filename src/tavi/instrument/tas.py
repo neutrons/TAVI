@@ -5,7 +5,7 @@ import numpy as np
 
 from tavi.instrument.tas_base import TASBase
 from tavi.sample.xtal import Xtal
-from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle
+from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle, mantid_to_spice, spice_to_mantid
 
 
 class TAS(TASBase):
@@ -21,16 +21,6 @@ class TAS(TASBase):
     def __init__(self, SPICE_CONVENTION: bool = True):
         super().__init__()
         self.SPICE_CONVENTION = SPICE_CONVENTION  # use coordination system defined in SPICE
-
-    @staticmethod
-    def spice_to_mantid(vec):
-        """suffle the order"""
-        return np.array([vec[0], vec[2], -vec[1]])
-
-    @staticmethod
-    def mantid_to_spice(vec):
-        """suffle the order"""
-        return np.array([vec[0], -vec[2], vec[1]])
 
     @staticmethod
     def q_lab(
@@ -162,9 +152,9 @@ class TAS(TASBase):
         ub_mat = np.matmul(u_mat, b_mat)
 
         if self.SPICE_CONVENTION:
-            plane_normal = TAS.mantid_to_spice(plane_normal)
-            in_plane_ref = TAS.mantid_to_spice(in_plane_ref)
-            ub_mat = TAS.mantid_to_spice(ub_mat)
+            plane_normal = mantid_to_spice(plane_normal)
+            in_plane_ref = mantid_to_spice(in_plane_ref)
+            ub_mat = mantid_to_spice(ub_mat)
 
         return UBConf(
             peaks,
@@ -217,9 +207,9 @@ class TAS(TASBase):
         ub_mat = self.sample.ub_mat
 
         if self.SPICE_CONVENTION:  # suffle the order following SPICE convention
-            plane_normal = TAS.spice_to_mantid(plane_normal)
-            in_plane_ref = TAS.spice_to_mantid(in_plane_ref)
-            ub_mat = TAS.spice_to_mantid(ub_mat)
+            plane_normal = spice_to_mantid(plane_normal)
+            in_plane_ref = spice_to_mantid(in_plane_ref)
+            ub_mat = spice_to_mantid(ub_mat)
 
         q = ub_mat @ hkl
         t1 = q / np.linalg.norm(q)

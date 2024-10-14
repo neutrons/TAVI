@@ -2,7 +2,7 @@ import numpy as np
 
 from tavi.instrument.tas import TAS
 from tavi.sample.xtal import Xtal
-from tavi.utilities import MotorAngles, Peak
+from tavi.utilities import MotorAngles, Peak, spice_to_mantid
 
 
 def test_calc_ub_from_2_peaks_takin():
@@ -49,7 +49,7 @@ def test_calc_ub_from_2_peaks_takin():
     assert np.allclose(u_cal, u, atol=1e-2)
     assert np.allclose(v_cal, v, atol=1e-2)
 
-    u_cal, v_cal = tas.sample.spice_ub_matrix_to_uv(spice_ub_matrix)
+    u_cal, v_cal = tas.sample.ub_matrix_to_uv(spice_to_mantid(spice_ub_matrix))
     assert np.allclose(u_cal, u, atol=1e-2)
     assert np.allclose(v_cal, v, atol=1e-2)
 

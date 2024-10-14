@@ -3,6 +3,7 @@ import pytest
 
 from tavi.sample.sample import Sample
 from tavi.sample.xtal import Xtal
+from tavi.utilities import spice_to_mantid
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -60,7 +61,7 @@ def test_ub_matrix_to_uv(xtal_info):
 
 def test_spice_ub_matrix_to_uv(xtal_info):
     xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    (u_calc, v_calc) = xtal.spice_ub_matrix_to_uv(spice_ub_matrix)
+    (u_calc, v_calc) = xtal.ub_matrix_to_uv(spice_to_mantid(spice_ub_matrix))
     assert np.allclose(u_calc, u, atol=1e-3)
     assert np.allclose(v_calc, v, atol=1e-3)
 

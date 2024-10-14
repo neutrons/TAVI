@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,6 +8,7 @@ import numpy as np
 from tavi.data.nxentry import NexusEntry
 from tavi.data.plotter import Plot1D
 from tavi.sample.xtal import Xtal
+from tavi.utilities import spice_to_mantid
 
 
 @dataclass
@@ -59,7 +60,9 @@ class Scan(object):
     Manage a single measued scan
 
     Attributes:
-        data: dictionary contains lists of scan data
+        name (str): scan name
+        _nexus_dict (NexusEntry)
+        data (dict): dictionary contains lists of scan data
 
     Methods:
         load_scan
@@ -71,17 +74,8 @@ class Scan(object):
     def __init__(self, name: str, nexus_dict: NexusEntry) -> None:
 
         self.name: str = name
-        self.nexus_dict: NexusEntry = nexus_dict
+        self._nexus_dict: NexusEntry = nexus_dict
         self.data: dict = self.get_data()
-        # always using spice convention
-        self.SPICE_CONVENTION = True
-
-    @classmethod
-    def from_tavi(cls, tavi_data: dict, scan_num: int, exp_id: Optional[str] = None):
-        if exp_id is None:
-            exp_id = next(iter(tavi_data))
-        scan_name = f"scan{scan_num:04}"
-        return cls(scan_name, tavi_data[exp_id].get(scan_name))
 
     @classmethod
     def from_spice(
@@ -111,31 +105,31 @@ class Scan(object):
     def scan_info(self):
         scan_info = ScanInfo(
             scan_num=int(self.name[-4:]),
-            scan_title=self.nexus_dict.get("title"),
-            def_y=self.nexus_dict.get("data", ATTRS=True)["signal"],
-            def_x=self.nexus_dict.get("data", ATTRS=True)["axes"],
-            start_time=self.nexus_dict.get("start_time"),
-            end_time=self.nexus_dict.get("end_time"),
+            scan_title=self._nexus_dict.get("title"),
+            def_y=self._nexus_dict.get("data", ATTRS=True)["signal"],
+            def_x=self._nexus_dict.get("data", ATTRS=True)["axes"],
+            start_time=self._nexus_dict.get("start_time"),
+            end_time=self._nexus_dict.get("end_time"),
             preset_type="normal",
-            preset_channel=self.nexus_dict.get("monitor/mode"),
-            preset_value=self.nexus_dict.get("monitor/preset"),
+            preset_channel=self._nexus_dict.get("monitor/mode"),
+            preset_value=self._nexus_dict.get("monitor/preset"),
         )
         return scan_info
 
     @property
     def sample_ub_info(self):
-        sample_type = self.nexus_dict.get("sample/type")
-        ub_matrix = self.nexus_dict.get("sample/orientation_matrix")
-        lattice_constants = self.nexus_dict.get("sample/unit_cell")
+        sample_type = self._nexus_dict.get("sample/type")
+        ub_matrix = self._nexus_dict.get("sample/orientation_matrix")
+        lattice_constants = self._nexus_dict.get("sample/unit_cell")
         if sample_type == "crystal" and (ub_matrix is not None):
             xtal = Xtal(lattice_constants)
-            (u, v) = xtal.spice_ub_matrix_to_uv(ub_matrix.reshape(3, 3))
+            (u, v) = xtal.ub_matrix_to_uv(spice_to_mantid(ub_matrix.reshape(3, 3)))
         else:
             u = None
             v = None
 
         sample_ub_info = SampleUBInfo(
-            sample_name=self.nexus_dict.get("sample/name"),
+            sample_name=self._nexus_dict.get("sample/name"),
             lattice_constants=lattice_constants,
             ub_matrix=ub_matrix,
             type=sample_type,
@@ -143,9 +137,9 @@ class Scan(object):
             v=v,
             # ub_mode: int = 0  # mode for UB determination in SPICE
             # angle_mode: int = 0  # mode for goni angle calculation in SPICE
-            plane_normal=self.nexus_dict.get("sample/plane_normal"),
+            plane_normal=self._nexus_dict.get("sample/plane_normal"),
             # in_plane_ref: Optional[np.ndarray] = None
-            ubconf=None,  # path to UB configration file)
+            ubconf=None,  # path to UB configration file
         )
 
         return sample_ub_info
@@ -153,22 +147,23 @@ class Scan(object):
     @property
     def instrument_info(self):
         instru_info = InstrumentInfo(
-            monochromator=self.nexus_dict.get("monochromator/type"),
-            analyzer=self.nexus_dict.get("analyser/type"),
+            monochromator=self._nexus_dict.get("monochromator/type"),
+            analyzer=self._nexus_dict.get("analyser/type"),
             sense=(
-                self.nexus_dict.get("monochromator/sense")
-                + self.nexus_dict.get("sample/sense")
-                + self.nexus_dict.get("analyser/sense")
+                self._nexus_dict.get("monochromator/sense")
+                + self._nexus_dict.get("sample/sense")
+                + self._nexus_dict.get("analyser/sense")
             ),
-            collimation=self.nexus_dict.get("divergence_x"),
+            collimation=self._nexus_dict.get("divergence_x"),
         )
         return instru_info
 
-    def get_data(self):
+    def get_data(self) -> dict:
+        """Get scan data as a dictionary"""
         data_dict = {}
-        names = self.nexus_dict.get_dataset_names()
+        names = self._nexus_dict.get_dataset_names()
         for name in names:
-            data_dict.update({name: self.nexus_dict.get(name)})
+            data_dict.update({name: self._nexus_dict.get(name)})
         return data_dict
 
     def _rebin_tol(
@@ -176,12 +171,19 @@ class Scan(object):
         x_raw: np.ndarray,
         y_raw: np.ndarray,
         y_str: str,
-        rebin_step: float,
+        rebin_params: tuple,
         norm_channel: Literal["time", "monitor", "mcu", None],
         norm_val: float,
     ):
         """Rebin with tolerance"""
-        x_grid = np.arange(np.min(x_raw) + rebin_step / 2, np.max(x_raw) + rebin_step / 2, rebin_step)
+
+        rebin_min, rebin_max, rebin_step = rebin_params
+        if rebin_min is None:
+            rebin_min = np.min(x_raw)
+        if rebin_max is None:
+            rebin_max = np.max(x_raw)
+
+        x_grid = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
         x = np.zeros_like(x_grid)
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
@@ -225,16 +227,19 @@ class Scan(object):
         x_raw: np.ndarray,
         y_raw: np.ndarray,
         y_str: str,
-        rebin_step: float,
+        rebin_params: tuple,
         norm_channel: Literal["time", "monitor", "mcu", None],
         norm_val: float,
     ):
         """Rebin with a regular grid"""
-        x = np.arange(
-            np.min(x_raw) + rebin_step / 2,
-            np.max(x_raw) + rebin_step / 2,
-            rebin_step,
-        )
+
+        rebin_min, rebin_max, rebin_step = rebin_params
+        if rebin_min is None:
+            rebin_min = np.min(x_raw)
+        if rebin_max is None:
+            rebin_max = np.max(x_raw)
+
+        x = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
         y = np.zeros_like(x)
         cts = np.zeros_like(x)
         yerr = None
@@ -271,10 +276,19 @@ class Scan(object):
         norm_channel: Literal["time", "monitor", "mcu", None] = None,
         norm_val: float = 1.0,
         rebin_type: Literal["tol", "grid", None] = None,
-        rebin_step: float = 0.0,
+        rebin_params: Union[float, tuple] = 0.0,
     ) -> Plot1D:
-        """Generate a curve from a single scan to plot,
-        with the options to normalize the y-axis and rebin x-axis.
+        """Generate a curve from a single scan to plot, with the options
+        to normalize the y-axis and rebin x-axis.
+
+        Args:
+            x_str (str): x-axis variable
+            y_str (str): y-axis variable
+            norm_channel (str | None): choose from "time", "monitor", "mcu"
+            norm_val (float): value to normalized to
+            rebin_type (str | None): "tol" or "grid"
+            rebin_params (float | tuple(flot, float, float)): take as step size if a numer is given,
+                take as (min, max, step) if a tuple of size 3 is given
         """
 
         if x_str is None:
@@ -306,14 +320,26 @@ class Scan(object):
 
             return plot1d
 
-        if not rebin_step > 0:
-            raise ValueError("Rebin step needs to be greater than zero.")
+        # validate rebin params
+        if isinstance(rebin_params, tuple):
+            if len(rebin_params) != 3:
+                raise ValueError("Rebin parameters should have the form (min, max, step)")
+            rebin_min, rebin_max, rebin_step = rebin_params
+            if (rebin_min >= rebin_max) or (rebin_step < 0):
+                raise ValueError(f"Nonsensical rebin parameters {rebin_params}")
+
+        elif isinstance(rebin_params, float | int):
+            if rebin_params < 0:
+                raise ValueError("Rebin step needs to be greater than zero.")
+            rebin_params = (None, float(rebin_params), None)
+        else:
+            raise ValueError(f"Unrecogonized rebin parameters {rebin_params}")
 
         match rebin_type:
             case "tol":  # x weighted by normalization channel
-                x, y, yerr = self._rebin_tol(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                x, y, yerr = self._rebin_tol(x_raw, y_raw, y_str, rebin_params, norm_channel, norm_val)
             case "grid":
-                x, y, yerr = self._rebin_grid(x_raw, y_raw, y_str, rebin_step, norm_channel, norm_val)
+                x, y, yerr = self._rebin_grid(x_raw, y_raw, y_str, rebin_params, norm_channel, norm_val)
             case _:
                 raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
 

@@ -82,15 +82,6 @@ class Xtal(Sample):
         return (u, v)
 
     @staticmethod
-    def spice_ub_matrix_to_uv(spice_ub_matrix) -> tuple[np.ndarray, np.ndarray]:
-        """Calculate u and v vector from UB matrix
-        Note:
-            u vector, in reciprocal lattice unit, along beam
-            v vector, in reciprocal lattice unit,in the horizaontal scattering plane"""
-        ub_matrix = np.array([spice_ub_matrix[0], spice_ub_matrix[2], -spice_ub_matrix[1]])
-        return Xtal.ub_matrix_to_uv(ub_matrix)
-
-    @staticmethod
     def ub_matrix_to_lattice_params(ub_matrix):
         """Calculate lattice parameters from UB matrix"""
         g_mat = np.linalg.inv(ub_matrix.T @ ub_matrix)
@@ -125,10 +116,6 @@ class Xtal(Sample):
         ub_matrix = q_mat @ np.linalg.inv(t_mat) @ b_mat
 
         return ub_matrix
-
-    # TODO
-    def uv_to_spice_ub_matrix(self, u, v) -> np.ndarray:
-        pass
 
     def set_orientation(self, ubconf: UBConf) -> None:
         "Set crystal orientation from UB conf"

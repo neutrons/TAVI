@@ -2,14 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.scan import Scan
-from tavi.data.tavi import TAVI
-
-
-def test_scan_from_tavi():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
-    scan = Scan.from_tavi(tavi, scan_num=34)
-    assert scan.name == "scan0034"
-    assert scan.scan_info.scan_num == 34
 
 
 def test_scan_from_spice():
@@ -93,7 +85,7 @@ def test_generate_curve_norm():
 def test_generate_curve_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve(rebin_type="grid", rebin_step=0.25)
+    plot = scan.generate_curve(rebin_type="grid", rebin_params=0.25)
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -119,7 +111,12 @@ def test_generate_curve_rebin_grid():
 def test_generate_curve_rebin_grid_renorm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve(rebin_type="grid", rebin_step=0.25, norm_channel="time", norm_val=5)
+    plot = scan.generate_curve(
+        rebin_type="grid",
+        rebin_params=(0.1, 5, 0.25),
+        norm_channel="time",
+        norm_val=5,
+    )
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -147,18 +144,6 @@ def test_plot_scan_from_nexus():
     s1 = Scan.from_nexus(nexus_file_name)
     plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
     assert plot1d.label == "scan 42"
-    fig, ax = plt.subplots()
-    plot1d.plot_curve(ax)
-    plt.show()
-
-
-def test_plot_scan_from_tavi():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
-    s1 = Scan.from_tavi(tavi.data, scan_num=42)
-    plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
-    assert plot1d.xlabel == "en"
-    assert plot1d.ylabel == "detector / 30 mcu"
-
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)
     plt.show()

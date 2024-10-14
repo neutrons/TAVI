@@ -5,7 +5,7 @@ from typing import Optional
 import h5py
 
 from tavi.data.nxentry import NexusEntry
-from tavi.data.scan_group import ScanGroup
+from tavi.data.scan import Scan
 
 
 class TAVI(object):
@@ -36,12 +36,13 @@ class TAVI(object):
 
     @staticmethod
     def load_data(scan_dict: dict):
+        """Load data under coresponding exp_id"""
         data_dict: dict = {}
         for scan_name, nxentry in scan_dict.items():
             exp_id = nxentry["attrs"]["dataset_name"]
             if not data_dict.get(exp_id):  # first entry
                 data_dict.update({exp_id: {scan_name: nxentry}})
-            else:
+            else:  # exp_id existing
                 data_dict[exp_id].update({scan_name: nxentry})
         return data_dict
 
@@ -133,14 +134,34 @@ class TAVI(object):
         except OSError:
             print(f"Cannot create tavi file at {self.file_path}")
 
-    def generate_scan_group(
+    def get_scan(
         self,
-        signals=None,
-        backgrounds=None,
-        signal_axes=(None, None, None),
-        background_axes=(None, None, None),
-    ):
-        """Generate a scan group."""
-        sg = ScanGroup(signals, backgrounds, signal_axes, background_axes)
+        scan_num: int,
+        exp_id: Optional[str] = None,
+    ) -> Scan:
+        """Get the scan at location /data/exp_id/scanXXXX, return a Scan instance
 
-        return sg
+        Arguments:
+            scan_num (int): scan number
+            exp_id (str | None): in the format of IPTSXXXXX_INSTRU_expXXXX, needed when
+                more than one experiment is loaded as data
+        Return:
+            Scan: an instance of Scan class
+        """
+        if exp_id is None:
+            exp_id = next(iter(self.data))
+        dataset = self.data[exp_id]
+        scan_name = f"scan{scan_num:04}"
+        return Scan(scan_name, dataset[scan_name])
+
+    # def generate_scan_group(
+    #     self,
+    #     signals=None,
+    #     backgrounds=None,
+    #     signal_axes=(None, None, None),
+    #     background_axes=(None, None, None),
+    # ):
+    #     """Generate a scan group."""
+    #     sg = ScanGroup(signals, backgrounds, signal_axes, background_axes)
+
+    #     return sg
