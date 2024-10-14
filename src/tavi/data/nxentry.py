@@ -143,6 +143,8 @@ class NexusEntry(dict):
                     value = str(value.asstr()[...])
                 except TypeError:  # arrays instead
                     value = value[...]
+                    if not np.shape(value):  # single element
+                        value = value.tolist()
 
                 if not attr_dict:  # empty attributes
                     items.update({key: {"dataset": value}})

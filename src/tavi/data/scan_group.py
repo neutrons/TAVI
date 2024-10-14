@@ -1,5 +1,3 @@
-from typing import Optional
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -10,43 +8,21 @@ class ScanGroup(object):
 
     Atributes:
         name (string): Name of combined scans
-        signals (list of Scan objects):
-        backgrounds (list of Scan objects):
-        signal_axes (list): Can be ["s1", "s2", "detector"],
-                            Or ["s1", "s2",["det_1", "det_2", "det_3"]].
-                            Default is (None, None, None)
-        background_axes (list): Default is (None, None, None)
 
     Methods:
-        generate_curve
-        plot_curve
-        generate_contour
+        get_plot_data
         plot_contour
     """
 
     def __init__(
         self,
-        signals: list[int],
-        backgrounds=Optional[list[int]],
-        signal_axes=(None, None, None),
-        background_axes=(None, None, None),
     ):
-        self.signals = signals
-        self.backgrounds = backgrounds
-        self.signal_axes = list(signal_axes)
-        self.background_axes = list(background_axes)
+
         self.name = ""
 
-    def generate_curve(self):
-        pass
-
-    def plot_curve(self):
-        pass
-
-    # TODO background subtraction
     # TODO non-orthogonal axes for constant E contours
 
-    def generate_contour(
+    def get_plot_data(
         self,
         norm_channel=None,
         norm_val=1,
@@ -129,7 +105,7 @@ class ScanGroup(object):
 
         return (xv, yv, z, x_step, y_step, xlabel, ylabel, zlabel, title)
 
-    def plot_contour(self, contour_plot, cmap="turbo", vmax=100, vmin=0, ylim=None, xlim=None):
+    def plot(self, contour_plot, cmap="turbo", vmax=100, vmin=0, ylim=None, xlim=None):
         """Plot contour"""
 
         x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
@@ -148,108 +124,3 @@ class ScanGroup(object):
             ax.set_ylim(bottom=ylim[0], top=ylim[1])
 
         fig.show()
-
-    # def plot_waterfall(self, contour_plot, shifts=None, ylim=None, xlim=None, fmt="o"):
-    #     """Plot waterfall plot.
-
-    #     Note:
-    #         Horizontal is Y-axis, vertical is Z-axis. Stacked along X-axis.
-    #     """
-
-    #     x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
-
-    #     num = len(x[0])
-
-    #     if shifts is not None:
-    #         if np.size(shifts) == 1:
-    #             shifts = (shifts,) * num
-    #     else:
-    #         shifts = (0,) * num
-
-    #     fig, ax = plt.subplots()
-    #     shift = 0
-    #     for i in range(num):
-    #         if np.isnan(z[:, i]).all():  # all nan
-    #             continue
-    #         else:
-    #             p = ax.errorbar(
-    #                 x=y[:, i],
-    #                 y=z[:, i] + shift,
-    #                 fmt=fmt,
-    #                 label=f"{xlabel}={np.round(x[0,i],3)}, shift={shift}",
-    #             )
-    #         shift += shifts[i]
-
-    #     ax.set_title(title)
-    #     ax.set_xlabel(ylabel)
-    #     ax.set_ylabel(zlabel)
-    #     ax.grid(alpha=0.6)
-    #     ax.legend()
-    #     if xlim is not None:
-    #         ax.set_xlim(left=xlim[0], right=xlim[1])
-    #     if ylim is not None:
-    #         ax.set_ylim(bottom=ylim[0], top=ylim[1])
-    #     fig.show()
-
-    # def generate_waterfall_scans(
-    #     self,
-    #     rebin_type=None,
-    #     rebin_step=0,
-    #     norm_channel=None,
-    #     norm_val=1,
-    # ):
-    #     curves = []
-    #     num_scans = np.size(self.signals)
-    #     signal_x, signal_y, _ = self.signal_axes
-
-    #     if np.size(signal_x) == 1:
-    #         signal_x = [signal_x] * num_scans
-    #     xlabel = signal_x[0]
-    #     if np.size(signal_y) == 1:
-    #         signal_y = [signal_y] * num_scans
-    #     ylabel = signal_y[0]
-    #     if norm_channel is not None:
-    #         ylabel += f" / {norm_val} " + norm_channel
-
-    #     title = self.name
-
-    #     for i, signal in enumerate(self.signals):
-    #         x, y, _, yerr, _, _, _, label = signal.generate_curve(
-    #             x_str=signal_x[i],
-    #             y_str=signal_y[i],
-    #             norm_channel=norm_channel,
-    #             norm_val=norm_val,
-    #             rebin_type=rebin_type,
-    #             rebin_step=rebin_step,
-    #         )
-    #         curve = (x, y, yerr, label)
-    #         curves.append(curve)
-    #     waterfall = curves, xlabel, ylabel, title
-    #     return waterfall
-
-    # def plot_waterfall_scans(self, waterfall, shifts=None, ylim=None, xlim=None, fmt="o"):
-
-    #     curves, xlabel, ylabel, title = waterfall
-    #     if shifts is not None:
-    #         if np.size(shifts) == 1:
-    #             shifts = (shifts,) * len(curves)
-    #     else:
-    #         shifts = (0,) * len(curves)
-
-    #     fig, ax = plt.subplots()
-    #     shift = 0
-    #     for i, curve in enumerate(curves):
-    #         shift += shifts[i]
-    #         x, y, yerr, label = curve
-    #         ax.errorbar(x, y + shift, yerr=yerr, label=label, fmt=fmt)
-
-    #     ax.set_title(title)
-    #     ax.set_xlabel(xlabel)
-    #     ax.set_ylabel(ylabel)
-    #     ax.legend()
-    #     if xlim is not None:
-    #         ax.set_xlim(left=xlim[0], right=xlim[1])
-    #     if ylim is not None:
-    #         ax.set_ylim(bottom=ylim[0], top=ylim[1])
-
-    #     fig.show()

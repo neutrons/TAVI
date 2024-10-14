@@ -41,7 +41,7 @@ def test_scan_from_nexus():
 def test_generate_curve():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve()
+    plot = scan.get_plot_data()
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -68,7 +68,7 @@ def test_generate_curve():
 def test_generate_curve_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve(norm_channel="mcu", norm_val=5)
+    plot = scan.get_plot_data(norm_channel="mcu", norm_val=5)
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -85,7 +85,7 @@ def test_generate_curve_norm():
 def test_generate_curve_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve(rebin_type="grid", rebin_params=0.25)
+    plot = scan.get_plot_data(rebin_type="grid", rebin_params=0.25)
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -111,7 +111,7 @@ def test_generate_curve_rebin_grid():
 def test_generate_curve_rebin_grid_renorm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.generate_curve(
+    plot = scan.get_plot_data(
         rebin_type="grid",
         rebin_params=(0.1, 5, 0.25),
         norm_channel="time",
@@ -142,7 +142,7 @@ def test_generate_curve_rebin_grid_renorm():
 def test_plot_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     s1 = Scan.from_nexus(nexus_file_name)
-    plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
+    plot1d = s1.get_plot_data(norm_channel="mcu", norm_val=30)
     assert plot1d.label == "scan 42"
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)
