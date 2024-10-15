@@ -10,14 +10,69 @@ class ScanData1D(object):
 
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
 
-        self.ind = np.argsort(x)
-        self.x = x[self.ind]
-        self.y = y[self.ind]
+        ind = np.argsort(x)
+        self.x = x[ind]
+        self.y = y[ind]
         self.err = np.sqrt(y)
+        self._ind = ind
+
+    def __add__(self, other):  # addition is not really needed
+        # check x length, rebin other if do not match
+        if len(self.x) != len(other.x):
+            rebin_intervals = np.diff(self.x)
+            rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
+            rebin_boundary = self.x + rebin_intervals / 2
+
+            y = np.zeros_like(rebin_boundary)
+            counts = np.zeros_like(rebin_boundary)
+            err = np.zeros_like(rebin_boundary)
+            (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
+
+            for i, x0 in enumerate(other.x):
+                if x0 > x_max or x0 < x_min:
+                    continue
+                idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
+                y[idx] += other.y[i]
+                err[idx] += other.err[i] ** 2
+                counts[idx] += 1
+
+            other.err = err / counts
+            other.y = y / counts
+
+        scan_data_1d = ScanData1D(self.x, self.y + other.y)
+        scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
+        return scan_data_1d
+
+    def __sub__(self, other):
+        # check x length, rebin other if do not match
+        if len(self.x) != len(other.x):
+            rebin_intervals = np.diff(self.x)
+            rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
+            rebin_boundary = self.x + rebin_intervals / 2
+
+            y = np.zeros_like(rebin_boundary)
+            counts = np.zeros_like(rebin_boundary)
+            err = np.zeros_like(rebin_boundary)
+            (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
+
+            for i, x0 in enumerate(other.x):
+                if x0 > x_max or x0 < x_min:
+                    continue
+                idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
+                y[idx] += other.y[i]
+                err[idx] += other.err[i] ** 2
+                counts[idx] += 1
+
+            other.err = err / counts
+            other.y = y / counts
+
+        scan_data_1d = ScanData1D(self.x, self.y - other.y)
+        scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
+        return scan_data_1d
 
     def renorm(self, norm_col: np.ndarray, norm_val: float = 1.0):
         """Renormalized to norm_val"""
-        norm_col = norm_col[self.ind]
+        norm_col = norm_col[self._ind]
         self.y = self.y / norm_col * norm_val
         self.err = self.err / norm_col * norm_val
 
@@ -56,7 +111,7 @@ class ScanData1D(object):
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
 
-        norm_col = norm_col[self.ind]
+        norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):
             idx = np.nanargmax(x_grid + rebin_step / 2 + ScanData1D.ZERO >= x0)
@@ -98,7 +153,7 @@ class ScanData1D(object):
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
-        norm_col = norm_col[self.ind]
+        norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):  # plus ZERO helps improve precision
             idx = np.nanargmax(x + rebin_step / 2 + ScanData1D.ZERO >= x0)
@@ -108,3 +163,23 @@ class ScanData1D(object):
         self.x = x
         self.err = np.sqrt(y) / counts * norm_val
         self.y = y / counts * norm_val
+
+
+class ScanData2D(object):
+
+    ZEROS = 1e-6
+
+    def __init__(self, x: np.ndarray, y: np.ndarray, z: np.ndarray) -> None:
+        self.x = x
+        self.y = y
+        self.y = z
+        self.err = np.sqrt(z)
+
+    def __sub__(self, other):
+        pass
+
+    def renorm(self):
+        pass
+
+    def rebin_grid(self):
+        pass

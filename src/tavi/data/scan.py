@@ -168,7 +168,7 @@ class Scan(object):
         return data_dict
 
     @staticmethod
-    def validate_rebin_params(rebin_params):
+    def validate_rebin_params(rebin_params: float | tuple) -> tuple:
         if isinstance(rebin_params, tuple):
             if len(rebin_params) != 3:
                 raise ValueError("Rebin parameters should have the form (min, max, step)")
@@ -210,13 +210,13 @@ class Scan(object):
         x_str = self.scan_info.def_x if x_str is None else x_str
         y_str = self.scan_info.def_y if y_str is None else y_str
 
-        scan_data = ScanData1D(x=self.data[x_str], y=self.data[y_str])
+        scan_data_1d = ScanData1D(x=self.data[x_str], y=self.data[y_str])
 
         if rebin_type is None:  # no rebin
             if norm_channel is not None:  # normalize y-axis without rebining along x-axis
-                scan_data.renorm(norm_col=self.data[norm_channel] / norm_val)
+                scan_data_1d.renorm(norm_col=self.data[norm_channel] / norm_val)
 
-            plot1d = Plot1D(x=scan_data.x, y=scan_data.y, yerr=scan_data.err)
+            plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
             plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
 
             return plot1d
@@ -228,18 +228,18 @@ class Scan(object):
             case "tol":
                 if norm_channel is None:  # x weighted by preset channel
                     weight_channel = self.scan_info.preset_channel
-                    scan_data.rebin_tol(rebin_params_tuple, weight_col=self.data[weight_channel])
+                    scan_data_1d.rebin_tol(rebin_params_tuple, weight_col=self.data[weight_channel])
                 else:  # x weighted by normalization channel
-                    scan_data.rebin_tol_renorm(
+                    scan_data_1d.rebin_tol_renorm(
                         rebin_params_tuple,
                         norm_col=self.data[norm_channel],
                         norm_val=norm_val,
                     )
             case "grid":
                 if norm_channel is None:
-                    scan_data.rebin_grid(rebin_params_tuple)
+                    scan_data_1d.rebin_grid(rebin_params_tuple)
                 else:
-                    scan_data.rebin_grid_renorm(
+                    scan_data_1d.rebin_grid_renorm(
                         rebin_params_tuple,
                         norm_col=self.data[norm_channel],
                         norm_val=norm_val,
@@ -247,7 +247,7 @@ class Scan(object):
             case _:
                 raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
 
-        plot1d = Plot1D(x=scan_data.x, y=scan_data.y, yerr=scan_data.err)
+        plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
         plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
         return plot1d
 

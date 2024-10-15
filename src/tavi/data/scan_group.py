@@ -1,5 +1,22 @@
+from dataclasses import dataclass
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
+
+from tavi.data.scan import Scan
+
+
+@dataclass
+class SGInfo:
+    """Information needed to generate a ScanGroup"""
+
+    scan_num: int
+    x_axis: Optional[str] = None
+    y_axis: Optional[str] = None
+    z_axis: Optional[str] = None
+    norm_channel: Optional[str] = None
+    exp_id: Optional[str] = None
 
 
 class ScanGroup(object):
@@ -14,13 +31,57 @@ class ScanGroup(object):
         plot_contour
     """
 
+    scan_group_number: int = 1
+
     def __init__(
         self,
+        scan_path_list,
     ):
+        scans = {}
+        for scan_path in scan_path_list:
+            if "/" in scan_path:
+                exp_id, scan_name = scan_path.split("/")
+            else:
+                exp_id = next(iter(self.data))
+                scan_name = scan_path
+                scan_path = "/".join([exp_id, scan_name])
+            scans.update({scan_path: Scan(scan_name, self.data[exp_id][scan_name])})
 
-        self.name = ""
+        # axes: tuple,
+        # rebin_params: tuple,
+        # sg_info_list: list[SGInfo],
+        # scan_group_name: Optional[str] = None,
+        # self.axes = axes
+        # self.dim = len(axes)
+        # if len(rebin_params) != self.dim:
+        #     raise ValueError(f"Mismatched dimension with axes={axes} and rebin_params={rebin_params}")
+
+        # for scan in sg_info_list:
+        #     self.add_scan(scan)
+
+        # if self.dim == 2:  # 1D data
+        #     ScanData1D()
+        # elif self.dim == 3:  # 2D data
+        #     ScanData2D()
+
+        # self.axes = axes
+
+        self.name = scan_group_name if scan_group_name is not None else f"ScanGroup{ScanGroup.scan_group_number}"
+        ScanGroup.scan_group_number += 1
+
+    # TODO
+    def add_scan(self, scan_path: str):
+        pass
+
+    # TODO
+    def remove_scan(self, scan_path: str):
+        pass
 
     # TODO non-orthogonal axes for constant E contours
+
+    # @staticmethod
+    # def validate_rebin_params(rebin_params: float | tuple) -> tuple:
+    #     return rebin_params
 
     def get_plot_data(
         self,

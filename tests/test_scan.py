@@ -38,7 +38,7 @@ def test_scan_from_nexus():
     assert np.allclose(scan.data["detector"][0:3], [569, 194, 40])
 
 
-def test_generate_curve():
+def test_get_plot_data():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
     plot = scan.get_plot_data()
@@ -65,7 +65,7 @@ def test_generate_curve():
     assert np.allclose(scan.data["time"], time_data)
 
 
-def test_generate_curve_norm():
+def test_get_plot_data_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
     plot = scan.get_plot_data(norm_channel="mcu", norm_val=5)
@@ -82,7 +82,7 @@ def test_generate_curve_norm():
     assert np.allclose(plot.yerr, yerr_data / 12)
 
 
-def test_generate_curve_rebin_grid():
+def test_get_plot_data_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
     plot = scan.get_plot_data(rebin_type="grid", rebin_params=0.25)

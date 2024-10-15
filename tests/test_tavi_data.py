@@ -73,9 +73,9 @@ def test_open_tavi_file():
 
 def test_get_scan():
     tavi = TAVI("./test_data/tavi_exp424.h5")
-    scan0034 = tavi.get_scan(scan_num=34, exp_id="IPTS32124_CG4C_exp0424")
+    scan0034 = tavi.get_scan(scan_path="IPTS32124_CG4C_exp0424/scan0034")
     assert scan0034.name == "scan0034"
     assert scan0034.scan_info.scan_num == 34
     # works only if loaded data from one experiment
-    scan0035 = tavi.get_scan(scan_num=35)
+    scan0035 = tavi.get_scan(scan_path="scan0035")
     assert scan0035.scan_info.scan_num == 35

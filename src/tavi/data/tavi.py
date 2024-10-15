@@ -6,6 +6,7 @@ import h5py
 
 from tavi.data.nxentry import NexusEntry
 from tavi.data.scan import Scan
+from tavi.data.scan_group import ScanGroup
 
 
 class TAVI(object):
@@ -134,34 +135,28 @@ class TAVI(object):
         except OSError:
             print(f"Cannot create tavi file at {self.file_path}")
 
-    def get_scan(
-        self,
-        scan_num: int,
-        exp_id: Optional[str] = None,
-    ) -> Scan:
+    def get_scan(self, scan_path: str) -> Scan:
         """Get the scan at location /data/exp_id/scanXXXX, return a Scan instance
 
         Arguments:
-            scan_num (int): scan number
-            exp_id (str | None): in the format of IPTSXXXXX_INSTRU_expXXXX, needed when
+            scan_path (str): exp_id /scan_name. exp_id is in the format of
+                IPTSXXXXX_INSTRU_expXXXX, it is needed when
                 more than one experiment is loaded as data
         Return:
             Scan: an instance of Scan class
         """
-        if exp_id is None:
+        if "/" in scan_path:
+            exp_id, scan_name = scan_path.split("/")
+        else:
             exp_id = next(iter(self.data))
-        dataset = self.data[exp_id]
-        scan_name = f"scan{scan_num:04}"
-        return Scan(scan_name, dataset[scan_name])
+            scan_name = scan_path
+        return Scan(scan_name, self.data[exp_id][scan_name])
 
-    # def generate_scan_group(
-    #     self,
-    #     signals=None,
-    #     backgrounds=None,
-    #     signal_axes=(None, None, None),
-    #     background_axes=(None, None, None),
-    # ):
-    #     """Generate a scan group."""
-    #     sg = ScanGroup(signals, backgrounds, signal_axes, background_axes)
+    def get_scan_group(self, scan_group_name: str):
+        pass
 
-    #     return sg
+    def make_scan_group(
+        self,
+        scan_path_list: list,
+    ):
+        sg = ScanGroup(scan_path_list)
