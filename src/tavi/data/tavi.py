@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import Optional
+from typing import Optional, Union
 
 import h5py
 
@@ -135,7 +135,7 @@ class TAVI(object):
         except OSError:
             print(f"Cannot create tavi file at {self.file_path}")
 
-    def get_scan(self, scan_path: str) -> Scan:
+    def get_scan(self, scan_num: Union[tuple[str, int], int]) -> Scan:
         """Get the scan at location /data/exp_id/scanXXXX, return a Scan instance
 
         Arguments:
@@ -145,18 +145,42 @@ class TAVI(object):
         Return:
             Scan: an instance of Scan class
         """
-        if "/" in scan_path:
-            exp_id, scan_name = scan_path.split("/")
-        else:
+        if isinstance(scan_num, tuple):
+            exp_id, scan_num = scan_num
+            scan_name = f"scan{scan_num:04}"
+        elif isinstance(scan_num, int):
             exp_id = next(iter(self.data))
-            scan_name = scan_path
+            scan_name = f"scan{scan_num:04}"
+        else:
+            raise ValueError(f"scan_num={scan_num} needs to be tuple or int")
         return Scan(scan_name, self.data[exp_id][scan_name])
 
-    def get_scan_group(self, scan_group_name: str):
-        pass
-
-    def make_scan_group(
+    def group_scans(
         self,
-        scan_path_list: list,
+        scan_nums: Union[list[int], list[tuple[str, int]]],
+        scan_group_name: Optional[str] = None,
     ):
-        sg = ScanGroup(scan_path_list)
+        """Group scans for further processing
+
+        Arguments:
+            scan_nums:
+            scan_group_name:
+
+        Returns:
+            ScanGroup
+        """
+        first_exp_id = next(iter(self.data))
+        scan_num_list = []
+        for scan_item in scan_nums:
+            if isinstance(scan_item, int):
+                scan_num_list.append((first_exp_id, f"scan{scan_item:04}"))
+            elif isinstance(scan_item, tuple):
+                exp_id, scan_num = scan_item
+                scan_num_list.append((exp_id, f"scan{scan_num:04}"))
+            else:
+                raise ValueError(f"scan_num={scan_item} needs to be tuple or int")
+
+        scans = []
+        for exp_id, scan_name in scan_num_list:
+            scans.append(Scan(scan_name, self.data[exp_id][scan_name]))
+        return ScanGroup(scans, name=scan_group_name)

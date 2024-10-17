@@ -16,6 +16,7 @@ from tavi.utilities import spice_to_mantid
 class ScanInfo:
     """Metadata containing scan information"""
 
+    exp_id: str
     scan_num: int
     scan_title: str = ""
     def_y: str = "detector"
@@ -105,6 +106,7 @@ class Scan(object):
     @property
     def scan_info(self):
         scan_info = ScanInfo(
+            exp_id=self._nexus_dict["attrs"].get("dataset_name"),
             scan_num=int(self.name[-4:]),
             scan_title=self._nexus_dict.get("title"),
             def_y=self._nexus_dict.get("data", ATTRS=True)["signal"],
@@ -187,10 +189,8 @@ class Scan(object):
 
     def get_plot_data(
         self,
-        x_str: Optional[str] = None,
-        y_str: Optional[str] = None,
-        norm_channel: Literal["time", "monitor", "mcu", None] = None,
-        norm_val: float = 1.0,
+        axes: tuple[Optional[str], Optional[str]] = (None, None),
+        norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         rebin_type: Literal["tol", "grid", None] = None,
         rebin_params: Union[float, tuple] = 0.0,
     ) -> Plot1D:
@@ -198,26 +198,27 @@ class Scan(object):
         to normalize the y-axis and rebin x-axis.
 
         Args:
-            x_str (str): x-axis variable
-            y_str (str): y-axis variable
-            norm_channel (str | None): choose from "time", "monitor", "mcu"
-            norm_val (float): value to normalized to
+            axes (x_str, y_stre): x-axis and y-axis variables
+            norm_to (norm_val (float), norm_channel(str)): value and channel for normalization
+                norm_channel should be "time", "monitor" or"mcu".
             rebin_type (str | None): "tol" or "grid"
             rebin_params (float | tuple(flot, float, float)): take as step size if a numer is given,
                 take as (min, max, step) if a tuple of size 3 is given
         """
 
+        x_str, y_str = axes
         x_str = self.scan_info.def_x if x_str is None else x_str
         y_str = self.scan_info.def_y if y_str is None else y_str
 
         scan_data_1d = ScanData1D(x=self.data[x_str], y=self.data[y_str])
 
         if rebin_type is None:  # no rebin
-            if norm_channel is not None:  # normalize y-axis without rebining along x-axis
+            if norm_to is not None:  # normalize y-axis without rebining along x-axis
+                norm_val, norm_channel = norm_to
                 scan_data_1d.renorm(norm_col=self.data[norm_channel] / norm_val)
 
             plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
-            plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
+            plot1d.make_labels(x_str, y_str, norm_to, self.scan_info)
 
             return plot1d
 
@@ -226,19 +227,21 @@ class Scan(object):
 
         match rebin_type:
             case "tol":
-                if norm_channel is None:  # x weighted by preset channel
+                if norm_to is None:  # x weighted by preset channel
                     weight_channel = self.scan_info.preset_channel
                     scan_data_1d.rebin_tol(rebin_params_tuple, weight_col=self.data[weight_channel])
                 else:  # x weighted by normalization channel
+                    norm_val, norm_channel = norm_to
                     scan_data_1d.rebin_tol_renorm(
                         rebin_params_tuple,
                         norm_col=self.data[norm_channel],
                         norm_val=norm_val,
                     )
             case "grid":
-                if norm_channel is None:
+                if norm_to is None:
                     scan_data_1d.rebin_grid(rebin_params_tuple)
                 else:
+                    norm_val, norm_channel = norm_to
                     scan_data_1d.rebin_grid_renorm(
                         rebin_params_tuple,
                         norm_col=self.data[norm_channel],
@@ -248,7 +251,7 @@ class Scan(object):
                 raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
 
         plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
-        plot1d.make_labels(x_str, y_str, norm_channel, norm_val, self.scan_info)
+        plot1d.make_labels(x_str, y_str, norm_to, self.scan_info)
         return plot1d
 
     def plot(

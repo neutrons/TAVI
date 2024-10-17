@@ -16,7 +16,7 @@ class ScanData1D(object):
         self.err = np.sqrt(y)
         self._ind = ind
 
-    def __add__(self, other):  # addition is not really needed
+    def __add__(self, other):
         # check x length, rebin other if do not match
         if len(self.x) != len(other.x):
             rebin_intervals = np.diff(self.x)
@@ -173,7 +173,6 @@ class ScanData2D(object):
         self.x = x
         self.y = y
         self.y = z
-        self.err = np.sqrt(z)
 
     def __sub__(self, other):
         pass

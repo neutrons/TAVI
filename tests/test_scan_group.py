@@ -2,17 +2,20 @@
 
 import matplotlib.pyplot as plt
 
-from tavi.data.scan_group import ScanGroup
 from tavi.data.tavi import TAVI
 
 
-def test_scan_group_from_tavi():
-    tavi = TAVI("./test_data/tavi_test_exp424.h5")
+def test_scan_group():
+    tavi = TAVI("./test_data/tavi_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
-    sg1 = ScanGroup.from_tavi(tavi, signals=scan_list, signal_axes=("qh", "en", "detector"))
 
-    contour1 = sg1.generate_contour(rebin_steps=(0.025, 0.1))
-    assert contour1[0].shape == (40, 25)
+    sg = tavi.group_scans(scan_list, scan_group_name="dispH")
+    plot2d = sg.get_plot_data_2d(
+        axes=("qh", "en", "detector"),
+        rebin_params=(0.025, 0.1),
+        norm_to=(1, "mcu"),
+    )
 
-    sg1.plot_contour(contour1, cmap="turbo", vmax=80)
+    assert plot2d[0].shape == (40, 25)
+    sg.plot_contour(contour, cmap="turbo", vmax=80)
     plt.show()

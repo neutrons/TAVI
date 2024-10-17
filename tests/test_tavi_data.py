@@ -2,6 +2,7 @@
 import os
 
 import h5py
+import pytest
 
 from tavi.data.nxentry import NexusEntry
 from tavi.data.tavi import TAVI
@@ -71,11 +72,41 @@ def test_open_tavi_file():
     assert len(tavi_method2.data["IPTS32124_CG4C_exp0424"]) == 92
 
 
-def test_get_scan():
+@pytest.fixture
+def tavi_exp0424():
     tavi = TAVI("./test_data/tavi_exp424.h5")
-    scan0034 = tavi.get_scan(scan_path="IPTS32124_CG4C_exp0424/scan0034")
+    return tavi
+
+
+def test_get_scan(tavi_exp0424):
+
+    scan0034 = tavi_exp0424.get_scan(scan_num=("IPTS32124_CG4C_exp0424", 34))
     assert scan0034.name == "scan0034"
     assert scan0034.scan_info.scan_num == 34
     # works only if loaded data from one experiment
-    scan0035 = tavi.get_scan(scan_path="scan0035")
+    scan0035 = tavi_exp0424.get_scan(scan_num=35)
     assert scan0035.scan_info.scan_num == 35
+
+
+def test_group_scans_int(tavi_exp0424):
+    sg1 = tavi_exp0424.group_scans(
+        scan_nums=list(range(42, 49, 1)),
+    )
+    sg2 = tavi_exp0424.group_scans(
+        scan_nums=list(range(70, 76, 1)),
+    )
+    assert sg1.name == "ScanGroup1"
+    assert len(sg1.scans) == 7
+    assert sg2.name == "ScanGroup2"
+    assert len(sg2.scans) == 6
+
+
+def test_group_scans_tuple(tavi_exp0424):
+    scan_list = [("IPTS32124_CG4C_exp0424", scan_num) for scan_num in list(range(42, 49, 1)) + list(range(70, 76, 1))]
+
+    sg = tavi_exp0424.group_scans(
+        scan_nums=scan_list,
+        scan_group_name="dispH",
+    )
+    assert sg.name == "dispH"
+    assert len(sg.scans) == 13

@@ -47,12 +47,12 @@ class Plot1D(object):
         self,
         x_str: str,
         y_str: str,
-        norm_channel: Optional[str],
-        norm_val: float,
+        norm_to: Optional[tuple[float, str]],
         scan_info,
     ):
         """Create axes labels, plot title and curve label"""
-        if norm_channel is not None:
+        if norm_to is not None:
+            norm_val, norm_channel = norm_to
             if norm_channel == "time":
                 norm_channel_str = "seconds"
             else:
@@ -84,3 +84,7 @@ class Plot1D(object):
         ax.set_ylabel(self.ylabel)
         ax.grid(alpha=0.6)
         ax.legend()
+
+
+class Plot2D(object):
+    pass

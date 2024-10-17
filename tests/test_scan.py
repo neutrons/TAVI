@@ -8,6 +8,7 @@ def test_scan_from_spice():
     path_to_spice_folder = "./test_data/exp424"
     scan = Scan.from_spice(path_to_spice_folder, scan_num=34)
     assert scan.name == "scan0034"
+    assert scan.scan_info.exp_id == "IPTS32124_CG4C_exp0424"
     assert scan.scan_info.scan_num == 34
     assert scan.scan_info.scan_title == "003 scan at Q=[0 0 2.5+0.8]"
     assert scan.sample_ub_info.sample_name == "NiTiO3"
@@ -68,7 +69,7 @@ def test_get_plot_data():
 def test_get_plot_data_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.get_plot_data(norm_channel="mcu", norm_val=5)
+    plot = scan.get_plot_data(norm_to=(5, "mcu"))
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -114,8 +115,7 @@ def test_generate_curve_rebin_grid_renorm():
     plot = scan.get_plot_data(
         rebin_type="grid",
         rebin_params=(0.1, 5, 0.25),
-        norm_channel="time",
-        norm_val=5,
+        norm_to=(5, "time"),
     )
 
     x_data = np.arange(0.225, 4.1, 0.25)
@@ -142,7 +142,7 @@ def test_generate_curve_rebin_grid_renorm():
 def test_plot_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     s1 = Scan.from_nexus(nexus_file_name)
-    plot1d = s1.get_plot_data(norm_channel="mcu", norm_val=30)
+    plot1d = s1.get_plot_data(norm_to=(30, "mcu"))
     assert plot1d.label == "scan 42"
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)
