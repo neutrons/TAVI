@@ -47,26 +47,25 @@ class Plot1D(object):
         self,
         x_str: str,
         y_str: str,
-        norm_to: Optional[tuple[float, str]],
-        scan_info,
+        norm_to: tuple[float, str],
+        label: Optional[str] = None,
+        title: Optional[str] = None,
     ):
         """Create axes labels, plot title and curve label"""
-        if norm_to is not None:
-            norm_val, norm_channel = norm_to
-            if norm_channel == "time":
-                norm_channel_str = "seconds"
-            else:
-                norm_channel_str = norm_channel
-            if norm_val == 1:
-                self.ylabel = y_str + "/ " + norm_channel_str
-            else:
-                self.ylabel = y_str + f" / {norm_val} " + norm_channel_str
+
+        norm_val, norm_channel = norm_to
+        if norm_channel == "time":
+            norm_channel_str = "seconds"
         else:
-            self.ylabel = f"{y_str} / {scan_info.preset_value} {scan_info.preset_channel}"
+            norm_channel_str = norm_channel
+        if norm_val == 1:
+            self.ylabel = y_str + "/ " + norm_channel_str
+        else:
+            self.ylabel = y_str + f" / {norm_val} " + norm_channel_str
 
         self.xlabel = x_str
-        self.label = "scan " + str(scan_info.scan_num)
-        self.title = self.label + ": " + scan_info.scan_title
+        self.label = label
+        self.title = title
 
     def plot_curve(self, ax):
         if self.yerr is None:
@@ -79,7 +78,8 @@ class Plot1D(object):
         if self.ylim is not None:
             ax.set_ylim(bottom=self.ylim[0], top=self.ylim[1])
 
-        ax.set_title(self.title)
+        if self.title is not None:
+            ax.set_title(self.title)
         ax.set_xlabel(self.xlabel)
         ax.set_ylabel(self.ylabel)
         ax.grid(alpha=0.6)

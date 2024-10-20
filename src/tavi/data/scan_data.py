@@ -10,11 +10,13 @@ class ScanData1D(object):
 
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
 
-        ind = np.argsort(x)
-        self.x = x[ind]
-        self.y = y[ind]
+        # ind = np.argsort(x)
+        # self.x = x[ind]
+        # self.y = y[ind]
+        self.x = x
+        self.y = y
         self.err = np.sqrt(y)
-        self._ind = ind
+        # self._ind = ind
 
     def __add__(self, other):
         # check x length, rebin other if do not match
@@ -72,7 +74,7 @@ class ScanData1D(object):
 
     def renorm(self, norm_col: np.ndarray, norm_val: float = 1.0):
         """Renormalized to norm_val"""
-        norm_col = norm_col[self._ind]
+        # norm_col = norm_col[self._ind]
         self.y = self.y / norm_col * norm_val
         self.err = self.err / norm_col * norm_val
 
@@ -111,7 +113,7 @@ class ScanData1D(object):
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
 
-        norm_col = norm_col[self._ind]
+        # norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):
             idx = np.nanargmax(x_grid + rebin_step / 2 + ScanData1D.ZERO >= x0)
@@ -153,7 +155,7 @@ class ScanData1D(object):
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
-        norm_col = norm_col[self._ind]
+        # norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):  # plus ZERO helps improve precision
             idx = np.nanargmax(x + rebin_step / 2 + ScanData1D.ZERO >= x0)
