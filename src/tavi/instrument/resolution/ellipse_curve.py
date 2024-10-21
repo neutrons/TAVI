@@ -143,7 +143,6 @@ class ResoEllipse(object):
         pts = self.generate_ellipse()
 
         if self.grid_helper is None:
-
             s = ax.plot(
                 pts[0],
                 pts[1],

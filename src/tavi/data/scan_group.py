@@ -65,7 +65,6 @@ class ScanGroup(object):
         norm_to: Optional[tuple[float, str]],
         **rebin_params_dict: Optional[tuple],
     ) -> ScanData1D:
-
         x_axis, y_axis = axes
         x_array = np.array([])
         y_array = np.array([])
@@ -130,7 +129,6 @@ class ScanGroup(object):
         norm_to: Optional[tuple[float, str]],
         **rebin_params_dict: Optional[tuple],
     ) -> ScanData2D:
-
         if not isinstance(rebin_params, tuple):
             raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple.")
         if not len(rebin_params) == 2:

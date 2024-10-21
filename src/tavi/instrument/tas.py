@@ -90,7 +90,7 @@ class TAS(TASBase):
         if not isinstance(self.sample, Xtal):
             raise ValueError("sample needs to be Xtal class for UB calculation.")
 
-        match (num_of_peaks := len(peaks)):
+        match num_of_peaks := len(peaks):
             case 2:
                 ubconf = self._find_u_from_two_peaks(peaks)
                 self.sample.set_orientation(ubconf)
