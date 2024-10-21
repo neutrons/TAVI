@@ -9,7 +9,6 @@ class ScanData1D(object):
     ZERO = 1e-6
 
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
-
         # ind = np.argsort(x)
         # self.x = x[ind]
         # self.y = y[ind]
@@ -188,7 +187,6 @@ class ScanData1D(object):
 
 
 class ScanData2D(object):
-
     ZEROS = 1e-6
 
     def __init__(self, x: np.ndarray, y: np.ndarray, z: np.ndarray) -> None:
