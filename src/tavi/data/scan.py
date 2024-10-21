@@ -77,7 +77,7 @@ class Scan(object):
 
         self.name: str = name
         self._nexus_dict: NexusEntry = nexus_dict
-        self.data: dict = self.get_data()
+        self.data: dict = self.get_data_columns()
 
     @classmethod
     def from_spice(
@@ -161,7 +161,7 @@ class Scan(object):
         )
         return instru_info
 
-    def get_data(self) -> dict:
+    def get_data_columns(self) -> dict[str, np.ndarray]:
         """Get scan data as a dictionary"""
         data_dict = {}
         names = self._nexus_dict.get_dataset_names()
@@ -187,13 +187,12 @@ class Scan(object):
             raise ValueError(f"Unrecogonized rebin parameters {rebin_params}")
         return rebin_params
 
-    def get_plot_data(
+    def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
         norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
-        rebin_type: Literal["tol", "grid", None] = None,
-        rebin_params: Union[float, tuple] = 0.0,
-    ) -> Plot1D:
+        **rebin_params_dict: Union[float, tuple],
+    ) -> ScanData1D:
         """Generate a curve from a single scan to plot, with the options
         to normalize the y-axis and rebin x-axis.
 
@@ -214,17 +213,20 @@ class Scan(object):
         label = "scan " + str(self.scan_info.scan_num)
         title = f"{label}: {self.scan_info.scan_title}"
 
-        if rebin_type is None:  # no rebin
+        for rebin_type in ["grid", "tol"]:
+            rebin_params = rebin_params_dict.get(rebin_type)
+            if rebin_params is not None:
+                break
+
+        if not rebin_params:  # no rebin
             if norm_to is not None:  # normalize y-axis without rebining along x-axis
                 norm_val, norm_channel = norm_to
                 scan_data_1d.renorm(norm_col=self.data[norm_channel] / norm_val)
-            else:
+            else:  # equivalent to normalizing to preset
                 norm_to = (self.scan_info.preset_value, self.scan_info.preset_channel)
 
-            plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
-            plot1d.make_labels(x_str, y_str, norm_to, label, title)
-
-            return plot1d
+            scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
+            return scan_data_1d
 
         # Rebin, first validate rebin params
         rebin_params_tuple = Scan.validate_rebin_params(rebin_params)
@@ -254,25 +256,23 @@ class Scan(object):
                         norm_val=norm_val,
                     )
             case _:
-                raise ValueError('Unrecogonized rebin type. Needs to be "tol" or "grid".')
+                raise ValueError('Unrecogonized rebin_params_dict keyword. Needs to be "tol" or "grid".')
 
-        plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
-        plot1d.make_labels(x_str, y_str, norm_to, label, title)
-        return plot1d
+        scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
+        return scan_data_1d
 
     def plot(
         self,
-        x_str: Optional[str] = None,
-        y_str: Optional[str] = None,
-        norm_channel: Literal["time", "monitor", "mcu", None] = None,
-        norm_val: float = 1.0,
-        rebin_type: Literal["tol", "grid", None] = None,
-        rebin_step: float = 0.0,
+        axes: tuple[Optional[str], Optional[str]] = (None, None),
+        norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
+        **rebin_params_dict: Union[float, tuple],
     ):
         """Plot a 1D curve gnerated from a singal scan in a new window"""
 
-        plot1d = self.get_plot_data(x_str, y_str, norm_channel, norm_val, rebin_type, rebin_step)
+        scan_data_1d = self.get_data(axes, norm_to, **rebin_params_dict)
 
         fig, ax = plt.subplots()
-        plot1d.plot_curve(ax)
+        plot1d = Plot1D()
+        plot1d.add_scan(scan_data_1d, c="C0", fmt="o")
+        plot1d.plot(ax)
         fig.show()

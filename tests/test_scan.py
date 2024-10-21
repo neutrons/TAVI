@@ -39,10 +39,10 @@ def test_scan_from_nexus():
     assert np.allclose(scan.data["detector"][0:3], [569, 194, 40])
 
 
-def test_get_plot_data():
+def test_get_scan_data():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.get_plot_data()
+    scan_data_1d = scan.get_data()
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -58,18 +58,18 @@ def test_get_plot_data():
         + [73.738, 73.991, 74.261, 74.6, 74.638, 74.627, 75.343, 75.293, 75.183, 75.37]
     )
 
-    assert np.allclose(plot.x, x_data)
-    assert np.allclose(plot.y, y_data)
-    assert np.allclose(plot.yerr, yerr_data)
+    assert np.allclose(scan_data_1d.x, x_data)
+    assert np.allclose(scan_data_1d.y, y_data)
+    assert np.allclose(scan_data_1d.err, yerr_data)
     assert scan.scan_info.preset_channel == "mcu"
     assert np.allclose(scan.data["mcu"], mcu_data)
     assert np.allclose(scan.data["time"], time_data)
 
 
-def test_get_plot_data_norm():
+def test_get_scan_data_norm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.get_plot_data(norm_to=(5, "mcu"))
+    scan_data_1d = scan.get_data(norm_to=(5, "mcu"))
 
     x_data = np.arange(0.1, 4.1, 0.1)
     y_data = np.array(
@@ -78,15 +78,15 @@ def test_get_plot_data_norm():
     )
     yerr_data = np.sqrt(y_data)
 
-    assert np.allclose(plot.x, x_data)
-    assert np.allclose(plot.y, y_data / 12)
-    assert np.allclose(plot.yerr, yerr_data / 12)
+    assert np.allclose(scan_data_1d.x, x_data)
+    assert np.allclose(scan_data_1d.y, y_data / 12)
+    assert np.allclose(scan_data_1d.err, yerr_data / 12)
 
 
-def test_get_plot_data_rebin_grid():
+def test_get_scan_data_rebin_grid():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.get_plot_data(rebin_type="grid", rebin_params=0.25)
+    scan_data_1d = scan.get_data(grid=0.25)
 
     x_data = np.arange(0.225, 4.1, 0.25)
     y_data = np.array(
@@ -104,18 +104,17 @@ def test_get_plot_data_rebin_grid():
         ]
     )
 
-    assert np.allclose(plot.x[0:3], x_data[0:3])
-    assert np.allclose(plot.y[0:3], y_data)
-    assert np.allclose(plot.yerr[0:3], yerr_data)
+    assert np.allclose(scan_data_1d.x[0:3], x_data[0:3])
+    assert np.allclose(scan_data_1d.y[0:3], y_data)
+    assert np.allclose(scan_data_1d.err[0:3], yerr_data)
 
 
 def test_generate_curve_rebin_grid_renorm():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     scan = Scan.from_nexus(nexus_file_name)
-    plot = scan.get_plot_data(
-        rebin_type="grid",
-        rebin_params=(0.1, 5, 0.25),
+    scan_data_1d = scan.get_data(
         norm_to=(5, "time"),
+        grid=(0.1, 5, 0.25),
     )
 
     x_data = np.arange(0.225, 4.1, 0.25)
@@ -134,16 +133,15 @@ def test_generate_curve_rebin_grid_renorm():
         ]
     )
 
-    assert np.allclose(plot.x[0:3], x_data[0:3])
-    assert np.allclose(plot.y[0:3], y_data)
-    assert np.allclose(plot.yerr[0:3], yerr_data)
+    assert np.allclose(scan_data_1d.x[0:3], x_data[0:3])
+    assert np.allclose(scan_data_1d.y[0:3], y_data)
+    assert np.allclose(scan_data_1d.err[0:3], yerr_data)
 
 
 def test_plot_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     s1 = Scan.from_nexus(nexus_file_name)
-    plot1d = s1.get_plot_data(norm_to=(30, "mcu"))
-    assert plot1d.label == "scan 42"
-    fig, ax = plt.subplots()
-    plot1d.plot_curve(ax)
+    scan_data_1d = s1.get_data(norm_to=(30, "mcu"))
+    assert scan_data_1d.label == "scan 42"
+    s1.plot(norm_to=(30, "mcu"))
     plt.show()

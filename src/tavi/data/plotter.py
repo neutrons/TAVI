@@ -1,7 +1,7 @@
 # import matplotlib.colors as colors
 from typing import Optional
 
-import numpy as np
+from tavi.data.scan_data import ScanData1D
 
 
 class Plot1D(object):
@@ -18,60 +18,36 @@ class Plot1D(object):
 
     """
 
-    def __init__(
-        self,
-        x: np.ndarray,
-        y: np.ndarray,
-        xerr: Optional[np.ndarray] = None,
-        yerr: Optional[np.ndarray] = None,
-    ) -> None:
+    def __init__(self) -> None:
         # self.ax = None
-        self.x = x
-        self.y = y
-        self.xerr = xerr
-        self.yerr = yerr
+        self.data_list: list[ScanData1D] = []
+        self.title = ""
+        self.xlabel = None
+        self.ylabel = None
 
-        self.title: str = ""
-        self.xlabel: Optional[str] = None
-        self.ylabel: Optional[str] = None
-        self.label: Optional[str] = None
         # plot specifications
         self.xlim: Optional[tuple[float, float]] = None
         self.ylim: Optional[tuple[float, float]] = None
-        self.color = "C0"
-        self.fmt = "o"
         self.LOG_X = False
         self.LOG_Y = False
 
-    def make_labels(
-        self,
-        x_str: str,
-        y_str: str,
-        norm_to: tuple[float, str],
-        label: Optional[str] = None,
-        title: Optional[str] = None,
-    ):
-        """Create axes labels, plot title and curve label"""
+    def add_scan(self, scan_data: ScanData1D, **kwargs):
+        self.data_list.append(scan_data)
+        for key, val in kwargs.items():
+            scan_data.fmt.update({key: val})
 
-        norm_val, norm_channel = norm_to
-        if norm_channel == "time":
-            norm_channel_str = "seconds"
-        else:
-            norm_channel_str = norm_channel
-        if norm_val == 1:
-            self.ylabel = y_str + "/ " + norm_channel_str
-        else:
-            self.ylabel = y_str + f" / {norm_val} " + norm_channel_str
-
-        self.xlabel = x_str
-        self.label = label
-        self.title = title
-
-    def plot_curve(self, ax):
-        if self.yerr is None:
-            ax.plot(self.x, self.y, label=self.label)
-        else:
-            ax.errorbar(x=self.x, y=self.y, yerr=self.yerr, fmt=self.fmt, label=self.label)
+    def plot(self, ax):
+        for data in self.data_list:
+            if data.err is None:
+                if not data.label:
+                    ax.plot(data.x, data.y, **data.fmt)
+                else:
+                    ax.plot(data.x, data.y, label=data.label, **data.fmt)
+            else:
+                if not data.label:
+                    ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
+                else:
+                    ax.errorbar(x=data.x, y=data.y, yerr=data.err, label=data.label, **data.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -80,8 +56,19 @@ class Plot1D(object):
 
         if self.title is not None:
             ax.set_title(self.title)
-        ax.set_xlabel(self.xlabel)
-        ax.set_ylabel(self.ylabel)
+
+        if self.xlabel is None:
+            xlabels = []
+            for data in self.data_list:
+                xlabels.append(data.xlabel)
+            ax.set_xlabel(",".join(xlabels))
+
+        if self.ylabel is None:
+            ylabels = []
+            for data in self.data_list:
+                ylabels.append(data.ylabel)
+            ax.set_ylabel(",".join(ylabels))
+
         ax.grid(alpha=0.6)
         ax.legend()
 

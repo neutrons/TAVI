@@ -13,7 +13,7 @@ class ScanGroup(object):
     Manage combined scans
 
     Atributes:
-        name (string): Name of combined scans
+        name (string): Name of combined scans, default is CombinedScansNum
 
     Methods:
         add_scan
@@ -24,13 +24,9 @@ class ScanGroup(object):
 
     scan_group_number: int = 1
 
-    def __init__(
-        self,
-        scans: list[Scan],
-        name: Optional[str] = None,
-    ):
+    def __init__(self, scans: list[Scan], name: str = "") -> None:
         self.scans = scans
-        self.name = name if name is not None else f"ScanGroup{ScanGroup.scan_group_number}"
+        self.name = f"CombineScans{ScanGroup.scan_group_number}" if not name else name
         ScanGroup.scan_group_number += 1
 
     # TODO
@@ -43,68 +39,123 @@ class ScanGroup(object):
 
     # TODO non-orthogonal axes for constant E contours
 
-    def _get_plot_data_1d(self, axes, rebin_params, rebin_type, norm_to) -> Plot1D:
-        x_axis, y_axis = axes
-        x_list = np.array([])
-        y_list = np.array([])
+    def _get_default_renorm_params(self) -> tuple[float, str]:
+        norm_vals = []
+        norm_channels = []
+        for scan in self.scans:
+            norm_channels.append(scan.scan_info.preset_channel)
+            norm_vals.append(scan.scan_info.preset_value)
+        norm_val = set(norm_vals)
+        norm_channel = set(norm_channels)
+
+        if not (len(norm_val) == 1 and len(norm_channel) == 1):
+            raise ValueError("Combined scans have different preset settings. Need proper normalization.")
+
+        return (*norm_val, *norm_channel)
+
+    def _get_norm_list(self, norm_channel: str) -> np.ndarray:
         norm_list = np.array([])
+        for scan in self.scans:
+            norm_list = np.append(norm_list, scan.data[norm_channel])
+        return norm_list
+
+    def _get_data_1d(
+        self,
+        axes: tuple[str, str],
+        norm_to: Optional[tuple[float, str]],
+        **rebin_params_dict: Optional[tuple],
+    ) -> ScanData1D:
+
+        x_axis, y_axis = axes
+        x_array = np.array([])
+        y_array = np.array([])
+
+        title = "Combined scans: "
 
         for scan in self.scans:
-            x_list = np.append(x_list, scan.data[x_axis])
-            y_list = np.append(y_list, scan.data[y_axis])
-        scan_data_1d = ScanData1D(np.array(x_list), np.array(y_list))
+            x_array = np.append(x_array, scan.data[x_axis])
+            y_array = np.append(y_array, scan.data[y_axis])
+            title += f"{scan.scan_info.scan_num} "
 
-        if rebin_params is None:  # no rebin
-            if norm_to is not None:  # normalize y-axis without rebining along x-axis
+        scan_data_1d = ScanData1D(x=x_array, y=y_array)
+
+        for rebin_type in ["grid", "tol"]:
+            rebin_params = rebin_params_dict.get(rebin_type)
+            if rebin_params is not None:
+                break
+
+        if not rebin_params:  # no rebin,
+            if norm_to is not None:  # renorm
                 norm_val, norm_channel = norm_to
-                for scan in self.scans:
-                    norm_list = np.append(y_list, scan.data[y_axis])
-                scan_data_1d.renorm(norm_col=norm_list / norm_val)
-            else:
-                norm_to = (self.scans[0].scan_info.preset_value, self.scans[0].scan_info.preset_channel)
+                norm_list = self._get_norm_list(norm_channel)
+                scan_data_1d.renorm(norm_col=norm_list, norm_val=norm_val)
+            else:  # no renorm, check if all presets are the same
+                norm_to = self._get_default_renorm_params()
 
-            plot1d = Plot1D(x=scan_data_1d.x, y=scan_data_1d.y, yerr=scan_data_1d.err)
-            plot1d.make_labels(x_axis, y_axis, norm_to)
+            scan_data_1d.make_labels(axes, norm_to, title=title)
+            return scan_data_1d
 
-            return plot1d
+        # rebin
+        rebin_params_tuple = Scan.validate_rebin_params(rebin_params)
 
         match rebin_type:
             case "tol":
                 if norm_to is None:  # x weighted by preset channel
-                    weight_channel = self.scan_info.preset_channel
-                    scan_data_1d.rebin_tol(rebin_params_tuple, weight_col=self.data[weight_channel])
+                    norm_to = self._get_default_renorm_params()
+                    norm_val, norm_channel = norm_to
+                    norm_list = self._get_norm_list(norm_channel)
+                    scan_data_1d.rebin_tol(rebin_params_tuple, weight_col=norm_list)
+
                 else:  # x weighted by normalization channel
                     norm_val, norm_channel = norm_to
-                    scan_data_1d.rebin_tol_renorm(
-                        rebin_params_tuple,
-                        norm_col=self.data[norm_channel],
-                        norm_val=norm_val,
-                    )
+                    norm_list = self._get_norm_list(norm_channel)
+                    scan_data_1d.rebin_tol_renorm(rebin_params_tuple, norm_col=norm_list, norm_val=norm_val)
             case "grid":
                 if norm_to is None:
+                    norm_to = self._get_default_renorm_params()
                     scan_data_1d.rebin_grid(rebin_params_tuple)
                 else:
                     norm_val, norm_channel = norm_to
-                    scan_data_1d.rebin_grid_renorm(
-                        rebin_params_tuple,
-                        norm_col=self.data[norm_channel],
-                        norm_val=norm_val,
-                    )
+                    norm_list = self._get_norm_list(norm_channel)
+                    scan_data_1d.rebin_grid_renorm(rebin_params_tuple, norm_col=norm_list, norm_val=norm_val)
+            case _:
+                raise ValueError(f"Unrecogonized rebin_type={rebin_type}")
+
+        scan_data_1d.make_labels(axes, norm_to, title=title)
         return scan_data_1d
 
-    def _get_plot_data_2d(self, axes, rebin_params, norm_to) -> Plot2D:
-        return Plot2D()
+    def _get_data_2d(
+        self,
+        axes: tuple[str, str, str],
+        norm_to: Optional[tuple[float, str]],
+        **rebin_params_dict: Optional[tuple],
+    ) -> ScanData2D:
 
-    def get_plot_data(
+        if not isinstance(rebin_params, tuple):
+            raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple.")
+        if not len(rebin_params) == 2:
+            raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple of size 2.")
+        rebin_params_list = []
+        for rebin in rebin_params:
+            if isinstance(rebin, float | int | tuple):
+                rebin_params_list.append(Scan.validate_rebin_params(rebin))
+        rebin_params = tuple(rebin_params_list)
+        return scan_data_2d
+
+    def get_data(
         self,
         axes: Union[tuple[str, str], tuple[str, str, str], None] = None,
-        rebin_params: Optional[tuple] = None,
         norm_to: Optional[tuple[float, str]] = None,
-        rebin_type: Literal["grid", "tol"] = "grid",
-    ) -> Union[Plot1D, Plot2D]:
-        """Get plot data
+        **rebin_params_dict: Optional[tuple],
+    ) -> Union[ScanData1D, ScanData2D]:
+        """Get data from a group of scans
 
-        If axes is None, get default axes and return 1D data"""
+        If axes is None, get default axes and return 1D data
+
+        Note:
+            rebin_params_dict could be either "tol" or "grid" for 1D data, but only
+            "grid" for 2D data.
+        """
         if axes is None:
             x_axes = []
             y_axes = []
@@ -120,29 +171,10 @@ class ScanGroup(object):
 
         match len(axes):
             case 2:
-                if rebin_params is not None:
-                    if isinstance(rebin_params, float | int | tuple):
-                        rebin_params = Scan.validate_rebin_params(rebin_params)
-                    else:
-                        raise ValueError(
-                            f"rebin parameters ={rebin_params} needs to be float or int of tuple of size 3"
-                        )
-                plot_data_1d = self._get_plot_data_1d(axes, rebin_params, rebin_type, norm_to)
-                return plot_data_1d
+                return self._get_data_1d(axes, norm_to, **rebin_params_dict)
 
             case 3:
-                if not isinstance(rebin_params, tuple):
-                    raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple.")
-                if not len(rebin_params) == 2:
-                    raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple of size 2.")
-                rebin_params_list = []
-                for rebin in rebin_params:
-                    if isinstance(rebin, float | int | tuple):
-                        rebin_params_list.append(Scan.validate_rebin_params(rebin))
-                rebin_params = tuple(rebin_params_list)
-
-                plot_data_2d = self._get_plot_data_2d(axes, rebin_params, norm_to)
-                return plot_data_2d
+                return self._get_data_2d(axes, norm_to, **rebin_params_dict)
 
             case _:
                 raise ValueError(f"length of axes={axes} should be either 2 or 3.")

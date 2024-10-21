@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 import numpy as np
 
 
 class ScanData1D(object):
+    """1D scan data ready to be plot, with ooptions to renormalize or rebin"""
 
     ZERO = 1e-6
 
@@ -17,6 +17,26 @@ class ScanData1D(object):
         self.y = y
         self.err = np.sqrt(y)
         # self._ind = ind
+        self.label = ""
+        self.title = ""
+        self.fmt: dict = {}
+
+    def make_labels(self, axes: tuple[str, str], norm_to: tuple[float, str], label: str = "", title: str = "") -> None:
+        """Create axes labels, plot title and curve label"""
+        x_str, y_str = axes
+        norm_val, norm_channel = norm_to
+        if norm_channel == "time":
+            norm_channel_str = "seconds"
+        else:
+            norm_channel_str = norm_channel
+        if norm_val == 1:
+            self.ylabel = y_str + "/ " + norm_channel_str
+        else:
+            self.ylabel = y_str + f" / {norm_val} " + norm_channel_str
+
+        self.xlabel = x_str
+        self.label = label
+        self.title = title
 
     def __add__(self, other):
         # check x length, rebin other if do not match
@@ -85,7 +105,7 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x_grid = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
+        x_grid = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
         x = np.zeros_like(x_grid)
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
@@ -98,9 +118,9 @@ class ScanData1D(object):
             weights[idx] += weight_col[i]
             counts[idx] += 1
 
-        self.err = np.sqrt(y) / counts
-        self.y = y / counts
-        self.x = x / weights
+        self.err = np.sqrt(y[1:-2]) / counts[1:-2]
+        self.y = y[1:-2] / counts[1:-2]
+        self.x = x[1:-2] / weights[1:-2]
 
     def rebin_tol_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
         """Rebin with tolerance and renormalize"""
@@ -108,7 +128,7 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x_grid = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
+        x_grid = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
         x = np.zeros_like(x_grid)
         y = np.zeros_like(x_grid)
         counts = np.zeros_like(x_grid)
@@ -121,9 +141,9 @@ class ScanData1D(object):
             x[idx] += self.x[i] * norm_col[i]
             counts[idx] += norm_col[i]
 
-        self.err = np.sqrt(y) / counts * norm_val
-        self.y = y / counts * norm_val
-        self.x = x / counts
+        self.err = np.sqrt(y[1:-2]) / counts[1:-2] * norm_val
+        self.y = y[1:-2] / counts[1:-2] * norm_val
+        self.x = x[1:-2] / counts
 
     def rebin_grid(self, rebin_params: tuple):
         """Rebin with a regular grid"""
@@ -131,7 +151,7 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
+        x = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
@@ -140,9 +160,9 @@ class ScanData1D(object):
             y[idx] += self.y[i]
             counts[idx] += 1
 
-        self.x = x
-        self.err = np.sqrt(y) / counts
-        self.y = y / counts
+        self.x = x[1:-2]
+        self.err = np.sqrt(y[1:-2]) / counts[1:-2]
+        self.y = y[1:-2] / counts[1:-2]
 
     def rebin_grid_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
         """Rebin with a regular grid and renormalize"""
@@ -151,7 +171,7 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x = np.arange(rebin_min + rebin_step / 2, rebin_max + rebin_step / 2, rebin_step)
+        x = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
@@ -162,9 +182,9 @@ class ScanData1D(object):
             y[idx] += self.y[i]
             counts[idx] += norm_col[i]
 
-        self.x = x
-        self.err = np.sqrt(y) / counts * norm_val
-        self.y = y / counts * norm_val
+        self.x = x[1:-2]
+        self.err = np.sqrt(y[1:-2]) / counts[1:-2] * norm_val
+        self.y = y[1:-2] / counts[1:-2] * norm_val
 
 
 class ScanData2D(object):
