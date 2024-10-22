@@ -53,5 +53,5 @@ def test_scan_group_2d():
 
     fig, ax = plt.subplots()
     plot2d = Plot2D()
-    plot2d.plot_contour(scan_data_2d, cmap="turbo", vmax=80)
+    plot2d.plot(ax, scan_data_2d, cmap="turbo", vmax=80)
     plt.show()

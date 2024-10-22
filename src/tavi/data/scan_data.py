@@ -194,7 +194,10 @@ class ScanData2D(object):
     def __init__(self, x: np.ndarray, y: np.ndarray, z: np.ndarray) -> None:
         self.x = x
         self.y = y
-        self.y = z
+        self.z = z
+
+        self.err = np.sqrt(z)
+        self.title = ""
 
     def __sub__(self, other):
         pass
