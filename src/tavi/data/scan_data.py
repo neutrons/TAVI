@@ -198,12 +198,40 @@ class ScanData2D(object):
 
         self.err = np.sqrt(z)
         self.title = ""
+        self.fmt: dict = {}
+
+    def make_labels(
+        self,
+        axes: tuple[str, str, str],
+        norm_to: tuple[float, str],
+        label: str = "",
+        title: str = "",
+    ) -> None:
+        """Create axes labels, plot title and curve label"""
+        x_str, y_str, z_str = axes
+        norm_val, norm_channel = norm_to
+        if norm_channel == "time":
+            norm_channel_str = "seconds"
+        else:
+            norm_channel_str = norm_channel
+        if norm_val == 1:
+            self.zlabel = z_str + "/ " + norm_channel_str
+        else:
+            self.zlabel = z_str + f" / {norm_val} " + norm_channel_str
+
+        self.xlabel = x_str
+        self.ylabel = y_str
+        self.label = label
+        self.title = title + self.zlabel
 
     def __sub__(self, other):
         pass
 
-    def renorm(self):
+    def renorm(self, norm_col: np.ndarray, norm_val: float = 1.0):
         pass
 
-    def rebin_grid(self):
+    def rebin_grid(self, rebin_params: tuple):
+        pass
+
+    def rebin_grid_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
         pass

@@ -1,6 +1,5 @@
 from typing import Optional, Union
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.scan import Scan
@@ -134,31 +133,35 @@ class ScanGroup(object):
         """
 
         x_axis, y_axis, z_axis = axes
-        x_array = np.array([])
-        y_array = np.array([])
-        z_array = np.array([])
+        x_array = []
+        y_array = []
+        z_array = []
 
         title = "Combined scans: "
 
         for scan in self.scans:
-            x_array = np.append(x_array, scan.data[x_axis])
-            y_array = np.append(y_array, scan.data[y_axis])
-            z_array = np.append(y_array, scan.data[z_axis])
+            x_array.append(scan.data[x_axis])
+            y_array.append(scan.data[y_axis])
+            z_array.append(scan.data[z_axis])
             title += f"{scan.scan_info.scan_num} "
 
-        scan_data_2d = ScanData2D(x=x_array, y=y_array, z=z_array)
+        scan_data_2d = ScanData2D(
+            x=np.vstack(x_array),
+            y=np.vstack(y_array),
+            z=np.vstack(z_array),
+        )
         rebin_params = rebin_params_dict.get("grid")
 
         if not rebin_params:  # no rebin,
             if norm_to is not None:  # renorm
                 norm_val, norm_channel = norm_to
                 norm_list = self._get_norm_list(norm_channel)
-                scan_data_1d.renorm(norm_col=norm_list, norm_val=norm_val)
+                scan_data_2d.renorm(norm_col=norm_list, norm_val=norm_val)
             else:  # no renorm, check if all presets are the same
                 norm_to = self._get_default_renorm_params()
 
-            scan_data_1d.make_labels(axes, norm_to, title=title)
-            return scan_data_1d
+            scan_data_2d.make_labels(axes, norm_to, title=title)
+            return scan_data_2d
 
         # if not isinstance(rebin_params, tuple):
         #     raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple.")
@@ -207,23 +210,3 @@ class ScanGroup(object):
             raise ValueError(f"x axes={x_axis} or y axes={y_axis} are not identical.")
         axes = (*x_axis, *y_axis)
         return self._get_data_1d(axes, norm_to, **rebin_params_dict)
-
-    def plot(self, contour_plot, cmap="turbo", vmax=100, vmin=0, ylim=None, xlim=None):
-        """Plot contour"""
-
-        x, y, z, _, _, xlabel, ylabel, zlabel, title = contour_plot
-
-        fig, ax = plt.subplots()
-        p = ax.pcolormesh(x, y, z, shading="auto", cmap=cmap, vmax=vmax, vmin=vmin)
-        fig.colorbar(p, ax=ax)
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.grid(alpha=0.6)
-
-        if xlim is not None:
-            ax.set_xlim(left=xlim[0], right=xlim[1])
-        if ylim is not None:
-            ax.set_ylim(bottom=ylim[0], top=ylim[1])
-
-        fig.show()
