@@ -88,25 +88,25 @@ def test_get_scan(tavi_exp0424):
     assert scan0035.scan_info.scan_num == 35
 
 
-def test_group_scans_int(tavi_exp0424):
-    sg1 = tavi_exp0424.group_scans(
+def test_combine_scans_int(tavi_exp0424):
+    sg1 = tavi_exp0424.combine_scans(
         scan_nums=list(range(42, 49, 1)),
     )
-    sg2 = tavi_exp0424.group_scans(
+    sg2 = tavi_exp0424.combine_scans(
         scan_nums=list(range(70, 76, 1)),
     )
-    assert sg1.name == "ScanGroup1"
+    assert sg1.name == "CombinedScans1"
     assert len(sg1.scans) == 7
-    assert sg2.name == "ScanGroup2"
+    assert sg2.name == "CombinedScans2"
     assert len(sg2.scans) == 6
 
 
-def test_group_scans_tuple(tavi_exp0424):
+def test_combine_scans_tuple(tavi_exp0424):
     scan_list = [("IPTS32124_CG4C_exp0424", scan_num) for scan_num in list(range(42, 49, 1)) + list(range(70, 76, 1))]
 
-    sg = tavi_exp0424.group_scans(
+    sg = tavi_exp0424.combine_scans(
         scan_nums=scan_list,
-        scan_group_name="dispH",
+        name="dispH",
     )
     assert sg.name == "dispH"
     assert len(sg.scans) == 13

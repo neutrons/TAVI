@@ -22,7 +22,7 @@ class ScanGroup(object):
 
     def __init__(self, scans: list[Scan], name: str = "") -> None:
         self.scans = scans
-        self.name = f"CombineScans{ScanGroup.scan_group_number}" if not name else name
+        self.name = f"CombinedScans{ScanGroup.scan_group_number}" if not name else name
         ScanGroup.scan_group_number += 1
 
     # TODO

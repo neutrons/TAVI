@@ -81,6 +81,21 @@ class Sample(object):
 
         self.update_lattice_parameters(lattice_params)
 
+    def _unpack_json_parameters(self):
+        sample_params = self.json_dict
+
+        shape = sample_params.get("shape")
+        width = sample_params.get("width")
+        height = sample_params.get("height")
+        depth = sample_params.get("depth")
+        if all([shape, width, height, depth]):
+            self.set_shape(shape, width, height, depth)
+
+        mosaic_h = sample_params.get("mosaic_h")
+        mosaic_v = sample_params.get("mosaic_v")
+        if all([mosaic_h, mosaic_v]):
+            self.set_mosaic(mosaic_h, mosaic_v)
+
     @classmethod
     def from_json(cls, path_to_json):
         """Alternate constructor from json"""
@@ -97,20 +112,8 @@ class Sample(object):
             sample_params["gamma"],
         )
         sample = cls(lattice_params=lattice_params)
-
         sample.json_dict = sample_params
-
-        shape = sample_params.get("shape")
-        width = sample_params.get("width")
-        height = sample_params.get("height")
-        depth = sample_params.get("depth")
-        if all([shape, width, height, depth]):
-            sample.set_shape(shape, width, height, depth)
-
-        mosaic_h = sample_params.get("mosaic_h")
-        mosaic_v = sample_params.get("mosaic_v")
-        if all([mosaic_h, mosaic_v]):
-            sample.set_mosaic(mosaic_h, mosaic_v)
+        sample._unpack_json_parameters()
 
         return sample
 
