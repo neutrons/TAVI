@@ -1,20 +1,27 @@
 # -*- coding: utf-8 -*-
 
+import math
+from typing import Optional
+
 import numpy as np
 
 
 class ScanData1D(object):
     """1D scan data ready to be plot, with ooptions to renormalize or rebin"""
 
-    ZERO = 1e-6
-
-    def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
+    def __init__(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        norm: Optional[np.ndarray] = None,
+    ) -> None:
 
         # ind = np.argsort(x)
         # self.x = x[ind]
         # self.y = y[ind]
         self.x = x
         self.y = y
+        self.norm = norm
         self.err = np.sqrt(y)
         # self._ind = ind
         self.label = ""
@@ -92,11 +99,17 @@ class ScanData1D(object):
         scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
         return scan_data_1d
 
-    def renorm(self, norm_col: np.ndarray, norm_val: float = 1.0):
+    def renorm(self, norm: Optional[np.ndarray] = None, val: float = 1.0):
         """Renormalized to norm_val"""
-        # norm_col = norm_col[self._ind]
-        self.y = self.y / norm_col * norm_val
-        self.err = self.err / norm_col * norm_val
+
+        if norm is not None:
+            norm_col = norm
+        elif self.norm is not None:
+            norm_col = self.norm
+        else:
+            raise ValueError("Normalizaion collumns cannot be None.")
+        self.y = self.y / norm_col * val
+        self.err = self.err / norm_col * val
 
     def rebin_tol(self, rebin_params: tuple, weight_col: np.ndarray):
         """Rebin with tolerance"""
@@ -105,28 +118,36 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x_grid = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
-        x = np.zeros_like(x_grid)
-        y = np.zeros_like(x_grid)
-        counts = np.zeros_like(x_grid)
-        weights = np.zeros_like(x_grid)
+        ZERO = rebin_step / 100  # helps with the rounding error
+        num = math.floor((rebin_max + ZERO - rebin_min) / rebin_step) + 1
+
+        x_boundary = np.linspace(rebin_min - rebin_step / 2, rebin_min + rebin_step * (num - 1 / 2), num + 1)
+        x = np.linspace(rebin_min, rebin_min + rebin_step * (num - 1), num)
+        y = np.zeros_like(x)
+        counts = np.zeros_like(x)
+        weights = np.zeros_like(x)
+        x = np.zeros_like(y)
 
         for i, x0 in enumerate(self.x):
-            idx = np.nanargmax(x_grid + rebin_step / 2 + ScanData1D.ZERO >= x0)
-            y[idx] += self.y[i]
-            x[idx] += self.x[i] * weight_col[i]
-            weights[idx] += weight_col[i]
-            counts[idx] += 1
+            # Return the indices of the maximum values in the specified axis ignoring NaNs.
+            idx = np.nanargmax(x_boundary - ZERO > x0)
+            if idx > 0:  # ignore first and last bin box
+                y[idx - 1] += self.y[i]
+                x[idx - 1] += self.x[i] * weight_col[i]
+                weights[idx - 1] += weight_col[i]
+                counts[idx - 1] += 1
 
-        self.err = np.sqrt(y[1:-2]) / counts[1:-2]
-        self.y = y[1:-2] / counts[1:-2]
-        self.x = x[1:-2] / weights[1:-2]
+        self.err = np.sqrt(y) / counts
+        self.y = y / counts
+        self.x = x / weights
 
     def rebin_tol_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
         """Rebin with tolerance and renormalize"""
         rebin_min, rebin_max, rebin_step = rebin_params
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
+
+        ZERO = rebin_step / 100  # helps with the rounding error
 
         x_grid = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
         x = np.zeros_like(x_grid)
@@ -136,7 +157,7 @@ class ScanData1D(object):
         # norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):
-            idx = np.nanargmax(x_grid + rebin_step / 2 + ScanData1D.ZERO >= x0)
+            idx = np.nanargmax(x_grid + rebin_step / 2 + ZERO >= x0)
             y[idx] += self.y[i]
             x[idx] += self.x[i] * norm_col[i]
             counts[idx] += norm_col[i]
@@ -151,18 +172,25 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
+        ZERO = rebin_step / 100  # helps with the rounding error
+        num = math.floor((rebin_max + ZERO - rebin_min) / rebin_step) + 1
+
+        x_boundary = np.linspace(rebin_min - rebin_step / 2, rebin_min + rebin_step * (num - 1 / 2), num + 1)
+        x = np.linspace(rebin_min, rebin_min + rebin_step * (num - 1), num)
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
         for i, x0 in enumerate(self.x):
-            idx = np.nanargmax(x + rebin_step / 2 + ScanData1D.ZERO >= x0)
-            y[idx] += self.y[i]
-            counts[idx] += 1
 
-        self.x = x[1:-2]
-        self.err = np.sqrt(y[1:-2]) / counts[1:-2]
-        self.y = y[1:-2] / counts[1:-2]
+            # Return the indices of the maximum values in the specified axis ignoring NaNs.
+            idx = np.nanargmax(x_boundary - ZERO > x0)
+            if idx > 0:  # ignore first and last bin box
+                y[idx - 1] += self.y[i]
+                counts[idx - 1] += 1
+
+        self.x = x
+        self.err = np.sqrt(y) / counts
+        self.y = y / counts
 
     def rebin_grid_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
         """Rebin with a regular grid and renormalize"""
@@ -171,20 +199,26 @@ class ScanData1D(object):
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
-        x = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
+        ZERO = rebin_step / 100  # helps with the rounding error
+        num = math.floor((rebin_max + ZERO - rebin_min) / rebin_step) + 1
+
+        x_boundary = np.linspace(rebin_min - rebin_step / 2, rebin_min + rebin_step * (num - 1 / 2), num + 1)
+        x = np.linspace(rebin_min, rebin_min + rebin_step * (num - 1), num)
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
 
         # norm_col = norm_col[self._ind]
 
         for i, x0 in enumerate(self.x):  # plus ZERO helps improve precision
-            idx = np.nanargmax(x + rebin_step / 2 + ScanData1D.ZERO >= x0)
-            y[idx] += self.y[i]
-            counts[idx] += norm_col[i]
+            idx = np.nanargmax(x_boundary - ZERO > x0)
 
-        self.x = x[1:-2]
-        self.err = np.sqrt(y[1:-2]) / counts[1:-2] * norm_val
-        self.y = y[1:-2] / counts[1:-2] * norm_val
+            if idx > 0:  # ignore first and last bin box
+                y[idx - 1] += self.y[i]
+                counts[idx - 1] += norm_col[i]
+
+        self.x = x
+        self.err = np.sqrt(y) / counts * norm_val
+        self.y = y / counts * norm_val
 
 
 class ScanData2D(object):
