@@ -250,10 +250,10 @@ class NexusEntry(dict):
                         scan_grp_data[def_x].attrs["target"] = path_x
 
             # Create the ATTRIBUTES
-            scan_grp.attrs["file_name"] = os.path.abspath(path_to_nexus)
-            scan_grp.attrs["file_time"] = datetime.now().isoformat()
-            scan_grp.attrs["h5py_version"] = h5py.version.version
-            scan_grp.attrs["HDF5_Version"] = h5py.version.hdf5_version
+            nexus_file.attrs["file_name"] = os.path.abspath(path_to_nexus)
+            nexus_file.attrs["file_time"] = datetime.now().isoformat()
+            nexus_file.attrs["h5py_version"] = h5py.version.version
+            nexus_file.attrs["HDF5_Version"] = h5py.version.hdf5_version
 
     def get(self, key, ATTRS=False, default=None):
         """
@@ -273,8 +273,15 @@ class NexusEntry(dict):
         for log in ("SPICElogs", "DASlogs"):
             if log in self.keys():
                 self.pop(log)
+
+        # special treatment for annoying cases!!!
         if (key == "detector") and (not ATTRS):
             key = "detector/data"
+        if (key == "monitor") and (not ATTRS):
+            key = "monitor/monitor"
+        if (key == "sample") and (not ATTRS):
+            key = "sample/sample"
+
         value = NexusEntry._getitem_recursively(self, key, ATTRS)
 
         return value if value is not None else default

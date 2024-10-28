@@ -130,6 +130,10 @@ class TAVI(object):
                         nxentry.to_nexus(file_path, name=name)
                 # TODO save pdata, fits and plots
                 grp_pdata = root.create_group("processed_data", track_order=True)
+                for entry_name, nxentry in self.processed_data.items():
+                    name = f"processed_data/{entry_name}"
+                    nxentry.to_nexus(file_path, name=name)
+
                 grp_fits = root.create_group("fits", track_order=True)
                 grp_plots = root.create_group("plots", track_order=True)
         except OSError:
