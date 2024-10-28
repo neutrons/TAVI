@@ -13,7 +13,7 @@ class ScanData1D(object):
         self,
         x: np.ndarray,
         y: np.ndarray,
-        norm: Optional[np.ndarray] = None,
+        norm_col: Optional[np.ndarray] = None,
     ) -> None:
 
         # ind = np.argsort(x)
@@ -21,7 +21,7 @@ class ScanData1D(object):
         # self.y = y[ind]
         self.x = x
         self.y = y
-        self.norm = norm
+        self.norm_col = norm_col
         self.err = np.sqrt(y)
         # self._ind = ind
         self.label = ""
@@ -45,74 +45,89 @@ class ScanData1D(object):
         self.label = label
         self.title = title
 
-    def __add__(self, other):
-        # check x length, rebin other if do not match
-        if len(self.x) != len(other.x):
-            rebin_intervals = np.diff(self.x)
-            rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
-            rebin_boundary = self.x + rebin_intervals / 2
+    # def __add__(self, other):
+    #     # check x length, rebin other if do not match
+    #     if len(self.x) != len(other.x):
+    #         rebin_intervals = np.diff(self.x)
+    #         rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
+    #         rebin_boundary = self.x + rebin_intervals / 2
 
-            y = np.zeros_like(rebin_boundary)
-            counts = np.zeros_like(rebin_boundary)
-            err = np.zeros_like(rebin_boundary)
-            (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
+    #         y = np.zeros_like(rebin_boundary)
+    #         counts = np.zeros_like(rebin_boundary)
+    #         err = np.zeros_like(rebin_boundary)
+    #         (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
 
-            for i, x0 in enumerate(other.x):
-                if x0 > x_max or x0 < x_min:
-                    continue
-                idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
-                y[idx] += other.y[i]
-                err[idx] += other.err[i] ** 2
-                counts[idx] += 1
+    #         for i, x0 in enumerate(other.x):
+    #             if x0 > x_max or x0 < x_min:
+    #                 continue
+    #             idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
+    #             y[idx] += other.y[i]
+    #             err[idx] += other.err[i] ** 2
+    #             counts[idx] += 1
 
-            other.err = err / counts
-            other.y = y / counts
+    #         other.err = err / counts
+    #         other.y = y / counts
 
-        scan_data_1d = ScanData1D(self.x, self.y + other.y)
-        scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
-        return scan_data_1d
+    #     scan_data_1d = ScanData1D(self.x, self.y + other.y)
+    #     scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
+    #     return scan_data_1d
 
+    # TODO how to normalize?
     def __sub__(self, other):
-        # check x length, rebin other if do not match
+        # check x length, rebin other
         if len(self.x) != len(other.x):
-            rebin_intervals = np.diff(self.x)
-            rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
-            rebin_boundary = self.x + rebin_intervals / 2
+            pass
+        #     rebin_intervals = np.diff(self.x)
+        #     rebin_intervals = np.append(rebin_intervals, rebin_intervals[-1])
+        #     rebin_boundary = self.x + rebin_intervals / 2
 
-            y = np.zeros_like(rebin_boundary)
-            counts = np.zeros_like(rebin_boundary)
-            err = np.zeros_like(rebin_boundary)
-            (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
+        #     y = np.zeros_like(rebin_boundary)
+        #     counts = np.zeros_like(rebin_boundary)
+        #     err = np.zeros_like(rebin_boundary)
+        #     (x_min, x_max) = (self.x[0] - rebin_intervals[0] / 2, self.x[-1] + rebin_intervals[-1] / 2)
 
-            for i, x0 in enumerate(other.x):
-                if x0 > x_max or x0 < x_min:
-                    continue
-                idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
-                y[idx] += other.y[i]
-                err[idx] += other.err[i] ** 2
-                counts[idx] += 1
+        #     for i, x0 in enumerate(other.x):
+        #         if x0 > x_max or x0 < x_min:
+        #             continue
+        #         idx = np.nanargmax(rebin_boundary + ScanData1D.ZERO >= x0)
+        #         y[idx] += other.y[i]
+        #         err[idx] += other.err[i] ** 2
+        #         counts[idx] += 1
 
-            other.err = err / counts
-            other.y = y / counts
+        #     other.err = err / counts
+        #     other.y = y / counts
 
         scan_data_1d = ScanData1D(self.x, self.y - other.y)
         scan_data_1d.err = np.sqrt(self.err**2 + other.err**2)
         return scan_data_1d
 
     def renorm(self, norm: Optional[np.ndarray] = None, val: float = 1.0):
-        """Renormalized to norm_val"""
+        """Renormalized to norm_val
+
+        Use norm if given, otherwise use self.norm
+        """
 
         if norm is not None:
             norm_col = norm
-        elif self.norm is not None:
-            norm_col = self.norm
+        elif self.norm_col is not None:
+            norm_col = self.norm_col
         else:
-            raise ValueError("Normalizaion collumns cannot be None.")
+            raise ValueError("Normalizaion columns cannot be None.")
         self.y = self.y / norm_col * val
         self.err = self.err / norm_col * val
 
-    def rebin_tol(self, rebin_params: tuple, weight_col: np.ndarray):
-        """Rebin with tolerance"""
+    def rebin_tol(self, rebin_params: tuple, weight_col: Optional[np.ndarray] = None):
+        """Rebin with tolerance
+
+        Note:
+            This should be used only if all data are measured with the same weight/counting time"""
+
+        if weight_col is not None:
+            norm_col = weight_col
+        elif self.norm_col is not None:
+            norm_col = self.norm_col
+        else:
+            raise ValueError("Normalizaion columns cannot be None.")
 
         rebin_min, rebin_max, rebin_step = rebin_params
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
@@ -122,49 +137,57 @@ class ScanData1D(object):
         num = math.floor((rebin_max + ZERO - rebin_min) / rebin_step) + 1
 
         x_boundary = np.linspace(rebin_min - rebin_step / 2, rebin_min + rebin_step * (num - 1 / 2), num + 1)
-        x = np.linspace(rebin_min, rebin_min + rebin_step * (num - 1), num)
+        x = np.zeros_like(x_boundary[1:])
         y = np.zeros_like(x)
         counts = np.zeros_like(x)
         weights = np.zeros_like(x)
-        x = np.zeros_like(y)
 
         for i, x0 in enumerate(self.x):
             # Return the indices of the maximum values in the specified axis ignoring NaNs.
             idx = np.nanargmax(x_boundary - ZERO > x0)
             if idx > 0:  # ignore first and last bin box
                 y[idx - 1] += self.y[i]
-                x[idx - 1] += self.x[i] * weight_col[i]
-                weights[idx - 1] += weight_col[i]
+                x[idx - 1] += self.x[i] * norm_col[i]
+                weights[idx - 1] += norm_col[i]
                 counts[idx - 1] += 1
 
         self.err = np.sqrt(y) / counts
         self.y = y / counts
         self.x = x / weights
 
-    def rebin_tol_renorm(self, rebin_params: tuple, norm_col: np.ndarray, norm_val: float = 1.0):
+    def rebin_tol_renorm(self, rebin_params: tuple, norm_col: Optional[np.ndarray] = None, norm_val: float = 1.0):
         """Rebin with tolerance and renormalize"""
+
+        if norm_col is not None:
+            norm_col = norm_col
+        elif self.norm_col is not None:
+            norm_col = self.norm_col
+        else:
+            raise ValueError("Normalizaion columns cannot be None.")
+
         rebin_min, rebin_max, rebin_step = rebin_params
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min
         rebin_max = np.max(self.x) if rebin_max is None else rebin_max
 
         ZERO = rebin_step / 100  # helps with the rounding error
+        num = math.floor((rebin_max + ZERO - rebin_min) / rebin_step) + 1
 
-        x_grid = np.arange(rebin_min - rebin_step / 2, rebin_max + rebin_step * 3 / 2, rebin_step)
-        x = np.zeros_like(x_grid)
-        y = np.zeros_like(x_grid)
-        counts = np.zeros_like(x_grid)
-
-        # norm_col = norm_col[self._ind]
+        x_boundary = np.linspace(rebin_min - rebin_step / 2, rebin_min + rebin_step * (num - 1 / 2), num + 1)
+        x = np.zeros_like(x_boundary[1:])
+        y = np.zeros_like(x)
+        counts = np.zeros_like(x)
 
         for i, x0 in enumerate(self.x):
-            idx = np.nanargmax(x_grid + rebin_step / 2 + ZERO >= x0)
-            y[idx] += self.y[i]
-            x[idx] += self.x[i] * norm_col[i]
-            counts[idx] += norm_col[i]
+            # Return the indices of the maximum values in the specified axis ignoring NaNs.
+            idx = np.nanargmax(x_boundary - ZERO > x0)
+            if idx > 0:  # ignore first and last bin box
+                y[idx - 1] += self.y[i]
+                x[idx - 1] += self.x[i] * norm_col[i]
+                counts[idx - 1] += norm_col[i]
 
-        self.err = np.sqrt(y[1:-2]) / counts[1:-2] * norm_val
-        self.y = y[1:-2] / counts[1:-2] * norm_val
-        self.x = x[1:-2] / counts
+        self.err = np.sqrt(y) / counts * norm_val
+        self.y = y / counts * norm_val
+        self.x = x / counts
 
     def rebin_grid(self, rebin_params: tuple):
         """Rebin with a regular grid"""
@@ -181,7 +204,6 @@ class ScanData1D(object):
         counts = np.zeros_like(x)
 
         for i, x0 in enumerate(self.x):
-
             # Return the indices of the maximum values in the specified axis ignoring NaNs.
             idx = np.nanargmax(x_boundary - ZERO > x0)
             if idx > 0:  # ignore first and last bin box
