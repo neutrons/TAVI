@@ -31,24 +31,45 @@ tavi.open_file("./test_data/tavi_MnTe.h5")
 # p1.plot(ax)
 
 
-# -------------- H0L const Q scans ------------
+# -------------- (H, 0. 2-H) Ef = 14.7 const Q scans ------------
 
-scans = list(range(83, 167))
+scans = list(range(88, 133))
 
 scan_list2 = [("IPTS34735_HB3_exp0823", scan) for scan in scans]
-sg2 = tavi.combine_scans(scan_list2, name="dispH_2")
-scan_data_2d = sg2.get_data(
+sg2 = tavi.combine_scans(scan_list2, name="dispH (H,0,2-H) Ef=14.7 meV")
+scan_data_2 = sg2.get_data(
     axes=("qh", "en", "detector"),
     norm_to=(1, "mcu"),
     grid=(0.025, 0.5),
 )
 
 p2 = Plot2D()
-p2.add_contour(scan_data_2d, cmap="turbo", vmax=1)
-p2.zlim = [0, 0.01]
+p2.add_contour(scan_data_2, cmap="turbo", vmin=0, vmax=1)
+p2.title = sg2.name
 p2.ylim = [0, 50]
 fig, ax = plt.subplots()
-p2.plot(ax)
+im = p2.plot(ax)
+fig.colorbar(im)
 
+# -------------- (H, 0. 2-H) Ef = 30.5 meV const Q scans ------------
 
+scans = list(range(133, 167))
+
+scan_list3 = [("IPTS34735_HB3_exp0823", scan) for scan in scans]
+sg3 = tavi.combine_scans(scan_list3, name="dispH_ H,0,2-H) Ef=30.5 meV")
+scan_data_3 = sg3.get_data(
+    axes=("qh", "en", "detector"),
+    norm_to=(1, "mcu"),
+    grid=(0.025, 0.5),
+)
+
+p3 = Plot2D()
+p3.add_contour(scan_data_3, cmap="turbo", vmin=0, vmax=1)
+p3.title = sg3.name
+p3.ylim = [0, 50]
+
+fig, ax = plt.subplots()
+im = p3.plot(ax)
+
+fig.colorbar(im)
 plt.show()

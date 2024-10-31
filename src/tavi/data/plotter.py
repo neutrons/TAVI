@@ -86,8 +86,10 @@ class Plot2D(object):
         # plot specifications
         self.xlim: Optional[tuple[float, float]] = None
         self.ylim: Optional[tuple[float, float]] = None
+
         self.LOG_X = False
         self.LOG_Y = False
+        self.LOG_Z = False
 
     def add_contour(self, contour_data: ScanData2D, **kwargs):
         self.contour_data.append(contour_data)
@@ -102,9 +104,9 @@ class Plot2D(object):
 
     def plot(self, ax):
         for contour in self.contour_data:
-            ax.pcolormesh(contour.x, contour.y, contour.z, **contour.fmt)
+            im = ax.pcolormesh(contour.x, contour.y, contour.z, **contour.fmt)
         for curve in self.curve_data:
-            ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
+            im = ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -128,3 +130,4 @@ class Plot2D(object):
 
         ax.grid(alpha=0.6)
         ax.legend()
+        return im
