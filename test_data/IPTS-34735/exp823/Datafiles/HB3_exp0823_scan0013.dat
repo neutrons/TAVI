@@ -1,0 +1,35 @@
+# scan = 13
+# date = 10/25/2024
+# time = 2:24:46 PM
+# proposal = 34735
+# experiment = Magnons and paramagnon coupling in MnTe
+# experiment_number = 823
+# command = scan stl 10 -10 1
+# builtin_command = scan stl 10 -10 1
+# users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
+# local_contact = Eleanor Clements
+# scan_title = check stl 100
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = MnTe
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.138967,4.138967,6.714305,90.000000,90.000000,120.000000
+# ubmatrix = 0.011781,0.005888,-0.148803,0.278734,0.139364,0.006289,-0.000004,-0.241608,0.000001
+# mode = 0
+# plane_normal = 0.000009,0.000013,1.000000
+# ubconf = UB25Oct2024_20016PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = stl
+# def_y = detector
+# col_headers = 
+#   Pt.        stl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
+      1     2.7480      0.000      0.000      0.000      0.000    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   111.6328    38.4213     0.0008     0.0020    34.0000    34.0000    34.0000    34.0000    34.0000    34.0000    34.0000    34.0000     0.0025   159.4167   -41.1662     1.7528     0.9999     0.0000    -0.0000    14.7002    14.7000     0.0002   299.9900   299.9990   300.0000   300.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 2:24:49 PM  10/25/2024   scan stopped!!

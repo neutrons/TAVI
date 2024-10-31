@@ -61,7 +61,7 @@ class TAVI(object):
         for scan_file in scan_list:
             scan = NexusEntry.from_nexus(path_to_hdf5_folder + scan_file)
             scan_dict.update(scan)
-        self.data = TAVI.load_data(scan_dict)
+        self.data.update(TAVI.load_data(scan_dict))
 
     def load_spice_data_from_disk(self, path_to_spice_folder):
         """Load hdf5 data from path_to_hdf5.
@@ -70,7 +70,7 @@ class TAVI(object):
             path_to_spice_folder (str): path to spice folder
         """
         scan_dict = NexusEntry.from_spice(path_to_spice_folder)
-        self.data = TAVI.load_data(scan_dict)
+        self.data.update(TAVI.load_data(scan_dict))
 
     # TODO
     def load_data_from_oncat(self, user_credentials, ipts_info):

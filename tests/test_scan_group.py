@@ -45,12 +45,28 @@ def test_scan_group_2d():
     sg = tavi.combine_scans(scan_list, name="dispH")
     scan_data_2d = sg.get_data(
         axes=("qh", "en", "detector"),
-        # norm_to=(1, "mcu"),
-        # grid=(0.025, 0.1),
     )
 
     plot2d = Plot2D()
     plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=80)
+    fig, ax = plt.subplots()
+    plot2d.plot(ax)
+    plt.show()
+
+
+def test_scan_group_2d_rebin():
+    tavi = TAVI("./test_data/tavi_exp424.h5")
+    scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
+
+    sg = tavi.combine_scans(scan_list, name="dispH")
+    scan_data_2d = sg.get_data(
+        axes=("qh", "en", "detector"),
+        norm_to=(1, "mcu"),
+        grid=(0.025, 0.1),
+    )
+
+    plot2d = Plot2D()
+    plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
     fig, ax = plt.subplots()
     plot2d.plot(ax)
     plt.show()

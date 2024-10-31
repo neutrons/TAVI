@@ -146,9 +146,9 @@ class ScanGroup(object):
             title += f"{scan.scan_info.scan_num} "
 
         scan_data_2d = ScanData2D(
-            x=np.vstack(x_array),
-            y=np.vstack(y_array),
-            z=np.vstack(z_array),
+            x=np.concatenate(x_array),
+            y=np.concatenate(y_array),
+            z=np.concatenate(z_array),
         )
         rebin_params = rebin_params_dict.get("grid")
 
@@ -163,15 +163,23 @@ class ScanGroup(object):
             scan_data_2d.make_labels(axes, norm_to, title=title)
             return scan_data_2d
 
-        # if not isinstance(rebin_params, tuple):
-        #     raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple.")
-        # if not len(rebin_params) == 2:
-        #     raise ValueError(f"rebin parameters ={rebin_params} needs to be a tuple of size 2.")
-        # rebin_params_list = []
-        # for rebin in rebin_params:
-        #     if isinstance(rebin, float | int | tuple):
-        #         rebin_params_list.append(Scan.validate_rebin_params(rebin))
-        # rebin_params = tuple(rebin_params_list)
+        # rebin
+        if len(rebin_params) != 2:
+            raise ValueError(f"length of rebin parameters={rebin_params} should be a tuple of size 2.")
+        rebin_params_list = []
+        for parmas in rebin_params:
+            rebin_params_list.append(Scan.validate_rebin_params(parmas))
+        rebin_params_tuple = tuple(rebin_params_list)
+
+        if norm_to is None:
+            norm_to = self._get_default_renorm_params()
+            scan_data_2d.rebin_grid(rebin_params_tuple)
+        else:
+            norm_val, norm_channel = norm_to
+            norm_list = self._get_norm_list(norm_channel)
+            scan_data_2d.rebin_grid_renorm(rebin_params_tuple, norm_col=norm_list, norm_val=norm_val)
+
+        scan_data_2d.make_labels(axes, norm_to, title=title)
         return scan_data_2d
 
     def get_data(
@@ -191,10 +199,8 @@ class ScanGroup(object):
         if axes is not None:
             if len(axes) == 2:
                 return self._get_data_1d(axes, norm_to, **rebin_params_dict)
-
             elif len(axes) == 3:
                 return self._get_data_2d(axes, norm_to, **rebin_params_dict)
-
             else:
                 raise ValueError(f"length of axes={axes} should be either 2 or 3.")
 

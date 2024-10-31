@@ -1,0 +1,40 @@
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.075, mcu = 60
+scan h 1.075 k 0.0 l 1.075 e 33 4 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.1, mcu = 60 (higher e)"
+scan h 1.1 k 0.0 l 1.1 e 34 24.25 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.125, mcu = 60"
+scan h 1.125 k 0.0 l 1.125 e 35 5.0 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.175, mcu = 60"
+scan h 1.175 k 0.0 l 1.175 e 35 5.0 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.2, mcu = 60 (higher e)"
+scan h 1.2 k 0.0 l 1.2 e 38 35.25 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.225, mcu = 60, E= 38 to 25 mev "
+scan h 1.225 k 0.0 l 1.225 e 38 25 0.25 ef 14.7 preset mcu 90
+scantitle "-H0L scans along (101) to (1.5, 0, 0.5) at H/L = 1.225, mcu = 60, E = 25 to 5 mev"
+scan h 1.225 k 0.0 l 1.225 e 24.75 5 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 60(higher e) "
+scan h 1.25 k 0.0 l 1.25 e 40 35 0.25 ef 14.7 preset mcu 90
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.275, mcu = 60, E= 40 to 25 mev "
+scan h 1.275 k 0.0 l 1.275 e 40 25 0.25 ef 14.7 preset mcu 90
+scantitle "-H0L scans along (101) to (1.5, 0, 0.5) at H/L = 1.225, mcu = 60, E = 25 to 5 mev"
+scan h 1.275 k 0.0 l 1.275 e 24.75 10 0.25 ef 14.7 preset mcu 60
+
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.3, mcu = 120 (higher e) "
+scan h 1.3 k 0.0 l 1.3 e 42.4 40.2 0.2 ef 14.7 preset mcu 120
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.325, mcu = 120 (higher e) "
+scan h 1.325 k 0.0 l 1.325 e 43.6 40.2 0.2 ef 14.7 preset mcu 120
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.425, mcu = 120, E= 45 to 31 mev "
+scan h 1.425 k 0.0 l 1.425 e 45 31 0.2 ef 14.7 preset mcu 120
+scantitle "H0L scans along (101) to (1.5, 0, 0.5) at H/L = 1.425, mcu = 60, E = 31 to 9 mev"
+scan h 1.425 k 0.0 l 1.425 e 30.75 9 0.25 ef 14.7 preset mcu 60
+scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.475, mcu = 120, E= 45 to 33 mev "
+scan h 1.475 k 0.0 l 1.475 e 45 33 0.2 ef 14.7 preset mcu 120
+scantitle "H0L scans along (101) to (1.5, 0, 0.5) at H/L = 1.475, mcu = 60, E = 33 to 9 mev"
+scan h 1.475 k 0.0 l 1.475 e 32.75 9 0.25 ef 14.7 preset mcu 60
+

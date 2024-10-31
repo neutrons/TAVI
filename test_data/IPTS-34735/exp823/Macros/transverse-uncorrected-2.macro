@@ -1,0 +1,53 @@
+
+scantitle "Scans H0L = (1.0+0, 0, 1.0-0) - Transverse "
+ scan h 1.0+0 k 0.0 l 1.0-0 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.02, 0, 1.0-0.02) - Transverse "
+ scan h 1.0+0.02 k 0.0 l 1.0-0.02 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.04, 0, 1.0-0.04) - Transverse "
+ scan h 1.0+0.04 k 0.0 l 1.0-0.04 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.06, 0, 1.0-0.06) - Transverse "
+ scan h 1.0+0.06 k 0.0 l 1.0-0.06 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.08, 0, 1.0-0.08) - Transverse "
+ scan h 1.0+0.08 k 0.0 l 1.0-0.08 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.1, 0, 1.0-0.1) - Transverse "
+ scan h 1.0+0.1 k 0.0 l 1.0-0.1 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.12, 0, 1.0-0.12) - Transverse "
+ scan h 1.0+0.12 k 0.0 l 1.0-0.12 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.14, 0, 1.0-0.14) - Transverse "
+ scan h 1.0+0.14 k 0.0 l 1.0-0.14 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.16, 0, 1.0-0.16) - Transverse "
+ scan h 1.0+0.16 k 0.0 l 1.0-0.16 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.18, 0, 1.0-0.18) - Transverse "
+ scan h 1.0+0.18 k 0.0 l 1.0-0.18 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.2, 0, 1.0-0.2) - Transverse "
+ scan h 1.0+0.2 k 0.0 l 1.0-0.2 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.22, 0, 1.0-0.22) - Transverse "
+ scan h 1.0+0.22 k 0.0 l 1.0-0.22 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.24, 0, 1.0-0.24) - Transverse "
+ scan h 1.0+0.24 k 0.0 l 1.0-0.24 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.26, 0, 1.0-0.26) - Transverse "
+ scan h 1.0+0.26 k 0.0 l 1.0-0.26 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.28, 0, 1.0-0.28) - Transverse "
+ scan h 1.0+0.28 k 0.0 l 1.0-0.28 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.3, 0, 1.0-0.3) - Transverse "
+ scan h 1.0+0.3 k 0.0 l 1.0-0.3 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.32, 0, 1.0-0.32) - Transverse "
+ scan h 1.0+0.32 k 0.0 l 1.0-0.32 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.34, 0, 1.0-0.34) - Transverse "
+ scan h 1.0+0.34 k 0.0 l 1.0-0.34 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.36, 0, 1.0-0.36) - Transverse "
+ scan h 1.0+0.36 k 0.0 l 1.0-0.36 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.38, 0, 1.0-0.38) - Transverse "
+ scan h 1.0+0.38 k 0.0 l 1.0-0.38 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.4, 0, 1.0-0.4) - Transverse "
+ scan h 1.0+0.4 k 0.0 l 1.0-0.4 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.42, 0, 1.0-0.42) - Transverse "
+ scan h 1.0+0.42 k 0.0 l 1.0-0.42 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.44, 0, 1.0-0.44) - Transverse "
+ scan h 1.0+0.44 k 0.0 l 1.0-0.44 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.46, 0, 1.0-0.46) - Transverse "
+ scan h 1.0+0.46 k 0.0 l 1.0-0.46 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.48, 0, 1.0-0.48) - Transverse "
+ scan h 1.0+0.48 k 0.0 l 1.0-0.48 e 44.25 5.0 0.25 ef 14.7 preset mcu 120
+ scantitle "Scans H0L = (1.0+0.5, 0, 1.0-0.5) - Transverse "
+ scan h 1.0+0.5 k 0.0 l 1.0-0.5 e 44.25 5.0 0.25 ef 14.7 preset mcu 120

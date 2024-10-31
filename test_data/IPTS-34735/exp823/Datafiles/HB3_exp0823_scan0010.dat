@@ -1,0 +1,118 @@
+# scan = 10
+# date = 10/25/2024
+# time = 2:19:11 PM
+# proposal = 34735
+# experiment = Magnons and paramagnon coupling in MnTe
+# experiment_number = 823
+# command = scan stu\ 10 -10 1
+# builtin_command = scan stu\ 10 -10 1
+# users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
+# local_contact = Eleanor Clements
+# scan_title = check stu 002
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = MnTe
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.138967,4.138967,6.714305,90.000000,90.000000,120.000000
+# ubmatrix = 0.011781,0.005888,-0.148803,0.278734,0.139364,0.006289,-0.000004,-0.241608,0.000001
+# mode = 0
+# plane_normal = 0.000009,0.000013,1.000000
+# ubconf = UB25Oct2024_20016PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = stu\
+# def_y = detector
+# col_headers = 
+#   Pt.       stu\       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [2:19:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor stu\, "" contains more than one motor position.
+# ...Move aborted.
+# Sum of Counts = 0
+# Center of Mass = 0.000000+/-0.000000
+# Full Width Half-Maximum = 0.000000+/-0.000000
+# 2:19:11 PM  10/25/2024   scan completed.

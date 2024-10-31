@@ -9,16 +9,14 @@ from tavi.data.scan_data import ScanData1D
 
 @pytest.fixture
 def scans1d():
-    scan0001 = ScanData1D(x=np.array([0, 1, 2]), y=np.array([1, 2, 3]), norm_col=np.array([2, 2, 3]))
+    scan0001 = ScanData1D(x=np.array([0, 1, 2]), y=np.array([1, 2, 3]), norm=np.array([2, 2, 3]))
     scan0002 = ScanData1D(
         x=np.array([15, 15.1, 15.2, 15.3, 15.4, 15.1, 15.2, 15.3, 15.4, 15.5]),
         y=np.array([10, 12, 15, 42, 90, 31, 34, 105, 230, 3]),
-        norm_col=np.array([2, 2, 2, 2, 2, 5, 5, 5, 5, 5]),
+        norm=np.array([2, 2, 2, 2, 2, 5, 5, 5, 5, 5]),
     )
     scan0003 = ScanData1D(x=np.array([0.1, 1.1, 2.1]), y=np.array([1, 1, 1]))
-    scan0004 = ScanData1D(
-        x=np.array([-0.9, 0.1, 1.1, 2.1, 3.1]), y=np.array([10, 1, 1, 1, 10]), norm_col=np.array([2, 2, 3])
-    )
+    scan0004 = ScanData1D(x=np.array([-0.9, 0.1, 1.1, 2.1, 3.1]), y=np.array([10, 1, 1, 1, 10]))
 
     scans = (scan0001, scan0002, scan0003, scan0004)
 
@@ -27,7 +25,7 @@ def scans1d():
 
 def test_scan_data_1d_renorm(scans1d):
     scan0001, *_ = scans1d
-    scan0001.renorm(val=2)
+    scan0001.renorm(norm_val=2)
     assert np.allclose(scan0001.y, [1, 2, 2], atol=1e-3)
     assert np.allclose(scan0001.err, [1, np.sqrt(2), np.sqrt(3) / 3 * 2], atol=1e-3)
 
@@ -75,9 +73,14 @@ def test_rebin_grid(scans1d):
     _, scan0002, *_ = scans1d
     scan0002.rebin_grid_renorm(
         rebin_params=(15.0, 15.5, 0.2),
+        norm_col=np.array([2, 2, 2, 2, 2, 5, 5, 5, 5, 5]),
         norm_val=4.0,
     )
-    assert np.allclose(scan0002.x, [15.0, 15.2, 15.4], atol=1e-3)
+    assert np.allclose(
+        scan0002.x,
+        [15.0, 15.2, 15.4],
+        atol=1e-3,
+    )
     assert np.allclose(
         scan0002.y,
         [
@@ -101,10 +104,12 @@ def test_rebin_grid(scans1d):
 
 
 def test_rebin_tol(scans1d):
-    """This should be used only for data measured w/ same weight/counting time"""
     _, scan0002, *_ = scans1d
 
-    scan0002.rebin_tol(rebin_params=(15.0, 15.5, 0.2))
+    scan0002.rebin_tol(
+        rebin_params=(15.0, 15.5, 0.2),
+        # weight_col=np.array([2, 2, 2, 2, 2, 5, 5, 5, 5, 5]),
+    )
     assert np.allclose(
         scan0002.x,
         [
@@ -116,11 +121,7 @@ def test_rebin_tol(scans1d):
     )
     assert np.allclose(
         scan0002.y,
-        [
-            10,
-            (12 + 15 + 31 + 34) / 4,
-            (42 + 90 + 105 + 230) / 4,
-        ],
+        [10, (12 + 15 + 31 + 34) / 4, (42 + 90 + 105 + 230) / 4],
         atol=1e-3,
         equal_nan=True,
     )
@@ -141,6 +142,7 @@ def test_rebin_tol_renorm(scans1d):
 
     scan0002.rebin_tol_renorm(
         rebin_params=(15.0, 15.5, 0.2),
+        # norm_col=np.array([2, 2, 2, 2, 2, 5, 5, 5, 5, 5]),
         norm_val=4.0,
     )
     assert np.allclose(
@@ -152,6 +154,7 @@ def test_rebin_tol_renorm(scans1d):
         ],
         atol=1e-3,
     )
+
     assert np.allclose(
         scan0002.y,
         [
@@ -192,13 +195,7 @@ def test_add(scans1d):
 
 def test_sub_mismatch_x(scans1d):
     scan0001, _, _, scan0004, *_ = scans1d
-    scan_sub1 = scan0001 - scan0004
-    assert np.allclose(scan_sub1.x, [0, 1 / 2, 2 / 3])
-    assert np.allclose(scan_sub1.y, [0, 1, 2])
-    assert np.allclose(scan_sub1.err, [1 / np.sqrt(2), np.sqrt(3) / 2, 2 / 3])
-
-    # TODO reverse?
-    # scan_sub2 = scan0004 - scan0001
-    # assert np.allclose(scan_sub2.x, [0, 1, 2])
-    # assert np.allclose(scan_sub2.y, [0, -1, -2])
-    # assert np.allclose(scan_sub2.err, [np.sqrt(2), np.sqrt(3), 2])
+    scan_sub = scan0001 - scan0004
+    assert np.allclose(scan_sub.x, [0, 1, 2])
+    assert np.allclose(scan_sub.y, [0, 1, 2])
+    assert np.allclose(scan_sub.err, [np.sqrt(2), np.sqrt(3), 2])

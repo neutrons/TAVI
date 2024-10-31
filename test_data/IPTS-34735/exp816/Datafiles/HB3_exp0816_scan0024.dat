@@ -1,0 +1,37 @@
+# scan = 24
+# date = 9/21/2024
+# time = 1:34:31 PM
+# proposal = 34735
+# experiment = Magnons and paramagnon coupling in MnTe
+# experiment_number = 816
+# command = scan bal 0 34 2
+# builtin_command = scan bal 0 34 2
+# users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
+# local_contact = Eleanor Clements
+# scan_title = slit scan with (100)
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = MnTe
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.134597,4.134597,6.679746,90.000000,90.000000,120.000000
+# ubmatrix = -0.273127,-0.149222,-0.030247,-0.056745,-0.024153,0.146560,-0.013326,0.234830,-0.004146
+# mode = 0
+# plane_normal = -0.052339,0.017444,0.998477
+# ubconf = UB21Sep2024_13243PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = bal
+# def_y = detector
+# col_headers = 
+#   Pt.        bal       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
+      1     0.0000      1.000   8049.000   2584.000      1.029    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    25.0000    25.0000    25.0000    25.0000    16.0000    25.0000    25.0000    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   250.0680     0.000
+      2     2.0000      1.000   8224.000   2569.000      1.023    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    25.0000    25.0000    25.0000    25.0000    16.0000    25.0000    25.0000    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   249.8820     0.000
+      3     3.0508      0.000      0.000      0.000      0.000    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    25.0000    25.0000    25.0000    25.0000    16.0000    25.0000    25.0000    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   249.8950     0.000
+# Sum of Counts = 16273
+# Center of Mass = 1.010754+/-0.013675
+# Full Width Half-Maximum = 1.999884+/-0.022291
+# 1:35:05 PM  9/21/2024   scan stopped!!

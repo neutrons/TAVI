@@ -1,0 +1,24 @@
+preset time 1
+
+br 1 0 0
+
+scantitle "slit scan with (100)"
+
+scan bab 0 24 2
+scan bat 0 24 2
+scan bbb 0 24 2
+scan bbt 0 24 2
+
+scan bal 0 24 2
+scan bar 0 24 2
+scan bbl 0 24 2
+scan bbr 0 24 2
+
+br 0 0 2
+scantitle "slit scan with (002)"
+
+scan bal  0 24 2
+scan bar  0 24 2
+scan bbl 0 24 2
+scan bbr  0 24 2
+
