@@ -1,70 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.linalg as la
 from mpl_toolkits.axisartist import Subplot
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
+from tavi.data.scan_data import ScanData1D
 from tavi.utilities import sig2fwhm
 
 np.set_printoptions(floatmode="fixed", precision=4)
-
-
-class ResoCurve(object):
-    """1D Gaussian curve
-
-    Attributes:
-        cen (float)
-        fwhm (float)
-        xlabel
-        ylabel
-        title
-        legend
-
-    Methods:
-        generate_curve
-        generate_plot
-    """
-
-    def __init__(self) -> None:
-        self.center: float = 0.0
-        self.fwhm = None
-        self.r0 = None
-        self.x = None
-        self.y = None
-        self.xlabel = None
-        self.ylabel = None
-        self.title = None
-        self.legend = None
-
-    def generate_curve(self, num_of_sigmas=3, points=100):
-        """Generate points on the Gaussian curve"""
-
-        sigma = self.fwhm / sig2fwhm
-        cen = self.cen
-        self.x = np.linspace(
-            -num_of_sigmas * sigma + cen,
-            num_of_sigmas * sigma + cen,
-            points,
-        )
-        amp = self.r0 / np.sqrt(2 * np.pi) / sigma
-        self.y = amp * np.exp(-((self.x - cen) ** 2) / sigma**2 / 2)
-
-    def generate_plot(self, ax, c="black", linestyle="solid"):
-        """Generate the plot"""
-        self.generate_curve()
-
-        s = ax.plot(
-            self.x,
-            self.y,
-            c=c,
-            linestyle=linestyle,
-            label=self.legend,
-        )
-        ax.set_xlabel(self.xlabel)
-        ax.set_ylabel(self.ylabel)
-        ax.set_title(self.title)
-        ax.grid(alpha=0.6)
-        ax.legend()
 
 
 class ResoEllipse(object):
@@ -77,7 +21,7 @@ class ResoEllipse(object):
         vecs: eigen-vectors
         angle: angle between the two plotting axes, in degrees
         axes_labels (str)
-        ORIGIN (bool|None): shift the origin if True
+
 
     Methods:
         generate_ellipse(ellipse_points=128)
@@ -87,26 +31,26 @@ class ResoEllipse(object):
 
     """
 
-    g_esp = 1e-8
+    def __init__(self, mat, centers, angle, axes_labels):
+        self.mat = mat
+        self.centers = centers
+        self.angle = angle
+        self.axes_labels = axes_labels
 
-    def __init__(self):
-        self.mat = None
-        self.centers = None
-        self.fwhms = None
-        self.vecs = None
-        self.angle = None
-        self.axes_labels = None
-
-        self.ORIGIN = None
         self.grid_helper = None
 
-    def generate_ellipse(self, ellipse_points=128):
+        evals, self.evecs = la.eig(mat)  # evecs normalized already
+        self.fwhms = 1.0 / np.sqrt(np.abs(evals)) * sig2fwhm
+
+        self.generate_axes()
+
+    def get_points(self, num_points=128):
         """Generate points on a ellipse"""
 
-        phi = np.linspace(0, 2.0 * np.pi, ellipse_points)
+        phi = np.linspace(0, 2.0 * np.pi, num_points)
 
         pts = np.dot(
-            self.vecs,
+            self.evecs,
             np.array(
                 [
                     self.fwhms[0] / 2 * np.cos(phi),
@@ -114,10 +58,10 @@ class ResoEllipse(object):
                 ],
             ),
         )
-        if self.ORIGIN:
-            pts[0] += self.centers[0]
-            pts[1] += self.centers[1]
-        return pts
+
+        pts[0] += self.centers[0]
+        pts[1] += self.centers[1]
+        return ScanData1D(pts[0], pts[1])
 
     def _tr(self, x, y):
         x, y = np.asarray(x), np.asarray(y)
@@ -140,7 +84,7 @@ class ResoEllipse(object):
     def generate_plot(self, ax, c="black", linestyle="solid"):
         """Gnerate the ellipse for plotting"""
 
-        pts = self.generate_ellipse()
+        pts = self.get_points()
 
         if self.grid_helper is None:
 
@@ -164,7 +108,7 @@ class ResoEllipse(object):
         return None
 
     def plot(self):
-        """Plot the ellipsis."""
+        """Plot the ellipses."""
 
         fig = plt.figure()
         ax = Subplot(fig, 1, 1, 1, grid_helper=self.grid_helper)

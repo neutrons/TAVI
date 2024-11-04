@@ -2,10 +2,10 @@ from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.linalg as la
 from mpl_toolkits.axisartist import Axes
 
-from tavi.instrument.resolution.ellipse_curve import ResoCurve, ResoEllipse
+from tavi.instrument.resolution.curve import ResoCurve
+from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.sample.xtal import Xtal
 from tavi.utilities import get_angle_vec, sig2fwhm
 
@@ -20,8 +20,7 @@ class ResoEllipsoid(object):
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
         q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
-        hkl (tuple): momentum transfer (h, k, l)
-        en (float): energy transfer
+        hkle (tuple): momentum transfer (h, k, l) and energy transfer
         agnles (tuple): angles between plotting axes
 
         mat (np.ndarray): 4 by 4 resolution matrix
@@ -38,34 +37,35 @@ class ResoEllipsoid(object):
 
     def __init__(
         self,
-        hkl: tuple[float, float, float],
-        en: float,
+        hkle: tuple[float, float, float, float],
         sample: Xtal,
         projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
     ) -> None:
 
-        self.STATUS: Optional[bool] = None
-        self.q: Optional[tuple[float, float, float]] = None
-        self.hkl: tuple[float, float, float] = hkl
+        self.STATUS: bool
+        self.q: tuple[float, float, float]
+
+        *hkl, en = hkle
+        self.hkl: tuple = tuple(hkl)
         self.en: float = en
 
         self.projection: Optional[tuple] = projection
         self.angles: tuple[float, float, float] = (90.0, 90.0, 90.0)
         self.axes_labels = None
 
-        self.mat = None
-        self.r0 = None
+        self.mat: np.ndarray
+        self.r0: Optional[float] = None
 
         match self.projection:
             case None:  # Local Q frame
                 self.frame = "q"
                 self.angles = (90.0, 90.0, 90.0)
-                q_norm = np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi
+                q_norm = np.linalg.norm(sample.b_mat @ self.hkl) * 2 * np.pi
                 self.q = (q_norm, 0.0, 0.0)
 
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
-                self.q = hkl
+                self.q = self.hkl
                 self.angles = (sample.gamma_star, sample.alpha_star, sample.beta_star)
             case _:  # customized projection
                 p1, p2, p3 = self.projection
@@ -89,7 +89,7 @@ class ResoEllipsoid(object):
 
         self.set_labels()
 
-    def project_to_frame(self, mat_reso, phi, conv_mat):
+    def _project_to_frame(self, mat_reso, phi, conv_mat):
         """determinate the frame from the projection vectors"""
 
         mat_lab_to_local = np.array(
@@ -190,7 +190,7 @@ class ResoEllipsoid(object):
         # print("\nProjected row/column %d:\n%s\n->\n%s.\n" % (idx, str(quadric), str(ortho_proj)))
         return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
 
-    def generate_ellipse(self, axes=(0, 1), PROJECTION=False, ORIGIN=True):
+    def get_ellipse(self, axes=(0, 1), PROJECTION=False, ORIGIN=True) -> ResoEllipse:
         """Gnerate a 2D ellipse by either making a cut or projection
 
         Arguments:
@@ -199,48 +199,41 @@ class ResoEllipsoid(object):
             ORIGIN: shift the center if True
 
         """
-        ellipse = ResoEllipse()
-        ellipse.ORIGIN = ORIGIN
+
         qe_list = np.concatenate((self.q, self.en), axis=None)
         # axes = np.sort(axes)
         # match tuple(np.sort(axes)):
         match tuple(axes):
             case (0, 1) | (1, 0):
-                ellipse.angle = np.round(self.angles[0], 2)
+                angle = np.round(self.angles[0], 2)
             case (1, 2) | (2, 1):
-                ellipse.angle = np.round(self.angles[1], 2)
+                angle = np.round(self.angles[1], 2)
             case (0, 2) | (2, 0):
-                ellipse.angle = np.round(self.angles[2], 2)
+                angle = np.round(self.angles[2], 2)
             case _:
-                ellipse.angle = 90.0
+                angle = 90.0
+        axes_labels = (self.axes_labels[axes[0]], self.axes_labels[axes[1]])
 
+        if ORIGIN:
+            centers = (qe_list[axes[0]], qe_list[axes[1]])
+        else:
+            centers = (0.0, 0.0)
+
+        q_res = self.mat
         if PROJECTION:  # make a projection
-            q_res = self.mat
-            ellipse.centers = (qe_list[axes[0]], qe_list[axes[1]])
-            ellipse.axes_labels = (self.axes_labels[axes[0]], self.axes_labels[axes[1]])
             # Qres_QxE_proj = np.delete(np.delete(self.mat, 2, axis=0), 2, axis=1)
             for i in (3, 2, 1, 0):
                 if i not in axes:
                     q_res = ResoEllipsoid.quadric_proj(q_res, i)
-            ellipse.mat = q_res
+            mat = q_res
 
         else:  # make a slice
-            q_res = self.mat
-            ellipse.centers = (qe_list[axes[0]], qe_list[axes[1]])
-            ellipse.axes_labels = (self.axes_labels[axes[0]], self.axes_labels[axes[1]])
             for i in (3, 2, 1, 0):
                 if i not in axes:
                     q_res = np.delete(np.delete(q_res, i, axis=0), i, axis=1)
-            ellipse.mat = q_res
+            mat = q_res
 
-        evals, evecs = la.eig(ellipse.mat)  # evecs normalized already
-        fwhms = 1.0 / np.sqrt(np.abs(evals)) * sig2fwhm
-        # angles = np.array([np.arctan2(evecs[1][0], evecs[0][0])])
-        ellipse.fwhms = fwhms
-        ellipse.vecs = evecs
-        ellipse.generate_axes()
-
-        return ellipse
+        return ResoEllipse(mat, centers, angle, axes_labels)
 
     def set_labels(self):
         """Set axes labels based on the frame"""
@@ -257,77 +250,45 @@ class ResoEllipsoid(object):
                     "E (meV)",
                 )
 
-    # TODO
-    def calc_ellipses(self, verbose=True):
-        """Calculate FWHMs and rotation angles"""
-
-        # 2d sliced ellipses
-
-        elps_qx_en = self.generate_ellipse(axes=(0, 3), PROJECTION=False)
-        # elps_qx_en.plot()
-
-        elps_qy_en = self.generate_ellipse(axes=(1, 3), PROJECTION=False)
-        elps_qz_en = self.generate_ellipse(axes=(2, 3), PROJECTION=False)
-
-        elps_qx_qy = self.generate_ellipse(axes=(0, 1), PROJECTION=False)
-        elps_qx_qy.plot()
-        elps_qy_qz = self.generate_ellipse(axes=(1, 2), PROJECTION=False)
-        elps_qx_qz = self.generate_ellipse(axes=(0, 2), PROJECTION=False)
-        elps_qx_qz.plot()
-        plt.show()
-
-        # 2d projected ellipses
-        # Qres_QxE_proj = np.delete(np.delete(self.mat, 2, axis=0), 2, axis=1)
-
-        elps_proj_qx_en = self.generate_ellipse(axes=(0, 3), PROJECTION=True)
-        elps_proj_qy_en = self.generate_ellipse(axes=(1, 3), PROJECTION=True)
-        elps_proj_qz_en = self.generate_ellipse(axes=(2, 3), PROJECTION=True)
-
-        elps_proj_qx_qy = self.generate_ellipse(axes=(0, 1), PROJECTION=True)
-        elps_proj_qy_qz = self.generate_ellipse(axes=(1, 2), PROJECTION=True)
-        elps_proj_qx_qz = self.generate_ellipse(axes=(0, 2), PROJECTION=True)
-
-        return None
-
     def plot(self):
         """Plot all 2D ellipses"""
 
         # fig = plt.figure()
         fig = plt.figure(figsize=(10, 6))
-        elps_qx_en = self.generate_ellipse(axes=(0, 3), PROJECTION=False)
+        elps_qx_en = self.get_ellipse(axes=(0, 3), PROJECTION=False)
         ax = fig.add_subplot(231, axes_class=Axes, grid_helper=elps_qx_en.grid_helper)
         elps_qx_en.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qx_en = self.generate_ellipse(axes=(0, 3), PROJECTION=True)
+        elps_proj_qx_en = self.get_ellipse(axes=(0, 3), PROJECTION=True)
         elps_proj_qx_en.generate_plot(ax, c="black", linestyle="dashed")
 
-        elps_qy_en = self.generate_ellipse(axes=(1, 3), PROJECTION=False)
+        elps_qy_en = self.get_ellipse(axes=(1, 3), PROJECTION=False)
         ax = fig.add_subplot(232, axes_class=Axes, grid_helper=elps_qy_en.grid_helper)
         elps_qy_en.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qy_en = self.generate_ellipse(axes=(1, 3), PROJECTION=True)
+        elps_proj_qy_en = self.get_ellipse(axes=(1, 3), PROJECTION=True)
         elps_proj_qy_en.generate_plot(ax, c="black", linestyle="dashed")
 
-        elps_qz_en = self.generate_ellipse(axes=(2, 3), PROJECTION=False)
+        elps_qz_en = self.get_ellipse(axes=(2, 3), PROJECTION=False)
         ax = fig.add_subplot(233, axes_class=Axes, grid_helper=elps_qz_en.grid_helper)
         elps_qz_en.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qz_en = self.generate_ellipse(axes=(2, 3), PROJECTION=True)
+        elps_proj_qz_en = self.get_ellipse(axes=(2, 3), PROJECTION=True)
         elps_proj_qz_en.generate_plot(ax, c="black", linestyle="dashed")
 
-        elps_qx_qy = self.generate_ellipse(axes=(0, 1), PROJECTION=False)
+        elps_qx_qy = self.get_ellipse(axes=(0, 1), PROJECTION=False)
         ax = fig.add_subplot(234, axes_class=Axes, grid_helper=elps_qx_qy.grid_helper)
         elps_qx_qy.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qx_qy = self.generate_ellipse(axes=(0, 1), PROJECTION=True)
+        elps_proj_qx_qy = self.get_ellipse(axes=(0, 1), PROJECTION=True)
         elps_proj_qx_qy.generate_plot(ax, c="black", linestyle="dashed")
 
-        elps_qy_qz = self.generate_ellipse(axes=(1, 2), PROJECTION=False)
+        elps_qy_qz = self.get_ellipse(axes=(1, 2), PROJECTION=False)
         ax = fig.add_subplot(235, axes_class=Axes, grid_helper=elps_qy_qz.grid_helper)
         elps_qy_qz.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qy_qz = self.generate_ellipse(axes=(1, 2), PROJECTION=True)
+        elps_proj_qy_qz = self.get_ellipse(axes=(1, 2), PROJECTION=True)
         elps_proj_qy_qz.generate_plot(ax, c="black", linestyle="dashed")
 
-        elps_qx_qz = self.generate_ellipse(axes=(0, 2), PROJECTION=False)
+        elps_qx_qz = self.get_ellipse(axes=(0, 2), PROJECTION=False)
         ax = fig.add_subplot(236, axes_class=Axes, grid_helper=elps_qx_qz.grid_helper)
         elps_qx_qz.generate_plot(ax, c="black", linestyle="solid")
-        elps_proj_qx_qz = self.generate_ellipse(axes=(0, 2), PROJECTION=True)
+        elps_proj_qx_qz = self.get_ellipse(axes=(0, 2), PROJECTION=True)
         elps_proj_qx_qz.generate_plot(ax, c="black", linestyle="dashed")
 
         fig.tight_layout(pad=2)

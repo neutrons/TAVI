@@ -4,9 +4,14 @@ from pathlib import Path
 from typing import Optional, Union
 
 from tavi.data.scan import Scan
-from tavi.instrument.goni import Goniometer
-from tavi.instrument.mono_ana import MonoAna
-from tavi.instrument.tas_cmponents import Collimators, Detector, Distances, Guide, Monitor, Source
+from tavi.instrument.components.collimators import Collimators
+from tavi.instrument.components.component_base import Distances
+from tavi.instrument.components.detector import Detector
+from tavi.instrument.components.goni import Goniometer
+from tavi.instrument.components.guide import Guide
+from tavi.instrument.components.monitor import Monitor
+from tavi.instrument.components.mono_ana import MonoAna
+from tavi.instrument.components.source import Source
 from tavi.sample.powder import Powder
 from tavi.sample.sample import Sample
 from tavi.sample.xtal import Xtal
@@ -32,16 +37,18 @@ class TASBase(object):
     """
 
     def __init__(self) -> None:
-        """Load instrument configuration from json if provided, otherwise leace as None"""
+        """Load instrument configuration from json if provided, otherwise leave as None"""
         self.monochromator: MonoAna
+        self.analyzer: MonoAna
         self.goniometer: Goniometer
+        self.collimators: Collimators
         self.sample: Union[Sample, Xtal, Powder]
 
         self.source: Optional[Source] = None
-        self.collimators: Optional[Collimators] = None
+
         self.guide: Optional[Guide] = None
         self.monitor: Optional[Monitor] = None
-        self.analyzer: Optional[MonoAna] = None
+
         self.detector: Optional[Detector] = None
         self.arms: Optional[Distances] = None
 

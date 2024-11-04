@@ -2,7 +2,7 @@ from typing import Literal, Optional
 
 import numpy as np
 
-from tavi.instrument.tas_cmponents import TASComponent
+from tavi.instrument.components.component_base import TASComponent
 from tavi.utilities import MotorAngles
 
 

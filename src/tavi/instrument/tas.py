@@ -23,11 +23,7 @@ class TAS(TASBase):
         self.SPICE_CONVENTION = SPICE_CONVENTION  # use coordination system defined in SPICE
 
     @staticmethod
-    def q_lab(
-        two_theta_deg: float,
-        ei: float,
-        ef: float,
-    ):
+    def q_lab(two_theta_deg: float, ei: float, ef: float):
         """
         Reutrn momentum transfer q in lab frame, using Mantid convention
 
