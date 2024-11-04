@@ -1,8 +1,8 @@
 import matplotlib.pylab as plt
 
-from tavi.data.plotter import Plot1DManager, Plot2DManager
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.plotter import Plot1DManager, Plot2DManager
 
 # from tavi.instrument.instrument_params.python_dicts.cg4c import cg4c_config_params
 # from tests.test_data_folder.test_samples.python_samples.nitio3 import nitio3

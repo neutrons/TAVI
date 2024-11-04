@@ -2,8 +2,8 @@
 
 import matplotlib.pyplot as plt
 
-from tavi.data.plotter import Plot1D, Plot2D
 from tavi.data.tavi import TAVI
+from tavi.plotter import Plot1D, Plot2D
 
 
 def test_scan_group_default_1d():

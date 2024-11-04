@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 from lmfit import Parameters, models
 
-from tavi.data.plotter import Plot1D
+from tavi.plotter import Plot1D
 
 
 class Fit1D(object):

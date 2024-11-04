@@ -34,7 +34,7 @@ class ResoEllipsoid(object):
 
     """
 
-    EPS = 1e-8
+    ZERO = 1e-8
 
     def __init__(
         self,
@@ -60,7 +60,8 @@ class ResoEllipsoid(object):
             case None:  # Local Q frame
                 self.frame = "q"
                 self.angles = (90.0, 90.0, 90.0)
-                self.q = (np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi, 0.0, 0.0)
+                q_norm = np.linalg.norm(sample.b_mat @ hkl) * 2 * np.pi
+                self.q = (q_norm, 0.0, 0.0)
 
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
@@ -73,9 +74,9 @@ class ResoEllipsoid(object):
                 v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
                 v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
 
-                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.EPS:
+                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.ZERO:
                     raise ValueError("Projection is left handed! Please use right-handed projection")
-                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.EPS:
+                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.ZERO:
                     raise ValueError("Projection vectors need to be non-coplanar.")
 
                 mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(
@@ -170,7 +171,7 @@ class ResoEllipsoid(object):
     def quadric_proj(quadric, idx):
         """projects along one axis of the quadric"""
 
-        if np.abs(quadric[idx, idx]) < ResoEllipsoid.EPS:
+        if np.abs(quadric[idx, idx]) < ResoEllipsoid.ZERO:
             return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
 
         # row/column along which to perform the orthogonal projection

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-from tavi.data.plotter import Plot1DManager, Plot2DManager
 from tavi.data.tavi import TAVI
+from tavi.plotter import Plot1DManager, Plot2DManager
 
 
 def test_fit_group(tavi):

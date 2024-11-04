@@ -2,8 +2,8 @@
 # from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 import matplotlib.pylab as plt
 
-from tavi.data.plotter import Plot1DManager, Plot2DManager
 from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.plotter import Plot1DManager, Plot2DManager
 
 
 def test_l_vs_en(tas):

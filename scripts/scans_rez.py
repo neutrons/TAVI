@@ -28,7 +28,7 @@ for scan_num in scan_list:
     qk_list = scan.data["qk"]
     ql_list = scan.data["ql"]
 
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    # projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     R0 = True
 
     rez_mat_list = []
@@ -40,7 +40,7 @@ for scan_num in scan_list:
             ei=ei_list[i],
             ef=ef_list[i],
             hkl=(qh_list[i], qk_list[i], ql_list[i]),
-            projection=projection,
+            # projection=projection,
             R0=R0,
         )
         rez_mat_list.append(rez.mat)
@@ -56,11 +56,11 @@ for scan_num in scan_list:
         err=NXdataset(ds=scan_data.err),
         rez_mat=NXdataset(ds=rez_mat_list),
         rez_r0=NXdataset(ds=rez_r0_list),
-        projection=NXdataset(ds=projection),
+        # projection=NXdataset(ds=projection),
     )
 
     tavi.processed_data.update(NexusEntry._dict_to_nexus_entry({scan.name: rez_entry}))
 
 
-file_path = "./test_data/tavi_rez.h5"
+file_path = "./test_data/tavi_rez_HKLE.h5"
 tavi.save(file_path)
