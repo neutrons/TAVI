@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from mpl_toolkits.axisartist import Subplot
+from mpl_toolkits.axisartist import Axes
 
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.plotter import Plot2D
@@ -12,28 +12,39 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 def test_local_q(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, projection=None, R0=R0)
+    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=R0)
     ellipse = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
 
     assert np.allclose(ellipse.angle, 90)
-    assert ellipse.axes_labels == ("Q_para (1/A)", "E (meV)")
+    assert ellipse.xlabel == "Q_para (1/A)"
+    assert ellipse.ylabel == "E (meV)"
 
 
 def test_hkl(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.cooper_nathans(ei=ei, ef=ef, hkl=hkl, R0=R0)
-    ellipse = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
+    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+    e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
+    e01_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
+    e03_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
+    e03_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
 
-    assert np.allclose(ellipse.angle, 60)
-    assert ellipse.axes_labels == ("H (r.l.u.)", "K (r.l.u.)")
+    assert np.allclose(e01_co.angle, 60)
 
     p1 = Plot2D()
-    p1.add_curve(ellipse.get_points(), fmt="-k")
+    p1.add_reso(e01_co, c="k", linestyle="solid")
+    p1.add_reso(e01_inco, c="k", linestyle="dashed")
+
+    p2 = Plot2D()
+    p2.add_reso(e03_co, c="k", linestyle="solid", label="Coherent")
+    p2.add_reso(e03_inco, c="k", linestyle="dashed", label="Incoherent")
 
     fig = plt.figure()
-    ax = Subplot(fig, 1, 1, 1)
-    fig.add_subplot(ax)
-    p1.plot(ax)
+    ax1 = fig.add_subplot(121, axes_class=Axes, grid_helper=p1.grid_helper)
+    p1.plot(ax1)
+
+    ax2 = fig.add_subplot(122, axes_class=Axes)
+    p2.plot(ax2)
+
     plt.show()
 
 

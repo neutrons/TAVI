@@ -29,12 +29,12 @@ def test_scan_group_1d_rebin():
     scan_data_1 = sg.get_data(tol=(0.5, 4, 0.2))
     scan_data_2 = sg.get_data(grid=(0.5, 4, 0.2))
 
-    plot1d = Plot1D()
-    plot1d.add_scan(scan_data_1, c="C0", fmt="o")
-    plot1d.add_scan(scan_data_2, c="C1", fmt="o")
+    p1 = Plot1D()
+    p1.add_scan(scan_data_1, c="C0", fmt="o", label="tol")
+    p1.add_scan(scan_data_2, c="C1", fmt="o", label="grid")
 
     fig, ax = plt.subplots()
-    plot1d.plot(ax)
+    p1.plot(ax)
     plt.show()
 
 
@@ -44,7 +44,7 @@ def test_scan_group_2d():
 
     sg = tavi.combine_scans(scan_list, name="dispH")
     scan_data_2d = sg.get_data(
-        axes=("qh", "en", "detector"),
+        axes=("s1", "en", "detector"),
     )
 
     plot2d = Plot2D()
@@ -62,7 +62,7 @@ def test_scan_group_2d_rebin():
     scan_data_2d = sg.get_data(
         axes=("qh", "en", "detector"),
         norm_to=(1, "mcu"),
-        grid=(0.025, 0.1),
+        grid=(0.025, (-1, 5, 0.1)),
     )
 
     plot2d = Plot2D()

@@ -1,7 +1,23 @@
 # import matplotlib.colors as colors
+from functools import partial
 from typing import Optional
 
+import numpy as np
+from mpl_toolkits.axisartist.grid_finder import MaxNLocator
+from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
+
 from tavi.data.scan_data import ScanData1D, ScanData2D
+from tavi.instrument.resolution.ellipse import ResoEllipse
+
+
+def tr(x, y, angle):
+    x, y = np.asarray(x), np.asarray(y)
+    return x + y / np.tan(angle / 180 * np.pi), y
+
+
+def inv_tr(x, y, angle):
+    x, y = np.asarray(x), np.asarray(y)
+    return x - y / np.tan(angle / 180 * np.pi), y
 
 
 class Plot1D(object):
@@ -70,7 +86,10 @@ class Plot1D(object):
             ax.set_ylabel(",".join(ylabels))
 
         ax.grid(alpha=0.6)
-        ax.legend()
+        for data in self.scan_data:
+            if "label" in data.fmt.keys():
+                ax.legend()
+                break
 
 
 class Plot2D(object):
@@ -79,6 +98,7 @@ class Plot2D(object):
         # self.ax = None
         self.contour_data: list[ScanData2D] = []
         self.curve_data: list[ScanData1D] = []
+        self.reso_data: list[ResoEllipse] = []
         self.title = ""
         self.xlabel = None
         self.ylabel = None
@@ -91,22 +111,45 @@ class Plot2D(object):
         self.LOG_Y = False
         self.LOG_Z = False
 
+        self.grid_helper = None
+
     def add_contour(self, contour_data: ScanData2D, **kwargs):
-        self.contour_data.append(contour_data)
+
         for key, val in kwargs.items():
             contour_data.fmt.update({key: val})
+        self.contour_data.append(contour_data)
 
-    # TODO
     def add_curve(self, curve_data: ScanData1D, **kwargs):
-        self.curve_data.append(curve_data)
+
         for key, val in kwargs.items():
             curve_data.fmt.update({key: val})
+        self.curve_data.append(curve_data)
+
+    def add_reso(self, reso_data: ResoEllipse, **kwargs):
+
+        for key, val in kwargs.items():
+            reso_data.fmt.update({key: val})
+        self.reso_data.append(reso_data)
+        self.grid_helper = GridHelperCurveLinear(
+            (
+                partial(tr, angle=reso_data.angle),
+                partial(inv_tr, angle=reso_data.angle),
+            ),
+            grid_locator1=MaxNLocator(integer=True, steps=[1]),
+            grid_locator2=MaxNLocator(integer=True, steps=[1]),
+        )
 
     def plot(self, ax):
         for contour in self.contour_data:
             im = ax.pcolormesh(contour.x, contour.y, contour.z, **contour.fmt)
         for curve in self.curve_data:
-            im = ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
+            ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
+        for reso in self.reso_data:
+            pts = reso.get_points(num_points=128)  # num_points=128 by default
+            if np.abs(reso.angle - 90) > 1e-5:  # askew axes
+                ax.plot(*tr(pts[0], pts[1], reso.angle), **reso.fmt)
+            else:
+                ax.plot(pts[0], pts[1], **reso.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -118,16 +161,23 @@ class Plot2D(object):
 
         if self.xlabel is None:
             xlabels = []
-            for contour in self.contour_data:
-                xlabels.append(contour.xlabel)
-            ax.set_xlabel(",".join(xlabels))
+            for data in self.contour_data + self.reso_data:
+                xlabels.append(data.xlabel)
+            ax.set_xlabel(",".join(set(xlabels)))
 
         if self.ylabel is None:
             ylabels = []
-            for contour in self.contour_data:
-                ylabels.append(contour.ylabel)
-            ax.set_ylabel(",".join(ylabels))
+            for data in self.contour_data + self.reso_data:
+                ylabels.append(data.ylabel)
+            ax.set_ylabel(",".join(set(ylabels)))
 
         ax.grid(alpha=0.6)
-        ax.legend()
-        return im
+        for data in self.contour_data + self.reso_data + self.curve_data:
+            if "label" in data.fmt.keys():
+                ax.legend()
+                break
+
+        if not self.contour_data:
+            pass
+        else:
+            return im

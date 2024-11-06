@@ -44,41 +44,6 @@ class CN(TAS):
         self._mat_f: Optional[np.ndarray] = None
         self._mat_g: Optional[np.ndarray] = None
 
-    def validate_instrument_parameters(self):
-        """Check if enough instrument parameters are provided for Cooper-Nathans mehtod"""
-
-        try:  # monochromator
-            mono = self.monochromator
-        except AttributeError:
-            print("Monochromator info are missing.")
-
-        if None in (mono_mosaic := (mono.mosaic_h, mono.mosaic_v)):
-            raise ValueError("Mosaic of monochromator is missing.")
-        elif not all(val > 0 for val in mono_mosaic):
-            raise ValueError("Mosaic of monochromator cannot be negative.")
-
-        try:  # analyzer
-            ana = self.analyzer
-        except AttributeError:
-            print("Analyzer info are missing.")
-
-        if None in (ana_mosaic := (ana.mosaic_h, ana.mosaic_v)):
-            raise ValueError("Mosaic of analyzer is missing.")
-        elif not all(val > 0 for val in ana_mosaic):
-            raise ValueError("Mosaic of analyzer cannot be negative.")
-
-        # collimators
-        if (coll := self.collimators) is None:
-            raise ValueError("Collimators info are missing.")
-        elif not all(val > 0 for val in coll.horizontal_divergence):
-            raise ValueError("Horizontal divergence of collimators cannot be negative.")
-        elif not all(val > 0 for val in coll.vertical_divergence):
-            raise ValueError("Vertical divergence of collimators cannot be negative.")
-
-        # sample
-        # if self.sample is None:
-        #     raise ValueError("Sample info are missing.")
-
     @staticmethod
     def calc_mat_f(mono: MonoAna, ana: MonoAna) -> np.ndarray:
         # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
@@ -158,6 +123,76 @@ class CN(TAS):
         mat_c[CN.IDX_ANA0_V, CN.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
         return mat_c
 
+    @staticmethod
+    def _generate_hkle_list(
+        hkl_list: Union[tuple, list[tuple]],
+        ei: Union[float, list[float]],
+        ef: Union[float, list[float]],
+    ) -> list[tuple[tuple[float, float, float], float, float]]:
+        """Generate a list containing tuple ((h, k, l), ei, ef)"""
+
+        if isinstance(hkl_list, list):
+            num = len(hkl_list)
+            if not isinstance(ei, list):
+                ei_list = [ei] * num
+            elif len(ei) == num:
+                ei_list = ei
+            else:
+                raise ValueError("length of ei and hkl_list do not match.")
+
+            if not isinstance(ef, list):
+                ef_list = [ef] * num
+            elif len(ef) == num:
+                ef_list = ef
+            else:
+                raise ValueError("length of ef and hkl_list do not match.")
+
+            hkle_list = list(zip(hkl_list, ei_list, ef_list))
+
+        elif isinstance(hkl_list, tuple) and len(hkl_list) == 3:
+            if (not isinstance(ei, list)) and (not isinstance(ef, list)):
+                hkle_list = [(hkl_list, ei, ef)]
+            else:
+                raise ValueError("length of ei and hkl_list do not match.")
+        else:
+            raise ValueError(f"hkl_list={hkl_list} should be either a list or a tuple.")
+        return hkle_list
+
+    def validate_instrument_parameters(self):
+        """Check if enough instrument parameters are provided for Cooper-Nathans mehtod"""
+
+        try:  # monochromator
+            mono = self.monochromator
+        except AttributeError:
+            print("Monochromator info are missing.")
+
+        if None in (mono_mosaic := (mono.mosaic_h, mono.mosaic_v)):
+            raise ValueError("Mosaic of monochromator is missing.")
+        elif not all(val > 0 for val in mono_mosaic):
+            raise ValueError("Mosaic of monochromator cannot be negative.")
+
+        try:  # analyzer
+            ana = self.analyzer
+        except AttributeError:
+            print("Analyzer info are missing.")
+
+        if None in (ana_mosaic := (ana.mosaic_h, ana.mosaic_v)):
+            raise ValueError("Mosaic of analyzer is missing.")
+        elif not all(val > 0 for val in ana_mosaic):
+            raise ValueError("Mosaic of analyzer cannot be negative.")
+
+        # collimators
+        if (coll := self.collimators) is None:
+            raise ValueError("Collimators info are missing.")
+        elif not all(val > 0 for val in coll.horizontal_divergence):
+            raise ValueError("Horizontal divergence of collimators cannot be negative.")
+        elif not all(val > 0 for val in coll.vertical_divergence):
+            raise ValueError("Vertical divergence of collimators cannot be negative.")
+
+        # sample
+        # if self.sample is None:
+        #     raise ValueError("Sample info are missing.")
+
     def cooper_nathans(
         self,
         hkl_list: Union[tuple[float, float, float], list[tuple[float, float, float]]],
@@ -165,7 +200,7 @@ class CN(TAS):
         ef: Union[float, list[float]],
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
         R0: bool = False,
-    ) -> ResoEllipsoid:
+    ) -> Union[ResoEllipsoid, list[ResoEllipsoid]]:
         """Calculate resolution using Cooper-Nathans method
 
         Args:
@@ -181,14 +216,9 @@ class CN(TAS):
         self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer) if self._mat_f is None else self._mat_f
         self._mat_g = CN.calc_mat_g(self.collimators) if self._mat_g is None else self._mat_g
 
-        if not isinstance(hkl_list, list):
-            hkl_list = [hkl_list]
-        # TODO
-        else:  # generate ei, ef list
-            pass
-
+        hkle_list = self._generate_hkle_list(hkl_list, ei, ef)
         rez_list = []
-        for hlk in hkl_list:
+        for hkl, ei, ef in hkle_list:
 
             # q_lab = conv_mat @ hkl
             # q_mod = np.linalg.norm(q_lab)
@@ -271,5 +301,5 @@ class CN(TAS):
             rez_list.append(rez)
 
         if len(rez_list) == 1:
-            return rez[0]
-        return rez
+            return rez_list[0]
+        return rez_list

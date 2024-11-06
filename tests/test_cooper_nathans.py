@@ -55,7 +55,7 @@ def test_copper_nathans_projection(tas_params):
 def test_copper_nathans_list(tas_params):
     tas, ei, ef, _, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(hkl_list=[(0, 0, 3), (0, 0, -3)], ei=ei, ef=ef, projection=None, R0=r0)
+    rez_list = tas.cooper_nathans(hkl_list=[(0, 0, 3), (0, 0, -3)], ei=ei, ef=ef, projection=None, R0=r0)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -64,8 +64,9 @@ def test_copper_nathans_list(tas_params):
             [986.5610, -4129.1553, -0.0000, 864.3494],
         ]
     )
-    assert len(rez) == 2
-    assert np.allclose(rez[0].mat, mat, atol=1e-1)
+    assert len(rez_list) == 2
+    assert np.allclose(rez_list[0].mat, mat, atol=1e-1)
+    assert np.allclose(rez_list[1].mat, mat, atol=1e-1)
 
 
 @pytest.fixture

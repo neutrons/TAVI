@@ -2,10 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as la
 from mpl_toolkits.axisartist import Subplot
-from mpl_toolkits.axisartist.grid_finder import MaxNLocator
-from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
-from tavi.data.scan_data import ScanData1D
 from tavi.utilities import sig2fwhm
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -35,51 +32,23 @@ class ResoEllipse(object):
         self.mat = mat
         self.centers = centers
         self.angle = angle
-        self.axes_labels = axes_labels
+        self.xlabel, self.ylabel = axes_labels
 
-        self.grid_helper = None
+        self.fmt = {}
 
         evals, self.evecs = la.eig(mat)  # evecs normalized already
         self.fwhms = 1.0 / np.sqrt(np.abs(evals)) * sig2fwhm
-
-        self.generate_axes()
 
     def get_points(self, num_points=128):
         """Generate points on a ellipse"""
 
         phi = np.linspace(0, 2.0 * np.pi, num_points)
-
-        pts = np.dot(
-            self.evecs,
-            np.array(
-                [
-                    self.fwhms[0] / 2 * np.cos(phi),
-                    self.fwhms[1] / 2 * np.sin(phi),
-                ],
-            ),
-        )
+        length = np.array([self.fwhms[0] / 2 * np.cos(phi), self.fwhms[1] / 2 * np.sin(phi)])
+        pts = np.dot(self.evecs, length)
 
         pts[0] += self.centers[0]
         pts[1] += self.centers[1]
-        return ScanData1D(pts[0], pts[1])
-
-    def _tr(self, x, y):
-        x, y = np.asarray(x), np.asarray(y)
-        return x + y / np.tan(self.angle / 180 * np.pi), y
-
-    def _inv_tr(self, x, y):
-        x, y = np.asarray(x), np.asarray(y)
-        return x - y / np.tan(self.angle / 180 * np.pi), y
-
-    def generate_axes(self):
-        """Generate grid helper"""
-
-        if not np.abs(self.angle - 90) < 1e-2:  # regular axes
-            self.grid_helper = GridHelperCurveLinear(
-                (self._tr, self._inv_tr),
-                grid_locator1=MaxNLocator(integer=True, steps=[1]),
-                grid_locator2=MaxNLocator(integer=True, steps=[1]),
-            )
+        return pts
 
     def generate_plot(self, ax, c="black", linestyle="solid"):
         """Gnerate the ellipse for plotting"""

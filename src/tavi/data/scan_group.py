@@ -140,8 +140,8 @@ class ScanGroup(object):
         title = "Combined scans: "
 
         for scan in self.scans:
-            x_array.append(scan.data[x_axis])
-            y_array.append(scan.data[y_axis])
+            x_array.append(xdata := scan.data[x_axis])
+            y_array.append(ydata := scan.data[y_axis])
             z_array.append(scan.data[z_axis])
             title += f"{scan.scan_info.scan_num} "
 
@@ -152,15 +152,34 @@ class ScanGroup(object):
         )
         rebin_params = rebin_params_dict.get("grid")
 
-        if not rebin_params:  # no rebin,
+        if not rebin_params:  # no rebin
+            if scan.scan_info.def_x == x_axis:
+                try:
+                    size_y, size_x = np.shape(x_array)
+                except TypeError:
+                    print("Cannot group scans. Rebin needed.")
+            elif scan.scan_info.def_x == y_axis:
+                try:
+                    size_x, size_y = np.shape(x_array)
+                except TypeError:
+                    print("Cannot group scans. Rebin needed.")
+            else:
+                raise ValueError("Rebin grid parameters needed. ")
+
             if norm_to is not None:  # renorm
                 norm_val, norm_channel = norm_to
                 norm_list = self._get_norm_list(norm_channel)
                 scan_data_2d.renorm(norm_col=norm_list, norm_val=norm_val)
+                scan_data_2d.norm = scan_data_2d.norm.reshape((size_x, size_y))
             else:  # no renorm, check if all presets are the same
                 norm_to = self._get_default_renorm_params()
 
             scan_data_2d.make_labels(axes, norm_to, title=title)
+            scan_data_2d.x = scan_data_2d.x.reshape((size_x, size_y))
+            scan_data_2d.y = scan_data_2d.y.reshape((size_x, size_y))
+            scan_data_2d.z = scan_data_2d.z.reshape((size_x, size_y))
+            scan_data_2d.err = scan_data_2d.err.reshape((size_x, size_y))
+
             return scan_data_2d
 
         # rebin
