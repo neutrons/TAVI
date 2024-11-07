@@ -130,32 +130,22 @@ class CN(TAS):
         ef: Union[float, list[float]],
     ) -> list[tuple[tuple[float, float, float], float, float]]:
         """Generate a list containing tuple ((h, k, l), ei, ef)"""
+        hkle_list = []
+        if not isinstance(ei, list):
+            ei = [ei]
+        if not isinstance(ef, list):
+            ef = [ef]
+        if not isinstance(hkl_list, list):
+            hkl_list = [hkl_list]
 
         if isinstance(hkl_list, list):
-            num = len(hkl_list)
-            if not isinstance(ei, list):
-                ei_list = [ei] * num
-            elif len(ei) == num:
-                ei_list = ei
-            else:
-                raise ValueError("length of ei and hkl_list do not match.")
-
-            if not isinstance(ef, list):
-                ef_list = [ef] * num
-            elif len(ef) == num:
-                ef_list = ef
-            else:
-                raise ValueError("length of ef and hkl_list do not match.")
-
-            hkle_list = list(zip(hkl_list, ei_list, ef_list))
-
-        elif isinstance(hkl_list, tuple) and len(hkl_list) == 3:
-            if (not isinstance(ei, list)) and (not isinstance(ef, list)):
-                hkle_list = [(hkl_list, ei, ef)]
-            else:
-                raise ValueError("length of ei and hkl_list do not match.")
-        else:
-            raise ValueError(f"hkl_list={hkl_list} should be either a list or a tuple.")
+            for one_ei in ei:
+                for one_ef in ef:
+                    for hkl in hkl_list:
+                        if isinstance(hkl, tuple) and len(hkl) == 3:
+                            hkle_list.append((hkl, one_ei, one_ef))
+                        else:
+                            raise ValueError(f"hkl={hkl} is not a tuple of length 3.")
         return hkle_list
 
     def validate_instrument_parameters(self):

@@ -50,7 +50,8 @@ def test_scan_group_2d():
     plot2d = Plot2D()
     plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=80)
     fig, ax = plt.subplots()
-    plot2d.plot(ax)
+    im = plot2d.plot(ax)
+    fig.colorbar(im, ax=ax)
     plt.show()
 
 
@@ -68,5 +69,6 @@ def test_scan_group_2d_rebin():
     plot2d = Plot2D()
     plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
     fig, ax = plt.subplots()
-    plot2d.plot(ax)
+    im = plot2d.plot(ax)
+    fig.colorbar(im, ax=ax)
     plt.show()
