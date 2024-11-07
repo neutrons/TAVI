@@ -296,7 +296,7 @@ class CN(TAS):
             else:
                 rez.STATUS = True
 
-            rez.set_labels()
+            rez._set_labels()
 
             rez_list.append(rez)
 

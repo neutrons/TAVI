@@ -23,12 +23,23 @@ def test_local_q(tas_params):
 def test_hkl(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
     rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
-    e01_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
-    e03_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
-    e03_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
 
     assert np.allclose(e01_co.angle, 60)
+    assert e01_co.xlabel == "H (r.l.u.)"
+    assert e01_co.ylabel == "K (r.l.u.)"
+
+
+def test_plotting(tas_params):
+    tas, ei, ef, hkl, _, R0 = tas_params
+    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+
+    e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
+    e01_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
+
+    e03_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
+    e03_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
 
     p1 = Plot2D()
     p1.add_reso(e01_co, c="k", linestyle="solid")
@@ -45,6 +56,7 @@ def test_hkl(tas_params):
     ax2 = fig.add_subplot(122, axes_class=Axes)
     p2.plot(ax2)
 
+    fig.tight_layout(pad=2)
     plt.show()
 
 

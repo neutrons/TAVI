@@ -174,7 +174,7 @@ class Plot2D(object):
         ax.grid(alpha=0.6)
         for data in self.contour_data + self.reso_data + self.curve_data:
             if "label" in data.fmt.keys():
-                ax.legend()
+                ax.legend(loc=1)
                 break
 
         if not self.contour_data:

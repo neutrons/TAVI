@@ -1,11 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import numpy.linalg as la
-from mpl_toolkits.axisartist import Subplot
 
 from tavi.utilities import sig2fwhm
-
-np.set_printoptions(floatmode="fixed", precision=4)
 
 
 class ResoEllipse(object):
@@ -49,38 +45,3 @@ class ResoEllipse(object):
         pts[0] += self.centers[0]
         pts[1] += self.centers[1]
         return pts
-
-    def generate_plot(self, ax, c="black", linestyle="solid"):
-        """Gnerate the ellipse for plotting"""
-
-        pts = self.get_points()
-
-        if self.grid_helper is None:
-
-            s = ax.plot(
-                pts[0],
-                pts[1],
-                c=c,
-                linestyle=linestyle,
-            )
-        else:  # askew axes
-            s = ax.plot(
-                *self._tr(pts[0], pts[1]),
-                c=c,
-                linestyle=linestyle,
-            )
-
-        ax.set_xlabel(self.axes_labels[0])
-        ax.set_ylabel(self.axes_labels[1])
-        ax.grid(alpha=0.6)
-
-        return None
-
-    def plot(self):
-        """Plot the ellipses."""
-
-        fig = plt.figure()
-        ax = Subplot(fig, 1, 1, 1, grid_helper=self.grid_helper)
-        fig.add_subplot(ax)
-        self.generate_plot(ax)
-        fig.show()

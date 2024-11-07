@@ -41,11 +41,10 @@ def test_projection(tas_params):
     assert rez.axes_labels == ("(1, 1, 0)", "(0, 0, 1)", "(1, -1, 0)", "E (meV)")
 
 
-def test_plot(tas_params):
+def test_plotting(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
     rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
-    rez.plot()
-
+    rez.plot_ellipses()
     plt.show()
 
 
