@@ -111,8 +111,6 @@ class Plot2D(object):
         self.LOG_Y = False
         self.LOG_Z = False
 
-        self.grid_helper = None
-
     def add_contour(self, contour_data: ScanData2D, **kwargs):
 
         for key, val in kwargs.items():
@@ -130,14 +128,18 @@ class Plot2D(object):
         for key, val in kwargs.items():
             reso_data.fmt.update({key: val})
         self.reso_data.append(reso_data)
-        self.grid_helper = GridHelperCurveLinear(
+
+    @staticmethod
+    def grid_helper(angle: float):
+        grid_helper = GridHelperCurveLinear(
             (
-                partial(tr, angle=reso_data.angle),
-                partial(inv_tr, angle=reso_data.angle),
+                partial(tr, angle=angle),
+                partial(inv_tr, angle=angle),
             ),
             grid_locator1=MaxNLocator(integer=True, steps=[1]),
             grid_locator2=MaxNLocator(integer=True, steps=[1]),
         )
+        return grid_helper
 
     def plot(self, ax):
         for contour in self.contour_data:

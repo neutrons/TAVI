@@ -50,7 +50,11 @@ def test_plotting(tas_params):
     p2.add_reso(e03_inco, c="k", linestyle="dashed", label="Incoherent")
 
     fig = plt.figure()
-    ax1 = fig.add_subplot(121, axes_class=Axes, grid_helper=p1.grid_helper)
+    ax1 = fig.add_subplot(
+        121,
+        axes_class=Axes,
+        grid_helper=p1.grid_helper(e01_co.angle),
+    )
     p1.plot(ax1)
 
     ax2 = fig.add_subplot(122, axes_class=Axes)

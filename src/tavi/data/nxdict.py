@@ -60,7 +60,8 @@ class NXdataset(dict):
 
         match kwargs:
             case {"type": "NX_CHAR"}:
-                dataset = str(ds)
+                dataset = np.array(ds) if isinstance(ds, list) else str(ds)
+
             case {"type": "NX_INT"} | {"type": "NX_FLOAT"}:
                 dataset = _recast_type(ds, kwargs["type"])
             case {"type": "NX_DATE_TIME"}:
@@ -159,6 +160,9 @@ def spice_scan_to_nxdict(
 
     spicelogs = _create_spicelogs(path_to_scan_file)
     metadata = spicelogs["metadata"]
+    # ---------------------------------------- user ----------------------------------------
+    nxuser = NXentry(NX_class="NXuser")
+    nxuser.add_dataset("name", NXdataset(ds=metadata["users"].split(","), type="NX_CHAR"))
 
     # ---------------------------------------- source ----------------------------------------
 
@@ -168,6 +172,10 @@ def spice_scan_to_nxdict(
         NX_class="NXsource",
         EX_required="true",
     )
+    # TODO
+    if "source" in instrument_config_params:
+        pass
+
     # ------------------------------------- monochromator ----------------------------------------
 
     nxmono = NXentry(
@@ -345,6 +353,7 @@ def spice_scan_to_nxdict(
         instrument=nxinstrument,
         monitor=nxmonitor,
         sample=nxsample,
+        user=nxuser,
         NX_class="NXentry",
         EX_required="true",
     )

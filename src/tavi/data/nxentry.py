@@ -90,7 +90,12 @@ class NexusEntry(dict):
             attr_type = attr.get("type")
             match attr_type:
                 case "NX_CHAR":
-                    dv = dv.encode("utf-8")
+                    if isinstance(dv, list | np.ndarray):
+                        dv = np.array([v.encode("utf-8") for v in dv])
+                    elif isinstance(dv, str):
+                        dv = dv.encode("utf-8")
+                    else:
+                        raise ValueError(f"Unrecogonized type for dataset={dv}")
                 case "NX_FLOAT":
                     dv = np.array(dv).astype("float")
                 case "NX_INT":

@@ -7,6 +7,8 @@ from tavi.data.nxentry import NexusEntry
 def convert_spice_to_nexus(
     path_to_spice_folder: str,
     path_to_nexus_folder: Optional[str] = None,
+    path_to_instrument_json: Optional[str] = None,
+    path_to_sample_json: Optional[str] = None,
 ):
     """convert datafiles in spice folder into nexus entries
 
@@ -15,7 +17,11 @@ def convert_spice_to_nexus(
         will be creatred in the same parent folder as the SPICE data,
         using the defalut folder name IPTSxxxxx_INSTRU_exp0000"""
 
-    scan_dict = NexusEntry.from_spice(path_to_spice_folder)
+    scan_dict = NexusEntry.from_spice(
+        path_to_spice_folder,
+        path_to_instrument_json=path_to_instrument_json,
+        path_to_sample_json=path_to_sample_json,
+    )
     scan0001 = next(iter(scan_dict.values()))
     nexus_folder_name = scan0001["attrs"]["dataset_name"]
 
@@ -31,7 +37,11 @@ def convert_spice_to_nexus(
 
 
 if __name__ == "__main__":
+    path_to_instrument_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     path_to_spice_folder = "./test_data/exp424"
-    path_to_spice_folder = "./test_data/exp815"  # empty runs in exp815
+    # path_to_spice_folder = "./test_data/exp815"  # empty runs in exp815
     # path_to_spice_folder = "./test_data/exp813"
-    convert_spice_to_nexus(path_to_spice_folder)
+    convert_spice_to_nexus(
+        path_to_spice_folder,
+        path_to_instrument_json=path_to_instrument_json,
+    )

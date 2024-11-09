@@ -33,11 +33,17 @@ def test_plot2d():
 
     # calculate resolution ellipses
     R0 = False
-    hkl_list = [(qh, qh, 3) for qh in np.arange(-0.5, 0.1, 0.05)]
+    hkl_list = [(qh, qh, 3) for qh in np.arange(-0.5, 0.15, 0.05)]
     ef = 4.8
     ei_list = [e + ef for e in np.arange(0, 4.1, 0.4)]
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez_list = tas.cooper_nathans(hkl_list=hkl_list, ei=ei_list, ef=ef, projection=projection, R0=R0)
+    rez_list = tas.cooper_nathans(
+        hkl_list=hkl_list,
+        ei=ei_list,
+        ef=ef,
+        projection=projection,
+        R0=R0,
+    )
 
     # genreate plot
     p = Plot2D()
@@ -50,7 +56,7 @@ def test_plot2d():
         p.add_reso(e_inco, c="k", linestyle="dashed")
 
     fig = plt.figure()
-    ax = fig.add_subplot(111, axes_class=Axes, grid_helper=p.grid_helper)
+    ax = fig.add_subplot(111, axes_class=Axes)
 
     im = p.plot(ax)
     fig.colorbar(im, ax=ax)

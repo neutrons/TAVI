@@ -274,7 +274,11 @@ class ResoEllipsoid(object):
                 p.add_reso(ellipse_co, c="k", linestyle="solid")
                 p.add_reso(ellipse_inco, c="k", linestyle="dashed")
 
-            ax = fig.add_subplot(int(f"23{i+1}"), axes_class=Axes, grid_helper=p.grid_helper)
+            ax = fig.add_subplot(
+                int(f"23{i+1}"),
+                axes_class=Axes,
+                grid_helper=p.grid_helper(ellipse_co.angle),
+            )
             p.plot(ax)
 
         fig.tight_layout(pad=2)
