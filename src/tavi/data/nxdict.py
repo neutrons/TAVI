@@ -28,7 +28,7 @@ def _find_val(val, grp, prefix=""):
 
 
 def _recast_type(ds, dtype):
-    if type(ds) is str:
+    if isinstance(ds, str):
         if "," in ds:  # vector
             if dtype == "NX_FLOAT":
                 dataset = np.array([float(d) for d in ds.split(",")])
@@ -39,6 +39,11 @@ def _recast_type(ds, dtype):
                 dataset = float(ds)
             else:
                 dataset = int(ds)
+    elif isinstance(ds, float | int):
+        if dtype == "NX_FLOAT":
+            dataset = float(ds)
+        else:
+            dataset = int(ds)
     else:  # expect np.ndarray
         if dtype == "NX_FLOAT":
             dataset = np.array([float(d) for d in ds])
@@ -172,9 +177,17 @@ def spice_scan_to_nxdict(
         NX_class="NXsource",
         EX_required="true",
     )
-    # TODO
-    if "source" in instrument_config_params:
-        pass
+
+    if instrument_config_params is not None:
+        if (source_params := instrument_config_params.get("source")) is not None:
+            for param, value in source_params.items():
+                match param:
+                    case "shape":
+                        nxsource.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "width" | "height":
+                        nxsource.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
+                    case _:
+                        nxsource.add_dataset(key=param, ds=NXdataset(ds=value))
 
     # ------------------------------------- monochromator ----------------------------------------
 
@@ -192,6 +205,23 @@ def spice_scan_to_nxdict(
     nxmono.add_dataset("mtrans", NXdataset(ds=spicelogs.get("mtrans"), type="NX_FLOAT"))
     nxmono.add_dataset("focal_length", NXdataset(ds=spicelogs.get("focal_length"), type="NX_FLOAT"))
 
+    if instrument_config_params is not None:
+        if (mono_params := instrument_config_params.get("monochromator")) is not None:
+            for param, value in mono_params.items():
+                match param:
+                    case "shape":
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "width" | "height" | "depth":
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
+                    case "mosaic_h" | "mosaic_v":
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="mins of arc"))
+                    case "curved_h" | "optimally_curved_h" | "curved_v" | "optimally_curved_v":
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "curvh" | "curvv":
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm^-1"))
+                    case _:
+                        nxmono.add_dataset(key=param, ds=NXdataset(ds=value))
+
     # ------------------------------------- analyzer ----------------------------------------
 
     nxana = NXentry(
@@ -208,6 +238,23 @@ def spice_scan_to_nxdict(
         nxana.add_dataset(key=f"qm{i+1}", ds=NXdataset(ds=spicelogs.get(f"qm{i+1}"), type="NX_FLOAT"))
         nxana.add_dataset(key=f"xm{i+1}", ds=NXdataset(ds=spicelogs.get(f"xm{i+1}"), type="NX_FLOAT"))
 
+    if instrument_config_params is not None:
+        if (ana_params := instrument_config_params.get("analyzer")) is not None:
+            for param, value in ana_params.items():
+                match param:
+                    case "shape":
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "width" | "height" | "depth":
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
+                    case "mosaic_h" | "mosaic_v":
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_ANGLE", units="minutes of arc"))
+                    case "curved_h" | "optimally_curved_h" | "curved_v" | "optimally_curved_v":
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "curvh" | "curvv":
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm^-1"))
+                    case _:
+                        nxana.add_dataset(key=param, ds=NXdataset(ds=value))
+
     # ------------------------------------- detector ----------------------------------------
 
     nxdet = NXentry(
@@ -215,6 +262,17 @@ def spice_scan_to_nxdict(
         NX_class="NXdetector",
         EX_required="true",
     )
+
+    if instrument_config_params is not None:
+        if (det_params := instrument_config_params.get("detector")) is not None:
+            for param, value in det_params.items():
+                match param:
+                    case "shape":
+                        nxdet.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                    case "width" | "height":
+                        nxdet.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
+                    case _:
+                        nxdet.add_dataset(key=param, ds=NXdataset(ds=value))
 
     # ------------------------------------- collimators ----------------------------------------
 
@@ -224,6 +282,31 @@ def spice_scan_to_nxdict(
         NX_class="NXcollimator",
     )
     nxcoll.add_dataset(key="divergence_x", ds=NXdataset(ds=div_x, type="NX_ANGLE", units="minutes of arc"))
+
+    if instrument_config_params is not None:
+        if (coll_params := instrument_config_params.get("collimators")) is not None:
+
+            try:
+                div_x = [
+                    coll_params["h_pre_mono"],
+                    coll_params["h_pre_sample"],
+                    coll_params["h_post_sample"],
+                    coll_params["h_post_ana"],
+                ]
+                nxcoll.add_dataset(key="divergence_x", ds=NXdataset(ds=div_x, type="NX_ANGLE", units="minutes of arc"))
+            except KeyError:
+                pass
+
+            try:
+                div_y = [
+                    coll_params["v_pre_mono"],
+                    coll_params["v_pre_sample"],
+                    coll_params["v_post_sample"],
+                    coll_params["v_post_ana"],
+                ]
+                nxcoll.add_dataset(key="divergence_y", ds=NXdataset(ds=div_y, type="NX_ANGLE", units="minutes of arc"))
+            except KeyError:
+                pass
 
     # ------------------------------------- slits ----------------------------------------
 
@@ -242,20 +325,27 @@ def spice_scan_to_nxdict(
     nxflipper.add_dataset(key="hguide", ds=NXdataset(ds=spicelogs.get("hguide"), type="NX_FLOAT"))
     nxflipper.add_dataset(key="vguide", ds=NXdataset(ds=spicelogs.get("vguide"), type="NX_FLOAT"))
 
-    # ---------------------------------------- instrument ---------------------------------------------
+    # ------------------------------------- goniometer ----------------------------------------
 
-    nxinstrument = NXentry(
-        source=nxsource,
-        monochromator=nxmono,
-        collimator=nxcoll,
-        analyser=nxana,
-        detector=nxdet,
-        slits=nxslits,
-        flipper=nxflipper,
-        name=NXdataset(ds=metadata.get("instrument"), type="NX_CHAR"),
-        NX_class="NXinstrument",
-        EX_required="true",
+    nxgoni = NXentry(
+        sense=NXdataset(ds=metadata["sense"][1], type="NX_CHAR"),
+        NX_class="NXtransformations",
     )
+    # Motor angles
+    nxgoni.add_dataset(key="s1", ds=NXdataset(ds=spicelogs.get("s1"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="s2", ds=NXdataset(ds=spicelogs.get("s2"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="sgu", ds=NXdataset(ds=spicelogs.get("sgu"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="sgl", ds=NXdataset(ds=spicelogs.get("sgl"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="stu", ds=NXdataset(ds=spicelogs.get("stu"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="stl", ds=NXdataset(ds=spicelogs.get("stl"), type="NX_FLOAT", units="degrees"))
+
+    if instrument_config_params is not None:
+        if (goni_params := instrument_config_params.get("goniometer")) is not None:
+            for param, value in goni_params.items():
+                match param:
+                    case "type":
+                        nxgoni.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+
     # ---------------------------------------- monitor ---------------------------------------------
 
     preset_type = metadata.get("preset_type")
@@ -281,6 +371,28 @@ def spice_scan_to_nxdict(
         print(f"Unrecogonized preset type {preset_type}.")
         nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")
 
+    if instrument_config_params is not None:
+        if (monitor_params := instrument_config_params.get("monitor")) is not None:
+            for param, value in monitor_params.items():
+                match param:
+                    case "shape":
+                        nxmonitor.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+
+    # ---------------------------------------- instrument ---------------------------------------------
+    nxinstrument = NXentry(
+        source=nxsource,
+        monochromator=nxmono,
+        collimator=nxcoll,
+        analyser=nxana,
+        detector=nxdet,
+        slits=nxslits,
+        flipper=nxflipper,
+        goniometer=nxgoni,
+        name=NXdataset(ds=metadata.get("instrument"), type="NX_CHAR"),
+        NX_class="NXinstrument",
+        EX_required="true",
+    )
+
     # ---------------------------------------- sample ---------------------------------------------
 
     nxsample = NXentry(
@@ -292,7 +404,6 @@ def spice_scan_to_nxdict(
         ql=NXdataset(ds=spicelogs.get("l"), type="NX_FLOAT", EX_required="true", units="r.l.u."),
         en=NXdataset(ds=spicelogs.get("e"), type="NX_FLOAT", EX_required="true", units="meV"),
         q=NXdataset(ds=spicelogs.get("q"), type="NX_FLOAT", units="Angstrom^-1"),
-        sense=NXdataset(ds=metadata["sense"][1], type="NX_CHAR"),
         NX_class="NXsample",
         EX_required="true",
     )
@@ -304,14 +415,6 @@ def spice_scan_to_nxdict(
     )
     # nxsample.add_dataset(key="ub_conf", ds=NXdataset(ds=metadata["ubconf"].split(".")[0], type="NX_CHAR"))
     nxsample.add_dataset(key="plane_normal", ds=NXdataset(ds=metadata.get("plane_normal"), type="NX_FLOAT"))
-
-    # Motor angles
-    nxsample.add_dataset(key="s1", ds=NXdataset(ds=spicelogs.get("s1"), type="NX_FLOAT", units="degrees"))
-    nxsample.add_dataset(key="s2", ds=NXdataset(ds=spicelogs.get("s2"), type="NX_FLOAT", units="degrees"))
-    nxsample.add_dataset(key="sgu", ds=NXdataset(ds=spicelogs.get("sgu"), type="NX_FLOAT", units="degrees"))
-    nxsample.add_dataset(key="sgl", ds=NXdataset(ds=spicelogs.get("sgl"), type="NX_FLOAT", units="degrees"))
-    nxsample.add_dataset(key="stu", ds=NXdataset(ds=spicelogs.get("stu"), type="NX_FLOAT", units="degrees"))
-    nxsample.add_dataset(key="stl", ds=NXdataset(ds=spicelogs.get("stl"), type="NX_FLOAT", units="degrees"))
 
     # ---------------------------------------- sample environment ---------------------------------------------
 

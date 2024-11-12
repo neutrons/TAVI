@@ -33,20 +33,21 @@ def test_h_vs_k(tas):
     plt2d = Plot2DManager()
     plt2d.rez_plot(tas, projection, q1, q2, q3, en, ef, r0)
 
-    # TODO
-    def test_1D(tas):
-        projection = ((0, 0, 1), (0, -1, 0), (2, -1, 0))
-        hkl = (0, 0, 1)
-        en = 6
 
-        ef = 13.5
-        r0 = True
+# TODO
+def test_1D(tas):
+    projection = ((0, 0, 1), (0, -1, 0), (2, -1, 0))
+    hkl = (0, 0, 1)
+    en = 6
 
-        axis = 1
+    ef = 13.5
+    r0 = True
 
-        plt1d = Plot1DManager()
-        rez = plt1d.rez_plot_1D(tas, projection, hkl, en, ef, r0, axis)
-        print(f"renorm factor R0 = {rez.r0}")
+    axis = 1
+
+    plt1d = Plot1DManager()
+    rez = plt1d.rez_plot_1D(tas, projection, hkl, en, ef, r0, axis)
+    print(f"renorm factor R0 = {rez.r0}")
 
 
 if __name__ == "__main__":

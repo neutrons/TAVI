@@ -41,7 +41,7 @@ sg2 = tavi.combine_scans(scan_list2, name="dispH (H,0,2-H) Ef=14.7 meV")
 scan_data_2 = sg2.get_data(
     axes=("qh", "en", "detector"),
     norm_to=(1, "mcu"),
-    grid=(0.025, 0.5),
+    grid=((1.0, 1.5, 0.025), 0.5),
 )
 
 p2 = Plot2D()
@@ -61,7 +61,7 @@ sg3 = tavi.combine_scans(scan_list3, name="dispH (H,0,2-H) Ef=30.5 meV")
 scan_data_3 = sg3.get_data(
     axes=("qh", "en", "detector"),
     norm_to=(1, "mcu"),
-    grid=(0.025, 0.5),
+    grid=((1.0, 1.5, 0.025), 0.5),
 )
 
 p3 = Plot2D()

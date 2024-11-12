@@ -24,8 +24,8 @@ scan2 = tavi.get_scan(("IPTS34735_HB3_exp0823", 145))
 l2 = scan2.get_data(norm_to=(1, "mcu"))
 
 p4 = Plot1D()
-p4.add_scan(l1, fmt="o")
-p4.add_scan(l2, fmt="s")
+p4.add_scan(l1, fmt="o", label="Ef=14.7 meV")
+p4.add_scan(l2, fmt="s", label="Ef=30.5 meV")
 fig, ax = plt.subplots()
 p4.plot(ax)
 

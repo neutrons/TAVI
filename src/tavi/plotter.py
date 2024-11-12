@@ -55,15 +55,9 @@ class Plot1D(object):
     def plot(self, ax):
         for data in self.scan_data:
             if data.err is None:
-                if not data.label:
-                    ax.plot(data.x, data.y, **data.fmt)
-                else:
-                    ax.plot(data.x, data.y, label=data.label, **data.fmt)
+                ax.plot(data.x, data.y, **data.fmt)
             else:
-                if not data.label:
-                    ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
-                else:
-                    ax.errorbar(x=data.x, y=data.y, yerr=data.err, label=data.label, **data.fmt)
+                ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -77,13 +71,13 @@ class Plot1D(object):
             xlabels = []
             for data in self.scan_data:
                 xlabels.append(data.xlabel)
-            ax.set_xlabel(",".join(xlabels))
+            ax.set_xlabel(",".join(set(xlabels)))
 
         if self.ylabel is None:
             ylabels = []
             for data in self.scan_data:
                 ylabels.append(data.ylabel)
-            ax.set_ylabel(",".join(ylabels))
+            ax.set_ylabel(",".join(set(ylabels)))
 
         ax.grid(alpha=0.6)
         for data in self.scan_data:
