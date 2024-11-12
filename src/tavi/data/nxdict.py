@@ -44,11 +44,16 @@ def _recast_type(ds, dtype):
             dataset = float(ds)
         else:
             dataset = int(ds)
-    else:  # expect np.ndarray
+    elif isinstance(ds, np.ndarray) or isinstance(ds, list):
+        ds = np.array(ds)
+        sz = np.shape(ds)
         if dtype == "NX_FLOAT":
-            dataset = np.array([float(d) for d in ds])
+            dataset = np.array([float(d) for d in ds.flat])
         else:
-            dataset = np.array([int(d) for d in ds])
+            dataset = np.array([int(d) for d in ds.flat])
+        dataset = dataset.reshape(sz)
+    else:
+        raise TypeError(f"dataset={ds} has unrecogonized type {type(ds)}")
     return dataset
 
 
@@ -134,7 +139,6 @@ def _formatted_spicelogs(spicelogs: dict) -> NXentry:
     return formatted_spicelogs
 
 
-# TODO json support
 def spice_scan_to_nxdict(
     path_to_scan_file: str,
     path_to_instrument_json: Optional[str] = None,
@@ -166,6 +170,7 @@ def spice_scan_to_nxdict(
     spicelogs = _create_spicelogs(path_to_scan_file)
     metadata = spicelogs["metadata"]
     # ---------------------------------------- user ----------------------------------------
+
     nxuser = NXentry(NX_class="NXuser")
     nxuser.add_dataset("name", NXdataset(ds=metadata["users"].split(","), type="NX_CHAR"))
 
@@ -430,6 +435,25 @@ def spice_scan_to_nxdict(
     field_str = ("persistent_field", "mag_i")
     for fi in field_str:
         nxsample.add_dataset(key=fi, ds=NXdataset(ds=spicelogs.get(fi), type="NX_FLOAT", units="Tesla"))
+
+    if sample_config_params is not None:
+        for param, value in sample_config_params.items():
+            match param:
+                case "a" | "b" | "c" | "alpha" | "beta" | "gamma":
+                    pass
+                case "shape":
+                    nxsample.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_CHAR"))
+                case "width" | "height" | "depth" | "plane_normal" | "in_plane_ref":
+                    nxsample.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
+                case "mosaic_h" | "mosaic_v":
+                    nxsample.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_ANGLE", units="minutes of arc"))
+                case "ub_matrix":
+                    nxsample.add_dataset(
+                        key="orientation_matrix", ds=NXdataset(ds=np.reshape(np.array(value), (3, 3)), type="NX_FLOAT")
+                    )
+                case _:
+                    nxsample.add_dataset(key=param, ds=NXdataset(ds=value))
+
     # ---------------------------------------- data ---------------------------------------------
     nexus_keywork_conversion_dict = {"h": "qh", "k": "qk", "l": "ql", "e": "en"}
     def_x = metadata.get("def_x")

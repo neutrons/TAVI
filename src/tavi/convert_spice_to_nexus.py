@@ -38,10 +38,12 @@ def convert_spice_to_nexus(
 
 if __name__ == "__main__":
     path_to_instrument_json = "./src/tavi/instrument/instrument_params/cg4c.json"
-    path_to_spice_folder = "./test_data/exp424"
+    path_to_sample_json = "./test_data/test_samples/nitio3.json"
+    path_to_spice_folder_exp424 = "./test_data/exp424"
     # path_to_spice_folder = "./test_data/exp815"  # empty runs in exp815
     # path_to_spice_folder = "./test_data/exp813"
     convert_spice_to_nexus(
-        path_to_spice_folder,
+        path_to_spice_folder_exp424,
         path_to_instrument_json=path_to_instrument_json,
+        path_to_sample_json=path_to_sample_json,
     )
