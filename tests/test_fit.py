@@ -1,28 +1,83 @@
 # -*- coding: utf-8 -*
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit.models import ConstantModel, GaussianModel
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
+from tavi.plotter import Plot1D
 
 
-def test_fit_single_peak():
+def test_fit_single_peak_external_model():
 
-    nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    _, s1 = Scan.from_nexus_file(nexus_file_name)
+    path_to_spice_folder = "./test_data/exp424"
+    scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
 
-    plot1d = s1.generate_curve(norm_channel="mcu", norm_val=30)
-    f1 = Fit1D(plot1d)
-    f1.set_range(0.5, 4.0)
-    f1.add_background(values=(0.7,))
-    f1.add_signal(values=(None, 3.5, None), vary=(True, True, True))
-    f1.perform_fit()
-    assert np.allclose(f1.result.params["s1_center"].value, 3.54, atol=0.01)
-    assert np.allclose(f1.result.params["s1_fwhm"].value, 0.39, atol=0.01)
+    s1_scan = scan42.get_data(norm_channel="mcu", norm_val=30)
+    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    bkg = ConstantModel(prefix="bkg_", nan_policy="propagate")
+    peak = GaussianModel(prefix="peak_", nan_policy="propagate")
+    model = peak + bkg
+    pars = peak.guess(f1.y, x=f1.x)
+    pars += bkg.make_params(c=0)
+    out = model.fit(f1.y, pars, x=f1.x, weight=f1.err)
+
+    assert np.allclose(out.values["peak_center"], 3.54, atol=0.01)
+    assert np.allclose(out.values["peak_fwhm"], 0.39, atol=0.01)
+    assert np.allclose(out.redchi, 10.012, atol=0.01)
+
+    # p1 = Plot1D()
+    # p1.add_scan(s1_scan, fmt="o")
+    # fig, ax = plt.subplots()
+    # p1.plot(ax)
+    # ax.plot(f1.x, out.best_fit)
+    # plt.show()
+
+    # f1.add_background(model="Constant", values=(0.7,))
+    # f1.add_signal(values=(None, 3.5, None), vary=(True, True, True))
+    # f1.perform_fit()
+
+    # fig, ax = plt.subplots()
+    # plot1d.plot_curve(ax)
+    # f1.fit_plot.plot_curve(ax)
+    # plt.show()
+
+
+def test_fit_single_peak_internal_model():
+
+    path_to_spice_folder = "./test_data/exp424"
+    scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
+
+    s1_scan = scan42.get_data(norm_channel="mcu", norm_val=30)
+    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    bkg = ConstantModel(prefix="bkg_", nan_policy="propagate")
+    peak = GaussianModel(prefix="peak_", nan_policy="propagate")
+    model = peak + bkg
+    pars = peak.guess(f1.y, x=f1.x)
+    pars += bkg.make_params(c=0)
+    out = model.fit(f1.y, pars, x=f1.x, weight=f1.err)
+
+    assert np.allclose(out.values["peak_center"], 3.54, atol=0.01)
+    assert np.allclose(out.values["peak_fwhm"], 0.39, atol=0.01)
+    assert np.allclose(out.redchi, 10.012, atol=0.01)
+
+    p1 = Plot1D()
+    p1.add_scan(s1_scan, fmt="o")
     fig, ax = plt.subplots()
-    plot1d.plot_curve(ax)
-    f1.fit_plot.plot_curve(ax)
+    p1.plot(ax)
+    ax.plot(f1.x, out.best_fit)
     plt.show()
+
+    # f1.add_background(model="Constant", values=(0.7,))
+    # f1.add_signal(values=(None, 3.5, None), vary=(True, True, True))
+    # f1.perform_fit()
+
+    # fig, ax = plt.subplots()
+    # plot1d.plot_curve(ax)
+    # f1.fit_plot.plot_curve(ax)
+    # plt.show()
 
 
 def test_fit_two_peak():
@@ -49,4 +104,35 @@ def test_fit_two_peak():
     fig, ax = plt.subplots()
     plot1d.plot_curve(ax)
     f1.fit_plot.plot_curve(ax)
+    plt.show()
+
+
+def test_plot_fit():
+    path_to_spice_folder = "./test_data/exp424"
+    scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
+
+    s1_scan = scan42.get_data(norm_channel="mcu", norm_val=30)
+    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    bkg = ConstantModel(prefix="bkg_", nan_policy="propagate")
+    peak = GaussianModel(prefix="peak_", nan_policy="propagate")
+    model = peak + bkg
+    pars = peak.guess(f1.y, x=f1.x)
+    pars += bkg.make_params(c=0)
+    out = model.fit(f1.y, pars, x=f1.x, weight=f1.err)
+
+    assert np.allclose(out.values["peak_center"], 3.54, atol=0.01)
+    assert np.allclose(out.values["peak_fwhm"], 0.39, atol=0.01)
+    assert np.allclose(out.redchi, 10.012, atol=0.01)
+
+    comps = out.eval_components(x=f1.x)
+
+    p1 = Plot1D()
+    p1.add_scan(s1_scan, fmt="o")
+    fig, ax = plt.subplots()
+    p1.plot(ax)
+    ax.plot(f1.x, out.best_fit, label="peak+bkg")
+    ax.plot(f1.x, comps["peak_"], label="peak")
+    ax.plot(f1.x, comps["bkg_"], label="bkg")
+    ax.legend()
     plt.show()

@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 from lmfit import Parameters, models
 
+from tavi.data.scan_data import ScanData1D
 from tavi.plotter import Plot1D
 
 
@@ -10,7 +11,8 @@ class Fit1D(object):
     """Fit a 1d curve
 
     Attributes:
-        NUM_PTS (int): number of points for the fit curve"""
+
+    """
 
     models = {
         # ---------- peak models ---------------
@@ -32,31 +34,38 @@ class Fit1D(object):
         "Spline": models.SplineModel,
     }
 
-    def __init__(self, plot1d: Plot1D):
-        """initialize a fit model"""
+    def __init__(
+        self,
+        data: ScanData1D,
+        fit_range: Optional[tuple[float, float]] = None,
+    ):
+        """initialize a fit model, mask based on fit_range if given"""
+
         self.NUM_PTS: int = 100
-        self.x = plot1d.x
-        self.y = plot1d.y
-        self.yerr = plot1d.yerr
+        self.x: np.ndarray = data.x
+        self.y: np.ndarray = data.y
+        self.err: Optional[np.ndarray] = data.err
 
         self.background_models: models = []
         self.signal_models: models = []
         self.pars = Parameters()
-        self.num_backgrounds = 0
-        self.num_signals = 0
+        self._num_backgrounds = 0
+        self._num_signals = 0
         self.fit_result = None
 
         self.PLOT_SEPARATELY = False
-        self.fit_plot: Optional[Plot1D] = None
 
-    def set_range(self, fit_min, fit_max):
+        if fit_range is not None:
+            self.set_range(fit_range)
+
+    def set_range(self, fit_range: tuple[float, float]):
         """set the range used for fitting"""
-
+        fit_min, fit_max = fit_range
         mask = np.bitwise_and(self.x >= fit_min, self.x <= fit_max)
         self.x = self.x[mask]
         self.y = self.y[mask]
-        if self.yerr is not None:
-            self.yerr = self.yerr[mask]
+        if self.err is not None:
+            self.err = self.err[mask]
 
     @property
     def x_plot(self):
@@ -64,7 +73,7 @@ class Fit1D(object):
 
     def add_background(
         self,
-        model="Constant",
+        model: Literal["Constant", "Linear", "Quadratic", "Polynomial", "Exponential", "PowerLaw"] = "Constant",
         values=None,
         vary=None,
         mins=None,
@@ -82,13 +91,14 @@ class Fit1D(object):
             fixed (tuple | None): tuple of flags
             expr (tuple| None ): constraint expressions
         """
-        self.num_backgrounds += 1
+        self._num_backgrounds += 1
 
         # add prefix if more than one background
-        if self.num_backgrounds > 1:
-            prefix = f"b{self.num_backgrounds}_"
+        if self._num_backgrounds > 1:
+            prefix = f"b{self._num_backgrounds}_"
         else:
             prefix = ""
+
         model = Fit1D.models[model](prefix=prefix, nan_policy="propagate")
         param_names = model.param_names
         # guess initials
@@ -143,8 +153,8 @@ class Fit1D(object):
             max (tuple | None): maximum
             expr (str| None ): constraint expression
         """
-        self.num_signals += 1
-        prefix = f"s{self.num_signals}_"
+        self._num_signals += 1
+        prefix = f"s{self._num_signals}_"
         model = Fit1D.models[model](prefix=prefix, nan_policy="propagate")
         param_names = model.param_names
         # guess initials
@@ -182,13 +192,13 @@ class Fit1D(object):
     def perform_fit(self) -> None:
         model = np.sum(self.signal_models)
 
-        if self.num_backgrounds > 0:
+        if self._num_backgrounds > 0:
             model += np.sum(self.background_models)
 
-        if self.yerr is None:
+        if self.err is None:
             out = model.fit(self.y, self.pars, x=self.x)
         else:
-            out = model.fit(self.y, self.pars, x=self.x, weights=self.yerr)
+            out = model.fit(self.y, self.pars, x=self.x, weights=self.err)
 
         self.result = out
         self.y_plot = model.eval(out.params, x=self.x_plot)
