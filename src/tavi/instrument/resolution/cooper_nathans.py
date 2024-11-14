@@ -224,7 +224,10 @@ class CN(TAS):
             except TypeError:
                 rez.STATUS = False
                 print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
-                return rez
+
+                rez._set_labels()
+                rez_list.append(rez)
+                continue
 
             # phi = <ki to q>, always has the oppositie sign of s2
             phi = get_angle_from_triangle(ki, q_mod, kf) * self.goniometer.sense * (-1)
@@ -256,7 +259,9 @@ class CN(TAS):
             motor_angles = self.calculate_motor_angles(peak=hkl, ei=ei, ef=ef)
             if motor_angles is None:
                 rez.STATUS = False
-                return rez
+                rez._set_labels()
+                rez_list.append(rez)
+                continue
 
             r_mat = self.goniometer.r_mat(motor_angles)
             ub_mat = self.sample.ub_mat
@@ -287,7 +292,6 @@ class CN(TAS):
                 rez.STATUS = True
 
             rez._set_labels()
-
             rez_list.append(rez)
 
         if len(rez_list) == 1:

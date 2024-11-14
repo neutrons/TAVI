@@ -194,7 +194,7 @@ class ResoEllipsoid(object):
         axes: tuple[int, int] = (0, 1),
         PROJECTION: bool = False,
         ORIGIN: bool = True,
-    ) -> ResoEllipse:
+    ) -> Optional[ResoEllipse]:
         """Gnerate a 2D ellipse by either making a cut or projection
 
         Arguments:
@@ -203,6 +203,8 @@ class ResoEllipsoid(object):
             ORIGIN: shift the center if True
 
         """
+        if not self.STATUS:
+            return None
         x_axis, y_axis = axes
         qe_list = np.concatenate((self.q, self.en), axis=None)
         # axes = np.sort(axes)

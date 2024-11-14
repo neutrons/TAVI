@@ -39,7 +39,7 @@ for scan_num in scan_list:
         rez = tas.cooper_nathans(
             ei=ei_list[i],
             ef=ef_list[i],
-            hkl=(qh_list[i], qk_list[i], ql_list[i]),
+            hkl_list=(qh_list[i], qk_list[i], ql_list[i]),
             # projection=projection,
             R0=R0,
         )
