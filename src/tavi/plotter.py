@@ -6,6 +6,7 @@ import numpy as np
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
+from tavi.data.fit import FitData1D
 from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
 
@@ -37,6 +38,7 @@ class Plot1D(object):
     def __init__(self) -> None:
         # self.ax = None
         self.scan_data: list[ScanData1D] = []
+        self.fit_data: list[FitData1D] = []
         self.title = ""
         self.xlabel = None
         self.ylabel = None
@@ -52,12 +54,19 @@ class Plot1D(object):
         for key, val in kwargs.items():
             scan_data.fmt.update({key: val})
 
+    def add_fit(self, fit_data: FitData1D, **kwargs):
+        self.fit_data.append(fit_data)
+        for key, val in kwargs.items():
+            fit_data.fmt.update({key: val})
+
     def plot(self, ax):
         for data in self.scan_data:
             if data.err is None:
                 ax.plot(data.x, data.y, **data.fmt)
             else:
                 ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
+        for fit in self.fit_data:
+            ax.plot(fit.x, fit.y, **fit.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -80,7 +89,7 @@ class Plot1D(object):
             ax.set_ylabel(",".join(set(ylabels)))
 
         ax.grid(alpha=0.6)
-        for data in self.scan_data:
+        for data in self.scan_data + self.fit_data:
             if "label" in data.fmt.keys():
                 ax.legend()
                 break

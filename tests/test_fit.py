@@ -13,19 +13,21 @@ def test_fit_single_peak_external_model():
     path_to_spice_folder = "./test_data/exp424"
     scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
 
-    s1_scan = scan42.get_data(norm_channel="mcu", norm_val=30)
+    s1_scan = scan42.get_data(norm_to=(30, "mcu"))
     f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
 
     bkg = ConstantModel(prefix="bkg_", nan_policy="propagate")
     peak = GaussianModel(prefix="peak_", nan_policy="propagate")
     model = peak + bkg
+
     pars = peak.guess(f1.y, x=f1.x)
     pars += bkg.make_params(c=0)
+
     out = model.fit(f1.y, pars, x=f1.x, weight=f1.err)
 
     assert np.allclose(out.values["peak_center"], 3.54, atol=0.01)
     assert np.allclose(out.values["peak_fwhm"], 0.39, atol=0.01)
-    assert np.allclose(out.redchi, 10.012, atol=0.01)
+    assert np.allclose(out.redchi, 2.50, atol=0.01)
 
     # p1 = Plot1D()
     # p1.add_scan(s1_scan, fmt="o")
@@ -44,13 +46,55 @@ def test_fit_single_peak_external_model():
     # plt.show()
 
 
+def test_get_fitting_variables():
+    path_to_spice_folder = "./test_data/exp424"
+    scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
+
+    s1_scan = scan42.get_data(norm_to=(30, "mcu"))
+    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    f1.add_signal(model_name="Gaussian")
+    f1.add_background(model_name="Constant")
+
+    assert f1.get_signal_params() == [["s1_amplitude", "s1_center", "s1_sigma"]]
+    assert f1.get_background_params() == [["b1_c"]]
+
+
+def test_guess_initial():
+    path_to_spice_folder = "./test_data/exp424"
+    scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
+
+    s1_scan = scan42.get_data(norm_to=(30, "mcu"))
+    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    f1.add_signal(model_name="Gaussian")
+    f1.add_background(model_name="Constant")
+    pars = f1.guess()
+    inital = f1.eval(pars)
+    fit = f1.fit(pars)
+
+    p1 = Plot1D()
+    p1.add_scan(s1_scan, fmt="o", label="data")
+    p1.add_fit(inital, label="guess")
+    p1.add_fit(fit, label="fit")
+
+    fig, ax = plt.subplots()
+    p1.plot(ax)
+    plt.show()
+
+
 def test_fit_single_peak_internal_model():
 
     path_to_spice_folder = "./test_data/exp424"
     scan42 = Scan.from_spice(path_to_spice_folder=path_to_spice_folder, scan_num=42)
 
-    s1_scan = scan42.get_data(norm_channel="mcu", norm_val=30)
+    s1_scan = scan42.get_data(norm_to=(30, "mcu"))
     f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+
+    f1.add_background(model="Constant")
+    f1.add_signal(model_name="Gaussian")
+    f1.eval()
+    f1.fit()
 
     bkg = ConstantModel(prefix="bkg_", nan_policy="propagate")
     peak = GaussianModel(prefix="peak_", nan_policy="propagate")
@@ -91,7 +135,7 @@ def test_fit_two_peak():
     f1.add_background(values=(0.7,))
     f1.add_signal(values=(None, 3.5, 0.29), vary=(True, True, True))
     f1.add_signal(
-        model="Gaussian",
+        model_name="Gaussian",
         values=(None, 0, None),
         vary=(True, False, True),
         mins=(0, 0, 0.1),
