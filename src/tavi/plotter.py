@@ -1,8 +1,9 @@
 # import matplotlib.colors as colors
 from functools import partial
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
+from lmfit.model import ModelResult
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
@@ -54,10 +55,13 @@ class Plot1D(object):
         for key, val in kwargs.items():
             scan_data.fmt.update({key: val})
 
-    def add_fit(self, fit_data: FitData1D, **kwargs):
-        self.fit_data.append(fit_data)
-        for key, val in kwargs.items():
-            fit_data.fmt.update({key: val})
+    def add_fit(self, fit_data: Union[FitData1D, ModelResult], PLOT_COMPONENTS=False, **kwargs):
+        if PLOT_COMPONENTS:
+            pass
+        else:
+            self.fit_data.append(fit_data)
+            for key, val in kwargs.items():
+                fit_data.fmt.update({key: val})
 
     def plot(self, ax):
         for data in self.scan_data:
@@ -66,7 +70,10 @@ class Plot1D(object):
             else:
                 ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
         for fit in self.fit_data:
-            ax.plot(fit.x, fit.y, **fit.fmt)
+            if fit.PLOT_INDIVIDUALLY:
+                pass
+            else:
+                ax.plot(fit.x, fit.y, **fit.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])

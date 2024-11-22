@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 import h5py
 import numpy as np
@@ -75,7 +76,17 @@ class NXdataset(dict):
             case {"type": "NX_INT"} | {"type": "NX_FLOAT"}:
                 dataset = _recast_type(ds, kwargs["type"])
             case {"type": "NX_DATE_TIME"}:
-                dataset = datetime.strptime(ds, "%m/%d/%Y %I:%M:%S %p").isoformat()
+                dt = datetime.strptime(ds, "%m/%d/%Y %I:%M:%S %p")
+                date = datetime(
+                    dt.year,
+                    dt.month,
+                    dt.day,
+                    dt.hour,
+                    dt.minute,
+                    dt.second,
+                    tzinfo=ZoneInfo("America/New_York"),
+                )
+                dataset = date.isoformat()
             case _:
                 dataset = ds
 
@@ -464,7 +475,6 @@ def spice_scan_to_nxdict(
     nxdata = NXentry(NX_class="NXdata", EX_required="true", signal=def_y, axes=def_x)
     # ---------------------------------------- scan ---------------------------------------------
 
-    # TODO timezone
     start_date_time = "{} {}".format(metadata.get("date"), metadata.get("time"))
     # TODO what is last scan never finished?
     # if "end_time" in das_logs.attrs:

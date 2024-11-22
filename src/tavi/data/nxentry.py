@@ -256,7 +256,7 @@ class NexusEntry(dict):
 
             # Create the ATTRIBUTES
             nexus_file.attrs["file_name"] = os.path.abspath(path_to_nexus)
-            nexus_file.attrs["file_time"] = datetime.now().isoformat()
+            nexus_file.attrs["file_time"] = datetime.now().astimezone().isoformat()
             nexus_file.attrs["h5py_version"] = h5py.version.version
             nexus_file.attrs["HDF5_Version"] = h5py.version.hdf5_version
 

@@ -2,6 +2,7 @@ from typing import Literal, Optional
 
 import numpy as np
 from lmfit import Parameters, models
+from lmfit.model import ModelResult
 
 from tavi.data.scan_data import ScanData1D
 
@@ -20,7 +21,7 @@ class FitData1D(object):
 
 
 class Fit1D(object):
-    """Fit a 1d curve
+    """Fit a 1D curve
 
     Attributes:
 
@@ -50,8 +51,12 @@ class Fit1D(object):
         self,
         data: ScanData1D,
         fit_range: Optional[tuple[float, float]] = None,
+        nan_policy: Literal["raise", "propagate", "omit"] = "propagate",
+        name="",
     ):
         """initialize a fit model, mask based on fit_range if given"""
+
+        self.name = name
 
         self.x: np.ndarray = data.x
         self.y: np.ndarray = data.y
@@ -66,6 +71,7 @@ class Fit1D(object):
         self.fit_data: Optional[FitData1D] = None
 
         self.PLOT_SEPARATELY = False
+        self.nan_policy = nan_policy
 
         if fit_range is not None:
             self.set_range(fit_range)
@@ -80,41 +86,68 @@ class Fit1D(object):
             self.err = self.err[mask]
 
     @staticmethod
-    def _add_model(model, prefix):
+    def _add_model(model, prefix, nan_policy):
         model = Fit1D.models[model]
-        return model(prefix=prefix, nan_policy="propagate")
+        return model(prefix=prefix, nan_policy=nan_policy)
 
     def add_signal(
         self,
-        model_name: Literal[
-            "Gaussian", "Lorentzian", "Voigt", "PseudoVoigt", "DampedOscillator", "DampedHarmonicOscillator"
+        model: Literal[
+            "Gaussian",
+            "Lorentzian",
+            "Voigt",
+            "PseudoVoigt",
+            "DampedOscillator",
+            "DampedHarmonicOscillator",
         ],
     ):
         self._num_signals += 1
         prefix = f"s{self._num_signals}_"
-        self.signal_models.append(Fit1D._add_model(model_name, prefix))
+        self.signal_models.append(
+            Fit1D._add_model(
+                model,
+                prefix,
+                nan_policy=self.nan_policy,
+            )
+        )
 
     def add_background(
-        self, model_name: Literal["Constant", "Linear", "Quadratic", "Polynomial", "Exponential", "PowerLaw"]
+        self,
+        model: Literal[
+            "Constant",
+            "Linear",
+            "Quadratic",
+            "Polynomial",
+            "Exponential",
+            "PowerLaw",
+        ],
     ):
         self._num_backgrounds += 1
         prefix = f"b{self._num_backgrounds}_"
-        self.background_models.append(Fit1D._add_model(model_name, prefix))
+        self.background_models.append(
+            Fit1D._add_model(
+                model,
+                prefix,
+                nan_policy=self.nan_policy,
+            )
+        )
 
     @staticmethod
-    def _get_model_params(models):
+    def _get_model_params(models) -> list[list[str]]:
         params = []
         for model in models:
             params.append(model.param_names)
         return params
 
-    def get_signal_params(self):
+    @property
+    def signal_params(self) -> list[list[str]]:
         return Fit1D._get_model_params(self.signal_models)
 
-    def get_background_params(self):
+    @property
+    def background_params(self) -> list[list[str]]:
         return Fit1D._get_model_params(self.background_models)
 
-    def guess(self):
+    def guess(self) -> Parameters:
         pars = Parameters()
         for signal in self.signal_models:
             pars += signal.guess(self.y, x=self.x)
@@ -123,47 +156,28 @@ class Fit1D(object):
         self.pars = pars
         return pars
 
-    @property
-    def x_to_plot(self):
-        return
+    def _build_composite_model(self):
+        compposite_model = np.sum(self.signal_models + self.background_models)
+        return compposite_model
+
+    def _get_x_to_plot(self, num_of_pts: Optional[int]):
+        if num_of_pts is None:
+            x_to_plot = self.x
+        elif isinstance(num_of_pts, int):
+            x_to_plot = np.linspace(self.x.min(), self.x.max(), num=num_of_pts)
+        else:
+            raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
+        return x_to_plot
 
     def eval(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> FitData1D:
-        mod = self.signal_models[0]
-        if (sz := len(self.signal_models)) > 1:
-            for i in range(1, sz):
-                mod += self.signal_models[i]
+        model = self._build_composite_model()
+        x_to_plot = self._get_x_to_plot(num_of_pts)
+        y_to_plot = model.eval(pars, x=x_to_plot)
 
-        for bkg in self.background_models:
-            mod += bkg
-
-        if num_of_pts is None:
-            x_to_plot = self.x
-        elif isinstance(num_of_pts, int):
-            x_to_plot = np.linspace(self.x.min(), self.x.max(), num=num_of_pts)
-        else:
-            raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
-        y_to_plot = mod.eval(pars, x=x_to_plot)
         return FitData1D(x_to_plot, y_to_plot)
 
-    def fit(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> FitData1D:
-        mod = self.signal_models[0]
-        if (sz := len(self.signal_models)) > 1:
-            for i in range(1, sz):
-                mod += self.signal_models[i]
-
-        for bkg in self.background_models:
-            mod += bkg
-
+    def fit(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> ModelResult:
+        mod = self._build_composite_model()
         result = mod.fit(self.y, pars, x=self.x, weights=self.err)
         self.result = result
-
-        if num_of_pts is None:
-            x_to_plot = self.x
-        elif isinstance(num_of_pts, int):
-            x_to_plot = np.linspace(self.x.min(), self.x.max(), num=num_of_pts)
-        else:
-            raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
-
-        y_to_plot = mod.eval(result.params, x=x_to_plot)
-
-        return FitData1D(x_to_plot, y_to_plot)
+        return result
