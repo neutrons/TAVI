@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Literal, Optional
 
 import numpy as np
@@ -5,6 +6,24 @@ from lmfit import Parameters, models
 from lmfit.model import ModelResult
 
 from tavi.data.scan_data import ScanData1D
+
+
+@dataclass
+class FitParams:
+    name: str
+    value: Optional[float] = None
+    vary: bool = True
+    min: float = -np.inf
+    max: float = np.inf
+    expr: Optional[str] = None
+    brute_step: Optional[float] = None
+
+
+# @dataclass
+# class FitData1D:
+#     x: np.ndarray
+#     y: np.ndarray
+#     fmt: dict = {}
 
 
 class FitData1D(object):
@@ -64,13 +83,13 @@ class Fit1D(object):
 
         self.background_models: models = []
         self.signal_models: models = []
-        self.pars = Parameters()
+        self.parameters: Optional[Parameters] = None
         self._num_backgrounds = 0
         self._num_signals = 0
-        self.result = None
+        self.result: Optional[ModelResult] = None
         self.fit_data: Optional[FitData1D] = None
 
-        self.PLOT_SEPARATELY = False
+        self.PLOT_COMPONENTS = False
         self.nan_policy = nan_policy
 
         if fit_range is not None:
@@ -133,19 +152,59 @@ class Fit1D(object):
         )
 
     @staticmethod
-    def _get_model_params(models) -> list[list[str]]:
+    def _get_param_names(models) -> list[list[str]]:
         params = []
         for model in models:
             params.append(model.param_names)
         return params
 
     @property
-    def signal_params(self) -> list[list[str]]:
-        return Fit1D._get_model_params(self.signal_models)
+    def signal_param_names(self):
+        return Fit1D._get_param_names(self.signal_models)
 
     @property
-    def background_params(self) -> list[list[str]]:
-        return Fit1D._get_model_params(self.background_models)
+    def background_param_names(self):
+        return Fit1D._get_param_names(self.background_models)
+
+    @staticmethod
+    def _get_params(all_pars, parsms_names: list[list[str]]) -> tuple[tuple[FitParams, ...], ...]:
+        signal_params_list = []
+
+        for params in parsms_names:
+            params_list = []
+            for param_name in params:
+                param = all_pars[param_name]
+                params_list.append(
+                    FitParams(
+                        name=param.name,
+                        value=param.value,
+                        vary=param.vary,
+                        min=param.min,
+                        max=param.max,
+                        expr=param.expr,
+                        brute_step=param.brute_step,
+                    )
+                )
+            signal_params_list.append(tuple(params_list))
+        return tuple(signal_params_list)
+
+    @property
+    def signal_params(self) -> tuple[tuple[FitParams, ...], ...]:
+
+        pars = self.guess() if self.parameters is None else self.parameters
+        names = Fit1D._get_param_names(self.signal_models)
+        signal_params = Fit1D._get_params(pars, names)
+
+        return signal_params
+
+    @property
+    def background_params(self) -> tuple[tuple[FitParams, ...], ...]:
+
+        pars = self.guess() if self.parameters is None else self.parameters
+        names = Fit1D._get_param_names(self.background_models)
+        background_params = Fit1D._get_params(pars, names)
+
+        return background_params
 
     def guess(self) -> Parameters:
         pars = Parameters()
@@ -153,14 +212,15 @@ class Fit1D(object):
             pars += signal.guess(self.y, x=self.x)
         for bkg in self.background_models:
             pars += bkg.guess(self.y, x=self.x)
-        self.pars = pars
+        self.parameters = pars
         return pars
 
-    def _build_composite_model(self):
+    @property
+    def model(self):
         compposite_model = np.sum(self.signal_models + self.background_models)
         return compposite_model
 
-    def _get_x_to_plot(self, num_of_pts: Optional[int]):
+    def x_to_plot(self, num_of_pts: Optional[int]):
         if num_of_pts is None:
             x_to_plot = self.x
         elif isinstance(num_of_pts, int):
@@ -170,14 +230,14 @@ class Fit1D(object):
         return x_to_plot
 
     def eval(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> FitData1D:
-        model = self._build_composite_model()
-        x_to_plot = self._get_x_to_plot(num_of_pts)
-        y_to_plot = model.eval(pars, x=x_to_plot)
+
+        x_to_plot = self.x_to_plot(num_of_pts)
+        y_to_plot = self.model.eval(pars, x=x_to_plot)
 
         return FitData1D(x_to_plot, y_to_plot)
 
-    def fit(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> ModelResult:
-        mod = self._build_composite_model()
-        result = mod.fit(self.y, pars, x=self.x, weights=self.err)
+    def fit(self, pars: Parameters) -> ModelResult:
+
+        result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
         self.result = result
-        return result
+        return self

@@ -3,11 +3,10 @@ from functools import partial
 from typing import Optional, Union
 
 import numpy as np
-from lmfit.model import ModelResult
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
-from tavi.data.fit import FitData1D
+from tavi.data.fit import Fit1D, FitData1D
 from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
 
@@ -55,13 +54,37 @@ class Plot1D(object):
         for key, val in kwargs.items():
             scan_data.fmt.update({key: val})
 
-    def add_fit(self, fit_data: Union[FitData1D, ModelResult], PLOT_COMPONENTS=False, **kwargs):
-        if PLOT_COMPONENTS:
-            pass
-        else:
+    def add_fit(self, fit_data: Union[FitData1D, Fit1D], num_of_pts: Optional[int] = 100, **kwargs):
+        """
+        Note:
+            PLOT_COMPONENTS is ignored if fit_data has the type FitData1D
+        """
+        if isinstance(fit_data, FitData1D):
             self.fit_data.append(fit_data)
             for key, val in kwargs.items():
                 fit_data.fmt.update({key: val})
+        elif isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
+            x = fit_data.x_to_plot(num_of_pts)
+            data = FitData1D(x=x, y=result.eval(param=result.params, x=x))
+            self.fit_data.append(data)
+            for key, val in kwargs.items():
+                data.fmt.update({key: val})
+        else:
+            raise ValueError(f"Invalid input fit_data={fit_data}")
+
+    def add_fit_components(self, fit_data: Fit1D, num_of_pts: Optional[int] = 100, **kwargs):
+        if isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
+            x = fit_data.x_to_plot(num_of_pts)
+            components = result.eval_components(result.params, x=x)
+            for i, (prefix, y) in enumerate(components.items()):
+                data = FitData1D(x=x, y=y)
+                self.fit_data.append(data)
+                data.fmt.update({"label": prefix[:-1]})
+                for key, val in kwargs.items():
+                    data.fmt.update({key: val[i]})
+
+        else:
+            raise ValueError(f"Invalid input fit_data={fit_data}")
 
     def plot(self, ax):
         for data in self.scan_data:
@@ -70,10 +93,7 @@ class Plot1D(object):
             else:
                 ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
         for fit in self.fit_data:
-            if fit.PLOT_INDIVIDUALLY:
-                pass
-            else:
-                ax.plot(fit.x, fit.y, **fit.fmt)
+            ax.plot(fit.x, fit.y, **fit.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
