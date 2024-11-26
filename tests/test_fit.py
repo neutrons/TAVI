@@ -58,16 +58,17 @@ def test_get_fitting_variables(fit_data):
     assert f1.signal_param_names == [["s1_amplitude", "s1_center", "s1_sigma"]]
     assert f1.background_param_names == [["b1_c"]]
 
-    assert len(f1.signal_params) == 1
-    assert len(f1.signal_params[0]) == 5
+    assert len(f1.params) == 2
 
-    assert f1.signal_params[0][0].name == "s1_amplitude"
-    assert f1.signal_params[0][1].name == "s1_center"
-    assert f1.signal_params[0][2].name == "s1_sigma"
-    assert f1.signal_params[0][3].name == "s1_fwhm"
-    assert f1.signal_params[0][4].name == "s1_height"
-    assert f1.signal_params[0][4].expr == "0.3989423*s1_amplitude/max(1e-15, s1_sigma)"
-    assert f1.background_params[0][0].name == "b1_c"
+    s1_params = f1.params["s1"]
+    assert len(s1_params) == 5
+    assert s1_params[0].name == "s1_amplitude"
+    assert s1_params[1].name == "s1_center"
+    assert s1_params[2].name == "s1_sigma"
+    assert s1_params[3].name == "s1_fwhm"
+    assert s1_params[4].name == "s1_height"
+    assert s1_params[4].expr == "0.3989423*s1_amplitude/max(1e-15, s1_sigma)"
+    assert f1.params["b1"][0].name == "b1_c"
 
 
 def test_guess_initial(fit_data):
@@ -117,9 +118,9 @@ def test_fit_two_peak(fit_data):
 
     s1_scan, PLOT = fit_data
 
-    f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0))
+    f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")
 
-    f1.add_background(values=(0.7,))
+    f1.add_background(model="Constant")
     f1.add_signal(values=(None, 3.5, 0.29), vary=(True, True, True))
     f1.add_signal(
         model="Gaussian",

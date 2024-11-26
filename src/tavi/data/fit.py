@@ -83,7 +83,7 @@ class Fit1D(object):
 
         self.background_models: models = []
         self.signal_models: models = []
-        self.parameters: Optional[Parameters] = None
+        self._parameters: Optional[Parameters] = None
         self._num_backgrounds = 0
         self._num_signals = 0
         self.result: Optional[ModelResult] = None
@@ -122,13 +122,7 @@ class Fit1D(object):
     ):
         self._num_signals += 1
         prefix = f"s{self._num_signals}_"
-        self.signal_models.append(
-            Fit1D._add_model(
-                model,
-                prefix,
-                nan_policy=self.nan_policy,
-            )
-        )
+        self.signal_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
 
     def add_background(
         self,
@@ -143,13 +137,7 @@ class Fit1D(object):
     ):
         self._num_backgrounds += 1
         prefix = f"b{self._num_backgrounds}_"
-        self.background_models.append(
-            Fit1D._add_model(
-                model,
-                prefix,
-                nan_policy=self.nan_policy,
-            )
-        )
+        self.background_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
 
     @staticmethod
     def _get_param_names(models) -> list[list[str]]:
@@ -166,11 +154,15 @@ class Fit1D(object):
     def background_param_names(self):
         return Fit1D._get_param_names(self.background_models)
 
-    @staticmethod
-    def _get_params(all_pars, parsms_names: list[list[str]]) -> tuple[tuple[FitParams, ...], ...]:
-        signal_params_list = []
+    @property
+    def params(self) -> dict[str, tuple[FitParams, ...]]:
+
+        all_pars = self.guess() if self._parameters is None else self._parameters
+        parsms_names = Fit1D._get_param_names(self.signal_models + self.background_models)
+        params_dict = {}
 
         for params in parsms_names:
+            key = params[0].split("_")[0]
             params_list = []
             for param_name in params:
                 param = all_pars[param_name]
@@ -185,26 +177,9 @@ class Fit1D(object):
                         brute_step=param.brute_step,
                     )
                 )
-            signal_params_list.append(tuple(params_list))
-        return tuple(signal_params_list)
+            params_dict.update({key: tuple(params_list)})
 
-    @property
-    def signal_params(self) -> tuple[tuple[FitParams, ...], ...]:
-
-        pars = self.guess() if self.parameters is None else self.parameters
-        names = Fit1D._get_param_names(self.signal_models)
-        signal_params = Fit1D._get_params(pars, names)
-
-        return signal_params
-
-    @property
-    def background_params(self) -> tuple[tuple[FitParams, ...], ...]:
-
-        pars = self.guess() if self.parameters is None else self.parameters
-        names = Fit1D._get_param_names(self.background_models)
-        background_params = Fit1D._get_params(pars, names)
-
-        return background_params
+        return params_dict
 
     def guess(self) -> Parameters:
         pars = Parameters()
@@ -212,7 +187,7 @@ class Fit1D(object):
             pars += signal.guess(self.y, x=self.x)
         for bkg in self.background_models:
             pars += bkg.guess(self.y, x=self.x)
-        self.parameters = pars
+        self._parameters = pars
         return pars
 
     @property
