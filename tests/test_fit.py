@@ -102,12 +102,13 @@ def test_fit_single_peak_internal_model(fit_data):
     f1.add_background(model="Constant")
     pars = f1.guess()
     fit_result = f1.fit(pars)
+    assert np.allclose(fit_result.redchi, 37.6, atol=1)
 
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
-        p1.add_fit(fit_result, label="fit", color="C3", num_of_pts=50, marker="^")
-        p1.add_fit_components(fit_result, color=["C4", "C5"])
+        p1.add_fit(f1, label="fit", color="C3", num_of_pts=50, marker="^")
+        p1.add_fit_components(f1, color=["C4", "C5"])
 
         fig, ax = plt.subplots()
         p1.plot(ax)
@@ -121,6 +122,8 @@ def test_fit_two_peak(fit_data):
     f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")
 
     f1.add_background(model="Constant")
+    f1.add_signal(model="Gaussian")
+
     f1.add_signal(values=(None, 3.5, 0.29), vary=(True, True, True))
     f1.add_signal(
         model="Gaussian",

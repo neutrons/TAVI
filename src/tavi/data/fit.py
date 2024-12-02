@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Literal, Optional
 
 import numpy as np
@@ -7,16 +6,17 @@ from lmfit.model import ModelResult
 
 from tavi.data.scan_data import ScanData1D
 
+# @dataclass
+# class FitParam:
+#     name: str
+#     value: Optional[float] = None
+#     vary: bool = True
+#     min: float = -np.inf
+#     max: float = np.inf
+#     expr: Optional[str] = None
 
-@dataclass
-class FitParams:
-    name: str
-    value: Optional[float] = None
-    vary: bool = True
-    min: float = -np.inf
-    max: float = np.inf
-    expr: Optional[str] = None
-    brute_step: Optional[float] = None
+
+# brute_step: Optional[float] = None
 
 
 # @dataclass
@@ -28,11 +28,7 @@ class FitParams:
 
 class FitData1D(object):
 
-    def __init__(
-        self,
-        x: np.ndarray,
-        y: np.ndarray,
-    ) -> None:
+    def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
 
         self.x = x
         self.y = y
@@ -81,8 +77,8 @@ class Fit1D(object):
         self.y: np.ndarray = data.y
         self.err: Optional[np.ndarray] = data.err
 
-        self.background_models: models = []
-        self.signal_models: models = []
+        self._background_models: models = []
+        self._signal_models: models = []
         self._parameters: Optional[Parameters] = None
         self._num_backgrounds = 0
         self._num_signals = 0
@@ -122,7 +118,7 @@ class Fit1D(object):
     ):
         self._num_signals += 1
         prefix = f"s{self._num_signals}_"
-        self.signal_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
+        self._signal_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
 
     def add_background(
         self,
@@ -137,7 +133,7 @@ class Fit1D(object):
     ):
         self._num_backgrounds += 1
         prefix = f"b{self._num_backgrounds}_"
-        self.background_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
+        self._background_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
 
     @staticmethod
     def _get_param_names(models) -> list[list[str]]:
@@ -148,51 +144,62 @@ class Fit1D(object):
 
     @property
     def signal_param_names(self):
-        return Fit1D._get_param_names(self.signal_models)
+        """Get parameter names of all signals"""
+        return Fit1D._get_param_names(self._signal_models)
 
     @property
     def background_param_names(self):
-        return Fit1D._get_param_names(self.background_models)
+        """Get parameter names of all backgrounds"""
+        return Fit1D._get_param_names(self._background_models)
 
+    # TODO
     @property
-    def params(self) -> dict[str, tuple[FitParams, ...]]:
+    def params(self) -> dict[str, dict]:
+        """Get fitting parameters as a dictionary with the model prefix being the key"""
 
         all_pars = self.guess() if self._parameters is None else self._parameters
-        parsms_names = Fit1D._get_param_names(self.signal_models + self.background_models)
-        params_dict = {}
+        params_names = Fit1D._get_param_names(self._signal_models + self._background_models)
 
-        for params in parsms_names:
-            key = params[0].split("_")[0]
-            params_list = []
-            for param_name in params:
+        params_dict = {}
+        for names in params_names:
+            if len(names) < 1:
+                raise ValueError(f"Should have at least 1 parameter in {names}.")
+            prefix, _ = names[0].split("_")
+            param_dict = {}
+            for param_name in names:
                 param = all_pars[param_name]
-                params_list.append(
-                    FitParams(
-                        name=param.name,
-                        value=param.value,
-                        vary=param.vary,
-                        min=param.min,
-                        max=param.max,
-                        expr=param.expr,
-                        brute_step=param.brute_step,
-                    )
+                param_dict.update(
+                    {
+                        "name": param.name,
+                        "value": param.value,
+                        "vary": param.vary,
+                        "min": param.min,
+                        "max": param.max,
+                        "expr": param.expr,
+                    }
                 )
-            params_dict.update({key: tuple(params_list)})
+
+            params_dict.update({prefix: param_dict})
 
         return params_dict
 
     def guess(self) -> Parameters:
+        """Guess fitting parameters' values
+        Reutrn:
+            Parameters class in LMFIT"""
+
         pars = Parameters()
-        for signal in self.signal_models:
+        for signal in self._signal_models:
             pars += signal.guess(self.y, x=self.x)
-        for bkg in self.background_models:
+        for bkg in self._background_models:
             pars += bkg.guess(self.y, x=self.x)
         self._parameters = pars
         return pars
 
     @property
     def model(self):
-        compposite_model = np.sum(self.signal_models + self.background_models)
+        """Return the  composite model of all singals and backgrounds"""
+        compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 
     def x_to_plot(self, num_of_pts: Optional[int]):
@@ -215,4 +222,4 @@ class Fit1D(object):
 
         result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
         self.result = result
-        return self
+        return result

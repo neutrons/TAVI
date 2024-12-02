@@ -54,21 +54,25 @@ class Plot1D(object):
         for key, val in kwargs.items():
             scan_data.fmt.update({key: val})
 
+    def _add_fit_from_eval(self, fit_data: FitData1D, **kwargs):
+        self.fit_data.append(fit_data)
+        for key, val in kwargs.items():
+            fit_data.fmt.update({key: val})
+
+    def _add_fit_from_fitting(self, fit_data: Fit1D, num_of_pts: Optional[int] = 100, **kwargs):
+        if (result := fit_data.result) is None:
+            raise ValueError("Fitting result is None.")
+        x = fit_data.x_to_plot(num_of_pts)
+        data = FitData1D(x=x, y=result.eval(param=result.params, x=x))
+        self.fit_data.append(data)
+        for key, val in kwargs.items():
+            data.fmt.update({key: val})
+
     def add_fit(self, fit_data: Union[FitData1D, Fit1D], num_of_pts: Optional[int] = 100, **kwargs):
-        """
-        Note:
-            PLOT_COMPONENTS is ignored if fit_data has the type FitData1D
-        """
         if isinstance(fit_data, FitData1D):
-            self.fit_data.append(fit_data)
-            for key, val in kwargs.items():
-                fit_data.fmt.update({key: val})
-        elif isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
-            x = fit_data.x_to_plot(num_of_pts)
-            data = FitData1D(x=x, y=result.eval(param=result.params, x=x))
-            self.fit_data.append(data)
-            for key, val in kwargs.items():
-                data.fmt.update({key: val})
+            self._add_fit_from_eval(fit_data, **kwargs)
+        elif isinstance(fit_data, Fit1D):
+            self._add_fit_from_fitting(fit_data, num_of_pts, **kwargs)
         else:
             raise ValueError(f"Invalid input fit_data={fit_data}")
 
@@ -76,10 +80,18 @@ class Plot1D(object):
         if isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
             x = fit_data.x_to_plot(num_of_pts)
             components = result.eval_components(result.params, x=x)
+
+            num_components = len(components)
+            for k, v in kwargs.items():
+                if len(v) != num_components:
+                    raise ValueError(
+                        f"Length of key word argument {k}={v} dose not match the number of fitting models."
+                    )
+
             for i, (prefix, y) in enumerate(components.items()):
                 data = FitData1D(x=x, y=y)
                 self.fit_data.append(data)
-                data.fmt.update({"label": prefix[:-1]})
+                data.fmt.update({"label": prefix[:-1]})  # remove "_"
                 for key, val in kwargs.items():
                     data.fmt.update({key: val[i]})
 
@@ -92,6 +104,7 @@ class Plot1D(object):
                 ax.plot(data.x, data.y, **data.fmt)
             else:
                 ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
+
         for fit in self.fit_data:
             ax.plot(fit.x, fit.y, **fit.fmt)
 
