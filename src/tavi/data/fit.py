@@ -27,9 +27,7 @@ from tavi.data.scan_data import ScanData1D
 
 
 class FitData1D(object):
-
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
-
         self.x = x
         self.y = y
         self.fmt: dict = {}
@@ -212,14 +210,12 @@ class Fit1D(object):
         return x_to_plot
 
     def eval(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> FitData1D:
-
         x_to_plot = self.x_to_plot(num_of_pts)
         y_to_plot = self.model.eval(pars, x=x_to_plot)
 
         return FitData1D(x_to_plot, y_to_plot)
 
     def fit(self, pars: Parameters) -> ModelResult:
-
         result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
         self.result = result
         return result

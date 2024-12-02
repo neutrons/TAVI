@@ -301,7 +301,6 @@ def spice_scan_to_nxdict(
 
     if instrument_config_params is not None:
         if (coll_params := instrument_config_params.get("collimators")) is not None:
-
             try:
                 div_x = [
                     coll_params["h_pre_mono"],
