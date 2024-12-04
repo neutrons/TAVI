@@ -11,6 +11,14 @@ from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
 
 
+class ResoBar(object):
+    def __init__(self, pos: tuple[float, float], fwhm: float) -> None:
+
+        self.pos = pos
+        self.fwhm = fwhm
+        self.fmt: dict = {}
+
+
 def tr(x, y, angle):
     x, y = np.asarray(x), np.asarray(y)
     return x + y / np.tan(angle / 180 * np.pi), y
@@ -39,6 +47,7 @@ class Plot1D(object):
         # self.ax = None
         self.scan_data: list[ScanData1D] = []
         self.fit_data: list[FitData1D] = []
+        self.reso_data: list[ResoBar] = []
         self.title = ""
         self.xlabel = None
         self.ylabel = None
@@ -98,6 +107,12 @@ class Plot1D(object):
         else:
             raise ValueError(f"Invalid input fit_data={fit_data}")
 
+    def add_reso_bar(self, pos: tuple, fwhm: float, **kwargs):
+        reso_data = ResoBar(pos, fwhm)
+        for key, val in kwargs.items():
+            reso_data.fmt.update({key: val})
+        self.reso_data.append(reso_data)
+
     def plot(self, ax):
         for data in self.scan_data:
             if data.err is None:
@@ -107,6 +122,12 @@ class Plot1D(object):
 
         for fit in self.fit_data:
             ax.plot(fit.x, fit.y, **fit.fmt)
+
+        for reso in self.reso_data:
+            x, y = reso.pos
+            if "capsize" not in reso.fmt:
+                reso.fmt.update({"capsize": 3})
+            ax.errorbar(x, y, xerr=reso.fwhm / 2, **reso.fmt)
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])

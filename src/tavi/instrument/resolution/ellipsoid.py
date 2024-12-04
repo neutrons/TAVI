@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axisartist import Axes
 
-from tavi.instrument.resolution.curve import ResoCurve
 from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
 from tavi.sample.xtal import Xtal
@@ -121,25 +120,11 @@ class ResoEllipsoid(object):
 
     def coh_fwhms(self, axis=None):
         """Coherent FWHM"""
-
-        curve = ResoCurve()
         idx = int(axis)
-        curve.fwhm = np.array(sig2fwhm / np.sqrt(self.mat[idx, idx]))
-        if idx == 3:
-            curve.cen = self.en
-        else:
-            curve.cen = self.q[idx]
-
-        curve.r0 = self.r0
-        curve.xlabel = self.axes_labels[idx]
-        curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
-        curve.legend = f"coherent FWHM={np.round(curve.fwhm, 3)}"
-        return curve
+        return sig2fwhm / np.sqrt(self.mat[idx, idx])
 
     def incoh_fwhms(self, axis=None):
         """Incoherent FWHMs"""
-
-        curve = ResoCurve()
         idx = int(axis)
 
         reso = self.mat
@@ -147,17 +132,47 @@ class ResoEllipsoid(object):
             if not i == idx:
                 reso = ResoEllipsoid.quadric_proj(reso, i)
 
-        curve.fwhm = (1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm,)
-        if idx == 3:
-            curve.cen = self.en
-        else:
-            curve.cen = self.q[idx]
+        return 1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm
 
-        curve.r0 = self.r0
-        curve.xlabel = self.axes_labels[idx]
-        curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
-        curve.legend = f"incoherent FWHM={np.round(curve.fwhm , 3)}"
-        return curve
+    # def coh_fwhms(self, axis=None):
+    #     """Coherent FWHM"""
+
+    #     curve = ResoCurve()
+    #     idx = int(axis)
+    #     curve.fwhm = np.array(sig2fwhm / np.sqrt(self.mat[idx, idx]))
+    #     if idx == 3:
+    #         curve.cen = self.en
+    #     else:
+    #         curve.cen = self.q[idx]
+
+    #     curve.r0 = self.r0
+    #     curve.xlabel = self.axes_labels[idx]
+    #     curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
+    #     curve.legend = f"coherent FWHM={np.round(curve.fwhm, 3)}"
+    #     return curve
+
+    # def incoh_fwhms(self, axis=None):
+    #     """Incoherent FWHMs"""
+
+    #     curve = ResoCurve()
+    #     idx = int(axis)
+
+    #     reso = self.mat
+    #     for i in (3, 2, 1, 0):
+    #         if not i == idx:
+    #             reso = ResoEllipsoid.quadric_proj(reso, i)
+
+    #     curve.fwhm = (1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm,)
+    #     if idx == 3:
+    #         curve.cen = self.en
+    #     else:
+    #         curve.cen = self.q[idx]
+
+    #     curve.r0 = self.r0
+    #     curve.xlabel = self.axes_labels[idx]
+    #     curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
+    #     curve.legend = f"incoherent FWHM={np.round(curve.fwhm , 3)}"
+    #     return curve
 
     # def principal_fwhms_calc(self):
     #     """FWHMs of principal axes in 4D"""
@@ -283,4 +298,5 @@ class ResoEllipsoid(object):
             )
             p.plot(ax)
 
+        fig.suptitle(f"Q={self.hkl}")
         fig.tight_layout(pad=2)

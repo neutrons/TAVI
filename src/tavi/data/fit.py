@@ -211,12 +211,18 @@ class Fit1D(object):
             raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
         return x_to_plot
 
-    def eval(self, pars: Parameters, num_of_pts: Optional[int] = 100) -> FitData1D:
+    def eval(self, pars: Optional[Parameters], num_of_pts: Optional[int] = 100, x=None) -> FitData1D:
+        if pars is None:
+            pars = self.result.params
 
-        x_to_plot = self.x_to_plot(num_of_pts)
-        y_to_plot = self.model.eval(pars, x=x_to_plot)
+        if x is not None:
+            return self.model.eval(pars, x=x)
 
-        return FitData1D(x_to_plot, y_to_plot)
+        else:
+            x_to_plot = self.x_to_plot(num_of_pts)
+            y_to_plot = self.model.eval(pars, x=x_to_plot)
+
+            return FitData1D(x_to_plot, y_to_plot)
 
     def fit(self, pars: Parameters) -> ModelResult:
 
