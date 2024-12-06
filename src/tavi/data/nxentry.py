@@ -322,6 +322,7 @@ class NexusEntry(dict):
                     dataset_names.append(key)
 
         dataset_names = []
+        #  num_pts = len(pts) if (pts := self.get("Pt.")) is not None else 0
         num_pts = len(self.get("Pt."))
         instru = self["instrument"]
 
