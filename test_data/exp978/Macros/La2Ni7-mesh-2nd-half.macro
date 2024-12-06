@@ -1,0 +1,29 @@
+
+ 
+br 0 0 8
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), mesh, RT"
+preset mcu 2
+loop i=-0.016, 0.016 0.0008
+scan h %i k %i l 7.58 8.42 0.03
+endloop
+
+br 0 0 14
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), mesh, RT"
+preset mcu 2
+loop i=-0.0322, 0.0322 0.0014
+scan h %i k %i l 13.52 14.48 0.03
+endloop
+
+br 0 0 16
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), mesh, RT"
+preset mcu 2
+loop i=-0.04, 0.04 0.004
+scan h %i k %i l 15.6 16.4 0.04
+endloop
+
+br 0 0 18
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), mesh, RT"
+preset mcu 2
+loop i=-0.04, 0.04 0.004
+scan h %i k %i l 17.5 18.5 0.05
+endloop

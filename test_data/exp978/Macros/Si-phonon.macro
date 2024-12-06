@@ -1,0 +1,13 @@
+
+
+scantitle "E scan at Q=(1.05 1.05 1.05), 40'-40'-S-40'-80' coll"
+scan h 1.05 k 1.05 l 1.05 e 2 -16 -0.25 preset mcu 120
+
+scantitle "E scan at Q=(1.1 1.1 1.1), 40'-40'-S-40'-80' coll"
+scan h 1.1 k 1.1 l 1.1 e 2 -16 -0.25 preset mcu 120
+ 
+scantitle "E scan at Q=(1.05 1.05 1.05), 40'-40'-S-40'-80' coll"
+scan h 1.05 k 1.05 l 1.05 e 2 -16 -0.25 preset mcu 120
+
+scantitle "E scan at Q=(1.1 1.1 1.1), 40'-40'-S-40'-80' coll"
+scan h 1.1 k 1.1 l 1.1 e 2 -16 -0.25 preset mcu 120

@@ -1,0 +1,39 @@
+# scan = 46
+# date = 5/24/2023
+# time = 4:59:42 PM
+# proposal = 9879
+# experiment = HB-1A  - Backend upgrade commissioning
+# experiment_number = 978
+# command = scan sgu 5 0 0.5
+# builtin_command = scan sgu 5 0 0.5
+# users = Feng Ye, John Carruth, Adam Aczel, Songxue Chi, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Travis Williams, Wei Tian, Michael Cox
+# local_contact = Wei Tian, Adam Aczel
+# scan_title = 10.8% Fe-Ga NXS crystal, 40' S-A, 80' A-D collimators in, check (002) and (020) alignment, HB1a ~42 attenuator in
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = Si powdre, Si crystal, FeGa alloy, La2Ni7 crystal, Ba2.8Sr0.2CoSn2O9 crystal
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 2.890068,2.890068,2.890068,90.000000,90.000000,90.000000
+# ubmatrix = 0.346005,0.001684,0.001510,0.001684,-0.346009,0.000002,0.001510,0.000006,-0.346009
+# mode = 0
+# plane_normal = -0.004364,-0.000005,0.999990
+# ubconf = UB24May2023_45508PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 1.000000
+# def_x = sgu
+# def_y = detector
+# col_headers = 
+#   Pt.        sgu       time   detector    monitor        mcu         m2   rad_coll         s1         s2        sgl   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e
+      1     5.0007      1.113  28936.000   7111.000      1.000    41.5367     0.0149    34.3079  -110.8287     0.2501    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0006    -0.0023    -0.0017    20.7708    41.5520     4.3474     0.0005     1.9921    -0.1743    14.4503    14.4401     0.010
+      2     4.4997      1.100  29488.000   7111.000      1.000    41.5367     0.0149    34.3078  -110.8287     0.2501    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0007    -0.0023    -0.0017    20.7708    41.5520     4.3474     0.0004     1.9935    -0.1569    14.4503    14.4401     0.010
+      3     4.0005      1.119  29720.000   7111.000      1.000    41.5367     0.0149    34.3078  -110.8287     0.2501    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0008    -0.0023    -0.0016    20.7708    41.5520     4.3474     0.0004     1.9948    -0.1395    14.4503    14.4401     0.010
+      4     3.4998      1.127  27387.000   7111.000      1.000    41.5367     0.0149    34.3078  -110.8287     0.2501    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0010    -0.0023    -0.0016    20.7708    41.5520     4.3474     0.0003     1.9959    -0.1221    14.4503    14.4401     0.010
+      5     3.1632      0.000      0.000      0.000      0.000    41.5367     0.0149    34.3077  -110.8287     0.2501    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0011    -0.0023    -0.0016    20.7708    41.5520     4.3474     0.0002     1.9966    -0.1103    14.4503    14.4401     0.010
+# Sum of Counts = 115531
+# Center of Mass = 4.259734+/-0.017798
+# Full Width Half-Maximum = 1.107057+/-0.017822
+# 5:00:20 PM  5/24/2023   scan stopped!!

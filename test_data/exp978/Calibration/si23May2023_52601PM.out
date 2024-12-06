@@ -1,0 +1,31 @@
+Performing calibration using si(d-spacing=5.430900) with the following data:
+
+    h    k    l      d-spacing     position
+ 1.00 1.00 1.00        3.13553     -44.666980+/-0.004826
+ 2.00 2.00 0.00        1.92011     -76.667493+/-0.038828
+ 1.00 1.00 3.00        1.63748     -93.196232+/-0.028665
+ 0.00 0.00 4.00        1.35773     -122.264351+/-0.056126
+Results of the fit:
+
+Chi-Squared = 1.597224
+
+    h    k    l    Fit Position
+ 1.00 1.00 1.00      -44.667716
+ 2.00 2.00 0.00      -76.603511
+ 1.00 1.00 3.00      -93.195251
+ 0.00 0.00 4.00     -122.302196
+
+Best fit parameters:
+lambda=2.377114+/-0.000764  (Energy=14.476897 meV).
+
+The calculated zero angle for m2 is:
+m2_old - m2_calc + m2_zero_old = 41.536674-41.496739+-0.234886 = -0.194951
+Command:      zero m2 -0.194951
+
+
+The s2 offset angle is: 0.116678+/-0.017351
+The calculated zero angle for s2 is:
+
+s2_zero_old - s2_offset = 0.000000 - 0.116678 = -0.116678
+Command:      zero s2 -0.116678
+

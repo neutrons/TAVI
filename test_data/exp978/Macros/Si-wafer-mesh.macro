@@ -1,0 +1,7 @@
+scantitle "Si  wafer 111 mesh, 40'-20'-S-20'-20' coll"
+
+preset mcu 1
+
+loop i=0.97 1.03 0.0025
+scan h 0.97 1.03 0.0025 k 0.97 1.03 0.0025 l %i
+endloop

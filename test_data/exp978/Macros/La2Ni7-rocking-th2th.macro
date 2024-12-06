@@ -1,0 +1,28 @@
+
+loop i=2,18 1
+
+br 0 0 %i 
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), th2th, RT"
+preset mcu 10
+th2th 4 -4 0.2
+
+br 0 0 %i 
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), rocking, RT"
+preset mcu 10
+scanrel s1 1.5 -1.5 0.1 
+
+endloop
+
+loop i=0,15 1
+
+br 1 1 %i 
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), th2th, RT"
+preset mcu 10
+th2th 4 -4 0.2
+
+br 1 1 %i 
+scantitle "La2Ni7, ( @(h) @(k) @(l) ), rocking, RT"
+preset mcu 10
+scanrel s1 1.5 -1.5 0.1 
+
+endloop

@@ -1,0 +1,8 @@
+
+
+scantitle "Si powder, 1 mm annulus triple axis can, long s2 scan, part 1"
+scan s2 -10 -120 0.2 preset mcu 60
+
+scantitle "Si powder, 1 mm annulus triple axis can, long s2 scan, part 2"
+scan s2 -10 -120 0.2 preset mcu 60
+

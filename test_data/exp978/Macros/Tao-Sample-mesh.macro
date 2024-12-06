@@ -1,0 +1,29 @@
+br 0 0 2
+scantitle "Ba2p8Sr0p2CoSb2O9, ( @(h) @(k) @(l) ) mesh"
+loop i=1.8 2.2 0.02
+scan h -0.1 0.1 0.0025 k -0.1 0.1 0.0025 l %i preset mcu 2
+endloop
+
+br 0 0 5
+scantitle "Ba2p8Sr0p2CoSb2O9, ( @(h) @(k) @(l) ) mesh"
+loop i=4.8 5.2 0.02
+scan h -0.1 0.1 0.0025 k -0.1 0.1 0.0025 l %i preset mcu 2
+endloop
+
+br 0 0 8
+scantitle "Ba2p8Sr0p2CoSb2O9, ( @(h) @(k) @(l) ) mesh"
+loop i=7.8 8.2 0.02
+scan h -0.1 0.1 0.0025 k -0.1 0.1 0.0025 l %i preset mcu 2
+endloop
+
+br 1 1 1
+scantitle "Ba2p8Sr0p2CoSb2O9, ( @(h) @(k) @(l) ) mesh"
+loop i=0.8 1.2 0.02
+scan h 0.9 1.1 0.0025 k 0.9 1.1 0.0025 l %i preset mcu 2
+endloop
+
+br 1 1 3
+scantitle "Ba2p8Sr0p2CoSb2O9, ( @(h) @(k) @(l) ) mesh"
+loop i=2.8 3.2 0.02
+scan h 0.9 1.1 0.0025 k 0.9 1.1 0.0025 l %i preset mcu 2
+endloop

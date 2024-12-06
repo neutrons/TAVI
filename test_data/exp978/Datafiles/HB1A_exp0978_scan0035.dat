@@ -1,0 +1,98 @@
+# scan = 35
+# date = 5/24/2023
+# time = 10:13:52 AM
+# proposal = 9879
+# experiment = HB-1A  - Backend upgrade commissioning
+# experiment_number = 978
+# command = scan slib_bt 20 35 1
+# builtin_command = scan slib_bt 20 35 1
+# users = Feng Ye, John Carruth, Adam Aczel, Songxue Chi, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Travis Williams, Wei Tian, Michael Cox
+# local_contact = Wei Tian, Adam Aczel
+# scan_title = Tao's sample, 40' S-A, 80' A-D collimators in
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = Si powdre, Si crystal, FeGa alloy, La2Ni7 crystal, Ba2.8Sr0.2CoSn2O9 crystal
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.855303,5.855303,14.423992,90.000000,90.000000,120.000000
+# ubmatrix = 0.004330,0.002610,0.069312,-0.169527,-0.171948,0.001401,0.100658,-0.096525,-0.000622
+# mode = 0
+# plane_normal = 0.008721,0.012280,0.999887
+# ubconf = UB24May2023_101158AM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 1.000000
+# def_x = slib_bt
+# def_y = detector
+# col_headers = 
+#   Pt.    slib_bt       time   detector    monitor        mcu         m2   rad_coll         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:52 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:53 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:53 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Wed, May 24, 2023 [10:13:53 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, May 24, 2023 [10:13:53 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor slib_bt, "" contains more than one motor position.
+# ...Move aborted.
+# Sum of Counts = 0
+# Center of Mass = 0.000000+/-0.000000
+# Full Width Half-Maximum = 0.000000+/-0.000000
+# 10:13:53 AM  5/24/2023   scan completed.
