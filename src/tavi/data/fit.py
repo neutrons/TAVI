@@ -6,34 +6,6 @@ from lmfit.model import ModelResult
 
 from tavi.data.scan_data import ScanData1D
 
-# @dataclass
-# class FitParam:
-#     name: str
-#     value: Optional[float] = None
-#     vary: bool = True
-#     min: float = -np.inf
-#     max: float = np.inf
-#     expr: Optional[str] = None
-
-
-# brute_step: Optional[float] = None
-
-
-# @dataclass
-# class FitData1D:
-#     x: np.ndarray
-#     y: np.ndarray
-#     fmt: dict = {}
-
-
-class FitData1D(object):
-
-    def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
-
-        self.x = x
-        self.y = y
-        self.fmt: dict = {}
-
 
 class Fit1D(object):
     """Fit a 1D curve
@@ -83,7 +55,6 @@ class Fit1D(object):
         self._num_backgrounds = 0
         self._num_signals = 0
         self.result: Optional[ModelResult] = None
-        self.fit_data: Optional[FitData1D] = None
 
         self.PLOT_COMPONENTS = False
         self.nan_policy = nan_policy
@@ -202,7 +173,7 @@ class Fit1D(object):
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 
-    def x_to_plot(self, num_of_pts: Optional[int]):
+    def x_to_plot(self, num_of_pts: Optional[int] = 100):
         if num_of_pts is None:
             x_to_plot = self.x
         elif isinstance(num_of_pts, int):
@@ -211,18 +182,8 @@ class Fit1D(object):
             raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
         return x_to_plot
 
-    def eval(self, pars: Optional[Parameters], num_of_pts: Optional[int] = 100, x=None) -> FitData1D:
-        if pars is None:
-            pars = self.result.params
-
-        if x is not None:
-            return self.model.eval(pars, x=x)
-
-        else:
-            x_to_plot = self.x_to_plot(num_of_pts)
-            y_to_plot = self.model.eval(pars, x=x_to_plot)
-
-            return FitData1D(x_to_plot, y_to_plot)
+    def eval(self, pars: Parameters, x: np.ndarray) -> np.ndarray:
+        return self.model.eval(pars, x=x)
 
     def fit(self, pars: Parameters) -> ModelResult:
 

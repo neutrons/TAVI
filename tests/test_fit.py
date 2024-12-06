@@ -78,15 +78,16 @@ def test_guess_initial(fit_data):
     f1.add_signal(model="Gaussian")
     f1.add_background(model="Constant")
     pars = f1.guess()
-    inital = f1.eval(pars, num_of_pts=50)
+    x = f1.x_to_plot(num_of_pts=100)
+    y = f1.eval(pars, x)
     # fit_result = f1.fit(pars)
-    assert inital.y.shape == (50,)
-    assert inital.y.min() > 6
+    assert y.shape == (100,)
+    assert y.min() > 6
 
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
-        p1.add_fit(inital, label="guess", color="C1", marker="s", linestyle="dashed", linewidth=2, markersize=4)
+        p1.add_fit((x, y), label="guess", color="C1", marker="s", linestyle="dashed", linewidth=2, markersize=4)
 
         fig, ax = plt.subplots()
         p1.plot(ax)
@@ -101,8 +102,8 @@ def test_fit_single_peak_internal_model(fit_data):
     f1.add_signal(model="Gaussian")
     f1.add_background(model="Constant")
     pars = f1.guess()
-    fit_result = f1.fit(pars)
-    assert np.allclose(fit_result.redchi, 37.6, atol=1)
+    result = f1.fit(pars)
+    assert np.allclose(result.redchi, 37.6, atol=1)
 
     if PLOT:
         p1 = Plot1D()

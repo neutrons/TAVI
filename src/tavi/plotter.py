@@ -6,12 +6,22 @@ import numpy as np
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
-from tavi.data.fit import Fit1D, FitData1D
+from tavi.data.fit import Fit1D
 from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
 
 
+class FitData1D(object):
+
+    def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
+
+        self.x = x
+        self.y = y
+        self.fmt: dict = {}
+
+
 class ResoBar(object):
+
     def __init__(self, pos: tuple[float, float], fwhm: float) -> None:
 
         self.pos = pos
@@ -77,9 +87,12 @@ class Plot1D(object):
         for key, val in kwargs.items():
             data.fmt.update({key: val})
 
-    def add_fit(self, fit_data: Union[FitData1D, Fit1D], num_of_pts: Optional[int] = 100, **kwargs):
-        if isinstance(fit_data, FitData1D):
-            self._add_fit_from_eval(fit_data, **kwargs)
+    def add_fit(
+        self, fit_data: Union[tuple[np.ndarray, np.ndarray], Fit1D], num_of_pts: Optional[int] = 100, **kwargs
+    ):
+        if isinstance(fit_data, tuple):
+            x, y = fit_data
+            self._add_fit_from_eval(FitData1D(x, y), **kwargs)
         elif isinstance(fit_data, Fit1D):
             self._add_fit_from_fitting(fit_data, num_of_pts, **kwargs)
         else:
