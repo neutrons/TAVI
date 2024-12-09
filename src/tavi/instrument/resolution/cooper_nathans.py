@@ -209,7 +209,6 @@ class CN(TAS):
         hkle_list = self._generate_hkle_list(hkl_list, ei, ef)
         rez_list = []
         for hkl, ei, ef in hkle_list:
-
             # q_lab = conv_mat @ hkl
             # q_mod = np.linalg.norm(q_lab)
             q_mod = np.linalg.norm(self.sample.b_mat @ hkl) * 2 * np.pi
