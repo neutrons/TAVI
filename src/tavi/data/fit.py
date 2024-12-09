@@ -169,7 +169,6 @@ class Fit1D(object):
         return self.model.eval(pars, x=x)
 
     def fit(self, pars: Parameters) -> ModelResult:
-
         result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
         self.result = result
         return result
