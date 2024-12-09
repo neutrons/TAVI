@@ -1,0 +1,50 @@
+# scan = 166
+# date = 10/28/2011
+# time = 2:18:14 AM
+# proposal = 5137
+# experiment = Measurement of the phonon dispersion of Bismuch at high temperatures
+# experiment_number = 25
+# command = scan h 1.5 k 0 l 0 e -5 -2.5 0.25 preset mcu 1
+# builtin_command = scan h 1.5 k 0 l 0 e -5 -2.5 0.25 preset mcu 1
+# users = Michael Manley and Olivier Delaire
+# local_contact = T. Hong
+# scan_title = LA at X (1.5 0 0), 150 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = C32D24CuN2O14
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.550000,4.550000,11.874153,90.000000,90.000000,120.000000
+# ubmatrix = 0.010837,-0.005083,-0.084043,0.253534,0.124851,0.003635,-0.002731,-0.220886,0.003989
+# mode = 0
+# plane_normal = 0.028751,0.005245,0.601004
+# ubconf = UB24Oct2011_63347PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 1.000000
+# def_x = e
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]   e_typ_tc   au-fe_tc       temp
+      1     1.5000     0.0000     0.0000    -5.0000     58.252      3.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   118.8832    77.1477    -2.7386     0.5000     0.0000     0.0000   154.7701   -50.4598     2.3918     5.0000    10.0000   138.5020    15.0710   148.8470   144.2780   150.000
+      2     1.5000     0.0000     0.0000    -4.7500     58.507     12.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   119.9269    78.0318    -2.7386     0.5000     0.0000     0.0000   154.4257   -51.1486     2.3918     5.0000     9.7500   138.3890    14.5920   155.1910   144.4760   150.000
+      3     1.5000     0.0000     0.0000    -4.5000     58.339     16.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   120.9806    78.9338    -2.7386     0.5000     0.0000     0.0000   154.0667   -51.8666     2.3918     5.0000     9.5000   138.2590    14.3600   146.6140   144.2200   150.000
+      4     1.5000     0.0000     0.0000    -4.2500     58.688     67.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   122.0448    79.8550    -2.7386     0.5000     0.0000     0.0000   153.6921   -52.6158     2.3918     5.0000     9.2500   138.3060    14.0250   153.9050   144.4070   150.000
+      5     1.5000     0.0000     0.0000    -4.0000     58.274    124.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   123.1205    80.7969    -2.7386     0.5000     0.0000     0.0000   153.3007   -53.3986     2.3918     5.0000     9.0000   139.6690    38.0500   150.5150   144.4520   150.000
+      6     1.5000     0.0000     0.0000    -3.7500     58.446    127.000  91593.000      1.000    96.4440   142.9286   -74.1428     0.6500     0.0000    34.9840   124.2082    81.7608    -2.7386     0.5000     0.0000     0.0000   152.8912   -54.2176     2.3918     5.0000     8.7500   141.7450    40.1000   152.0750   144.4560   150.000
+# Fri, Oct 28, 2011 [2:24:32 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
+# a1 hit lower controller software limit 
+# Fri, Oct 28, 2011 [2:25:35 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
+# a1 hit lower controller software limit 
+# Fri, Oct 28, 2011 [2:26:35 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
+# a1 hit lower controller software limit 
+# Fri, Oct 28, 2011 [2:27:35 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
+# a1 hit lower controller software limit 
+# Fri, Oct 28, 2011 [2:28:35 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
+# a1 hit lower controller software limit 
+# Sum of Counts = 349
+# Center of Mass = -4.014327+/-0.304237
+# Full Width Half-Maximum = 0.543820+/-0.252716
+# 2:28:35 AM  10/28/2011   scan completed.

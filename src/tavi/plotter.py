@@ -87,6 +87,7 @@ class Plot1D(object):
         for key, val in kwargs.items():
             data.fmt.update({key: val})
 
+    # TODO
     def add_fit(
         self, fit_data: Union[tuple[np.ndarray, np.ndarray], Fit1D], num_of_pts: Optional[int] = 100, **kwargs
     ):
@@ -98,6 +99,7 @@ class Plot1D(object):
         else:
             raise ValueError(f"Invalid input fit_data={fit_data}")
 
+    # TODO
     def add_fit_components(self, fit_data: Fit1D, num_of_pts: Optional[int] = 100, **kwargs):
         if isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
             x = fit_data.x_to_plot(num_of_pts)

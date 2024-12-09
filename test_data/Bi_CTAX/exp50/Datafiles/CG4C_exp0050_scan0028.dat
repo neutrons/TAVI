@@ -1,0 +1,139 @@
+# scan = 28
+# date = 6/21/2012
+# time = 4:17:12 PM
+# proposal = 5137
+# experiment = Measurement of the phonon dispersion of Bismuch at high temperatures
+# experiment_number = 50
+# command = scan h -0.75 k 0 l.5 1 e -7.0 -2.0 -0.25 preset mcu 2
+# builtin_command = scan h -0.75 k 0 l.5 1 e -7.0 -2.0 -0.25 preset mcu 2
+# users = Michael Manley and Olivier Delaire
+# local_contact = T. Hong
+# scan_title = G-X LA, 150 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = C32D24CuN2O14
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.535778,4.535778,11.837000,90.000000,90.000000,120.000000
+# ubmatrix = 0.006903,-0.004243,-0.084398,0.254439,0.123374,0.002343,-0.004682,-0.222643,0.002907
+# mode = 0
+# plane_normal = 0.020999,0.010495,0.601255
+# ubconf = UB21Jun2012_25646PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 2.000000
+# def_x = e
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k        l.5          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q          l         ei         ef cold_tip_[a] sample_[b]   e_typ_tc   au-fe_tc       temp
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Jun 21, 2012 [4:17:12 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:Drive_Motor_Val_Pairs.vi. 
+# The argument for motor k, "0.000000 l.5 1.000000 
+# " contains more than one motor position.
+# ...Move aborted.
+# Sum of Counts = 0
+# Center of Mass = 0.000000+/-0.000000
+# Full Width Half-Maximum = 0.000000+/-0.000000
+# 4:17:12 PM  6/21/2012   scan completed.

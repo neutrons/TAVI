@@ -1,0 +1,26 @@
+scantitle "TO at G (1,0,1), T=50K"
+scan h 1 k 0 l 1 e -12.5 -7.25 0.25 preset mcu 12
+
+scantitle "LA at L (1.5, 0, 1.5), T=50K"
+scan h 1.5 k 0 l 1.5 e -8.2 -5.6 0.2 preset mcu 4
+
+scantitle "LA at X (-1.5, 0, 0), T=50K"
+scan h -1.5 k 0 l 0 e -5.25 -2.5 0.25 preset mcu 2
+
+scantitle "LA + TA at T (-1,0,3.5), T=50K"
+scan h -1 k 0 l 3.5 e -8.8 -3.4 0.2 preset mcu 2
+
+scantitle "LO at L (1.5, 0, 1.5), T=50K"
+scan h 1.5 k 0 l 1.5 e -16.0 -10.5 0.25 preset mcu 12
+
+scantitle "LO at T (0, 0, 4.5), T=50K"
+scan h 0 k 0 l 4.5 e -16.75 -11 0.25 preset mcu 12
+
+scantitle "LO at X (1.5, 0, 0), T=50K"
+scan h 1.5 k 0 l 0 e -14.5 -10 0.25 preset mcu 15
+
+scantitle "LA+TA mid G-X (-0.75, 0, 1.5), T=50K"
+scan h -0.75 k 0 l 1.5 e -7.5 -1.5 0.25 preset mcu 8 
+
+scantitle "LA+TA G-T (-1, 0, 2.9), T=50K"
+scan h -1 k 0 l 2.9 e -6.5 -2.5 0.1 preset mcu 2

@@ -1,0 +1,35 @@
+# scan = 41
+# date = 6/22/2012
+# time = 9:44:16 PM
+# proposal = 5137
+# experiment = Measurement of the phonon dispersion of Bismuch at high temperatures
+# experiment_number = 50
+# command = scan h 1.5 k 0 l 0 e -5.25 -2.5 0.25 preset mcu 1
+# builtin_command = scan h 1.5 k 0 l 0 e -5.25 -2.5 0.25 preset mcu 1
+# users = Michael Manley and Olivier Delaire
+# local_contact = T. Hong
+# scan_title = LA at X (1.5, 0, 0), 225K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = C32D24CuN2O14
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.535778,4.535778,11.837000,90.000000,90.000000,120.000000
+# ubmatrix = 0.006903,-0.004243,-0.084398,0.254439,0.123374,0.002343,-0.004682,-0.222643,0.002907
+# mode = 0
+# plane_normal = 0.020999,0.010495,0.601255
+# ubconf = UB21Jun2012_25646PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 1.000000
+# def_x = e
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]   e_typ_tc   au-fe_tc       temp
+      1    -0.2551     0.0000     4.4443    -5.2500      0.000      0.000      0.000      0.000    96.4440   142.9286   -74.1428     0.6359     0.0000    34.9840    17.2079    76.3732    -2.0000     1.0000     0.0000     0.0000   155.1010   -49.7981     2.3941     5.0000    10.2500   225.4450   222.4680     0.0000     0.0000   225.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 9:44:41 PM  6/22/2012   scan stopped!!

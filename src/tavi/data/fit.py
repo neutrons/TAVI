@@ -106,53 +106,31 @@ class Fit1D(object):
         prefix = f"b{self._num_backgrounds}_"
         self._background_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
 
-    @staticmethod
-    def _get_param_names(models) -> list[list[str]]:
-        params = []
-        for model in models:
-            params.append(model.param_names)
-        return params
+    # @staticmethod
+    # def _get_param_names(models) -> list[list[str]]:
+    #     params = []
+    #     for model in models:
+    #         params.append(model.param_names)
+    #     return params
+
+    # @property
+    # def signal_param_names(self):
+    #     """Get parameter names of all signals"""
+    #     return Fit1D._get_param_names(self._signal_models)
+
+    # @property
+    # def background_param_names(self):
+    #     """Get parameter names of all backgrounds"""
+    #     return Fit1D._get_param_names(self._background_models)
 
     @property
-    def signal_param_names(self):
-        """Get parameter names of all signals"""
-        return Fit1D._get_param_names(self._signal_models)
-
-    @property
-    def background_param_names(self):
-        """Get parameter names of all backgrounds"""
-        return Fit1D._get_param_names(self._background_models)
-
-    # TODO
-    @property
-    def params(self) -> dict[str, dict]:
+    def params(self) -> Parameters:
         """Get fitting parameters as a dictionary with the model prefix being the key"""
 
-        all_pars = self.guess() if self._parameters is None else self._parameters
-        params_names = Fit1D._get_param_names(self._signal_models + self._background_models)
+        if self._parameters is None:
+            self._parameters = self.guess()
 
-        params_dict = {}
-        for names in params_names:
-            if len(names) < 1:
-                raise ValueError(f"Should have at least 1 parameter in {names}.")
-            prefix, _ = names[0].split("_")
-            param_dict = {}
-            for param_name in names:
-                param = all_pars[param_name]
-                param_dict.update(
-                    {
-                        "name": param.name,
-                        "value": param.value,
-                        "vary": param.vary,
-                        "min": param.min,
-                        "max": param.max,
-                        "expr": param.expr,
-                    }
-                )
-
-            params_dict.update({prefix: param_dict})
-
-        return params_dict
+        return self._parameters
 
     def guess(self) -> Parameters:
         """Guess fitting parameters' values
@@ -173,13 +151,18 @@ class Fit1D(object):
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 
-    def x_to_plot(self, num_of_pts: Optional[int] = 100):
-        if num_of_pts is None:
-            x_to_plot = self.x
-        elif isinstance(num_of_pts, int):
-            x_to_plot = np.linspace(self.x.min(), self.x.max(), num=num_of_pts)
-        else:
-            raise ValueError(f"num_of_points={num_of_pts} needs to be an integer.")
+    def x_to_plot(
+        self,
+        min: Optional[float] = None,
+        max: Optional[float] = None,
+        num_of_pts: int = 100,
+    ):
+        if min is None:
+            min = self.x.min()
+        if max is None:
+            max = self.x.max()
+        x_to_plot = np.linspace(min, max, num=num_of_pts)
+
         return x_to_plot
 
     def eval(self, pars: Parameters, x: np.ndarray) -> np.ndarray:

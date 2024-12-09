@@ -55,20 +55,11 @@ def test_get_fitting_variables(fit_data):
     f1.add_signal(model="Gaussian")
     f1.add_background(model="Constant")
 
-    assert f1.signal_param_names == [["s1_amplitude", "s1_center", "s1_sigma"]]
-    assert f1.background_param_names == [["b1_c"]]
-
-    assert len(f1.params) == 2
-
-    s1_params = f1.params["s1"]
-    assert len(s1_params) == 5
-    assert s1_params[0].name == "s1_amplitude"
-    assert s1_params[1].name == "s1_center"
-    assert s1_params[2].name == "s1_sigma"
-    assert s1_params[3].name == "s1_fwhm"
-    assert s1_params[4].name == "s1_height"
-    assert s1_params[4].expr == "0.3989423*s1_amplitude/max(1e-15, s1_sigma)"
-    assert f1.params["b1"][0].name == "b1_c"
+    assert len(f1.params) == 6
+    for k in ["s1_amplitude", "s1_center", "s1_sigma", "s1_fwhm", "s1_height", "b1_c"]:
+        assert k in f1.params.keys()
+    assert f1.params["s1_amplitude"].name == "s1_amplitude"
+    assert f1.params["s1_height"].expr == "0.3989423*s1_amplitude/max(1e-15, s1_sigma)"
 
 
 def test_guess_initial(fit_data):
@@ -87,7 +78,7 @@ def test_guess_initial(fit_data):
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
-        p1.add_fit((x, y), label="guess", color="C1", marker="s", linestyle="dashed", linewidth=2, markersize=4)
+        p1.add_fit(f1, x=x, label="guess", color="C1", marker="s", linestyle="dashed", linewidth=2, markersize=4)
 
         fig, ax = plt.subplots()
         p1.plot(ax)
@@ -113,6 +104,7 @@ def test_fit_single_peak_internal_model(fit_data):
 
         fig, ax = plt.subplots()
         p1.plot(ax)
+        ax.set_ylim(top=80)
         plt.show()
 
 
@@ -122,26 +114,30 @@ def test_fit_two_peak(fit_data):
 
     f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")
 
-    f1.add_background(model="Constant")
+    # f1.add_background(model="Constant")
+    f1.add_signal(model="Gaussian")
     f1.add_signal(model="Gaussian")
 
-    f1.add_signal(values=(None, 3.5, 0.29), vary=(True, True, True))
-    f1.add_signal(
-        model="Gaussian",
-        values=(None, 0, None),
-        vary=(True, False, True),
-        mins=(0, 0, 0.1),
-        maxs=(None, 0.1, 0.3),
-    )
-    f1.perform_fit()
-    assert np.allclose(f1.result.params["s1_center"].value, 3.54, atol=0.01)
-    assert np.allclose(f1.result.params["s1_fwhm"].value, 0.40, atol=0.01)
+    pars = f1.guess()
+    pars["s1_amplitude"].set(min=0)
+    pars["s1_center"].set(value=3.9)
+    pars["s1_sigma"].set(value=0.29, max=3)
+    pars["s2_amplitude"].set(value=250, min=0, max=300)
+    pars["s2_center"].set(value=0, vary=False)
+    pars["s2_fwhm"].set(value=0.2, min=0.1, max=0.3)
+    # pars["b1_c"].set(min=0)
+
+    result = f1.fit(pars)
+    assert np.allclose(result.params["s1_center"].value, 3.54, atol=0.01)
+    assert np.allclose(result.params["s1_fwhm"].value, 0.40, atol=0.01)
+    x = f1.x_to_plot(num_of_pts=100, min=-1, max=5)
+    # y = f1.eval(result.params, x)
 
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
-        p1.add_fit(fit_result, label="fit", color="C3", num_of_pts=50, marker="^")
-        p1.add_fit_components(fit_result, color=["C4", "C5"])
+        p1.add_fit(f1, x=x, label="fit", color="C3")
+        p1.add_fit_components(f1, x=x, color=["C4", "C5"])
 
         fig, ax = plt.subplots()
         p1.plot(ax)

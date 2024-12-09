@@ -1,0 +1,449 @@
+10/24/2011 10:28 AM        drive a2 0 a1 90
+10/24/2011 10:30 AM        drive s2 0
+10/24/2011 10:31 AM        drive s1 0.5
+10/24/2011 10:31 AM        drive s1 0 s2 0.5
+10/24/2011 10:31 AM        drive s2 0.7
+10/24/2011 10:32 AM        zero s2 0
+10/24/2011 10:32 AM        spos s2 0
+10/24/2011 10:32 AM        drive s2 40
+10/24/2011 10:34 AM        drive s2 60
+10/24/2011 10:34 AM        drive ei 5
+10/24/2011 10:34 AM        preset time 10
+10/24/2011 10:34 AM        scantitle "Ni powder (1/2,1/2,1/2)"
+10/24/2011 10:34 AM        scan s2 56 63 0.2 
+10/24/2011 10:41 AM        scantitle "Ni powder (1,0,0)"
+10/24/2011 10:41 AM        scan s2 67 73 0.2 
+10/24/2011 10:48 AM        lattice 4.550000 4.550000 11.850000 90.000000 90.000000 120.000000
+10/24/2011 10:51 AM        drive s2 59.78
+10/24/2011 10:51 AM        count preset time 10
+10/24/2011 10:52 AM        zero s2 0
+10/24/2011 10:52 AM        spos s2 59.61
+10/24/2011 10:54 AM        ef 5
+10/24/2011 10:54 AM        drive e 0
+10/24/2011 10:56 AM        scantitle "analyzer calibration using polyethelyne sample, open-80 mode"
+10/24/2011 10:56 AM        scanrel a1 -2 2 0.2
+10/24/2011 11:04 AM        scanrel a2 -5 5 0.25
+10/24/2011 11:14 AM        preset time 15
+10/24/2011 11:15 AM        scan ei 4.2 5.8 0.05
+10/24/2011 11:29 AM        drive e 0
+10/24/2011 11:35 AM        drive s1 19.653
+10/24/2011 11:35 AM        drive s2 19.653
+10/24/2011 11:36 AM        drive s2 61.595
+10/24/2011 11:37 AM        drive s1 30
+10/24/2011 11:37 AM        drive s1 40
+10/24/2011 11:38 AM        drive s1 35
+10/24/2011 11:38 AM        drive s1 36
+10/24/2011 11:38 AM        scantitle "Bi (003) room temperature check"
+10/24/2011 11:39 AM        scanrel s1 -1 1 0.1
+10/24/2011 11:39 AM        drive s1 36
+10/24/2011 11:39 AM        preset time 1
+10/24/2011 11:39 AM        scanrel s1 -1 1 0.1
+10/24/2011 11:39 AM        drive s1 36.0636
+10/24/2011 11:40 AM        scanrel sgl -4 4 0.5
+10/24/2011 11:41 AM        drive sgl 2
+10/24/2011 11:41 AM        th2th -2 2 0.2
+10/24/2011 11:43 AM        lattice a 4.550000 b 4.550000 c 11.875419
+10/24/2011 11:44 AM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_114359AM.ini"
+10/24/2011 11:44 AM        br 0.5 0.5 0
+10/24/2011 11:45 AM        drive sgu 4
+10/24/2011 11:45 AM        drive sgu 0
+10/24/2011 11:46 AM        drive sgu -4
+10/24/2011 11:46 AM        drive sgu 0
+10/24/2011 11:48 AM        drive s1 -90
+10/24/2011 11:49 AM        br 0 0 3
+10/24/2011 11:51 AM        br 0 1 2
+10/24/2011 11:51 AM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_115122AM.ini"
+10/24/2011 11:51 AM        br 0 1 2
+10/24/2011 11:53 AM        br 0 0 3
+10/24/2011 12:12 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_121209PM.ini"
+10/24/2011 12:12 PM        br 0.5 0 2
+10/24/2011 12:14 PM        scantitle "Bi (0.5 0 2) room temperature check"
+10/24/2011 12:14 PM        scanrel s1 -1 1 0.1
+10/24/2011 12:15 PM        br 0.5 0 2.5
+10/24/2011 12:17 PM        scanrel s1 -1 1 0.1
+10/24/2011 12:17 PM        drive s1 90
+10/24/2011 12:18 PM        br 1 0 0.5
+10/24/2011 12:19 PM        br 1 0 -1
+10/24/2011 12:20 PM        br 0.5 0 2
+10/24/2011 1:21 PM        drive s1 0 sgl 0
+10/24/2011 1:24 PM        calc ef 16
+10/24/2011 1:24 PM        calc ef 18
+10/24/2011 1:24 PM        calc ef 20
+10/24/2011 2:28 PM        set_temp 300
+10/24/2011 2:36 PM        drive s1 61.449
+10/24/2011 2:36 PM        drive s1 62.449
+10/24/2011 2:36 PM        drive s2 61.449
+10/24/2011 2:37 PM        drive s1 35
+10/24/2011 2:37 PM        drive s1 34
+10/24/2011 2:37 PM        drive s1 33
+10/24/2011 2:37 PM        scantitle "Bi (0 0 3) room temperature inside CCR check"
+10/24/2011 2:37 PM        scanrel s1 -2 2 0.1
+10/24/2011 2:39 PM        drive s1 33.1898
+10/24/2011 2:39 PM        scanrel sgl -4 4 0.5
+10/24/2011 2:40 PM        drive sgl -2.7387
+10/24/2011 2:40 PM        scanrel s1 -2 2 0.1
+10/24/2011 2:42 PM        drive s1 33.1749
+10/24/2011 2:42 PM        th2th -2 2 0.1
+10/24/2011 2:44 PM        drive s2 61.4563 s1 33.1786
+10/24/2011 2:44 PM        lattice a 4.550000 b 4.550000 c 11.874153
+10/24/2011 2:44 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_24432PM.ini"
+10/24/2011 2:44 PM        br 0.5 0 2
+10/24/2011 2:46 PM        drive s1 -30
+10/24/2011 2:47 PM        drive s1 10
+10/24/2011 2:47 PM        br 0.5 0 2
+10/24/2011 2:48 PM        drive sgu 3
+10/24/2011 2:48 PM        drive sgu 0
+10/24/2011 2:48 PM        drive sgu -3
+10/24/2011 2:48 PM        drive sgl 0
+10/24/2011 2:49 PM        drive sgl 0
+10/24/2011 2:49 PM        drive sgu 0
+10/24/2011 2:49 PM        br 0 0 3
+10/24/2011 2:50 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_25010PM.ini"
+10/24/2011 2:50 PM        br 0.5 0 2
+10/24/2011 2:50 PM        drive s1 -90
+10/24/2011 2:52 PM        drive s2 0
+10/24/2011 2:53 PM        br 0.5 0 2
+10/24/2011 2:55 PM        drive s1 90
+10/24/2011 2:57 PM        drive s1 67
+10/24/2011 2:57 PM        drive s1 65
+10/24/2011 2:57 PM        drive s1 65.5
+10/24/2011 2:57 PM        drive s1 65.2
+10/24/2011 2:57 PM        drive s1 64.8
+10/24/2011 2:58 PM        scantitle "Bi (0.5 0 2) room temperature inside CCR check"
+10/24/2011 2:58 PM        scanrel s1 -2 2 0.1
+10/24/2011 2:59 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_25945PM.ini"
+10/24/2011 2:59 PM        calc h 0.5 k 0 l 2 e 0
+10/24/2011 3:00 PM        drive s1 64.68809
+10/24/2011 3:01 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_30106PM.ini"
+10/24/2011 3:01 PM        scanrel sgu -4 4 0.5
+10/24/2011 3:02 PM        drive sgu 0.5
+10/24/2011 3:04 PM        br 0 0 3
+10/24/2011 3:04 PM        scantitle "Bi (0 0 3) room temperature inside CCR check"
+10/24/2011 3:04 PM        scanrel sgu -4 4 0.5
+10/24/2011 3:06 PM        drive sgu 0.5
+10/24/2011 3:06 PM        ubcalc file "C:\User\exp25\UBConf\tmp\UB24Oct2011_30644PM.ini"
+10/24/2011 3:06 PM        br 0 0 3
+10/24/2011 3:07 PM        br 0.5 0 2
+10/24/2011 3:18 PM        br 0 0 3
+10/24/2011 3:19 PM        scantitle "Bi (0 0 3) room temperature inside CCR check with Be filter"
+10/24/2011 3:19 PM        scanrel s1 -1 1 0.1
+10/24/2011 3:20 PM        th2th -2 2 0.2
+10/24/2011 3:21 PM        br 0 0 3
+10/24/2011 3:21 PM        ei 5
+10/24/2011 3:23 PM        calc ef 10
+10/24/2011 3:26 PM        count preset time 60
+10/24/2011 3:27 PM        mcu 91593
+10/24/2011 3:33 PM        scantitle "Looking for some LA phonon in (003) along Z"
+10/24/2011 3:33 PM        scan h 0 k 0 l 3.4 e -3.25 -1.75 0.25 preset mcu 1
+10/24/2011 3:42 PM        scan h 0 k 0 l 3.4 e -1.75 0.25 0.25 preset mcu 1
+10/24/2011 3:55 PM        scan h 0 k 0 l 3.5 e -2.6 -0.6 0.2 preset mcu 2
+10/24/2011 4:22 PM        scantitle "check focusing condition for LA in (003)"
+10/24/2011 4:23 PM        scan h 0 k 0 l 2.6 e -2.5 -0.5 0.25 preset mcu 1
+10/24/2011 4:36 PM        scantitle "checking optical modes at Gamma (003)"
+10/24/2011 4:37 PM        scan h 0 k 0 l 3 e -6.5 -5.25 0.25 preset mcu 2
+10/24/2011 4:53 PM        scan h 0 k 0 l 3 e -8.5 -7.0 0.25 preset mcu 2
+10/24/2011 5:14 PM        scantitle "checking for TA modes in (003) along (h00)"
+10/24/2011 5:14 PM        scan h 0.2 k 0 l 3 e -3.0 -0.5 0.25 preset mcu 1
+10/24/2011 5:37 PM        scan h 0.2 k 0 l 3 e -3.25 -1.6 0.15 preset mcu 2
+10/24/2011 6:04 PM        br 0 0 3
+10/24/2011 6:08 PM        scantitle "check LA phonon (0,0,3.4) phonon creation side"
+10/24/2011 6:08 PM        scan h 0 k 0 l 3.4 e 1.0 2.0  0.2 preset mcu 1
+10/24/2011 6:13 PM        scan h 0 k 0 l 2.6 e 1.0 2.0  0.2 preset mcu 1
+10/24/2011 6:21 PM        drive h 0 k 0 l 2.6 e 1.5
+10/24/2011 6:21 PM        count preset mcu 1
+10/24/2011 6:22 PM        drive h 0 k 0 l 3.4 e -1.5
+10/24/2011 6:23 PM        count preset mcu 1
+10/24/2011 6:27 PM        drive h 0 k 0 l 3.2 e -0.75
+10/24/2011 6:27 PM        count preset mcu 1
+10/24/2011 6:33 PM        ubcalc file c:\user\exp25\ubconf\ub24oct2011_30648pm.ini
+10/24/2011 6:33 PM        br 0 0 3
+10/24/2011 6:38 PM        br 1 0 2
+10/24/2011 6:52 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 1
+10/24/2011 6:53 PM        driverel s2 -51
+10/24/2011 6:54 PM        br 1 0 2
+10/24/2011 6:59 PM        br 0 0 3
+10/24/2011 7:17 PM        calc h 1 k 0 l -2 e 0
+10/24/2011 7:17 PM        br -1 0 2
+10/24/2011 7:24 PM        br 0 0 3
+10/24/2011 7:30 PM        br -1 0 2
+10/24/2011 7:33 PM        scantitle "Check LA phonon at (0,0,0.4) in (-1,0,2)"
+10/24/2011 7:34 PM        scan h -1 k 0 l 2.4 e  -2.5  -0.5  0.25 preset mcu 1
+10/24/2011 7:46 PM        scan h -1 k 0 l 2.4 e  -2.5  -1.0  0.1  preset mcu 0.5
+10/24/2011 8:31 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.1)"
+10/24/2011 8:31 PM        scan h -1 k 0 l 2.1 e -1.0 0.4 0.1 preset mcu 0.25
+10/24/2011 8:36 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.2)"
+10/24/2011 8:36 PM        scan h -1 k 0 l 2.2 e -1.3 0.4 0.1 preset mcu 0.25
+10/24/2011 8:41 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.6)"
+10/24/2011 8:41 PM        scan h -1 k 0 l 2.6 e -6.5 -2.0 0.1 preset mcu 0.5
+10/24/2011 9:07 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.9)"
+10/24/2011 9:07 PM        scan h -1 k 0 l 2.9 e -7.2 -3.0 0.1 preset mcu 0.5
+10/24/2011 9:31 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.2)"
+10/24/2011 9:31 PM        scan h -1 k 0 l 3.2 e -7.9 -3.5 0.1 preset mcu 0.5
+10/24/2011 9:56 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.5)"
+10/24/2011 9:56 PM        scan h -1 k 0 l 3.5 e -8.2 -4.0 0.1 preset mcu 0.5
+10/24/2011 10:19 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.8)"
+10/24/2011 10:19 PM        scan h -1 k 0 l 3.8 e -7.9 -3.5 0.1 preset mcu 0.5
+10/24/2011 10:44 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.3)"
+10/24/2011 10:44 PM        scan h -1 k 0 l 2.3 e -2.3 -1.0 0.1 preset mcu 0.25
+10/24/2011 10:48 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.5)"
+10/24/2011 10:48 PM        scan h -1 k 0 l 2.5 e -3.0 -1.0 0.1 preset mcu 0.5
+10/24/2011 11:16 PM        calc h 1 k 0 l 2 e 0
+10/24/2011 11:19 PM        br 1 0 2
+10/24/2011 11:21 PM        br 1 0 1
+10/24/2011 11:31 PM        scantitle "Looking for acoustic modes at X point in (0.5, 0, 2)"
+10/24/2011 11:31 PM        scan h 0.5 k 0 l 2 e -4.5 -2.0 0.2 preset mcu 0.5
+10/24/2011 11:39 PM        scantitle "Looking for acoustic modes at X point in (1.5, 0, 0)"
+10/24/2011 11:40 PM        scan h 1.5 k 0 l 0 e -4.5 -1.9 0.2 preset mcu 0.5
+10/24/2011 11:55 PM        scantitle "Looking for acoustic modes at X point in (-0.5, 0, 1)"
+10/24/2011 11:55 PM        scan h -0.5 k 0 l 1 e -4.5 -2.0 0.2 preset mcu 0.5
+10/25/2011 12:10 AM        scantitle "Looking for acoustic modes at L point in (1.5, 0, 1.5)"
+10/25/2011 12:10 AM        scan h 1.5 k 0 l 1.5 e -7.0 -4.2 0.2 preset mcu 0.5
+10/25/2011 12:20 AM        scan h 1.5 k 0 l 1.5 e -8.2 -7.0 0.2 preset mcu 0.5
+10/25/2011 12:28 AM        scantitle "Looking for acoustic modes at L point in (-0.5, 0, 2.5)"
+10/25/2011 12:28 AM        scan h -0.5 k 0 l 2.5 e -8.2 -4.0 0.2 preset mcu 0.5
+10/25/2011 12:43 AM        scantitle "Looking for acoustic modes at L point in (0.5, 0, 3.5)"
+10/25/2011 12:43 AM        scan h 0.5 k 0 l 3.5 e -8.2 -4.0 0.2 preset mcu 0.5
+10/25/2011 1:07 AM        scantitle "LA + TA phonons in (-102) at (0,0,0.2), add points"
+10/25/2011 1:07 AM        scan h -1 k 0 l 2.2 e -1.25  -0.45 0.1 preset mcu 0.25
+10/25/2011 1:13 AM        scantitle "LA + TA phonons in (-102) at (0,0,0.6), add data"
+10/25/2011 1:13 AM        scan h -1 k 0 l 2.6 e -2.0 0.3 0.1 preset mcu 0.5
+10/25/2011 1:26 AM        scantitle "LA + TA phonons in (-102) at (0,0,0.9), add data"
+10/25/2011 1:26 AM        scan h -1 k 0 l 2.9 e -4.0 -2.5 0.1 preset mcu 0.5
+10/25/2011 1:36 AM        scantitle "LA + TA phonons in (-102) at (0,0,1.2), add data"
+10/25/2011 1:36 AM        scan h -1 k 0 l 3.2 e -7.9 -3.5 0.1 preset mcu 0.5
+10/25/2011 2:00 AM        scantitle "LA + TA phonons in (-102) at (0,0,1.5), add data"
+10/25/2011 2:00 AM        scan h -1 k 0 l 3.5 e -8.2 -4.0 0.1 preset mcu 0.5
+10/25/2011 2:24 AM        scantitle "LA + TA phonons in (-102) at (0,0,1.8), add data"
+10/25/2011 2:24 AM        scan h -1 k 0 l 3.8 e -7.9 -3.5 0.1 preset mcu 0.5
+10/25/2011 2:49 AM        scantitle "LA + TA phonons in (-102) at (0,0,0.3), add data"
+10/25/2011 2:49 AM        scan h -1 k 0 l 2.3 e -1.75 -0.55 0.1 preset mcu 0.25
+10/25/2011 2:53 AM        scantitle "Dispersion G-X in (101) zone"
+10/25/2011 2:53 AM        scan h 1.5 k 0 l 0 e -5.0 -1.9 0.2 preset mcu 0.5
+10/25/2011 3:03 AM        scan h 1.4 k 0 l 0.2 e -4.5 -1.9 0.1 preset mcu 1.0
+10/25/2011 3:32 AM        scan h 1.3 k 0 l 0.4 e -4.2 -1.9 0.1 preset mcu 1.0
+10/25/2011 3:57 AM        scan h 1.2 k 0 l 0.6 e -4.0 -1.0 0.1 preset mcu 1.0
+10/25/2011 4:30 AM        scan h 1.1 k 0 l 0.8 e -3.5 -0.2 0.1 preset mcu 1.0
+10/25/2011 5:06 AM        scantitle "Dispersion G-T longitudinal (003) zone"
+10/25/2011 5:06 AM        scan h 0 k 0 l 4.5 e -8.5 -4.0 0.1 preset mcu 1.0
+10/25/2011 5:55 AM        scan h 0 k 0 l 4.2 e -7.9 -3.5 0.1 preset mcu 1.0
+10/25/2011 6:43 AM        scan h 0 k 0 l 3.9 e -7.0 -2.5 0.1 preset mcu 1.0
+10/25/2011 7:32 AM        scan h 0 k 0 l 3.6 e -5.0 -1.0 0.1 preset mcu 1.0
+10/25/2011 8:15 AM        scan h 0 k 0 l 3.4 e -2.5 -1.0 0.1 preset mcu 1.0
+10/25/2011 8:32 AM        scan h 0 k 0 l 3.2 e -1.5 -0.3 0.05 preset mcu 1.0
+10/25/2011 8:59 AM        scantitle "Dispersion G-T transverse (101) zone"
+10/25/2011 8:59 AM        scan h 1 k 0 l -0.5 e -8.5 -4.0 0.1 preset mcu 1.0
+10/25/2011 9:49 AM        scan h 1 k 0 l -0.2 e -7.9 -3.5 0.1 preset mcu 1.0
+10/25/2011 10:36 AM        scan h 1 k 0 l 0.1 e -7.0 -2.5 0.1 preset mcu 1.0
+10/25/2011 11:30 AM        scan h 1 k 0 l 0.4 e -5.0 -1.0 0.1 preset mcu 1.0
+10/25/2011 12:13 PM        scan h 1 k 0 l 0.6 e -2.5 -1.0 0.1 preset mcu 1.0
+10/25/2011 12:30 PM        scan h 1 k 0 l 0.8 e -1.5 -0.3 0.05 preset mcu 1.0
+10/25/2011 12:56 PM        scantitle "Dispersion G-L longitudinal (101) zone"
+10/25/2011 12:56 PM        scan h 1.1 k 0 l 1.1 e -1.5 -0.3 0.05 preset mcu 1.0
+10/25/2011 1:22 PM        scan h 1.2 k 0 l 1.2 e -2.5 -1.0 0.1 preset mcu 1.0
+10/25/2011 1:39 PM        scan h 1.3 k 0 l 1.3 e -5.0 -1.0 0.1 preset mcu 1.0
+10/25/2011 2:22 PM        scan h 1.4 k 0 l 1.4 e -7.0 -2.5 0.1 preset mcu 1.0
+10/25/2011 2:56 PM        scan h 1.5 k 0 l 1.5 e -8.5 -5.5 0.1 preset mcu 1.0
+10/25/2011 3:28 PM        scantitle "Dispersion G-L transverse (-102) zone"
+10/25/2011 3:28 PM        scan h -0.9 k 0 l 2.1 e -1.5 -0.3 0.05 preset mcu 1.0
+10/25/2011 3:28 PM        scan h -0.8 k 0 l 2.2 e -6.0 -2.0 0.1 preset mcu 1.0
+10/25/2011 3:31 PM        drive h 1 k 0 l 1 e 0
+10/25/2011 3:33 PM        scantitle "Looking for TO mode at Gamma (1,0,1)"
+10/25/2011 3:33 PM        scan h 1 k 0 l 1 e -10 -8.5 0.25 preset mcu 1.0
+10/25/2011 3:45 PM        scan h 1 k 0 l 1 e -10.375 -8.0 0.25 preset mcu 2.0
+10/25/2011 4:17 PM        scan h 1 k 0 l 1 e -7.875 -6.875 0.25 preset mcu 2.0
+10/25/2011 4:34 PM        scantitle "Looking for LO mode at Gamma (1,0,1)"
+10/25/2011 4:35 PM        scan h 1 k 0 l 1 e -13.5 -11.5 0.25 preset mcu 1.0
+10/25/2011 4:48 PM        drive s2 60
+10/25/2011 4:49 PM        drive s1 65
+10/25/2011 4:50 PM        drive s2 109
+10/25/2011 4:53 PM        drive ef 18.5
+10/25/2011 4:53 PM        drive s2 105
+10/25/2011 4:54 PM        drive s2 109
+10/25/2011 4:56 PM        drive s1 90
+10/25/2011 4:56 PM        drive s1 110
+10/25/2011 4:57 PM        drive s1 120
+10/25/2011 4:57 PM        drive s2 70
+10/25/2011 4:58 PM        drive s1 100
+10/25/2011 4:58 PM        scantitle "Looking for optical phonons at (2,0,2)"
+10/25/2011 4:59 PM        scan h 2 k 0 l 2 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 5:23 PM        scantitle "Optical phonons at Gamma (104)"
+10/25/2011 5:23 PM        scan h 1 k 0 l 4 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 5:48 PM        scantitle "Optical phonons at Gamma (003)"
+10/25/2011 5:48 PM        scan h 0 k 0 l 3 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 6:13 PM        scantitle "Optical phonons at Gamma (-102)"
+10/25/2011 6:13 PM        scan h -1 k 0 l 2 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 6:37 PM        scantitle "Optical phonons at L (1.5,0,1.5)"
+10/25/2011 6:37 PM        scan h 1.5 k 0 l 1.5 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 7:02 PM        scantitle "Optical phonons at L (0.5,0,3.5)"
+10/25/2011 7:02 PM        scan h 0.5 k 0 l 3.5 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 7:27 PM        scantitle "Optical phonons at L (-0.5,0,2.5)"
+10/25/2011 7:27 PM        scan h -0.5 k 0 l 2.5 e -13.5 -8.0 0.25 preset mcu 1.0
+10/25/2011 7:52 PM        scantitle "Optical phonons at X (1.5,0,0)"
+10/25/2011 7:52 PM        scan h 1.5 k 0 l 0 e -13.0 -9.0 0.25 preset mcu 1.0
+10/25/2011 8:11 PM        scantitle "Optical phonons at X (-0.5,0,4)"
+10/25/2011 8:11 PM        scan h -0.5 k 0 l 4 e -13.0 -9.0 0.25 preset mcu 1.0
+10/25/2011 8:30 PM        scantitle "Optical phonons at X (1.5,0,3)"
+10/25/2011 8:30 PM        scan h 1.5 k 0 l 3 e -13.0 -9.0 0.25 preset mcu 1.0
+10/25/2011 8:49 PM        scantitle "Optical phonons at T (0,0,4.5)"
+10/25/2011 8:49 PM        scan h 0 k 0 l 4.5 e -14.25 -11.5 0.25 preset mcu 1.0
+10/25/2011 9:02 PM        scantitle "Optical phonons at T (-1,0,3.5)"
+10/25/2011 9:02 PM        scan h -1 k 0 l 3.5 e -14.25 -11.5 0.25 preset mcu 1.0
+10/25/2011 9:15 PM        scantitle "Optical phonons at T (1,0,-0.5)"
+10/25/2011 9:15 PM        scan h 1 k 0 l -0.5 e -14.25 -11.5 0.25 preset mcu 1.0
+10/25/2011 9:28 PM        scantitle "Optical phonons at T (1,0,2.5)"
+10/25/2011 9:28 PM        scan h 1 k 0 l 2.5 e -14.25 -11.5 0.25 preset mcu 1.0
+10/25/2011 9:58 PM        scantitle "Looking for TO mode at Gamma (1,0,1)"
+10/25/2011 10:01 PM        scan h 1 k 0 l 1 e -10.375 -7.375 0.25 preset mcu 2.0
+10/25/2011 10:50 PM        scantitle "Dispersion G-L transverse (-102) zone"
+10/25/2011 10:50 PM        scan h -0.9 k 0 l 2.1 e -1.5 -0.3 0.05 preset mcu 1.0
+10/25/2011 11:17 PM        scan h -0.8 k 0 l 2.2 e -6.0 -2.0 0.1 preset mcu 1.0
+10/26/2011 12:01 AM        scan h -0.7 k 0 l 2.3 e -7.0 -2.5 0.1 preset mcu 1.0
+10/26/2011 12:50 AM        scan h -0.6 k 0 l 2.4 e -7.0 -2.5 0.1 preset mcu 1.0
+10/26/2011 1:38 AM        scan h -0.5 k 0 l 2.5 e -8.5 -3.5 0.1 preset mcu 1.0
+10/26/2011 2:33 AM        scantitle "Optic dispersion G (101)"
+10/26/2011 2:33 AM        scan h 1 k 0 l 1 e -13.5 -7.0 0.25 preset mcu 4.0
+10/26/2011 4:25 AM        scantitle "Optic dispersion L (1.5 0 1.5)"
+10/26/2011 4:25 AM        scan h 1.5 k 0 l 1.5 e -14 -10.5 0.25 preset mcu 4.0
+10/26/2011 5:28 AM        scantitle "Optic dispersion X (1.5 0 0)"
+10/26/2011 5:28 AM        scan h 1.5 k 0 l 0 e -13 -9 0.25 preset mcu 4.0
+10/26/2011 6:40 AM        scantitle "Optic dispersion T (0 0 4.5)"
+10/26/2011 6:40 AM        scan h 0 k 0 l 4.5 e -14.5 -11.0 0.25 preset mcu 4.0
+10/26/2011 7:47 AM        scantitle "Optic dispersion T (0 0 4.5)"
+10/26/2011 7:47 AM        scan h 0 k 0 l 4.5 e -14.5 -11.0 0.25 preset mcu 4.0
+10/26/2011 10:38 AM        set_temp 200
+10/26/2011 10:50 AM        set_temp 373
+10/26/2011 10:52 AM        drive e -2
+10/26/2011 11:00 AM        set_temp 400
+10/26/2011 11:11 AM        set_temp 473
+10/26/2011 11:35 AM        set_temp 525
+10/26/2011 11:48 AM        set_temp 520
+10/26/2011 11:51 AM        set_temp 515
+10/26/2011 11:52 AM        set_temp 500
+10/26/2011 11:58 AM        scantitle "LA + TA phonons in (-102) at (0,0,0.6), add data"
+10/26/2011 11:58 AM        scan h -1 k 0 l 2.6 e -2.0 0.3 0.1 preset mcu 0.5
+10/26/2011 12:11 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.9), add data"
+10/26/2011 12:11 PM        scan h -1 k 0 l 2.9 e -4.0 -2.5 0.1 preset mcu 0.5
+10/26/2011 12:20 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.2), add data"
+10/26/2011 12:20 PM        scan h -1 k 0 l 3.2 e -7.9 -3.5 0.1 preset mcu 0.5
+10/26/2011 12:21 PM        drive e -5
+10/26/2011 12:22 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.6), add data"
+10/26/2011 12:22 PM        scan h -1 k 0 l 2.6 e -2.0 0.3 0.1 preset mcu 0.5
+10/26/2011 12:35 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.9), add data"
+10/26/2011 12:35 PM        scan h -1 k 0 l 2.9 e -4.0 -2.5 0.1 preset mcu 0.5
+10/26/2011 12:44 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.2), add data"
+10/26/2011 12:44 PM        scan h -1 k 0 l 3.2 e -7.9 -3.5 0.1 preset mcu 0.5
+10/26/2011 1:08 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.5), add data"
+10/26/2011 1:08 PM        scan h -1 k 0 l 3.5 e -8.2 -4.0 0.1 preset mcu 0.5
+10/26/2011 1:32 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.8), add data"
+10/26/2011 1:32 PM        scan h -1 k 0 l 3.8 e -7.9 -3.5 0.1 preset mcu 0.5
+10/26/2011 1:37 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.5), add data"
+10/26/2011 1:38 PM        scan h -1 k 0 l 3.5 e -4.0 -3.0 0.1 preset mcu 0.5
+10/26/2011 1:44 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.2), add data"
+10/26/2011 1:44 PM        scan h -1 k 0 l 3.2 e -3.5 -3.0 0.1 preset mcu 0.5
+10/26/2011 1:49 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.9), add data"
+10/26/2011 1:50 PM        scan h -1 k 0 l 2.9 e -5.5 -4.0 0.1 preset mcu 0.5
+10/26/2011 1:59 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.6), add data"
+10/26/2011 1:59 PM        scan h -1 k 0 l 2.6 e -3.0 -2.0 0.1 preset mcu 0.5
+10/26/2011 2:05 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.9), add data"
+10/26/2011 2:05 PM        scan h -1 k 0 l 2.9 e -7.0 -5.5 0.1 preset mcu 0.5
+10/26/2011 2:23 PM        scantitle "LA + TA phonons in (-102) at (0,0,1.8), add data"
+10/26/2011 2:23 PM        scan h -1 k 0 l 3.8 e -7.9 -3.0 0.1 preset mcu 0.5
+10/26/2011 2:50 PM        scantitle "Optic dispersion G (101)"
+10/26/2011 2:50 PM        scan h 1 k 0 l 1 e -12.5 -5.0 0.25 preset mcu 4.0
+10/26/2011 4:57 PM        scantitle "LA + TA phonons in (-102) at (0,0,0.3), add data"
+10/26/2011 4:57 PM        scan h -1 k 0 l 2.3 e  -2.3  -0.4  0.1 preset mcu 0.25
+10/26/2011 5:04 PM        scantitle "Dispersion G-X in (101) zone"
+10/26/2011 5:04 PM        scan h 1.5 k 0 l 0 e -5.0 -2.2 0.1 preset mcu 0.5
+10/26/2011 5:21 PM        scan h 1.4 k 0 l 0.2 e -5.3 -2.5 0.1 preset mcu 1.0
+10/26/2011 5:51 PM        scan h 1.3 k 0 l 0.4 e -4.2 -1.5 0.1 preset mcu 1.0
+10/26/2011 6:21 PM        scan h 1.2 k 0 l 0.6 e -4.0 -1.0 0.1 preset mcu 1.0
+10/26/2011 6:53 PM        scan h 1.1 k 0 l 0.8 e -1.7 -0.8 0.1 preset mcu 1.0
+10/26/2011 7:04 PM        scantitle "Dispersion G-T longitudinal (003) zone"
+10/26/2011 7:04 PM        scan h 0 k 0 l 3.6 e -5.0 -1.0 0.1 preset mcu 1.0
+10/26/2011 7:46 PM        scan h 0 k 0 l 3.4 e -2.5 -0.5 0.1 preset mcu 1.0
+10/26/2011 8:05 PM        calc h 0 k 0 l 3.4 e -2.5
+10/26/2011 8:05 PM        drive h 0 k 0 l 3.4 e -2.5
+10/26/2011 8:08 PM        drive h 0 k 0 l 3.4 e -2.5
+10/26/2011 8:09 PM        drive s1 0 s2 40
+10/26/2011 8:09 PM        drive s1 23.74
+10/26/2011 8:09 PM        drive s1 23.74948
+10/26/2011 8:10 PM        drive s2 0
+10/26/2011 8:12 PM        drive s2 71.47332
+10/26/2011 8:16 PM        scan h 0 k 0 l 3.4 e -2.5 -0.5 0.1 preset mcu 1.0
+10/26/2011 8:41 PM        scan h 0 k 0 l 3.2 e -1.5 0.0 0.05 preset mcu 1.0
+10/26/2011 9:13 PM        scantitle "Dispersion G-T transverse (101) zone"
+10/26/2011 9:13 PM        scan h 1 k 0 l -0.5 e -6.5 -2.5 0.1 preset mcu 1.0
+10/26/2011 9:55 PM        scan h 1 k 0 l -0.2 e -6.0 -3.0 0.1 preset mcu 1.0
+10/26/2011 10:27 PM        scan h 1 k 0 l 0.1 e -5.0 -2.3 0.1 preset mcu 1.0
+10/26/2011 10:56 PM        scan h 1 k 0 l 0.4 e -4.0 -1.0 0.1 preset mcu 1.0
+10/26/2011 11:28 PM        scan h 1 k 0 l 0.6 e -2.5 -0.7 0.1 preset mcu 1.0
+10/26/2011 11:48 PM        scan h 1 k 0 l 0.8 e -1.5 -0.3 0.05 preset mcu 1.0
+10/27/2011 12:14 AM        scantitle "Dispersion G-L longitudinal (101) zone"
+10/27/2011 12:14 AM        scan h 1.1 k 0 l 1.1 e -2.0 -0.7 0.05 preset mcu 1.0
+10/27/2011 12:42 AM        scan h 1.2 k 0 l 1.2 e -5.5 -2.5 0.1 preset mcu 1.0
+10/27/2011 1:14 AM        scan h 1.3 k 0 l 1.3 e -6.5 -3.5 0.1 preset mcu 1.0
+10/27/2011 1:46 AM        scan h 1.4 k 0 l 1.4 e -7.0 -5.0 0.1 preset mcu 1.0
+10/27/2011 2:07 AM        scan h 1.5 k 0 l 1.5 e -8.5 -5.5 0.1 preset mcu 1.0
+10/27/2011 2:39 AM        scantitle "Dispersion G-L transverse (-102) zone"
+10/27/2011 2:39 AM        scan h -0.9 k 0 l 2.1 e -2.0 -0.6 0.05 preset mcu 1.0
+10/27/2011 3:09 AM        scan h -0.8 k 0 l 2.2 e -6.0 -2.0 0.1 preset mcu 1.0
+10/27/2011 3:52 AM        scan h -0.7 k 0 l 2.3 e -8.0 -3.5 0.1 preset mcu 1.0
+10/27/2011 4:39 AM        scan h -0.6 k 0 l 2.4 e -8.5 -4.5 0.1 preset mcu 1.0
+10/27/2011 5:21 AM        scan h -0.5 k 0 l 2.5 e -9.5 -5.0 0.1 preset mcu 1.0
+10/27/2011 6:08 AM        scantitle "Optic dispersion L (1.5 0 1.5)"
+10/27/2011 6:08 AM        scan h 1.5 k 0 l 1.5 e -15 -10.5 0.25 preset mcu 4.0
+10/27/2011 7:23 AM        scantitle "Optic dispersion X (1.5 0 0)"
+10/27/2011 7:23 AM        scan h 1.5 k 0 l 0 e -15 -9 0.25 preset mcu 4.0
+10/27/2011 9:02 AM        scantitle "Optic dispersion T (0 0 4.5)"
+10/27/2011 9:02 AM        scan h 0 k 0 l 4.5 e -14.5 -11.0 0.25 preset mcu 4.0
+10/27/2011 10:05 AM        scantitle "Optic dispersion T (0 0 4.5)"
+10/27/2011 10:05 AM        scan h 0 k 0 l 4.5 e -14.5 -11.0 0.25 preset mcu 4.0
+10/27/2011 11:36 AM        scantitle "Dispersion G-L transverse (-102) zone"
+10/27/2011 11:38 AM        scan h -0.9 k 0 l 2.1 e -3.0 -2.0 0.05 preset mcu 1.0
+10/27/2011 12:03 PM        scantitle "Dispersion G-T longitudinal (003) zone"
+10/27/2011 12:04 PM        scan h 0 k 0 l 3.4 e -2.5 -0.5 0.1 preset mcu 1.0
+10/27/2011 12:32 PM        set_temp 383
+10/27/2011 1:12 PM        scantitle "TO at G (101)"
+10/27/2011 1:12 PM        scan h 1 k 0 l 1 e -13.5 -7.0 0.25 preset mcu 4.0
+10/27/2011 3:02 PM        scantitle "LA at X (1.5 0 1.5)"
+10/27/2011 3:02 PM        scan h 1.5 k 0 l 1.5 e -8.5 -5.5 0.1 preset mcu 1.0
+10/27/2011 3:34 PM        scantitle "LA at L (1.5 0 0)"
+10/27/2011 3:34 PM        scan h 1.5 k 0 l 0 e -5 -2.5 0.25 preset mcu 0.5
+10/27/2011 3:40 PM        scantitle "Dispersion G-L transverse (-102) zone"
+10/27/2011 3:40 PM        scan h -0.9 k 0 l 2.1 e -3.0 -0.6 0.05 preset mcu 1.0
+10/27/2011 4:38 PM        scan h -0.8 k 0 l 2.2 e -6.0 -2.0 0.1 preset mcu 1.0
+10/27/2011 4:39 PM        set_temp 400
+10/27/2011 4:52 PM        set_temp 300
+10/27/2011 5:15 PM        scantitle "TO at X (1.5,0,0), add data, T=300K"
+10/27/2011 5:15 PM        scan h 1.5 k 0 l 0 e -15.0 -13.0 0.25 preset mcu 4.0
+10/27/2011 5:52 PM        scantitle "Optic dispersion L (1.5 0 1.5), add data, 300K"
+10/27/2011 5:52 PM        scan h 1.5 k 0 l 1.5 e -15 -14 0.25 preset mcu 4.0
+10/27/2011 6:12 PM        scantitle "Optic dispersion T (0 0 4.5), add data, 300K"
+10/27/2011 6:12 PM        scan h 0 k 0 l 4.5 e -16 -14.5 0.25 preset mcu 4.0
+10/27/2011 6:46 PM        set_temp 150
+10/27/2011 9:16 PM        scantitle "TO at G (101), 150 K"
+10/27/2011 9:16 PM        scan h 1 k 0 l 1 e -12.5 -7.25 0.25 preset mcu 12.0
+10/28/2011 1:36 AM        scantitle "LA at L (1.5 0 1.5), 150 K"
+10/28/2011 1:36 AM        scan h 1.5 k 0 l 1.5 e -8.2 -5.6 0.2 preset mcu 3.0
+10/28/2011 2:18 AM        scantitle "LA at X (1.5 0 0), 150 K"
+10/28/2011 2:18 AM        scan h 1.5 k 0 l 0 e -5 -2.5 0.25 preset mcu 1
+10/28/2011 2:28 AM        scantitle "Dispersion G-L transverse (-102) zone, 150 K"
+10/28/2011 2:28 AM        scan h -0.9 k 0 l 2.1 e -3.0 -0.6 0.05 preset mcu 1.0
+10/28/2011 3:17 AM        scan h -0.7 k 0 l 2.3 e -8.0 -3.5 0.1 preset mcu 2.0
+10/28/2011 4:49 AM        scan h -0.5 k 0 l 2.5 e -9.5 -5.0 0.1 preset mcu 2.0
+10/28/2011 6:21 AM        scantitle "Dispersion G-L longitudinal (101) zone, 150 K"
+10/28/2011 6:21 AM        scan h 1.1 k 0 l 1.1 e -2.0 -0.7 0.05 preset mcu 2.0
+10/28/2011 7:16 AM        scan h 1.3 k 0 l 1.3 e -6.5 -3.5 0.1 preset mcu 2.0
+10/28/2011 8:18 AM        scan h 1.5 k 0 l 1.5 e -8.5 -5.5 0.1 preset mcu 2.0
+10/28/2011 9:19 AM        scantitle "Dispersion G-T transverse (101) zone, 150 K"
+10/28/2011 9:19 AM        scan h 1 k 0 l -0.5 e -6.5 -2.5 0.1 preset mcu 2.0
+10/28/2011 10:10 AM        set_temp 300
+10/28/2011 10:14 AM        drive sgl 0 sgu 0
+10/28/2011 10:15 AM        drive e 0
+10/28/2011 10:27 AM        initialize
+10/28/2011 10:28 AM        begin

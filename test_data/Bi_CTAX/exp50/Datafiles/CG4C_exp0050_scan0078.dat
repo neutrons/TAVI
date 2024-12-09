@@ -1,0 +1,38 @@
+# scan = 78
+# date = 6/25/2012
+# time = 11:52:06 AM
+# proposal = 5137
+# experiment = Measurement of the phonon dispersion of Bismuch at high temperatures
+# experiment_number = 50
+# command = scanrel a1 -2 2 0.2 
+# builtin_command = scan a1 @(a1)+-2 @(a1)+2 0.200000
+# users = Michael Manley and Olivier Delaire
+# local_contact = T. Hong
+# scan_title = analyzer calibration
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = C32D24CuN2O14
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.535778,4.535778,11.837000,90.000000,90.000000,120.000000
+# ubmatrix = 0.006903,-0.004243,-0.084398,0.254439,0.123374,0.002343,-0.004682,-0.222643,0.002907
+# mode = 0
+# plane_normal = 0.020999,0.010495,0.601255
+# ubconf = UB21Jun2012_25646PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 30.000000
+# def_x = a1
+# def_y = detector
+# col_headers = 
+#   Pt.         a1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]   e_typ_tc   au-fe_tc       temp
+      1   140.9286     30.000     12.000  62490.000      0.762    96.4440   142.9286   -74.1428     0.6359     0.0000    34.9840     0.0000    73.0000     0.0000     0.0000     0.0000     0.0000   -74.1428     1.8480    -0.7376     0.0513     2.7384     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.000
+      2   141.1286     30.000     13.000  62584.000      0.763    96.4440   142.9286   -74.1428     0.6359     0.0000    34.9840     0.0000    73.0000     0.0000     0.0000     0.0000     0.0000   -74.1428     1.8480    -0.7376     0.0513     2.7384     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.000
+      3   141.3286     30.000     21.000  61649.000      0.752    96.4440   142.9286   -74.1428     0.6359     0.0000    34.9840     0.0000    73.0000     0.0000     0.0000     0.0000     0.0000   -74.1428     1.8480    -0.7376     0.0513     2.7384     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.000
+      4   141.5286      1.586      1.000   3333.000      0.041    96.4440   142.9286   -74.1428     0.6359     0.0000    34.9840     0.0000    73.0000     0.0000     0.0000     0.0000     0.0000   -74.1428     1.8480    -0.7376     0.0513     2.7384     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.000
+# Sum of Counts = 47
+# Center of Mass = 141.175409+/-29.122274
+# Full Width Half-Maximum = 0.342335+/-32.065712
+# 11:53:44 AM  6/25/2012   scan stopped!!
