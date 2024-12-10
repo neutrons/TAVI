@@ -99,7 +99,7 @@ def test_fit_single_peak_internal_model(fit_data):
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
-        p1.add_fit(f1, label="fit", color="C3", num_of_pts=50, marker="^")
+        p1.add_fit(f1, label="fit", color="C3", marker="^")
         p1.add_fit_components(f1, color=["C4", "C5"])
 
         fig, ax = plt.subplots()
@@ -114,7 +114,7 @@ def test_fit_two_peak(fit_data):
 
     f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")
 
-    # f1.add_background(model="Constant")
+    f1.add_background(model="Constant")
     f1.add_signal(model="Gaussian")
     f1.add_signal(model="Gaussian")
 
@@ -130,14 +130,14 @@ def test_fit_two_peak(fit_data):
     result = f1.fit(pars)
     assert np.allclose(result.params["s1_center"].value, 3.54, atol=0.01)
     assert np.allclose(result.params["s1_fwhm"].value, 0.40, atol=0.01)
-    x = f1.x_to_plot(num_of_pts=100, min=-1, max=5)
+    x = f1.x_to_plot(num_of_pts=200, min=-1, max=5)
     # y = f1.eval(result.params, x)
 
     if PLOT:
         p1 = Plot1D()
         p1.add_scan(s1_scan, fmt="o", label="data")
         p1.add_fit(f1, x=x, label="fit", color="C3")
-        p1.add_fit_components(f1, x=x, color=["C4", "C5"])
+        p1.add_fit_components(f1, x=x, color=["C1", "C2", "C4"])
 
         fig, ax = plt.subplots()
         p1.plot(ax)

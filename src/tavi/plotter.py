@@ -1,6 +1,6 @@
 # import matplotlib.colors as colors
 from functools import partial
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
@@ -73,11 +73,6 @@ class Plot1D(object):
         for key, val in kwargs.items():
             scan_data.fmt.update({key: val})
 
-    def _add_fit_from_eval(self, fit_data: FitData1D, **kwargs):
-        self.fit_data.append(fit_data)
-        for key, val in kwargs.items():
-            fit_data.fmt.update({key: val})
-
     def _add_fit_from_fitting(self, fit_data: Fit1D, num_of_pts: Optional[int] = 100, **kwargs):
         if (result := fit_data.result) is None:
             raise ValueError("Fitting result is None.")
@@ -87,22 +82,24 @@ class Plot1D(object):
         for key, val in kwargs.items():
             data.fmt.update({key: val})
 
-    # TODO
-    def add_fit(
-        self, fit_data: Union[tuple[np.ndarray, np.ndarray], Fit1D], num_of_pts: Optional[int] = 100, **kwargs
-    ):
-        if isinstance(fit_data, tuple):
-            x, y = fit_data
-            self._add_fit_from_eval(FitData1D(x, y), **kwargs)
-        elif isinstance(fit_data, Fit1D):
-            self._add_fit_from_fitting(fit_data, num_of_pts, **kwargs)
-        else:
-            raise ValueError(f"Invalid input fit_data={fit_data}")
+    def add_fit(self, fit1d: Fit1D, x: Optional[np.ndarray] = None, DISPLAY_PARAMS=True, **kwargs):
+        if x is None:
+            x = fit1d.x
+        if (result := fit1d.result) is None:  # evaluate
+            y = fit1d.eval(fit1d.params, x)
+        else:  # fit
+            y = result.eval(param=fit1d.params, x=x)
+        fit_data = FitData1D(x, y)
+        self.fit_data.append(fit_data)
+        for key, val in kwargs.items():
+            fit_data.fmt.update({key: val})
 
-    # TODO
-    def add_fit_components(self, fit_data: Fit1D, num_of_pts: Optional[int] = 100, **kwargs):
-        if isinstance(fit_data, Fit1D) and (result := fit_data.result) is not None:
-            x = fit_data.x_to_plot(num_of_pts)
+    def add_fit_components(self, fit1d: Fit1D, x: Optional[np.ndarray] = None, DISPLAY_PARAMS=True, **kwargs):
+        if x is None:
+            x = fit1d.x
+        if (result := fit1d.result) is None:  # fit first
+            pass
+        else:
             components = result.eval_components(result.params, x=x)
 
             num_components = len(components)
@@ -115,12 +112,10 @@ class Plot1D(object):
             for i, (prefix, y) in enumerate(components.items()):
                 data = FitData1D(x=x, y=y)
                 self.fit_data.append(data)
-                data.fmt.update({"label": prefix[:-1]})  # remove "_"
+                label = prefix[:-1]  # remove "_"
+                data.fmt.update({"label": label})
                 for key, val in kwargs.items():
                     data.fmt.update({key: val[i]})
-
-        else:
-            raise ValueError(f"Invalid input fit_data={fit_data}")
 
     def add_reso_bar(self, pos: tuple, fwhm: float, **kwargs):
         reso_data = ResoBar(pos, fwhm)

@@ -127,9 +127,12 @@ class Fit1D(object):
     def params(self) -> Parameters:
         """Get fitting parameters as a dictionary with the model prefix being the key"""
 
-        if self._parameters is None:
-            self._parameters = self.guess()
+        if self.result is not None:
+            params = self.result.params
+        else:
+            params = self.guess()
 
+        self._parameters = params
         return self._parameters
 
     def guess(self) -> Parameters:
@@ -171,5 +174,9 @@ class Fit1D(object):
     def fit(self, pars: Parameters) -> ModelResult:
 
         result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
-        self.result = result
-        return result
+        if result.success:
+            self.result = result
+            self._parameters = result.params
+            return result
+        else:
+            return None
