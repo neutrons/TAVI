@@ -11,7 +11,6 @@ from tavi.sample.xtal import Xtal
 
 
 def test_plot2d():
-
     # load data
     tavi = TAVI("./test_data/tavi_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
