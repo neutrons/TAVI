@@ -114,7 +114,7 @@ p2.add_reso_bar(
 
 fig, ax = plt.subplots()
 p2.plot(ax)
-ax.set_title("scan0060")
+ax.set_title("scan0050")
 
 # -----------------------------Fit 2 Q-----------------------------
 
@@ -141,5 +141,5 @@ p2_2.add_reso_bar(
 
 fig, ax = plt.subplots()
 p2_2.plot(ax)
-ax.set_title("scan0060")
+ax.set_title("scan0050")
 plt.show()

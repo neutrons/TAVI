@@ -162,7 +162,7 @@ class TAVI(object):
     def combine_scans(
         self,
         scan_nums: Union[list[int], list[tuple[str, int]]],
-        name: Optional[str] = None,
+        name: str = "",
     ):
         """Group scans for further processing
 
