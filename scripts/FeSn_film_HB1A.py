@@ -142,4 +142,44 @@ p2_2.add_reso_bar(
 fig, ax = plt.subplots()
 p2_2.plot(ax)
 ax.set_title("scan0050")
+
+
+# ------------------- scan0083 --------------
+
+scan83 = Scan.from_spice(path_to_spice_folder, scan_num=83)
+
+fesn000p5_lscan_2 = scan83.get_data(norm_to=(120, "mcu"))
+
+sample_json_path_3 = "./test_data/IPTS32816_HB1A_exp1034/fesn3.json"
+sample_3 = Xtal.from_json(sample_json_path_3)
+tas.mount_sample(sample_3)
+rez3_l = tas.cooper_nathans(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
+rez3_l.plot_ellipses()
+# -----------------------------Fit 3 L-----------------------------
+
+f3_lscan = Fit1D(fesn000p5_lscan_2)
+f3_lscan.add_background(model="Linear")
+f3_lscan.add_signal(model="Gaussian")
+pars = f3_lscan.guess()
+result = f3_lscan.fit(pars)
+print(result.fit_report())
+
+
+p3 = Plot1D()
+p3.add_scan(fesn000p5_lscan_2, fmt="o")
+p3.add_fit(
+    f3_lscan,
+    label=f"FWHM={result.params["s1_fwhm"].value:.4f}+/-{result.params["s1_fwhm"].stderr:.4f}",
+)
+x = result.params["s1_center"].value
+components = result.eval_components(result.params, x=x)
+y = components["s1_"] / 2 + components["b1_"]
+p3.add_reso_bar(
+    pos=(x, y), fwhm=rez3_l.coh_fwhms(axis=2), c="C3", label=f"Resolution FWHM={rez3_l.coh_fwhms(axis=2):.04f}"
+)
+
+fig, ax = plt.subplots()
+p3.plot(ax)
+ax.set_title("scan0083")
+
 plt.show()

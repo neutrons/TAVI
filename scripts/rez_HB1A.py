@@ -21,8 +21,8 @@ tas.mount_sample(sample)
 rez1 = tas.cooper_nathans(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
 rez1.plot_ellipses()
 rez1_hhl = rez1.get_ellipse(axes=(0, 1), PROJECTION=False)
-# rez1_q = tas.cooper_nathans(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=None)
-# rez1_q.plot_ellipses()
+rez1_q = tas.cooper_nathans(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=None)
+rez1_q.plot_ellipses()
 # ----------------------- load data ----------------------------
 
 tavi = TAVI()
@@ -45,7 +45,7 @@ si_111_1 = sg1.get_data(
 
 p1 = Plot2D()
 p1.add_contour(si_111_1, cmap="turbo", vmin=0, vmax=2.5e4)
-p1.add_reso(rez1_hhl, c="w")
+p1.add_reso(rez1_hhl, c="w", label="Copper-Nathans")
 p1.title = sg1.name
 p1.ylim = [0.97, 1.03]
 p1.xlim = [0.97, 1.03]
@@ -122,7 +122,7 @@ si_111_2 = sg2.get_data(
 
 p2 = Plot2D()
 p2.add_contour(si_111_2, cmap="turbo", vmin=0, vmax=3500)
-p2.add_reso(rez2_hhl, c="w")
+p2.add_reso(rez2_hhl, c="w", label="Copper-Nathans")
 p2.title = sg2.name
 # p2.ylim = [0.97, 1.03]
 # p2.xlim = [0.97, 1.03]

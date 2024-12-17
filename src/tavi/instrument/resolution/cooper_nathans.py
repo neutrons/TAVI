@@ -203,8 +203,10 @@ class CN(TAS):
         """
         self.validate_instrument_parameters()
 
-        self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer) if self._mat_f is None else self._mat_f
-        self._mat_g = CN.calc_mat_g(self.collimators) if self._mat_g is None else self._mat_g
+        # self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer) if self._mat_f is None else self._mat_f
+        # self._mat_g = CN.calc_mat_g(self.collimators) if self._mat_g is None else self._mat_g
+        self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer)
+        self._mat_g = CN.calc_mat_g(self.collimators)
 
         hkle_list = self._generate_hkle_list(hkl_list, ei, ef)
         rez_list = []
