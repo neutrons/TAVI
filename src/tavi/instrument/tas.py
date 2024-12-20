@@ -78,7 +78,7 @@ class TAS(TASBase):
         # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
         # pass
 
-        return np.rad2deg(two_theta_radian) * self.goniometer.sense
+        return np.rad2deg(two_theta_radian) * self.goniometer._sense
 
     # TODO complete finding UB from 3 or more peaks
     def calculate_ub_matrix(self, peaks: tuple[Peak, ...]):
@@ -267,7 +267,7 @@ class TAS(TASBase):
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
             return None
 
-        two_theta_deg = np.rad2deg(two_theta) * self.goniometer.sense
+        two_theta_deg = np.rad2deg(two_theta) * self.goniometer._sense
         t_mat = self._t_mat_minimal_tilt(hkl)
         t_mat_inv = np.linalg.inv(t_mat)
 

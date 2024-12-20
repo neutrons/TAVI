@@ -7,7 +7,7 @@ import numpy as np
 
 
 class ScanData1D(object):
-    """1D scan data ready to be plot, with ooptions to renormalize or rebin"""
+    """1D scan data ready to be plot, with options to renormalize or rebin"""
 
     def __init__(
         self,

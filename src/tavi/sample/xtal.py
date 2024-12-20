@@ -11,7 +11,7 @@ class Xtal(Sample):
     Singel crystal class
 
     Attibutes:
-        type (str): "xtal"
+        type (str): "crystal"
         ub_peaks : peaks used to determine UB matrix
         ub_matrix (np.adarray): UB matrix
         inv_ub_matrix (np.ndarray): inverse of UB matrix
@@ -29,7 +29,7 @@ class Xtal(Sample):
         lattice_params=(1, 1, 1, 90, 90, 90),
     ) -> None:
         super().__init__(lattice_params)
-        self.type = "xtal"
+        self.type = "crystal"
 
         self.ub_peaks: Optional[tuple[Peak, ...]] = None
         self.u_mat: Optional[np.ndarray] = None

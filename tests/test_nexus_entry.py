@@ -4,7 +4,7 @@ import h5py
 import numpy as np
 import pytest
 
-from tavi.data.nxentry import NexusEntry
+from tavi.data.nexus_entry import NexusEntry
 
 
 def test_get_dataset(nexus_entries):
@@ -109,7 +109,7 @@ def test_from_nexus_real_data():
 
     scan0034 = nexus_entries["scan0034"]
     assert scan0034.get("definition") == "NXtas"
-    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28-04:00"
     assert np.allclose(scan0034.get("s1")[0:3], [36.14, 36.5025, 36.855])
 
 
@@ -118,7 +118,7 @@ def test_from_spice_get_one():
     scan0034 = NexusEntry.from_spice(path_to_spice_entry, 34)["scan0034"]
 
     assert scan0034.get("definition") == "NXtas"
-    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28-04:00"
     assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
 
@@ -128,7 +128,7 @@ def test_from_spice_get_all():
 
     scan0034 = scans["scan0034"]
     assert scan0034.get("definition") == "NXtas"
-    assert scan0034.get("end_time") == "2024-07-03T02:41:28"
+    assert scan0034.get("end_time") == "2024-07-03T02:41:28-04:00"
     assert np.allclose(scan0034.get("s1")[0:3], np.array([36.14, 36.5025, 36.855]))
 
     # scan 41 contains only one data point

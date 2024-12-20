@@ -203,8 +203,6 @@ class CN(TAS):
         """
         self.validate_instrument_parameters()
 
-        # self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer) if self._mat_f is None else self._mat_f
-        # self._mat_g = CN.calc_mat_g(self.collimators) if self._mat_g is None else self._mat_g
         self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer)
         self._mat_g = CN.calc_mat_g(self.collimators)
 
@@ -222,7 +220,7 @@ class CN(TAS):
             rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=self.sample)
 
             try:
-                two_theta = get_angle_from_triangle(ki, kf, q_mod) * self.goniometer.sense
+                two_theta = get_angle_from_triangle(ki, kf, q_mod) * self.goniometer._sense
             except TypeError:
                 rez.STATUS = False
                 print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
@@ -232,10 +230,10 @@ class CN(TAS):
                 continue
 
             # phi = <ki to q>, always has the oppositie sign of s2
-            phi = get_angle_from_triangle(ki, q_mod, kf) * self.goniometer.sense * (-1)
+            phi = get_angle_from_triangle(ki, q_mod, kf) * self.goniometer._sense * (-1)
 
-            theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator.sense
-            theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer.sense
+            theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator._sense
+            theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer._sense
 
             # TODO
             # curved monochromator and analyzer

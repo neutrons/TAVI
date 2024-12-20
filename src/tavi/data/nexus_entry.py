@@ -5,7 +5,7 @@ from typing import Optional
 import h5py
 import numpy as np
 
-from tavi.data.nxdict import spice_data_to_nxdict
+from tavi.data.nexus_builder import spice_data_to_nxdict
 
 
 def _find_val_path(val, grp, prefix=""):

@@ -123,14 +123,14 @@ def test_calc_ub_from_2_peaks_ctax():
     ub_matrix = np.array(
         [
             [-0.016934, -0.026164, -0.071871],
+            [-0.20102, -0.192954, 0.007764],
             [-0.108217, 0.12038, -0.003176],
-            [0.20102, 0.192954, -0.007764],
         ]
     )
-    plane_normal = [-0.04032, 0.998565, -0.035237]
-    in_plane_ref = [-0.993257, -0.043892, -0.107299]
+    plane_normal = [-0.04032, 0.035237, 0.998565]
+    in_plane_ref = [-0.993257, 0.107299, -0.043892]
 
-    ctax = TAS(SPICE_CONVENTION=False)
+    ctax = TAS(SPICE_CONVENTION=True)
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
     nitio3 = Xtal.from_json("./test_data/test_samples/nitio3.json")

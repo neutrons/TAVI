@@ -5,7 +5,7 @@ from typing import Literal, Optional, Union
 import matplotlib.pyplot as plt
 import numpy as np
 
-from tavi.data.nxentry import NexusEntry
+from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D
 from tavi.plotter import Plot1D
 from tavi.sample.xtal import Xtal
@@ -97,10 +97,7 @@ class Scan(object):
 
     @classmethod
     def from_nexus(cls, path_to_nexus: str, scan_num: Optional[int] = None):
-        ((name, nexus_dict),) = NexusEntry.from_nexus(
-            path_to_nexus,
-            scan_num,
-        ).items()
+        ((name, nexus_dict),) = NexusEntry.from_nexus(path_to_nexus, scan_num).items()
         return cls(name, nexus_dict)
 
     @property
@@ -122,14 +119,13 @@ class Scan(object):
     @property
     def sample_ub_info(self):
         sample_type = self._nexus_dict.get("sample/type")
-        ub_matrix = self._nexus_dict.get("sample/orientation_matrix")
+        ub_matrix = self._nexus_dict.get("sample/orientation_matrix").reshape(3, 3)
         lattice_constants = self._nexus_dict.get("sample/unit_cell")
         if sample_type == "crystal" and (ub_matrix is not None):
             xtal = Xtal(lattice_constants)
-            (u, v) = xtal.ub_matrix_to_uv(spice_to_mantid(ub_matrix.reshape(3, 3)))
+            (u, v) = xtal.ub_matrix_to_uv(spice_to_mantid(ub_matrix))
         else:
-            u = None
-            v = None
+            (u, v) = (None, None)
 
         sample_ub_info = SampleUBInfo(
             sample_name=self._nexus_dict.get("sample/name"),
@@ -154,7 +150,7 @@ class Scan(object):
             analyzer=self._nexus_dict.get("analyser/type"),
             sense=(
                 self._nexus_dict.get("monochromator/sense")
-                + self._nexus_dict.get("sample/sense")
+                + self._nexus_dict.get("goniometer/sense")
                 + self._nexus_dict.get("analyser/sense")
             ),
             collimation=self._nexus_dict.get("divergence_x"),
@@ -197,7 +193,7 @@ class Scan(object):
         to normalize the y-axis and rebin x-axis.
 
         Args:
-            axes (x_str, y_stre): x-axis and y-axis variables
+            axes (x_str, y_str): x-axis and y-axis variables
             norm_to (norm_val (float), norm_channel(str)): value and channel for normalization
                 norm_channel should be "time", "monitor" or"mcu".
             rebin_type (str | None): "tol" or "grid"

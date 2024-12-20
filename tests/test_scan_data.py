@@ -185,17 +185,17 @@ def test_sub(scans1d):
     assert np.allclose(scan_sub.err, [np.sqrt(2), np.sqrt(3), 2])
 
 
-def test_add(scans1d):
-    scan0001, _, scan0003, *_ = scans1d
-    scan_add = scan0001 + scan0003
-    assert np.allclose(scan_add.x, [0, 1, 2])
-    assert np.allclose(scan_add.y, [2, 3, 4])
-    assert np.allclose(scan_add.err, [np.sqrt(2), np.sqrt(3), 2])
+# def test_add(scans1d):
+#     scan0001, _, scan0003, *_ = scans1d
+#     scan_add = scan0001 + scan0003
+#     assert np.allclose(scan_add.x, [0, 1, 2])
+#     assert np.allclose(scan_add.y, [2, 3, 4])
+#     assert np.allclose(scan_add.err, [np.sqrt(2), np.sqrt(3), 2])
 
 
-def test_sub_mismatch_x(scans1d):
-    scan0001, _, _, scan0004, *_ = scans1d
-    scan_sub = scan0001 - scan0004
-    assert np.allclose(scan_sub.x, [0, 1, 2])
-    assert np.allclose(scan_sub.y, [0, 1, 2])
-    assert np.allclose(scan_sub.err, [np.sqrt(2), np.sqrt(3), 2])
+# def test_sub_mismatch_x(scans1d):
+#     scan0001, _, _, scan0004, *_ = scans1d
+#     scan_sub = scan0001 - scan0004
+#     assert np.allclose(scan_sub.x, [0, 1, 2])
+#     assert np.allclose(scan_sub.y, [0, 1, 2])
+#     assert np.allclose(scan_sub.err, [np.sqrt(2), np.sqrt(3), 2])

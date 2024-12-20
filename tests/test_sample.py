@@ -93,6 +93,6 @@ def test_load_generic_sample_from_json():
 def test_load_xtal_from_json():
     xtal_json_path = "./test_data/test_samples/nitio3.json"
     xtal = Xtal.from_json(xtal_json_path)
-    assert xtal.type == "xtal"
+    assert xtal.type == "crystal"
     assert np.allclose(xtal.a, 5.034785)
     assert np.shape(xtal.ub_mat) == (3, 3)

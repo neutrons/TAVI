@@ -1,5 +1,5 @@
-from tavi.data.nxdict import NXdataset, NXentry
-from tavi.data.nxentry import NexusEntry
+from tavi.data.nexus_builder import NXdataset, NXentry
+from tavi.data.nexus_entry import NexusEntry
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CN
 from tavi.sample.xtal import Xtal

@@ -19,7 +19,7 @@ class Goniometer(TASComponent):
         component_name: str = "goniometer",
     ):
         self.type: str = "Y-ZX"  # Y-mZ-X for Huber stage at HB1A and HB3
-        self.sense: Literal[-1, +1] = -1
+        self.sense: Literal["-", "+"] = "-"
         self.omega_limit: Optional[tuple]
         self.sgl_limit: Optional[tuple] = (-10, 10)
         self.sgu_limit: Optional[tuple] = (-10, 10)
@@ -28,6 +28,16 @@ class Goniometer(TASComponent):
 
         super().__init__(param_dict)
         self.component_name = component_name
+
+    @property
+    def _sense(self):
+        match self.sense:
+            case "+":
+                return +1
+            case "-":
+                return -1
+            case _:
+                raise ValueError(f"sense {self.sense} needs to be either '+' or '-'.")
 
     @staticmethod
     def rot_x(nu):

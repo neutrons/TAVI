@@ -41,7 +41,7 @@ class MonoAna(TASComponent):
         self.d_spacing: float = mono_ana_xtal["PG002"]
         self.mosaic_h: float = 45.0  # horizontal mosaic, min of arc
         self.mosaic_v: float = 45.0  # vertical mosaic, if anisotropic
-        self.sense: Literal[-1, 1] = -1  # +1 for counter-clockwise, -1 for clockwise
+        self.sense: Literal["-", "+"] = "-"  # + for counter-clockwise, - for clockwise
 
         # divide by np.sqrt(12) if rectangular
         # Diameter D/4 if spherical
@@ -60,6 +60,16 @@ class MonoAna(TASComponent):
 
         super().__init__(param_dict, component_name)
         self.d_spacing = mono_ana_xtal[self.type]
+
+    @property
+    def _sense(self):
+        match self.sense:
+            case "+":
+                return +1
+            case "-":
+                return -1
+            case _:
+                raise ValueError(f"sense {self.sense} needs to be either '+' or '-'.")
 
     @property
     def _mosaic_h(self):

@@ -13,7 +13,7 @@
         "type": "PG002",
         "mosaic_h": 30,
         "mosaic_v": 30,
-        "sense": -1,
+        "sense": "-",
         "shape": "rectangular",
         "width": 7,
         "height": 15,
@@ -26,7 +26,7 @@
         "optimally_curved_v": false
     },
     "goniometer": {
-        "sense": 1,
+        "sense": "+",
         "type": "Y-ZX"
     },
     "monitor": {
@@ -37,7 +37,7 @@
         "d_spacing": 3.35416,
         "mosaic_h": 90,
         "mosaic_v": 90,
-        "sense": -1,
+        "sense": "-",
         "shape": "rectangular",
         "width": 20.0,
         "height": 18.0,

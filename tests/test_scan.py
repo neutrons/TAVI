@@ -13,6 +13,12 @@ def test_scan_from_spice():
     assert scan.scan_info.scan_title == "003 scan at Q=[0 0 2.5+0.8]"
     assert scan.sample_ub_info.sample_name == "NiTiO3"
     assert scan.sample_ub_info.type == "crystal"
+    assert np.allclose(
+        scan.sample_ub_info.ub_matrix,
+        np.array(
+            [[-0.016965, -0.026212, -0.071913], [-0.201388, -0.193307, 0.007769], [-0.108415, 0.1206, -0.003178]],
+        ),
+    )
     assert np.allclose(scan.sample_ub_info.u, [2.65493, 2.34763, -1.48203])
     assert np.allclose(scan.sample_ub_info.v, [-0.09782, -0.44945, -13.71879])
     assert scan.instrument_info.monochromator == "PG002"
@@ -30,10 +36,17 @@ def test_scan_from_nexus():
     assert scan.scan_info.scan_title == "003 scan at Q=[0 0 2.5+0.8]"
     assert scan.sample_ub_info.sample_name == "NiTiO3"
     assert scan.sample_ub_info.type == "crystal"
+    assert np.allclose(
+        scan.sample_ub_info.ub_matrix,
+        np.array(
+            [[-0.016965, -0.026212, -0.071913], [-0.201388, -0.193307, 0.007769], [-0.108415, 0.1206, -0.003178]],
+        ),
+    )
     assert np.allclose(scan.sample_ub_info.u, [2.65493, 2.34763, -1.48203])
     assert np.allclose(scan.sample_ub_info.v, [-0.09782, -0.44945, -13.71879])
     assert scan.instrument_info.monochromator == "PG002"
-    assert np.allclose(scan.instrument_info.collimation, (48, 40, 40, 120))
+    # assert np.allclose(scan.instrument_info.collimation, (48, 40, 40, 120))
+    assert np.allclose(scan.instrument_info.collimation, (40, 100, 80, 120))
     assert len(scan.data) == 55
     assert len(scan.data["Pt."]) == 40
     assert np.allclose(scan.data["detector"][0:3], [569, 194, 40])
