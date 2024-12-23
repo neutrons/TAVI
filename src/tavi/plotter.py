@@ -12,18 +12,14 @@ from tavi.instrument.resolution.ellipse import ResoEllipse
 
 
 class FitData1D(object):
-
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
-
         self.x = x
         self.y = y
         self.fmt: dict = {}
 
 
 class ResoBar(object):
-
     def __init__(self, pos: tuple[float, float], fwhm: float) -> None:
-
         self.pos = pos
         self.fwhm = fwhm
         self.fmt: dict = {}
@@ -167,7 +163,6 @@ class Plot1D(object):
 
 
 class Plot2D(object):
-
     def __init__(self) -> None:
         # self.ax = None
         self.contour_data: list[ScanData2D] = []
@@ -186,19 +181,16 @@ class Plot2D(object):
         self.LOG_Z = False
 
     def add_contour(self, contour_data: ScanData2D, **kwargs):
-
         for key, val in kwargs.items():
             contour_data.fmt.update({key: val})
         self.contour_data.append(contour_data)
 
     def add_curve(self, curve_data: ScanData1D, **kwargs):
-
         for key, val in kwargs.items():
             curve_data.fmt.update({key: val})
         self.curve_data.append(curve_data)
 
     def add_reso(self, reso_data: ResoEllipse, **kwargs):
-
         for key, val in kwargs.items():
             reso_data.fmt.update({key: val})
         self.reso_data.append(reso_data)
