@@ -171,12 +171,15 @@ class Fit1D(object):
     def eval(self, pars: Parameters, x: np.ndarray) -> np.ndarray:
         return self.model.eval(pars, x=x)
 
-    def fit(self, pars: Parameters) -> ModelResult:
+    def fit(self, pars: Parameters, USE_ERRORBAR=True) -> ModelResult:
 
-        result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
+        if USE_ERRORBAR:
+            result = self.model.fit(self.y, pars, x=self.x, weights=self.err)
+        else:
+            result = self.model.fit(self.y, pars, x=self.x)
         if result.success:
             self.result = result
             self._parameters = result.params
             return result
         else:
-            return None
+            raise ValueError("Fitting failed")

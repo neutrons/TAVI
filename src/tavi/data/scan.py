@@ -183,6 +183,18 @@ class Scan(object):
             raise ValueError(f"Unrecogonized rebin parameters {rebin_params}")
         return rebin_params
 
+    def _get_del_q(self):
+        """Calculate del_q for aeither a s1 scan or a th2th scan"""
+        qs = self.data["q"]
+        q_diff = np.max(qs) - np.min(qs)
+        mid_idx = int((len(qs) - 1) / 2)
+        if q_diff > 0.0001:  # q changing, must be a th2th scan
+            return qs - qs[mid_idx]
+        else:  # q not changing, must be a s1 scan
+            q_abs = np.mean(qs)
+            s1s = self.data["s1"]
+            return np.deg2rad(s1s - s1s[mid_idx]) * q_abs
+
     def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
@@ -205,7 +217,11 @@ class Scan(object):
         x_str = self.scan_info.def_x if x_str is None else x_str
         y_str = self.scan_info.def_y if y_str is None else y_str
 
-        scan_data_1d = ScanData1D(x=self.data[x_str], y=self.data[y_str])
+        if x_str == "del_q":
+            scan_data_1d = ScanData1D(x=self._get_del_q(), y=self.data[y_str])
+        else:
+            scan_data_1d = ScanData1D(x=self.data[x_str], y=self.data[y_str])
+
         label = "scan " + str(self.scan_info.scan_num)
         title = f"{label}: {self.scan_info.scan_title}"
 
