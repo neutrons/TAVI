@@ -1,0 +1,76 @@
+{
+    "source": {
+        "shape": "rectangular",
+        "width": 15.0,
+        "height": 15.0
+    },
+    "guide": {
+        "in_use": false,
+        "div_h": 0.0,
+        "div_v": 0.0
+    },
+    "monochromator": {
+        "type": "Heusler",
+        "mosaic_h": 30,
+        "mosaic_v": 30,
+        "sense": "+",
+        "shape": "rectangular",
+        "width": 7.62,
+        "height": 10.16,
+        "depth": 0.25,
+        "curved_h": false,
+        "curvh": 0.0,
+        "optimally_curved_h": false,
+        "curved_v": false,
+        "curvv": 0.4,
+        "optimally_curved_v": false
+    },
+    "monitor": {
+        "shape": "rectangular",
+        "width": 5,
+        "height": 12
+    },
+    "goniometer": {
+        "sense": "-",
+        "type": "Y-ZX"
+    },
+    "analyzer": {
+        "type": "Heusler",
+        "d_spacing": 3.437,
+        "mosaic_h": 40,
+        "mosaic_v": 40,
+        "sense": "+",
+        "shape": "rectangular",
+        "width": 7.62,
+        "height": 7,
+        "depth": 0.2,
+        "curved_h": false,
+        "curvh": 0.0,
+        "optimally_curved_h": false,
+        "curved_v": true,
+        "curvv": 0.0,
+        "optimally_curved_v": false
+    },
+    "detector": {
+        "shape": "rectangular",
+        "width": 4,
+        "height": 12.0
+    },
+    "distances": {
+        "src_mono": 325.0,
+        "mono_sample": 192.0,
+        "sample_ana": 91.0,
+        "ana_det": 61.0,
+        "mono_monitor": 121.0
+    },
+    "collimators": {
+        "h_pre_mono": 48,
+        "h_pre_sample": 80,
+        "h_post_sample": 60,
+        "h_post_ana": 240,
+        "v_pre_mono": 140,
+        "v_pre_sample": 240,
+        "v_post_sample": 320,
+        "v_post_ana": 450
+    }
+}
