@@ -88,12 +88,12 @@ class Sample(object):
         width = sample_params.get("width")
         height = sample_params.get("height")
         depth = sample_params.get("depth")
-        if all([shape, width, height, depth]):
+        if None not in [shape, width, height, depth]:
             self.set_shape(shape, width, height, depth)
 
         mosaic_h = sample_params.get("mosaic_h")
         mosaic_v = sample_params.get("mosaic_v")
-        if all([mosaic_h, mosaic_v]):
+        if None not in [mosaic_h, mosaic_v]:
             self.set_mosaic(mosaic_h, mosaic_v)
 
     @classmethod

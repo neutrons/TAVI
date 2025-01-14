@@ -1,11 +1,11 @@
 from tavi.data.nexus_builder import NXdataset, NXentry
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-tas = CN(SPICE_CONVENTION=False)
+tas = CooperNathans(SPICE_CONVENTION=False)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "./test_data/test_samples/nitio3.json"
@@ -36,7 +36,7 @@ for scan_num in scan_list:
 
     for i in range(len(ei_list)):
 
-        rez = tas.cooper_nathans(
+        rez = tas.rez(
             ei=ei_list[i],
             ef=ef_list[i],
             hkl_list=(qh_list[i], qk_list[i], ql_list[i]),

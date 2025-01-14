@@ -2,7 +2,7 @@
 # from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 import matplotlib.pylab as plt
 
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot1DManager, Plot2DManager
 
 
@@ -51,7 +51,7 @@ def test_1D(tas):
 
 
 if __name__ == "__main__":
-    tas = CN()
+    tas = CooperNathans()
     # tas.load_instrument_from_dicts(instrument_params)
     # tas.load_sample(test_xtal)
 

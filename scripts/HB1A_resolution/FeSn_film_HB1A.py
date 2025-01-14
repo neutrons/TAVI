@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot1D
 from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./test_data/IPTS32816_HB1A_exp1034/hb1a.json"
-tas = CN(SPICE_CONVENTION=True)
+tas = CooperNathans(SPICE_CONVENTION=True)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 
@@ -19,17 +19,17 @@ sample_json_path_1 = "./test_data/IPTS32816_HB1A_exp1034/fesn1.json"
 sample_1 = Xtal.from_json(sample_json_path_1)
 tas.mount_sample(sample_1)
 
-rez1_l = tas.cooper_nathans(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
+rez1_l = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
 rez1_l.plot_ellipses()
-rez1_q = tas.cooper_nathans(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0, projection=None)
+rez1_q = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0, projection=None)
 
 sample_json_path_2 = "./test_data/IPTS32816_HB1A_exp1034/fesn2.json"
 sample_2 = Xtal.from_json(sample_json_path_2)
 tas.mount_sample(sample_2)
 
-rez2_l = tas.cooper_nathans(hkl_list=(0, 0, 6), ei=ei, ef=ef, R0=R0)
+rez2_l = tas.rez(hkl_list=(0, 0, 6), ei=ei, ef=ef, R0=R0)
 rez2_l.plot_ellipses()
-rez2_q = tas.cooper_nathans(hkl_list=(0, 0, 6), ei=ei, ef=ef, R0=R0, projection=None)
+rez2_q = tas.rez(hkl_list=(0, 0, 6), ei=ei, ef=ef, R0=R0, projection=None)
 
 path_to_spice_folder = "./test_data/IPTS32816_HB1A_exp1034/exp1034/"
 scan35 = Scan.from_spice(path_to_spice_folder, scan_num=35)
@@ -153,7 +153,7 @@ fesn000p5_lscan_2 = scan83.get_data(norm_to=(120, "mcu"))
 sample_json_path_3 = "./test_data/IPTS32816_HB1A_exp1034/fesn3.json"
 sample_3 = Xtal.from_json(sample_json_path_3)
 tas.mount_sample(sample_3)
-rez3_l = tas.cooper_nathans(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
+rez3_l = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
 rez3_l.plot_ellipses()
 # -----------------------------Fit 3 L-----------------------------
 

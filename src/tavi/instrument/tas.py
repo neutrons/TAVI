@@ -37,7 +37,7 @@ class TAS(TASBase):
         q = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)])
         return q
 
-    def calculate_two_theta(
+    def get_two_theta(
         self,
         hkl: tuple[float, float, float],
         ei: float,

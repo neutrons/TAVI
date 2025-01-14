@@ -12,9 +12,9 @@ def test_find_two_theta():
     nitio3 = Xtal.from_json("./test_data/test_samples/nitio3.json")
     ctax.mount_sample(nitio3)
 
-    two_theta = ctax.calculate_two_theta(hkl=(0, 0, 3), ei=4.799999)
+    two_theta = ctax.get_two_theta(hkl=(0, 0, 3), ei=4.799999)
     assert np.allclose(two_theta, 53.240000, atol=1e-1)
-    two_theta = ctax.calculate_two_theta(hkl=(0.5, 0.5, 0), ei=4.799999)
+    two_theta = ctax.get_two_theta(hkl=(0.5, 0.5, 0), ei=4.799999)
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 

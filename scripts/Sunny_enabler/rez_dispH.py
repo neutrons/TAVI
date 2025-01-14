@@ -5,12 +5,12 @@ from mpl_toolkits.axisartist import Axes
 from tavi.data.nexus_builder import NXdataset, NXentry
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot2D
 from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-tas = CN(SPICE_CONVENTION=False)
+tas = CooperNathans(SPICE_CONVENTION=False)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "./test_data/test_samples/nitio3.json"
@@ -30,7 +30,7 @@ ei_list = [e + ef for e in np.arange(0, 5.1, 0.2)]
 p = Plot2D()
 
 for i, hkl in enumerate(hkl_list, 1):
-    rez_list = tas.cooper_nathans(hkl_list=hkl, ei=ei_list, ef=ef, R0=R0)
+    rez_list = tas.rez(hkl_list=hkl, ei=ei_list, ef=ef, R0=R0)
     sz = len(rez_list)
     rez_entry = NXentry(
         hkl=NXdataset(ds=[rez.hkl for rez in rez_list]),

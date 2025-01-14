@@ -5,7 +5,7 @@ import numpy as np
 from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot2D
 from tavi.sample.xtal import Xtal
 
@@ -24,7 +24,7 @@ def test_plot2d():
     )
     # load experimental parameters
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CN(SPICE_CONVENTION=False)
+    tas = CooperNathans(SPICE_CONVENTION=False)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
@@ -37,7 +37,7 @@ def test_plot2d():
     ef = 4.8
     ei_list = [e + ef for e in np.arange(0, 4.1, 0.4)]
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez_list = tas.cooper_nathans(
+    rez_list = tas.rez(
         hkl_list=hkl_list,
         ei=ei_list,
         ef=ef,

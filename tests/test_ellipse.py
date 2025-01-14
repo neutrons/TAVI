@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from mpl_toolkits.axisartist import Axes
 
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot2D
 from tavi.sample.xtal import Xtal
 
@@ -69,7 +69,7 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CN(SPICE_CONVENTION=False)
+    tas = CooperNathans(SPICE_CONVENTION=False)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"

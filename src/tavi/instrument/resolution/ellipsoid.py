@@ -132,7 +132,7 @@ class ResoEllipsoid(object):
             if not i == idx:
                 reso = ResoEllipsoid.quadric_proj(reso, i)
 
-        return 1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm
+        return sig2fwhm / np.sqrt(np.abs(reso[0, 0]))
 
     # def coh_fwhms(self, axis=None):
     #     """Coherent FWHM"""

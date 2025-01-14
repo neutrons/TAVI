@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot2D
 from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./test_data/IPTS9879_HB1A_exp978/hb1a.json"
-tas = CN(SPICE_CONVENTION=True)
+tas = CooperNathans(SPICE_CONVENTION=True)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 ei = 14.450292
@@ -41,14 +41,14 @@ p1 = Plot2D()
 p1.add_contour(si_111_1, cmap="turbo", vmin=0, vmax=2.5e4)
 
 for v, l in zip([30, 60, 90, 180], ["solid", "dashed", "dashdot", "dotted"]):
-    # tas.monochromator.mosaic_h = v
-    # tas.analyzer.mosaic_h = v
-    tas.sample.mosaic_h = v
-    # tas.collimators.h_pre_mono = v
+    tas.monochromator.mosaic_h = v
+    tas.analyzer.mosaic_h = v
+    # tas.sample.mosaic_h = v
+    tas.collimators.h_pre_mono = v
     # tas.collimators.h_pre_sample = v
     # tas.collimators.h_post_sample = v
     # tas.collimators.h_post_ana = v
-    rez1 = tas.cooper_nathans(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
+    rez1 = tas.rez(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
     # rez1.plot_ellipses()
     rez1_hhl = rez1.get_ellipse(axes=(0, 1), PROJECTION=False)
     # p1.add_reso(rez1_hhl, c="w", linestyle=l, label=f"mono+ana+coll_pre_mono {v}'")

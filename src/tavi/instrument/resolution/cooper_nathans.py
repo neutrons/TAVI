@@ -1,9 +1,7 @@
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 
-from tavi.instrument.components.collimators import Collimators
-from tavi.instrument.components.mono_ana import MonoAna
 from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas import TAS
 from tavi.utilities import (
@@ -16,7 +14,7 @@ from tavi.utilities import (
 )
 
 
-class CN(TAS):
+class CooperNathans(TAS):
     """Copper-Nathans method
 
     Methods:
@@ -40,62 +38,55 @@ class CN(TAS):
         """Load instrument configuration from json if provided"""
         super().__init__(SPICE_CONVENTION=SPICE_CONVENTION)
 
-        # constants independent of q and eng
-        self._mat_f: Optional[np.ndarray] = None
-        self._mat_g: Optional[np.ndarray] = None
+        # # constants independent of q and eng
+        # self._mat_f: Optional[np.ndarray] = None
+        # self._mat_g: Optional[np.ndarray] = None
 
-    @staticmethod
-    def calc_mat_f(mono: MonoAna, ana: MonoAna) -> np.ndarray:
-        # matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
-        mat_f = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, (CN.NUM_MONOS + CN.NUM_ANAS) * 2))
-        mat_f[CN.IDX_MONO0_H, CN.IDX_MONO0_H] = 1.0 / mono._mosaic_h**2
-        mat_f[CN.IDX_MONO0_V, CN.IDX_MONO0_V] = 1.0 / mono._mosaic_v**2
-        mat_f[CN.IDX_ANA0_H, CN.IDX_ANA0_H] = 1.0 / ana._mosaic_h**2
-        mat_f[CN.IDX_ANA0_V, CN.IDX_ANA0_V] = 1.0 / ana._mosaic_v**2
+    def mat_f(self) -> np.ndarray:
+        """matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
+        Note: No conversion from sigma to FWHM
+        """
+        i, j = CooperNathans.NUM_MONOS, CooperNathans.NUM_ANAS
+        mat_f = np.zeros(((i + j) * 2, (i + j) * 2))
+        mat_f[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_MONO0_H] = 1.0 / self.monochromator._mosaic_h**2
+        mat_f[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_MONO0_V] = 1.0 / self.monochromator._mosaic_v**2
+        mat_f[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_ANA0_H] = 1.0 / self.analyzer._mosaic_h**2
+        mat_f[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_ANA0_V] = 1.0 / self.analyzer._mosaic_v**2
         return mat_f
 
-    @staticmethod
-    def calc_mat_g(coll: Collimators):
-        (
-            coll_h_pre_mono,
-            coll_h_pre_sample,
-            coll_h_post_sample,
-            coll_h_post_ana,
-        ) = coll._horizontal_divergence
-
-        (
-            coll_v_pre_mono,
-            coll_v_pre_sample,
-            coll_v_post_sample,
-            coll_v_post_ana,
-        ) = coll._vertical_divergence
+    def mat_g(self) -> np.ndarray:
+        """matrix G, divergence of monochromator and analyzer, [pop75] Appendix 1
+        Note: No conversion from sigma to FWHM
+        """
+        (h_pre_mono, h_pre_sample, h_post_sample, h_post_ana) = self.collimators._horizontal_divergence
+        (v_pre_mono, v_pre_sample, v_post_sample, v_post_ana) = self.collimators._vertical_divergence
 
         # matrix G, divergence of collimators, [pop75] Appendix 1
-        mat_g = np.zeros((CN.NUM_COLLS * 2, CN.NUM_COLLS * 2))
-        mat_g[CN.IDX_COLL0_H, CN.IDX_COLL0_H] = 1.0 / coll_h_pre_mono**2
-        mat_g[CN.IDX_COLL0_V, CN.IDX_COLL0_V] = 1.0 / coll_v_pre_mono**2
-        mat_g[CN.IDX_COLL1_H, CN.IDX_COLL1_H] = 1.0 / coll_h_pre_sample**2
-        mat_g[CN.IDX_COLL1_V, CN.IDX_COLL1_V] = 1.0 / coll_v_pre_sample**2
-        mat_g[CN.IDX_COLL2_H, CN.IDX_COLL2_H] = 1.0 / coll_h_post_sample**2
-        mat_g[CN.IDX_COLL2_V, CN.IDX_COLL2_V] = 1.0 / coll_v_post_sample**2
-        mat_g[CN.IDX_COLL3_H, CN.IDX_COLL3_H] = 1.0 / coll_h_post_ana**2
-        mat_g[CN.IDX_COLL3_V, CN.IDX_COLL3_V] = 1.0 / coll_v_post_ana**2
+        mat_g = np.zeros((CooperNathans.NUM_COLLS * 2, CooperNathans.NUM_COLLS * 2))
+        mat_g[CooperNathans.IDX_COLL0_H, CooperNathans.IDX_COLL0_H] = 1.0 / h_pre_mono**2
+        mat_g[CooperNathans.IDX_COLL0_V, CooperNathans.IDX_COLL0_V] = 1.0 / v_pre_mono**2
+        mat_g[CooperNathans.IDX_COLL1_H, CooperNathans.IDX_COLL1_H] = 1.0 / h_pre_sample**2
+        mat_g[CooperNathans.IDX_COLL1_V, CooperNathans.IDX_COLL1_V] = 1.0 / v_pre_sample**2
+        mat_g[CooperNathans.IDX_COLL2_H, CooperNathans.IDX_COLL2_H] = 1.0 / h_post_sample**2
+        mat_g[CooperNathans.IDX_COLL2_V, CooperNathans.IDX_COLL2_V] = 1.0 / v_post_sample**2
+        mat_g[CooperNathans.IDX_COLL3_H, CooperNathans.IDX_COLL3_H] = 1.0 / h_post_ana**2
+        mat_g[CooperNathans.IDX_COLL3_V, CooperNathans.IDX_COLL3_V] = 1.0 / v_post_ana**2
 
         return mat_g
 
     @staticmethod
     def calc_mat_a(ki, kf, theta_m, theta_a):
         """matrix A,Y=AU, tranform from collimators angular divergence to  ki-kf frame"""
-        mat_a = np.zeros((6, 2 * CN.NUM_COLLS))
-        mat_a[0, CN.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
-        mat_a[0, CN.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
-        mat_a[1, CN.IDX_COLL1_H] = ki
-        mat_a[2, CN.IDX_COLL1_V] = -ki
+        mat_a = np.zeros((6, 2 * CooperNathans.NUM_COLLS))
+        mat_a[0, CooperNathans.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
+        mat_a[0, CooperNathans.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
+        mat_a[1, CooperNathans.IDX_COLL1_H] = ki
+        mat_a[2, CooperNathans.IDX_COLL1_V] = ki  # negative in Takin
 
-        mat_a[3, CN.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
-        mat_a[3, CN.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
-        mat_a[4, CN.IDX_COLL2_H] = kf
-        mat_a[5, CN.IDX_COLL2_V] = kf
+        mat_a[3, CooperNathans.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
+        mat_a[3, CooperNathans.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
+        mat_a[4, CooperNathans.IDX_COLL2_H] = kf
+        mat_a[5, CooperNathans.IDX_COLL2_V] = kf
         return mat_a
 
     @staticmethod
@@ -111,16 +102,16 @@ class CN(TAS):
     @staticmethod
     def calc_mat_c(theta_m, theta_a):
         """matrix C, constrinat between mono/ana mosaic and collimator divergence"""
-        mat_c = np.zeros(((CN.NUM_MONOS + CN.NUM_ANAS) * 2, CN.NUM_COLLS * 2))
-        mat_c[CN.IDX_MONO0_H, CN.IDX_COLL0_H] = 0.5
-        mat_c[CN.IDX_MONO0_H, CN.IDX_COLL1_H] = 0.5
-        mat_c[CN.IDX_MONO0_V, CN.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
-        mat_c[CN.IDX_MONO0_V, CN.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
+        mat_c = np.zeros(((CooperNathans.NUM_MONOS + CooperNathans.NUM_ANAS) * 2, CooperNathans.NUM_COLLS * 2))
+        mat_c[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_COLL0_H] = 0.5
+        mat_c[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_COLL1_H] = 0.5
+        mat_c[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
+        mat_c[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
 
-        mat_c[CN.IDX_ANA0_H, CN.IDX_COLL2_H] = 0.5
-        mat_c[CN.IDX_ANA0_H, CN.IDX_COLL3_H] = 0.5
-        mat_c[CN.IDX_ANA0_V, CN.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
-        mat_c[CN.IDX_ANA0_V, CN.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
+        mat_c[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_COLL2_H] = 0.5
+        mat_c[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_COLL3_H] = 0.5
+        mat_c[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
+        mat_c[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
         return mat_c
 
     @staticmethod
@@ -183,7 +174,7 @@ class CN(TAS):
         # if self.sample is None:
         #     raise ValueError("Sample info are missing.")
 
-    def cooper_nathans(
+    def rez(
         self,
         hkl_list: Union[tuple[float, float, float], list[tuple[float, float, float]]],
         ei: Union[float, list[float]],
@@ -203,10 +194,8 @@ class CN(TAS):
         """
         self.validate_instrument_parameters()
 
-        self._mat_f = CN.calc_mat_f(self.monochromator, self.analyzer)
-        self._mat_g = CN.calc_mat_g(self.collimators)
-
         hkle_list = self._generate_hkle_list(hkl_list, ei, ef)
+
         rez_list = []
         for hkl, ei, ef in hkle_list:
 
@@ -241,11 +230,11 @@ class CN(TAS):
             # TODO
             # reflection efficiency
 
-            mat_a = CN.calc_mat_a(ki, kf, theta_m, theta_a)
-            mat_b = CN.calc_mat_b(ki, kf, phi, two_theta)
-            mat_c = CN.calc_mat_c(theta_m, theta_a)
+            mat_a = CooperNathans.calc_mat_a(ki, kf, theta_m, theta_a)
+            mat_b = CooperNathans.calc_mat_b(ki, kf, phi, two_theta)
+            mat_c = CooperNathans.calc_mat_c(theta_m, theta_a)
 
-            mat_h = mat_c.T @ self._mat_f @ mat_c + self._mat_g
+            mat_h = mat_c.T @ self.mat_f() @ mat_c + self.mat_g()
             mat_h_inv = np.linalg.inv(mat_h)
             mat_ba = mat_b @ mat_a
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
@@ -280,7 +269,7 @@ class CN(TAS):
 
             if R0:  # calculate
                 r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-                r0 *= np.sqrt(np.linalg.det(self._mat_f) / np.linalg.det(mat_h))
+                r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
             else:
                 r0 = 0
 

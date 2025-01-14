@@ -1,7 +1,7 @@
 import matplotlib.pylab as plt
 import numpy as np
 
-from tavi.instrument.resolution.cooper_nathans import CN
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.sample.xtal import Xtal
 
 np.set_printoptions(floatmode="fixed", precision=4)
@@ -30,7 +30,7 @@ def test_copper_nathans_projection(tas_params):
 
 
 def test_cooper_nathans_compare_3():
-    tas = CN()
+    tas = CooperNathans()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/takin_test.json"
     sample_json_path = "./test_data/test_samples/sample_test.json"
@@ -61,7 +61,7 @@ def test_cooper_nathans_compare_3():
 
 
 def test_cooper_nathans_CTAX():
-    tas = CN()
+    tas = CooperNathans()
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     sample_json_path = "./test_data/test_samples/nitio3.json"
