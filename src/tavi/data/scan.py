@@ -102,6 +102,8 @@ class Scan(object):
 
     @property
     def scan_info(self):
+        preset_type = self._nexus_dict.get("preset_type")
+
         scan_info = ScanInfo(
             exp_id=self._nexus_dict["attrs"].get("dataset_name"),
             scan_num=int(self.name[-4:]),
@@ -110,9 +112,17 @@ class Scan(object):
             def_x=self._nexus_dict.get("data", ATTRS=True)["axes"],
             start_time=self._nexus_dict.get("start_time"),
             end_time=self._nexus_dict.get("end_time"),
-            preset_type="normal",
-            preset_channel=self._nexus_dict.get("monitor/mode"),
-            preset_value=self._nexus_dict.get("monitor/preset"),
+            preset_type=preset_type,
+            preset_channel=(
+                self._nexus_dict.get("monitor/mode")
+                if preset_type == "normal"
+                else self._nexus_dict.get("monitor/mode_1")
+            ),
+            preset_value=(
+                self._nexus_dict.get("monitor/preset")
+                if preset_type == "normal"
+                else self._nexus_dict.get("monitor/preset_1")
+            ),
         )
         return scan_info
 

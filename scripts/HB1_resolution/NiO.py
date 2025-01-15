@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
-from tavi.plotter import Plot1D
+from tavi.plotter import Plot1D, Plot2D
 from tavi.sample.xtal import Xtal
 from tavi.utilities import MotorAngles, Peak
 
@@ -30,19 +31,51 @@ assert np.allclose(tas.sample.ub_mat, ub_json, atol=1e-4)
 # ----------------- plot scan 45 and 59 -----------------------------
 # load data
 tavi = TAVI()
-path_to_spice_folder = "./test_data/IPTS9879_HB1A_exp978/exp978/"
+path_to_spice_folder = "./test_data/IPTS31591_HB1_exp0917/exp917/"
 tavi.load_spice_data_from_disk(path_to_spice_folder)
-
+tavi.save("./test_data/IPTS31591_HB1_exp0917/tavi.h5")
 
 scans = [45, 59]
 
 scan_combo = tavi.combine_scans(scans, name="NiO_combo_(0,0,1.3)")
-scan_combo_data = scan_combo.get_data(axes=("en", "detector_1"))
-
+scan_combo_data_1 = scan_combo.get_data(axes=("en", "detector_1"))
+scan_combo_data_2 = scan_combo.get_data(axes=("en", "detector_2"))
 
 p = Plot1D()
-p.add_scan(scan_combo_data)
+p.add_scan(scan_combo_data_1, fmt="o")
+p.add_scan(scan_combo_data_2, fmt="o")
 
 fig, ax = plt.subplots()
 im1 = p.plot(ax)
+
+# --------------------- resolution contour ------------
+
+
+R0 = False
+hkl_list = [(0, 0, ql) for ql in np.arange(0, 4, 0.2)]
+ef = 13.5
+ei_list = [e + ef for e in np.arange(0, 50, 5)]
+projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+
+rez_list = tas.rez(
+    hkl_list=hkl_list,
+    ei=ei_list,
+    ef=ef,
+    projection=projection,
+    R0=R0,
+)
+
+# genreate plot
+p2 = Plot2D()
+
+for rez in rez_list:
+    e_co = rez.get_ellipse(axes=(1, 3), PROJECTION=False)
+    e_inco = rez.get_ellipse(axes=(1, 3), PROJECTION=True)
+    p2.add_reso(e_co, c="k", linestyle="solid")
+    p2.add_reso(e_inco, c="k", linestyle="dashed")
+
+fig = plt.figure()
+ax = fig.add_subplot(111, axes_class=Axes)
+
+im = p2.plot(ax)
 plt.show()

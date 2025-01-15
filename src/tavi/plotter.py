@@ -199,9 +199,10 @@ class Plot2D(object):
 
     def add_reso(self, reso_data: ResoEllipse, **kwargs):
 
-        for key, val in kwargs.items():
-            reso_data.fmt.update({key: val})
-        self.reso_data.append(reso_data)
+        if reso_data is not None:
+            for key, val in kwargs.items():
+                reso_data.fmt.update({key: val})
+            self.reso_data.append(reso_data)
 
     @staticmethod
     def grid_helper(angle: float):

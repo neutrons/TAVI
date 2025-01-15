@@ -273,11 +273,10 @@ def spice_scan_to_nxdict(
 
     # ------------------------------------- detector ----------------------------------------
 
-    nxdet = NXentry(
-        data=NXdataset(ds=spicelogs.get("detector"), type="NX_INT", EX_required="true", units="counts"),
-        NX_class="NXdetector",
-        EX_required="true",
-    )
+    nxdet = NXentry(NX_class="NXdetector", EX_required="true")
+
+    if (ds := spicelogs.get("detector")) is not None:  # single detector
+        nxdet.add_dataset(key="data", ds=NXdataset(ds=ds, type="NX_INT", EX_required="true", units="counts"))
 
     if instrument_config_params is not None:
         if (det_params := instrument_config_params.get("detector")) is not None:
@@ -289,6 +288,14 @@ def spice_scan_to_nxdict(
                         nxdet.add_dataset(key=param, ds=NXdataset(ds=value, type="NX_FLOAT", units="cm"))
                     case _:
                         nxdet.add_dataset(key=param, ds=NXdataset(ds=value))
+
+    # for HB1 in polarized mode
+    idx = 1
+    while f"detector_{idx}" in spicelogs.keys():
+        nxdet.add_dataset(
+            key=f"detector_{idx}", ds=NXdataset(ds=spicelogs.get(f"detector_{idx}"), type="NX_INT", units="counts")
+        )
+        idx += 1
 
     # ------------------------------------- collimators ----------------------------------------
 
@@ -368,6 +375,7 @@ def spice_scan_to_nxdict(
     if preset_type == "normal":
         preset_channel = metadata.get("preset_channel")
         nxmonitor = NXentry(
+            preset_type=NXdataset(ds="normal", type="NX_CHAR"),
             mode=NXdataset(ds=preset_channel, type="NX_CHAR", EX_required="true"),
             preset=NXdataset(ds=metadata.get("preset_value"), type="NX_FLOAT", EX_required="true"),
             time=NXdataset(ds=spicelogs.get("time"), type="NX_FLOAT", units="seconds"),
@@ -379,10 +387,34 @@ def spice_scan_to_nxdict(
             EX_required="true",
         )
 
-    # TODO polarized exp at HB1
+    # polarized exp at HB1
     elif preset_type == "countfile":
-        print("Polarization data, not yet supported.")
-        nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")
+        countfile = metadata.get("countfile")
+        lines = countfile.split(",")
+        preset_list = []
+        for line in lines:
+            if line.startswith(" count preset"):
+                *_, mode, preset = line.split(" ")
+                preset_list.append((mode, preset))
+
+        nxmonitor = NXentry(
+            preset_type=NXdataset(ds="countfile", type="NX_CHAR"),
+            countfile=NXdataset(ds=countfile.split(","), type="NX_CHAR"),
+            NX_class="NXmonitor",
+            EX_required="true",
+        )
+        idx = 1
+        while f"detector_{idx}" in spicelogs.keys():
+            mode, preset = preset_list[idx - 1]
+            nxmonitor.add_dataset(key=f"mode_{idx}", ds=NXdataset(ds=mode, type="NX_CHAR"))
+            nxmonitor.add_dataset(key=f"preset_{idx}", ds=NXdataset(ds=preset, type="NX_FLOAT"))
+            time = spicelogs.get(f"time_{idx}")
+            nxmonitor.add_dataset(key=f"time_{idx}", ds=NXdataset(ds=time, type="NX_FLOAT", units="seconds"))
+            monitor = spicelogs.get(f"monitor_{idx}")
+            nxmonitor.add_dataset(key=f"monitor_{idx}", ds=NXdataset(ds=monitor, type="NX_INT", units="counts"))
+            mcu = spicelogs.get(f"mcu_{idx}")
+            nxmonitor.add_dataset(key=f"mcu_{idx}", ds=NXdataset(ds=mcu, type="NX_FLOAT", units="mcu"))
+            idx += 1
     else:
         print(f"Unrecogonized preset type {preset_type}.")
         nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")

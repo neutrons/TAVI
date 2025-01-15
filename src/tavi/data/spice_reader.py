@@ -58,6 +58,14 @@ def read_spice_datafile(file_name: str):
             others.append(line)
     # others = tuple(others)
 
+    if metadata["preset_type"] == "countfile":  # HB1 in polarization mode
+        countfile = []
+        for metadata_entry in metadata_list:
+            if metadata_entry.startswith("# countfile"):
+                _, val = metadata_entry.split("=")
+                countfile.append(val.strip())
+        metadata.update({"countfile": ", ".join(countfile)})
+
     data = np.genfromtxt(file_name, comments="#")
 
     return (data, tuple(col_names), metadata, tuple(others), tuple(error_messages))

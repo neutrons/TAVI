@@ -324,18 +324,19 @@ class NexusEntry(dict):
         dataset_names = []
         #  num_pts = len(pts) if (pts := self.get("Pt.")) is not None else 0
         num_pts = len(self.get("Pt."))
-        instru = self["instrument"]
 
+        instru = self["instrument"]
         for component, val_dict in instru.items():
             if component == "attrs":
                 continue
             if component == "detector":
-                dataset_names.append("detector")
-                continue
+                if "data" in val_dict:
+                    dataset_names.append("detector")
+                    continue
+                _get_name(val_dict)
             _get_name(val_dict)
 
         monitor = self["monitor"]
-
         if self.get("monitor/data") is not None:
             monitor.pop("data")
         _get_name(monitor)
