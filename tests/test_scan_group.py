@@ -7,7 +7,7 @@ from tavi.plotter import Plot1D, Plot2D
 
 
 def test_scan_group_default_1d():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
+    tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
 
     sg = tavi.combine_scans(scan_list, name="dispH")
@@ -22,7 +22,7 @@ def test_scan_group_default_1d():
 
 
 def test_scan_group_1d_rebin():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
+    tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
 
     sg = tavi.combine_scans(scan_list, name="dispH")
@@ -39,7 +39,7 @@ def test_scan_group_1d_rebin():
 
 
 def test_scan_group_2d():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
+    tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
 
     sg = tavi.combine_scans(scan_list, name="dispH")
@@ -56,7 +56,7 @@ def test_scan_group_2d():
 
 
 def test_scan_group_2d_rebin():
-    tavi = TAVI("./test_data/tavi_exp424.h5")
+    tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
 
     sg = tavi.combine_scans(scan_list, name="dispH")

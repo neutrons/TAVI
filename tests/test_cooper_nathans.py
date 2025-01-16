@@ -10,7 +10,7 @@ np.set_printoptions(floatmode="fixed", precision=4)
 def test_copper_nathans_localQ(tas_params):
     tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=r0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=r0)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -25,7 +25,7 @@ def test_copper_nathans_localQ(tas_params):
 def test_copper_nathans_hkl(tas_params):
     tas, ei, ef, hkl, _, r0 = tas_params
 
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=r0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=r0)
     mat = np.array(
         [
             [33305.0843, 33224.4963, -2651.8290, -5152.9962],
@@ -40,7 +40,7 @@ def test_copper_nathans_hkl(tas_params):
 def test_copper_nathans_projection(tas_params):
     tas, ei, ef, hkl, projection, r0 = tas_params
 
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, projection=projection, R0=r0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, projection=projection, R0=r0)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
@@ -55,7 +55,7 @@ def test_copper_nathans_projection(tas_params):
 def test_copper_nathans_list(tas_params):
     tas, ei, ef, _, _, r0 = tas_params
 
-    rez_list = tas.cooper_nathans(hkl_list=[(0, 0, 3), (0, 0, -3)], ei=[ei, ei + 1], ef=ef, projection=None, R0=r0)
+    rez_list = tas.rez(hkl_list=[(0, 0, 3), (0, 0, -3)], ei=[ei, ei + 1], ef=ef, projection=None, R0=r0)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],

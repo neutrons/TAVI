@@ -53,8 +53,10 @@ def test_scan_from_nexus():
 
 
 def test_get_scan_data():
-    nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-    scan = Scan.from_nexus(nexus_file_name)
+
+    path_to_spice_folder = "./test_data/exp424"
+    scan = Scan.from_spice(path_to_spice_folder, scan_num=42)
+
     scan_data_1d = scan.get_data()
 
     x_data = np.arange(0.1, 4.1, 0.1)

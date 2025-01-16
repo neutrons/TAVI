@@ -10,7 +10,7 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 def test_local_q(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=R0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=R0)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (3 * 2 * np.pi / tas.sample.c, 0, 0))
@@ -21,7 +21,7 @@ def test_local_q(tas_params):
 
 def test_hkl(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 0, 3))
@@ -32,7 +32,7 @@ def test_hkl(tas_params):
 
 def test_projection(tas_params):
     tas, ei, ef, hkl, projection, R0 = tas_params
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, projection=projection, R0=R0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, projection=projection, R0=R0)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 3, 0))
@@ -43,7 +43,7 @@ def test_projection(tas_params):
 
 def test_plotting(tas_params):
     tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.cooper_nathans(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
     rez.plot_ellipses()
     plt.show()
 
