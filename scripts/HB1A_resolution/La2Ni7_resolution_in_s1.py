@@ -156,7 +156,7 @@ ax.errorbar(
 )
 
 
-slope = 2.7
+slope = 1
 ax.plot([0, 1e5], [0, 1e5 * slope], "r", label=f"y = {slope} x")
 
 for i, hkl in enumerate(hkl_list):

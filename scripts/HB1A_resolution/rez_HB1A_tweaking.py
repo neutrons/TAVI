@@ -40,19 +40,20 @@ si_111_1 = sg1.get_data(
 p1 = Plot2D()
 p1.add_contour(si_111_1, cmap="turbo", vmin=0, vmax=2.5e4)
 
+tas.collimators.h_pre_mono = 90
 for v, l in zip([30, 60, 90, 180], ["solid", "dashed", "dashdot", "dotted"]):
     tas.monochromator.mosaic_h = v
     tas.analyzer.mosaic_h = v
     # tas.sample.mosaic_h = v
-    tas.collimators.h_pre_mono = v
+
     # tas.collimators.h_pre_sample = v
     # tas.collimators.h_post_sample = v
     # tas.collimators.h_post_ana = v
     rez1 = tas.rez(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
     # rez1.plot_ellipses()
     rez1_hhl = rez1.get_ellipse(axes=(0, 1), PROJECTION=False)
-    # p1.add_reso(rez1_hhl, c="w", linestyle=l, label=f"mono+ana+coll_pre_mono {v}'")
-    p1.add_reso(rez1_hhl, c="w", linestyle=l, label=f"sample mosaic_h {v}'")
+    p1.add_reso(rez1_hhl, c="w", linestyle=l, label=f"mono+ana+coll_pre_mono {v}'")
+    # p1.add_reso(rez1_hhl, c="w", linestyle=l, label=f"sample mosaic_h {v}'")
 p1.title = sg1.name
 p1.ylim = [0.97, 1.03]
 p1.xlim = [0.97, 1.03]

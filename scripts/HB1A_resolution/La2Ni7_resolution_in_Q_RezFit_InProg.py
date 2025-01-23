@@ -1,21 +1,34 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit import Parameters, minimize
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
-from tavi.plotter import Plot1D, Plot2D
+from tavi.plotter import Plot1D
 from tavi.sample.xtal import Xtal
 from tavi.utilities import MotorAngles, Peak
 
 
-def analyze_in_q(hkl, scans, fit_ranges):
+def residual(params, hkl, data, uncertainty):
+    params.add("m_mono", value=60)
+    params.add("m_ana", value=60)
+    params.add("c0", value=50)
+
+    s1_fwhm, th2th_fwhm = data
+    s1_fwhm_err, th2th_fwhm_err = uncertainty
+
+    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+
+    model = 1
+    return (data - model) / uncertainty
+
+
+def analyze(scans, fit_ranges):
     scan1, scan2 = scans
     fit_range1, fit_range2 = fit_ranges
-
     # ------------------------- th2th -------------------------
-
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=scan1)
     scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
     # perform fit
@@ -27,8 +40,26 @@ def analyze_in_q(hkl, scans, fit_ranges):
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     # print(scan_th2th_fit.result.fit_report())
 
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    # ------------------------- s1 -------------------------
+    s1 = Scan.from_spice(path_to_spice_folder, scan_num=scan2)
+    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    # perform fit
+    scan_s1_fit = Fit1D(scan_s1, fit_range2)
+    scan_s1_fit.add_signal(model="Gaussian")
+    scan_s1_fit.add_background(model="Constant")
+    pars_s1 = scan_s1_fit.guess()
+    # pars_s1["b1_c"].set(min=0)
+    result_s1 = scan_s1_fit.fit(pars_s1, USE_ERRORBAR=False)
+    # print(scan_s1_fit.result.fit_report())
 
+    return ((scan_th2th, scan_th2th_fit), (scan_s1, scan_s1_fit))
+
+
+def plot(hkl, scans, scan_data, results):
+    scan1, scan2 = scans
+    scan_th2th, scan_s1 = scan_data
+    result_th2th, result_s1 = results
+    # ------------------------- th2th -------------------------
     p1 = Plot1D()
     # data
     p1.add_scan(scan_th2th, fmt="o", label="#{} ({},{},{}) th2th scan".format(scan1, *hkl))
@@ -48,19 +79,6 @@ def analyze_in_q(hkl, scans, fit_ranges):
         c="C3",
         label=f"Resolution FWHM={rez.coh_fwhms(axis=0):.04f}",
     )
-
-    # ------------------------- s1 -------------------------
-
-    s1 = Scan.from_spice(path_to_spice_folder, scan_num=scan2)
-    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
-    # perform fit
-    scan_s1_fit = Fit1D(scan_s1, fit_range2)
-    scan_s1_fit.add_signal(model="Gaussian")
-    scan_s1_fit.add_background(model="Constant")
-    pars_s1 = scan_s1_fit.guess()
-    # pars_s1["b1_c"].set(min=0)
-    result_s1 = scan_s1_fit.fit(pars_s1, USE_ERRORBAR=False)
-    # print(scan_s1_fit.result.fit_report())
 
     p2 = Plot1D()
     # data
@@ -128,44 +146,6 @@ path_to_spice_folder = "test_data/IPTS9879_HB1A_exp978/exp978/"
 tavi.load_spice_data_from_disk(path_to_spice_folder)
 
 
-# generate a contour of all scans
-scans = list(range(132, 198 + 1))
-
-scan_group = tavi.combine_scans(scans, name="La2Ni7_40-40-40-80")
-scan_group_data = scan_group.get_data(
-    axes=("qh", "ql", "detector"),
-    norm_to=(1, "mcu"),
-    grid=(0.01, 0.05),
-)
-# ----------- overplot with resoluytion ellipses -----------
-projection = ((1, 1, 0), (-2, 1, 0), (0, 0, 1))
-
-hkl_list = [(qh, qh, ql) for ql in np.arange(0, 18, 1) for qh in np.arange(0, 1.5, 0.5)]
-hkl_list.pop(0)
-
-rez_list = tas.rez(
-    hkl_list=hkl_list,
-    ei=ei,
-    ef=ef,
-    projection=projection,
-    R0=False,
-)
-
-contour = Plot2D()
-contour.add_contour(scan_group_data, cmap="turbo", vmin=0, vmax=5e3)
-
-for rez in rez_list:
-    e_co = rez.get_ellipse(axes=(0, 2), PROJECTION=False)
-    e_inco = rez.get_ellipse(axes=(0, 2), PROJECTION=True)
-    contour.add_reso(e_co, c="k", linestyle="solid")
-    contour.add_reso(e_inco, c="k", linestyle="dashed")
-
-
-fig, ax = plt.subplots()
-im1 = contour.plot(ax)
-fig.colorbar(im1)
-
-
 #  ----------------------- bad peaks -------------------------
 # scan_info = (hkl, (th2th scan num, s1, scan num), fit ranges in del_q)
 # bad_scans = (
@@ -214,7 +194,6 @@ good_scans = (
 
 #  outputs to be collected
 q_list = []
-# s1_list = []
 hkl_list = []
 exp_th2th = []
 exp_s1 = []
@@ -223,36 +202,33 @@ cn_fwhm_s1 = []
 
 for info in good_scans:
     hkl, scans, fit_ranges = info
-    q, _, th2th, s1, cn_th2th, cn_s1 = analyze_in_q(hkl, scans, fit_ranges)
+    ((scan_th2th, scan_th2th_fit), (scan_s1, scan_s1_fit)) = analyze(scans, fit_ranges)
     #  collect output
     hkl_list.append(hkl)
     q_list.append(q)
-    # s1_list.append(s1)
     exp_th2th.append(th2th)
     exp_s1.append(s1)
     cn_fwhm_th2th.append(cn_th2th)
     cn_fwhm_s1.append(cn_s1)
 
 
-# -------------------plot FWHM/Q vs Q ------------------
-fig, ax = plt.subplots()
-ax.set_xlabel("Q (A^-1)")
-ax.set_ylabel("FWHM/Q")
-ax.set_ylim((0, 0.07))
 s1_fwhm = np.array([s1.params["s1_fwhm"].value for s1 in exp_s1])
 s1_fwhm_err = np.array([s1.params["s1_fwhm"].stderr for s1 in exp_s1])
-
-ax.errorbar(q_list, s1_fwhm / np.array(q_list), yerr=s1_fwhm_err / np.array(q_list), fmt="s", label="exp s1")
-
 th2th_fwhm = np.array([th2th.params["s1_fwhm"].value for th2th in exp_th2th])
 th2th_fwhm_err = np.array([th2th.params["s1_fwhm"].stderr for th2th in exp_th2th])
 
-ax.errorbar(q_list, th2th_fwhm / np.array(q_list), yerr=th2th_fwhm_err / np.array(q_list), fmt="o", label="exp th2th")
-ax.plot(q_list, np.array(cn_fwhm_s1) / np.array(q_list), "s", markerfacecolor="none", label="CN s1", c="C0")
-ax.plot(q_list, np.array(cn_fwhm_th2th) / np.array(q_list), "o", markerfacecolor="none", label="CN th2th", c="C1")
 
-ax.legend()
-ax.grid(alpha=0.6)
+# ----------------- fit to get resolution parameters ----------------
+params = Parameters()
+params.add("m_mono", value=60)
+params.add("m_ana", value=60)
+params.add("c0", value=50)
+
+out = minimize(
+    residual,
+    params,
+    args=(hkl, [s1_fwhm, th2th_fwhm], [s1_fwhm_err, th2th_fwhm_err]),
+)
 
 
 # --------------------- plot FWHM vs Q ---------------------
@@ -261,15 +237,19 @@ ax.set_xlabel("Q (A^-1)")
 ax.set_ylabel("FWHM (A^-1)")
 ax.set_ylim((0, 0.1))
 ax.set_xlim((0, 5))
-s1_fwhm = np.array([s1.params["s1_fwhm"].value for s1 in exp_s1])
-s1_fwhm_err = np.array([s1.params["s1_fwhm"].stderr for s1 in exp_s1])
-th2th_fwhm = np.array([th2th.params["s1_fwhm"].value for th2th in exp_th2th])
-th2th_fwhm_err = np.array([th2th.params["s1_fwhm"].stderr for th2th in exp_th2th])
 
 ax.errorbar(q_list, s1_fwhm, yerr=s1_fwhm_err, fmt="s", label="exp s1")
 ax.plot(q_list, np.array(cn_fwhm_s1), "s", markerfacecolor="none", label="CN s1", c="C0")
 ax.errorbar(q_list, th2th_fwhm, yerr=th2th_fwhm_err, fmt="o", label="exp th2th")
 ax.plot(q_list, cn_fwhm_th2th, "o", markerfacecolor="none", label="CN th2th", c="C1")
+ax.legend(loc=2)
+ax.grid(alpha=0.6)
+
+ax.set_title(
+    f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
+    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+)
+# annotation
 for i, hkl in enumerate(hkl_list):
     x = q_list[i]
     y = th2th_fwhm[i] + 0.002
@@ -284,14 +264,6 @@ for i, hkl in enumerate(hkl_list):
         y -= 0.012
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
 
-ax.legend(loc=2)
-ax.grid(alpha=0.6)
-
-ax.set_title(
-    f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
-    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
-)
-plt.tight_layout()
 
 # -----------------------LG TR Integrated intensity comparison ---------------
 fig, ax = plt.subplots()

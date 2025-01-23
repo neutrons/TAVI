@@ -180,8 +180,10 @@ ax.plot(q_list, y, "sr", label="1/sin(2*theta)")
 
 # ax1.set_xscale("log")
 # ax1.set_yscale("log")
-# plt.title("Mono, analyzer mosaic = (30'30'), horizontal coll=(40'-40'-40'-80')")
-
+# ax1.set_title(
+#     f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
+#     + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+# )
 ax.legend(loc=2)
 ax.grid(alpha=0.6)
 plt.tight_layout()

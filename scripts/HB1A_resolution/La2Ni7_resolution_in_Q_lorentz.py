@@ -94,8 +94,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
         np.mean(s1.data.get("s1")),
         result_th2th,
         result_s1,
-        rez.coh_fwhms(axis=0),
-        rez.coh_fwhms(axis=1),
+        rez,
     )
 
 
@@ -218,21 +217,22 @@ q_list = []
 hkl_list = []
 exp_th2th = []
 exp_s1 = []
-cn_fwhm_th2th = []
-cn_fwhm_s1 = []
+rez_list = []
 
 for info in good_scans:
     hkl, scans, fit_ranges = info
-    q, _, th2th, s1, cn_th2th, cn_s1 = analyze_in_q(hkl, scans, fit_ranges)
+    q, _, th2th, s1, rez = analyze_in_q(hkl, scans, fit_ranges)
     #  collect output
     hkl_list.append(hkl)
     q_list.append(q)
     # s1_list.append(s1)
     exp_th2th.append(th2th)
     exp_s1.append(s1)
-    cn_fwhm_th2th.append(cn_th2th)
-    cn_fwhm_s1.append(cn_s1)
+    rez_list.append(rez)
 
+
+cn_fwhm_th2th = [rez.coh_fwhms(axis=0) for rez in rez_list]
+cn_fwhm_s1 = [rez.coh_fwhms(axis=1) for rez in rez_list]
 
 # -------------------plot FWHM/Q vs Q ------------------
 fig, ax = plt.subplots()
@@ -292,28 +292,57 @@ ax.set_title(
     + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
 )
 plt.tight_layout()
+# ------------------------------
+x_array = []
+x_err = []
+x_array_l = []
+x_err_l = []
+
+for i, s1 in enumerate(exp_s1):
+    mat = rez_list[i].mat
+    # det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+    det = np.linalg.det(mat)
+    lorentz = np.sqrt(det / mat[1, 1])
+    amp = s1.params["s1_amplitude"].value
+    err = s1.params["s1_amplitude"].stderr
+    x_array.append(amp)
+    x_err.append(err)
+    x_array_l.append(amp / lorentz)
+    x_err_l.append(err / lorentz)
+
+y_array = []
+y_err = []
+y_array_l = []
+y_err_l = []
+for i, th2th in enumerate(exp_th2th):
+    mat = rez_list[i].mat
+    #  det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+    det = np.linalg.det(mat)
+    lorentz = np.sqrt(det / mat[0, 0])
+    amp = th2th.params["s1_amplitude"].value
+    err = th2th.params["s1_amplitude"].stderr
+    y_array.append(amp)
+    y_err.append(err)
+    y_array_l.append(amp / lorentz)
+    y_err_l.append(err / lorentz)
 
 # -----------------------LG TR Integrated intensity comparison ---------------
 fig, ax = plt.subplots()
-ax.set_xlabel("integ. intent. s1")
-ax.set_ylabel("integ. intent. th2th")
+ax.set_xlabel("integ. intent. s1 scans")
+ax.set_ylabel("integ. intent. th2th scans")
 # ax.set_xlim([-100,2000])
 # ax.set_ylim([-300,6000])
 
-x_array = np.array([s1.params["s1_amplitude"].value for s1 in exp_s1])
-y_array = np.array([th2th.params["s1_amplitude"].value for th2th in exp_th2th])
-ax.errorbar(
-    x=x_array,
-    y=y_array,
-    xerr=np.array([s1.params["s1_amplitude"].stderr for s1 in exp_s1]),
-    yerr=np.array([th2th.params["s1_amplitude"].stderr for th2th in exp_th2th]),
-    fmt="o",
-    label="exp integ. intent. in Q",
-)
-
-
+# x_array = np.array([s1.params["s1_amplitude"].value for s1 in exp_s1])
+# y_array = np.array([th2th.params["s1_amplitude"].value for th2th in exp_th2th])
+ax.errorbar(x=x_array, y=y_array, xerr=x_err, yerr=y_err, fmt="o", label="exp integ. intent. in Q")
+ax.errorbar(x=x_array_l, y=y_array_l, xerr=x_err_l, yerr=y_err_l, fmt="o", label="w/ Lorentz")
 slope = 2.7
-ax.plot([0, 6000], [0, 6000 * slope], "r", label=f"y = {slope} x")
+ax.plot([0, 6000], [0, 6000 * slope], "--r", label=f"y = {slope} x")
+
+slope = 1
+ax.plot([0, 6000], [0, 6000 * slope], "r", label="y = x")
+# ----------- annotation --------------
 
 for i, hkl in enumerate(hkl_list):
     x = x_array[i]
@@ -321,7 +350,7 @@ for i, hkl in enumerate(hkl_list):
     # mannual ajdjust position
     # if hkl ==(1,1,0):
     #     x-=0.15
-    ax.annotate(hkl, (x, y), rotation=90, fontsize=8)
+    ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
 
 plt.xscale("log")
 plt.yscale("log")
@@ -332,5 +361,76 @@ ax.grid(alpha=0.6)
 
 # ax.set_title("Mono, analyzer mosaic = (60'60'), horizontal coll=(40'-40'-40'-80')")
 plt.tight_layout()
+
+# --------------------- plot ratio ---------------------
+fig, ax = plt.subplots()
+ax.set_ylabel("integ. intent. th2th/s1 scans")
+ax.set_xlabel("Q (A^-1)")
+
+x_array = []
+x_err = []
+x_array_l = []
+x_err_l = []
+
+for i, s1 in enumerate(exp_s1):
+    mat = rez_list[i].mat
+    # det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+    det = np.linalg.det(mat)
+    lorentz = np.sqrt(det / mat[1, 1])
+    amp = s1.params["s1_amplitude"].value
+    err = s1.params["s1_amplitude"].stderr
+    x_array.append(amp)
+    x_err.append(err)
+    x_array_l.append(amp / lorentz)
+    x_err_l.append(err / lorentz)
+
+y_array = []
+y_err = []
+y_array_l = []
+y_err_l = []
+for i, th2th in enumerate(exp_th2th):
+    mat = rez_list[i].mat
+    #  det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+    det = np.linalg.det(mat)
+    lorentz = np.sqrt(det / mat[0, 0])
+    amp = th2th.params["s1_amplitude"].value
+    err = th2th.params["s1_amplitude"].stderr
+    y_array.append(amp)
+    y_err.append(err)
+    y_array_l.append(amp / lorentz)
+    y_err_l.append(err / lorentz)
+
+y = [y_array[i] / x_array[i] for i in range(len(q_list))]
+err = [y[i] * np.sqrt((y_err[i] / y_array[i]) ** 2 + (x_err[i] / x_array[i]) ** 2) for i in range(len(q_list))]
+ax.errorbar(x=q_list, y=y, yerr=err, fmt="o", label="exp integ. intent.")
+
+y_l = [y_array_l[i] / x_array_l[i] for i in range(len(q_list))]
+err_l = [
+    y_l[i] * np.sqrt((y_err_l[i] / y_array_l[i]) ** 2 + (x_err_l[i] / x_array_l[i]) ** 2) for i in range(len(q_list))
+]
+ax.errorbar(x=q_list, y=y_l, yerr=err_l, fmt="s", label="w/ Lorentz factor")
+plt.axhline(y=1, color="k", linestyle="-")
+
+ax.set_xlim(left=0)
+ax.set_ylim(bottom=0)
+ax.set_ylim(top=14)
+
+ax.legend(loc=1)
+ax.grid(alpha=0.6)
+ax.set_title(
+    f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
+    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+)
+
+plt.tight_layout()
+
+for i, hkl in enumerate(hkl_list):
+    x = q_list[i]
+    y = y_l[i] * 1.2
+    # mannual ajdjust position
+    # if hkl ==(1,1,0):
+    #     x-=0.15
+    ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8, color="k")
+
 
 plt.show()
