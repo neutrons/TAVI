@@ -268,8 +268,9 @@ class CooperNathans(TAS):
             # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
             if R0:  # calculate
-                r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-                r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
+                # r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
+                # r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
+                r0 = 1
             else:
                 r0 = 0
 

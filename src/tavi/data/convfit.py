@@ -1,42 +1,60 @@
+from functools import partial
 from typing import Literal, Optional
 
 import numpy as np
-from lmfit import Parameters, models
+from lmfit import Model, Parameters, models
 from lmfit.model import ModelResult
 
 from tavi.data.scan_data import ScanData1D
 
 
-class Fit1D(object):
+def gaussian(x, amplitude, center, sigma):
+    """1-d gaussian: gaussian(x, amp, cen, wid)"""
+    prefactor = amplitude / (np.sqrt(2 * np.pi) * sigma)
+    return prefactor * np.exp(-((x - center) ** 2) / (2 * sigma**2))
+
+
+def constant(x, c):
+    return c * np.ones_like(x)
+
+
+def conv_1d(x, signal_fnc, rez_params):
+    """1D convolution, -3 sigma to +3 sigma, 100 points"""
+    NUM_SIGMA = 3
+    NUM_PTS = 100
+    y = np.empty_like(x)
+    for i in range(len(x)):
+        # genrate resolution function at each point
+        r0, sigma_rez = rez_params[i]
+        x_rez = np.linspace(-NUM_SIGMA * sigma_rez, +NUM_SIGMA * sigma_rez, NUM_PTS)
+        del_x = 2 * NUM_SIGMA * sigma_rez / NUM_PTS
+        rez_fnc = gaussian(x_rez, center=0, sigma=sigma_rez, amplitude=r0)
+        # convolute
+        y[i] = np.sum(rez_fnc * signal_fnc(x[i] - x_rez)) * del_x
+    return y
+
+
+def signal(fnc, params):
+    return partial(fnc, **params)
+
+
+def conv_constant(x, c, rez_params):
+    signal_fnc = signal(constant, dict(c=c))
+    y_conv = conv_1d(x, signal_fnc, rez_params)
+    return y_conv
+
+
+class ConvFit1D(object):
     """Fit a 1D curve
 
     Attributes:
 
     """
 
-    models = {
-        # ---------- peak models ---------------
-        "Gaussian": models.GaussianModel,
-        "Lorentzian": models.LorentzianModel,
-        "Voigt": models.VoigtModel,
-        "PseudoVoigt": models.PseudoVoigtModel,
-        "DampedOscillator": models.DampedOscillatorModel,
-        "DampedHarmonicOscillator": models.DampedHarmonicOscillatorModel,
-        # ---------- background models ------------
-        "Constant": models.ConstantModel,
-        "Linear": models.LinearModel,
-        "Quadratic": models.QuadraticModel,
-        "Polynomial": models.PolynomialModel,
-        "Exponential": models.ExponentialModel,
-        "PowerLaw": models.PowerLawModel,
-        # --------- expression ---------------
-        "Expression": models.ExpressionModel,
-        "Spline": models.SplineModel,
-    }
-
     def __init__(
         self,
         data: ScanData1D,
+        rez_params: tuple,
         fit_range: Optional[tuple[float, float]] = None,
         nan_policy: Literal["raise", "propagate", "omit"] = "propagate",
         name="",
@@ -44,13 +62,16 @@ class Fit1D(object):
         """initialize a fit model, mask based on fit_range if given"""
 
         self.name = name
+        self.rez_params = rez_params
 
         self.x: np.ndarray = data.x
         self.y: np.ndarray = data.y
         self.err: Optional[np.ndarray] = data.err
 
-        self._background_models: models = []
-        self._signal_models: models = []
+        self._background_models: Model = []
+        self._background_models_instrinsic: Model = []
+        self._signal_models: Model = []
+        self._signal_models_intrinsic: Model = []
         self._parameters: Optional[Parameters] = None
         self._num_backgrounds = 0
         self._num_signals = 0
@@ -71,59 +92,43 @@ class Fit1D(object):
         if self.err is not None:
             self.err = self.err[mask]
 
-    # @staticmethod
-    # def _add_model(model, prefix, nan_policy):
-    #     model = Fit1D.models[model]
-    #     return model(prefix=prefix, nan_policy=nan_policy)
-
     def add_signal(
         self,
-        model: Literal[
-            "Gaussian",
-            "Lorentzian",
-            "Voigt",
-            "PseudoVoigt",
-            "DampedOscillator",
-            "DampedHarmonicOscillator",
-        ],
+        model: Literal["Gaussian"],
     ):
+        def conv_gaussian(x, amplitude, center, sigma):
+            signal_fnc = signal(gaussian, dict(amplitude=amplitude, center=center, sigma=sigma))
+            y_conv = conv_1d(x, signal_fnc, self.rez_params)
+            return y_conv
+
         self._num_signals += 1
         prefix = f"s{self._num_signals}_"
-        signal_model = type(self).models[model]
-        self._signal_models.append(signal_model(prefix=prefix, nan_policy=self.nan_policy))
+        match model:
+            case "Gaussian":
+                model = Model(conv_gaussian, nan_policy=self.nan_policy, prefix=prefix)
+                model_intrinsic = models.GaussianModel(nan_policy=self.nan_policy, prefix=prefix)
+
+            case _:
+                pass
+
+        self._signal_models.append(model)
+        self._signal_models_intrinsic.append(model_intrinsic)
 
     def add_background(
         self,
-        model: Literal[
-            "Constant",
-            "Linear",
-            "Quadratic",
-            "Polynomial",
-            "Exponential",
-            "PowerLaw",
-        ],
+        model: Literal["Constant"],
     ):
         self._num_backgrounds += 1
         prefix = f"b{self._num_backgrounds}_"
-        background_model = type(self).models[model]
-        self._background_models.append(background_model(prefix=prefix, nan_policy=self.nan_policy))
+        match model:
+            case "Constant":
+                model = Model(
+                    partial(conv_constant, rez_params=self.rez_parmas),
+                    nan_policy=self.nan_policy,
+                    prefix=prefix,
+                )
 
-    # @staticmethod
-    # def _get_param_names(models) -> list[list[str]]:
-    #     params = []
-    #     for model in models:
-    #         params.append(model.param_names)
-    #     return params
-
-    # @property
-    # def signal_param_names(self):
-    #     """Get parameter names of all signals"""
-    #     return Fit1D._get_param_names(self._signal_models)
-
-    # @property
-    # def background_param_names(self):
-    #     """Get parameter names of all backgrounds"""
-    #     return Fit1D._get_param_names(self._background_models)
+        self._background_models.append(model)
 
     @property
     def params(self) -> Parameters:
@@ -143,9 +148,9 @@ class Fit1D(object):
             Parameters class in LMFIT"""
 
         pars = Parameters()
-        for signal in self._signal_models:
-            pars += signal.guess(self.y, x=self.x)
-        for bkg in self._background_models:
+        for sigal in self._signal_models_intrinsic:
+            pars += sigal.guess(self.y, x=self.x)
+        for bkg in self._background_models_instrinsic:
             pars += bkg.guess(self.y, x=self.x)
         self._parameters = pars
         return pars
@@ -155,6 +160,13 @@ class Fit1D(object):
         """Return the  composite model of all singals and backgrounds"""
 
         compposite_model = np.sum(self._signal_models + self._background_models)
+        return compposite_model
+
+    @property
+    def model_intrinsic(self):
+        """Return the  composite model of all singals and backgrounds"""
+
+        compposite_model = np.sum(self._signal_models_intrinsic + self._background_models_instrinsic)
         return compposite_model
 
     def x_to_plot(

@@ -283,6 +283,22 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
+    def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
+
+        qh = self.data.get("qh")
+        qk = self.data.get("qk")
+        ql = self.data.get("ql")
+        ei = self.data.get("ei")
+        ef = self.data.get("ef")
+        rez_params_list = []
+
+        for i in range(len(qh)):
+            rez = tas.rez(hkl_list=(qh[i], qk[i], ql[i]), ei=ei[i], ef=ef[i], R0=True, projection=projection)
+            coh_fwhm = rez.coh_fwhms(axis=axis)
+            prefactor = rez.r0
+            rez_params_list.append((prefactor, coh_fwhm))
+        return tuple(rez_params_list)
+
     def plot(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
