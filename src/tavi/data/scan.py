@@ -198,7 +198,7 @@ class Scan(object):
         qs = self.data["q"]
         q_diff = np.max(qs) - np.min(qs)
         mid_idx = int((len(qs) - 1) / 2)
-        if q_diff > 0.0001:  # q changing, must be a th2th scan
+        if q_diff > 1.1e-4:  # q changing, must be a th2th scan
             return qs - qs[mid_idx]
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)

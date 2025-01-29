@@ -1,0 +1,38 @@
+# scan = 352
+# date = 8/16/2024
+# time = 1:37:15 AM
+# proposal = 32912
+# experiment = Quantum Phase Transition in Transverse Field Ising Ferromagnet HoV6Sn6
+# experiment_number = 1031
+# command = scanon
+# builtin_command = scanon
+# users = Aashish Sapkota, Benjamin Ueland, Fei Li, Rob McQueeney, Tianxiong Han
+# local_contact = Wei Tian, Bing Li
+# scan_title = Temp scan while warming (1 0 0), at H = 1.4 T, T = 1.73603 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = HoV6Sn6
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.520013,5.520013,9.152013,90.000000,90.000000,120.000000
+# ubmatrix = 0.015667,0.005926,0.108953,0.208596,0.104928,-0.008180,-0.000560,0.180868,0.001176
+# mode = 0
+# plane_normal = -0.010528,0.003477,0.999939
+# ubconf = C:\SPICE\User\exp1031\UBConf\UB12Aug2024_54830PM.ini
+# def_x = lt
+# def_y = detector
+# col_headers = 
+#   Pt.         m2      mag_i         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti       temp     temp_2         lt         ht      1kpot  sorb_temp       sorb  sample_ht persistent_field       time   detector    monitor        mcu
+      1    41.5367    -0.0000  -100.1144   -28.8175     0.6032     0.1990    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0010    20.7697    41.5370     1.3142     0.9999     0.0000    -0.0000    14.4503    14.4501     0.0002     1.6528     1.0000     0.0000     1.7649     1.7229     1.7139    35.0622    35.0000     2.0000     1.400     20.000   8245.000 611730.000     25.834
+      2    41.5367     0.0001  -100.1144   -28.8175     0.6032     0.1990    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0010    20.7697    41.5370     1.3142     0.9999     0.0000    -0.0000    14.4503    14.4501     0.0002     1.6564     1.0000     0.0000     1.7615     1.7195     1.7112    34.9099    35.0000     2.2000     1.400     20.000   8198.000 610254.000     25.771
+      3    41.5367    -0.0000  -100.1144   -28.8175     0.6032     0.1990    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0010    20.7697    41.5370     1.3142     0.9999     0.0000    -0.0000    14.4503    14.4501     0.0002     1.6576     1.0000     0.0000     1.8082     1.7669     1.7408    35.0770    35.0000     2.4000     1.400     20.000   8424.000 609435.000     25.737
+      4    41.5367    -0.0000  -100.1144   -28.8175     0.6032     0.1990    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0010    20.7697    41.5370     1.3142     0.9999     0.0000    -0.0000    14.4503    14.4501     0.0002     1.6571     1.0000     0.0000     1.8974     1.8505     1.8053    35.0029    35.0000     2.6000     1.400     20.000   8184.000 608462.000     25.696
+# # Fault during the RANGE command when calling
+#  the set_setpoint method, RANGE 2,3
+# .
+# Sum of Counts = 33051
+# Center of Mass = 1.807902+/-0.014067
+# Full Width Half-Maximum = 0.109156+/-0.014020
+# 1:46:44 AM  8/16/2024   scan completed.

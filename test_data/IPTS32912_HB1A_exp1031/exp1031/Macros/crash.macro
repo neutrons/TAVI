@@ -1,0 +1,9 @@
+loop i=1,2
+dr sgl 15 sgu 15 stl 10 stu 10
+wait 00:00:10
+dr sgl -15 sgu -15 stl -10 stu -10
+wait 00:00:10
+drive sgl 0 sgu 0 stl 0 stu 0
+endloop
+
+drive sgl 0 sgu 0 stl 0 stu 0

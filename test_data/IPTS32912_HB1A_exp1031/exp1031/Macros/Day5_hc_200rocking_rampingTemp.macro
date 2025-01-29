@@ -1,0 +1,76 @@
+set_field mag_i 1.8
+br 2 0 0
+preset time 5
+
+loop i=8,35 2
+set_sorb %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+end loop
+set_sorb 35
+wait 30
+
+loop i=3,5,0.5
+set_ht %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+scanrel s1 1 -1 0.1
+end loop
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+
+set_field mag_i 2
+br 2 0 0
+preset time 5
+
+loop i=8,35 2
+set_sorb %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+end loop
+set_sorb 35
+wait 30
+
+loop i=3,5,0.5
+set_ht %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+scanrel s1 1 -1 0.1
+end loop
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+
+set_field mag_i 2.2
+br 2 0 0
+preset time 5
+
+loop i=8,35 2
+set_sorb %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+end loop
+set_sorb 35
+wait 30
+
+loop i=3,5,0.5
+set_ht %i
+wait 100
+scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+scanrel s1 1 -1 0.1
+end loop
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600

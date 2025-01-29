@@ -1,0 +1,33 @@
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+set_field mag_i 0.6
+set_sorb 29
+wait 360
+defxy lt detector
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=29, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
