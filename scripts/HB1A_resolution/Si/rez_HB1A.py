@@ -45,7 +45,7 @@ si_111_1 = sg1.get_data(
 
 p1 = Plot2D()
 p1.add_contour(si_111_1, cmap="turbo", vmin=0, vmax=2.5e4)
-p1.add_reso(rez1_hhl, c="w", label="Copper-Nathans")
+# p1.add_reso(rez1_hhl, c="w", label="Copper-Nathans")
 p1.title = sg1.name
 p1.ylim = [0.97, 1.03]
 p1.xlim = [0.97, 1.03]
@@ -122,7 +122,7 @@ si_111_2 = sg2.get_data(
 
 p2 = Plot2D()
 p2.add_contour(si_111_2, cmap="turbo", vmin=0, vmax=3500)
-p2.add_reso(rez2_hhl, c="w", label="Copper-Nathans")
+# p2.add_reso(rez2_hhl, c="w", label="Copper-Nathans")
 p2.title = sg2.name
 # p2.ylim = [0.97, 1.03]
 # p2.xlim = [0.97, 1.03]

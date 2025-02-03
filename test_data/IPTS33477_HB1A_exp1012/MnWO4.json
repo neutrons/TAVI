@@ -1,0 +1,15 @@
+{
+    "type": "crystal",
+    "a": 4.83,
+    "b": 5.75,
+    "c": 5,
+    "alpha": 90,
+    "beta": 91.14,
+    "gamma": 120,
+    "shape": "cylindrical",
+    "width": 1.0,
+    "height": 1.0,
+    "depth": 1.0,
+    "mosaic_h": 30,
+    "mosaic_v": 30
+}

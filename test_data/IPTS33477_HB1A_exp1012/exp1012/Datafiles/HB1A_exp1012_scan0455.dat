@@ -1,0 +1,27 @@
+# scan = 455
+# date = 4/11/2024
+# time = 4:02:53 PM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1012
+# command = scanon
+# builtin_command = scanon
+# users = Feng Ye, Mike McDowell, Adam Aczel, Bing Li, Wei Tian, Bing Li
+# local_contact = Wei Tian, Adam Aczel
+# scan_title = Co-doped MnWO4-FC, look for [010]
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, Al-doped CuFeO2
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.830000,5.750000,5.000000,90.000000,91.300000,90.000000
+# ubmatrix = -0.000000,0.173884,-0.000000,-0.000000,0.003195,-0.000000,-0.000000,0.000123,-0.000000
+# mode = 0
+# plane_normal = -0.000714,0.000226,1.000000
+# ubconf = C:\SPICE\User\exp1012\UBConf\UB11Apr2024_40156PM.ini
+# def_x = Pt.
+# def_y = detector
+# col_headers = 
+#   Pt.         m2        chi        phi         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e       time   detector    monitor        mcu

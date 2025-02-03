@@ -37,12 +37,7 @@ class TAS(TASBase):
         q = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)])
         return q
 
-    def get_two_theta(
-        self,
-        hkl: tuple[float, float, float],
-        ei: float,
-        ef: Optional[float] = None,
-    ) -> Optional[float]:
+    def get_two_theta(self, hkl: tuple[float, float, float], ei: float, ef: Optional[float] = None) -> Optional[float]:
         """find two theta angle for a given peak
 
         Args:
@@ -122,8 +117,16 @@ class TAS(TASBase):
 
         # find r_inv
         r_mat_inv = self.goniometer.r_mat_inv
-        q_lab1 = TAS.q_lab(peak1.angles.two_theta, ei=peak1.ei, ef=peak1.ef)
-        q_lab2 = TAS.q_lab(peak2.angles.two_theta, ei=peak2.ei, ef=peak2.ef)
+        q_lab1 = TAS.q_lab(
+            peak1.angles.two_theta,
+            ei=peak1.ei,
+            ef=peak1.ef if peak1.ef is not None else peak1.ei,
+        )
+        q_lab2 = TAS.q_lab(
+            peak2.angles.two_theta,
+            ei=peak2.ei,
+            ef=peak2.ef if peak2.ef is not None else peak2.ei,
+        )
 
         # Goniometer angles all zeros in q_sample frame
         q_sample1 = np.matmul(r_mat_inv(peak1.angles), q_lab1)

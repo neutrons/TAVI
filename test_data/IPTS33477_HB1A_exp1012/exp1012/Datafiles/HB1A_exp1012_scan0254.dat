@@ -1,0 +1,85 @@
+# scan = 254
+# date = 4/10/2024
+# time = 7:30:16 PM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1012
+# command = scanrel s1 1 -1 0.1
+# builtin_command = scan s1 @(s1)+1 @(s1)+-1 0.100000
+# users = Feng Ye, Mike McDowell, Adam Aczel, Bing Li, Wei Tian, Bing Li
+# local_contact = Wei Tian, Adam Aczel
+# scan_title = Ruby-FC, [1 1 1] rocking
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, Al-doped CuFeO2
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 13.649303,9.890496,7.024000,90.000000,90.000000,90.000000
+# ubmatrix = -0.000052,0.101107,-0.000002,0.000017,0.000002,0.142369,0.073264,0.000072,-0.000032
+# mode = 0
+# plane_normal = -0.000714,0.000226,1.000000
+# ubconf = UB10Apr2024_62322PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 10.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu         m2        chi        phi         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.99613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.89613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.79613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.69613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.59613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.49613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:16 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.39613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.29613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.19613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Wed, Apr 10, 2024 [7:30:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 0.09613, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+     11    -0.0038     11.101 2640966.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0004     0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     12    -0.1036     11.085 2641362.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0004     0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     13    -0.2033     11.096 2639399.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0004     0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     14    -0.3036     11.063 2614611.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003    -0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     15    -0.4035     11.111 2628396.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003     0.0000    -0.0005    -0.0000    14.4503    14.4503     0.000
+     16    -0.5038     11.037 2609514.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003    -0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     17    -0.6039     11.054 2613618.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003    -0.0000    -0.0005    -0.0000    14.4503    14.4503     0.000
+     18    -0.7038     10.962 2588607.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003     0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     19    -0.8042     11.057 2613393.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003    -0.0000    -0.0006    -0.0000    14.4503    14.4503     0.000
+     20    -0.9037     11.095 2621777.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003    -0.0000    -0.0005    -0.0000    14.4503    14.4503     0.000
+     21    -1.0037     11.094 2622394.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0076     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7610    -0.0010     0.0003     0.0000    -0.0005    -0.0000    14.4503    14.4503     0.000
+# Sum of Counts = 28834037
+# Center of Mass = -0.502622+/-0.000145
+# Full Width Half-Maximum = 0.633506+/-0.000132
+# 7:32:32 PM  4/10/2024   scan completed.
