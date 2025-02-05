@@ -53,9 +53,9 @@ if __name__ == "__main__":
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     print(scan_th2th_fit.result.fit_report())
 
-    tas.monochromator.mosaic_h = 30
-    tas.analyzer.mosaic_h = 30
-    tas.collimators.h_pre_mono = 20
+    tas.monochromator.mosaic_h = 60
+    tas.analyzer.mosaic_h = 60
+    tas.collimators.h_pre_mono = 50
     rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
 
     # resolution fwhm
@@ -69,8 +69,13 @@ if __name__ == "__main__":
     p1.add_reso_bar(
         pos=(x_th2th, y_th2th),
         fwhm=rez.coh_fwhms(axis=0),
-        c="C3",
+        c="k",
         label=f"Resolution FWHM={rez.coh_fwhms(axis=0):.04f}",
+    )
+    p1.add_fit(
+        scan_th2th_fit,
+        x=scan_th2th_fit.x_to_plot(),
+        label=f"Gaussian FWHM={result_th2th.params["s1_fwhm"].value:.4f}+/-{result_th2th.params["s1_fwhm"].stderr:.4f}",
     )
 
     # perform fit convoluted with resolution
@@ -79,13 +84,17 @@ if __name__ == "__main__":
     scan_th2th_fit_rez.add_signal(model="Gaussian")
     # scan_th2th_fit_rez.add_background(model="Constant")
     pars_th2th_rez = scan_th2th_fit_rez.guess()
-    # pars_th2th_rez["b1_c"].set(min=0)
+    # pars_th2th_rez["s1_sigma"].value = 0.01
+    # pars_th2th_rez["s1_amplitude"].value = 1e6
     result_th2th_rez = scan_th2th_fit_rez.fit(pars_th2th_rez, USE_ERRORBAR=False)
     print(result_th2th_rez.fit_report())
 
     # fits
     fwhm = result_th2th_rez.params["s1_fwhm"]
-    p1.add_fit(scan_th2th_fit_rez, label="Fit Convoluted w/ Resolution")
+    p1.add_fit(
+        scan_th2th_fit_rez,
+        label="Fit Convoluted w/ Resolution",
+    )
     p1.add_fit(
         scan_th2th_fit_rez,
         DECONV=True,
@@ -94,6 +103,6 @@ if __name__ == "__main__":
     )
 
     # plotting
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6))
     p1.plot(ax)
     plt.show()

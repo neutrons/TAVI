@@ -20,16 +20,16 @@ def constant(x, c):
 
 def conv_1d(x, signal_fnc, rez_params):
     """1D convolution, -3 sigma to +3 sigma, 100 points"""
-    NUM_SIGMA = 3
-    NUM_PTS = 100
+    NUM_SIGMA = 5
+    NUM_PTS = 10000
     y = np.empty_like(x)
     for i in range(len(x)):
         # genrate resolution function at each point
-        r0, sigma_rez = rez_params[i]
-        x_rez = np.linspace(-NUM_SIGMA * sigma_rez, +NUM_SIGMA * sigma_rez, NUM_PTS)
+        r0, fwhm_rez = rez_params[i]
+        sigma_rez = fwhm_rez / (2 * np.sqrt(2 * np.log(2)))
         del_x = 2 * NUM_SIGMA * sigma_rez / NUM_PTS
+        x_rez = np.linspace(-NUM_SIGMA * sigma_rez, +NUM_SIGMA * sigma_rez, NUM_PTS)
         rez_fnc = gaussian(x_rez, center=0, sigma=sigma_rez, amplitude=r0)
-        # convolute
         y[i] = np.sum(rez_fnc * signal_fnc(x[i] - x_rez)) * del_x
     return y
 
@@ -123,7 +123,7 @@ class ConvFit1D(object):
         match model:
             case "Constant":
                 model = Model(
-                    partial(conv_constant, rez_params=self.rez_parmas),
+                    partial(conv_constant, rez_params=self.rez_params),
                     nan_policy=self.nan_policy,
                     prefix=prefix,
                 )

@@ -168,19 +168,19 @@ fig.colorbar(im1)
 
 #  ----------------------- bad peaks -------------------------
 # scan_info = (hkl, (th2th scan num, s1, scan num), fit ranges in del_q)
-# bad_scans = (
-#     ((0, 0, 9), (146, 147), (None, None)),  # double peaks
-#     ((0, 0, 11), (150, 151), ((-0.08, 0.07), None)),  # triple pekas
-#     ((0, 0, 13), (154, 155), ((-0.1, 0.15), None)),  # double peaks
-#     ((1, 1, 3), (172, 173), ((-0.13, 0.05), None)),  # double
-#     ((1, 1, 4), (174, 175), ((-0.13, 0.05), None)),  # on a powder line
-#     ((1, 1, 5), (176, 177), ((-0.06, 0.15), None)),  # double
-#     ((1, 1, 7), (180, 181), ((-0.10, 0.15), None)),  # double peak
-# )
+bad_scans = (
+    ((0, 0, 9), (146, 147), (None, None)),  # double peaks
+    ((0, 0, 11), (150, 151), ((-0.08, 0.07), None)),  # triple pekas
+    ((0, 0, 13), (154, 155), ((-0.1, 0.15), None)),  # double peaks
+    ((1, 1, 3), (172, 173), ((-0.13, 0.05), None)),  # double
+    ((1, 1, 4), (174, 175), ((-0.13, 0.05), None)),  # on a powder line
+    ((1, 1, 5), (176, 177), ((-0.06, 0.15), None)),  # double
+    ((1, 1, 7), (180, 181), ((-0.10, 0.15), None)),  # double peak
+)
 
-# for info in bad_scans:
-#     hkl, scans, fit_ranges = info
-#     analyze_in_q(hkl, scans, fit_ranges)
+for info in bad_scans:
+    hkl, scans, fit_ranges = info
+    analyze_in_q(hkl, scans, fit_ranges)
 
 #  ----------------------- good peaks -------------------------
 good_scans = (

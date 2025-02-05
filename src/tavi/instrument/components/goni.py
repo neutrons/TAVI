@@ -18,8 +18,8 @@ class Goniometer(TASComponent):
         param_dict: Optional[dict] = None,
         component_name: str = "goniometer",
     ):
-        self.type: str = "Y-ZX"  # Y-mZ-X for Huber stage at HB1A and HB3
-        self.sense: Literal["-", "+"] = "-"
+        self.type: str = "Y-ZX"  # Y-mZ-X for (s1, sgl, sgu), Huber table at HB1A and HB3,
+        self.sense: Literal["-", "+"] = "-"  # determines the sign of s2
         self.omega_limit: Optional[tuple]
         self.sgl_limit: Optional[tuple] = (-10, 10)
         self.sgu_limit: Optional[tuple] = (-10, 10)
@@ -108,13 +108,17 @@ class Goniometer(TASComponent):
         )
         return mat
 
-    def r_mat(
-        self,
-        angles: MotorAngles,
-    ) -> np.ndarray:
-        "Goniometer rotation matrix R"
+    def r_mat(self, angles: MotorAngles) -> np.ndarray:
+        """Goniometer rotation matrix R
 
-        match self.type:
+        Note:
+            type refers to the axis of rotation for each motor,
+            + for CCW, - for CW.
+            The Cartesian coordinate Z is along the incoming beam,
+            X in plane, Y up, right handed.
+        """
+
+        match self.type:  # (s1, sgl, sgu)
             case "Y-ZX":  # HB3
                 r_mat = np.matmul(
                     Goniometer.rot_y(angles.omega),

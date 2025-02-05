@@ -35,8 +35,8 @@ def read_macro():
                 omega=omega,
                 chi=chi,
                 phi=phi,
-                sgl=0.0409,
-                sgu=0.0130,
+                sgl=0,
+                sgu=0,
             )
         )
     return scan_nums, hkl_list, angles_list
