@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     scan_nums, hkl_list, angles_list = read_macro()
 
-    instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a.json"
+    instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
     tas = CooperNathans(SPICE_CONVENTION=True)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
@@ -117,3 +117,7 @@ if __name__ == "__main__":
     peak2 = Peak(hkl=hkl_list[1], angles=angles_list[1], ei=ei, ef=ef)
     tas.calculate_ub_matrix(peaks=(peak1, peak2))
     print(tas.sample.ub_mat)
+
+    angles_1 = tas.calculate_motor_angles(peak=hkl_list[0], ei=ei, ef=ef)
+    print(angles_list[0])
+    print(peak1.angles)

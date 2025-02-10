@@ -118,7 +118,7 @@ class Goniometer(TASComponent):
             X in plane, Y up, right handed.
         """
 
-        match self.type:  # (s1, sgl, sgu)
+        match self.type:  # (s1, sgl, sgu, chi, phi)
             case "Y-ZX":  # HB3
                 r_mat = np.matmul(
                     Goniometer.rot_y(angles.omega),
@@ -133,6 +133,14 @@ class Goniometer(TASComponent):
                     np.matmul(
                         Goniometer.rot_z(angles.sgl),
                         Goniometer.rot_x(-1.0 * angles.sgu),
+                    ),
+                )
+            case "YZY_bisect":
+                r_mat = np.matmul(
+                    Goniometer.rot_y(angles.omega),
+                    np.matmul(
+                        Goniometer.rot_z(angles.chi),
+                        Goniometer.rot_y(angles.phi),
                     ),
                 )
             case _:
@@ -159,7 +167,7 @@ class Goniometer(TASComponent):
             range of np.atan2 is -pi to pi
         """
 
-        def staking_order_yzx(r_mat):
+        def stacking_order_yzx(r_mat):
             """Huber table, return angles in degrees"""
             # sgl1 = np.arcsin(r_mat[1, 0]) * rad2deg
             # sgl2 = np.arccos(np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)) * rad2deg
@@ -185,6 +193,7 @@ class Goniometer(TASComponent):
 
         # TODO four-circle is chi circle parallel to beam
         def stacking_order_yzy(r_mat):
+
             pass
 
         # TODO four-circle is chi circle perpendicular to beam
@@ -193,13 +202,18 @@ class Goniometer(TASComponent):
 
         match self.type:
             case "Y-ZX":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3,
-                omega, sgl, sgu = staking_order_yzx(r_mat)
+                omega, sgl, sgu = stacking_order_yzx(r_mat)
                 angles = MotorAngles(None, omega, -1 * sgl, sgu, None, None)
                 self.validate_motor_positions(angles)
 
             case "YZ-X":  # Y-Z-mX (s1, sgl, sgu) for CG4C
-                omega, sgl, sgu = staking_order_yzx(r_mat)
+                omega, sgl, sgu = stacking_order_yzx(r_mat)
                 angles = MotorAngles(None, omega, sgl, -1 * sgu, None, None)
+                self.validate_motor_positions(angles)
+
+            case "YZ-Y_bisect":
+                omega, chi, phi = stacking_order_yzy(r_mat)
+                angles = MotorAngles(None, omega, None, None, chi, phi)
                 self.validate_motor_positions(angles)
 
             case _:
