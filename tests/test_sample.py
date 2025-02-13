@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from tavi.sample.sample import Sample
+from tavi.sample import Sample
 from tavi.sample.xtal import Xtal
 from tavi.utilities import spice_to_mantid
 
@@ -17,7 +17,7 @@ def xtal_info():
     beta = 90
     gamma = 120
     lattice_params = (a, b, c, alpha, beta, gamma)
-    xtal = Xtal(lattice_params=lattice_params)
+    xtal = Sample(lattice_params=lattice_params)
 
     b_matrix = np.array(
         [

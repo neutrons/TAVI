@@ -31,6 +31,7 @@ class Goniometer(TASComponent):
 
     @property
     def _sense(self):
+        """Sense of goniometer is the sign of s2"""
         match self.sense:
             case "+":
                 return +1
@@ -115,7 +116,8 @@ class Goniometer(TASComponent):
             type refers to the axis of rotation for each motor,
             + for CCW, - for CW.
             The Cartesian coordinate Z is along the incoming beam,
-            X in plane, Y up, right handed.
+            X in plane, Y up, right handed. This is the convention used
+            in Mantid and the International Crystallography Table.
         """
 
         match self.type:  # (s1, sgl, sgu, chi, phi)

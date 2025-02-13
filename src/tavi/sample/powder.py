@@ -1,4 +1,4 @@
-from tavi.sample.sample import Sample
+from tavi.sample import Sample
 
 
 # TODO

@@ -12,8 +12,8 @@ from tavi.instrument.components.guide import Guide
 from tavi.instrument.components.monitor import Monitor
 from tavi.instrument.components.mono_ana import MonoAna
 from tavi.instrument.components.source import Source
+from tavi.sample import Sample
 from tavi.sample.powder import Powder
-from tavi.sample.sample import Sample
 from tavi.sample.xtal import Xtal
 
 

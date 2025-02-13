@@ -42,6 +42,38 @@ def read_macro():
     return scan_nums, hkl_list, angles_list
 
 
+def read_reflection_list():
+    # filename = "test_data/IPTS33477_HB1A_exp1012/Reflections_012825.list"
+    filename = "test_data/IPTS33477_HB1A_exp1012/RuCl3/fit_observ.dat"
+    with open(filename, encoding="utf-8") as f:
+        all_content = f.readlines()
+
+    hkl_list = []
+    angles_list = []
+
+    for i in range(2, len(all_content) - 2):
+        line_parts = all_content[i].split(" ")
+        two_theta = float(line_parts[3])
+        omega = float(line_parts[4])
+        chi = float(line_parts[5])
+        phi = float(line_parts[6][:-1])
+        angles_list.append(
+            MotorAngles(
+                two_theta=two_theta,
+                omega=omega,
+                chi=chi,
+                phi=phi,
+                sgl=0,
+                sgu=0,
+            )
+        )
+        h = int(float(line_parts[0]))
+        k = int(float(line_parts[1]))
+        l = int(float(line_parts[2]))
+        hkl_list.append((h, k, l))
+    return hkl_list, angles_list
+
+
 def analyze_in_angles(hkl, scans, fit_ranges):
     scan1, scan2 = scans
     fit_range1, fit_range2 = fit_ranges
@@ -99,13 +131,14 @@ def analyze_in_angles(hkl, scans, fit_ranges):
 
 if __name__ == "__main__":
 
-    scan_nums, hkl_list, angles_list = read_macro()
+    # scan_nums, hkl_list, angles_list = read_macro()
+    hkl_list, angles_list = read_reflection_list()
 
     instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
     tas = CooperNathans(SPICE_CONVENTION=True)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
-    sample_json_path = "test_data/IPTS33477_HB1A_exp1012/MnWO4.json"
+    sample_json_path = "test_data/IPTS33477_HB1A_exp1012/RuCl3/RuCl3.json"
     sample = Xtal.from_json(sample_json_path)
     ub_json = sample.ub_mat
     tas.mount_sample(sample)

@@ -2,7 +2,7 @@ from typing import Optional
 
 import numpy as np
 
-from tavi.sample.sample import Sample
+from tavi.sample import Sample
 from tavi.utilities import Peak, UBConf
 
 

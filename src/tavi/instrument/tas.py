@@ -6,7 +6,7 @@ import numpy as np
 from tavi.instrument.tas_base import TASBase
 from tavi.instrument.ub_algorithm import find_u_from_two_peaks
 from tavi.sample.xtal import Xtal
-from tavi.utilities import MotorAngles, en2q, get_angle_from_triangle
+from tavi.utilities import MotorAngles, UBConf, en2q, get_angle_from_triangle, mantid_to_spice
 
 
 class TAS(TASBase):
@@ -22,21 +22,6 @@ class TAS(TASBase):
     def __init__(self, SPICE_CONVENTION: bool = True):
         super().__init__()
         self.SPICE_CONVENTION = SPICE_CONVENTION  # use coordination system defined in SPICE
-
-    @staticmethod
-    def q_lab(two_theta_deg: float, ei: float, ef: float):
-        """
-        Reutrn momentum transfer q in lab frame, using Mantid convention
-
-        Note:
-            Only for a single detector in the scattering plane.
-        """
-
-        ki = en2q(ei)
-        kf = en2q(ef)
-        two_theta = np.deg2rad(two_theta_deg)
-        q = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)])
-        return q
 
     def get_two_theta(
         self,
@@ -89,8 +74,8 @@ class TAS(TASBase):
         match (num_of_peaks := len(peaks)):
             case 2:
                 b_mat = self.sample.b_mat_from_lattice()
-                ubconf = find_u_from_two_peaks(peaks, b_mat)
-                self.sample.set_orientation(ubconf)
+                u_mat, plane_normal, in_plane_ref = find_u_from_two_peaks(peaks, b_mat, self.goniometer.r_mat_inv)
+                ub_mat = np.matmul(u_mat, b_mat)
 
             case 3:
                 pass
@@ -102,6 +87,15 @@ class TAS(TASBase):
                 # self.sample.set_orientation(ubconf)
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")
+
+        # suffle the order following SPICE convention
+        if self.SPICE_CONVENTION:
+            plane_normal = mantid_to_spice(plane_normal)
+            in_plane_ref = mantid_to_spice(in_plane_ref)
+            ub_mat = mantid_to_spice(ub_mat)
+
+        ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
+        self.sample.set_orientation(ubconf)
 
     def calculate_motor_angles(self, peak: tuple, ei: float, ef: Optional[float] = None):
         """calculate motor positions for a given peak if UB matrix has been determined
