@@ -6,7 +6,9 @@ from mpl_toolkits.axisartist import Axes
 
 from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
-from tavi.sample.xtal import Xtal
+
+# from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import get_angle_vec, sig2fwhm
 
 
@@ -36,7 +38,7 @@ class ResoEllipsoid(object):
     def __init__(
         self,
         hkle: tuple[float, float, float, float],
-        sample: Xtal,
+        sample: Sample,
         projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
     ) -> None:
 

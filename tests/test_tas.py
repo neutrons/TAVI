@@ -1,7 +1,7 @@
 import numpy as np
 
 from tavi.instrument.tas import TAS
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import MotorAngles
 
 
@@ -9,7 +9,7 @@ def test_find_two_theta():
     ctax = TAS()
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
-    nitio3 = Xtal.from_json("./test_data/test_samples/nitio3.json")
+    nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
     ctax.mount_sample(nitio3)
 
     two_theta = ctax.get_two_theta(hkl=(0, 0, 3), ei=4.799999)
@@ -23,7 +23,7 @@ def test_calculate_motor_angles():
     hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
     tas.load_instrument_params_from_json(hb3_json)
     lattice_params = (4.128474, 4.128474, 6.651507, 90, 90, 120)
-    sample = Xtal(lattice_params)
+    sample = Sample(lattice_params)
     sample.ub_mat = np.array(
         [
             [-0.000328, -0.004396, -0.150319],

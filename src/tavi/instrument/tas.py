@@ -4,8 +4,9 @@ from typing import Optional
 import numpy as np
 
 from tavi.instrument.tas_base import TASBase
-from tavi.instrument.ub_algorithm import find_u_from_two_peaks
-from tavi.sample.xtal import Xtal
+
+# from tavi.sample.xtal import Xtal
+from tavi.ub_algorithm import find_u_from_two_peaks
 from tavi.utilities import MotorAngles, UBConf, en2q, get_angle_from_triangle, mantid_to_spice
 
 

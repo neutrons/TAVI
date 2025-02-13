@@ -7,7 +7,7 @@ from mpl_toolkits.axisartist import Axes
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot2D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 
 def test_plot2d():
@@ -28,7 +28,7 @@ def test_plot2d():
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
-    sample = Xtal.from_json(sample_json_path)
+    sample = Sample.from_json(sample_json_path)
     tas.mount_sample(sample)
 
     # calculate resolution ellipses

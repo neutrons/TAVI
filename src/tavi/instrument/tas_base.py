@@ -13,8 +13,6 @@ from tavi.instrument.components.monitor import Monitor
 from tavi.instrument.components.mono_ana import MonoAna
 from tavi.instrument.components.source import Source
 from tavi.sample import Sample
-from tavi.sample.powder import Powder
-from tavi.sample.xtal import Xtal
 
 
 class TASBase(object):
@@ -30,7 +28,7 @@ class TASBase(object):
         analyzer (MonoAna): analyzer
         detector (Detector): detector
         distnaces (Distances): distances between components
-        sample (Sample | Xtal | Powder): sample being measured
+        sample (Sample): sample being measured
 
     Methods:
         load_instrument_params_from_json(path_to_json)
@@ -42,7 +40,7 @@ class TASBase(object):
         self.analyzer: MonoAna
         self.goniometer: Goniometer
         self.collimators: Collimators
-        self.sample: Union[Sample, Xtal, Powder]
+        self.sample: Sample
 
         self.source: Optional[Source] = None
 
@@ -117,9 +115,6 @@ class TASBase(object):
         """Save ONE instrument parameter to scan"""
         pass
 
-    def mount_sample(
-        self,
-        sample: Union[Sample, Xtal, Powder],
-    ) -> None:
+    def mount_sample(self, sample: Sample) -> None:
         """Add sample info to the triple-axis spectrometer"""
         self.sample = sample

@@ -8,7 +8,8 @@ import numpy as np
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D
 from tavi.plotter import Plot1D
-from tavi.sample.xtal import Xtal
+
+# from tavi.sample.xtal import Xtal
 from tavi.utilities import spice_to_mantid
 
 

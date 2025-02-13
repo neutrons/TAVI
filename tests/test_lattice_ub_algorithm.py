@@ -2,14 +2,14 @@ import numpy as np
 import pytest
 
 from tavi.sample import Sample
-from tavi.sample.xtal import Xtal
+from tavi.ub_algorithm import ub_matrix_to_lattice_params, ub_matrix_to_uv, uv_to_ub_matrix
 from tavi.utilities import spice_to_mantid
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
 @pytest.fixture
-def xtal_info():
+def sample_info():
     a = 3.574924
     b = 3.574924
     c = 5.663212
@@ -47,28 +47,28 @@ def xtal_info():
     return (xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v)
 
 
-def test_b_matrix(xtal_info):
-    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    assert np.allclose(xtal.b_mat_from_lattice(), b_matrix, atol=1e-4)
+def test_b_matrix_from_lattice(sample_info):
+    xtal, b_matrix, _, _, _, _ = sample_info
+    assert np.allclose(xtal.b_mat, b_matrix, atol=1e-4)
 
 
-def test_ub_matrix_to_uv(xtal_info):
-    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    (u_calc, v_calc) = xtal.ub_matrix_to_uv(ub_matrix)
+def test_ub_matrix_to_uv(sample_info):
+    _, _, ub_matrix, _, u, v = sample_info
+    (u_calc, v_calc) = ub_matrix_to_uv(ub_matrix)
     assert np.allclose(u_calc, u, atol=1e-3)
     assert np.allclose(v_calc, v, atol=1e-3)
 
 
-def test_spice_ub_matrix_to_uv(xtal_info):
-    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    (u_calc, v_calc) = xtal.ub_matrix_to_uv(spice_to_mantid(spice_ub_matrix))
+def test_spice_ub_matrix_to_uv(sample_info):
+    _, _, _, spice_ub_matrix, u, v = sample_info
+    (u_calc, v_calc) = ub_matrix_to_uv(spice_to_mantid(spice_ub_matrix))
     assert np.allclose(u_calc, u, atol=1e-3)
     assert np.allclose(v_calc, v, atol=1e-3)
 
 
-def test_ub_matrix_to_lattice_params(xtal_info):
-    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    (a, b, c, alpha, beta, gamma) = xtal.ub_matrix_to_lattice_params(ub_matrix)
+def test_ub_matrix_to_lattice_params(sample_info):
+    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = sample_info
+    (a, b, c, alpha, beta, gamma) = ub_matrix_to_lattice_params(ub_matrix)
     assert np.allclose(a, xtal.a, atol=1e-2)
     assert np.allclose(b, xtal.b, atol=1e-2)
     assert np.allclose(c, xtal.c, atol=1e-2)
@@ -77,9 +77,9 @@ def test_ub_matrix_to_lattice_params(xtal_info):
     assert np.allclose(gamma, xtal.gamma, atol=1e-2)
 
 
-def test_uv_to_ub_matrix(xtal_info):
-    xtal, b_matrix, ub_matrix, spice_ub_matrix, u, v = xtal_info
-    ub_matrix_calc = xtal.uv_to_ub_matrix(u, v)
+def test_uv_to_ub_matrix(sample_info):
+    xtal, _, ub_matrix, _, u, v = sample_info
+    ub_matrix_calc = uv_to_ub_matrix(u, v, xtal.lattice_params)
 
     assert np.allclose(ub_matrix_calc, ub_matrix, atol=1e-2)
 
@@ -92,7 +92,7 @@ def test_load_generic_sample_from_json():
 
 def test_load_xtal_from_json():
     xtal_json_path = "./test_data/test_samples/nitio3.json"
-    xtal = Xtal.from_json(xtal_json_path)
+    xtal = Sample.from_json(xtal_json_path)
     assert xtal.type == "crystal"
     assert np.allclose(xtal.a, 5.034785)
     assert np.shape(xtal.ub_mat) == (3, 3)

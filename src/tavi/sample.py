@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 
-from tavi.instrument.ub_algorithm import (
+from tavi.lattice_algorithm import (
     b_mat_from_lattice,
     real_space_vectors,
     reciprocal_latt_params,
     reciprocal_space_vectors,
 )
+from tavi.utilities import Peak
 
 
 class Sample(object):
@@ -17,6 +18,7 @@ class Sample(object):
     Sample class
 
     Attributes:
+        type (str): "crystal" or "powder"
         json_dict (dict): dictionary from json file
         shape (str): "cuboid" or "cylindrical"
         width (float): in units of cm
@@ -28,6 +30,14 @@ class Sample(object):
 
         a, b, c                 lattice constants in Angstrom
         alpha, beta, gamma      angles in degrees
+
+        ub_peaks : peaks used to determine UB matrix
+        ub_matrix (np.adarray): UB matrix
+        inv_ub_matrix (np.ndarray): inverse of UB matrix
+        in_plane_ref: in plane vector in Qsample frame, goniometers at zero
+        plane_normal: normal vector in Qsample frame, goniometers at zero
+        u (tuple): u vector, (h, k, l) along the beam direction when all goniometer angles are zero
+        v (tuple): v vector, (h ,k, l) in the scattering plane
 
     Methods:
         update_lattice_parameters: recommended method to set lattice parameters.
@@ -53,7 +63,7 @@ class Sample(object):
         lattice_params: tuple[float, float, float, float, float, float] = (1, 1, 1, 90, 90, 90),
     ) -> None:
         """Initialization from lattice parameters"""
-        self.type = "generic"
+        self.type: Literal["crystal", "powder"] = "crystal"
         self.json_dict: Optional[dict] = None
         # lattice parameters
         self.a: float
@@ -62,7 +72,7 @@ class Sample(object):
         self.alpha: float
         self.beta: float
         self.gamma: float
-        self.b_mat: np.ndarray
+
         # parameters for resolution calculation
         self.shape: str = "cuboid"
         self.width: float = 1.0  # in cm
@@ -71,54 +81,55 @@ class Sample(object):
         self.mosaic_h: float = 30  # horizontal mosaic in minutes of arc
         self.mosaic_v: float = 30  # vertical mosaic in minutes of arc
 
-        try:
-            a, b, c, alpha, beta, gamma = lattice_params
-        except ValueError:
-            print("Incomplete lattice parameters.")
-
-        for length in (a, b, c):
-            if length <= 0:
-                raise ValueError("Lattice parameters smaller than zero.")
-
-        for angle in (alpha, beta, gamma):
-            if 0.0 > angle or angle > 180.0:
-                raise ValueError("Lattice angles out of range.")
+        # UB info
+        self.ub_peaks: Optional[tuple[Peak, ...]] = None
+        # self.u_mat: Optional[np.ndarray] = None
+        self.ub_mat: Optional[np.ndarray] = None
+        # self.inv_ub_mat: Optional[np.ndarray] = None
+        # self.plane_normal: Optional[np.ndarray] = None
+        # self.in_plane_ref: Optional[np.ndarray] = None
 
         self.update_lattice_parameters(lattice_params)
-
-    def _unpack_json_parameters(self):
-        sample_params = self.json_dict
-
-        shape = sample_params.get("shape")
-        width = sample_params.get("width")
-        height = sample_params.get("height")
-        depth = sample_params.get("depth")
-        if None not in [shape, width, height, depth]:
-            self.set_shape(shape, width, height, depth)
-
-        mosaic_h = sample_params.get("mosaic_h")
-        mosaic_v = sample_params.get("mosaic_v")
-        if None not in [mosaic_h, mosaic_v]:
-            self.set_mosaic(mosaic_h, mosaic_v)
 
     @classmethod
     def from_json(cls, path_to_json):
         """Alternate constructor from json"""
 
         with open(path_to_json, "r", encoding="utf-8") as file:
-            sample_params = json.load(file)
+            sample_params_dict = json.load(file)
 
         lattice_params = (
-            sample_params["a"],
-            sample_params["b"],
-            sample_params["c"],
-            sample_params["alpha"],
-            sample_params["beta"],
-            sample_params["gamma"],
+            sample_params_dict["a"],
+            sample_params_dict["b"],
+            sample_params_dict["c"],
+            sample_params_dict["alpha"],
+            sample_params_dict["beta"],
+            sample_params_dict["gamma"],
         )
         sample = cls(lattice_params=lattice_params)
-        sample.json_dict = sample_params
-        sample._unpack_json_parameters()
+        # sample.json_dict = sample_params_dict
+
+        # setting sample shape
+        shape = sample_params_dict.get("shape")
+        width = sample_params_dict.get("width")
+        height = sample_params_dict.get("height")
+        depth = sample_params_dict.get("depth")
+        if None not in [shape, width, height, depth]:
+            sample.set_shape(shape, width, height, depth)
+
+        # setting sample mosaic
+        mosaic_h = sample_params_dict.get("mosaic_h")
+        mosaic_v = sample_params_dict.get("mosaic_v")
+        if None not in [mosaic_h, mosaic_v]:
+            sample.set_mosaic(mosaic_h, mosaic_v)
+
+        # setting UB matrix
+        if (ub_matrix := sample_params_dict.get("ub_matrix")) is not None:
+            sample.ub_mat = np.array(ub_matrix).reshape(3, 3)
+        if (plane_normal := sample_params_dict.get("plane_normal")) is not None:
+            sample.plane_normal = np.array(plane_normal)
+        if (in_plane_ref := sample_params_dict.get("in_plane_ref")) is not None:
+            sample.in_plane_ref = np.array(in_plane_ref)
 
         return sample
 
@@ -137,21 +148,21 @@ class Sample(object):
 
     def set_mosaic(
         self,
-        mosaic_h: float = 30,  # horizontal mosaic
-        mosaic_v: float = 30,  # vertical mosaic
+        mosaic_h: float = 30,  # horizontal mosaic in minutes of arc
+        mosaic_v: float = 30,  # vertical mosaic in minutes of arc
     ) -> None:
         """Set horizontal and vertical mosaic in units of minitues of arc"""
-        self.mosaic_h = mosaic_h  # * min2rad
-        self.mosaic_v = mosaic_v  # * min2rad
+        self.mosaic_h = mosaic_h
+        self.mosaic_v = mosaic_v
 
     @property
     def _mosaic_h(self) -> float:
-        """horizontal mosaic in radian, for resolution calculation"""
+        """horizontal mosaic in radian, reserved for resolution calculation"""
         return np.deg2rad(self.mosaic_h / 60)
 
     @property
     def _mosaic_v(self) -> float:
-        """vertical mosaic in radian, for resolution calculation"""
+        """vertical mosaic in radian, reserved for resolution calculation"""
         return np.deg2rad(self.mosaic_v / 60)
 
     def update_lattice_parameters(
@@ -160,7 +171,19 @@ class Sample(object):
     ):
         """update real and reciprocal space lattice parameters and vectors"""
 
-        a, b, c, alpha, beta, gamma = lattice_params
+        try:
+            a, b, c, alpha, beta, gamma = lattice_params
+        except ValueError:
+            print(f"Trying to set lattice parameters={lattice_params}.")
+
+        for length in (a, b, c):
+            if length <= 0:
+                raise ValueError(f"Lattice parameters={lattice_params[0:3]} smaller than zero.")
+
+        for angle in (alpha, beta, gamma):
+            if 0.0 > angle or angle > 180.0:
+                raise ValueError(f"Lattice angles= {lattice_params[3:6]}out of range.")
+
         self.a = a
         self.b = b
         self.c = c

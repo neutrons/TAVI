@@ -1,7 +1,7 @@
 import numpy as np
 
 from tavi.instrument.tas import TAS
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak, spice_to_mantid
 
 
@@ -31,7 +31,7 @@ def test_calc_ub_from_2_peaks_takin():
     tas = TAS(SPICE_CONVENTION=False)
     takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
     tas.load_instrument_params_from_json(takin_json)
-    tas.mount_sample(Xtal(lattice_params))
+    tas.mount_sample(Sample(lattice_params))
 
     ei = 13.500172
     ef = 13.505137
@@ -90,7 +90,7 @@ def test_calc_ub_from_2_peaks_hb3():
     tas = TAS(SPICE_CONVENTION=True)
     hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
     tas.load_instrument_params_from_json(hb3_json)
-    tas.mount_sample(Xtal(lattice_params))
+    tas.mount_sample(Sample(lattice_params))
 
     ei = 14.7
     ef = 14.7
@@ -133,7 +133,7 @@ def test_calc_ub_from_2_peaks_ctax():
     ctax = TAS(SPICE_CONVENTION=True)
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
-    nitio3 = Xtal.from_json("./test_data/test_samples/nitio3.json")
+    nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
 
     ctax.mount_sample(nitio3)
 
@@ -166,7 +166,7 @@ def test_calc_ub_from_2_peaks_hb1():
     hb1.load_instrument_params_from_json(hb1_json)
 
     lattice_params = (3.939520, 3.939520, 3.941957, 90.0, 90.0, 90.0)
-    xtal = Xtal(lattice_params=lattice_params)
+    xtal = Sample(lattice_params=lattice_params)
     hb1.mount_sample(xtal)
     ub_matrix = np.array(
         [
