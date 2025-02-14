@@ -6,7 +6,7 @@ import numpy as np
 from tavi.instrument.tas_base import TASBase
 
 # from tavi.sample.xtal import Xtal
-from tavi.ub_algorithm import find_u_from_two_peaks
+from tavi.ub_algorithm import find_u_from_two_peaks, two_theta_from_hkl
 from tavi.utilities import MotorAngles, UBConf, en2q, get_angle_from_triangle, mantid_to_spice
 
 
@@ -14,20 +14,40 @@ class TAS(TASBase):
     """
     Triple-axis instrument class. Handles angle and UB calculations
 
+    Attributes:
+        s2_limit (tuple | None): (min, max) of s2 angle
+        sense ("+" | "-"): "+" if s2 is right-hand
+        fixed_ei (float | None): set if ei is fixed
+        fixed_ef (float | None): set if ef is fixed
+
     Methods:
         calculate_two_theta
         calculate_ub_matrix
 
     """
 
-    def __init__(self, SPICE_CONVENTION: bool = True):
+    def __init__(
+        self,
+        spice_convention: bool = True,
+        fixed_ei: Optional[float] = None,
+        fixed_ef: Optional[float] = None,
+    ):
         super().__init__()
-        self.SPICE_CONVENTION = SPICE_CONVENTION  # use coordination system defined in SPICE
+        self.spice_convention = spice_convention  # use coordination system defined in SPICE
+        self.fixed_ei = fixed_ei
+        self.fixed_ef = fixed_ef
+
+    def __repr__(self):
+        cls = self.__class__.__name__
+        cls_str = (
+            f"{cls}(fixed_ei={self.fixed_ei!r}, fixed_ef={self.fixed_ef!r}, spice_convention={self.spice_convention})"
+        )
+        return cls_str
 
     def get_two_theta(
         self,
         hkl: tuple[float, float, float],
-        ei: float,
+        ei: Optional[float] = None,
         ef: Optional[float] = None,
     ) -> Optional[float]:
         """find two theta angle for a given peak
@@ -35,47 +55,50 @@ class TAS(TASBase):
         Args:
             hkl (tuple): miller indice of a peak
             ei (float): incident neutron energy, in emV
-            ef (float): final neutron energy, in meV
+            ef (float | None): final neutron energy, in meV. Use ei if not given
         Returns:
-            two_theta (float): two theta angle, in degrees
-
-        Note:
-            if ef is None, assume ef equals ei
+            two_theta (float | None): two theta angle, in degrees. Reutrn None if can't reach.
         """
 
-        if ei is None:
-            raise ValueError("Cannot calculate two thetha without incident energy ei.")
-
-        ki = en2q(ei)
         if ef is None:
-            ef = ei
-            kf = ki
-        else:
-            kf = en2q(ef)
+            if self.fixed_ef is None:
+                raise ValueError("Cannot calculate two thetha without knowing final energy ef.")
+            else:
+                ef = self.fixed_ef
+        if ei is None:
+            if self.fixed_ei is None:
+                ei = ef  # assuming ei and ef are the same
+            else:
+                ei = self.fixed_ei
 
-        b_mat = self.sample.b_mat_from_lattice()
-        qh, qk, ql = hkl
-        hkl_array = np.array([qh, qk, ql])
-        q_sq = 4 * np.pi**2 * hkl_array.T @ b_mat.T @ b_mat @ hkl_array
-        q_norm = np.sqrt(q_sq)
-        two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
+        two_theta_radian = two_theta_from_hkl(hkl, ei, ef, self.sample.b_mat)
+
         if two_theta_radian is None:
-            print(f"Triangle cannot be closed at q=({qh}, {qk}, {ql}), en={ei-ef} meV.")
+            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
             return None
         # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
         # pass
-
-        return np.rad2deg(two_theta_radian) * self.goniometer._sense
+        else:
+            two_theta = np.rad2deg(two_theta_radian) * self.goniometer._sense
+            return two_theta
 
     def calculate_ub_matrix(self, peaks):
         """Find UB matrix from a list of observed peaks"""
-        if not isinstance(self.sample, Xtal):
-            raise ValueError("sample needs to be Xtal class for UB calculation.")
+
+        if (ef := self.fixed_ef) is None:
+            if (ei := self.fixed_ei) is None:
+                raise ValueError("Ei and Ef needs to be provided to calculate q_lab.")
+            else:  # fixed Ei
+                ef = ei
+        else:  # fixed Ef
+            ei = ef
 
         match (num_of_peaks := len(peaks)):
             case 2:
-                b_mat = self.sample.b_mat_from_lattice()
-                u_mat, plane_normal, in_plane_ref = find_u_from_two_peaks(peaks, b_mat, self.goniometer.r_mat_inv)
+                b_mat = self.sample.b_mat
+                u_mat, plane_normal, in_plane_ref = find_u_from_two_peaks(
+                    peaks, b_mat, self.goniometer.r_mat_inv, ei, ef
+                )
                 ub_mat = np.matmul(u_mat, b_mat)
 
             case 3:
@@ -90,7 +113,7 @@ class TAS(TASBase):
                 raise ValueError("Not enough peaks for UB matrix determination.")
 
         # suffle the order following SPICE convention
-        if self.SPICE_CONVENTION:
+        if self.spice_convention:
             plane_normal = mantid_to_spice(plane_normal)
             in_plane_ref = mantid_to_spice(in_plane_ref)
             ub_mat = mantid_to_spice(ub_mat)
@@ -98,16 +121,14 @@ class TAS(TASBase):
         ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
         self.sample.set_orientation(ubconf)
 
-    def calculate_motor_angles(self, peak: tuple, ei: float, ef: Optional[float] = None):
+    # TODO
+    def calculate_motor_angles(self, peak: tuple[float, float, float], en: float):
         """calculate motor positions for a given peak if UB matrix has been determined
 
         Args:
-            peak (tuple): (h, k, l) of a peak
-            ei (float): incident neutron energy, in meV
-            ef (float): final neutron energy, in meV
-
+            peak (tuple): Miller indice (h, k, l) of a peak
+            en (float): energy transfer, in meV. en = ei - ef
         """
-        S2_MIN_DEG = 1
 
         try:
             h, k, l = peak

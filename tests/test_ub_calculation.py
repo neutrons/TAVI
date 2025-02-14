@@ -28,17 +28,19 @@ def test_calc_ub_from_2_peaks_takin():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.942840, 0.014534, -0.332928]
 
-    tas = TAS(SPICE_CONVENTION=False)
+    ei = 13.500172
+    ef = 13.505137
+
+    # tas = TAS(fixed_ef=ef, fixed_ei=ei, spice_convention=False)
+    tas = TAS(fixed_ef=ef, spice_convention=False)
     takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
     tas.load_instrument_params_from_json(takin_json)
     tas.mount_sample(Sample(lattice_params))
 
-    ei = 13.500172
-    ef = 13.505137
     angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
-    peak1 = Peak(hkl=(0, 0, 2), angles=angles1, ei=ei, ef=ef)
+    peak1 = Peak((0, 0, 2), angles1)
     angles2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
-    peak2 = Peak(hkl=(0, 2, 0), angles=angles2, ei=ei, ef=ef)
+    peak2 = Peak((0, 2, 0), angles2)
 
     tas.calculate_ub_matrix(peaks=(peak1, peak2))
     u_cal, v_cal = tas.sample.ub_matrix_to_uv(tas.sample.ub_mat)

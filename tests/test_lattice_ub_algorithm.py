@@ -1,9 +1,10 @@
 import numpy as np
 import pytest
 
+from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.ub_algorithm import ub_matrix_to_lattice_params, ub_matrix_to_uv, uv_to_ub_matrix
-from tavi.utilities import spice_to_mantid
+from tavi.ub_algorithm import find_u_from_two_peaks, ub_matrix_to_lattice_params, ub_matrix_to_uv, uv_to_ub_matrix
+from tavi.utilities import MotorAngles, Peak, spice_to_mantid
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -96,3 +97,41 @@ def test_load_xtal_from_json():
     assert xtal.type == "crystal"
     assert np.allclose(xtal.a, 5.034785)
     assert np.shape(xtal.ub_mat) == (3, 3)
+
+
+def test_calc_ub_from_2_peaks_takin():
+    lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
+    ub_matrix = np.array(
+        [
+            [0.053821, 0.107638, 0.166485],
+            [0.272815, -0.013290, 0.002566],
+            [0.164330, 0.304247, -0.058788],
+        ]
+    )
+
+    plane_normal = [0.000009, 0.999047, 0.043637]
+    in_plane_ref = [0.942840, 0.014534, -0.332928]
+
+    ef = 13.505137
+    xtal = Sample(lattice_params)
+    tas = TAS(fixed_ef=ef, spice_convention=False)
+    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
+    tas.load_instrument_params_from_json(takin_json)
+
+    angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
+    peak1 = Peak((0, 0, 2), angles1)
+    angles2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
+    peak2 = Peak((0, 2, 0), angles2)
+
+    u_mat_cal, plane_normal_cal, in_plane_ref_cal = find_u_from_two_peaks(
+        peaks=(peak1, peak2),
+        b_mat=xtal.b_mat,
+        r_mat_inv=tas.goniometer.r_mat_inv,
+        ef=ef,
+        ei=ef,
+    )
+    ub_matrix_cal = np.matmul(u_mat_cal, xtal.b_mat)
+
+    assert np.allclose(ub_matrix_cal, ub_matrix, atol=1e-2)
+    assert np.allclose(plane_normal_cal, plane_normal, atol=1e-2)
+    assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-2)

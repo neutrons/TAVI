@@ -20,13 +20,12 @@ rad2deg = 180.0 / np.pi
 class MotorAngles(NamedTuple):
     """Moter anlges
 
-     Attributes:
-        two_theta: s2 angle, in degree
-        omega: s1 angle, in degree
-        sgl: sample goniometer lower, in degree
-        sgu: sample goniometer upper, in degree
-        chi: chi angle for a four-circle goniometer, in degree
-        phi: phi angle for a four-circle goniometer, in degree
+    two_theta: s2 angle, in degree
+    omega: s1 angle, in degree
+    sgl: sample goniometer lower, in degree
+    sgu: sample goniometer upper, in degree
+    chi: chi angle for a four-circle goniometer, in degree
+    phi: phi angle for a four-circle goniometer, in degree
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
@@ -44,22 +43,12 @@ class Peak(NamedTuple):
     """
     Phsical/virtual monitor positions
 
-    Attributes:
-        ei: incident energy, in meV
-        ef: final energy, in meV
-        hkl: miller indice (h,k,l)
-        angles: moter angles
-
-    Note:
-        use angles = (two_theta, omega, sgl, sgu) for a Huber table,
-        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
-
+    hkl: miller indice (h,k,l)
+    angles: moter angles
     """
 
-    hkl: tuple
+    hkl: tuple[float, float, float]
     angles: MotorAngles
-    ei: float
-    ef: Optional[float] = None
 
 
 class UBConf(NamedTuple):

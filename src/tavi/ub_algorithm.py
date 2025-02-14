@@ -3,19 +3,16 @@ from typing import Optional
 import numpy as np
 
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
-from tavi.utilities import Peak, en2q
+from tavi.utilities import Peak, en2q, get_angle_from_triangle
 
 
-def q_lab(
-    theta: float,
-    phi: float = 0,
-    ei: Optional[float] = None,
-    ef: Optional[float] = None,
-) -> np.ndarray:
+def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     """
     Reutrn momentum transfer vector q in lab frame
 
     Args:
+        ei
+        ef
         theta: In degree. Same as two theta for TAS with a single detector
                 in the scattering plane.
         phi: In degree. Always zero for TAS with a single detector in the scattering plane.
@@ -27,13 +24,6 @@ def q_lab(
         Using convention in Mantid/Internaltional Crystallography Table
 
     """
-
-    if (ei is None) and (ef is not None):
-        ei = ef
-    elif (ei is not None) and (ef is None):
-        ef = ei
-    else:
-        raise ValueError("Ei and Ef needs to be provided to calculate q_lab.")
 
     ki = en2q(ei)
     kf = en2q(ef)
@@ -113,7 +103,13 @@ def uv_to_ub_matrix(
 # -----------------------------------------------------
 
 
-def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
+def find_u_from_two_peaks(
+    peaks: tuple[Peak, Peak],
+    b_mat,
+    r_mat_inv,
+    ei: float,
+    ef: float,
+):
     """Calculate U matrix from two peaks, need to know B matrix"""
 
     peak1, peak2 = peaks
@@ -130,16 +126,8 @@ def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
         ]
     ).T
 
-    q_lab1 = q_lab(
-        peak1.angles.two_theta,
-        ei=peak1.ei,
-        ef=peak1.ef if peak1.ef is not None else peak1.ei,
-    )
-    q_lab2 = q_lab(
-        peak2.angles.two_theta,
-        ei=peak2.ei,
-        ef=peak2.ef if peak2.ef is not None else peak2.ei,
-    )
+    q_lab1 = q_lab(ei=ei, ef=ef, theta=peak1.angles.two_theta)
+    q_lab2 = q_lab(ei=ei, ef=ef, theta=peak2.angles.two_theta)
 
     # Goniometer angles all zeros in q_sample frame
     q_sample1 = np.matmul(r_mat_inv(peak1.angles), q_lab1)
@@ -153,7 +141,7 @@ def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
 
     q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
 
-    u_mat = np.matmul(q_sample_mat, np.linalg.inv(q_hkl_mat))
+    u_mat = np.matmul(q_sample_mat, q_hkl_mat.T)
 
     plane_normal = q_sample3
     if plane_normal[1] < 0:  # plane normal always up along +Y
@@ -164,10 +152,13 @@ def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
     return u_mat, plane_normal, in_plane_ref
 
 
-# # TODO
+# TODO
 # def _find_ub_from_three_peaks(
 #     self,
 #     peaks: tuple[Peak, Peak, Peak],
+#     r_mat_inv,
+#     ei: float,
+#     ef: float,
 # ) -> UBConf:
 #     """Find UB matrix from three observed peaks for a given goniomete"""
 #     ubconf = UBConf()
@@ -178,6 +169,9 @@ def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
 # def _find_ub_from_multiple_peaks(
 #     self,
 #     peaks: tuple[Peak, ...],
+#     r_mat_inv,
+#     ei: float,
+#     ef: float,
 # ) -> UBConf:
 #     """Find UB matrix from more than three observed peaks for a given goniomete"""
 #     ubconf = UBConf()
@@ -233,3 +227,24 @@ def find_u_from_two_peaks(peaks: tuple[Peak, Peak], b_mat, r_mat_inv):
 #         t3 = np.cross(t1, t2p)
 #         t2 = np.cross(t3, t1)
 #         return TAS.norm_mat(t1, t2, t3)
+
+# -----------------------------------------------------
+# Angle math
+# -----------------------------------------------------
+
+
+def two_theta_from_hkl(
+    hkl: tuple[float, float, float],
+    ei: float,
+    ef: float,
+    b_mat: np.ndarray,
+) -> Optional[float]:
+    """Return None is (h,k,l) can't be reached."""
+
+    ki = en2q(ei)
+    kf = en2q(ef)
+    b_hkl = np.matmul(b_mat, np.array(hkl))
+    q_squared = np.matmul(b_hkl.T, b_hkl)
+    q_norm = np.sqrt(q_squared) * 2 * np.pi
+    two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
+    return two_theta_radian

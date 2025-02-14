@@ -20,6 +20,7 @@ class Goniometer(TASComponent):
     ):
         self.type: str = "Y-ZX"  # Y-mZ-X for (s1, sgl, sgu), Huber table at HB1A and HB3,
         self.sense: Literal["-", "+"] = "-"  # determines the sign of s2
+        self.s2_limit: Optional[tuple] = None
         self.omega_limit: Optional[tuple]
         self.sgl_limit: Optional[tuple] = (-10, 10)
         self.sgu_limit: Optional[tuple] = (-10, 10)

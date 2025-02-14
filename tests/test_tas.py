@@ -6,20 +6,20 @@ from tavi.utilities import MotorAngles
 
 
 def test_find_two_theta():
-    ctax = TAS()
+    ctax = TAS(fixed_ei=4.799999, fixed_ef=4.799999)
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
     nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
     ctax.mount_sample(nitio3)
 
-    two_theta = ctax.get_two_theta(hkl=(0, 0, 3), ei=4.799999)
+    two_theta = ctax.get_two_theta(hkl=(0, 0, 3))
     assert np.allclose(two_theta, 53.240000, atol=1e-1)
-    two_theta = ctax.get_two_theta(hkl=(0.5, 0.5, 0), ei=4.799999)
+    two_theta = ctax.get_two_theta(hkl=(0.5, 0.5, 0))
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 
 def test_calculate_motor_angles():
-    tas = TAS()
+    tas = TAS(fixed_ef=14.7, fixed_ei=14.7)
     hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
     tas.load_instrument_params_from_json(hb3_json)
     lattice_params = (4.128474, 4.128474, 6.651507, 90, 90, 120)

@@ -10,7 +10,6 @@ from tavi.lattice_algorithm import (
     reciprocal_latt_params,
     reciprocal_space_vectors,
 )
-from tavi.utilities import Peak
 
 
 class Sample(object):
@@ -82,14 +81,19 @@ class Sample(object):
         self.mosaic_v: float = 30  # vertical mosaic in minutes of arc
 
         # UB info
-        self.ub_peaks: Optional[tuple[Peak, ...]] = None
+        # self.ub_peaks: Optional[tuple[Peak, ...]] = None
         # self.u_mat: Optional[np.ndarray] = None
         self.ub_mat: Optional[np.ndarray] = None
         # self.inv_ub_mat: Optional[np.ndarray] = None
-        # self.plane_normal: Optional[np.ndarray] = None
-        # self.in_plane_ref: Optional[np.ndarray] = None
+        self.plane_normal: Optional[np.ndarray] = None
+        self.in_plane_ref: Optional[np.ndarray] = None
 
         self.update_lattice_parameters(lattice_params)
+
+    def __repr__(self):
+        cls = self.__class__.__name__
+        cls_str = f"{cls}(lattice_params={self.lattice_params!r})"
+        return cls_str
 
     @classmethod
     def from_json(cls, path_to_json):
@@ -214,7 +218,7 @@ class Sample(object):
     def b_mat(self):
         return b_mat_from_lattice(self.lattice_params)
 
-    def q_norm(self, hkl: tuple[float, float, float]) -> float:
+    def get_q_norm(self, hkl: tuple[float, float, float]) -> float:
         """Convert (h,k,l) to q, in units of inverse Angstrom"""
         try:
             qh, qk, ql = hkl
