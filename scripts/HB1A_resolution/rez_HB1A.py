@@ -84,7 +84,7 @@ p4.add_scan(hh1, fmt="o")
 p4.add_fit(
     hh1_fit,
     x=hh1_fit.x_to_plot(),
-    label=f"FWHM={result.params["s1_fwhm"].value:.5f}+/-{result.params["s1_fwhm"].stderr:.5f}",
+    label=f"FWHM={result.params['s1_fwhm'].value:.5f}+/-{result.params['s1_fwhm'].stderr:.5f}",
 )
 
 x = hh1_fit.result.params["s1_center"].value
@@ -148,7 +148,7 @@ p5.add_scan(hh1_2, fmt="o")
 p5.add_fit(
     hh1_fit_2,
     x=hh1_fit.x_to_plot(),
-    label=f"FWHM={result.params["s1_fwhm"].value:.5f}+/-{result.params["s1_fwhm"].stderr:.5f}",
+    label=f"FWHM={result.params['s1_fwhm'].value:.5f}+/-{result.params['s1_fwhm'].stderr:.5f}",
 )
 
 x = hh1_fit_2.result.params["s1_center"].value

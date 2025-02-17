@@ -73,7 +73,7 @@ class TAS(TASBase):
         q_norm = np.sqrt(q_sq)
         two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
         if two_theta_radian is None:
-            print(f"Triangle cannot be closed at q=({qh}, {qk}, {ql}), en={ei-ef} meV.")
+            print(f"Triangle cannot be closed at q=({qh}, {qk}, {ql}), en={ei - ef} meV.")
             return None
         # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
         # pass
@@ -86,7 +86,7 @@ class TAS(TASBase):
         if not isinstance(self.sample, Xtal):
             raise ValueError("sample needs to be Xtal class for UB calculation.")
 
-        match (num_of_peaks := len(peaks)):
+        match num_of_peaks := len(peaks):
             case 2:
                 ubconf = self._find_u_from_two_peaks(peaks)
                 self.sample.set_orientation(ubconf)
@@ -261,7 +261,7 @@ class TAS(TASBase):
         two_theta = get_angle_from_triangle(ki, kf, q_norm)
 
         if two_theta is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
+            print(f"Triangle cannot be closed at q={hkl}, en={ei - ef} meV.")
             return None
         if np.rad2deg(two_theta) < S2_MIN_DEG:
             print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
