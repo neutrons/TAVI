@@ -34,7 +34,7 @@ class Goniometer(TASComponent):
     def stacking_order(self) -> str:
         """Return motors staking order without the signs"""
 
-        ax0, ax1, ax2, _ = self.type.split(",")
+        ax0, ax1, ax2, *_ = self.type.split(",")
         stacking_order = ""
         for ax in [ax0, ax1, ax2]:
             if ax.startswith("-"):
@@ -52,7 +52,7 @@ class Goniometer(TASComponent):
 
     @property
     def motor_senses(self) -> List[Literal[+1, -1]]:
-        ax0, ax1, ax2, _ = self.type.split(",")
+        ax0, ax1, ax2, *_ = self.type.split(",")
         signs = []
         for ax in [ax0, ax1, ax2]:
             sign = -1 if ax.startswith("-") else +1
@@ -112,7 +112,7 @@ class Goniometer(TASComponent):
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
 
-    def angles_from_r_mat(self, r_mat: np.ndarray, two_theta: Optional[float] = None) -> MotorAngles:
+    def angles_from_r_mat(self, r_mat: np.ndarray, two_theta: float) -> MotorAngles:
         """Calculate goniometer angles from the R matrix
 
         Note:
@@ -145,7 +145,7 @@ class Goniometer(TASComponent):
                 self.validate_motor_positions(angles)
 
             case _:
-                raise ValueError("Unknow goniometer type.  Curruntly support Y-ZX and YZ-X.")
+                raise ValueError("Unknow goniometer type. Curruntly support Y,-Z,X ....")
 
         return angles
 

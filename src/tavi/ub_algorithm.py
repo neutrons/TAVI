@@ -5,14 +5,18 @@ import numpy as np
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
 from tavi.utilities import Peak, en2q, get_angle_from_triangle
 
+# -----------------------------------------------------
+# Angle math
+# -----------------------------------------------------
+
 
 def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     """
     Reutrn momentum transfer vector q in lab frame
 
     Args:
-        ei
-        ef
+        ei: incident energy, in meV
+        ef: final energy, in meV
         theta: In degree. Same as two theta for TAS with a single detector
                 in the scattering plane.
         phi: In degree. Always zero for TAS with a single detector in the scattering plane.
@@ -39,9 +43,73 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     return q_lab
 
 
+def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
+    """return norm of q for given (h,k,l)
+
+    Note:
+        Either b_mat or ub_mat would work"""
+
+    b_hkl = np.matmul(b_mat, np.array(hkl))
+    q_squared = np.matmul(b_hkl.T, b_hkl)
+    q_norm = np.sqrt(q_squared) * 2 * np.pi
+    return q_norm
+
+
+def two_theta_from_hkle(
+    hkl: tuple[float, float, float],
+    ei: float,
+    ef: float,
+    b_mat: np.ndarray,
+) -> Optional[float]:
+    """Return None is (h,k,l) can't be reached.
+
+    Note:
+        Either b_mat or ub_mat would work"""
+
+    ki = en2q(ei)
+    kf = en2q(ef)
+    q_norm = q_norm_from_hkl(hkl, b_mat)
+    two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
+    return two_theta_radian
+
+
 # -----------------------------------------------------
 # R matrix math
 # -----------------------------------------------------
+
+
+def r_matrix_with_minimal_tilt(
+    hkl: tuple[float, float, float],
+    ei: float,
+    ef: float,
+    two_theta: float,
+    ub_mat: np.ndarray,
+) -> np.ndarray:
+
+    ki = en2q(ei)
+    kf = en2q(ef)
+
+    q_norm = q_norm_from_hkl(hkl, ub_mat)
+
+    q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
+    q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm
+    q_lab3 = np.array([0, 1, 0])
+    q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
+
+    t1 = ub_mat @ np.array(hkl)
+    t3_prime = np.array([0, 1, 0])
+    t2 = np.cross(t3_prime, t1)
+    t3 = np.cross(t1, t2)
+    t_mat = np.array(
+        [
+            t1 / np.linalg.norm(t1),
+            t2 / np.linalg.norm(t2),
+            t3 / np.linalg.norm(t3),
+        ]
+    ).T
+    t_mat_inv = np.linalg.inv(t_mat)
+    r_mat = q_lab_mat @ t_mat_inv
+    return r_mat
 
 
 # -----------------------------------------------------
@@ -227,24 +295,3 @@ def find_u_from_two_peaks(
 #         t3 = np.cross(t1, t2p)
 #         t2 = np.cross(t3, t1)
 #         return TAS.norm_mat(t1, t2, t3)
-
-# -----------------------------------------------------
-# Angle math
-# -----------------------------------------------------
-
-
-def two_theta_from_hkl(
-    hkl: tuple[float, float, float],
-    ei: float,
-    ef: float,
-    b_mat: np.ndarray,
-) -> Optional[float]:
-    """Return None is (h,k,l) can't be reached."""
-
-    ki = en2q(ei)
-    kf = en2q(ef)
-    b_hkl = np.matmul(b_mat, np.array(hkl))
-    q_squared = np.matmul(b_hkl.T, b_hkl)
-    q_norm = np.sqrt(q_squared) * 2 * np.pi
-    two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
-    return two_theta_radian

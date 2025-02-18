@@ -6,8 +6,8 @@ import numpy as np
 from tavi.instrument.tas_base import TASBase
 
 # from tavi.sample.xtal import Xtal
-from tavi.ub_algorithm import find_u_from_two_peaks, two_theta_from_hkl
-from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle, mantid_to_spice
+from tavi.ub_algorithm import find_u_from_two_peaks, r_matrix_with_minimal_tilt, two_theta_from_hkle
+from tavi.utilities import MotorAngles, Peak, mantid_to_spice, spice_to_mantid
 
 
 class TAS(TASBase):
@@ -44,12 +44,24 @@ class TAS(TASBase):
         )
         return cls_str
 
-    def get_two_theta(
+    def _get_ei_ef(
         self,
-        hkl: tuple[float, float, float],
         ei: Optional[float] = None,
         ef: Optional[float] = None,
-    ) -> Optional[float]:
+        en: float = 0.0,
+    ) -> tuple[float, float]:
+        """Determine Ei and Ef based on if Ei or Ef is fixed"""
+        if self.fixed_ef is not None:
+            ef = self.fixed_ef
+            ei = en + ef
+        elif self.fixed_ei is not None:
+            ei = self.fixed_ei
+            ef = ei - en
+        else:
+            raise ValueError(f"{self} shold has either Ei or Ef fixed.")
+        return (ei, ef)
+
+    def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> tuple[float, float]:
         """find two theta angle for a given peak
 
         Args:
@@ -60,21 +72,11 @@ class TAS(TASBase):
             two_theta (float | None): two theta angle, in degrees. Reutrn None if can't reach.
         """
 
-        if ef is None:
-            if self.fixed_ef is None:
-                raise ValueError("Cannot calculate two thetha without knowing final energy ef.")
-            else:
-                ef = self.fixed_ef
-        if ei is None:
-            if self.fixed_ei is None:
-                ei = ef  # assuming ei and ef are the same
-            else:
-                ei = self.fixed_ei
-
-        two_theta_radian = two_theta_from_hkl(hkl, ei, ef, self.sample.b_mat)
+        ei, ef = self._get_ei_ef(en=en)
+        two_theta_radian = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
 
         if two_theta_radian is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
+            print(f"Triangle cannot be closed at q={hkl}, en={en} meV.")
             return None
         # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
         # pass
@@ -85,13 +87,7 @@ class TAS(TASBase):
     def calculate_ub_matrix(self, peaks: tuple[Peak, ...]):
         """Find UB matrix from a list of observed peaks"""
 
-        if (ef := self.fixed_ef) is None:
-            if (ei := self.fixed_ei) is None:
-                raise ValueError("Ei and Ef needs to be provided to calculate q_lab.")
-            else:  # fixed Ei
-                ef = ei
-        else:  # fixed Ef
-            ei = ef
+        ei, ef = self._get_ei_ef()
 
         match (num_of_peaks := len(peaks)):
             case 2:
@@ -116,9 +112,13 @@ class TAS(TASBase):
 
         # ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
         # self.sample.set_orientation(ubconf)
+        return ub_mat
 
-    # TODO
-    def calculate_motor_angles(self, peak: tuple[float, float, float], en: float):
+    def calculate_motor_angles(
+        self,
+        hkl: tuple[float, float, float],
+        en: float = 0.0,
+    ) -> Optional[MotorAngles]:
         """calculate motor positions for a given peak if UB matrix has been determined
 
         Args:
@@ -126,45 +126,22 @@ class TAS(TASBase):
             en (float): energy transfer, in meV. en = ei - ef
         """
 
-        try:
-            h, k, l = peak
-        except ValueError:
-            print(f"hkl ={peak} should have the format (h,k,l).")
-        hkl = np.array((h, k, l))
+        if len(hkl) != 3:
+            raise ValueError(f"hkl ={hkl} should have the format (h,k,l).")
 
-        ki = en2q(ei)
-        if ef is None:
-            ef = ei
-            kf = ki
-        else:
-            kf = en2q(ef)
+        ei, ef = self._get_ei_ef(en)
+        b_mat = self.sample.b_mat
 
-        if self.sample.b_mat is None:
-            b_mat = self.sample.b_mat_from_lattice()
-        else:
-            b_mat = self.sample.b_mat
-        q_norm = 2 * np.pi * np.sqrt(hkl.T @ b_mat.T @ b_mat @ hkl)
+        two_theta_radian = two_theta_from_hkle(hkl, ei, ef, b_mat)
 
-        two_theta = get_angle_from_triangle(ki, kf, q_norm)
-
-        if two_theta is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={ei-ef} meV.")
-            return None
-        if np.rad2deg(two_theta) < S2_MIN_DEG:
-            print(f"s2 is smaller than {S2_MIN_DEG} deg at q={hkl}.")
+        if two_theta_radian is None:
+            print(f"Position hkl={hkl}, en={en} can't be reached.")
             return None
 
-        two_theta_deg = np.rad2deg(two_theta) * self.goniometer._sense
-        t_mat = self._t_mat_minimal_tilt(hkl)
-        t_mat_inv = np.linalg.inv(t_mat)
+        ub_mat = spice_to_mantid(self.sample.ub_mat) if self.spice_convention else self.sample.ub_mat
 
-        q_lab1 = TAS.q_lab(two_theta_deg, ei, ef) / q_norm
-        q_lab2 = np.array([q_lab1[2], 0, -q_lab1[0]])
-        q_lab3 = np.array([0, 1, 0])
+        two_theta = np.rad2deg(two_theta_radian * self.goniometer._sense)
+        r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_mat)
+        angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)
 
-        q_lab_mat = TAS.norm_mat(q_lab1, q_lab2, q_lab3)
-        r_mat = q_lab_mat @ t_mat_inv
-
-        _, omega, sgl, sgu, chi, phi = self.goniometer.angles_from_r_mat(r_mat)
-
-        return MotorAngles(two_theta_deg, omega, sgl, sgu, chi, phi)
+        return angles

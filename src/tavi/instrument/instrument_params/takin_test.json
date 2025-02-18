@@ -32,7 +32,7 @@
     },
     "goniometer": {
         "sense": "-",
-        "type": "Y-ZX"
+        "type": "Y,-Z,X"
     },
     "analyzer": {
         "type": "Pg002",

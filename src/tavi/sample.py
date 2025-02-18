@@ -85,8 +85,8 @@ class Sample(object):
         # self.u_mat: Optional[np.ndarray] = None
         self.ub_mat: Optional[np.ndarray] = None
         # self.inv_ub_mat: Optional[np.ndarray] = None
-        self.plane_normal: Optional[np.ndarray] = None
-        self.in_plane_ref: Optional[np.ndarray] = None
+        # self.plane_normal: Optional[np.ndarray] = None
+        # self.in_plane_ref: Optional[np.ndarray] = None
 
         self.update_lattice_parameters(lattice_params)
 

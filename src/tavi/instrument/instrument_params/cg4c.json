@@ -27,7 +27,7 @@
     },
     "goniometer": {
         "sense": "+",
-        "type": "Y-ZX"
+        "type": "Y,-Z,X"
     },
     "monitor": {
         "shape": "rectangular"

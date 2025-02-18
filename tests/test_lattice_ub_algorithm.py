@@ -123,7 +123,7 @@ def test_calc_ub_from_2_peaks_takin():
     angles2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
     peak2 = Peak((0, 2, 0), angles2)
 
-    u_mat_cal, plane_normal_cal, in_plane_ref_cal = find_u_from_two_peaks(
+    u_mat_cal = find_u_from_two_peaks(
         peaks=(peak1, peak2),
         b_mat=xtal.b_mat,
         r_mat_inv=tas.goniometer.r_mat_inv,
@@ -132,6 +132,6 @@ def test_calc_ub_from_2_peaks_takin():
     )
     ub_matrix_cal = np.matmul(u_mat_cal, xtal.b_mat)
 
-    assert np.allclose(ub_matrix_cal, ub_matrix, atol=1e-2)
-    assert np.allclose(plane_normal_cal, plane_normal, atol=1e-2)
-    assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-2)
+    assert np.allclose(ub_matrix_cal, ub_matrix, atol=1e-4)
+    # assert np.allclose(plane_normal_cal, plane_normal, atol=1e-2)
+    # assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-2)
