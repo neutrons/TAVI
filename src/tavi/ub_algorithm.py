@@ -40,7 +40,7 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
 
 
 # -----------------------------------------------------
-# U matrix math
+# R matrix math
 # -----------------------------------------------------
 
 
@@ -56,8 +56,8 @@ def ub_matrix_to_uv(ub_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
 
     inv_ub_matrix = np.linalg.inv(ub_matrix)
-    u = inv_ub_matrix @ np.array([0, 0, 1])
-    v = inv_ub_matrix @ np.array([1, 0, 0])
+    u = np.matmul(inv_ub_matrix, np.array([0, 0, 1]))
+    v = np.matmul(inv_ub_matrix, np.array([1, 0, 0]))
     return (u, v)
 
 
@@ -113,8 +113,8 @@ def find_u_from_two_peaks(
     """Calculate U matrix from two peaks, need to know B matrix"""
 
     peak1, peak2 = peaks
-    q_hkl1 = np.matmul(b_mat, np.array(peak1.hkl))
-    q_hkl2p = np.matmul(b_mat, np.array(peak2.hkl))
+    q_hkl1 = np.dot(b_mat, np.array(peak1.hkl))
+    q_hkl2p = np.dot(b_mat, np.array(peak2.hkl))
     q_hkl3 = np.cross(q_hkl1, q_hkl2p)
     q_hkl_2 = np.cross(q_hkl3, q_hkl1)
 
@@ -143,13 +143,13 @@ def find_u_from_two_peaks(
 
     u_mat = np.matmul(q_sample_mat, q_hkl_mat.T)
 
-    plane_normal = q_sample3
-    if plane_normal[1] < 0:  # plane normal always up along +Y
-        plane_normal = -plane_normal
+    # plane_normal = q_sample3
+    # if plane_normal[1] < 0:  # plane normal always up along +Y
+    #     plane_normal = -plane_normal
+    # in_plane_ref = q_sample1
+    # return u_mat, plane_normal, in_plane_ref
 
-    in_plane_ref = q_sample1
-
-    return u_mat, plane_normal, in_plane_ref
+    return u_mat
 
 
 # TODO

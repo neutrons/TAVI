@@ -7,7 +7,7 @@ from tavi.instrument.tas_base import TASBase
 
 # from tavi.sample.xtal import Xtal
 from tavi.ub_algorithm import find_u_from_two_peaks, two_theta_from_hkl
-from tavi.utilities import MotorAngles, UBConf, en2q, get_angle_from_triangle, mantid_to_spice
+from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle, mantid_to_spice
 
 
 class TAS(TASBase):
@@ -82,7 +82,7 @@ class TAS(TASBase):
             two_theta = np.rad2deg(two_theta_radian) * self.goniometer._sense
             return two_theta
 
-    def calculate_ub_matrix(self, peaks):
+    def calculate_ub_matrix(self, peaks: tuple[Peak, ...]):
         """Find UB matrix from a list of observed peaks"""
 
         if (ef := self.fixed_ef) is None:
@@ -96,30 +96,26 @@ class TAS(TASBase):
         match (num_of_peaks := len(peaks)):
             case 2:
                 b_mat = self.sample.b_mat
-                u_mat, plane_normal, in_plane_ref = find_u_from_two_peaks(
-                    peaks, b_mat, self.goniometer.r_mat_inv, ei, ef
-                )
+                u_mat = find_u_from_two_peaks(peaks, b_mat, self.goniometer.r_mat_inv, ei, ef)
                 ub_mat = np.matmul(u_mat, b_mat)
 
             case 3:
                 pass
-                # ubconf = self._find_ub_from_three_peaks(peaks)
-                # self.sample.set_orientation(ubconf)
+
             case _ if num_of_peaks > 3:
                 pass
-                # ubconf = self._find_ub_from_multiple_peaks(peaks)
-                # self.sample.set_orientation(ubconf)
+
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")
 
         # suffle the order following SPICE convention
         if self.spice_convention:
-            plane_normal = mantid_to_spice(plane_normal)
-            in_plane_ref = mantid_to_spice(in_plane_ref)
+            # plane_normal = mantid_to_spice(plane_normal)
+            # in_plane_ref = mantid_to_spice(in_plane_ref)
             ub_mat = mantid_to_spice(ub_mat)
 
-        ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
-        self.sample.set_orientation(ubconf)
+        # ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
+        # self.sample.set_orientation(ubconf)
 
     # TODO
     def calculate_motor_angles(self, peak: tuple[float, float, float], en: float):
@@ -133,7 +129,7 @@ class TAS(TASBase):
         try:
             h, k, l = peak
         except ValueError:
-            print("hkl should have the format (h, k, l).")
+            print(f"hkl ={peak} should have the format (h,k,l).")
         hkl = np.array((h, k, l))
 
         ki = en2q(ei)
