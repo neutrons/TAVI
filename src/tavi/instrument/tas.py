@@ -4,10 +4,14 @@ from typing import Optional
 import numpy as np
 
 from tavi.instrument.tas_base import TASBase
-
-# from tavi.sample.xtal import Xtal
-from tavi.ub_algorithm import find_u_from_two_peaks, r_matrix_with_minimal_tilt, two_theta_from_hkle
-from tavi.utilities import MotorAngles, Peak, mantid_to_spice, spice_to_mantid
+from tavi.ub_algorithm import (
+    find_u_from_two_peaks,
+    find_ub_from_multiple_peaks,
+    find_ub_from_three_peaks,
+    r_matrix_with_minimal_tilt,
+    two_theta_from_hkle,
+)
+from tavi.utilities import MotorAngles, Peak, UBConf, mantid_to_spice
 
 
 class TAS(TASBase):
@@ -15,8 +19,7 @@ class TAS(TASBase):
     Triple-axis instrument class. Handles angle and UB calculations
 
     Attributes:
-        s2_limit (tuple | None): (min, max) of s2 angle
-        sense ("+" | "-"): "+" if s2 is right-hand
+        spice_convention (bool): False if using Mandid/International Crystallography Table convention
         fixed_ei (float | None): set if ei is fixed
         fixed_ef (float | None): set if ef is fixed
 
@@ -45,10 +48,7 @@ class TAS(TASBase):
         return cls_str
 
     def _get_ei_ef(
-        self,
-        ei: Optional[float] = None,
-        ef: Optional[float] = None,
-        en: float = 0.0,
+        self, ei: Optional[float] = None, ef: Optional[float] = None, en: float = 0.0
     ) -> tuple[float, float]:
         """Determine Ei and Ef based on if Ei or Ef is fixed"""
         if self.fixed_ef is not None:
@@ -58,10 +58,10 @@ class TAS(TASBase):
             ei = self.fixed_ei
             ef = ei - en
         else:
-            raise ValueError(f"{self} shold has either Ei or Ef fixed.")
+            raise ValueError(f"{self} should has either Ei or Ef fixed.")
         return (ei, ef)
 
-    def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> tuple[float, float]:
+    def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> Optional[float]:
         """find two theta angle for a given peak
 
         Args:
@@ -79,12 +79,12 @@ class TAS(TASBase):
             print(f"Triangle cannot be closed at q={hkl}, en={en} meV.")
             return None
         # elif np.rad2deg(two_theta_radian) < S2_MIN_DEG:
-        # pass
+        #   pass
         else:
             two_theta = np.rad2deg(two_theta_radian) * self.goniometer._sense
             return two_theta
 
-    def calculate_ub_matrix(self, peaks: tuple[Peak, ...]):
+    def calculate_ub_matrix(self, peaks: tuple[Peak]) -> UBConf:
         """Find UB matrix from a list of observed peaks"""
 
         ei, ef = self._get_ei_ef()
@@ -92,27 +92,35 @@ class TAS(TASBase):
         match (num_of_peaks := len(peaks)):
             case 2:
                 b_mat = self.sample.b_mat
-                u_mat = find_u_from_two_peaks(peaks, b_mat, self.goniometer.r_mat_inv, ei, ef)
+                u_mat, plane_normal, in_plane_ref = find_u_from_two_peaks(
+                    peaks, b_mat, self.goniometer.r_mat_inv, ei, ef
+                )
                 ub_mat = np.matmul(u_mat, b_mat)
 
             case 3:
-                pass
+                (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref) = find_ub_from_three_peaks(
+                    peaks, self.goniometer.r_mat_inv, ei, ef
+                )
+                self.sample.update_lattice_parametres_from_b_mat(b_mat)
 
             case _ if num_of_peaks > 3:
-                pass
+                (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref) = find_ub_from_multiple_peaks(
+                    peaks, self.goniometer.r_mat_inv, ei, ef
+                )
+                self.sample.update_lattice_parametres_from_b_mat(b_mat)
 
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")
 
         # suffle the order following SPICE convention
         if self.spice_convention:
-            # plane_normal = mantid_to_spice(plane_normal)
-            # in_plane_ref = mantid_to_spice(in_plane_ref)
+            plane_normal = mantid_to_spice(plane_normal)
+            in_plane_ref = mantid_to_spice(in_plane_ref)
             ub_mat = mantid_to_spice(ub_mat)
 
-        # ubconf = UBConf(peaks, u_mat, None, ub_mat, plane_normal, in_plane_ref)
-        # self.sample.set_orientation(ubconf)
-        return ub_mat
+        ub_conf = UBConf(ub_mat, plane_normal, in_plane_ref, u_mat, b_mat, peaks)
+        self.sample.ub_conf = ub_conf
+        return ub_conf
 
     def calculate_motor_angles(
         self,
@@ -129,7 +137,7 @@ class TAS(TASBase):
         if len(hkl) != 3:
             raise ValueError(f"hkl ={hkl} should have the format (h,k,l).")
 
-        ei, ef = self._get_ei_ef(en)
+        ei, ef = self._get_ei_ef(en=en)
         b_mat = self.sample.b_mat
 
         two_theta_radian = two_theta_from_hkle(hkl, ei, ef, b_mat)
@@ -138,10 +146,18 @@ class TAS(TASBase):
             print(f"Position hkl={hkl}, en={en} can't be reached.")
             return None
 
-        ub_mat = spice_to_mantid(self.sample.ub_mat) if self.spice_convention else self.sample.ub_mat
-
         two_theta = np.rad2deg(two_theta_radian * self.goniometer._sense)
-        r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_mat)
+        ub_conf = self.sample.ub_conf
+        if ub_conf is None:
+            raise ValueError(f"UB info not found. ub_conf={ub_conf}.")
+        if (
+            ((mat := ub_conf.ub_mat) is None)
+            or ((n := ub_conf.plane_normal) is None)
+            or ((i := ub_conf.in_plane_ref) is None)
+        ):
+            raise ValueError(f"Missing UB info. ub_mat={mat}, plane_normal={n}, in_plne_ref={i}.")
+
+        r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf)
         angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)
 
         return angles

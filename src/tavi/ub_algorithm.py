@@ -3,10 +3,10 @@ from typing import Optional
 import numpy as np
 
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
-from tavi.utilities import Peak, en2q, get_angle_from_triangle
+from tavi.utilities import Peak, UBConf, en2q, get_angle_from_triangle
 
 # -----------------------------------------------------
-# Angle math
+# Angle and Q math
 # -----------------------------------------------------
 
 
@@ -47,7 +47,7 @@ def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
     """return norm of q for given (h,k,l)
 
     Note:
-        Either b_mat or ub_mat would work"""
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
 
     b_hkl = np.matmul(b_mat, np.array(hkl))
     q_squared = np.matmul(b_hkl.T, b_hkl)
@@ -64,7 +64,7 @@ def two_theta_from_hkle(
     """Return None is (h,k,l) can't be reached.
 
     Note:
-        Either b_mat or ub_mat would work"""
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
 
     ki = en2q(ei)
     kf = en2q(ef)
@@ -83,23 +83,49 @@ def r_matrix_with_minimal_tilt(
     ei: float,
     ef: float,
     two_theta: float,
-    ub_mat: np.ndarray,
+    ub_conf: UBConf,
 ) -> np.ndarray:
+    """Calculate R matrix when the tilt from the scattering plane is minimal
+    Args:
+        hkl: tuple of Miller indices
+        ei: incident energy, in meV
+        ef: finial energy, in meV
+        two_theta: two_theta angle, in degrees
+        ub_conf: need to have ub_mat, plane_normal and in_plane_ref
+    """
+
+    ub_mat = ub_conf.ub_mat
+    plane_normal = ub_conf.plane_normal
+    in_plane_ref = ub_conf.in_plane_ref
 
     ki = en2q(ei)
     kf = en2q(ef)
 
     q_norm = q_norm_from_hkl(hkl, ub_mat)
-
-    q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
-    q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm
+    tt = np.deg2rad(two_theta)
+    q_lab1 = np.array([-kf * np.sin(tt), 0, ki - kf * np.cos(tt)]) / q_norm
+    q_lab2 = np.array([ki - kf * np.cos(tt), 0, kf * np.sin(tt)]) / q_norm
     q_lab3 = np.array([0, 1, 0])
     q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
 
+    ZERO = 1e-6
     t1 = ub_mat @ np.array(hkl)
-    t3_prime = np.array([0, 1, 0])
-    t2 = np.cross(t3_prime, t1)
-    t3 = np.cross(t1, t2)
+    if np.abs(np.dot(t1, plane_normal)) < ZERO:
+        # t1 in plane
+        t3 = plane_normal
+        t2 = np.cross(t3, t1)
+    elif np.linalg.norm(np.cross(plane_normal, t1)) < ZERO:
+        # oops, t1 along plane_normal
+        t2 = in_plane_ref
+        t3 = np.cross(t1, t2)
+    else:
+        # t1 not in plane, need to change tilts
+        # t2p = np.cross(plane_normal, t1)
+        # t3 = np.cross(t1, t2p)
+        # t2 = np.cross(t3, t1)
+        t2 = np.cross(plane_normal, t1)
+        t3 = np.cross(t1, t2)
+
     t_mat = np.array(
         [
             t1 / np.linalg.norm(t1),
@@ -173,7 +199,7 @@ def uv_to_ub_matrix(
 
 def find_u_from_two_peaks(
     peaks: tuple[Peak, Peak],
-    b_mat,
+    b_mat: np.ndarray,
     r_mat_inv,
     ei: float,
     ef: float,
@@ -211,87 +237,39 @@ def find_u_from_two_peaks(
 
     u_mat = np.matmul(q_sample_mat, q_hkl_mat.T)
 
-    # plane_normal = q_sample3
-    # if plane_normal[1] < 0:  # plane normal always up along +Y
-    #     plane_normal = -plane_normal
-    # in_plane_ref = q_sample1
-    # return u_mat, plane_normal, in_plane_ref
-
-    return u_mat
+    # plane normal always up along +Y
+    plane_normal = -q_sample3 if q_sample3[1] < 0 else q_sample3
+    in_plane_ref = q_sample1
+    return u_mat, plane_normal, in_plane_ref
 
 
 # TODO
-# def _find_ub_from_three_peaks(
-#     self,
-#     peaks: tuple[Peak, Peak, Peak],
-#     r_mat_inv,
-#     ei: float,
-#     ef: float,
-# ) -> UBConf:
-#     """Find UB matrix from three observed peaks for a given goniomete"""
-#     ubconf = UBConf()
-#     return ubconf
+def find_ub_from_three_peaks(
+    peaks: tuple[Peak, Peak, Peak],
+    r_mat_inv,
+    ei: float,
+    ef: float,
+):
+    """Find UB matrix from three observed peaks for a given goniomete"""
+    u_mat = None
+    b_mat = None
+    ub_mat = None
+    plane_normal = None
+    in_plane_ref = None
+    return (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref)
 
 
-# # TODO
-# def _find_ub_from_multiple_peaks(
-#     self,
-#     peaks: tuple[Peak, ...],
-#     r_mat_inv,
-#     ei: float,
-#     ef: float,
-# ) -> UBConf:
-#     """Find UB matrix from more than three observed peaks for a given goniomete"""
-#     ubconf = UBConf()
-#     return ubconf
-
-
-# @staticmethod
-# def norm_mat(t1, t2, t3):
-#     mat = np.array([t1 / np.linalg.norm(t1), t2 / np.linalg.norm(t2), t3 / np.linalg.norm(t3)]).T
-#     return mat
-
-
-# def _t_mat_minimal_tilt(self, hkl: np.ndarray):
-#     """Build matrix T assuming minimal goniometer tilt angles"""
-
-#     if not isinstance(self.sample, Xtal):
-#         raise ValueError("Sample needs to be Xtal class for UB calculation.")
-#     if self.sample.ub_mat is None:
-#         raise ValueError("UB matrix is unknown.")
-#     if self.sample.plane_normal is None:
-#         raise ValueError("Plane normal vector is not known.")
-#     if self.sample.in_plane_ref is None:
-#         raise ValueError("In-plnae reference vector is not known.")
-
-#     EPS = 1e-8  # zero
-
-#     plane_normal = np.array(self.sample.plane_normal)
-#     in_plane_ref = np.array(self.sample.in_plane_ref)
-#     ub_mat = self.sample.ub_mat
-
-#     if self.SPICE_CONVENTION:  # suffle the order following SPICE convention
-#         plane_normal = spice_to_mantid(plane_normal)
-#         in_plane_ref = spice_to_mantid(in_plane_ref)
-#         ub_mat = spice_to_mantid(ub_mat)
-
-#     q = ub_mat @ hkl
-#     t1 = q / np.linalg.norm(q)
-
-#     if np.dot(t1, plane_normal) < EPS:  # t1 in plane
-#         t3 = plane_normal
-#         t2 = np.cross(t3, t1)
-#         return TAS.norm_mat(t1, t2, t3)
-
-#     # t1 not in plane, need to change tilts
-#     if np.linalg.norm(np.cross(plane_normal, t1)) < EPS:
-#         # oops, t1 along plane_normal
-#         t2 = in_plane_ref
-#         t3 = np.cross(t1, t2)
-#         return TAS.norm_mat(t1, t2, t3)
-
-#     else:
-#         t2p = np.cross(plane_normal, t1)
-#         t3 = np.cross(t1, t2p)
-#         t2 = np.cross(t3, t1)
-#         return TAS.norm_mat(t1, t2, t3)
+# TODO
+def find_ub_from_multiple_peaks(
+    peaks: tuple[Peak, ...],
+    r_mat_inv,
+    ei: float,
+    ef: float,
+):
+    """Find UB matrix from more than three observed peaks for a given goniomete"""
+    u_mat = None
+    b_mat = None
+    ub_mat = None
+    plane_normal = None
+    in_plane_ref = None
+    return (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref)

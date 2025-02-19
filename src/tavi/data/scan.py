@@ -8,8 +8,8 @@ import numpy as np
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D
 from tavi.plotter import Plot1D
-
-# from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
+from tavi.ub_algorithm import ub_matrix_to_uv
 from tavi.utilities import spice_to_mantid
 
 
@@ -133,8 +133,8 @@ class Scan(object):
         ub_matrix = self._nexus_dict.get("sample/orientation_matrix").reshape(3, 3)
         lattice_constants = self._nexus_dict.get("sample/unit_cell")
         if sample_type == "crystal" and (ub_matrix is not None):
-            xtal = Xtal(lattice_constants)
-            (u, v) = xtal.ub_matrix_to_uv(spice_to_mantid(ub_matrix))
+            xtal = Sample(lattice_constants)
+            (u, v) = ub_matrix_to_uv(spice_to_mantid(ub_matrix))
         else:
             (u, v) = (None, None)
 

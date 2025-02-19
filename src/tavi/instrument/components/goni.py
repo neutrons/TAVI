@@ -11,6 +11,28 @@ class Goniometer(TASComponent):
     Goniometer
     For Huber table, use type Y,-Z,X or Y,Z,-X
     For Four-Cricle in bisect mode, use type ?Y,Z,Y,bisect
+
+    Attributes:
+        type (str):
+        sense (str): "+" if s2 is right-hand
+        s2_limit (tuple | None): (min, max) of s2 angle
+        omega_limit
+        sgl_limit: Default is (-10, 10)
+        sgu_limit:  Default is  (-10, 10)
+        chi_limit:
+        phi_limit:
+
+
+    Methods:
+        _sense
+        stacking_order
+        mode (str): Mode for Four-Circle. "bisect" or "azimuthal"
+        motor_senses: signs in the goniometer type string
+        r_mat
+        r_mat_inv
+        set_limit
+        validate_motor_positions
+
     """
 
     def __init__(
@@ -87,6 +109,11 @@ class Goniometer(TASComponent):
         operating_mode = self.stacking_order + self.mode if self.mode is not None else self.stacking_order
         match operating_mode:
             case "YZX":  # Huber table
+                relevant_angles = (angles.omega, angles.sgl, angles.sgu)
+                if None in relevant_angles:
+                    raise ValueError(
+                        f"Cannot have unknown omega={angles.omega}, sgl={angles.sgl}, sgu={angles.sgu} in YZX mode."
+                    )
                 r_mat = np.matmul(
                     rot_y(angles.omega * signs[0]),
                     np.matmul(
@@ -95,6 +122,11 @@ class Goniometer(TASComponent):
                     ),
                 )
             case "YZY_bisect":  # Four-Circle in s1 bisect mode
+                relevant_angles = (angles.omega, angles.chi, angles.phi)
+                if None in relevant_angles:
+                    raise ValueError(
+                        f"Cannot have unknown omega={angles.omega}, chi={angles.chi}, phi={angles.phi} in YZY_bisect mode."
+                    )
                 r_mat = np.matmul(
                     rot_y(angles.omega * signs[0]),
                     np.matmul(
@@ -127,8 +159,10 @@ class Goniometer(TASComponent):
             case "YZX":  # Y-mZ-X (s1, sgl, sgu) for HB1A and HB3,
                 denominator = np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)
                 sgl_rad = np.arctan2(r_mat[1, 0], denominator)
-                sgu_rad = np.arctan2(-r_mat[1, 2] / denominator, r_mat[1, 1] / denominator)
-                omega_rad = np.arctan2(-r_mat[2, 0] / denominator, r_mat[0, 0] / denominator)
+                # sgu_rad = np.arctan2(-r_mat[1, 2] / denominator, r_mat[1, 1] / denominator)
+                # omega_rad = np.arctan2(-r_mat[2, 0] / denominator, r_mat[0, 0] / denominator)
+                sgu_rad = np.arctan2(-r_mat[1, 2], r_mat[1, 1])
+                omega_rad = np.arctan2(-r_mat[2, 0], r_mat[0, 0])
                 omega, sgl, sgu = np.rad2deg(
                     [
                         signs[0] * omega_rad,

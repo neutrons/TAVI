@@ -69,7 +69,7 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CooperNathans(SPICE_CONVENTION=False)
+    tas = CooperNathans(fixed_ef=4.8, SPICE_CONVENTION=False)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"

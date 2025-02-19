@@ -6,10 +6,12 @@ import numpy as np
 
 from tavi.lattice_algorithm import (
     b_mat_from_lattice,
+    lattice_params_from_b_mat,
     real_space_vectors,
     reciprocal_latt_params,
     reciprocal_space_vectors,
 )
+from tavi.utilities import UBConf
 
 
 class Sample(object):
@@ -30,11 +32,7 @@ class Sample(object):
         a, b, c                 lattice constants in Angstrom
         alpha, beta, gamma      angles in degrees
 
-        ub_peaks : peaks used to determine UB matrix
-        ub_matrix (np.adarray): UB matrix
-        inv_ub_matrix (np.ndarray): inverse of UB matrix
-        in_plane_ref: in plane vector in Qsample frame, goniometers at zero
-        plane_normal: normal vector in Qsample frame, goniometers at zero
+        ub_conf (UBConf): latest UB configuration information
         u (tuple): u vector, (h, k, l) along the beam direction when all goniometer angles are zero
         v (tuple): v vector, (h ,k, l) in the scattering plane
 
@@ -80,14 +78,7 @@ class Sample(object):
         self.mosaic_h: float = 30  # horizontal mosaic in minutes of arc
         self.mosaic_v: float = 30  # vertical mosaic in minutes of arc
 
-        # UB info
-        # self.ub_peaks: Optional[tuple[Peak, ...]] = None
-        # self.u_mat: Optional[np.ndarray] = None
-        self.ub_mat: Optional[np.ndarray] = None
-        # self.inv_ub_mat: Optional[np.ndarray] = None
-        # self.plane_normal: Optional[np.ndarray] = None
-        # self.in_plane_ref: Optional[np.ndarray] = None
-
+        self.ub_conf: Optional[UBConf] = None
         self.update_lattice_parameters(lattice_params)
 
     def __repr__(self):
@@ -129,11 +120,16 @@ class Sample(object):
 
         # setting UB matrix
         if (ub_matrix := sample_params_dict.get("ub_matrix")) is not None:
-            sample.ub_mat = np.array(ub_matrix).reshape(3, 3)
+            ub_matrix = np.array(ub_matrix).reshape(3, 3)
         if (plane_normal := sample_params_dict.get("plane_normal")) is not None:
-            sample.plane_normal = np.array(plane_normal)
+            plane_normal = np.array(plane_normal)
         if (in_plane_ref := sample_params_dict.get("in_plane_ref")) is not None:
             sample.in_plane_ref = np.array(in_plane_ref)
+        sample.ub_conf = UBConf(
+            ub_mat=ub_matrix,
+            plane_normal=plane_normal,
+            in_plane_ref=in_plane_ref,
+        )
 
         return sample
 
@@ -229,3 +225,8 @@ class Sample(object):
         q_vec = qh * a_star_vec + qk * b_star_vec + ql * c_star_vec
         q_norm = float(np.linalg.norm(q_vec))
         return q_norm
+
+    def update_lattice_parametres_from_b_mat(self, b_mat: np.ndarray):
+        """Update lattice paramters based on B matrix"""
+        lattice_params = lattice_params_from_b_mat(b_mat)
+        self.update_lattice_parameters(lattice_params)
