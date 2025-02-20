@@ -69,8 +69,8 @@ class UBConf(NamedTuple):
     ub_mat: np.ndarray
     plane_normal: np.ndarray
     in_plane_ref: np.ndarray
-    u_mat: Optional[np.ndarray] = None
-    b_mat: Optional[np.ndarray] = None
+    # u_mat: Optional[np.ndarray] = None
+    # b_mat: Optional[np.ndarray] = None
     ub_peaks: Optional[tuple[Peak]] = None
 
 

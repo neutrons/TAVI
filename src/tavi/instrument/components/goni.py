@@ -52,6 +52,11 @@ class Goniometer(TASComponent):
         super().__init__(param_dict)
         self.component_name = component_name
 
+    def __repr__(self):
+        cls = self.__class__.__name__
+        cls_str = f"{cls}, type={self.type}"
+        return cls_str
+
     @property
     def stacking_order(self) -> str:
         """Return motors staking order without the signs"""
@@ -121,7 +126,7 @@ class Goniometer(TASComponent):
                         rot_x(angles.sgu * signs[2]),
                     ),
                 )
-            case "YZY_bisect":  # Four-Circle in s1 bisect mode
+            case "YZYbisect":  # Four-Circle in s1 bisect mode
                 relevant_angles = (angles.omega, angles.chi, angles.phi)
                 if None in relevant_angles:
                     raise ValueError(
@@ -135,7 +140,7 @@ class Goniometer(TASComponent):
                     ),
                 )
             case _:
-                raise ValueError(f"Unknow goniometert={operating_mode}")
+                raise ValueError(f"Unknow goniometer type={operating_mode}")
 
         return r_mat
 
@@ -144,10 +149,13 @@ class Goniometer(TASComponent):
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
 
-    def angles_from_r_mat(self, r_mat: np.ndarray, two_theta: float) -> MotorAngles:
+    def angles_from_r_mat(self, r_mat: np.ndarray, two_theta: float, psi: float) -> MotorAngles:
         """Calculate goniometer angles from the R matrix
 
         Note:
+            In bisect mode, omega angle is half of two_theta for diffrction. But for inelastic scattering,
+            chi ring should be rotated where the axis of chi is perpendicular to Q
+
             range of np.arcsin is -pi/2 to pi/2
             range of np.arctan2 is -pi to pi
         """
@@ -173,11 +181,26 @@ class Goniometer(TASComponent):
                 angles = MotorAngles(two_theta, omega, sgl, sgu, None, None)
                 self.validate_motor_positions(angles)
 
-            case "YZY_bisect":
-                # omega, chi, phi = stacking_order_yzy(r_mat)
-                angles = MotorAngles(two_theta, signs[0] * omega, None, None, signs[1] * chi, signs[2] * phi)
-                self.validate_motor_positions(angles)
+            case "YZYbisect":
+                omega = self._sense * 90.0 + psi
+                chi_rad = 1
+                phi_rad = np.arctan2(r_mat[1, 2], r_mat[1, 0])
+                omega = signs[0] * omega
+                chi, phi = np.rad2deg(
+                    [
+                        signs[1] * chi_rad,
+                        signs[2] * phi_rad,
+                    ]
+                )
 
+                angles = MotorAngles(two_theta, omega, None, None, chi, phi)
+                self.validate_motor_positions(angles)
+            case "YXYbisect":
+                print("Not implemented yet.")
+            case "YZYazimuthal":
+                print("Not implemented yet.")
+            case "YXYazimuthal":
+                print("Not implemented yet.")
             case _:
                 raise ValueError("Unknow goniometer type. Curruntly support Y,-Z,X ....")
 

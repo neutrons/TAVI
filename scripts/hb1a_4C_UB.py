@@ -5,8 +5,8 @@ from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot1D
-from tavi.sample.xtal import Xtal
-from tavi.utilities import MotorAngles, Peak
+from tavi.sample import Sample
+from tavi.utilities import MotorAngles, Peak, spice_to_mantid
 
 
 def read_macro():
@@ -135,22 +135,38 @@ if __name__ == "__main__":
     hkl_list, angles_list = read_reflection_list()
 
     instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
-    tas = CooperNathans(SPICE_CONVENTION=True)
+    tas = CooperNathans(fixed_ef=14.4643, fixed_ei=14.4503)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "test_data/IPTS33477_HB1A_exp1012/RuCl3/RuCl3.json"
-    sample = Xtal.from_json(sample_json_path)
-    ub_json = sample.ub_mat
+    sample = Sample.from_json(sample_json_path)
+    ub_json = sample.ub_conf.ub_mat
     tas.mount_sample(sample)
 
-    ei = 14.4503
-    ef = 14.4643
-
-    peak1 = Peak(hkl=hkl_list[0], angles=angles_list[0], ei=ei, ef=ef)
-    peak2 = Peak(hkl=hkl_list[1], angles=angles_list[1], ei=ei, ef=ef)
+    peak1 = Peak(hkl=hkl_list[0], angles=angles_list[0])
+    peak2 = Peak(hkl=hkl_list[1], angles=angles_list[1])
     tas.calculate_ub_matrix(peaks=(peak1, peak2))
-    print(tas.sample.ub_mat)
+    print(tas.sample.ub_conf.ub_mat)
+    ub = spice_to_mantid(tas.sample.ub_conf.ub_mat)
+    print(ub)
 
-    angles_1 = tas.calculate_motor_angles(peak=hkl_list[0], ei=ei, ef=ef)
-    print(angles_list[0])
-    print(peak1.angles)
+    def chi_phi(hkl, angles):
+        q = ub.dot(hkl)
+        # print(q)
+        chi = -np.degrees(np.arctan2(q[1], np.sqrt(q[0] ** 2 + q[2] ** 2)))
+        print(chi)
+        phi = np.degrees(np.arctan2(q[2], q[0]))
+        print(phi)
+
+        print(f"chi={angles.chi}, phi={angles.phi}.")
+
+    for i in range(len(hkl_list)):
+        chi_phi(hkl_list[i], angles_list[i])
+
+        hkl = tas.calcvulate_hkl_from_angles(angles_list[i])
+        print(hkl, hkl_list[i])
+
+    # print(angles_list[0])
+    # angles_1 = tas.calculate_motor_angles(hkl=hkl_list[0])
+    # print(angles_list[0])
+    # print(peak1.angles)

@@ -61,7 +61,10 @@ def two_theta_from_hkle(
     ef: float,
     b_mat: np.ndarray,
 ) -> Optional[float]:
-    """Return None is (h,k,l) can't be reached.
+    """Calculate the angle between ki and kf
+
+    Return:
+        Reutrn None is (h,k,l) can't be reached.
 
     Note:
         Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
@@ -71,6 +74,27 @@ def two_theta_from_hkle(
     q_norm = q_norm_from_hkl(hkl, b_mat)
     two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
     return two_theta_radian
+
+
+def psi_from_hkle(
+    hkl: tuple[float, float, float],
+    ei: float,
+    ef: float,
+    b_mat: np.ndarray,
+) -> Optional[float]:
+    """Calculate the angle between ki and Q=ki-kf
+
+    Return:
+        Reutrn None is (h,k,l) can't be reached.
+
+    Note:
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
+
+    ki = en2q(ei)
+    kf = en2q(ef)
+    q_norm = q_norm_from_hkl(hkl, b_mat)
+    psi_radian = get_angle_from_triangle(ki, q_norm, kf)
+    return psi_radian
 
 
 # -----------------------------------------------------
@@ -136,6 +160,10 @@ def r_matrix_with_minimal_tilt(
     t_mat_inv = np.linalg.inv(t_mat)
     r_mat = q_lab_mat @ t_mat_inv
     return r_mat
+
+
+def r_mat_chi_bisect():
+    pass
 
 
 # -----------------------------------------------------

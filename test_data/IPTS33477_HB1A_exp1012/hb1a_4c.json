@@ -28,7 +28,7 @@
     "monitor": {},
     "goniometer": {
         "sense": "-",
-        "type": "YZY_bisect"
+        "type": "Y,Z,Y,bisect"
     },
     "analyzer": {
         "type": "Pg002",

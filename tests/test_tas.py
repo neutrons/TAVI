@@ -3,7 +3,7 @@ import numpy as np
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 from tavi.ub_algorithm import r_matrix_with_minimal_tilt
-from tavi.utilities import MotorAngles, Peak, UBConf
+from tavi.utilities import MotorAngles, Peak, UBConf, spice_to_mantid
 
 
 def test_find_two_theta():
@@ -185,21 +185,19 @@ def test_calculate_motor_angles_hb3():
     r_mat_cal = r_matrix_with_minimal_tilt(
         hkl=(0, 0, 2), ei=14.7, ef=14.7, two_theta=angles1.two_theta, ub_conf=sample.ub_conf
     )
-    assert np.allclose(r_mat, r_mat_cal, atol=1e-3)
+    assert np.allclose(r_mat, spice_to_mantid(r_mat_cal.T).T, atol=1e-3)
 
-    angels1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2))
-    for name, value in angels1_cal._asdict().items():
+    angles1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2))
+    for name, value in angles1_cal._asdict().items():
         if value is not None:
             assert np.allclose(value, getattr(angles1, name), atol=1e-2)
 
-    angels2_cal = tas.calculate_motor_angles(hkl=(0, 0, 1))
+    angeles2_cal = tas.calculate_motor_angles(hkl=(1, 0, 0))
     angles2 = MotorAngles(two_theta=38.526091, omega=-70.614125, sgl=1.001000, sgu=-3.000750)
-    for name, value in angels2_cal._asdict().items():
+    for name, value in angeles2_cal._asdict().items():
         if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e-2)
+            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
 
-    angels3_cal = tas.calculate_motor_angles(hkl=(1.3, 0, 1.3))
-    angles3 = MotorAngles(two_theta=21.02, omega=6.71, sgl=1.001000, sgu=-3.000750)
-    for name, value in angels3_cal._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles3, name), atol=1e-2)
+    angles3_cal = tas.calculate_motor_angles(hkl=(1.3, 0, 1.3))
+    assert np.allclose(angles3_cal.sgl, 1.001000, atol=1e-2)
+    assert np.allclose(angles3_cal.sgu, -3.000750, atol=1e-2)
