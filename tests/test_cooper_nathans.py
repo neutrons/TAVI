@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -74,11 +74,11 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CooperNathans(SPICE_CONVENTION=True)
+    tas = CooperNathans()
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
-    sample = Xtal.from_json(sample_json_path)
+    sample = Sample.from_json(sample_json_path)
     tas.mount_sample(sample)
 
     ei = 4.8

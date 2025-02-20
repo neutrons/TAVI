@@ -1,0 +1,79 @@
+loop i = 2.8, 2.3, -0.5
+set_field mag_i %i
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+endloop
+
+loop i = 2.1, 1.5, -0.1
+set_field mag_i %i
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+endloop
+
+loop i = 1.3, 0.7, -0.3
+set_field mag_i %i
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+endloop
+
+loop i = 0.3, 0, -0.3
+set_field mag_i %i
+
+br 0 0 1
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 0 0 5
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+br 2 0 0
+scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K,  H=@(persistent_field.position) T"
+preset time 50
+scanrel s1 0.8 -0.8 0.1
+
+endloop

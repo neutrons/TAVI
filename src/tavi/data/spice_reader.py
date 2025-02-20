@@ -58,7 +58,7 @@ def read_spice_datafile(file_name: str):
             others.append(line)
     # others = tuple(others)
 
-    if metadata["preset_type"] == "countfile":  # HB1 in polarization mode
+    if metadata.get("preset_type") == "countfile":  # HB1 in polarization mode
         countfile = []
         for metadata_entry in metadata_list:
             if metadata_entry.startswith("# countfile"):
@@ -137,8 +137,10 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
 
     scan_path = os.path.abspath(path_to_scan_file)
     (*folder_path, _, _) = scan_path.split("/")
-    ub_file_path = os.path.join("/", *folder_path, "UBConf", metadata["ubconf"])
-    ub_temp_file_path = os.path.join("/", *folder_path, "UBConf", "temp", metadata["ubconf"])
+    # ubconf can be a Windows path in some scans
+    ub_file = metadata["ubconf"].split("\\")[-1]
+    ub_file_path = os.path.join("/", *folder_path, "UBConf", ub_file)
+    ub_temp_file_path = os.path.join("/", *folder_path, "UBConf", "temp", ub_file)
 
     if os.path.isfile(ub_file_path):
         ub_conf_dict = {"file_path": ub_file_path}

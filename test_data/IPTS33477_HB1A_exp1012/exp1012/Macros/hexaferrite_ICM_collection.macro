@@ -1,0 +1,1396 @@
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 -6.14 )"
+mv s2 -79.47 s1 -38.54 chi -16.20 phi -64.21
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 -4.86 )"
+mv s2 -78.24 s1 -37.92 chi -16.28 phi -67.40
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 -3.14 )"
+mv s2 -77.04 s1 -37.32 chi -16.31 phi -71.79
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 -1.86 )"
+mv s2 -76.47 s1 -37.04 chi -16.27 phi -75.12
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 -0.14 )"
+mv s2 -76.17 s1 -36.88 chi -16.13 phi -79.64
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 1.14 )"
+mv s2 -76.28 s1 -36.94 chi -15.96 phi -83.00
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 2.86 )"
+mv s2 -76.89 s1 -37.24 chi -15.66 phi -87.47
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 4.14 )"
+mv s2 -77.68 s1 -37.64 chi -15.39 phi -90.74
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 1.00 5.86 )"
+mv s2 -79.18 s1 -38.39 chi -14.95 phi -95.01
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 6.14 )"
+mv s2 -79.47 s1 -38.54 chi -35.53 phi -99.94
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 4.86 )"
+mv s2 -78.24 s1 -37.92 chi -36.24 phi -96.27
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 3.14 )"
+mv s2 -77.04 s1 -37.32 chi -37.02 phi -91.11
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 1.86 )"
+mv s2 -76.47 s1 -37.04 chi -37.46 phi -87.13
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 0.14 )"
+mv s2 -76.17 s1 -36.88 chi -37.84 phi -81.67
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 -1.14 )"
+mv s2 -76.28 s1 -36.94 chi -37.96 phi -77.57
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 -2.86 )"
+mv s2 -76.89 s1 -37.24 chi -37.90 phi -72.10
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 -4.14 )"
+mv s2 -77.68 s1 -37.64 chi -37.70 phi -68.11
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-3.00 2.00 -5.86 )"
+mv s2 -79.18 s1 -38.39 chi -37.23 phi -62.92
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 -3.14 )"
+mv s2 -56.60 s1 -27.10 chi -56.30 phi -64.20
+scan s1 -27.10 -29.50 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 -1.86 )"
+mv s2 -55.94 s1 -26.77 chi -56.90 phi -71.74
+scan s1 -26.77 -29.17 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 -0.14 )"
+mv s2 -55.59 s1 -26.59 chi -56.96 phi -82.26
+scan s1 -26.59 -28.99 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 1.14 )"
+mv s2 -55.72 s1 -26.66 chi -56.43 phi -89.99
+scan s1 -26.66 -29.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 2.86 )"
+mv s2 -56.43 s1 -27.01 chi -55.02 phi -99.76
+scan s1 -27.01 -29.41 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 4.14 )"
+mv s2 -57.35 s1 -27.47 chi -53.55 phi -106.33
+scan s1 -27.47 -29.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 10.14 )"
+mv s2 -65.70 s1 -31.65 chi -44.35 phi -128.36
+scan s1 -31.65 -34.05 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 14.86 )"
+mv s2 -76.41 s1 -37.00 chi -37.21 phi -138.21
+scan s1 -37.00 -39.40 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 16.14 )"
+mv s2 -79.88 s1 -38.74 chi -35.47 phi -140.19
+scan s1 -38.74 -41.14 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 17.14 )"
+mv s2 -76.43 s1 -37.01 chi -15.34 phi -132.11
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 14.14 )"
+mv s2 -67.98 s1 -32.79 chi -17.39 phi -126.79
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 12.86 )"
+mv s2 -64.75 s1 -31.17 chi -18.35 phi -124.14
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 8.14 )"
+mv s2 -54.91 s1 -26.26 chi -22.16 phi -111.81
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 6.86 )"
+mv s2 -52.88 s1 -25.24 chi -23.20 phi -107.70
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 5.14 )"
+mv s2 -50.63 s1 -24.11 chi -24.51 phi -101.62
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 3.86 )"
+mv s2 -49.34 s1 -23.47 chi -25.37 phi -96.72
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 2.14 )"
+mv s2 -48.16 s1 -22.88 chi -26.30 phi -89.71
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 0.86 )"
+mv s2 -47.72 s1 -22.66 chi -26.78 phi -84.27
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -0.86 )"
+mv s2 -47.72 s1 -22.66 chi -27.10 phi -76.83
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -2.14 )"
+mv s2 -48.16 s1 -22.88 chi -27.08 phi -71.33
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -3.86 )"
+mv s2 -49.34 s1 -23.47 chi -26.74 phi -64.19
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -5.14 )"
+mv s2 -50.63 s1 -24.11 chi -26.28 phi -59.16
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -6.86 )"
+mv s2 -52.88 s1 -25.24 chi -25.46 phi -52.88
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -8.14 )"
+mv s2 -54.91 s1 -26.26 chi -24.74 phi -48.61
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -12.86 )"
+mv s2 -64.75 s1 -31.17 chi -21.77 phi -35.75
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -14.14 )"
+mv s2 -67.98 s1 -32.79 chi -20.98 phi -32.98
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 1.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi -19.23 phi -27.42
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -16.14 )"
+mv s2 -79.88 s1 -38.74 chi 0.48 phi -35.90
+scan s1 -38.74 -41.14 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -14.86 )"
+mv s2 -76.41 s1 -37.00 chi 0.64 phi -38.25
+scan s1 -37.00 -39.40 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -10.14 )"
+mv s2 -65.70 s1 -31.65 chi 1.31 phi -48.55
+scan s1 -31.65 -34.05 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -4.14 )"
+mv s2 -57.35 s1 -27.47 chi 2.31 phi -65.57
+scan s1 -27.47 -29.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -2.86 )"
+mv s2 -56.43 s1 -27.01 chi 2.53 phi -69.67
+scan s1 -27.01 -29.41 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 -1.14 )"
+mv s2 -55.72 s1 -26.66 chi 2.80 phi -75.35
+scan s1 -26.66 -29.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 0.14 )"
+mv s2 -55.59 s1 -26.59 chi 2.99 phi -79.63
+scan s1 -26.59 -28.99 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 1.86 )"
+mv s2 -55.94 s1 -26.77 chi 3.22 phi -85.36
+scan s1 -26.77 -29.17 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 3.14 )"
+mv s2 -56.60 s1 -27.10 chi 3.36 phi -89.56
+scan s1 -27.10 -29.50 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 10.86 )"
+mv s2 -67.12 s1 -32.36 chi 3.82 phi -111.59
+scan s1 -32.36 -34.76 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 0.00 15.14 )"
+mv s2 -77.15 s1 -37.37 chi 3.85 phi -120.71
+scan s1 -37.37 -39.77 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 17.14 )"
+mv s2 -76.43 s1 -37.01 chi 22.84 phi -132.74
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 14.14 )"
+mv s2 -67.98 s1 -32.79 chi 25.03 phi -127.22
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 12.86 )"
+mv s2 -64.75 s1 -31.17 chi 26.03 phi -124.43
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 8.14 )"
+mv s2 -54.91 s1 -26.26 chi 29.82 phi -111.32
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 6.86 )"
+mv s2 -52.88 s1 -25.24 chi 30.77 phi -106.89
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 5.14 )"
+mv s2 -50.63 s1 -24.11 chi 31.86 phi -100.33
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 3.86 )"
+mv s2 -49.34 s1 -23.47 chi 32.48 phi -95.03
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 2.14 )"
+mv s2 -48.16 s1 -22.88 chi 32.98 phi -87.47
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 0.86 )"
+mv s2 -47.72 s1 -22.66 chi 33.05 phi -81.63
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -0.86 )"
+mv s2 -47.72 s1 -22.66 chi 32.71 phi -73.73
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -2.14 )"
+mv s2 -48.16 s1 -22.88 chi 32.14 phi -67.97
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -3.86 )"
+mv s2 -49.34 s1 -23.47 chi 31.02 phi -60.60
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -5.14 )"
+mv s2 -50.63 s1 -24.11 chi 29.98 phi -55.49
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -6.86 )"
+mv s2 -52.88 s1 -25.24 chi 28.39 phi -49.21
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -8.14 )"
+mv s2 -54.91 s1 -26.26 chi 27.13 phi -44.99
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -12.86 )"
+mv s2 -64.75 s1 -31.17 chi 22.50 phi -32.59
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -14.14 )"
+mv s2 -67.98 s1 -32.79 chi 21.34 phi -29.96
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 -1.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi 18.86 phi -24.74
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -2.00 -15.14 )"
+mv s2 -77.15 s1 -37.37 chi 39.65 phi -15.51
+scan s1 -37.37 -39.77 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -17.86 )"
+mv s2 -65.52 s1 -31.56 chi 20.24 phi -1.37
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -14.86 )"
+mv s2 -55.87 s1 -26.73 chi 24.02 phi -3.66
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -13.14 )"
+mv s2 -50.72 s1 -24.16 chi 26.73 phi -5.41
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -11.86 )"
+mv s2 -47.08 s1 -22.34 chi 29.08 phi -7.00
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -10.14 )"
+mv s2 -42.48 s1 -20.04 chi 32.77 phi -9.68
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -8.86 )"
+mv s2 -39.29 s1 -18.45 chi 35.97 phi -12.24
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -12.14 )"
+mv s2 -47.86 s1 -22.73 chi -0.29 phi -24.43
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -10.86 )"
+mv s2 -44.36 s1 -20.98 chi -0.09 phi -27.48
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -9.14 )"
+mv s2 -39.97 s1 -18.78 chi 0.24 phi -32.35
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -7.86 )"
+mv s2 -36.97 s1 -17.29 chi 0.53 phi -36.66
+scan s1 -17.29 -19.69 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -6.14 )"
+mv s2 -33.39 s1 -15.50 chi 0.98 phi -43.55
+scan s1 -15.50 -17.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -4.86 )"
+mv s2 -31.13 s1 -14.37 chi 1.37 phi -49.60
+scan s1 -14.37 -16.77 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -3.14 )"
+mv s2 -28.77 s1 -13.19 chi 1.94 phi -59.02
+scan s1 -13.19 -15.59 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -1.86 )"
+mv s2 -27.61 s1 -12.60 chi 2.38 phi -66.90
+scan s1 -12.60 -15.00 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -0.14 )"
+mv s2 -26.97 s1 -12.28 chi 2.93 phi -78.22
+scan s1 -12.28 -14.68 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 1.14 )"
+mv s2 -27.21 s1 -12.40 chi 3.27 phi -86.75
+scan s1 -12.40 -14.80 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 2.86 )"
+mv s2 -28.47 s1 -13.04 chi 3.59 phi -97.65
+scan s1 -13.04 -15.44 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 4.14 )"
+mv s2 -30.04 s1 -13.82 chi 3.74 phi -105.00
+scan s1 -13.82 -16.22 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 5.86 )"
+mv s2 -32.86 s1 -15.23 chi 3.84 phi -113.60
+scan s1 -15.23 -17.63 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 7.14 )"
+mv s2 -35.41 s1 -16.50 chi 3.85 phi -119.05
+scan s1 -16.50 -18.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 8.86 )"
+mv s2 -39.29 s1 -18.45 chi 3.83 phi -125.22
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 10.14 )"
+mv s2 -42.48 s1 -20.04 chi 3.79 phi -129.08
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 11.86 )"
+mv s2 -47.08 s1 -22.34 chi 3.73 phi -133.44
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 13.14 )"
+mv s2 -50.72 s1 -24.16 chi 3.68 phi -136.18
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 14.86 )"
+mv s2 -55.87 s1 -26.73 chi 3.61 phi -139.33
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 17.86 )"
+mv s2 -65.52 s1 -31.56 chi 3.50 phi -143.67
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 20.86 )"
+mv s2 -76.07 s1 -36.84 chi 3.40 phi -146.97
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 21.14 )"
+mv s2 -77.11 s1 -37.35 chi -15.95 phi -157.03
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 18.14 )"
+mv s2 -66.47 s1 -32.03 chi -18.60 phi -155.11
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 15.14 )"
+mv s2 -56.73 s1 -27.17 chi -22.03 phi -152.49
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 13.86 )"
+mv s2 -52.84 s1 -25.22 chi -23.82 phi -151.07
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 12.14 )"
+mv s2 -47.86 s1 -22.73 chi -26.61 phi -148.75
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 10.86 )"
+mv s2 -44.36 s1 -20.98 chi -29.02 phi -146.63
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 9.14 )"
+mv s2 -39.97 s1 -18.78 chi -32.79 phi -143.02
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 7.86 )"
+mv s2 -36.97 s1 -17.29 chi -36.03 phi -139.57
+scan s1 -17.29 -19.69 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 6.14 )"
+mv s2 -33.39 s1 -15.50 chi -40.99 phi -133.42
+scan s1 -15.50 -17.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 4.86 )"
+mv s2 -31.13 s1 -14.37 chi -45.03 phi -127.23
+scan s1 -14.37 -16.77 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 3.14 )"
+mv s2 -28.77 s1 -13.19 chi -50.52 phi -115.78
+scan s1 -13.19 -15.59 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 1.86 )"
+mv s2 -27.61 s1 -12.60 chi -54.06 phi -104.25
+scan s1 -12.60 -15.00 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 0.14 )"
+mv s2 -26.97 s1 -12.28 chi -56.84 phi -84.82
+scan s1 -12.28 -14.68 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -1.14 )"
+mv s2 -27.21 s1 -12.40 chi -56.75 phi -69.23
+scan s1 -12.40 -14.80 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -2.86 )"
+mv s2 -28.47 s1 -13.04 chi -53.94 phi -50.66
+scan s1 -13.04 -15.44 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -4.14 )"
+mv s2 -30.04 s1 -13.82 chi -50.63 phi -39.93
+scan s1 -13.82 -16.22 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -5.86 )"
+mv s2 -32.86 s1 -15.23 chi -45.71 phi -29.36
+scan s1 -15.23 -17.63 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -7.14 )"
+mv s2 -35.41 s1 -16.50 chi -42.15 phi -23.65
+scan s1 -16.50 -18.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -8.86 )"
+mv s2 -39.29 s1 -18.45 chi -37.82 phi -17.93
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -10.14 )"
+mv s2 -42.48 s1 -20.04 chi -34.99 phi -14.70
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -11.86 )"
+mv s2 -47.08 s1 -22.34 chi -31.68 phi -11.30
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -13.14 )"
+mv s2 -50.72 s1 -24.16 chi -29.56 phi -9.29
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -14.86 )"
+mv s2 -55.87 s1 -26.73 chi -27.09 phi -7.08
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -17.86 )"
+mv s2 -65.52 s1 -31.56 chi -23.63 phi -4.19
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 1.00 -20.86 )"
+mv s2 -76.07 s1 -36.84 chi -20.96 phi -2.09
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -21.14 )"
+mv s2 -77.11 s1 -37.35 chi -1.16 phi -11.32
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -18.14 )"
+mv s2 -66.47 s1 -32.03 chi -0.95 phi -14.53
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -15.14 )"
+mv s2 -56.73 s1 -27.17 chi -0.67 phi -18.74
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 0.00 -13.86 )"
+mv s2 -52.84 s1 -25.22 chi -0.53 phi -20.95
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -15.86 )"
+mv s2 -51.40 s1 -24.50 chi -2.45 phi 10.70
+scan s1 -24.50 -26.90 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -17.14 )"
+mv s2 -55.89 s1 -26.75 chi -2.45 phi 10.70
+scan s1 -26.75 -29.15 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -14.14 )"
+mv s2 -45.49 s1 -21.54 chi -2.45 phi 10.70
+scan s1 -21.54 -23.94 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -12.86 )"
+mv s2 -41.17 s1 -19.39 chi -2.45 phi 10.70
+scan s1 -19.39 -21.79 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -11.14 )"
+mv s2 -35.47 s1 -16.53 chi -2.45 phi 10.70
+scan s1 -16.53 -18.93 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -9.86 )"
+mv s2 -31.28 s1 -14.44 chi -2.45 phi 10.70
+scan s1 -14.44 -16.84 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -8.14 )"
+mv s2 -25.72 s1 -11.66 chi -2.45 phi 10.70
+scan s1 -11.66 -14.06 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -6.86 )"
+mv s2 -21.62 s1 -9.61 chi -2.45 phi 10.70
+scan s1 -9.61 -12.01 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -5.14 )"
+mv s2 -16.16 s1 -6.88 chi -2.45 phi 10.70
+scan s1 -6.88 -9.28 0.12
+preset time  3
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -3.86 )"
+mv s2 -12.12 s1 -4.86 chi -2.45 phi 10.70
+scan s1 -4.86 -7.26 0.12
+preset time  2
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -10.14 )"
+mv s2 -42.48 s1 -20.04 chi -3.79 phi 50.92
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -8.86 )"
+mv s2 -39.29 s1 -18.45 chi -3.83 phi 54.78
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -7.14 )"
+mv s2 -35.41 s1 -16.50 chi -3.85 phi 60.95
+scan s1 -16.50 -18.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -5.86 )"
+mv s2 -32.86 s1 -15.23 chi -3.84 phi 66.40
+scan s1 -15.23 -17.63 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -4.14 )"
+mv s2 -30.04 s1 -13.82 chi -3.74 phi 75.00
+scan s1 -13.82 -16.22 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -2.86 )"
+mv s2 -28.47 s1 -13.04 chi -3.59 phi 82.35
+scan s1 -13.04 -15.44 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -1.14 )"
+mv s2 -27.21 s1 -12.40 chi -3.27 phi 93.25
+scan s1 -12.40 -14.80 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 0.14 )"
+mv s2 -26.97 s1 -12.28 chi -2.93 phi 101.78
+scan s1 -12.28 -14.68 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 1.86 )"
+mv s2 -27.61 s1 -12.60 chi -2.38 phi 113.10
+scan s1 -12.60 -15.00 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 3.14 )"
+mv s2 -28.77 s1 -13.19 chi -1.94 phi 120.98
+scan s1 -13.19 -15.59 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 4.86 )"
+mv s2 -31.13 s1 -14.37 chi -1.37 phi 130.40
+scan s1 -14.37 -16.77 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 6.14 )"
+mv s2 -33.39 s1 -15.50 chi -0.98 phi 136.45
+scan s1 -15.50 -17.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 7.86 )"
+mv s2 -36.97 s1 -17.29 chi -0.53 phi 143.34
+scan s1 -17.29 -19.69 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 9.14 )"
+mv s2 -39.97 s1 -18.78 chi -0.24 phi 147.65
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 10.86 )"
+mv s2 -44.36 s1 -20.98 chi 0.09 phi 152.52
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 12.14 )"
+mv s2 -47.86 s1 -22.73 chi 0.29 phi 155.57
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 13.86 )"
+mv s2 -52.84 s1 -25.22 chi 0.53 phi 159.05
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 15.14 )"
+mv s2 -56.73 s1 -27.17 chi 0.67 phi 161.26
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 18.14 )"
+mv s2 -66.47 s1 -32.03 chi 0.95 phi 165.47
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 21.14 )"
+mv s2 -77.11 s1 -37.35 chi 1.16 phi 168.68
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 20.86 )"
+mv s2 -76.07 s1 -36.84 chi 20.96 phi 177.91
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 17.86 )"
+mv s2 -65.52 s1 -31.56 chi 23.63 phi 175.81
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 14.86 )"
+mv s2 -55.87 s1 -26.73 chi 27.09 phi 172.92
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 13.14 )"
+mv s2 -50.72 s1 -24.16 chi 29.56 phi 170.71
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 11.86 )"
+mv s2 -47.08 s1 -22.34 chi 31.68 phi 168.70
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 10.14 )"
+mv s2 -42.48 s1 -20.04 chi 34.99 phi 165.30
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 8.86 )"
+mv s2 -39.29 s1 -18.45 chi 37.82 phi 162.07
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 12.86 )"
+mv s2 -64.75 s1 -31.17 chi 21.77 phi 144.25
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 14.14 )"
+mv s2 -67.98 s1 -32.79 chi 20.98 phi 147.02
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 17.14 )"
+mv s2 -76.43 s1 -37.01 chi 19.23 phi 152.58
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 16.14 )"
+mv s2 -79.88 s1 -38.74 chi -0.48 phi 144.10
+scan s1 -38.74 -41.14 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 14.86 )"
+mv s2 -76.41 s1 -37.00 chi -0.64 phi 141.75
+scan s1 -37.00 -39.40 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 10.14 )"
+mv s2 -65.70 s1 -31.65 chi -1.31 phi 131.45
+scan s1 -31.65 -34.05 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 4.14 )"
+mv s2 -57.35 s1 -27.47 chi -2.31 phi 114.43
+scan s1 -27.47 -29.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 2.86 )"
+mv s2 -56.43 s1 -27.01 chi -2.53 phi 110.33
+scan s1 -27.01 -29.41 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 1.14 )"
+mv s2 -55.72 s1 -26.66 chi -2.80 phi 104.65
+scan s1 -26.66 -29.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 -0.14 )"
+mv s2 -55.59 s1 -26.59 chi -2.99 phi 100.37
+scan s1 -26.59 -28.99 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 -1.86 )"
+mv s2 -55.94 s1 -26.77 chi -3.22 phi 94.64
+scan s1 -26.77 -29.17 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 -3.14 )"
+mv s2 -56.60 s1 -27.10 chi -3.36 phi 90.44
+scan s1 -27.10 -29.50 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 -10.86 )"
+mv s2 -67.12 s1 -32.36 chi -3.82 phi 68.41
+scan s1 -32.36 -34.76 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 0.00 -15.14 )"
+mv s2 -77.15 s1 -37.37 chi -3.85 phi 59.29
+scan s1 -37.37 -39.77 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi 15.34 phi 47.89
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -14.14 )"
+mv s2 -67.98 s1 -32.79 chi 17.39 phi 53.21
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -12.86 )"
+mv s2 -64.75 s1 -31.17 chi 18.35 phi 55.86
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -8.14 )"
+mv s2 -54.91 s1 -26.26 chi 22.16 phi 68.19
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -6.86 )"
+mv s2 -52.88 s1 -25.24 chi 23.20 phi 72.30
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -5.14 )"
+mv s2 -50.63 s1 -24.11 chi 24.51 phi 78.38
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -3.86 )"
+mv s2 -49.34 s1 -23.47 chi 25.37 phi 83.28
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -2.14 )"
+mv s2 -48.16 s1 -22.88 chi 26.30 phi 90.29
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 -0.86 )"
+mv s2 -47.72 s1 -22.66 chi 26.78 phi 95.73
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 0.86 )"
+mv s2 -47.72 s1 -22.66 chi 27.10 phi 103.17
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 2.14 )"
+mv s2 -48.16 s1 -22.88 chi 27.08 phi 108.67
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 3.86 )"
+mv s2 -49.34 s1 -23.47 chi 26.74 phi 115.81
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 5.14 )"
+mv s2 -50.63 s1 -24.11 chi 26.28 phi 120.84
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 6.86 )"
+mv s2 -52.88 s1 -25.24 chi 25.46 phi 127.12
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -1.00 8.14 )"
+mv s2 -54.91 s1 -26.26 chi 24.74 phi 131.39
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 6.14 )"
+mv s2 -79.47 s1 -38.54 chi 16.20 phi 115.79
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 4.86 )"
+mv s2 -78.24 s1 -37.92 chi 16.28 phi 112.60
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 3.14 )"
+mv s2 -77.04 s1 -37.32 chi 16.31 phi 108.21
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 1.86 )"
+mv s2 -76.47 s1 -37.04 chi 16.27 phi 104.88
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 0.14 )"
+mv s2 -76.17 s1 -36.88 chi 16.13 phi 100.36
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 -1.14 )"
+mv s2 -76.28 s1 -36.94 chi 15.96 phi 97.00
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 -2.86 )"
+mv s2 -76.89 s1 -37.24 chi 15.66 phi 92.53
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 -4.14 )"
+mv s2 -77.68 s1 -37.64 chi 15.39 phi 89.26
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -1.00 -5.86 )"
+mv s2 -79.18 s1 -38.39 chi 14.95 phi 84.99
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 -6.14 )"
+mv s2 -79.47 s1 -38.54 chi 35.53 phi 80.06
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 -4.86 )"
+mv s2 -78.24 s1 -37.92 chi 36.24 phi 83.73
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 -3.14 )"
+mv s2 -77.04 s1 -37.32 chi 37.02 phi 88.89
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 -1.86 )"
+mv s2 -76.47 s1 -37.04 chi 37.46 phi 92.87
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 -0.14 )"
+mv s2 -76.17 s1 -36.88 chi 37.84 phi 98.33
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 1.14 )"
+mv s2 -76.28 s1 -36.94 chi 37.96 phi 102.43
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 2.86 )"
+mv s2 -76.89 s1 -37.24 chi 37.90 phi 107.90
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 4.14 )"
+mv s2 -77.68 s1 -37.64 chi 37.70 phi 111.89
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (3.00 -2.00 5.86 )"
+mv s2 -79.18 s1 -38.39 chi 37.23 phi 117.08
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 6.14 )"
+mv s2 -79.47 s1 -38.54 chi -20.56 phi 117.93
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 4.86 )"
+mv s2 -78.24 s1 -37.92 chi -20.99 phi 114.69
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 3.14 )"
+mv s2 -77.04 s1 -37.32 chi -21.47 phi 110.20
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 1.86 )"
+mv s2 -76.47 s1 -37.04 chi -21.76 phi 106.77
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 0.14 )"
+mv s2 -76.17 s1 -36.88 chi -22.04 phi 102.10
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 -1.14 )"
+mv s2 -76.28 s1 -36.94 chi -22.16 phi 98.61
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 -2.86 )"
+mv s2 -76.89 s1 -37.24 chi -22.21 phi 93.95
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 -4.14 )"
+mv s2 -77.68 s1 -37.64 chi -22.16 phi 90.54
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 1.00 -5.86 )"
+mv s2 -79.18 s1 -38.39 chi -21.98 phi 86.07
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 -6.14 )"
+mv s2 -79.47 s1 -38.54 chi -42.81 phi 82.24
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 -4.86 )"
+mv s2 -78.24 s1 -37.92 chi -43.32 phi 86.37
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 -3.14 )"
+mv s2 -77.04 s1 -37.32 chi -43.77 phi 92.16
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 -1.86 )"
+mv s2 -76.47 s1 -37.04 chi -43.92 phi 96.59
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 -0.14 )"
+mv s2 -76.17 s1 -36.88 chi -43.84 phi 102.61
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 1.14 )"
+mv s2 -76.28 s1 -36.94 chi -43.58 phi 107.08
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 2.86 )"
+mv s2 -76.89 s1 -37.24 chi -42.96 phi 112.94
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 4.14 )"
+mv s2 -77.68 s1 -37.64 chi -42.32 phi 117.15
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 2.00 5.86 )"
+mv s2 -79.18 s1 -38.39 chi -41.26 phi 122.53
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 3.14 )"
+mv s2 -56.60 s1 -27.10 chi -60.18 phi 126.75
+scan s1 -27.10 -29.50 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 1.86 )"
+mv s2 -55.94 s1 -26.77 chi -61.66 phi 118.67
+scan s1 -26.77 -29.17 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 0.14 )"
+mv s2 -55.59 s1 -26.59 chi -62.83 phi 106.60
+scan s1 -26.59 -28.99 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -1.14 )"
+mv s2 -55.72 s1 -26.66 chi -63.00 phi 97.20
+scan s1 -26.66 -29.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -2.86 )"
+mv s2 -56.43 s1 -27.01 chi -62.26 phi 84.94
+scan s1 -27.01 -29.41 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -4.14 )"
+mv s2 -57.35 s1 -27.47 chi -61.08 phi 76.63
+scan s1 -27.47 -29.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -10.14 )"
+mv s2 -65.70 s1 -31.65 chi -51.98 phi 50.10
+scan s1 -31.65 -34.05 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -14.86 )"
+mv s2 -76.41 s1 -37.00 chi -44.46 phi 39.43
+scan s1 -37.00 -39.40 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 -16.14 )"
+mv s2 -79.88 s1 -38.74 chi -42.62 phi 37.40
+scan s1 -38.74 -41.14 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi -22.84 phi 47.26
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -14.14 )"
+mv s2 -67.98 s1 -32.79 chi -25.03 phi 52.78
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -12.86 )"
+mv s2 -64.75 s1 -31.17 chi -26.03 phi 55.57
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -8.14 )"
+mv s2 -54.91 s1 -26.26 chi -29.82 phi 68.68
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -6.86 )"
+mv s2 -52.88 s1 -25.24 chi -30.77 phi 73.11
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -5.14 )"
+mv s2 -50.63 s1 -24.11 chi -31.86 phi 79.67
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -3.86 )"
+mv s2 -49.34 s1 -23.47 chi -32.48 phi 84.97
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -2.14 )"
+mv s2 -48.16 s1 -22.88 chi -32.98 phi 92.53
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 -0.86 )"
+mv s2 -47.72 s1 -22.66 chi -33.05 phi 98.37
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 0.86 )"
+mv s2 -47.72 s1 -22.66 chi -32.71 phi 106.27
+scan s1 -22.66 -25.06 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 2.14 )"
+mv s2 -48.16 s1 -22.88 chi -32.14 phi 112.03
+scan s1 -22.88 -25.28 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 3.86 )"
+mv s2 -49.34 s1 -23.47 chi -31.02 phi 119.40
+scan s1 -23.47 -25.87 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 5.14 )"
+mv s2 -50.63 s1 -24.11 chi -29.98 phi 124.51
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 6.86 )"
+mv s2 -52.88 s1 -25.24 chi -28.39 phi 130.79
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 8.14 )"
+mv s2 -54.91 s1 -26.26 chi -27.13 phi 135.01
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 12.86 )"
+mv s2 -64.75 s1 -31.17 chi -22.50 phi 147.41
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 14.14 )"
+mv s2 -67.98 s1 -32.79 chi -21.34 phi 150.04
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 1.00 17.14 )"
+mv s2 -76.43 s1 -37.01 chi -18.86 phi 155.26
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 15.14 )"
+mv s2 -77.15 s1 -37.37 chi -39.65 phi 164.49
+scan s1 -37.37 -39.77 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 2.00 10.86 )"
+mv s2 -67.12 s1 -32.36 chi -46.75 phi 156.67
+scan s1 -32.36 -34.76 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 11.86 )"
+mv s2 -47.08 s1 -22.34 chi -29.08 phi 173.00
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 13.14 )"
+mv s2 -50.72 s1 -24.16 chi -26.73 phi 174.59
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 14.86 )"
+mv s2 -55.87 s1 -26.73 chi -24.02 phi 176.34
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 17.86 )"
+mv s2 -65.52 s1 -31.56 chi -20.24 phi 178.63
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 10.14 )"
+mv s2 -42.48 s1 -20.04 chi -32.77 phi 170.32
+scan s1 -20.04 -22.44 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 8.86 )"
+mv s2 -39.29 s1 -18.45 chi -35.97 phi 167.76
+scan s1 -18.45 -20.85 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 7.14 )"
+mv s2 -35.41 s1 -16.50 chi -40.98 phi 163.19
+scan s1 -16.50 -18.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 5.86 )"
+mv s2 -32.86 s1 -15.23 chi -45.24 phi 158.56
+scan s1 -15.23 -17.63 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 4.14 )"
+mv s2 -30.04 s1 -13.82 chi -51.48 phi 149.68
+scan s1 -13.82 -16.22 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 2.86 )"
+mv s2 -28.47 s1 -13.04 chi -56.14 phi 140.07
+scan s1 -13.04 -15.44 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 1.14 )"
+mv s2 -27.21 s1 -12.40 chi -61.23 phi 121.43
+scan s1 -12.40 -14.80 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -0.14 )"
+mv s2 -26.97 s1 -12.28 chi -62.95 phi 103.53
+scan s1 -12.28 -14.68 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -1.86 )"
+mv s2 -27.61 s1 -12.60 chi -61.52 phi 79.26
+scan s1 -12.60 -15.00 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -3.14 )"
+mv s2 -28.77 s1 -13.19 chi -58.27 phi 64.89
+scan s1 -13.19 -15.59 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -4.86 )"
+mv s2 -31.13 s1 -14.37 chi -52.69 phi 51.37
+scan s1 -14.37 -16.77 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -6.14 )"
+mv s2 -33.39 s1 -15.50 chi -48.45 phi 44.52
+scan s1 -15.50 -17.90 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -7.86 )"
+mv s2 -36.97 s1 -17.29 chi -43.21 phi 38.03
+scan s1 -17.29 -19.69 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -9.14 )"
+mv s2 -39.97 s1 -18.78 chi -39.78 phi 34.53
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -10.86 )"
+mv s2 -44.36 s1 -20.98 chi -35.78 phi 30.98
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -12.14 )"
+mv s2 -47.86 s1 -22.73 chi -33.23 phi 28.94
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -13.86 )"
+mv s2 -52.84 s1 -25.22 chi -30.28 phi 26.75
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -15.14 )"
+mv s2 -56.73 s1 -27.17 chi -28.38 phi 25.42
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -18.14 )"
+mv s2 -66.47 s1 -32.03 chi -24.75 phi 23.03
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 -21.14 )"
+mv s2 -77.11 s1 -37.35 chi -21.95 phi 21.29
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -20.86 )"
+mv s2 -76.07 s1 -36.84 chi -3.40 phi 33.03
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -17.86 )"
+mv s2 -65.52 s1 -31.56 chi -3.50 phi 36.33
+scan s1 -31.56 -33.96 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -14.86 )"
+mv s2 -55.87 s1 -26.73 chi -3.61 phi 40.67
+scan s1 -26.73 -29.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -13.14 )"
+mv s2 -50.72 s1 -24.16 chi -3.68 phi 43.82
+scan s1 -24.16 -26.56 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 0.00 -11.86 )"
+mv s2 -47.08 s1 -22.34 chi -3.73 phi 46.56
+scan s1 -22.34 -24.74 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -13.86 )"
+mv s2 -52.84 s1 -25.22 chi 23.82 phi 28.93
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -15.14 )"
+mv s2 -56.73 s1 -27.17 chi 22.03 phi 27.51
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -18.14 )"
+mv s2 -66.47 s1 -32.03 chi 18.60 phi 24.89
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -21.14 )"
+mv s2 -77.11 s1 -37.35 chi 15.95 phi 22.97
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -23.14 )"
+mv s2 -78.50 s1 -38.05 chi -2.45 phi 10.70
+scan s1 -38.05 -40.45 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 -20.14 )"
+mv s2 -66.83 s1 -32.21 chi -2.45 phi 10.70
+scan s1 -32.21 -34.61 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 -20.86 )"
+mv s2 -76.07 s1 -36.84 chi 17.35 phi 0.30
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -2.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi 38.33 phi 13.20
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -2.00 -16.14 )"
+mv s2 -79.88 s1 -38.74 chi 35.47 phi 39.81
+scan s1 -38.74 -41.14 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (2.00 -2.00 -14.86 )"
+mv s2 -76.41 s1 -37.00 chi 37.21 phi 41.79
+scan s1 -37.00 -39.40 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -12.14 )"
+mv s2 -47.86 s1 -22.73 chi 26.61 phi 31.25
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -10.86 )"
+mv s2 -44.36 s1 -20.98 chi 29.02 phi 33.37
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -9.14 )"
+mv s2 -39.97 s1 -18.78 chi 32.79 phi 36.98
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (1.00 -1.00 -7.86 )"
+mv s2 -36.97 s1 -17.29 chi 36.03 phi 40.43
+scan s1 -17.29 -19.69 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 -17.14 )"
+mv s2 -76.43 s1 -37.01 chi -43.26 phi 8.01
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 -14.14 )"
+mv s2 -67.98 s1 -32.79 chi -48.74 phi 7.41
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 -12.86 )"
+mv s2 -64.75 s1 -31.17 chi -51.44 phi 7.07
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 -8.14 )"
+mv s2 -54.91 s1 -26.26 chi -63.56 phi 4.79
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 -6.86 )"
+mv s2 -52.88 s1 -25.24 chi -67.47 phi 3.59
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 -10.86 )"
+mv s2 -67.12 s1 -32.36 chi -46.94 phi -31.65
+scan s1 -32.36 -34.76 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 2.00 -15.14 )"
+mv s2 -77.15 s1 -37.37 chi -41.01 phi -22.04
+scan s1 -37.37 -39.77 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 -6.14 )"
+mv s2 -79.47 s1 -38.54 chi 20.56 phi -62.07
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 -4.86 )"
+mv s2 -78.24 s1 -37.92 chi 20.99 phi -65.31
+scan s1 -37.92 -40.32 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 -3.14 )"
+mv s2 -77.04 s1 -37.32 chi 21.47 phi -69.80
+scan s1 -37.32 -39.72 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 -1.86 )"
+mv s2 -76.47 s1 -37.04 chi 21.76 phi -73.23
+scan s1 -37.04 -39.44 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 -0.14 )"
+mv s2 -76.17 s1 -36.88 chi 22.04 phi -77.90
+scan s1 -36.88 -39.28 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 1.14 )"
+mv s2 -76.28 s1 -36.94 chi 22.16 phi -81.39
+scan s1 -36.94 -39.34 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 2.86 )"
+mv s2 -76.89 s1 -37.24 chi 22.21 phi -86.05
+scan s1 -37.24 -39.64 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 4.14 )"
+mv s2 -77.68 s1 -37.64 chi 22.16 phi -89.46
+scan s1 -37.64 -40.04 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 -1.00 5.86 )"
+mv s2 -79.18 s1 -38.39 chi 21.98 phi -93.93
+scan s1 -38.39 -40.79 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 18.14 )"
+mv s2 -66.47 s1 -32.03 chi 24.75 phi -156.97
+scan s1 -32.03 -34.43 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 15.14 )"
+mv s2 -56.73 s1 -27.17 chi 28.38 phi -154.58
+scan s1 -27.17 -29.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 13.86 )"
+mv s2 -52.84 s1 -25.22 chi 30.28 phi -153.25
+scan s1 -25.22 -27.62 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 12.14 )"
+mv s2 -47.86 s1 -22.73 chi 33.23 phi -151.06
+scan s1 -22.73 -25.13 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 10.86 )"
+mv s2 -44.36 s1 -20.98 chi 35.78 phi -149.02
+scan s1 -20.98 -23.38 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 9.14 )"
+mv s2 -39.97 s1 -18.78 chi 39.78 phi -145.47
+scan s1 -18.78 -21.18 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 -1.00 21.14 )"
+mv s2 -77.11 s1 -37.35 chi 21.95 phi -158.71
+scan s1 -37.35 -39.75 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 23.14 )"
+mv s2 -78.50 s1 -38.05 chi 2.45 phi -169.30
+scan s1 -38.05 -40.45 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 20.14 )"
+mv s2 -66.83 s1 -32.21 chi 2.45 phi -169.30
+scan s1 -32.21 -34.61 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 17.14 )"
+mv s2 -55.89 s1 -26.75 chi 2.45 phi -169.30
+scan s1 -26.75 -29.15 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 15.86 )"
+mv s2 -51.40 s1 -24.50 chi 2.45 phi -169.30
+scan s1 -24.50 -26.90 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 14.14 )"
+mv s2 -45.49 s1 -21.54 chi 2.45 phi -169.30
+scan s1 -21.54 -23.94 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 12.86 )"
+mv s2 -41.17 s1 -19.39 chi 2.45 phi -169.30
+scan s1 -19.39 -21.79 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 11.14 )"
+mv s2 -35.47 s1 -16.53 chi 2.45 phi -169.30
+scan s1 -16.53 -18.93 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 9.86 )"
+mv s2 -31.28 s1 -14.44 chi 2.45 phi -169.30
+scan s1 -14.44 -16.84 0.12
+preset time  5
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 8.14 )"
+mv s2 -25.72 s1 -11.66 chi 2.45 phi -169.30
+scan s1 -11.66 -14.06 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 6.86 )"
+mv s2 -21.62 s1 -9.61 chi 2.45 phi -169.30
+scan s1 -9.61 -12.01 0.12
+preset time  4
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 5.14 )"
+mv s2 -16.16 s1 -6.88 chi 2.45 phi -169.30
+scan s1 -6.88 -9.28 0.12
+preset time  3
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 0.00 3.86 )"
+mv s2 -12.12 s1 -4.86 chi 2.45 phi -169.30
+scan s1 -4.86 -7.26 0.12
+preset time  2
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (0.00 1.00 20.86 )"
+mv s2 -76.07 s1 -36.84 chi -17.35 phi -179.70
+scan s1 -36.84 -39.24 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 17.14 )"
+mv s2 -76.43 s1 -37.01 chi -38.33 phi -166.80
+scan s1 -37.01 -39.41 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 14.14 )"
+mv s2 -67.98 s1 -32.79 chi -43.81 phi -166.30
+scan s1 -32.79 -35.19 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 12.86 )"
+mv s2 -64.75 s1 -31.17 chi -46.50 phi -166.01
+scan s1 -31.17 -33.57 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 8.14 )"
+mv s2 -54.91 s1 -26.26 chi -58.62 phi -164.25
+scan s1 -26.26 -28.66 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 6.86 )"
+mv s2 -52.88 s1 -25.24 chi -62.53 phi -163.40
+scan s1 -25.24 -27.64 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-1.00 2.00 5.14 )"
+mv s2 -50.63 s1 -24.11 chi -68.20 phi -161.66
+scan s1 -24.11 -26.51 0.12
+preset time  6
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 3.00 6.14 )"
+mv s2 -79.47 s1 -38.54 chi -67.63 phi -131.80
+scan s1 -38.54 -40.94 0.12
+preset time  7
+scantitle "Magnetic_ICM_@(temp.position)K_2axis: (-2.00 3.00 4.86 )"
+mv s2 -78.24 s1 -37.92 chi -69.91 phi -126.19
+scan s1 -37.92 -40.32 0.12
+preset time  7

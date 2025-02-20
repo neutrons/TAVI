@@ -1,15 +1,15 @@
-from tavi.sample.sample import Sample
+# from tavi.sample import Sample
 
 
-# TODO
-class Powder(Sample):
-    """Powder sample
+# # TODO
+# class Powder(Sample):
+#     """Powder sample
 
-    Attibutes:
-        type (str): "powder"
+#     Attibutes:
+#         type (str): "powder"
 
-    """
+#     """
 
-    def __init__(self, lattice_params):
-        super().__init__(lattice_params)
-        self.type = "powder"
+#     def __init__(self, lattice_params):
+#         super().__init__(lattice_params)
+#         self.type = "powder"

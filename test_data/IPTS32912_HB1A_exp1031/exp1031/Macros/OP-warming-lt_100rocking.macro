@@ -1,0 +1,48 @@
+br 1 0 0
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+preset time 10
+
+set_sorb 8
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 12
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 15
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 17
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 19
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 21
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 21
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 25
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1
+
+set_sorb 35
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+scanrel s1 1 -1 0.1

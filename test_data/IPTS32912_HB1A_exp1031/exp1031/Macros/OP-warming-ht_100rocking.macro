@@ -1,0 +1,11 @@
+br 1 0 0
+preset time 10
+
+loop i=2.0, 5 0.2
+
+set_ht %i
+br 1 0 0
+wait 120
+scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+scanrel s1 1 -1 0.1
+endloop

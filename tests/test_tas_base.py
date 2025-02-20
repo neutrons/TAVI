@@ -1,13 +1,13 @@
 import numpy as np
 
 from tavi.instrument.tas import TAS
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 
 def test_load_from_json():
     tax = TAS()
     cg4c = "./src/tavi/instrument/instrument_params/cg4c.json"
-    nitio3 = Xtal.from_json("./test_data/test_samples/nitio3.json")
+    nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
     tax.load_instrument_params_from_json(cg4c)
     tax.mount_sample(nitio3)
 

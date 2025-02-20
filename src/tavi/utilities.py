@@ -16,24 +16,27 @@ cm2angstrom = 1e8
 min2rad = 1.0 / 60.0 / 180.0 * np.pi
 rad2deg = 180.0 / np.pi
 
+# --------------------------------------------------------------------------
+# Named tuples
+# --------------------------------------------------------------------------
+
 
 class MotorAngles(NamedTuple):
     """Moter anlges
 
-     Attributes:
-        two_theta: s2 angle, in degree
-        omega: s1 angle, in degree
-        sgl: sample goniometer lower, in degree
-        sgu: sample goniometer upper, in degree
-        chi: chi angle for a four-circle goniometer, in degree
-        phi: phi angle for a four-circle goniometer, in degree
+    two_theta: s2 angle, in degree
+    omega: s1 angle, in degree
+    sgl: sample goniometer lower, in degree
+    sgu: sample goniometer upper, in degree
+    chi: chi angle for a four-circle goniometer, in degree
+    phi: phi angle for a four-circle goniometer, in degree
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
         angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode"""
 
     two_theta: float
-    omega: float
+    omega: Optional[float] = None
     sgl: Optional[float] = None
     sgu: Optional[float] = None
     chi: Optional[float] = None
@@ -44,33 +47,31 @@ class Peak(NamedTuple):
     """
     Phsical/virtual monitor positions
 
-    Attributes:
-        ei: incident energy, in meV
-        ef: final energy, in meV
-        hkl: miller indice (h,k,l)
-        angles: moter angles
-
-    Note:
-        use angles = (two_theta, omega, sgl, sgu) for a Huber table,
-        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
-
+    hkl: miller indice (h,k,l)
+    angles: moter angles
     """
 
-    hkl: tuple
+    hkl: tuple[float, float, float]
     angles: MotorAngles
-    ei: float
-    ef: Optional[float] = None
 
 
 class UBConf(NamedTuple):
-    "Logs for UB matrix determination"
+    """Logs for UB matrix determination
 
-    ub_peaks: Optional[tuple[Peak, ...]] = None
-    u_mat: Optional[np.ndarray] = None
-    b_mat: Optional[np.ndarray] = None
-    ub_mat: Optional[np.ndarray] = None
-    plane_normal: Optional[np.ndarray] = None
-    in_plane_ref: Optional[np.ndarray] = None
+    ub_peaks (tuple of Peaks): peaks used to determine the UB matrix
+    u_mat (np.adarray): U matrix
+    b_mat (np.adarray): B matrix
+    ub_matrix (np.adarray): UB matrix
+    plane_normal (np.adarray): normal vector in Qsample frame, goniometers at zero
+    in_plane_ref (np.adarray): in plane vector in Qsample frame, goniometers at zero
+    """
+
+    ub_mat: np.ndarray
+    plane_normal: np.ndarray
+    in_plane_ref: np.ndarray
+    # u_mat: Optional[np.ndarray] = None
+    # b_mat: Optional[np.ndarray] = None
+    ub_peaks: Optional[tuple[Peak]] = None
 
 
 # --------------------------------------------------------------------------
@@ -92,11 +93,7 @@ def q2en(q: float) -> float:
     return en
 
 
-def get_angle_from_triangle(
-    a: float,
-    b: float,
-    c: float,
-) -> Optional[float]:
+def get_angle_from_triangle(a: float, b: float, c: float) -> Optional[float]:
     """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
@@ -155,3 +152,72 @@ def spice_to_mantid(vec):
 def mantid_to_spice(vec):
     """suffle the order from mantid convention to spice convention"""
     return np.array([vec[0], -vec[2], vec[1]])
+
+
+def rot_x(nu):
+    """rotation matrix about y-axis by angle nu
+
+    Args:
+        nu (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = np.deg2rad(nu)
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [1, 0, 0],
+            [0, c, -s],
+            [0, s, c],
+        ]
+    )
+    return mat
+
+
+def rot_y(omega):
+    """rotation matrix about y-axis by angle omega
+
+    Args:
+        omega (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = np.deg2rad(omega)
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [c, 0, s],
+            [0, 1, 0],
+            [-s, 0, c],
+        ]
+    )
+    return mat
+
+
+def rot_z(mu):
+    """rotation matrix about z-axis by angle mu
+
+    Args:
+        mu (float): angle in degrees
+
+    Note:
+        Using Mantid convention, beam along z, y is up, x in plane
+    """
+
+    angle = np.deg2rad(mu)
+    c = np.cos(angle)
+    s = np.sin(angle)
+    mat = np.array(
+        [
+            [c, -s, 0],
+            [s, c, 0],
+            [0, 0, 1],
+        ]
+    )
+    return mat

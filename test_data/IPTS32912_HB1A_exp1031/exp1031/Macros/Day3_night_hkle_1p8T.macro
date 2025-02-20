@@ -1,0 +1,20 @@
+set_field mag_i 1.8
+scantitle "HoV6Sn6, longitudinal scan (1 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 0.9 1.1 0.005 k 0 l 0 e 0.1 preset time 120
+scantitle "HoV6Sn6, longitudinal scan (2 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 1.9 2.1 0.005 k 0 l 0 e 0.1 preset time 120
+
+
+scantitle "HoV6Sn6, transverse scan (1 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 1 k 0 l -0.08 0.08 0.004 e 0.1 preset time 120
+scantitle "HoV6Sn6, transverse scan (2 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 2 k 0 l -0.1 0.1 0.005 e 0.1 preset time 120
+scantitle "HoV6Sn6, longitudinal scan (0 0 1), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 0 k 0 l 0.9 1.1 0.008 e 0.1 preset time 120
+
+
+scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
+scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
+

@@ -416,7 +416,7 @@ def spice_scan_to_nxdict(
             nxmonitor.add_dataset(key=f"mcu_{idx}", ds=NXdataset(ds=mcu, type="NX_FLOAT", units="mcu"))
             idx += 1
     else:
-        print(f"Unrecogonized preset type {preset_type}.")
+        print(f"Unrecogonized preset type {preset_type} for scan #{metadata.get('scan')}.")
         nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")
 
     if instrument_config_params is not None:

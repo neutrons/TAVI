@@ -71,10 +71,10 @@ class Fit1D(object):
         if self.err is not None:
             self.err = self.err[mask]
 
-    @staticmethod
-    def _add_model(model, prefix, nan_policy):
-        model = Fit1D.models[model]
-        return model(prefix=prefix, nan_policy=nan_policy)
+    # @staticmethod
+    # def _add_model(model, prefix, nan_policy):
+    #     model = Fit1D.models[model]
+    #     return model(prefix=prefix, nan_policy=nan_policy)
 
     def add_signal(
         self,
@@ -89,7 +89,8 @@ class Fit1D(object):
     ):
         self._num_signals += 1
         prefix = f"s{self._num_signals}_"
-        self._signal_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
+        signal_model = type(self).models[model]
+        self._signal_models.append(signal_model(prefix=prefix, nan_policy=self.nan_policy))
 
     def add_background(
         self,
@@ -104,7 +105,8 @@ class Fit1D(object):
     ):
         self._num_backgrounds += 1
         prefix = f"b{self._num_backgrounds}_"
-        self._background_models.append(Fit1D._add_model(model, prefix, nan_policy=self.nan_policy))
+        background_model = type(self).models[model]
+        self._background_models.append(background_model(prefix=prefix, nan_policy=self.nan_policy))
 
     # @staticmethod
     # def _get_param_names(models) -> list[list[str]]:
@@ -151,6 +153,7 @@ class Fit1D(object):
     @property
     def model(self):
         """Return the  composite model of all singals and backgrounds"""
+
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 

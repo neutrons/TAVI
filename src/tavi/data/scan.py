@@ -8,7 +8,8 @@ import numpy as np
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D
 from tavi.plotter import Plot1D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
+from tavi.ub_algorithm import ub_matrix_to_uv
 from tavi.utilities import spice_to_mantid
 
 
@@ -132,8 +133,8 @@ class Scan(object):
         ub_matrix = self._nexus_dict.get("sample/orientation_matrix").reshape(3, 3)
         lattice_constants = self._nexus_dict.get("sample/unit_cell")
         if sample_type == "crystal" and (ub_matrix is not None):
-            xtal = Xtal(lattice_constants)
-            (u, v) = xtal.ub_matrix_to_uv(spice_to_mantid(ub_matrix))
+            xtal = Sample(lattice_constants)
+            (u, v) = ub_matrix_to_uv(spice_to_mantid(ub_matrix))
         else:
             (u, v) = (None, None)
 
@@ -198,7 +199,7 @@ class Scan(object):
         qs = self.data["q"]
         q_diff = np.max(qs) - np.min(qs)
         mid_idx = int((len(qs) - 1) / 2)
-        if q_diff > 0.0001:  # q changing, must be a th2th scan
+        if q_diff > 1.1e-4:  # q changing, must be a th2th scan
             return qs - qs[mid_idx]
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)
@@ -282,6 +283,22 @@ class Scan(object):
 
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
+
+    def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
+
+        qh = self.data.get("qh")
+        qk = self.data.get("qk")
+        ql = self.data.get("ql")
+        ei = self.data.get("ei")
+        ef = self.data.get("ef")
+        rez_params_list = []
+
+        for i in range(len(qh)):
+            rez = tas.rez(hkl_list=(qh[i], qk[i], ql[i]), ei=ei[i], ef=ef[i], R0=True, projection=projection)
+            coh_fwhm = rez.coh_fwhms(axis=axis)
+            prefactor = rez.r0
+            rez_params_list.append((prefactor, coh_fwhm))
+        return tuple(rez_params_list)
 
     def plot(
         self,

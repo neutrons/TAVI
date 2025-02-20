@@ -1,0 +1,3190 @@
+8/12/2024 3:01 PM        init
+8/12/2024 3:01 PM        init
+8/12/2024 3:05 PM        set_temp_2 0
+8/12/2024 3:05 PM        set_temp 20
+8/12/2024 3:10 PM        drive s1 30
+8/12/2024 3:11 PM        drive s1 -160
+8/12/2024 3:15 PM        drive s1 -20
+8/12/2024 3:19 PM        lattice 5.516000 5.516000 9.181900 90.000000 90.000000 120.000000
+8/12/2024 3:20 PM        drive s2 -30.037
+8/12/2024 3:20 PM        drive s1 0
+8/12/2024 3:21 PM        drive s1 -11.35
+8/12/2024 3:21 PM        drive s1 -11
+8/12/2024 3:22 PM        scantitle "HoV6Sn6 initial alignment cooling 002"
+8/12/2024 3:22 PM        preset time 1
+8/12/2024 3:22 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:24 PM        drive s1 -10.6968
+8/12/2024 3:24 PM        th2th 2 -2 0.2
+8/12/2024 3:27 PM        lattice a 5.516000 b 5.516000 c 9.168648
+8/12/2024 3:28 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_32826PM.ini"
+8/12/2024 3:29 PM        br 0 0 6
+8/12/2024 3:30 PM        scantitle "HoV6Sn6 initial alignment cooling 006"
+8/12/2024 3:30 PM        scanrel sgl 3 -3 1
+8/12/2024 3:32 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_33152PM.ini"
+8/12/2024 3:32 PM        scanrel sgl 4 -4 1
+8/12/2024 3:33 PM        br 0 0 6
+8/12/2024 3:34 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_33433PM.ini"
+8/12/2024 3:35 PM        br 3 0 0
+8/12/2024 3:36 PM        scantitle "HoV6Sn6 initial alignment cooling 300"
+8/12/2024 3:36 PM        scanrel sgu 4 -4 1
+8/12/2024 3:38 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:39 PM        drive s1 -134.0478
+8/12/2024 3:41 PM        br 1 0 0
+8/12/2024 3:42 PM        scantitle "HoV6Sn6 initial alignment cooling 100"
+8/12/2024 3:42 PM        scanrel s1 1 -1 0.1
+8/12/2024 3:43 PM        drive s1 -100.1226
+8/12/2024 3:43 PM        th2th 2 -2 0.2
+8/12/2024 3:46 PM        lattice a 5.515569 b 5.515569 c 9.168648
+8/12/2024 3:47 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_34709PM.ini"
+8/12/2024 3:47 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_34732PM.ini"
+8/12/2024 3:48 PM        br 3 0 0
+8/12/2024 3:49 PM        scantitle "HoV6Sn6 initial alignment cooling 300"
+8/12/2024 3:49 PM        scan slita_bt 0 30 1
+8/12/2024 3:52 PM        scan slita_tp 0 30 1
+8/12/2024 3:54 PM        scan slita_lf 0 15 1
+8/12/2024 3:55 PM        scan slita_rt 0 15 1
+8/12/2024 3:57 PM        br 0 0 6
+8/12/2024 3:59 PM        scantitle "HoV6Sn6 initial alignment cooling 006"
+8/12/2024 3:59 PM        scan slita_bt 0 30 1
+8/12/2024 4:01 PM        scan slita_tp 0 30 1
+8/12/2024 4:04 PM        scan slita_lf 0 15 1
+8/12/2024 4:05 PM        scan slita_rt 0 15 1
+8/12/2024 4:13 PM        scanrel stl 8 -8 1
+8/12/2024 4:14 PM        scanrel stu 8 -8 1
+8/12/2024 4:15 PM        drive stl -3
+8/12/2024 4:15 PM        scan slita_lf 0 15 1
+8/12/2024 4:17 PM        scan slita_rt 0 15 1
+8/12/2024 4:18 PM        br 3 0 0
+8/12/2024 4:20 PM        scan slita_lf 0 15 1
+8/12/2024 4:21 PM        scan slita_rt 0 15 1
+8/12/2024 4:23 PM        drive slita_bt 23
+8/12/2024 4:23 PM        drive slita_tp 23
+8/12/2024 4:24 PM        drive slita_lf 3
+8/12/2024 4:24 PM        drive slita_rt 7
+8/12/2024 4:25 PM        scan slitb_bt 0 30 1
+8/12/2024 4:27 PM        scan slitb_tp 0 30 1
+8/12/2024 4:29 PM        scan slitb_lf 0 15 1
+8/12/2024 4:30 PM        scan slitb_rt 0 15 1
+8/12/2024 4:32 PM        br 0 0 6
+8/12/2024 4:34 PM        scan slitb_bt 0 30 1
+8/12/2024 4:36 PM        scan slitb_tp 0 30 1
+8/12/2024 4:38 PM        scan slitb_lf 0 15 1
+8/12/2024 4:39 PM        scan slitb_rt 0 15 1
+8/12/2024 4:42 PM        drive slitb_bt 22
+8/12/2024 4:42 PM        drive slitb_tp 22
+8/12/2024 4:42 PM        drive slitb_lf 7
+8/12/2024 4:42 PM        drive slitb_rt 8
+8/12/2024 4:43 PM        br 1 0 0
+8/12/2024 4:44 PM        scantitle "sit on [1 0 0] cooling"
+8/12/2024 4:44 PM        scan n 100 preset time 15
+8/12/2024 5:14 PM        set_temp 1
+8/12/2024 5:20 PM        scan n 200 preset time 15
+8/12/2024 5:33 PM        preset time 1
+8/12/2024 5:33 PM        br 3 0 0
+8/12/2024 5:34 PM        br 3 0 0
+8/12/2024 5:34 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, realign at T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 5:34 PM        preset time 1
+8/12/2024 5:34 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:35 PM        drive s1 -134.0304
+8/12/2024 5:36 PM        scanrel sgu 3 -3 1
+8/12/2024 5:37 PM        drive sgu 0.2
+8/12/2024 5:37 PM        th2th 2 -2 0.2
+8/12/2024 5:38 PM        br 1 0 0
+8/12/2024 5:39 PM        drive sgu 0.2
+8/12/2024 5:39 PM        th2th 2 -2 0.2
+8/12/2024 5:40 PM        lattice a 5.520013 b 5.520013 c 9.168648
+8/12/2024 5:40 PM        scanrel s1 1 -1  0.1
+8/12/2024 5:41 PM        drive s1 -100.1151
+8/12/2024 5:42 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54158PM.ini"
+8/12/2024 5:42 PM        br 0 0 6
+8/12/2024 5:43 PM        scanrel sgl 3 -3 0.5
+8/12/2024 5:44 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54414PM.ini"
+8/12/2024 5:44 PM        br 0 0 2
+8/12/2024 5:45 PM        br 0 0 2
+8/12/2024 5:45 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, realign at T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 5:45 PM        preset time 1
+8/12/2024 5:45 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:46 PM        drive s1 -10.7364
+8/12/2024 5:46 PM        th2th 2 -2 0.2
+8/12/2024 5:48 PM        lattice a 5.520013 b 5.520013 c 9.152013
+8/12/2024 5:48 PM        ubcalc file "C:\SPICE\User\exp1031\UBConf\tmp\UB12Aug2024_54826PM.ini"
+8/12/2024 5:48 PM        br 1 0 0
+8/12/2024 5:50 PM        scanrel s1 1 -1 0.1
+8/12/2024 5:53 PM        scantitle "sit at [100], T = @(lt.position) K"
+8/12/2024 5:53 PM        scan n 30 preset time 30
+8/12/2024 6:09 PM        set_sorb 0
+8/12/2024 6:09 PM        scantitle "sit at [1 0 0] cooling to 0.3K"
+8/12/2024 6:09 PM        scan n 30 preset time 30
+8/12/2024 6:28 PM        br 1 0 0
+8/12/2024 6:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:29 PM        preset time 5
+8/12/2024 6:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:31 PM        br 1 0 0
+8/12/2024 6:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:31 PM        preset time 5
+8/12/2024 6:31 PM        th2th 4 -4 0.2
+8/12/2024 6:35 PM        br 2 0 0
+8/12/2024 6:36 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:36 PM        preset time 5
+8/12/2024 6:36 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:38 PM        br 2 0 0
+8/12/2024 6:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:38 PM        preset time 5
+8/12/2024 6:38 PM        th2th 4 -4 0.2
+8/12/2024 6:43 PM        br 3 0 0
+8/12/2024 6:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:44 PM        preset time 5
+8/12/2024 6:44 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:46 PM        br 3 0 0
+8/12/2024 6:46 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:46 PM        preset time 5
+8/12/2024 6:46 PM        th2th 4 -4 0.2
+8/12/2024 6:51 PM        br 1 0 1
+8/12/2024 6:52 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:52 PM        preset time 5
+8/12/2024 6:52 PM        scanrel s1 1 -1 0.1
+8/12/2024 6:54 PM        br 1 0 1
+8/12/2024 6:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:54 PM        preset time 5
+8/12/2024 6:54 PM        th2th 4 -4 0.2
+8/12/2024 6:59 PM        br 1 0 2
+8/12/2024 6:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 6:59 PM        preset time 5
+8/12/2024 6:59 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:01 PM        br 1 0 2
+8/12/2024 7:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:01 PM        preset time 5
+8/12/2024 7:01 PM        th2th 4 -4 0.2
+8/12/2024 7:06 PM        br 1 0 3
+8/12/2024 7:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:07 PM        preset time 5
+8/12/2024 7:07 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:09 PM        br 1 0 3
+8/12/2024 7:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:10 PM        preset time 5
+8/12/2024 7:10 PM        th2th 4 -4 0.2
+8/12/2024 7:14 PM        br 1 0 4
+8/12/2024 7:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:15 PM        preset time 5
+8/12/2024 7:15 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:17 PM        br 1 0 4
+8/12/2024 7:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:17 PM        preset time 5
+8/12/2024 7:17 PM        th2th 4 -4 0.2
+8/12/2024 7:22 PM        br 1 0 5
+8/12/2024 7:22 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:22 PM        preset time 5
+8/12/2024 7:22 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:24 PM        br 1 0 5
+8/12/2024 7:24 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:24 PM        preset time 5
+8/12/2024 7:24 PM        th2th 4 -4 0.2
+8/12/2024 7:29 PM        br 1 0 6
+8/12/2024 7:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:29 PM        preset time 5
+8/12/2024 7:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:31 PM        br 1 0 6
+8/12/2024 7:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:31 PM        preset time 5
+8/12/2024 7:31 PM        th2th 4 -4 0.2
+8/12/2024 7:36 PM        br 2 0 1
+8/12/2024 7:37 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:37 PM        preset time 5
+8/12/2024 7:37 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:39 PM        br 2 0 1
+8/12/2024 7:39 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:39 PM        preset time 5
+8/12/2024 7:39 PM        th2th 4 -4 0.2
+8/12/2024 7:44 PM        br 2 0 2
+8/12/2024 7:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:44 PM        preset time 5
+8/12/2024 7:44 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:47 PM        br 2 0 2
+8/12/2024 7:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:47 PM        preset time 5
+8/12/2024 7:47 PM        th2th 4 -4 0.2
+8/12/2024 7:51 PM        br 2 0 3
+8/12/2024 7:52 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:52 PM        preset time 5
+8/12/2024 7:52 PM        scanrel s1 1 -1 0.1
+8/12/2024 7:54 PM        br 2 0 3
+8/12/2024 7:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:54 PM        preset time 5
+8/12/2024 7:54 PM        th2th 4 -4 0.2
+8/12/2024 7:59 PM        br 2 0 4
+8/12/2024 7:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 7:59 PM        preset time 5
+8/12/2024 7:59 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:01 PM        br 2 0 4
+8/12/2024 8:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:01 PM        preset time 5
+8/12/2024 8:01 PM        th2th 4 -4 0.2
+8/12/2024 8:06 PM        br 2 0 5
+8/12/2024 8:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:06 PM        preset time 5
+8/12/2024 8:06 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:09 PM        br 2 0 5
+8/12/2024 8:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:09 PM        preset time 5
+8/12/2024 8:09 PM        th2th 4 -4 0.2
+8/12/2024 8:13 PM        br 3 0 1
+8/12/2024 8:14 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:14 PM        preset time 5
+8/12/2024 8:14 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:16 PM        br 3 0 %
+8/12/2024 8:16 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:16 PM        preset time 5
+8/12/2024 8:16 PM        th2th 4 -4 0.2
+8/12/2024 8:21 PM        br 3 0 2
+8/12/2024 8:21 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:21 PM        preset time 5
+8/12/2024 8:21 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:24 PM        br 3 0 %
+8/12/2024 8:24 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:24 PM        preset time 5
+8/12/2024 8:24 PM        th2th 4 -4 0.2
+8/12/2024 8:28 PM        br 3 0 3
+8/12/2024 8:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:29 PM        preset time 5
+8/12/2024 8:29 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:31 PM        br 3 0 %
+8/12/2024 8:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:31 PM        preset time 5
+8/12/2024 8:31 PM        th2th 4 -4 0.2
+8/12/2024 8:36 PM        br 0 0 1
+8/12/2024 8:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:38 PM        preset time 5
+8/12/2024 8:38 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:40 PM        br 0 0 1
+8/12/2024 8:40 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:40 PM        preset time 5
+8/12/2024 8:40 PM        th2th 4 -4 0.2
+8/12/2024 8:45 PM        br 0 0 2
+8/12/2024 8:45 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:45 PM        preset time 5
+8/12/2024 8:45 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:47 PM        br 0 0 2
+8/12/2024 8:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:47 PM        preset time 5
+8/12/2024 8:47 PM        th2th 4 -4 0.2
+8/12/2024 8:52 PM        br 0 0 3
+8/12/2024 8:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:53 PM        preset time 5
+8/12/2024 8:53 PM        scanrel s1 1 -1 0.1
+8/12/2024 8:55 PM        br 0 0 3
+8/12/2024 8:55 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 8:55 PM        preset time 5
+8/12/2024 8:55 PM        th2th 4 -4 0.2
+8/12/2024 9:00 PM        br 0 0 4
+8/12/2024 9:00 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:00 PM        preset time 5
+8/12/2024 9:00 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:02 PM        br 0 0 4
+8/12/2024 9:02 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:02 PM        preset time 5
+8/12/2024 9:02 PM        th2th 4 -4 0.2
+8/12/2024 9:07 PM        br 0 0 5
+8/12/2024 9:08 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:08 PM        preset time 5
+8/12/2024 9:08 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:10 PM        br 0 0 5
+8/12/2024 9:10 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:10 PM        preset time 5
+8/12/2024 9:10 PM        th2th 4 -4 0.2
+8/12/2024 9:15 PM        br 0 0 6
+8/12/2024 9:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:15 PM        preset time 5
+8/12/2024 9:15 PM        scanrel s1 1 -1 0.1
+8/12/2024 9:17 PM        br 0 0 6
+8/12/2024 9:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:17 PM        preset time 5
+8/12/2024 9:17 PM        th2th 4 -4 0.2
+8/12/2024 9:34 PM        set_field mag_i 0
+8/12/2024 9:34 PM        br 0 0 1
+8/12/2024 9:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:35 PM        preset time 60
+8/12/2024 9:35 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 9:52 PM        br 0 0 5
+8/12/2024 9:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 9:53 PM        preset time 60
+8/12/2024 9:53 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:11 PM        br 1 0 1
+8/12/2024 10:11 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:11 PM        preset time 60
+8/12/2024 10:11 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:29 PM        br 1 0 0
+8/12/2024 10:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:29 PM        preset time 60
+8/12/2024 10:29 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 10:47 PM        br 2 0 0
+8/12/2024 10:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 10:47 PM        preset time 60
+8/12/2024 10:47 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:05 PM        set_field mag_i 0.5
+8/12/2024 11:16 PM        br 0 0 1
+8/12/2024 11:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:17 PM        preset time 60
+8/12/2024 11:17 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:35 PM        br 0 0 5
+8/12/2024 11:36 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:36 PM        preset time 60
+8/12/2024 11:36 PM        scanrel s1 0.8 -0.8 0.1
+8/12/2024 11:53 PM        br 1 0 1
+8/12/2024 11:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/12/2024 11:54 PM        preset time 60
+8/12/2024 11:54 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:12 AM        br 1 0 0
+8/13/2024 12:12 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:12 AM        preset time 60
+8/13/2024 12:12 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:29 AM        br 2 0 0
+8/13/2024 12:30 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:30 AM        preset time 60
+8/13/2024 12:30 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:47 AM        set_field mag_i 1
+8/13/2024 12:58 AM        br 0 0 1
+8/13/2024 1:00 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:00 AM        preset time 60
+8/13/2024 1:00 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:18 AM        br 0 0 5
+8/13/2024 1:19 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:19 AM        preset time 60
+8/13/2024 1:19 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:36 AM        br 1 0 1
+8/13/2024 1:37 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:37 AM        preset time 60
+8/13/2024 1:37 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:54 AM        br 1 0 0
+8/13/2024 1:55 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:55 AM        preset time 60
+8/13/2024 1:55 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:12 AM        br 2 0 0
+8/13/2024 2:13 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:13 AM        preset time 60
+8/13/2024 2:13 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:30 AM        set_field mag_i 1.2
+8/13/2024 2:39 AM        br 0 0 1
+8/13/2024 2:41 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:41 AM        preset time 60
+8/13/2024 2:41 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:58 AM        br 0 0 5
+8/13/2024 2:59 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:59 AM        preset time 60
+8/13/2024 2:59 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:17 AM        br 1 0 1
+8/13/2024 3:18 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:18 AM        preset time 60
+8/13/2024 3:18 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:35 AM        br 1 0 0
+8/13/2024 3:36 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:36 AM        preset time 60
+8/13/2024 3:36 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:53 AM        br 2 0 0
+8/13/2024 3:53 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:53 AM        preset time 60
+8/13/2024 3:53 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:11 AM        set_field mag_i 1.4
+8/13/2024 4:19 AM        br 0 0 1
+8/13/2024 4:21 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:21 AM        preset time 60
+8/13/2024 4:21 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:39 AM        br 0 0 5
+8/13/2024 4:40 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:40 AM        preset time 60
+8/13/2024 4:40 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:57 AM        br 1 0 1
+8/13/2024 4:58 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:58 AM        preset time 60
+8/13/2024 4:58 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:16 AM        br 1 0 0
+8/13/2024 5:16 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:16 AM        preset time 60
+8/13/2024 5:16 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:33 AM        br 2 0 0
+8/13/2024 5:34 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:34 AM        preset time 60
+8/13/2024 5:34 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:51 AM        set_field mag_i 1.6
+8/13/2024 6:00 AM        br 0 0 1
+8/13/2024 6:02 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:02 AM        preset time 60
+8/13/2024 6:02 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:20 AM        br 0 0 5
+8/13/2024 6:21 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:21 AM        preset time 60
+8/13/2024 6:21 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:38 AM        br 1 0 1
+8/13/2024 6:39 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:39 AM        preset time 60
+8/13/2024 6:39 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:56 AM        br 1 0 0
+8/13/2024 6:57 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:57 AM        preset time 60
+8/13/2024 6:57 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:14 AM        br 2 0 0
+8/13/2024 7:15 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:15 AM        preset time 60
+8/13/2024 7:15 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:32 AM        set_field mag_i 1.8
+8/13/2024 7:41 AM        br 0 0 1
+8/13/2024 7:43 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:43 AM        preset time 60
+8/13/2024 7:43 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:01 AM        br 0 0 5
+8/13/2024 8:02 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:02 AM        preset time 60
+8/13/2024 8:02 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:19 AM        br 1 0 1
+8/13/2024 8:20 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:20 AM        preset time 60
+8/13/2024 8:20 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:37 AM        br 1 0 0
+8/13/2024 8:38 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:38 AM        preset time 60
+8/13/2024 8:38 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:55 AM        br 2 0 0
+8/13/2024 8:56 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:56 AM        preset time 60
+8/13/2024 8:56 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 9:13 AM        set_field mag_i 2
+8/13/2024 9:38 AM        drive s1 -30
+8/13/2024 10:50 AM        init
+8/13/2024 10:52 AM        init
+8/13/2024 10:53 AM        set_field mag_i 0.1
+8/13/2024 10:59 AM        set_field mag_i 0
+8/13/2024 11:04 AM        br 0 0 1
+8/13/2024 11:05 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T testing"
+8/13/2024 11:05 AM        preset time 5
+8/13/2024 11:05 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:07 AM        br 1 0 0
+8/13/2024 11:08 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T testing"
+8/13/2024 11:08 AM        preset time 5
+8/13/2024 11:08 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:11 AM        set_field mag_i 2
+8/13/2024 11:22 AM        br 0 0 1
+8/13/2024 11:23 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:23 AM        preset time 60
+8/13/2024 11:23 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:41 AM        br 0 0 5
+8/13/2024 11:41 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:41 AM        preset time 60
+8/13/2024 11:41 AM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:59 AM        br 1 0 1
+8/13/2024 12:00 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:00 PM        preset time 60
+8/13/2024 12:00 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:17 PM        br 1 0 0
+8/13/2024 12:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:17 PM        preset time 60
+8/13/2024 12:17 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:35 PM        br 2 0 0
+8/13/2024 12:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 12:35 PM        preset time 60
+8/13/2024 12:35 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 12:52 PM        set_field mag_i 2.2
+8/13/2024 1:00 PM        br 0 0 1
+8/13/2024 1:02 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:02 PM        preset time 60
+8/13/2024 1:02 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:19 PM        br 0 0 5
+8/13/2024 1:20 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:20 PM        preset time 60
+8/13/2024 1:20 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:38 PM        br 1 0 1
+8/13/2024 1:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:38 PM        preset time 60
+8/13/2024 1:38 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 1:56 PM        br 1 0 0
+8/13/2024 1:56 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 1:56 PM        preset time 60
+8/13/2024 1:56 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:14 PM        br 2 0 0
+8/13/2024 2:14 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:14 PM        preset time 60
+8/13/2024 2:14 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:31 PM        set_field mag_i 2.4
+8/13/2024 2:39 PM        br 0 0 1
+8/13/2024 2:41 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:41 PM        preset time 60
+8/13/2024 2:41 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 2:58 PM        br 0 0 5
+8/13/2024 2:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 2:59 PM        preset time 60
+8/13/2024 2:59 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:17 PM        br 1 0 1
+8/13/2024 3:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:17 PM        preset time 60
+8/13/2024 3:17 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:35 PM        br 1 0 0
+8/13/2024 3:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:35 PM        preset time 60
+8/13/2024 3:35 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 3:53 PM        br 2 0 0
+8/13/2024 3:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 3:53 PM        preset time 60
+8/13/2024 3:53 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:10 PM        set_field mag_i 2.6
+8/13/2024 4:18 PM        br 0 0 1
+8/13/2024 4:20 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:20 PM        preset time 60
+8/13/2024 4:20 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:38 PM        br 0 0 5
+8/13/2024 4:39 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:39 PM        preset time 60
+8/13/2024 4:39 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 4:56 PM        br 1 0 0
+8/13/2024 4:57 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 4:57 PM        preset time 60
+8/13/2024 4:57 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:15 PM        br 2 0 0
+8/13/2024 5:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:15 PM        preset time 60
+8/13/2024 5:15 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 5:32 PM        set_field mag_i 3
+8/13/2024 5:41 PM        br 0 0 1
+8/13/2024 5:43 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 5:43 PM        preset time 60
+8/13/2024 5:43 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:00 PM        br 0 0 5
+8/13/2024 6:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:01 PM        preset time 60
+8/13/2024 6:01 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:19 PM        br 1 0 0
+8/13/2024 6:20 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:20 PM        preset time 60
+8/13/2024 6:20 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:37 PM        br 2 0 0
+8/13/2024 6:38 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 6:38 PM        preset time 60
+8/13/2024 6:38 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 6:55 PM        set_field mag_i 3.5
+8/13/2024 7:04 PM        br 0 0 1
+8/13/2024 7:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:06 PM        preset time 60
+8/13/2024 7:06 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:24 PM        br 0 0 5
+8/13/2024 7:25 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:25 PM        preset time 60
+8/13/2024 7:25 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 7:42 PM        br 1 0 0
+8/13/2024 7:43 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 7:43 PM        preset time 60
+8/13/2024 7:43 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:01 PM        br 2 0 0
+8/13/2024 8:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:01 PM        preset time 60
+8/13/2024 8:01 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 8:18 PM        br 1 0 0
+8/13/2024 8:19 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:19 PM        preset time 5
+8/13/2024 8:19 PM        scanrel s1 1 -1 0.1
+8/13/2024 8:21 PM        br 1 0 0
+8/13/2024 8:21 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:21 PM        preset time 5
+8/13/2024 8:21 PM        th2th 4 -4 0.2
+8/13/2024 8:26 PM        br 2 0 0
+8/13/2024 8:27 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:27 PM        preset time 5
+8/13/2024 8:27 PM        scanrel s1 1 -1 0.1
+8/13/2024 8:29 PM        br 2 0 0
+8/13/2024 8:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:29 PM        preset time 5
+8/13/2024 8:29 PM        th2th 4 -4 0.2
+8/13/2024 8:34 PM        br 3 0 0
+8/13/2024 8:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:35 PM        preset time 5
+8/13/2024 8:35 PM        scanrel s1 1 -1 0.1
+8/13/2024 8:37 PM        br 3 0 0
+8/13/2024 8:37 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:37 PM        preset time 5
+8/13/2024 8:37 PM        th2th 4 -4 0.2
+8/13/2024 8:42 PM        br 1 0 1
+8/13/2024 8:43 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:43 PM        preset time 5
+8/13/2024 8:43 PM        scanrel s1 1 -1 0.1
+8/13/2024 8:45 PM        br 1 0 1
+8/13/2024 8:45 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:45 PM        preset time 5
+8/13/2024 8:45 PM        th2th 4 -4 0.2
+8/13/2024 8:50 PM        br 1 0 2
+8/13/2024 8:50 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:50 PM        preset time 5
+8/13/2024 8:50 PM        scanrel s1 1 -1 0.1
+8/13/2024 8:53 PM        br 1 0 2
+8/13/2024 8:53 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:53 PM        preset time 5
+8/13/2024 8:53 PM        th2th 4 -4 0.2
+8/13/2024 8:58 PM        br 1 0 3
+8/13/2024 8:58 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 8:58 PM        preset time 5
+8/13/2024 8:58 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:00 PM        br 1 0 3
+8/13/2024 9:00 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:00 PM        preset time 5
+8/13/2024 9:00 PM        th2th 4 -4 0.2
+8/13/2024 9:05 PM        br 1 0 4
+8/13/2024 9:05 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:05 PM        preset time 5
+8/13/2024 9:05 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:08 PM        br 1 0 4
+8/13/2024 9:08 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:08 PM        preset time 5
+8/13/2024 9:08 PM        th2th 4 -4 0.2
+8/13/2024 9:13 PM        br 1 0 5
+8/13/2024 9:13 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:13 PM        preset time 5
+8/13/2024 9:13 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:15 PM        br 1 0 5
+8/13/2024 9:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:15 PM        preset time 5
+8/13/2024 9:15 PM        th2th 4 -4 0.2
+8/13/2024 9:20 PM        br 1 0 6
+8/13/2024 9:21 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:21 PM        preset time 5
+8/13/2024 9:21 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:23 PM        br 1 0 6
+8/13/2024 9:23 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:23 PM        preset time 5
+8/13/2024 9:23 PM        th2th 4 -4 0.2
+8/13/2024 9:28 PM        br 2 0 1
+8/13/2024 9:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:29 PM        preset time 5
+8/13/2024 9:29 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:31 PM        br 2 0 1
+8/13/2024 9:31 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:31 PM        preset time 5
+8/13/2024 9:31 PM        th2th 4 -4 0.2
+8/13/2024 9:36 PM        br 2 0 2
+8/13/2024 9:36 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:36 PM        preset time 5
+8/13/2024 9:36 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:39 PM        br 2 0 2
+8/13/2024 9:39 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:39 PM        preset time 5
+8/13/2024 9:39 PM        th2th 4 -4 0.2
+8/13/2024 9:44 PM        br 2 0 3
+8/13/2024 9:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:44 PM        preset time 5
+8/13/2024 9:44 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:46 PM        br 2 0 3
+8/13/2024 9:46 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:46 PM        preset time 5
+8/13/2024 9:46 PM        th2th 4 -4 0.2
+8/13/2024 9:51 PM        br 2 0 4
+8/13/2024 9:51 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:51 PM        preset time 5
+8/13/2024 9:51 PM        scanrel s1 1 -1 0.1
+8/13/2024 9:54 PM        br 2 0 4
+8/13/2024 9:54 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:54 PM        preset time 5
+8/13/2024 9:54 PM        th2th 4 -4 0.2
+8/13/2024 9:59 PM        br 2 0 5
+8/13/2024 9:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 9:59 PM        preset time 5
+8/13/2024 9:59 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:01 PM        br 2 0 5
+8/13/2024 10:01 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:01 PM        preset time 5
+8/13/2024 10:01 PM        th2th 4 -4 0.2
+8/13/2024 10:06 PM        br 3 0 1
+8/13/2024 10:07 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:07 PM        preset time 5
+8/13/2024 10:07 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:09 PM        br 3 0 1
+8/13/2024 10:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:09 PM        preset time 5
+8/13/2024 10:09 PM        th2th 4 -4 0.2
+8/13/2024 10:14 PM        br 3 0 2
+8/13/2024 10:15 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:15 PM        preset time 5
+8/13/2024 10:15 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:17 PM        br 3 0 2
+8/13/2024 10:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:17 PM        preset time 5
+8/13/2024 10:17 PM        th2th 4 -4 0.2
+8/13/2024 10:22 PM        br 3 0 3
+8/13/2024 10:22 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:22 PM        preset time 5
+8/13/2024 10:22 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:24 PM        br 3 0 3
+8/13/2024 10:25 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:25 PM        preset time 5
+8/13/2024 10:25 PM        th2th 4 -4 0.2
+8/13/2024 10:30 PM        br 0 0 1
+8/13/2024 10:32 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:32 PM        preset time 5
+8/13/2024 10:32 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:34 PM        br 0 0 1
+8/13/2024 10:34 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:34 PM        preset time 5
+8/13/2024 10:34 PM        th2th 4 -4 0.2
+8/13/2024 10:39 PM        br 0 0 2
+8/13/2024 10:39 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:39 PM        preset time 5
+8/13/2024 10:39 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:42 PM        br 0 0 2
+8/13/2024 10:42 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:42 PM        preset time 5
+8/13/2024 10:42 PM        th2th 4 -4 0.2
+8/13/2024 10:47 PM        br 0 0 3
+8/13/2024 10:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:47 PM        preset time 5
+8/13/2024 10:47 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:49 PM        br 0 0 3
+8/13/2024 10:49 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:49 PM        preset time 5
+8/13/2024 10:49 PM        th2th 4 -4 0.2
+8/13/2024 10:54 PM        br 0 0 4
+8/13/2024 10:55 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:55 PM        preset time 5
+8/13/2024 10:55 PM        scanrel s1 1 -1 0.1
+8/13/2024 10:57 PM        br 0 0 4
+8/13/2024 10:57 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 10:57 PM        preset time 5
+8/13/2024 10:57 PM        th2th 4 -4 0.2
+8/13/2024 11:02 PM        br 0 0 5
+8/13/2024 11:02 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:02 PM        preset time 5
+8/13/2024 11:02 PM        scanrel s1 1 -1 0.1
+8/13/2024 11:05 PM        br 0 0 5
+8/13/2024 11:05 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:05 PM        preset time 5
+8/13/2024 11:05 PM        th2th 4 -4 0.2
+8/13/2024 11:10 PM        br 0 0 6
+8/13/2024 11:10 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:10 PM        preset time 5
+8/13/2024 11:10 PM        scanrel s1 1 -1 0.1
+8/13/2024 11:13 PM        br 0 0 6
+8/13/2024 11:13 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:13 PM        preset time 5
+8/13/2024 11:13 PM        th2th 4 -4 0.2
+8/13/2024 11:18 PM        set_field mag_i 2.8
+8/13/2024 11:27 PM        br 0 0 1
+8/13/2024 11:29 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:29 PM        preset time 50
+8/13/2024 11:29 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:43 PM        br 0 0 5
+8/13/2024 11:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/13/2024 11:44 PM        preset time 50
+8/13/2024 11:44 PM        scanrel s1 0.8 -0.8 0.1
+8/13/2024 11:59 PM        br 2 0 0
+8/14/2024 12:00 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 12:00 AM        preset time 50
+8/14/2024 12:00 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 12:15 AM        set_field mag_i 2.3
+8/14/2024 12:24 AM        br 0 0 1
+8/14/2024 12:25 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 12:25 AM        preset time 50
+8/14/2024 12:26 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 12:40 AM        br 0 0 5
+8/14/2024 12:41 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 12:41 AM        preset time 50
+8/14/2024 12:41 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 12:56 AM        br 2 0 0
+8/14/2024 12:57 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 12:57 AM        preset time 50
+8/14/2024 12:57 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 1:12 AM        set_field mag_i 2.1
+8/14/2024 1:20 AM        br 0 0 1
+8/14/2024 1:22 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 1:22 AM        preset time 50
+8/14/2024 1:22 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 1:36 AM        br 0 0 5
+8/14/2024 1:37 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 1:37 AM        preset time 50
+8/14/2024 1:37 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 1:52 AM        br 2 0 0
+8/14/2024 1:53 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 1:53 AM        preset time 50
+8/14/2024 1:53 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 2:08 AM        set_field mag_i 2
+8/14/2024 2:16 AM        br 0 0 1
+8/14/2024 2:18 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:18 AM        preset time 50
+8/14/2024 2:18 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 2:32 AM        br 0 0 5
+8/14/2024 2:33 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:33 AM        preset time 50
+8/14/2024 2:33 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 2:48 AM        br 2 0 0
+8/14/2024 2:49 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:49 AM        preset time 50
+8/14/2024 2:49 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 3:04 AM        set_field mag_i 1.9
+8/14/2024 3:11 AM        br 0 0 1
+8/14/2024 3:13 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:13 AM        preset time 50
+8/14/2024 3:13 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 3:28 AM        br 0 0 5
+8/14/2024 3:29 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:29 AM        preset time 50
+8/14/2024 3:29 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 3:44 AM        br 2 0 0
+8/14/2024 3:45 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:45 AM        preset time 50
+8/14/2024 3:45 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 4:00 AM        set_field mag_i 1.8
+8/14/2024 4:07 AM        br 0 0 1
+8/14/2024 4:09 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:09 AM        preset time 50
+8/14/2024 4:09 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 4:24 AM        br 0 0 5
+8/14/2024 4:25 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:25 AM        preset time 50
+8/14/2024 4:25 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 4:40 AM        br 2 0 0
+8/14/2024 4:41 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:41 AM        preset time 50
+8/14/2024 4:41 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 4:56 AM        set_field mag_i 1.7
+8/14/2024 5:03 AM        br 0 0 1
+8/14/2024 5:05 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:05 AM        preset time 50
+8/14/2024 5:05 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 5:20 AM        br 0 0 5
+8/14/2024 5:21 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:21 AM        preset time 50
+8/14/2024 5:21 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 5:35 AM        br 2 0 0
+8/14/2024 5:37 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:37 AM        preset time 50
+8/14/2024 5:37 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 5:51 AM        set_field mag_i 1.6
+8/14/2024 5:59 AM        br 0 0 1
+8/14/2024 6:01 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 6:01 AM        preset time 50
+8/14/2024 6:01 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 6:15 AM        br 0 0 5
+8/14/2024 6:16 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 6:16 AM        preset time 50
+8/14/2024 6:16 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 6:31 AM        br 2 0 0
+8/14/2024 6:32 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 6:32 AM        preset time 50
+8/14/2024 6:32 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 6:47 AM        set_field mag_i 1.5
+8/14/2024 6:54 AM        br 0 0 1
+8/14/2024 6:56 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 6:56 AM        preset time 50
+8/14/2024 6:56 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 7:11 AM        br 0 0 5
+8/14/2024 7:12 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 7:12 AM        preset time 50
+8/14/2024 7:12 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 7:26 AM        br 2 0 0
+8/14/2024 7:28 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 7:28 AM        preset time 50
+8/14/2024 7:28 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 7:42 AM        set_field mag_i 1.3
+8/14/2024 7:50 AM        br 0 0 1
+8/14/2024 7:52 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 7:52 AM        preset time 50
+8/14/2024 7:52 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 8:07 AM        br 0 0 5
+8/14/2024 8:08 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 8:08 AM        preset time 50
+8/14/2024 8:08 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 8:22 AM        br 2 0 0
+8/14/2024 8:24 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 8:24 AM        preset time 50
+8/14/2024 8:24 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 8:38 AM        set_field mag_i 1
+8/14/2024 8:46 AM        br 0 0 1
+8/14/2024 8:48 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 8:48 AM        preset time 50
+8/14/2024 8:48 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 9:02 AM        br 0 0 5
+8/14/2024 9:03 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 9:03 AM        preset time 50
+8/14/2024 9:03 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 9:18 AM        br 2 0 0
+8/14/2024 9:19 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 9:19 AM        preset time 50
+8/14/2024 9:19 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 9:34 AM        set_field mag_i 0.7
+8/14/2024 9:42 AM        br 0 0 1
+8/14/2024 9:43 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 9:43 AM        preset time 50
+8/14/2024 9:43 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 9:58 AM        br 0 0 5
+8/14/2024 9:59 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 9:59 AM        preset time 50
+8/14/2024 9:59 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 10:14 AM        br 2 0 0
+8/14/2024 10:15 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 10:15 AM        preset time 50
+8/14/2024 10:15 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 10:30 AM        set_field mag_i 0.3
+8/14/2024 10:37 AM        br 0 0 1
+8/14/2024 10:39 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 10:39 AM        preset time 50
+8/14/2024 10:39 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 10:54 AM        br 0 0 5
+8/14/2024 10:55 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 10:55 AM        preset time 50
+8/14/2024 10:55 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 11:10 AM        br 2 0 0
+8/14/2024 11:11 AM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 11:11 AM        preset time 50
+8/14/2024 11:11 AM        scanrel s1 0.8 -0.8 0.1
+8/14/2024 11:27 AM        set_field mag_i 0
+8/14/2024 11:34 AM        set_sorb 8
+8/14/2024 11:36 AM        br 1 0 0
+8/14/2024 11:36 AM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 11:36 AM        preset time 10
+8/14/2024 11:36 AM        set_sorb 8
+8/14/2024 11:36 AM        wait 120
+8/14/2024 11:38 AM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 11:38 AM        scanrel s1 1 -1 0.1
+8/14/2024 11:42 AM        set_sorb 12
+8/14/2024 11:42 AM        wait 120
+8/14/2024 11:44 AM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 11:44 AM        scanrel s1 1 -1 0.1
+8/14/2024 11:49 AM        set_sorb 15
+8/14/2024 11:49 AM        wait 120
+8/14/2024 11:51 AM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 11:51 AM        scanrel s1 1 -1 0.1
+8/14/2024 11:55 AM        set_sorb 17
+8/14/2024 11:55 AM        wait 120
+8/14/2024 11:57 AM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 11:57 AM        scanrel s1 1 -1 0.1
+8/14/2024 12:01 PM        set_sorb 19
+8/14/2024 12:01 PM        wait 120
+8/14/2024 12:03 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 12:03 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:07 PM        set_sorb 21
+8/14/2024 12:07 PM        wait 120
+8/14/2024 12:09 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 12:09 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:13 PM        set_sorb 23
+8/14/2024 12:13 PM        wait 120
+8/14/2024 12:15 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 12:15 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:19 PM        set_sorb 25
+8/14/2024 12:19 PM        wait 120
+8/14/2024 12:21 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 12:21 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:26 PM        set_sorb 30
+8/14/2024 12:26 PM        wait 120
+8/14/2024 12:28 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/14/2024 12:28 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:32 PM        set_sorb 35
+8/14/2024 12:32 PM        wait 120
+8/14/2024 12:34 PM        br 1 0 0
+8/14/2024 12:34 PM        preset time 10
+8/14/2024 12:34 PM        br 1 0 0
+8/14/2024 12:34 PM        wait 120
+8/14/2024 12:36 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 12:36 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:41 PM        drive sample_ht 2 
+8/14/2024 12:45 PM        drive s1 -30
+8/14/2024 12:48 PM        init
+8/14/2024 12:51 PM        set_ht 2.1
+8/14/2024 12:52 PM        br 1 0 0
+8/14/2024 12:53 PM        preset time 10
+8/14/2024 12:53 PM        set_ht 2
+8/14/2024 12:53 PM        br 1 0 0
+8/14/2024 12:53 PM        wait 120
+8/14/2024 12:55 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 12:55 PM        scanrel s1 1 -1 0.1
+8/14/2024 12:59 PM        set_ht 2.2
+8/14/2024 12:59 PM        br 1 0 0
+8/14/2024 12:59 PM        wait 120
+8/14/2024 1:01 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:01 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:05 PM        set_ht 2.4
+8/14/2024 1:05 PM        br 1 0 0
+8/14/2024 1:05 PM        wait 120
+8/14/2024 1:07 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:07 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:11 PM        set_ht 2.6
+8/14/2024 1:11 PM        br 1 0 0
+8/14/2024 1:11 PM        wait 120
+8/14/2024 1:13 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:13 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:17 PM        set_ht 2.8
+8/14/2024 1:17 PM        br 1 0 0
+8/14/2024 1:17 PM        wait 120
+8/14/2024 1:19 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:19 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:23 PM        set_ht 3
+8/14/2024 1:23 PM        br 1 0 0
+8/14/2024 1:23 PM        wait 120
+8/14/2024 1:25 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:25 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:29 PM        set_ht 3.2
+8/14/2024 1:29 PM        br 1 0 0
+8/14/2024 1:29 PM        wait 120
+8/14/2024 1:31 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:31 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:35 PM        set_ht 3.4
+8/14/2024 1:35 PM        br 1 0 0
+8/14/2024 1:35 PM        wait 120
+8/14/2024 1:37 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:37 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:41 PM        set_ht 3.6
+8/14/2024 1:41 PM        br 1 0 0
+8/14/2024 1:41 PM        wait 120
+8/14/2024 1:43 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:43 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:47 PM        set_ht 3.8
+8/14/2024 1:47 PM        br 1 0 0
+8/14/2024 1:47 PM        wait 120
+8/14/2024 1:49 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:49 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:53 PM        set_ht 4
+8/14/2024 1:53 PM        br 1 0 0
+8/14/2024 1:53 PM        wait 120
+8/14/2024 1:55 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 1:55 PM        scanrel s1 1 -1 0.1
+8/14/2024 1:59 PM        set_ht 4.2
+8/14/2024 1:59 PM        br 1 0 0
+8/14/2024 1:59 PM        wait 120
+8/14/2024 2:01 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 2:01 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:05 PM        set_ht 4.4
+8/14/2024 2:05 PM        br 1 0 0
+8/14/2024 2:05 PM        wait 120
+8/14/2024 2:07 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 2:07 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:11 PM        set_ht 4.6
+8/14/2024 2:11 PM        br 1 0 0
+8/14/2024 2:11 PM        wait 120
+8/14/2024 2:13 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 2:13 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:17 PM        set_ht 4.8
+8/14/2024 2:17 PM        br 1 0 0
+8/14/2024 2:17 PM        wait 120
+8/14/2024 2:19 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 2:19 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:23 PM        set_ht 5
+8/14/2024 2:23 PM        br 1 0 0
+8/14/2024 2:23 PM        wait 120
+8/14/2024 2:25 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/14/2024 2:25 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:29 PM        br 1 0 0
+8/14/2024 2:30 PM        set_ht 4
+8/14/2024 2:31 PM        wait 120
+8/14/2024 2:33 PM        br 1 0 0
+8/14/2024 2:33 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:33 PM        preset time 5
+8/14/2024 2:33 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:35 PM        br 1 0 0
+8/14/2024 2:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:35 PM        preset time 5
+8/14/2024 2:35 PM        th2th 4 -4 0.2
+8/14/2024 2:40 PM        br 2 0 0
+8/14/2024 2:40 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:40 PM        preset time 5
+8/14/2024 2:40 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:43 PM        br 2 0 0
+8/14/2024 2:43 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:43 PM        preset time 5
+8/14/2024 2:43 PM        th2th 4 -4 0.2
+8/14/2024 2:47 PM        br 3 0 0
+8/14/2024 2:48 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:48 PM        preset time 5
+8/14/2024 2:48 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:50 PM        br 3 0 0
+8/14/2024 2:50 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:50 PM        preset time 5
+8/14/2024 2:50 PM        th2th 4 -4 0.2
+8/14/2024 2:55 PM        br 1 0 1
+8/14/2024 2:56 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:56 PM        preset time 5
+8/14/2024 2:56 PM        scanrel s1 1 -1 0.1
+8/14/2024 2:58 PM        br 1 0 1
+8/14/2024 2:58 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 2:58 PM        preset time 5
+8/14/2024 2:58 PM        th2th 4 -4 0.2
+8/14/2024 3:03 PM        br 1 0 2
+8/14/2024 3:03 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:03 PM        preset time 5
+8/14/2024 3:03 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:06 PM        br 1 0 2
+8/14/2024 3:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:06 PM        preset time 5
+8/14/2024 3:06 PM        th2th 4 -4 0.2
+8/14/2024 3:10 PM        br 1 0 3
+8/14/2024 3:11 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:11 PM        preset time 5
+8/14/2024 3:11 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:13 PM        br 1 0 3
+8/14/2024 3:13 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:13 PM        preset time 5
+8/14/2024 3:13 PM        th2th 4 -4 0.2
+8/14/2024 3:18 PM        br 1 0 4
+8/14/2024 3:18 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:18 PM        preset time 5
+8/14/2024 3:18 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:20 PM        br 1 0 4
+8/14/2024 3:20 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:20 PM        preset time 5
+8/14/2024 3:20 PM        th2th 4 -4 0.2
+8/14/2024 3:25 PM        br 1 0 5
+8/14/2024 3:25 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:25 PM        preset time 5
+8/14/2024 3:25 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:27 PM        br 1 0 5
+8/14/2024 3:27 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:27 PM        preset time 5
+8/14/2024 3:27 PM        th2th 4 -4 0.2
+8/14/2024 3:32 PM        br 1 0 6
+8/14/2024 3:33 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:33 PM        preset time 5
+8/14/2024 3:33 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:35 PM        br 1 0 6
+8/14/2024 3:35 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:35 PM        preset time 5
+8/14/2024 3:35 PM        th2th 4 -4 0.2
+8/14/2024 3:40 PM        br 2 0 1
+8/14/2024 3:40 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:40 PM        preset time 5
+8/14/2024 3:40 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:42 PM        br 2 0 1
+8/14/2024 3:42 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:42 PM        preset time 5
+8/14/2024 3:42 PM        th2th 4 -4 0.2
+8/14/2024 3:47 PM        br 2 0 2
+8/14/2024 3:47 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:48 PM        preset time 5
+8/14/2024 3:48 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:50 PM        br 2 0 2
+8/14/2024 3:50 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:50 PM        preset time 5
+8/14/2024 3:50 PM        th2th 4 -4 0.2
+8/14/2024 3:55 PM        br 2 0 3
+8/14/2024 3:55 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:55 PM        preset time 5
+8/14/2024 3:55 PM        scanrel s1 1 -1 0.1
+8/14/2024 3:57 PM        br 2 0 3
+8/14/2024 3:57 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 3:57 PM        preset time 5
+8/14/2024 3:57 PM        th2th 4 -4 0.2
+8/14/2024 4:02 PM        br 2 0 4
+8/14/2024 4:02 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:02 PM        preset time 5
+8/14/2024 4:02 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:04 PM        br 2 0 4
+8/14/2024 4:04 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:04 PM        preset time 5
+8/14/2024 4:04 PM        th2th 4 -4 0.2
+8/14/2024 4:09 PM        br 2 0 5
+8/14/2024 4:09 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:09 PM        preset time 5
+8/14/2024 4:09 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:12 PM        br 2 0 5
+8/14/2024 4:12 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:12 PM        preset time 5
+8/14/2024 4:12 PM        th2th 4 -4 0.2
+8/14/2024 4:17 PM        br 3 0 1
+8/14/2024 4:17 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:17 PM        preset time 5
+8/14/2024 4:17 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:20 PM        br 3 0 1
+8/14/2024 4:20 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:20 PM        preset time 5
+8/14/2024 4:20 PM        th2th 4 -4 0.2
+8/14/2024 4:25 PM        br 3 0 2
+8/14/2024 4:25 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:25 PM        preset time 5
+8/14/2024 4:25 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:27 PM        br 3 0 2
+8/14/2024 4:27 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:27 PM        preset time 5
+8/14/2024 4:27 PM        th2th 4 -4 0.2
+8/14/2024 4:32 PM        br 3 0 3
+8/14/2024 4:32 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:32 PM        preset time 5
+8/14/2024 4:32 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:34 PM        br 3 0 3
+8/14/2024 4:34 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:34 PM        preset time 5
+8/14/2024 4:34 PM        th2th 4 -4 0.2
+8/14/2024 4:39 PM        br 0 0 1
+8/14/2024 4:41 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:41 PM        preset time 5
+8/14/2024 4:41 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:43 PM        br 0 0 1
+8/14/2024 4:44 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:44 PM        preset time 5
+8/14/2024 4:44 PM        th2th 4 -4 0.2
+8/14/2024 4:48 PM        br 0 0 2
+8/14/2024 4:49 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:49 PM        preset time 5
+8/14/2024 4:49 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:51 PM        br 0 0 2
+8/14/2024 4:51 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:51 PM        preset time 5
+8/14/2024 4:51 PM        th2th 4 -4 0.2
+8/14/2024 4:56 PM        br 0 0 3
+8/14/2024 4:56 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:56 PM        preset time 5
+8/14/2024 4:56 PM        scanrel s1 1 -1 0.1
+8/14/2024 4:59 PM        br 0 0 3
+8/14/2024 4:59 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 4:59 PM        preset time 5
+8/14/2024 4:59 PM        th2th 4 -4 0.2
+8/14/2024 5:04 PM        br 0 0 4
+8/14/2024 5:04 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:04 PM        preset time 5
+8/14/2024 5:04 PM        scanrel s1 1 -1 0.1
+8/14/2024 5:06 PM        br 0 0 4
+8/14/2024 5:06 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:06 PM        preset time 5
+8/14/2024 5:06 PM        th2th 4 -4 0.2
+8/14/2024 5:11 PM        br 0 0 5
+8/14/2024 5:11 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:11 PM        preset time 5
+8/14/2024 5:11 PM        scanrel s1 1 -1 0.1
+8/14/2024 5:14 PM        br 0 0 5
+8/14/2024 5:14 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:14 PM        preset time 5
+8/14/2024 5:14 PM        th2th 4 -4 0.2
+8/14/2024 5:19 PM        br 0 0 6
+8/14/2024 5:19 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) rocking, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:19 PM        preset time 5
+8/14/2024 5:19 PM        scanrel s1 1 -1 0.1
+8/14/2024 5:21 PM        br 0 0 6
+8/14/2024 5:21 PM        scantitle "HoV6Sn6, (@(h) @(k) @(l)) th2th, T=@(ht.position) K, H=@(persistent_field.position) T"
+8/14/2024 5:21 PM        preset time 5
+8/14/2024 5:21 PM        th2th 4 -4 0.2
+8/14/2024 5:27 PM        set_ht 0
+8/14/2024 5:32 PM        scantitle "HoV6Sn6, check resolution"
+8/14/2024 5:32 PM        scan h 0.8 1.2 0.005 k 0 l 0 e 0 preset time 1
+8/14/2024 5:38 PM        scantitle "HoV6Sn6, check resolution"
+8/14/2024 5:38 PM        scan h 0.8 1.2 0.005 k 0 l 0 e 0.2 preset time 1
+8/14/2024 5:43 PM        scan h 0.8 1.2 0.005 k 0 l 0 e 0.1 preset time 1
+8/14/2024 5:47 PM        scan h 1 k 0 l 0 e -1 2 0.1 preset time 1
+8/14/2024 5:50 PM        scan h 1 k 0 l 0 e -0.25 1.5 0.02 preset time 1
+8/14/2024 5:55 PM        scan h 1.5 k 0 l 0 e -0.25 1.5 0.02 preset time 1
+8/14/2024 6:01 PM        scan h 2 k 0 l 0 e -0.25 1.5 0.02 preset time 1
+8/14/2024 6:07 PM        scan h 0.8 1.2 0.005 k 0 l 0 e 0.05 preset time 1
+8/14/2024 6:13 PM        scan h 1.8 2.2 0.005 k 0 l 0 e 0.05 preset time 5
+8/14/2024 6:23 PM        set_sorb 0
+8/14/2024 6:23 PM         scan h 0.8 1.2 0.005 k 0 l 0 e 0.375 preset time 1
+8/14/2024 6:29 PM        scan h 0 k 0 l 1 e -0.25 1.5 0.02 preset time 1
+8/14/2024 6:38 PM        scan h 1.2 k 0 l 0 e -1 2 0.1 preset time 1
+8/14/2024 6:39 PM        scan h 1.2 k 0 l 0 e -1 2 0.05 preset time 1
+8/14/2024 6:47 PM        scan h -0.15 0.15 0.005 k 0 l 1 e 0 preset time 1
+8/14/2024 6:54 PM        scan h 1 k 0 l -0.1 0.1 0.005 e 0 preset time 1
+8/14/2024 6:58 PM        scan h 0 k 0 l 0.9 1.1 0.005 e 0 preset time 1
+8/14/2024 7:03 PM        scan h 2 k 0 l -0.1 0.1 0.005 e 0 preset time 1
+8/14/2024 7:15 PM        scantitle "HoV6Sn6, longitudinal scan (1 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 7:15 PM        scan h 0.9 1.1 0.005 k 0 l 0 e 0.1 preset time 120
+8/14/2024 8:39 PM        scantitle "HoV6Sn6, longitudinal scan (2 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 8:39 PM        scan h 1.9 2.1 0.005 k 0 l 0 e 0.1 preset time 120
+8/14/2024 10:03 PM        scantitle "HoV6Sn6, transverse scan (1 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 10:03 PM        scan h 1 k 0 l -0.08 0.08 0.004 e 0.1 preset time 120
+8/14/2024 11:28 PM        scantitle "HoV6Sn6, transverse scan (2 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/14/2024 11:28 PM        scan h 2 k 0 l -0.1 0.1 0.005 e 0.1 preset time 120
+8/15/2024 12:53 AM        scantitle "HoV6Sn6, longitudinal scan (0 0 1), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 12:53 AM        scan h 0 k 0 l 0.9 1.1 0.008 e 0.1 preset time 120
+8/15/2024 1:48 AM        scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 1:48 AM        scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
+8/15/2024 5:27 AM        scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 5:27 AM        scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
+8/15/2024 9:05 AM        set_field mag_i 1.8
+8/15/2024 9:15 AM        scantitle "HoV6Sn6, longitudinal scan (1 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 9:15 AM        scan h 0.9 1.1 0.005 k 0 l 0 e 0.1 preset time 120
+8/15/2024 10:40 AM        scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 10:40 AM        scan h 1.98 k 0 l 0 e -0.4 1.6 0.04 preset time 60
+8/15/2024 11:34 AM        scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 11:34 AM        scan h 1 k 0 l 0 e -0.4 1.6 0.04 preset time 60
+8/15/2024 1:33 PM        init
+8/15/2024 1:34 PM        drive s1 -30
+8/15/2024 1:35 PM        init
+8/15/2024 1:37 PM        drive e 0
+8/15/2024 1:37 PM        br 1 0 0
+8/15/2024 1:40 PM        init
+8/15/2024 2:09 PM        init
+8/15/2024 2:11 PM        scantitle "HoV6Sn6, longitudinal scan (2 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+8/15/2024 2:11 PM        scan h 1.9 2.1 0.005 k 0 l 0 e 0.1 preset time 120
+8/15/2024 3:35 PM        scantitle "HoV6Sn6, e-scan (1.5 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
+8/15/2024 3:35 PM        scan h 1.5 k 0 l 0 e -0.4 1.6 0.1 preset time 30
+8/15/2024 3:39 PM        scantitle "HoV6Sn6, e-scan, (1.5 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 3:39 PM        scan h 1.5 k 0 l 0 e -1.5 1.6 0.1 preset time 30
+8/15/2024 3:56 PM        scantitle "HoV6Sn6, transverse scan (1 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 3:56 PM        scan h 1 k 0 l -0.08 0.08 0.004 e 0.1 preset time 60
+8/15/2024 4:39 PM        scantitle "HoV6Sn6, transverse scan (2 0 0), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 4:39 PM        scan h 2 k 0 l -0.1 0.1 0.005 e 0.1 preset time 60
+8/15/2024 5:22 PM        scantitle "HoV6Sn6, longitudinal scan (0 0 1), T=@(lt.position) K, H=@(persistent_field.position) T"
+8/15/2024 5:22 PM        scan h 0 k 0 l 0.9 1.1 0.008 e 0.1 preset time 60
+8/15/2024 5:27 PM        set_field mag_i 0 
+8/15/2024 5:37 PM        br 2 0 0
+8/15/2024 5:39 PM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, UP"
+8/15/2024 5:39 PM        start_field_scan mag_i
+8/15/2024 5:41 PM        scan mag_i 0 3 0.05 preset time 10
+8/15/2024 6:27 PM        end_field_scan mag_i
+8/15/2024 6:32 PM        br 2 0 0
+8/15/2024 6:32 PM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, DOWN"
+8/15/2024 6:32 PM        start_field_scan mag_i
+8/15/2024 6:35 PM        scan mag_i 3 0 -0.05 preset time 10
+8/15/2024 7:22 PM        end_field_scan mag_i
+8/15/2024 7:55 PM        set_field mag_i 0
+8/15/2024 7:55 PM        br 0 0 1
+8/15/2024 7:57 PM        set_field mag_i 0
+8/15/2024 7:57 PM        br 0 0 1
+8/15/2024 7:58 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, UP"
+8/15/2024 7:58 PM        start_field_scan mag_i
+8/15/2024 8:00 PM        scan mag_i 0 3 0.05 preset time 10
+8/15/2024 8:47 PM        end_field_scan mag_i
+8/15/2024 8:51 PM        br 0 0 1
+8/15/2024 8:51 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, DOWN"
+8/15/2024 8:51 PM        start_field_scan mag_i
+8/15/2024 8:54 PM        scan mag_i 3 0 -0.05 preset time 10
+8/15/2024 9:42 PM        end_field_scan mag_i
+8/15/2024 9:45 PM        set_field mag_i 1.6
+8/15/2024 9:55 PM        defxy lt detector
+8/15/2024 9:55 PM        br 1 0 0
+8/15/2024 9:56 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_fileld.position) T, T = @(lt.position) K"
+8/15/2024 9:56 PM        scanon
+8/15/2024 9:56 PM        set_sorb 8
+8/15/2024 9:56 PM        wait 120
+8/15/2024 9:58 PM        stepbegin
+8/15/2024 9:58 PM        count preset time 20
+8/15/2024 9:59 PM        stepend
+8/15/2024 9:59 PM        set_sorb 9
+8/15/2024 9:59 PM        wait 120
+8/15/2024 10:01 PM        stepbegin
+8/15/2024 10:01 PM        count preset time 20
+8/15/2024 10:01 PM        stepend
+8/15/2024 10:01 PM        set_sorb 10
+8/15/2024 10:01 PM        wait 120
+8/15/2024 10:03 PM        stepbegin
+8/15/2024 10:03 PM        count preset time 20
+8/15/2024 10:04 PM        stepend
+8/15/2024 10:04 PM        set_sorb 11
+8/15/2024 10:04 PM        wait 120
+8/15/2024 10:06 PM        stepbegin
+8/15/2024 10:06 PM        count preset time 20
+8/15/2024 10:06 PM        stepend
+8/15/2024 10:06 PM        set_sorb 12
+8/15/2024 10:06 PM        wait 120
+8/15/2024 10:08 PM        stepbegin
+8/15/2024 10:08 PM        count preset time 20
+8/15/2024 10:08 PM        stepend
+8/15/2024 10:08 PM        set_sorb 13
+8/15/2024 10:08 PM        wait 120
+8/15/2024 10:10 PM        stepbegin
+8/15/2024 10:10 PM        count preset time 20
+8/15/2024 10:11 PM        stepend
+8/15/2024 10:11 PM        set_sorb 14
+8/15/2024 10:11 PM        wait 120
+8/15/2024 10:13 PM        stepbegin
+8/15/2024 10:13 PM        count preset time 20
+8/15/2024 10:13 PM        stepend
+8/15/2024 10:13 PM        set_sorb 15
+8/15/2024 10:13 PM        wait 120
+8/15/2024 10:15 PM        set_sorb 0 
+8/15/2024 10:19 PM        scanoff
+8/15/2024 10:21 PM        preset time 1
+8/15/2024 10:21 PM        br 1 0 0
+8/15/2024 10:22 PM        scanrel s1 1 -1 0.1
+8/15/2024 10:34 PM        set_field mag_i 1.6
+8/15/2024 10:34 PM        defxy lt detector
+8/15/2024 10:34 PM        br 1 0 0
+8/15/2024 10:34 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/15/2024 10:34 PM        scanon
+8/15/2024 10:34 PM        set_sorb 8
+8/15/2024 10:34 PM        wait 120
+8/15/2024 10:36 PM        stepbegin
+8/15/2024 10:36 PM        count preset time 20
+8/15/2024 10:36 PM        stepend
+8/15/2024 10:37 PM        set_sorb 9
+8/15/2024 10:37 PM        wait 120
+8/15/2024 10:39 PM        stepbegin
+8/15/2024 10:39 PM        count preset time 20
+8/15/2024 10:39 PM        stepend
+8/15/2024 10:39 PM        set_sorb 10
+8/15/2024 10:39 PM        wait 120
+8/15/2024 10:41 PM        stepbegin
+8/15/2024 10:41 PM        count preset time 20
+8/15/2024 10:41 PM        stepend
+8/15/2024 10:41 PM        set_sorb 11
+8/15/2024 10:41 PM        wait 120
+8/15/2024 10:43 PM        stepbegin
+8/15/2024 10:43 PM        count preset time 20
+8/15/2024 10:44 PM        stepend
+8/15/2024 10:44 PM        set_sorb 12
+8/15/2024 10:44 PM        wait 120
+8/15/2024 10:46 PM        stepbegin
+8/15/2024 10:46 PM        count preset time 20
+8/15/2024 10:46 PM        stepend
+8/15/2024 10:46 PM        set_sorb 13
+8/15/2024 10:46 PM        wait 120
+8/15/2024 10:48 PM        stepbegin
+8/15/2024 10:48 PM        count preset time 20
+8/15/2024 10:48 PM        stepend
+8/15/2024 10:48 PM        set_sorb 14
+8/15/2024 10:48 PM        wait 120
+8/15/2024 10:50 PM        stepbegin
+8/15/2024 10:50 PM        count preset time 20
+8/15/2024 10:51 PM        stepend
+8/15/2024 10:51 PM        set_sorb 15
+8/15/2024 10:51 PM        wait 120
+8/15/2024 10:53 PM        stepbegin
+8/15/2024 10:53 PM        count preset time 20
+8/15/2024 10:53 PM        stepend
+8/15/2024 10:53 PM        set_sorb 16
+8/15/2024 10:53 PM        wait 120
+8/15/2024 10:55 PM        stepbegin
+8/15/2024 10:55 PM        count preset time 20
+8/15/2024 10:56 PM        stepend
+8/15/2024 10:56 PM        set_sorb 17
+8/15/2024 10:56 PM        wait 120
+8/15/2024 10:58 PM        stepbegin
+8/15/2024 10:58 PM        count preset time 20
+8/15/2024 10:58 PM        stepend
+8/15/2024 10:58 PM        set_sorb 18
+8/15/2024 10:58 PM        wait 120
+8/15/2024 11:00 PM        stepbegin
+8/15/2024 11:00 PM        count preset time 20
+8/15/2024 11:00 PM        stepend
+8/15/2024 11:00 PM        set_sorb 19
+8/15/2024 11:00 PM        wait 120
+8/15/2024 11:02 PM        stepbegin
+8/15/2024 11:02 PM        count preset time 20
+8/15/2024 11:03 PM        stepend
+8/15/2024 11:03 PM        set_sorb 20
+8/15/2024 11:03 PM        wait 120
+8/15/2024 11:05 PM        stepbegin
+8/15/2024 11:05 PM        count preset time 20
+8/15/2024 11:05 PM        stepend
+8/15/2024 11:05 PM        set_sorb 21
+8/15/2024 11:05 PM        wait 120
+8/15/2024 11:07 PM        stepbegin
+8/15/2024 11:07 PM        count preset time 20
+8/15/2024 11:07 PM        stepend
+8/15/2024 11:07 PM        set_sorb 22
+8/15/2024 11:07 PM        wait 120
+8/15/2024 11:09 PM        stepbegin
+8/15/2024 11:09 PM        count preset time 20
+8/15/2024 11:10 PM        stepend
+8/15/2024 11:10 PM        set_sorb 23
+8/15/2024 11:10 PM        wait 120
+8/15/2024 11:12 PM        stepbegin
+8/15/2024 11:12 PM        count preset time 20
+8/15/2024 11:12 PM        stepend
+8/15/2024 11:12 PM        set_sorb 24
+8/15/2024 11:12 PM        wait 120
+8/15/2024 11:14 PM        stepbegin
+8/15/2024 11:14 PM        count preset time 20
+8/15/2024 11:15 PM        stepend
+8/15/2024 11:15 PM        set_sorb 25
+8/15/2024 11:15 PM        wait 120
+8/15/2024 11:17 PM        stepbegin
+8/15/2024 11:17 PM        count preset time 20
+8/15/2024 11:17 PM        stepend
+8/15/2024 11:17 PM        set_sorb 26
+8/15/2024 11:17 PM        wait 120
+8/15/2024 11:19 PM        stepbegin
+8/15/2024 11:19 PM        count preset time 20
+8/15/2024 11:19 PM        stepend
+8/15/2024 11:19 PM        set_sorb 27
+8/15/2024 11:19 PM        wait 120
+8/15/2024 11:21 PM        stepbegin
+8/15/2024 11:21 PM        count preset time 20
+8/15/2024 11:22 PM        stepend
+8/15/2024 11:22 PM        set_sorb 28
+8/15/2024 11:22 PM        wait 120
+8/15/2024 11:24 PM        stepbegin
+8/15/2024 11:24 PM        count preset time 20
+8/15/2024 11:24 PM        stepend
+8/15/2024 11:24 PM        set_sorb 29
+8/15/2024 11:24 PM        wait 120
+8/15/2024 11:26 PM        stepbegin
+8/15/2024 11:26 PM        count preset time 20
+8/15/2024 11:26 PM        stepend
+8/15/2024 11:26 PM        set_sorb 30
+8/15/2024 11:26 PM        wait 120
+8/15/2024 11:28 PM        stepbegin
+8/15/2024 11:28 PM        count preset time 20
+8/15/2024 11:29 PM        stepend
+8/15/2024 11:29 PM        set_sorb 31
+8/15/2024 11:29 PM        wait 120
+8/15/2024 11:31 PM        stepbegin
+8/15/2024 11:31 PM        count preset time 20
+8/15/2024 11:31 PM        stepend
+8/15/2024 11:31 PM        set_sorb 32
+8/15/2024 11:31 PM        wait 120
+8/15/2024 11:33 PM        stepbegin
+8/15/2024 11:33 PM        count preset time 20
+8/15/2024 11:34 PM        stepend
+8/15/2024 11:34 PM        set_sorb 33
+8/15/2024 11:34 PM        wait 120
+8/15/2024 11:36 PM        stepbegin
+8/15/2024 11:36 PM        count preset time 20
+8/15/2024 11:36 PM        stepend
+8/15/2024 11:36 PM        set_sorb 34
+8/15/2024 11:36 PM        wait 120
+8/15/2024 11:38 PM        stepbegin
+8/15/2024 11:38 PM        count preset time 20
+8/15/2024 11:38 PM        stepend
+8/15/2024 11:38 PM        set_sorb 35
+8/15/2024 11:38 PM        wait 120
+8/15/2024 11:40 PM        stepbegin
+8/15/2024 11:40 PM        count preset time 20
+8/15/2024 11:41 PM        stepend
+8/15/2024 11:41 PM        scanoff
+8/15/2024 11:41 PM        set_ht 0
+8/15/2024 11:41 PM        wait 1920
+8/16/2024 12:13 AM        set_sorb 0
+8/16/2024 12:13 AM        wait 600
+8/16/2024 12:23 AM        set_field mag_i 1.4
+8/16/2024 12:30 AM        br 1 0 0
+8/16/2024 12:30 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 12:30 AM        scanon
+8/16/2024 12:30 AM        set_sorb 8
+8/16/2024 12:30 AM        wait 120
+8/16/2024 12:32 AM        stepbegin
+8/16/2024 12:32 AM        count preset time 20
+8/16/2024 12:33 AM        stepend
+8/16/2024 12:33 AM        set_sorb 9
+8/16/2024 12:33 AM        wait 120
+8/16/2024 12:35 AM        stepbegin
+8/16/2024 12:35 AM        count preset time 20
+8/16/2024 12:35 AM        stepend
+8/16/2024 12:35 AM        set_sorb 10
+8/16/2024 12:35 AM        wait 120
+8/16/2024 12:37 AM        stepbegin
+8/16/2024 12:37 AM        count preset time 20
+8/16/2024 12:37 AM        stepend
+8/16/2024 12:37 AM        set_sorb 11
+8/16/2024 12:37 AM        wait 120
+8/16/2024 12:39 AM        stepbegin
+8/16/2024 12:39 AM        count preset time 20
+8/16/2024 12:40 AM        stepend
+8/16/2024 12:40 AM        set_sorb 12
+8/16/2024 12:40 AM        wait 120
+8/16/2024 12:42 AM        stepbegin
+8/16/2024 12:42 AM        count preset time 20
+8/16/2024 12:42 AM        stepend
+8/16/2024 12:42 AM        set_sorb 13
+8/16/2024 12:42 AM        wait 120
+8/16/2024 12:44 AM        stepbegin
+8/16/2024 12:44 AM        count preset time 20
+8/16/2024 12:45 AM        stepend
+8/16/2024 12:45 AM        set_sorb 14
+8/16/2024 12:45 AM        wait 120
+8/16/2024 12:47 AM        stepbegin
+8/16/2024 12:47 AM        count preset time 20
+8/16/2024 12:47 AM        stepend
+8/16/2024 12:47 AM        set_sorb 15
+8/16/2024 12:47 AM        wait 120
+8/16/2024 12:49 AM        stepbegin
+8/16/2024 12:49 AM        count preset time 20
+8/16/2024 12:49 AM        stepend
+8/16/2024 12:49 AM        set_sorb 16
+8/16/2024 12:49 AM        wait 120
+8/16/2024 12:51 AM        stepbegin
+8/16/2024 12:51 AM        count preset time 20
+8/16/2024 12:52 AM        stepend
+8/16/2024 12:52 AM        set_sorb 17
+8/16/2024 12:52 AM        wait 120
+8/16/2024 12:54 AM        stepbegin
+8/16/2024 12:54 AM        count preset time 20
+8/16/2024 12:54 AM        stepend
+8/16/2024 12:54 AM        set_sorb 18
+8/16/2024 12:54 AM        wait 120
+8/16/2024 12:56 AM        stepbegin
+8/16/2024 12:56 AM        count preset time 20
+8/16/2024 12:56 AM        stepend
+8/16/2024 12:56 AM        set_sorb 19
+8/16/2024 12:56 AM        wait 120
+8/16/2024 12:58 AM        stepbegin
+8/16/2024 12:58 AM        count preset time 20
+8/16/2024 12:59 AM        stepend
+8/16/2024 12:59 AM        set_sorb 20
+8/16/2024 12:59 AM        wait 120
+8/16/2024 1:01 AM        stepbegin
+8/16/2024 1:01 AM        count preset time 20
+8/16/2024 1:01 AM        stepend
+8/16/2024 1:01 AM        set_sorb 21
+8/16/2024 1:01 AM        wait 120
+8/16/2024 1:03 AM        stepbegin
+8/16/2024 1:03 AM        count preset time 20
+8/16/2024 1:04 AM        stepend
+8/16/2024 1:04 AM        set_sorb 22
+8/16/2024 1:04 AM        wait 120
+8/16/2024 1:06 AM        stepbegin
+8/16/2024 1:06 AM        count preset time 20
+8/16/2024 1:06 AM        stepend
+8/16/2024 1:06 AM        set_sorb 23
+8/16/2024 1:06 AM        wait 120
+8/16/2024 1:08 AM        stepbegin
+8/16/2024 1:08 AM        count preset time 20
+8/16/2024 1:08 AM        stepend
+8/16/2024 1:08 AM        set_sorb 24
+8/16/2024 1:08 AM        wait 120
+8/16/2024 1:10 AM        stepbegin
+8/16/2024 1:10 AM        count preset time 20
+8/16/2024 1:11 AM        stepend
+8/16/2024 1:11 AM        set_sorb 25
+8/16/2024 1:11 AM        wait 120
+8/16/2024 1:13 AM        stepbegin
+8/16/2024 1:13 AM        count preset time 20
+8/16/2024 1:13 AM        stepend
+8/16/2024 1:13 AM        set_sorb 26
+8/16/2024 1:13 AM        wait 120
+8/16/2024 1:15 AM        stepbegin
+8/16/2024 1:15 AM        count preset time 20
+8/16/2024 1:15 AM        stepend
+8/16/2024 1:15 AM        set_sorb 27
+8/16/2024 1:15 AM        wait 120
+8/16/2024 1:17 AM        stepbegin
+8/16/2024 1:17 AM        count preset time 20
+8/16/2024 1:18 AM        stepend
+8/16/2024 1:18 AM        set_sorb 28
+8/16/2024 1:18 AM        wait 120
+8/16/2024 1:20 AM        stepbegin
+8/16/2024 1:20 AM        count preset time 20
+8/16/2024 1:20 AM        stepend
+8/16/2024 1:20 AM        set_sorb 29
+8/16/2024 1:20 AM        wait 120
+8/16/2024 1:22 AM        stepbegin
+8/16/2024 1:22 AM        count preset time 20
+8/16/2024 1:23 AM        stepend
+8/16/2024 1:23 AM        set_sorb 30
+8/16/2024 1:23 AM        wait 120
+8/16/2024 1:25 AM        stepbegin
+8/16/2024 1:25 AM        count preset time 20
+8/16/2024 1:25 AM        stepend
+8/16/2024 1:25 AM        set_sorb 31
+8/16/2024 1:25 AM        wait 120
+8/16/2024 1:27 AM        stepbegin
+8/16/2024 1:27 AM        count preset time 20
+8/16/2024 1:27 AM        stepend
+8/16/2024 1:27 AM        set_sorb 32
+8/16/2024 1:27 AM        wait 120
+8/16/2024 1:29 AM        stepbegin
+8/16/2024 1:29 AM        count preset time 20
+8/16/2024 1:30 AM        stepend
+8/16/2024 1:30 AM        set_sorb 33
+8/16/2024 1:30 AM        wait 120
+8/16/2024 1:32 AM        stepbegin
+8/16/2024 1:32 AM        count preset time 20
+8/16/2024 1:32 AM        stepend
+8/16/2024 1:32 AM        set_sorb 34
+8/16/2024 1:32 AM        wait 120
+8/16/2024 1:34 AM        stepbegin
+8/16/2024 1:34 AM        count preset time 20
+8/16/2024 1:34 AM        stepend
+8/16/2024 1:34 AM        set_sorb 35
+8/16/2024 1:34 AM        wait 120
+8/16/2024 1:36 AM        stepbegin
+8/16/2024 1:36 AM        count preset time 20
+8/16/2024 1:37 AM        stepend
+8/16/2024 1:37 AM        scanoff
+8/16/2024 1:37 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 1:37 AM        scanon
+8/16/2024 1:37 AM        set_ht 2
+8/16/2024 1:37 AM        wait 120
+8/16/2024 1:39 AM        stepbegin
+8/16/2024 1:39 AM        count preset time 20
+8/16/2024 1:39 AM        stepend
+8/16/2024 1:39 AM        set_ht 2.2
+8/16/2024 1:39 AM        wait 120
+8/16/2024 1:41 AM        stepbegin
+8/16/2024 1:41 AM        count preset time 20
+8/16/2024 1:41 AM        stepend
+8/16/2024 1:42 AM        set_ht 2.4
+8/16/2024 1:42 AM        wait 120
+8/16/2024 1:44 AM        stepbegin
+8/16/2024 1:44 AM        count preset time 20
+8/16/2024 1:44 AM        stepend
+8/16/2024 1:44 AM        set_ht 2.6
+8/16/2024 1:44 AM        wait 120
+8/16/2024 1:46 AM        stepbegin
+8/16/2024 1:46 AM        count preset time 20
+8/16/2024 1:46 AM        stepend
+8/16/2024 1:46 AM        scanoff
+8/16/2024 1:46 AM        set_ht 0
+8/16/2024 1:46 AM        wait 1920
+8/16/2024 2:18 AM        set_sorb 0
+8/16/2024 2:18 AM        wait 600
+8/16/2024 2:28 AM        set_field mag_i 1.2
+8/16/2024 2:36 AM        br 1 0 0
+8/16/2024 2:36 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 2:36 AM        scanon
+8/16/2024 2:36 AM        set_sorb 8
+8/16/2024 2:36 AM        wait 120
+8/16/2024 2:38 AM        stepbegin
+8/16/2024 2:38 AM        count preset time 20
+8/16/2024 2:38 AM        stepend
+8/16/2024 2:38 AM        set_sorb 9
+8/16/2024 2:38 AM        wait 120
+8/16/2024 2:40 AM        stepbegin
+8/16/2024 2:40 AM        count preset time 20
+8/16/2024 2:40 AM        stepend
+8/16/2024 2:40 AM        set_sorb 10
+8/16/2024 2:40 AM        wait 120
+8/16/2024 2:43 AM        stepbegin
+8/16/2024 2:43 AM        count preset time 20
+8/16/2024 2:43 AM        stepend
+8/16/2024 2:43 AM        set_sorb 11
+8/16/2024 2:43 AM        wait 120
+8/16/2024 2:45 AM        stepbegin
+8/16/2024 2:45 AM        count preset time 20
+8/16/2024 2:45 AM        stepend
+8/16/2024 2:45 AM        set_sorb 12
+8/16/2024 2:45 AM        wait 120
+8/16/2024 2:47 AM        stepbegin
+8/16/2024 2:47 AM        count preset time 20
+8/16/2024 2:48 AM        stepend
+8/16/2024 2:48 AM        set_sorb 13
+8/16/2024 2:48 AM        wait 120
+8/16/2024 2:50 AM        stepbegin
+8/16/2024 2:50 AM        count preset time 20
+8/16/2024 2:50 AM        stepend
+8/16/2024 2:50 AM        set_sorb 14
+8/16/2024 2:50 AM        wait 120
+8/16/2024 2:52 AM        stepbegin
+8/16/2024 2:52 AM        count preset time 20
+8/16/2024 2:52 AM        stepend
+8/16/2024 2:52 AM        set_sorb 15
+8/16/2024 2:52 AM        wait 120
+8/16/2024 2:54 AM        stepbegin
+8/16/2024 2:54 AM        count preset time 20
+8/16/2024 2:55 AM        stepend
+8/16/2024 2:55 AM        set_sorb 16
+8/16/2024 2:55 AM        wait 120
+8/16/2024 2:57 AM        stepbegin
+8/16/2024 2:57 AM        count preset time 20
+8/16/2024 2:57 AM        stepend
+8/16/2024 2:57 AM        set_sorb 17
+8/16/2024 2:57 AM        wait 120
+8/16/2024 2:59 AM        stepbegin
+8/16/2024 2:59 AM        count preset time 20
+8/16/2024 2:59 AM        stepend
+8/16/2024 2:59 AM        set_sorb 18
+8/16/2024 2:59 AM        wait 120
+8/16/2024 3:01 AM        stepbegin
+8/16/2024 3:01 AM        count preset time 20
+8/16/2024 3:02 AM        stepend
+8/16/2024 3:02 AM        set_sorb 19
+8/16/2024 3:02 AM        wait 120
+8/16/2024 3:04 AM        stepbegin
+8/16/2024 3:04 AM        count preset time 20
+8/16/2024 3:04 AM        stepend
+8/16/2024 3:04 AM        set_sorb 20
+8/16/2024 3:04 AM        wait 120
+8/16/2024 3:06 AM        stepbegin
+8/16/2024 3:06 AM        count preset time 20
+8/16/2024 3:07 AM        stepend
+8/16/2024 3:07 AM        set_sorb 21
+8/16/2024 3:07 AM        wait 120
+8/16/2024 3:09 AM        stepbegin
+8/16/2024 3:09 AM        count preset time 20
+8/16/2024 3:09 AM        stepend
+8/16/2024 3:09 AM        set_sorb 22
+8/16/2024 3:09 AM        wait 120
+8/16/2024 3:11 AM        stepbegin
+8/16/2024 3:11 AM        count preset time 20
+8/16/2024 3:11 AM        stepend
+8/16/2024 3:11 AM        set_sorb 23
+8/16/2024 3:11 AM        wait 120
+8/16/2024 3:13 AM        stepbegin
+8/16/2024 3:13 AM        count preset time 20
+8/16/2024 3:14 AM        stepend
+8/16/2024 3:14 AM        set_sorb 24
+8/16/2024 3:14 AM        wait 120
+8/16/2024 3:16 AM        stepbegin
+8/16/2024 3:16 AM        count preset time 20
+8/16/2024 3:16 AM        stepend
+8/16/2024 3:16 AM        set_sorb 25
+8/16/2024 3:16 AM        wait 120
+8/16/2024 3:18 AM        stepbegin
+8/16/2024 3:18 AM        count preset time 20
+8/16/2024 3:18 AM        stepend
+8/16/2024 3:18 AM        set_sorb 26
+8/16/2024 3:18 AM        wait 120
+8/16/2024 3:20 AM        stepbegin
+8/16/2024 3:20 AM        count preset time 20
+8/16/2024 3:21 AM        stepend
+8/16/2024 3:21 AM        set_sorb 27
+8/16/2024 3:21 AM        wait 120
+8/16/2024 3:23 AM        stepbegin
+8/16/2024 3:23 AM        count preset time 20
+8/16/2024 3:23 AM        stepend
+8/16/2024 3:23 AM        set_sorb 28
+8/16/2024 3:23 AM        wait 120
+8/16/2024 3:25 AM        stepbegin
+8/16/2024 3:25 AM        count preset time 20
+8/16/2024 3:26 AM        stepend
+8/16/2024 3:26 AM        set_sorb 29
+8/16/2024 3:26 AM        wait 120
+8/16/2024 3:28 AM        stepbegin
+8/16/2024 3:28 AM        count preset time 20
+8/16/2024 3:28 AM        stepend
+8/16/2024 3:28 AM        set_sorb 30
+8/16/2024 3:28 AM        wait 120
+8/16/2024 3:30 AM        stepbegin
+8/16/2024 3:30 AM        count preset time 20
+8/16/2024 3:30 AM        stepend
+8/16/2024 3:30 AM        set_sorb 31
+8/16/2024 3:30 AM        wait 120
+8/16/2024 3:32 AM        stepbegin
+8/16/2024 3:32 AM        count preset time 20
+8/16/2024 3:33 AM        stepend
+8/16/2024 3:33 AM        set_sorb 32
+8/16/2024 3:33 AM        wait 120
+8/16/2024 3:35 AM        stepbegin
+8/16/2024 3:35 AM        count preset time 20
+8/16/2024 3:35 AM        stepend
+8/16/2024 3:35 AM        set_sorb 33
+8/16/2024 3:35 AM        wait 120
+8/16/2024 3:37 AM        stepbegin
+8/16/2024 3:37 AM        count preset time 20
+8/16/2024 3:37 AM        stepend
+8/16/2024 3:37 AM        set_sorb 34
+8/16/2024 3:37 AM        wait 120
+8/16/2024 3:39 AM        stepbegin
+8/16/2024 3:39 AM        count preset time 20
+8/16/2024 3:40 AM        stepend
+8/16/2024 3:40 AM        set_sorb 35
+8/16/2024 3:40 AM        wait 120
+8/16/2024 3:42 AM        stepbegin
+8/16/2024 3:42 AM        count preset time 20
+8/16/2024 3:42 AM        stepend
+8/16/2024 3:42 AM        scanoff
+8/16/2024 3:42 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 3:42 AM        scanon
+8/16/2024 3:42 AM        set_ht 2
+8/16/2024 3:42 AM        wait 120
+8/16/2024 3:44 AM        stepbegin
+8/16/2024 3:44 AM        count preset time 20
+8/16/2024 3:45 AM        stepend
+8/16/2024 3:45 AM        set_ht 2.2
+8/16/2024 3:45 AM        wait 120
+8/16/2024 3:47 AM        stepbegin
+8/16/2024 3:47 AM        count preset time 20
+8/16/2024 3:47 AM        stepend
+8/16/2024 3:47 AM        set_ht 2.4
+8/16/2024 3:47 AM        wait 120
+8/16/2024 3:49 AM        stepbegin
+8/16/2024 3:49 AM        count preset time 20
+8/16/2024 3:49 AM        stepend
+8/16/2024 3:49 AM        set_ht 2.6
+8/16/2024 3:49 AM        wait 120
+8/16/2024 3:51 AM        stepbegin
+8/16/2024 3:51 AM        count preset time 20
+8/16/2024 3:52 AM        stepend
+8/16/2024 3:52 AM        set_ht 0
+8/16/2024 3:52 AM        wait 1920
+8/16/2024 4:24 AM        set_sorb 0
+8/16/2024 4:24 AM        wait 600
+8/16/2024 4:34 AM        set_field mag_i 1.0
+8/16/2024 4:41 AM        br 1 0 0
+8/16/2024 4:41 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:41 AM        scanon
+8/16/2024 4:41 AM        set_sorb 8
+8/16/2024 4:41 AM        wait 120
+8/16/2024 4:43 AM        stepbegin
+8/16/2024 4:43 AM        count preset time 20
+8/16/2024 4:43 AM        stepend
+8/16/2024 4:43 AM        set_sorb 9
+8/16/2024 4:43 AM        wait 120
+8/16/2024 4:45 AM        stepbegin
+8/16/2024 4:45 AM        count preset time 20
+8/16/2024 4:46 AM        stepend
+8/16/2024 4:46 AM        set_sorb 10
+8/16/2024 4:46 AM        wait 120
+8/16/2024 4:48 AM        stepbegin
+8/16/2024 4:48 AM        count preset time 20
+8/16/2024 4:48 AM        stepend
+8/16/2024 4:48 AM        set_sorb 11
+8/16/2024 4:48 AM        wait 120
+8/16/2024 4:50 AM        stepbegin
+8/16/2024 4:50 AM        count preset time 20
+8/16/2024 4:50 AM        stepend
+8/16/2024 4:50 AM        set_sorb 12
+8/16/2024 4:50 AM        wait 120
+8/16/2024 4:52 AM        stepbegin
+8/16/2024 4:52 AM        count preset time 20
+8/16/2024 4:53 AM        stepend
+8/16/2024 4:53 AM        set_sorb 13
+8/16/2024 4:53 AM        wait 120
+8/16/2024 4:55 AM        stepbegin
+8/16/2024 4:55 AM        count preset time 20
+8/16/2024 4:55 AM        stepend
+8/16/2024 4:55 AM        set_sorb 14
+8/16/2024 4:55 AM        wait 120
+8/16/2024 4:57 AM        stepbegin
+8/16/2024 4:57 AM        count preset time 20
+8/16/2024 4:57 AM        stepend
+8/16/2024 4:57 AM        set_sorb 15
+8/16/2024 4:57 AM        wait 120
+8/16/2024 4:59 AM        stepbegin
+8/16/2024 4:59 AM        count preset time 20
+8/16/2024 5:00 AM        stepend
+8/16/2024 5:00 AM        set_sorb 16
+8/16/2024 5:00 AM        wait 120
+8/16/2024 5:02 AM        stepbegin
+8/16/2024 5:02 AM        count preset time 20
+8/16/2024 5:02 AM        stepend
+8/16/2024 5:02 AM        set_sorb 17
+8/16/2024 5:02 AM        wait 120
+8/16/2024 5:04 AM        stepbegin
+8/16/2024 5:04 AM        count preset time 20
+8/16/2024 5:05 AM        stepend
+8/16/2024 5:05 AM        set_sorb 18
+8/16/2024 5:05 AM        wait 120
+8/16/2024 5:07 AM        stepbegin
+8/16/2024 5:07 AM        count preset time 20
+8/16/2024 5:07 AM        stepend
+8/16/2024 5:07 AM        set_sorb 19
+8/16/2024 5:07 AM        wait 120
+8/16/2024 5:09 AM        stepbegin
+8/16/2024 5:09 AM        count preset time 20
+8/16/2024 5:09 AM        stepend
+8/16/2024 5:09 AM        set_sorb 20
+8/16/2024 5:09 AM        wait 120
+8/16/2024 5:11 AM        stepbegin
+8/16/2024 5:11 AM        count preset time 20
+8/16/2024 5:12 AM        stepend
+8/16/2024 5:12 AM        set_sorb 21
+8/16/2024 5:12 AM        wait 120
+8/16/2024 5:14 AM        stepbegin
+8/16/2024 5:14 AM        count preset time 20
+8/16/2024 5:14 AM        stepend
+8/16/2024 5:14 AM        set_sorb 22
+8/16/2024 5:14 AM        wait 120
+8/16/2024 5:16 AM        stepbegin
+8/16/2024 5:16 AM        count preset time 20
+8/16/2024 5:16 AM        stepend
+8/16/2024 5:16 AM        set_sorb 23
+8/16/2024 5:16 AM        wait 120
+8/16/2024 5:18 AM        stepbegin
+8/16/2024 5:18 AM        count preset time 20
+8/16/2024 5:19 AM        stepend
+8/16/2024 5:19 AM        set_sorb 24
+8/16/2024 5:19 AM        wait 120
+8/16/2024 5:21 AM        stepbegin
+8/16/2024 5:21 AM        count preset time 20
+8/16/2024 5:21 AM        stepend
+8/16/2024 5:21 AM        set_sorb 25
+8/16/2024 5:21 AM        wait 120
+8/16/2024 5:23 AM        stepbegin
+8/16/2024 5:23 AM        count preset time 20
+8/16/2024 5:24 AM        stepend
+8/16/2024 5:24 AM        set_sorb 26
+8/16/2024 5:24 AM        wait 120
+8/16/2024 5:26 AM        stepbegin
+8/16/2024 5:26 AM        count preset time 20
+8/16/2024 5:26 AM        stepend
+8/16/2024 5:26 AM        set_sorb 27
+8/16/2024 5:26 AM        wait 120
+8/16/2024 5:28 AM        stepbegin
+8/16/2024 5:28 AM        count preset time 20
+8/16/2024 5:28 AM        stepend
+8/16/2024 5:28 AM        set_sorb 28
+8/16/2024 5:28 AM        wait 120
+8/16/2024 5:30 AM        stepbegin
+8/16/2024 5:30 AM        count preset time 20
+8/16/2024 5:31 AM        stepend
+8/16/2024 5:31 AM        set_sorb 29
+8/16/2024 5:31 AM        wait 120
+8/16/2024 5:33 AM        stepbegin
+8/16/2024 5:33 AM        count preset time 20
+8/16/2024 5:33 AM        stepend
+8/16/2024 5:33 AM        set_sorb 30
+8/16/2024 5:33 AM        wait 120
+8/16/2024 5:35 AM        stepbegin
+8/16/2024 5:35 AM        count preset time 20
+8/16/2024 5:35 AM        stepend
+8/16/2024 5:35 AM        set_sorb 31
+8/16/2024 5:35 AM        wait 120
+8/16/2024 5:37 AM        stepbegin
+8/16/2024 5:37 AM        count preset time 20
+8/16/2024 5:38 AM        stepend
+8/16/2024 5:38 AM        set_sorb 32
+8/16/2024 5:38 AM        wait 120
+8/16/2024 5:40 AM        stepbegin
+8/16/2024 5:40 AM        count preset time 20
+8/16/2024 5:40 AM        stepend
+8/16/2024 5:40 AM        set_sorb 33
+8/16/2024 5:40 AM        wait 120
+8/16/2024 5:42 AM        stepbegin
+8/16/2024 5:42 AM        count preset time 20
+8/16/2024 5:42 AM        stepend
+8/16/2024 5:42 AM        set_sorb 34
+8/16/2024 5:42 AM        wait 120
+8/16/2024 5:44 AM        stepbegin
+8/16/2024 5:44 AM        count preset time 20
+8/16/2024 5:45 AM        stepend
+8/16/2024 5:45 AM        set_sorb 35
+8/16/2024 5:45 AM        wait 120
+8/16/2024 5:47 AM        stepbegin
+8/16/2024 5:47 AM        count preset time 20
+8/16/2024 5:47 AM        stepend
+8/16/2024 5:47 AM        scanoff
+8/16/2024 5:47 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 5:47 AM        scanon
+8/16/2024 5:47 AM        set_ht 2
+8/16/2024 5:47 AM        wait 120
+8/16/2024 5:49 AM        stepbegin
+8/16/2024 5:49 AM        count preset time 20
+8/16/2024 5:50 AM        stepend
+8/16/2024 5:50 AM        set_ht 2.2
+8/16/2024 5:50 AM        wait 120
+8/16/2024 5:52 AM        stepbegin
+8/16/2024 5:52 AM        count preset time 20
+8/16/2024 5:52 AM        stepend
+8/16/2024 5:52 AM        set_ht 2.4
+8/16/2024 5:52 AM        wait 120
+8/16/2024 5:54 AM        stepbegin
+8/16/2024 5:54 AM        count preset time 20
+8/16/2024 5:54 AM        stepend
+8/16/2024 5:54 AM        set_ht 2.6
+8/16/2024 5:54 AM        wait 120
+8/16/2024 5:56 AM        stepbegin
+8/16/2024 5:56 AM        count preset time 20
+8/16/2024 5:57 AM        stepend
+8/16/2024 5:57 AM        scanoff
+8/16/2024 5:57 AM        set_ht 0
+8/16/2024 5:57 AM        wait 1920
+8/16/2024 6:29 AM        set_sorb 0
+8/16/2024 6:29 AM        wait 600
+8/16/2024 6:39 AM        set_field mag_i 0.8
+8/16/2024 6:46 AM        br 1 0 0
+8/16/2024 6:46 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:46 AM        scanon
+8/16/2024 6:46 AM        set_sorb 8
+8/16/2024 6:46 AM        wait 120
+8/16/2024 6:48 AM        stepbegin
+8/16/2024 6:48 AM        count preset time 20
+8/16/2024 6:48 AM        stepend
+8/16/2024 6:48 AM        set_sorb 9
+8/16/2024 6:48 AM        wait 120
+8/16/2024 6:50 AM        stepbegin
+8/16/2024 6:50 AM        count preset time 20
+8/16/2024 6:51 AM        stepend
+8/16/2024 6:51 AM        set_sorb 10
+8/16/2024 6:51 AM        wait 120
+8/16/2024 6:53 AM        stepbegin
+8/16/2024 6:53 AM        count preset time 20
+8/16/2024 6:53 AM        stepend
+8/16/2024 6:53 AM        set_sorb 11
+8/16/2024 6:53 AM        wait 120
+8/16/2024 6:55 AM        stepbegin
+8/16/2024 6:55 AM        count preset time 20
+8/16/2024 6:55 AM        stepend
+8/16/2024 6:55 AM        set_sorb 12
+8/16/2024 6:55 AM        wait 120
+8/16/2024 6:57 AM        stepbegin
+8/16/2024 6:57 AM        count preset time 20
+8/16/2024 6:58 AM        stepend
+8/16/2024 6:58 AM        set_sorb 13
+8/16/2024 6:58 AM        wait 120
+8/16/2024 7:00 AM        stepbegin
+8/16/2024 7:00 AM        count preset time 20
+8/16/2024 7:00 AM        stepend
+8/16/2024 7:00 AM        set_sorb 14
+8/16/2024 7:00 AM        wait 120
+8/16/2024 7:02 AM        stepbegin
+8/16/2024 7:02 AM        count preset time 20
+8/16/2024 7:02 AM        stepend
+8/16/2024 7:02 AM        set_sorb 15
+8/16/2024 7:03 AM        wait 120
+8/16/2024 7:05 AM        stepbegin
+8/16/2024 7:05 AM        count preset time 20
+8/16/2024 7:05 AM        stepend
+8/16/2024 7:05 AM        set_sorb 16
+8/16/2024 7:05 AM        wait 120
+8/16/2024 7:07 AM        stepbegin
+8/16/2024 7:07 AM        count preset time 20
+8/16/2024 7:07 AM        stepend
+8/16/2024 7:07 AM        set_sorb 17
+8/16/2024 7:07 AM        wait 120
+8/16/2024 7:09 AM        stepbegin
+8/16/2024 7:09 AM        count preset time 20
+8/16/2024 7:10 AM        stepend
+8/16/2024 7:10 AM        set_sorb 18
+8/16/2024 7:10 AM        wait 120
+8/16/2024 7:12 AM        stepbegin
+8/16/2024 7:12 AM        count preset time 20
+8/16/2024 7:12 AM        stepend
+8/16/2024 7:12 AM        set_sorb 19
+8/16/2024 7:12 AM        wait 120
+8/16/2024 7:14 AM        stepbegin
+8/16/2024 7:14 AM        count preset time 20
+8/16/2024 7:14 AM        stepend
+8/16/2024 7:14 AM        set_sorb 20
+8/16/2024 7:14 AM        wait 120
+8/16/2024 7:16 AM        stepbegin
+8/16/2024 7:16 AM        count preset time 20
+8/16/2024 7:17 AM        stepend
+8/16/2024 7:17 AM        set_sorb 21
+8/16/2024 7:17 AM        wait 120
+8/16/2024 7:19 AM        stepbegin
+8/16/2024 7:19 AM        count preset time 20
+8/16/2024 7:19 AM        stepend
+8/16/2024 7:19 AM        set_sorb 22
+8/16/2024 7:19 AM        wait 120
+8/16/2024 7:21 AM        stepbegin
+8/16/2024 7:21 AM        count preset time 20
+8/16/2024 7:21 AM        stepend
+8/16/2024 7:21 AM        set_sorb 23
+8/16/2024 7:21 AM        wait 120
+8/16/2024 7:23 AM        stepbegin
+8/16/2024 7:23 AM        count preset time 20
+8/16/2024 7:24 AM        stepend
+8/16/2024 7:24 AM        set_sorb 24
+8/16/2024 7:24 AM        wait 120
+8/16/2024 7:26 AM        stepbegin
+8/16/2024 7:26 AM        count preset time 20
+8/16/2024 7:26 AM        stepend
+8/16/2024 7:26 AM        set_sorb 25
+8/16/2024 7:26 AM        wait 120
+8/16/2024 7:28 AM        stepbegin
+8/16/2024 7:28 AM        count preset time 20
+8/16/2024 7:29 AM        stepend
+8/16/2024 7:29 AM        set_sorb 26
+8/16/2024 7:29 AM        wait 120
+8/16/2024 7:31 AM        stepbegin
+8/16/2024 7:31 AM        count preset time 20
+8/16/2024 7:31 AM        stepend
+8/16/2024 7:31 AM        set_sorb 27
+8/16/2024 7:31 AM        wait 120
+8/16/2024 7:33 AM        stepbegin
+8/16/2024 7:33 AM        count preset time 20
+8/16/2024 7:33 AM        stepend
+8/16/2024 7:33 AM        set_sorb 28
+8/16/2024 7:33 AM        wait 120
+8/16/2024 7:35 AM        stepbegin
+8/16/2024 7:35 AM        count preset time 20
+8/16/2024 7:36 AM        stepend
+8/16/2024 7:36 AM        set_sorb 29
+8/16/2024 7:36 AM        wait 120
+8/16/2024 7:38 AM        stepbegin
+8/16/2024 7:38 AM        count preset time 20
+8/16/2024 7:38 AM        stepend
+8/16/2024 7:38 AM        set_sorb 30
+8/16/2024 7:38 AM        wait 120
+8/16/2024 7:40 AM        stepbegin
+8/16/2024 7:40 AM        count preset time 20
+8/16/2024 7:40 AM        stepend
+8/16/2024 7:40 AM        set_sorb 31
+8/16/2024 7:40 AM        wait 120
+8/16/2024 7:42 AM        stepbegin
+8/16/2024 7:42 AM        count preset time 20
+8/16/2024 7:43 AM        stepend
+8/16/2024 7:43 AM        set_sorb 32
+8/16/2024 7:43 AM        wait 120
+8/16/2024 7:45 AM        stepbegin
+8/16/2024 7:45 AM        count preset time 20
+8/16/2024 7:45 AM        stepend
+8/16/2024 7:45 AM        set_sorb 33
+8/16/2024 7:45 AM        wait 120
+8/16/2024 7:47 AM        stepbegin
+8/16/2024 7:47 AM        count preset time 20
+8/16/2024 7:47 AM        stepend
+8/16/2024 7:47 AM        set_sorb 34
+8/16/2024 7:47 AM        wait 120
+8/16/2024 7:49 AM        stepbegin
+8/16/2024 7:49 AM        count preset time 20
+8/16/2024 7:50 AM        stepend
+8/16/2024 7:50 AM        set_sorb 35
+8/16/2024 7:50 AM        wait 120
+8/16/2024 7:52 AM        stepbegin
+8/16/2024 7:52 AM        count preset time 20
+8/16/2024 7:52 AM        stepend
+8/16/2024 7:52 AM        scanoff
+8/16/2024 7:52 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 7:52 AM        scanon
+8/16/2024 7:52 AM        set_ht 2
+8/16/2024 7:52 AM        wait 120
+8/16/2024 7:54 AM        stepbegin
+8/16/2024 7:54 AM        count preset time 20
+8/16/2024 7:55 AM        stepend
+8/16/2024 7:55 AM        set_ht 2.2
+8/16/2024 7:55 AM        wait 120
+8/16/2024 7:57 AM        stepbegin
+8/16/2024 7:57 AM        count preset time 20
+8/16/2024 7:57 AM        stepend
+8/16/2024 7:57 AM        set_ht 2.4
+8/16/2024 7:57 AM        wait 120
+8/16/2024 7:59 AM        stepbegin
+8/16/2024 7:59 AM        count preset time 20
+8/16/2024 7:59 AM        stepend
+8/16/2024 7:59 AM        set_ht 2.6
+8/16/2024 7:59 AM        wait 120
+8/16/2024 8:01 AM        stepbegin
+8/16/2024 8:01 AM        count preset time 20
+8/16/2024 8:02 AM        stepend
+8/16/2024 8:02 AM        scanoff
+8/16/2024 8:02 AM        set_ht 0
+8/16/2024 8:02 AM        wait 1920
+8/16/2024 8:34 AM        set_sorb 0
+8/16/2024 8:34 AM        wait 600
+8/16/2024 8:44 AM        set_field mag_i 0.6
+8/16/2024 8:52 AM        defxy lt detector
+8/16/2024 8:52 AM        br 1 0 0
+8/16/2024 8:52 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:52 AM        scanon
+8/16/2024 8:52 AM        set_sorb 8
+8/16/2024 8:52 AM        wait 120
+8/16/2024 8:54 AM        stepbegin
+8/16/2024 8:54 AM        count preset time 20
+8/16/2024 8:55 AM        stepend
+8/16/2024 8:55 AM        set_sorb 9
+8/16/2024 8:55 AM        wait 120
+8/16/2024 8:57 AM        stepbegin
+8/16/2024 8:57 AM        count preset time 20
+8/16/2024 8:58 AM        stepend
+8/16/2024 8:58 AM        set_sorb 10
+8/16/2024 8:58 AM        wait 120
+8/16/2024 9:00 AM        stepbegin
+8/16/2024 9:00 AM        count preset time 20
+8/16/2024 9:00 AM        stepend
+8/16/2024 9:00 AM        set_sorb 11
+8/16/2024 9:00 AM        wait 120
+8/16/2024 9:02 AM        stepbegin
+8/16/2024 9:02 AM        count preset time 20
+8/16/2024 9:02 AM        stepend
+8/16/2024 9:02 AM        set_sorb 12
+8/16/2024 9:02 AM        wait 120
+8/16/2024 9:04 AM        stepbegin
+8/16/2024 9:04 AM        count preset time 20
+8/16/2024 9:05 AM        stepend
+8/16/2024 9:05 AM        set_sorb 13
+8/16/2024 9:05 AM        wait 120
+8/16/2024 9:07 AM        stepbegin
+8/16/2024 9:07 AM        count preset time 20
+8/16/2024 9:07 AM        stepend
+8/16/2024 9:07 AM        set_sorb 14
+8/16/2024 9:07 AM        wait 120
+8/16/2024 9:09 AM        stepbegin
+8/16/2024 9:09 AM        count preset time 20
+8/16/2024 9:10 AM        stepend
+8/16/2024 9:10 AM        set_sorb 15
+8/16/2024 9:10 AM        wait 120
+8/16/2024 9:12 AM        stepbegin
+8/16/2024 9:12 AM        count preset time 20
+8/16/2024 9:12 AM        stepend
+8/16/2024 9:12 AM        set_sorb 16
+8/16/2024 9:12 AM        wait 120
+8/16/2024 9:14 AM        stepbegin
+8/16/2024 9:14 AM        count preset time 20
+8/16/2024 9:14 AM        stepend
+8/16/2024 9:14 AM        set_sorb 17
+8/16/2024 9:14 AM        wait 120
+8/16/2024 9:16 AM        stepbegin
+8/16/2024 9:16 AM        count preset time 20
+8/16/2024 9:17 AM        stepend
+8/16/2024 9:17 AM        set_sorb 18
+8/16/2024 9:17 AM        wait 120
+8/16/2024 9:19 AM        stepbegin
+8/16/2024 9:19 AM        count preset time 20
+8/16/2024 9:19 AM        stepend
+8/16/2024 9:19 AM        set_sorb 19
+8/16/2024 9:19 AM        wait 120
+8/16/2024 9:21 AM        stepbegin
+8/16/2024 9:21 AM        count preset time 20
+8/16/2024 9:21 AM        stepend
+8/16/2024 9:21 AM        set_sorb 20
+8/16/2024 9:21 AM        wait 120
+8/16/2024 9:23 AM        stepbegin
+8/16/2024 9:23 AM        count preset time 20
+8/16/2024 9:24 AM        stepend
+8/16/2024 9:24 AM        set_sorb 21
+8/16/2024 9:24 AM        wait 120
+8/16/2024 9:26 AM        stepbegin
+8/16/2024 9:26 AM        count preset time 20
+8/16/2024 9:26 AM        stepend
+8/16/2024 9:26 AM        set_sorb 22
+8/16/2024 9:26 AM        wait 120
+8/16/2024 9:28 AM        stepbegin
+8/16/2024 9:28 AM        count preset time 20
+8/16/2024 9:28 AM        stepend
+8/16/2024 9:28 AM        set_sorb 23
+8/16/2024 9:28 AM        wait 120
+8/16/2024 9:30 AM        stepbegin
+8/16/2024 9:30 AM        count preset time 20
+8/16/2024 9:31 AM        stepend
+8/16/2024 9:31 AM        set_sorb 24
+8/16/2024 9:31 AM        wait 120
+8/16/2024 9:33 AM        stepbegin
+8/16/2024 9:33 AM        count preset time 20
+8/16/2024 9:33 AM        stepend
+8/16/2024 9:33 AM        set_sorb 25
+8/16/2024 9:33 AM        wait 120
+8/16/2024 9:35 AM        stepbegin
+8/16/2024 9:35 AM        count preset time 20
+8/16/2024 9:35 AM        stepend
+8/16/2024 9:35 AM        set_sorb 26
+8/16/2024 9:36 AM        wait 120
+8/16/2024 9:38 AM        stepbegin
+8/16/2024 9:38 AM        count preset time 20
+8/16/2024 9:38 AM        stepend
+8/16/2024 9:38 AM        set_sorb 27
+8/16/2024 9:38 AM        wait 120
+8/16/2024 9:40 AM        stepbegin
+8/16/2024 9:40 AM        count preset time 20
+8/16/2024 9:40 AM        stepend
+8/16/2024 9:40 AM        set_sorb 28
+8/16/2024 9:40 AM        wait 120
+8/16/2024 9:42 AM        stepbegin
+8/16/2024 9:42 AM        count preset time 20
+8/16/2024 9:43 AM        stepend
+8/16/2024 9:43 AM        set_sorb 29
+8/16/2024 9:43 AM        wait 120
+8/16/2024 9:45 AM        stepbegin
+8/16/2024 9:45 AM        count preset time 20
+8/16/2024 9:45 AM        stepend
+8/16/2024 9:45 AM        set_sorb 30
+8/16/2024 9:45 AM        wait 120
+8/16/2024 9:47 AM        stepbegin
+8/16/2024 9:47 AM        count preset time 20
+8/16/2024 9:47 AM        stepend
+8/16/2024 9:47 AM        set_sorb 35
+8/16/2024 9:47 AM        wait 120
+8/16/2024 9:49 AM        stepbegin
+8/16/2024 9:49 AM        count preset time 20
+8/16/2024 9:50 AM        stepend
+8/16/2024 9:50 AM        scanoff
+8/16/2024 9:50 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:50 AM        scanon
+8/16/2024 9:50 AM        set_ht 3
+8/16/2024 9:50 AM        wait 120
+8/16/2024 9:52 AM        stepbegin
+8/16/2024 9:52 AM        count preset time 20
+8/16/2024 9:52 AM        stepend
+8/16/2024 9:52 AM        set_ht 3.5
+8/16/2024 9:52 AM        wait 120
+8/16/2024 9:54 AM        stepbegin
+8/16/2024 9:54 AM        count preset time 20
+8/16/2024 9:54 AM        stepend
+8/16/2024 9:54 AM        set_ht 4
+8/16/2024 9:54 AM        wait 120
+8/16/2024 9:56 AM        stepbegin
+8/16/2024 9:56 AM        count preset time 20
+8/16/2024 9:57 AM        stepend
+8/16/2024 9:57 AM        set_ht 2.6
+8/16/2024 9:57 AM        wait 120
+8/16/2024 9:59 AM        stepbegin
+8/16/2024 9:59 AM        count preset time 20
+8/16/2024 9:59 AM        stepend
+8/16/2024 9:59 AM        scanoff
+8/16/2024 9:59 AM        set_ht 0
+8/16/2024 9:59 AM        wait 1920
+8/16/2024 10:27 AM        br 0 0 1.5
+8/16/2024 10:28 AM        scantitle "test scan resolution"
+8/16/2024 10:28 AM        scan h 0 k 0 l 1.5 e -0.6 1.5 0.05 preset time 10
+8/16/2024 10:38 AM        set_sorb 0
+8/16/2024 10:49 AM        set_field mag_i 0.3
+8/16/2024 10:56 AM        defxy lt detector
+8/16/2024 10:56 AM        br 1 0 0
+8/16/2024 10:58 AM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 10:58 AM        scanon
+8/16/2024 10:58 AM        set_sorb 8
+8/16/2024 10:58 AM        wait 120
+8/16/2024 11:00 AM        stepbegin
+8/16/2024 11:00 AM        count preset time 20
+8/16/2024 11:00 AM        stepend
+8/16/2024 11:00 AM        set_sorb 9
+8/16/2024 11:00 AM        wait 120
+8/16/2024 11:02 AM        stepbegin
+8/16/2024 11:02 AM        count preset time 20
+8/16/2024 11:02 AM        stepend
+8/16/2024 11:02 AM        set_sorb 10
+8/16/2024 11:02 AM        wait 120
+8/16/2024 11:04 AM        stepbegin
+8/16/2024 11:04 AM        count preset time 20
+8/16/2024 11:05 AM        stepend
+8/16/2024 11:05 AM        set_sorb 11
+8/16/2024 11:05 AM        wait 120
+8/16/2024 11:07 AM        stepbegin
+8/16/2024 11:07 AM        count preset time 20
+8/16/2024 11:07 AM        stepend
+8/16/2024 11:07 AM        set_sorb 12
+8/16/2024 11:07 AM        wait 120
+8/16/2024 11:09 AM        stepbegin
+8/16/2024 11:09 AM        count preset time 20
+8/16/2024 11:09 AM        stepend
+8/16/2024 11:09 AM        set_sorb 13
+8/16/2024 11:09 AM        wait 120
+8/16/2024 11:11 AM        stepbegin
+8/16/2024 11:11 AM        count preset time 20
+8/16/2024 11:12 AM        stepend
+8/16/2024 11:12 AM        set_sorb 14
+8/16/2024 11:12 AM        wait 120
+8/16/2024 11:14 AM        stepbegin
+8/16/2024 11:14 AM        count preset time 20
+8/16/2024 11:14 AM        stepend
+8/16/2024 11:14 AM        set_sorb 15
+8/16/2024 11:14 AM        wait 120
+8/16/2024 11:16 AM        stepbegin
+8/16/2024 11:16 AM        count preset time 20
+8/16/2024 11:17 AM        stepend
+8/16/2024 11:17 AM        set_sorb 16
+8/16/2024 11:17 AM        wait 120
+8/16/2024 11:19 AM        stepbegin
+8/16/2024 11:19 AM        count preset time 20
+8/16/2024 11:19 AM        stepend
+8/16/2024 11:19 AM        set_sorb 17
+8/16/2024 11:19 AM        wait 120
+8/16/2024 11:21 AM        stepbegin
+8/16/2024 11:21 AM        count preset time 20
+8/16/2024 11:21 AM        stepend
+8/16/2024 11:21 AM        set_sorb 18
+8/16/2024 11:21 AM        wait 120
+8/16/2024 11:23 AM        stepbegin
+8/16/2024 11:23 AM        count preset time 20
+8/16/2024 11:24 AM        stepend
+8/16/2024 11:24 AM        set_sorb 19
+8/16/2024 11:24 AM        wait 120
+8/16/2024 11:26 AM        stepbegin
+8/16/2024 11:26 AM        count preset time 20
+8/16/2024 11:26 AM        stepend
+8/16/2024 11:26 AM        set_sorb 20
+8/16/2024 11:26 AM        wait 120
+8/16/2024 11:28 AM        stepbegin
+8/16/2024 11:28 AM        count preset time 20
+8/16/2024 11:28 AM        stepend
+8/16/2024 11:28 AM        set_sorb 21
+8/16/2024 11:28 AM        wait 120
+8/16/2024 11:30 AM        stepbegin
+8/16/2024 11:30 AM        count preset time 20
+8/16/2024 11:31 AM        stepend
+8/16/2024 11:31 AM        set_sorb 22
+8/16/2024 11:31 AM        wait 120
+8/16/2024 11:33 AM        stepbegin
+8/16/2024 11:33 AM        count preset time 20
+8/16/2024 11:33 AM        stepend
+8/16/2024 11:33 AM        set_sorb 23
+8/16/2024 11:33 AM        wait 120
+8/16/2024 11:35 AM        stepbegin
+8/16/2024 11:35 AM        count preset time 20
+8/16/2024 11:35 AM        stepend
+8/16/2024 11:35 AM        set_sorb 24
+8/16/2024 11:35 AM        wait 120
+8/16/2024 11:37 AM        stepbegin
+8/16/2024 11:37 AM        count preset time 20
+8/16/2024 11:38 AM        stepend
+8/16/2024 11:38 AM        set_sorb 25
+8/16/2024 11:38 AM        wait 120
+8/16/2024 11:40 AM        stepbegin
+8/16/2024 11:40 AM        count preset time 20
+8/16/2024 11:40 AM        stepend
+8/16/2024 11:40 AM        set_sorb 26
+8/16/2024 11:40 AM        wait 120
+8/16/2024 11:42 AM        stepbegin
+8/16/2024 11:42 AM        count preset time 20
+8/16/2024 11:42 AM        stepend
+8/16/2024 11:43 AM        set_sorb 27
+8/16/2024 11:43 AM        wait 120
+8/16/2024 11:45 AM        stepbegin
+8/16/2024 11:45 AM        count preset time 20
+8/16/2024 11:45 AM        stepend
+8/16/2024 11:45 AM        set_sorb 28
+8/16/2024 11:45 AM        wait 120
+8/16/2024 11:47 AM        stepbegin
+8/16/2024 11:47 AM        count preset time 20
+8/16/2024 11:47 AM        stepend
+8/16/2024 11:47 AM        set_sorb 29
+8/16/2024 11:47 AM        wait 120
+8/16/2024 11:49 AM        stepbegin
+8/16/2024 11:49 AM        count preset time 20
+8/16/2024 11:50 AM        stepend
+8/16/2024 11:50 AM        set_sorb 30
+8/16/2024 11:50 AM        wait 120
+8/16/2024 11:52 AM        stepbegin
+8/16/2024 11:52 AM        count preset time 20
+8/16/2024 11:52 AM        stepend
+8/16/2024 11:52 AM        set_sorb 31
+8/16/2024 11:52 AM        wait 120
+8/16/2024 11:54 AM        stepbegin
+8/16/2024 11:54 AM        count preset time 20
+8/16/2024 11:54 AM        stepend
+8/16/2024 11:54 AM        set_sorb 32
+8/16/2024 11:54 AM        wait 120
+8/16/2024 11:56 AM        stepbegin
+8/16/2024 11:56 AM        count preset time 20
+8/16/2024 11:57 AM        stepend
+8/16/2024 11:57 AM        set_sorb 33
+8/16/2024 11:57 AM        wait 120
+8/16/2024 11:59 AM        stepbegin
+8/16/2024 11:59 AM        count preset time 20
+8/16/2024 11:59 AM        stepend
+8/16/2024 11:59 AM        set_sorb 34
+8/16/2024 11:59 AM        wait 120
+8/16/2024 12:01 PM        stepbegin
+8/16/2024 12:01 PM        count preset time 20
+8/16/2024 12:01 PM        stepend
+8/16/2024 12:01 PM        set_sorb 35
+8/16/2024 12:01 PM        wait 120
+8/16/2024 12:03 PM        stepbegin
+8/16/2024 12:03 PM        count preset time 20
+8/16/2024 12:04 PM        stepend
+8/16/2024 12:04 PM        scanoff
+8/16/2024 12:04 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 12:04 PM        scanon
+8/16/2024 12:04 PM        set_ht 3
+8/16/2024 12:04 PM        wait 120
+8/16/2024 12:06 PM        stepbegin
+8/16/2024 12:06 PM        count preset time 20
+8/16/2024 12:06 PM        stepend
+8/16/2024 12:06 PM        set_ht 3.5
+8/16/2024 12:06 PM        wait 120
+8/16/2024 12:08 PM        stepbegin
+8/16/2024 12:08 PM        count preset time 20
+8/16/2024 12:08 PM        stepend
+8/16/2024 12:08 PM        set_ht 4
+8/16/2024 12:08 PM        wait 120
+8/16/2024 12:10 PM        stepbegin
+8/16/2024 12:10 PM        count preset time 20
+8/16/2024 12:11 PM        stepend
+8/16/2024 12:11 PM        scanoff
+8/16/2024 12:13 PM        set_ht 0
+8/16/2024 12:13 PM        wait 1920
+8/16/2024 12:45 PM        set_sorb 0
+8/16/2024 12:45 PM        wait 600
+8/16/2024 12:55 PM        set_field mag_i 0.6
+8/16/2024 1:01 PM        set_sorb 29
+8/16/2024 1:01 PM        wait 360
+8/16/2024 1:07 PM        defxy lt detector
+8/16/2024 1:07 PM        br 1 0 0
+8/16/2024 1:07 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 1:07 PM        scanon
+8/16/2024 1:07 PM        set_sorb 29
+8/16/2024 1:07 PM        wait 120
+8/16/2024 1:09 PM        stepbegin
+8/16/2024 1:09 PM        count preset time 20
+8/16/2024 1:10 PM        stepend
+8/16/2024 1:10 PM        set_sorb 30
+8/16/2024 1:10 PM        wait 120
+8/16/2024 1:12 PM        stepbegin
+8/16/2024 1:12 PM        count preset time 20
+8/16/2024 1:12 PM        stepend
+8/16/2024 1:12 PM        set_sorb 31
+8/16/2024 1:12 PM        wait 120
+8/16/2024 1:14 PM        stepbegin
+8/16/2024 1:14 PM        count preset time 20
+8/16/2024 1:14 PM        stepend
+8/16/2024 1:14 PM        set_sorb 32
+8/16/2024 1:14 PM        wait 120
+8/16/2024 1:16 PM        stepbegin
+8/16/2024 1:16 PM        count preset time 20
+8/16/2024 1:17 PM        stepend
+8/16/2024 1:17 PM        set_sorb 33
+8/16/2024 1:17 PM        wait 120
+8/16/2024 1:19 PM        stepbegin
+8/16/2024 1:19 PM        count preset time 20
+8/16/2024 1:19 PM        stepend
+8/16/2024 1:19 PM        set_sorb 34
+8/16/2024 1:19 PM        wait 120
+8/16/2024 1:21 PM        stepbegin
+8/16/2024 1:21 PM        count preset time 20
+8/16/2024 1:22 PM        stepend
+8/16/2024 1:22 PM        set_sorb 35
+8/16/2024 1:22 PM        wait 120
+8/16/2024 1:24 PM        stepbegin
+8/16/2024 1:24 PM        count preset time 20
+8/16/2024 1:24 PM        stepend
+8/16/2024 1:24 PM        scanoff
+8/16/2024 1:24 PM        set_ht 0
+8/16/2024 1:24 PM        wait 1920
+8/16/2024 1:56 PM        set_sorb 0
+8/16/2024 1:56 PM        wait 600
+8/16/2024 2:06 PM        defxy lt detector
+8/16/2024 2:06 PM        set_field mag_i 1.5
+8/16/2024 2:14 PM        br 1 0 0
+8/16/2024 2:14 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 2:14 PM        scanon
+8/16/2024 2:14 PM        set_sorb 7
+8/16/2024 2:14 PM        wait 60
+8/16/2024 2:16 PM        stepbegin
+8/16/2024 2:16 PM        count preset time 40
+8/16/2024 2:16 PM        stepend
+8/16/2024 2:16 PM        set_sorb 8
+8/16/2024 2:16 PM        wait 60
+8/16/2024 2:17 PM        stepbegin
+8/16/2024 2:17 PM        count preset time 40
+8/16/2024 2:18 PM        stepend
+8/16/2024 2:18 PM        set_sorb 9
+8/16/2024 2:18 PM        wait 60
+8/16/2024 2:19 PM        stepbegin
+8/16/2024 2:19 PM        count preset time 40
+8/16/2024 2:20 PM        stepend
+8/16/2024 2:20 PM        set_sorb 10
+8/16/2024 2:20 PM        wait 60
+8/16/2024 2:21 PM        stepbegin
+8/16/2024 2:22 PM        count preset time 40
+8/16/2024 2:22 PM        stepend
+8/16/2024 2:22 PM        set_sorb 11
+8/16/2024 2:22 PM        wait 60
+8/16/2024 2:23 PM        stepbegin
+8/16/2024 2:23 PM        count preset time 40
+8/16/2024 2:24 PM        stepend
+8/16/2024 2:24 PM        set_sorb 12
+8/16/2024 2:24 PM        wait 60
+8/16/2024 2:25 PM        stepbegin
+8/16/2024 2:25 PM        count preset time 40
+8/16/2024 2:26 PM        stepend
+8/16/2024 2:26 PM        set_sorb 13
+8/16/2024 2:26 PM        wait 60
+8/16/2024 2:27 PM        stepbegin
+8/16/2024 2:27 PM        count preset time 40
+8/16/2024 2:28 PM        stepend
+8/16/2024 2:28 PM        set_sorb 14
+8/16/2024 2:28 PM        wait 60
+8/16/2024 2:29 PM        stepbegin
+8/16/2024 2:29 PM        count preset time 40
+8/16/2024 2:29 PM        stepend
+8/16/2024 2:29 PM        set_sorb 15
+8/16/2024 2:29 PM        wait 60
+8/16/2024 2:30 PM        stepbegin
+8/16/2024 2:30 PM        count preset time 40
+8/16/2024 2:31 PM        stepend
+8/16/2024 2:31 PM        set_sorb 16
+8/16/2024 2:31 PM        wait 60
+8/16/2024 2:32 PM        stepbegin
+8/16/2024 2:32 PM        count preset time 40
+8/16/2024 2:33 PM        stepend
+8/16/2024 2:33 PM        set_sorb 17
+8/16/2024 2:33 PM        wait 60
+8/16/2024 2:34 PM        stepbegin
+8/16/2024 2:34 PM        count preset time 40
+8/16/2024 2:34 PM        stepend
+8/16/2024 2:34 PM        set_sorb 18
+8/16/2024 2:34 PM        wait 60
+8/16/2024 2:36 PM        stepbegin
+8/16/2024 2:36 PM        count preset time 40
+8/16/2024 2:36 PM        stepend
+8/16/2024 2:36 PM        set_sorb 19
+8/16/2024 2:36 PM        wait 60
+8/16/2024 2:37 PM        stepbegin
+8/16/2024 2:37 PM        count preset time 40
+8/16/2024 2:38 PM        stepend
+8/16/2024 2:38 PM        set_sorb 20
+8/16/2024 2:38 PM        wait 60
+8/16/2024 2:39 PM        stepbegin
+8/16/2024 2:39 PM        count preset time 40
+8/16/2024 2:40 PM        stepend
+8/16/2024 2:40 PM        set_sorb 21
+8/16/2024 2:40 PM        wait 60
+8/16/2024 2:41 PM        stepbegin
+8/16/2024 2:41 PM        count preset time 40
+8/16/2024 2:42 PM        stepend
+8/16/2024 2:42 PM        set_sorb 22
+8/16/2024 2:42 PM        wait 60
+8/16/2024 2:43 PM        stepbegin
+8/16/2024 2:43 PM        count preset time 40
+8/16/2024 2:44 PM        stepend
+8/16/2024 2:44 PM        set_sorb 23
+8/16/2024 2:44 PM        wait 60
+8/16/2024 2:45 PM        stepbegin
+8/16/2024 2:45 PM        count preset time 40
+8/16/2024 2:45 PM        stepend
+8/16/2024 2:45 PM        set_sorb 24
+8/16/2024 2:45 PM        wait 60
+8/16/2024 2:46 PM        stepbegin
+8/16/2024 2:46 PM        count preset time 40
+8/16/2024 2:47 PM        stepend
+8/16/2024 2:47 PM        set_sorb 25
+8/16/2024 2:47 PM        wait 60
+8/16/2024 2:48 PM        stepbegin
+8/16/2024 2:48 PM        count preset time 40
+8/16/2024 2:49 PM        stepend
+8/16/2024 2:49 PM        scanoff
+8/16/2024 2:49 PM        set_sorb 0
+8/16/2024 2:49 PM        wait 300
+8/16/2024 2:54 PM        set_field mag_i 1.7
+8/16/2024 3:02 PM        br 1 0 0
+8/16/2024 3:02 PM        scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 3:02 PM        scanon
+8/16/2024 3:02 PM        set_sorb 7
+8/16/2024 3:02 PM        wait 60
+8/16/2024 3:03 PM        stepbegin
+8/16/2024 3:03 PM        count preset time 40
+8/16/2024 3:04 PM        stepend
+8/16/2024 3:04 PM        set_sorb 8
+8/16/2024 3:04 PM        wait 60
+8/16/2024 3:05 PM        stepbegin
+8/16/2024 3:05 PM        count preset time 40
+8/16/2024 3:06 PM        stepend
+8/16/2024 3:06 PM        set_sorb 9
+8/16/2024 3:06 PM        wait 60
+8/16/2024 3:07 PM        stepbegin
+8/16/2024 3:07 PM        count preset time 40
+8/16/2024 3:07 PM        stepend
+8/16/2024 3:07 PM        set_sorb 10
+8/16/2024 3:07 PM        wait 60
+8/16/2024 3:08 PM        stepbegin
+8/16/2024 3:08 PM        count preset time 40
+8/16/2024 3:09 PM        stepend
+8/16/2024 3:09 PM        set_sorb 11
+8/16/2024 3:09 PM        wait 60
+8/16/2024 3:10 PM        stepbegin
+8/16/2024 3:10 PM        count preset time 40
+8/16/2024 3:11 PM        stepend
+8/16/2024 3:11 PM        set_sorb 12
+8/16/2024 3:11 PM        wait 60
+8/16/2024 3:12 PM        stepbegin
+8/16/2024 3:12 PM        count preset time 40
+8/16/2024 3:12 PM        stepend
+8/16/2024 3:12 PM        set_sorb 13
+8/16/2024 3:12 PM        wait 60
+8/16/2024 3:13 PM        stepbegin
+8/16/2024 3:13 PM        count preset time 40
+8/16/2024 3:14 PM        stepend
+8/16/2024 3:14 PM        set_sorb 14
+8/16/2024 3:14 PM        wait 60
+8/16/2024 3:15 PM        stepbegin
+8/16/2024 3:15 PM        count preset time 40
+8/16/2024 3:16 PM        stepend
+8/16/2024 3:16 PM        set_sorb 15
+8/16/2024 3:16 PM        wait 60
+8/16/2024 3:17 PM        stepbegin
+8/16/2024 3:17 PM        count preset time 40
+8/16/2024 3:18 PM        stepend
+8/16/2024 3:18 PM        set_sorb 16
+8/16/2024 3:18 PM        wait 60
+8/16/2024 3:19 PM        stepbegin
+8/16/2024 3:19 PM        count preset time 40
+8/16/2024 3:19 PM        stepend
+8/16/2024 3:19 PM        set_sorb 17
+8/16/2024 3:19 PM        wait 60
+8/16/2024 3:20 PM        stepbegin
+8/16/2024 3:20 PM        count preset time 40
+8/16/2024 3:21 PM        stepend
+8/16/2024 3:21 PM        set_sorb 18
+8/16/2024 3:21 PM        wait 60
+8/16/2024 3:22 PM        stepbegin
+8/16/2024 3:22 PM        count preset time 40
+8/16/2024 3:23 PM        stepend
+8/16/2024 3:23 PM        set_sorb 19
+8/16/2024 3:23 PM        wait 60
+8/16/2024 3:24 PM        stepbegin
+8/16/2024 3:24 PM        count preset time 40
+8/16/2024 3:24 PM        stepend
+8/16/2024 3:24 PM        set_sorb 20
+8/16/2024 3:24 PM        wait 60
+8/16/2024 3:26 PM        stepbegin
+8/16/2024 3:26 PM        count preset time 40
+8/16/2024 3:26 PM        stepend
+8/16/2024 3:26 PM        set_sorb 21
+8/16/2024 3:26 PM        wait 60
+8/16/2024 3:27 PM        stepbegin
+8/16/2024 3:27 PM        count preset time 40
+8/16/2024 3:28 PM        stepend
+8/16/2024 3:28 PM        set_sorb 22
+8/16/2024 3:28 PM        wait 60
+8/16/2024 3:29 PM        stepbegin
+8/16/2024 3:29 PM        count preset time 40
+8/16/2024 3:30 PM        stepend
+8/16/2024 3:30 PM        set_sorb 23
+8/16/2024 3:30 PM        wait 60
+8/16/2024 3:31 PM        stepbegin
+8/16/2024 3:31 PM        count preset time 40
+8/16/2024 3:31 PM        stepend
+8/16/2024 3:31 PM        scanoff
+8/16/2024 3:31 PM        set_sorb 0
+8/16/2024 3:31 PM        wait 300
+8/16/2024 3:36 PM        set_field mag_i 1.8
+8/16/2024 3:44 PM        br 2 0 0
+8/16/2024 3:45 PM        preset time 5
+8/16/2024 3:45 PM        set_sorb 8
+8/16/2024 3:45 PM        wait 100
+8/16/2024 3:46 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 3:46 PM        scanrel s1 1 -1 0.1
+8/16/2024 3:49 PM        set_sorb 10
+8/16/2024 3:49 PM        wait 100
+8/16/2024 3:50 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 3:50 PM        scanrel s1 1 -1 0.1
+8/16/2024 3:53 PM        set_sorb 12
+8/16/2024 3:53 PM        wait 100
+8/16/2024 3:54 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 3:54 PM        scanrel s1 1 -1 0.1
+8/16/2024 3:57 PM        set_sorb 14
+8/16/2024 3:57 PM        wait 100
+8/16/2024 3:59 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 3:59 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:01 PM        set_sorb 16
+8/16/2024 4:01 PM        wait 100
+8/16/2024 4:03 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:03 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:05 PM        set_sorb 18
+8/16/2024 4:05 PM        wait 100
+8/16/2024 4:07 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:07 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:09 PM        set_sorb 20
+8/16/2024 4:09 PM        wait 100
+8/16/2024 4:11 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:11 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:13 PM        set_sorb 22
+8/16/2024 4:13 PM        wait 100
+8/16/2024 4:15 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:15 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:17 PM        set_sorb 24
+8/16/2024 4:17 PM        wait 100
+8/16/2024 4:19 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:19 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:21 PM        set_sorb 26
+8/16/2024 4:21 PM        wait 100
+8/16/2024 4:23 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:23 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:25 PM        set_sorb 28
+8/16/2024 4:25 PM        wait 100
+8/16/2024 4:27 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:27 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:29 PM        set_sorb 30
+8/16/2024 4:29 PM        wait 100
+8/16/2024 4:31 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:31 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:34 PM        set_sorb 32
+8/16/2024 4:34 PM        wait 100
+8/16/2024 4:35 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:35 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:38 PM        set_sorb 34
+8/16/2024 4:38 PM        wait 100
+8/16/2024 4:40 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 4:40 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:42 PM        set_sorb 35
+8/16/2024 4:42 PM        wait 30
+8/16/2024 4:43 PM        set_ht 3
+8/16/2024 4:43 PM        wait 100
+8/16/2024 4:44 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 4:44 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:47 PM        set_ht 3.5
+8/16/2024 4:47 PM        wait 100
+8/16/2024 4:48 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 4:48 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:51 PM        set_ht 4
+8/16/2024 4:51 PM        wait 100
+8/16/2024 4:53 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 4:53 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:55 PM        set_ht 4.5
+8/16/2024 4:55 PM        wait 100
+8/16/2024 4:57 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 4:57 PM        scanrel s1 1 -1 0.1
+8/16/2024 4:59 PM        set_ht 5
+8/16/2024 4:59 PM        wait 100
+8/16/2024 5:01 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 5:01 PM        scanrel s1 1 -1 0.1
+8/16/2024 5:03 PM        set_ht 0
+8/16/2024 5:03 PM        wait 1920
+8/16/2024 5:35 PM        set_sorb 0
+8/16/2024 5:35 PM        wait 600
+8/16/2024 5:45 PM        set_field mag_i 2
+8/16/2024 5:53 PM        br 2 0 0
+8/16/2024 5:53 PM        preset time 5
+8/16/2024 5:53 PM        set_sorb 8
+8/16/2024 5:53 PM        wait 100
+8/16/2024 5:55 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 5:55 PM        scanrel s1 1 -1 0.1
+8/16/2024 5:57 PM        set_sorb 10
+8/16/2024 5:57 PM        wait 100
+8/16/2024 5:59 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 5:59 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:01 PM        set_sorb 12
+8/16/2024 6:01 PM        wait 100
+8/16/2024 6:03 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:03 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:06 PM        set_sorb 14
+8/16/2024 6:06 PM        wait 100
+8/16/2024 6:07 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:07 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:10 PM        set_sorb 16
+8/16/2024 6:10 PM        wait 100
+8/16/2024 6:11 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:11 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:14 PM        set_sorb 18
+8/16/2024 6:14 PM        wait 100
+8/16/2024 6:15 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:15 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:18 PM        set_sorb 20
+8/16/2024 6:18 PM        wait 100
+8/16/2024 6:19 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:19 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:22 PM        set_sorb 22
+8/16/2024 6:22 PM        wait 100
+8/16/2024 6:24 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:24 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:26 PM        set_sorb 24
+8/16/2024 6:26 PM        wait 100
+8/16/2024 6:28 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:28 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:30 PM        set_sorb 26
+8/16/2024 6:30 PM        wait 100
+8/16/2024 6:32 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:32 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:34 PM        set_sorb 28
+8/16/2024 6:34 PM        wait 100
+8/16/2024 6:36 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:36 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:38 PM        set_sorb 30
+8/16/2024 6:38 PM        wait 100
+8/16/2024 6:40 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:40 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:42 PM        set_sorb 32
+8/16/2024 6:42 PM        wait 100
+8/16/2024 6:44 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:44 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:46 PM        set_sorb 34
+8/16/2024 6:46 PM        wait 100
+8/16/2024 6:48 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 6:48 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:50 PM        set_sorb 35
+8/16/2024 6:50 PM        wait 30
+8/16/2024 6:51 PM        set_ht 3
+8/16/2024 6:51 PM        wait 100
+8/16/2024 6:53 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 6:53 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:55 PM        set_ht 3.5
+8/16/2024 6:55 PM        wait 100
+8/16/2024 6:57 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 6:57 PM        scanrel s1 1 -1 0.1
+8/16/2024 6:59 PM        set_ht 4
+8/16/2024 6:59 PM        wait 100
+8/16/2024 7:01 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 7:01 PM        scanrel s1 1 -1 0.1
+8/16/2024 7:03 PM        set_ht 4.5
+8/16/2024 7:03 PM        wait 100
+8/16/2024 7:05 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 7:05 PM        scanrel s1 1 -1 0.1
+8/16/2024 7:07 PM        set_ht 5
+8/16/2024 7:07 PM        wait 100
+8/16/2024 7:09 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 7:09 PM        scanrel s1 1 -1 0.1
+8/16/2024 7:11 PM        set_ht 0
+8/16/2024 7:11 PM        wait 1920
+8/16/2024 7:43 PM        set_sorb 0
+8/16/2024 7:43 PM        wait 600
+8/16/2024 7:54 PM        set_field mag_i 2.2
+8/16/2024 8:02 PM        br 2 0 0
+8/16/2024 8:02 PM        preset time 5
+8/16/2024 8:02 PM        set_sorb 8
+8/16/2024 8:02 PM        wait 100
+8/16/2024 8:03 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:03 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:06 PM        set_sorb 10
+8/16/2024 8:06 PM        wait 100
+8/16/2024 8:07 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:07 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:10 PM        set_sorb 12
+8/16/2024 8:10 PM        wait 100
+8/16/2024 8:12 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:12 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:14 PM        set_sorb 14
+8/16/2024 8:14 PM        wait 100
+8/16/2024 8:16 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:16 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:18 PM        set_sorb 16
+8/16/2024 8:18 PM        wait 100
+8/16/2024 8:20 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:20 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:22 PM        set_sorb 18
+8/16/2024 8:22 PM        wait 100
+8/16/2024 8:24 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:24 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:26 PM        set_sorb 20
+8/16/2024 8:26 PM        wait 100
+8/16/2024 8:28 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:28 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:30 PM        set_sorb 22
+8/16/2024 8:30 PM        wait 100
+8/16/2024 8:32 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:32 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:35 PM        set_sorb 24
+8/16/2024 8:35 PM        wait 100
+8/16/2024 8:36 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:36 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:39 PM        set_sorb 26
+8/16/2024 8:39 PM        wait 100
+8/16/2024 8:40 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:40 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:43 PM        set_sorb 28
+8/16/2024 8:43 PM        wait 100
+8/16/2024 8:44 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:45 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:47 PM        set_sorb 30
+8/16/2024 8:47 PM        wait 100
+8/16/2024 8:49 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:49 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:51 PM        set_sorb 32
+8/16/2024 8:51 PM        wait 100
+8/16/2024 8:53 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:53 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:55 PM        set_sorb 34
+8/16/2024 8:55 PM        wait 100
+8/16/2024 8:57 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(lt.position) K"
+8/16/2024 8:57 PM        scanrel s1 1 -1 0.1
+8/16/2024 8:59 PM        set_sorb 35
+8/16/2024 8:59 PM        wait 30
+8/16/2024 9:00 PM        set_ht 3
+8/16/2024 9:00 PM        wait 100
+8/16/2024 9:01 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:01 PM        scanrel s1 1 -1 0.1
+8/16/2024 9:04 PM        set_ht 3.5
+8/16/2024 9:04 PM        wait 100
+8/16/2024 9:06 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:06 PM        scanrel s1 1 -1 0.1
+8/16/2024 9:08 PM        set_ht 4
+8/16/2024 9:08 PM        wait 100
+8/16/2024 9:10 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:10 PM        scanrel s1 1 -1 0.1
+8/16/2024 9:12 PM        set_ht 4.5
+8/16/2024 9:12 PM        wait 100
+8/16/2024 9:14 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:14 PM        scanrel s1 1 -1 0.1
+8/16/2024 9:16 PM        set_ht 5
+8/16/2024 9:16 PM        wait 100
+8/16/2024 9:18 PM        scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
+8/16/2024 9:18 PM        scanrel s1 1 -1 0.1
+8/16/2024 9:20 PM        set_ht 0
+8/16/2024 9:20 PM        wait 1920
+8/16/2024 9:52 PM        set_sorb 0
+8/16/2024 9:52 PM        wait 600
+8/16/2024 10:02 PM        br 2 0 0
+8/16/2024 10:02 PM        set_sorb 8
+8/16/2024 10:02 PM        wait 120
+8/16/2024 10:04 PM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(lt.position) K"
+8/16/2024 10:04 PM        start_field_scan mag_i
+8/16/2024 10:07 PM        scan mag_i 0 5.5 0.05 preset time 10
+8/16/2024 11:36 PM        end_field_scan mag_i
+8/16/2024 11:42 PM        set_field mag_i 0
+8/17/2024 12:00 AM        set_sorb 10
+8/17/2024 12:00 AM        wait 120
+8/17/2024 12:02 AM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(lt.position) K"
+8/17/2024 12:02 AM        start_field_scan mag_i
+8/17/2024 12:04 AM        scan mag_i 0 5.5 0.05 preset time 10
+8/17/2024 1:29 AM        end_field_scan mag_i
+8/17/2024 1:34 AM        set_field mag_i 0
+8/17/2024 1:53 AM        set_sorb 12
+8/17/2024 1:53 AM        wait 120
+8/17/2024 1:55 AM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(lt.position) K"
+8/17/2024 1:55 AM        start_field_scan mag_i
+8/17/2024 1:57 AM        scan mag_i 0 5.5 0.05 preset time 10
+8/17/2024 3:22 AM        end_field_scan mag_i
+8/17/2024 3:27 AM        set_field mag_i 0
+8/17/2024 3:46 AM        set_sorb 14
+8/17/2024 3:46 AM        wait 120
+8/17/2024 3:48 AM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(lt.position) K"
+8/17/2024 3:48 AM        start_field_scan mag_i
+8/17/2024 3:49 AM        scan mag_i 0 5.5 0.05 preset time 10
+8/17/2024 5:15 AM        end_field_scan mag_i
+8/17/2024 5:21 AM        set_field mag_i 0
+8/17/2024 8:08 PM        set_sorb 35
+8/19/2024 8:37 AM        driverel a2 5
+8/19/2024 8:38 AM        driverel a2 3
+8/19/2024 9:28 AM        init
+8/19/2024 9:33 AM        init
+8/19/2024 11:39 AM        init
+8/19/2024 11:42 AM        drive a1 90 a2 0
+8/19/2024 12:18 PM        drive e 0
+8/20/2024 8:30 AM        drive stl 0
+8/20/2024 8:31 AM        drive stu 0
+8/20/2024 8:31 AM        drive sgu 0
+8/20/2024 8:31 AM        drive sgl 0
+8/20/2024 1:14 PM        drive s2 -90
+8/20/2024 1:16 PM        drive s1 0
+8/20/2024 3:47 PM        init
+8/21/2024 8:45 AM        lattice 4.760000 4.760000 12.993000 90.000000 90.000000 120.000000
+8/21/2024 8:48 AM        lattice 8.241000 8.241000 12.993000 90.000000 90.000000 120.000000
+8/21/2024 8:51 AM        lattice 8.241000 8.241000 12.993000 90.000000 90.000000 120.000000
+8/21/2024 8:53 AM        lattice 8.241000 8.241000 12.991000 90.000000 90.000000 120.000000
+8/21/2024 8:54 AM        lattice 8.580000 8.580000 12.140000 90.000000 90.000000 120.000000
+8/21/2024 8:54 AM        lattice 8.580000 8.580000 12.140000 90.000000 90.000000 120.000000
+8/21/2024 8:54 AM        lattice 8.580000 8.580000 12.140000 90.000000 90.000000 120.000000
+8/21/2024 8:56 AM        lattice 8.580000 8.580000 12.140000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 12.991000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 12.991000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 1214.000000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 1214.000000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 1214.000000 90.000000 90.000000 90.000000
+8/21/2024 8:58 AM        lattice 8.580000 8.580000 12.140000 90.000000 90.000000 90.000000
+8/21/2024 8:59 AM        lattice 8.241000 8.241000 12.991000 90.000000 90.000000 90.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:04 AM        lattice 8.241000 8.241000 14.280000 90.000000 90.000000 120.000000
+8/21/2024 9:06 AM        lattice 8.580000 8.580000 15.770000 90.000000 90.000000 120.000000
+8/23/2024 3:23 PM        preset time 1
+8/23/2024 3:23 PM        count
+8/26/2024 2:32 PM        count
+8/26/2024 2:33 PM        preset time 10
+8/26/2024 2:33 PM        count
+8/28/2024 8:23 AM        drive s1 -90
+8/28/2024 8:36 AM        drive s2 0
+8/28/2024 8:37 AM        drive a2 0
+8/28/2024 8:41 AM        drive stl 5
+8/28/2024 8:41 AM        drive stl 0
+8/28/2024 8:41 AM        drive stu 5
+8/28/2024 8:41 AM        drive stu 0
+8/28/2024 8:42 AM        drive sgl 5
+8/28/2024 8:42 AM        drive sgl 0
+8/28/2024 8:42 AM        drive sgu 5
+8/28/2024 8:42 AM        drive sgu 0
+8/28/2024 3:37 PM        homeslita
+8/28/2024 3:39 PM        homeslitb
+8/28/2024 3:43 PM        drive slita_bt 25 slita_tp 25 slita_lf 15 slta_rt 15
+8/28/2024 3:45 PM        drive slita_bt 25 slita_tp 25 slita_lf 15 slita_rt 15
+8/28/2024 3:46 PM        drive slitb_bt 25 slitb_tp 25 slitb_lf 15 slitb_rt 15
+8/29/2024 10:00 AM        init
+8/29/2024 10:02 AM        drive iout 0.001
+8/29/2024 10:03 AM        drive vout 0.1
+8/29/2024 10:03 AM        drive out 1
+8/29/2024 10:04 AM        drive set_output 1
+8/29/2024 10:05 AM        drive set_output 0
+8/29/2024 10:05 AM        init
+8/29/2024 10:07 AM        init
+8/29/2024 10:08 AM        drive set_output 1
+8/29/2024 10:08 AM        drive set_output 0
+8/29/2024 10:09 AM        drive vout 0
+8/29/2024 10:10 AM        drive iout 0
+8/29/2024 1:27 PM        drive s1 0 s2 -30
+8/29/2024 1:33 PM        drive e 2
+8/29/2024 1:34 PM        drive e 0
+8/29/2024 1:37 PM        drive e 3
+8/29/2024 1:37 PM        drive e 0
+8/29/2024 1:46 PM        dr sgl 15 sgu 15 stl 10 stu 10
+8/29/2024 1:46 PM        wait 00:00:10
+8/29/2024 1:47 PM        dr sgl -15 sgu -15 stl -10 stu -10
+8/29/2024 1:47 PM        wait 00:00:10
+8/29/2024 1:47 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/29/2024 1:47 PM        dr sgl 15 sgu 15 stl 10 stu 10
+8/29/2024 1:47 PM        wait 00:00:10
+8/29/2024 1:47 PM        dr sgl -15 sgu -15 stl -10 stu -10
+8/29/2024 1:47 PM        wait 00:00:10
+8/29/2024 1:47 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/29/2024 1:47 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/29/2024 1:49 PM        lowerlimit iout -1.500000 set_output 0.000000 vout -20.000000 s1 -160.000000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 
+8/29/2024 1:49 PM        upperlimit iout 1.500000 set_output 1.000000 vout 20.000000 s1 30.000000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 
+8/29/2024 1:49 PM        dr sgl 15 sgu 15 stl 10 stu 10
+8/29/2024 1:49 PM        wait 00:00:10
+8/29/2024 1:49 PM        dr sgl -15 sgu -15 stl -10 stu -10
+8/29/2024 1:50 PM        wait 00:00:10
+8/29/2024 1:50 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/29/2024 1:50 PM        dr sgl 15 sgu 15 stl 10 stu 10
+8/29/2024 1:50 PM        wait 00:00:10
+8/29/2024 1:51 PM        dr sgl -15 sgu -15 stl -10 stu -10
+8/29/2024 1:51 PM        wait 00:00:10
+8/29/2024 1:51 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/29/2024 1:52 PM        drive sgl 0 sgu 0 stl 0 stu 0
+8/30/2024 1:28 PM        drive set_output 1
+8/30/2024 1:39 PM        init
+8/30/2024 1:41 PM        drive vout 1
+8/30/2024 1:41 PM        drive set_output 1
+8/30/2024 1:41 PM        drive vout 1
+8/30/2024 1:42 PM        drive vout 1
+8/30/2024 1:42 PM        drive set_output 1
+8/30/2024 1:43 PM        drive iout 0.00001
+8/30/2024 1:51 PM        drive vout 4
+8/30/2024 1:51 PM        drive vout 2
+8/30/2024 1:52 PM        drive vout 0
+8/30/2024 1:53 PM        drive set_output 0
+8/30/2024 1:54 PM        init
+9/3/2024 1:16 PM        drive e 0
+9/3/2024 1:28 PM        begin

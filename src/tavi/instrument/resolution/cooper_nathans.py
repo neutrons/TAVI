@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -34,9 +34,18 @@ class CooperNathans(TAS):
     IDX_MONO0_H, IDX_MONO0_V = 0, 1
     IDX_ANA0_H, IDX_ANA0_V = 2, 3
 
-    def __init__(self, SPICE_CONVENTION: bool = True) -> None:
+    def __init__(
+        self,
+        spice_convention: bool = True,
+        fixed_ei: Optional[float] = None,
+        fixed_ef: Optional[float] = None,
+    ) -> None:
         """Load instrument configuration from json if provided"""
-        super().__init__(SPICE_CONVENTION=SPICE_CONVENTION)
+        super().__init__(
+            fixed_ei=fixed_ei,
+            fixed_ef=fixed_ef,
+            spice_convention=spice_convention,
+        )
 
         # # constants independent of q and eng
         # self._mat_f: Optional[np.ndarray] = None
@@ -268,8 +277,9 @@ class CooperNathans(TAS):
             # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
             if R0:  # calculate
-                r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-                r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
+                # r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
+                # r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
+                r0 = 1
             else:
                 r0 = 0
 

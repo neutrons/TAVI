@@ -1,11 +1,12 @@
 # import matplotlib.colors as colors
 from functools import partial
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
+from tavi.data.convfit import ConvFit1D
 from tavi.data.fit import Fit1D
 from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
@@ -82,13 +83,24 @@ class Plot1D(object):
         for key, val in kwargs.items():
             data.fmt.update({key: val})
 
-    def add_fit(self, fit1d: Fit1D, x: Optional[np.ndarray] = None, DISPLAY_PARAMS=True, **kwargs):
+    def add_fit(
+        self,
+        fit1d: Union[Fit1D, ConvFit1D],
+        x: Optional[np.ndarray] = None,
+        DECONV=False,
+        DISPLAY_PARAMS=True,
+        **kwargs,
+    ):
         if x is None:
             x = fit1d.x
         if (result := fit1d.result) is None:  # evaluate
             y = fit1d.eval(fit1d.params, x)
         else:  # fit
-            y = result.eval(param=fit1d.params, x=x)
+            if DECONV:
+                y = fit1d.model_intrinsic.eval(fit1d.params, x=x)
+            else:
+                y = result.eval(fit1d.params, x=x)
+
         fit_data = FitData1D(x, y)
         self.fit_data.append(fit_data)
         for key, val in kwargs.items():
@@ -162,7 +174,7 @@ class Plot1D(object):
         ax.grid(alpha=0.6)
         for data in self.scan_data + self.fit_data:
             if "label" in data.fmt.keys():
-                ax.legend()
+                ax.legend(loc=0)
                 break
 
 

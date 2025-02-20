@@ -1,0 +1,351 @@
+set_field mag_i 1.6
+
+defxy lt detector
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+set_field mag_i 1.4
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+set_field mag_i 1.2
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+set_field mag_i 1.0
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+set_field mag_i 0.8
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+set_field mag_i 0.6
+
+defxy lt detector
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+set_field mag_i 0.4
+
+defxy lt detector
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+set_ht 0
+wait 1920
+set_sorb 0
+wait 600
+
+set_field mag_i 0.2
+
+defxy lt detector
+
+br 1 0 0
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(lt.position) K"
+
+scanon
+
+loop i=8, 35 1
+
+set_sorb %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff
+
+
+
+scantitle "Temp scan while warming (1 0 0), at H = @(persistent_field.position) T, T = @(ht.position) K"
+
+scanon
+
+loop i=2, 2.6,0.2
+
+set_ht %i
+wait 120
+
+stepbegin
+count preset time 20
+stepend
+
+endloop
+
+scanoff

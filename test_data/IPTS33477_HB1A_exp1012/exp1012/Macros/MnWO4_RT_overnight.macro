@@ -1,0 +1,282 @@
+scantitle "Nuclear_@(tsample.position) (-2.00 -2.00 -1.00 )"
+mv s2 -87.28 s1 -43.64 chi -15.06 phi -131.05
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 -2.00 0.00 )"
+mv s2 -80.13 s1 -40.06 chi 4.86 phi -127.84
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 -2.00 1.00 )"
+mv s2 -86.06 s1 -43.03 chi 24.98 phi -124.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 -1.00 -1.00 )"
+mv s2 -72.27 s1 -36.14 chi -16.55 phi -148.11
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 -1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi 7.08 phi -145.23
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 -1.00 1.00 )"
+mv s2 -70.99 s1 -35.49 chi 31.07 phi -141.95
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 0.00 -2.00 )"
+mv s2 -87.74 s1 -43.87 chi -34.24 phi -170.92
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 0.00 -1.00 )"
+mv s2 -67.04 s1 -33.52 chi -16.44 phi -169.74
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 0.00 0.00 )"
+mv s2 -59.06 s1 -29.53 chi 8.99 phi -168.36
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 0.00 1.00 )"
+mv s2 -65.70 s1 -32.85 chi 34.91 phi -166.72
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 1.00 -1.00 )"
+mv s2 -72.27 s1 -36.14 chi -14.17 phi 169.01
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi 9.48 phi 168.53
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 1.00 1.00 )"
+mv s2 -70.99 s1 -35.49 chi 33.52 phi 167.95
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 2.00 -1.00 )"
+mv s2 -87.28 s1 -43.64 chi -11.08 phi 152.66
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 2.00 0.00 )"
+mv s2 -80.13 s1 -40.06 chi 8.85 phi 151.17
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-2.00 2.00 1.00 )"
+mv s2 -86.06 s1 -43.03 chi 29.02 phi 149.47
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi 0.38 phi -99.63
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -2.00 -2.00 )"
+mv s2 -85.88 s1 -42.94 chi -41.48 phi -118.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -2.00 -1.00 )"
+mv s2 -65.34 s1 -32.67 chi -23.76 phi -113.66
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -2.00 0.00 )"
+mv s2 -57.60 s1 -28.80 chi 1.88 phi -108.67
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -2.00 1.00 )"
+mv s2 -64.67 s1 -32.33 chi 27.76 phi -103.45
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -1.00 -2.00 )"
+mv s2 -70.80 s1 -35.40 chi -49.49 phi -139.28
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -1.00 -1.00 )"
+mv s2 -47.61 s1 -23.80 chi -30.78 phi -134.02
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 -1.00 0.00 )"
+mv s2 -37.55 s1 -18.77 chi 4.86 phi -127.84
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 0.00 -2.00 )"
+mv s2 -65.51 s1 -32.76 chi -52.43 phi -172.81
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 0.00 -1.00 )"
+mv s2 -40.55 s1 -20.27 chi -34.24 phi -170.92
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 0.00 0.00 )"
+mv s2 -28.53 s1 -14.27 chi 8.99 phi -168.36
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 1.00 -2.00 )"
+mv s2 -70.80 s1 -35.40 chi -45.96 phi 156.23
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 1.00 -1.00 )"
+mv s2 -47.61 s1 -23.80 chi -26.91 phi 153.99
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 1.00 0.00 )"
+mv s2 -37.55 s1 -18.77 chi 8.85 phi 151.17
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 2.00 -2.00 )"
+mv s2 -85.88 s1 -42.94 chi -36.37 phi 138.31
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 2.00 -1.00 )"
+mv s2 -65.34 s1 -32.67 chi -18.46 phi 135.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 2.00 0.00 )"
+mv s2 -57.60 s1 -28.80 chi 7.24 phi 132.03
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 2.00 1.00 )"
+mv s2 -64.67 s1 -32.33 chi 33.17 phi 128.20
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (-1.00 3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi 6.19 phi 123.01
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -3.00 -1.00 )"
+mv s2 -83.36 s1 -41.68 chi -23.58 phi -82.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -3.00 0.00 )"
+mv s2 -76.76 s1 -38.38 chi -3.13 phi -78.30
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -3.00 1.00 )"
+mv s2 -83.36 s1 -41.68 chi 17.34 phi -74.50
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -2.00 -2.00 )"
+mv s2 -78.23 s1 -39.12 chi -50.78 phi -90.55
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -2.00 -1.00 )"
+mv s2 -57.04 s1 -28.52 chi -32.28 phi -84.30
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -2.00 0.00 )"
+mv s2 -48.90 s1 -24.45 chi -3.13 phi -78.30
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -2.00 1.00 )"
+mv s2 -57.04 s1 -28.52 chi 26.05 phi -72.66
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -1.00 -2.00 )"
+mv s2 -62.55 s1 -31.28 chi -67.18 phi -103.22
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -1.00 -1.00 )"
+mv s2 -36.78 s1 -18.39 chi -50.78 phi -90.55
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 -1.00 0.00 )"
+mv s2 -23.89 s1 -11.94 chi -3.13 phi -78.30
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 1.00 -2.00 )"
+mv s2 -62.55 s1 -31.28 chi -61.38 phi 121.63
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 1.00 -1.00 )"
+mv s2 -36.78 s1 -18.39 chi -44.63 phi 112.56
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 1.00 0.00 )"
+mv s2 -23.89 s1 -11.94 chi 3.13 phi 101.70
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 2.00 -2.00 )"
+mv s2 -78.23 s1 -39.12 chi -44.63 phi 112.56
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 2.00 -1.00 )"
+mv s2 -57.04 s1 -28.52 chi -26.05 phi 107.34
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 2.00 0.00 )"
+mv s2 -48.90 s1 -24.45 chi 3.13 phi 101.70
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 2.00 1.00 )"
+mv s2 -57.04 s1 -28.52 chi 32.28 phi 95.70
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 3.00 -1.00 )"
+mv s2 -83.36 s1 -41.68 chi -17.34 phi 105.50
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 3.00 0.00 )"
+mv s2 -76.76 s1 -38.38 chi 3.13 phi 101.70
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (0.00 3.00 1.00 )"
+mv s2 -83.36 s1 -41.68 chi 23.58 phi 97.73
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi -6.19 phi -56.99
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -2.00 -2.00 )"
+mv s2 -84.66 s1 -42.33 chi -51.39 phi -56.18
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -2.00 -1.00 )"
+mv s2 -64.67 s1 -32.33 chi -33.17 phi -51.80
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -2.00 0.00 )"
+mv s2 -57.60 s1 -28.80 chi -7.24 phi -47.97
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -2.00 1.00 )"
+mv s2 -65.34 s1 -32.67 chi 18.46 phi -44.62
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -2.00 2.00 )"
+mv s2 -85.88 s1 -42.94 chi 36.37 phi -41.69
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -1.00 -2.00 )"
+mv s2 -69.50 s1 -34.75 chi -64.90 phi -37.29
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -1.00 -1.00 )"
+mv s2 -46.78 s1 -23.39 chi -45.28 phi -32.47
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -1.00 0.00 )"
+mv s2 -37.55 s1 -18.77 chi -8.85 phi -28.83
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 -1.00 1.00 )"
+mv s2 -47.61 s1 -23.80 chi 26.91 phi -26.01
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 0.00 -1.00 )"
+mv s2 -39.60 s1 -19.80 chi -53.45 phi 15.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 0.00 0.00 )"
+mv s2 -28.53 s1 -14.27 chi -8.99 phi 11.64
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 0.00 1.00 )"
+mv s2 -40.55 s1 -20.27 chi 34.24 phi 9.08
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 1.00 -2.00 )"
+mv s2 -69.50 s1 -34.75 chi -60.25 phi 67.46
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 1.00 -1.00 )"
+mv s2 -46.78 s1 -23.39 chi -41.11 phi 59.33
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 1.00 0.00 )"
+mv s2 -37.55 s1 -18.77 chi -4.86 phi 52.16
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 1.00 1.00 )"
+mv s2 -47.61 s1 -23.80 chi 30.78 phi 45.98
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 2.00 -2.00 )"
+mv s2 -84.66 s1 -42.33 chi -45.81 phi 81.90
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 2.00 -1.00 )"
+mv s2 -64.67 s1 -32.33 chi -27.76 phi 76.55
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 2.00 0.00 )"
+mv s2 -57.60 s1 -28.80 chi -1.88 phi 71.33
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 2.00 1.00 )"
+mv s2 -65.34 s1 -32.67 chi 23.76 phi 66.34
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (1.00 3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi -0.38 phi 80.37
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -2.00 -1.00 )"
+mv s2 -86.06 s1 -43.03 chi -29.02 phi -30.53
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -2.00 0.00 )"
+mv s2 -80.13 s1 -40.06 chi -8.85 phi -28.83
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -2.00 1.00 )"
+mv s2 -87.28 s1 -43.64 chi 11.08 phi -27.34
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -1.00 -1.00 )"
+mv s2 -70.99 s1 -35.49 chi -33.52 phi -12.05
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi -9.48 phi -11.47
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 -1.00 1.00 )"
+mv s2 -72.27 s1 -36.14 chi 14.17 phi -10.99
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 0.00 -2.00 )"
+mv s2 -85.29 s1 -42.65 chi -53.45 phi 15.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 0.00 -1.00 )"
+mv s2 -65.70 s1 -32.85 chi -34.91 phi 13.28
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 0.00 0.00 )"
+mv s2 -59.06 s1 -29.53 chi -8.99 phi 11.64
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 0.00 1.00 )"
+mv s2 -67.04 s1 -33.52 chi 16.44 phi 10.26
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 0.00 2.00 )"
+mv s2 -87.74 s1 -43.87 chi 34.24 phi 9.08
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 1.00 -1.00 )"
+mv s2 -70.99 s1 -35.49 chi -31.07 phi 38.05
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi -7.08 phi 34.77
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 1.00 1.00 )"
+mv s2 -72.27 s1 -36.14 chi 16.55 phi 31.89
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 2.00 -1.00 )"
+mv s2 -86.06 s1 -43.03 chi -24.98 phi 55.62
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 2.00 0.00 )"
+mv s2 -80.13 s1 -40.06 chi -4.86 phi 52.16
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(tsample.position) (2.00 2.00 1.00 )"
+mv s2 -87.28 s1 -43.64 chi 15.06 phi 48.95
+scanrel s1 1.5 -1.5 0.15
