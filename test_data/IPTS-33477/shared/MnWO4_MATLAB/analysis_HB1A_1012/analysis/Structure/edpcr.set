@@ -1,0 +1,11 @@
+! External ASCII Editor for EdPCR
+  Editor = 
+ 
+! Executable Fullprof program
+  Fullprof = wfp2k
+ 
+! Last Directory Worked
+  LastDirectory = C:\Users\2fy\Dropbox (ORNL)\data\multiferroics\GdMn2O5\Structure
+ 
+! External Programs
+ 

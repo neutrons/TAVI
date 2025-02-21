@@ -254,7 +254,7 @@ class CooperNathans(TAS):
 
             mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
 
-            motor_angles = self.calculate_motor_angles(peak=hkl, ei=ei, ef=ef)
+            motor_angles = self.calculate_motor_angles(hkl=hkl, en=ei - ef)
             if motor_angles is None:
                 rez.STATUS = False
                 rez._set_labels()
@@ -262,9 +262,9 @@ class CooperNathans(TAS):
                 continue
 
             r_mat = self.goniometer.r_mat(motor_angles)
-            ub_mat = self.sample.ub_mat
+            ub_mat = self.sample.ub_conf.ub_mat
 
-            if self.SPICE_CONVENTION:
+            if self.spice_convention:
                 ub_mat = spice_to_mantid(ub_mat)
 
             conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)

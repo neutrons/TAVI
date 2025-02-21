@@ -1,0 +1,34 @@
+br 0 0 2
+scantitle "mesh [0 0 2], spice index [0 0 -2]"
+
+loop i=-0.01, 0.01 0.001
+scan h %i k %i l 1.6 2.4 0.04
+endloop
+
+br 0 0 4
+scantitle "mesh [0 0 4], spice index [0 0 -4]"
+
+loop i=-0.01, 0.01 0.001
+scan h %i k %i l 3.6 4.4 0.04
+endloop
+
+br 0 0 6
+scantitle "mesh [0 0 6], spice index [0 0 -6]"
+
+loop i=-0.01, 0.01 0.001
+scan h %i k %i l 5.6 6.4 0.04
+endloop
+
+br 0 0 8
+scantitle "mesh [0 0 8], spice index [0 0 -8]"
+
+loop i=-0.01, 0.01 0.001
+scan h %i k %i l 7.5 8.5 0.05
+endloop
+
+br 0 0 10
+scantitle "mesh [0 0 10], spice index [0 0 -10]"
+
+loop i=-0.01, 0.01 0.001
+scan h %i k %i l 9.5 10.5 0.05
+endloop

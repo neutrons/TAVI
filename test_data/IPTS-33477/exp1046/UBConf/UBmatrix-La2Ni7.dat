@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--UB Matrix Information-->
+<ubmatrix>
+  <time time="2/20/2025 7:12:48 PM" />
+  <unitcell a="5.058" b="5.058" c="24.64" alpha="90" beta="90" gamma="120" />
+  <wavelength lambda="2.38" />
+  <matrix matrix="-0.0148844129856612 -0.00240922627773982 0.0404848827465389 -0.192745159024279 -0.202001189886323 -0.00168620753782269 0.121428823982155 -0.106333984615287 0.00228599244682446 " />
+</ubmatrix>

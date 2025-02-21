@@ -1,0 +1,41 @@
+br 0 0 2
+scantitle "mesh [0 0 2], spice index [0 0 -2], omega 2theta scans"
+
+loop i=-7 -4 0.1
+drive omega %i
+scanrel 2theta 3 -3 0.2
+endloop
+
+
+br 0 0 4
+scantitle "mesh [0 0 4], spice index [0 0 -4], omega 2theta scans"
+
+loop i=-12.5 -9.5 0.1
+drive omega %i
+scanrel 2theta 3 -3 0.2
+endloop
+
+br 0 0 6
+scantitle "mesh [0 0 6], spice index [0 0 -6], omega 2theta scans"
+
+loop i=-18.3 -15.3 0.1
+drive omega %i
+scanrel 2theta 3 -3 0.2
+endloop
+
+br 0 0 8
+scantitle "mesh [0 0 8], spice index [0 0 -8], omega 2theta scans"
+
+loop i=-24.2 -21.2 0.1
+drive omega %i
+scanrel 2theta 3 -3 0.2
+endloop
+
+br 0 0 10
+scantitle "mesh [0 0 10], spice index [0 0 -10], omega 2theta scans"
+
+loop i=-30.2 -27.2 0.1
+drive omega %i
+scanrel 2theta 3 -3 0.2
+endloop
+ 

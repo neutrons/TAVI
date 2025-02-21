@@ -4,10 +4,10 @@ from tavi.data.fit import Fit1D
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot1D, Plot2D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 instrument_config_json_path = "./test_data/IPTS9879_HB1A_exp978/hb1a.json"
-tas = CooperNathans(SPICE_CONVENTION=True)
+tas = CooperNathans(fixed_ei=14.450292, spice_convention=True)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 ei = 14.450292
@@ -15,7 +15,7 @@ ef = ei
 R0 = False
 
 sample_json_path = "./test_data/IPTS9879_HB1A_exp978/si.json"
-sample = Xtal.from_json(sample_json_path)
+sample = Sample.from_json(sample_json_path)
 tas.mount_sample(sample)
 
 rez1 = tas.rez(hkl_list=(1, 1, 1), ei=ei, ef=ef, R0=R0, projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
@@ -102,7 +102,7 @@ p4.plot(ax)
 # -------------- Si (111) 40'-20'-20'-20' ------------
 # ----------------------------------------------------
 instrument_config_json_path_2 = "./test_data/IPTS9879_HB1A_exp978/hb1a_2.json"
-tas2 = CooperNathans(SPICE_CONVENTION=True)
+tas2 = CooperNathans(fixed_ei=14.450292, spice_convention=True)
 tas2.load_instrument_params_from_json(instrument_config_json_path_2)
 tas2.mount_sample(sample)
 

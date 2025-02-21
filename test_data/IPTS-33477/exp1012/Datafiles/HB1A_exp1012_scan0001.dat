@@ -1,0 +1,35 @@
+# scan = 1
+# date = 4/9/2024
+# time = 2:57:01 PM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1012
+# command = scanrel phi -30 30 0.2
+# builtin_command = scan phi @(phi)+-30 @(phi)+30 0.200000
+# users = Feng Ye, Mike McDowell, Adam Aczel, Bing Li, Wei Tian, Bing Li
+# local_contact = Wei Tian, Adam Aczel
+# scan_title = look for (0 0 6) rotate phi
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, Al-doped CuFeO2
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.048300,5.048300,24.592200,90.000000,90.000000,120.000000
+# ubmatrix = 0.161737,0.220937,-0.000000,-0.000000,-0.000000,0.040663,0.161737,-0.059200,-0.000000
+# mode = 0
+# plane_normal = 0.000000,0.000000,1.000000
+# ubconf = UB09Apr2024_13525PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 3.000000
+# def_x = phi
+# def_y = detector
+# col_headers = 
+#   Pt.        phi       time   detector    monitor        mcu         m2        chi         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e
+      1    85.3812      0.000      0.000      0.000      0.000    41.5367     0.0000   -16.8731   -33.7438     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    10.0000    10.0000    10.0000    10.0000    20.7604    -0.0006     1.5329     0.3196     0.8703     0.0001    14.4503    14.4503     0.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 2:57:25 PM  4/9/2024   scan stopped!!

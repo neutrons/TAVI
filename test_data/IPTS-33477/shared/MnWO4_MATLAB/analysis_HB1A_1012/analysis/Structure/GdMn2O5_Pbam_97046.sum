@@ -1,0 +1,42 @@
+
+
+        **********************************************************
+        ** PROGRAM FullProf.2k (Version 5.80 - May2016-ILL JRC) **
+        **********************************************************
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
+                 Refinement of X-ray and/or Neutron Data
+
+
+    Date: 07/12/2016  Time: 20:08:34.404                              
+
+ => PCR file code: GdMn2O5_Pbam_97046
+ => DAT file code: GdMn2O5_Pbam_97046   -> Relative contribution: 1.0000                                                            
+ => Title: Powder of GdMn2O5
+
+ ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
+
+ => The    7th default profile function was selected
+
+ => Data supplied in free format for pattern:  1
+ => Wavelengths:  1.54000 1.54000
+ => Cos(Monochromator angle)=   0.9100
+ => Absorption correction (AC), muR-eff =   0.0000  0.0000
+ => Base of peaks: 2.0*HW*    8.00
+ =>-------> Pattern#  1
+ => Crystal Structure Refinement for phase: 1
+ => The density (volumic mass) of phase 1 is:    6.466 g/cm3
+
+     -----------------------------------------------------
+     BRAGG R-Factors and weight fractions for Pattern #  1
+     -----------------------------------------------------
+
+ => Phase:  1     Structure and ferroelectricity of R Mn2 O5
+ => Bragg R-factor:   0.00       Vol:  356.601( 0.000)  Fract(%):  100.00( 0.00)
+ => Rf-factor=  0.00             ATZ:        1388.492   Brindley:  1.0000
+
+ 
+              CPU Time:     0.170 seconds
+                            0.003 minutes
+
+ => Run finished at:     Date: 07/12/2016  Time: 20:08:34.569                              

@@ -1,0 +1,902 @@
+preset mcu 10
+
+drive  s2 -11.1116 s1 -5.5558 chi -2.7855 phi 85.7299
+scantitle "La2Ni7-FC, (0 0 2), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 2), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 2), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -11.1116 s1 -5.5558 chi 2.7855 phi -94.2701
+scantitle "La2Ni7-FC, (0 0 -2), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 -2), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 -2), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -22.3295 s1 -11.1647 chi -2.7855 phi 85.7299
+scantitle "La2Ni7-FC, (0 0 4), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 4), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 4), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -22.3295 s1 -11.647 chi -2.7855 phi -85.7299
+scantitle "La2Ni7-FC, (0 0 -4), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 -4), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 -4), th2th"
+
+th2th 2 -2 0.2
+
+
+drive  s2 -31.6007 s1 -15.8004 chi -28.466 phi 177.241
+scantitle "La2Ni7-FC, (-1 0 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 0), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -31.6007 s1 -15.8004 chi 31.4557 phi 174.024
+scantitle "La2Ni7-FC, (0 -1 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 0), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -31.6007 s1 -15.8004 chi -31.4557 phi -5.9757
+scantitle "La2Ni7-FC, (0 1 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 0), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -31.6007 s1 -15.8004 chi 28.4661 phi -2.7585
+scantitle "La2Ni7-FC, (1 0 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 0), th2th"
+
+th2th 2 -2 0.2
+
+
+drive  s2 -32.1095 s1 -16.0548 chi -27.4371 phi -171.402
+scantitle "La2Ni7-FC, (-1 0 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 -1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi 31.4859 phi -174.151
+scantitle "La2Ni7-FC, (0 -1 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 -1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi -31.4859 phi 5.84933
+scantitle "La2Ni7-FC, (0 1 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi 27.4371 phi 8.59838
+scantitle "La2Ni7-FC, (1 0 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi -28.5409 phi 165.766
+scantitle "La2Ni7-FC, (-1 0 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi 30.3497 phi 162.341
+scantitle "La2Ni7-FC, (0 -1 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi -30.3497 phi -17.6592
+scantitle "La2Ni7-FC, (0 1 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 -1), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -32.1095 s1 -16.0548 chi 28.5409 phi -14.2339
+scantitle "La2Ni7-FC, (1 0 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 -1), th2th"
+
+th2th 2 -2 0.2
+
+
+
+drive  s2 -33.7693 s1 -16.8846 chi -2.7855 phi 85.7299
+scantitle "La2Ni7-FC, (0 0 6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 6), th2th"
+
+th2th 2 -2 0.2
+
+
+drive  s2 -33.7693 s1 -16.8846 chi 2.7855 phi -94.2701
+scantitle "La2Ni7-FC, (0 0 -6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 -6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 -6), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -45.5684 s1 -22.7842 chi -2.7855 phi 85.7299
+scantitle "La2Ni7-FC, (0 0 8), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 8), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 8), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -45.5684 s1 -22.7842 chi 2.7855 phi -94.2701
+scantitle "La2Ni7-FC, (0 0 -8), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 0 -8), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 0 -8), th2th"
+
+th2th 2 -2 0.2
+
+
+drive  s2 -51.532 s1 -25.766 chi -15.1102 phi -129.032
+scantitle "La2Ni7-FC, (-1 0 -7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 -7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 -7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi -19.6601 phi 121.5
+scantitle "La2Ni7-FC, (-1 0 7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi 21.3924 phi -129.273
+scantitle "La2Ni7-FC, (0 -1 -7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 -7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 -7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi 16.7974 phi 119.64
+scantitle "La2Ni7-FC, (0 -1 7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi -16.7974 phi -60.3595
+scantitle "La2Ni7-FC, (0 1 -7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 -7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 -7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi -21.3924 phi 50.7272
+scantitle "La2Ni7-FC, (0 1 7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi 19.6601 phi -58.4999
+scantitle "La2Ni7-FC, (1 0 -7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 -7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 -7), th2th"
+
+th2th 2 -2 0.2
+
+drive  s2 -51.532 s1 -25.766 chi 15.1102 phi 50.9675
+scantitle "La2Ni7-FC, (1 0 7), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 7), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 7), th2th"
+
+th2th 2 -2 0.2
+
+
+
+drive  s2 -56.2782 s1 -28.1391chi 1.49537 phi 175.657
+scantitle "La2Ni7-FC, (-1 -1 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 -1 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 -1 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -56.2782 s1 -28.1391chi -1.49537 phi -4.34292
+scantitle "La2Ni7-FC, (1 1 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 1 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 1 0), th2th"
+
+th2th 3 -3 0.2
+
+
+drive  s2 -56.2782 s1 -28.1391chi -61.3727 phi -9.38415
+scantitle "La2Ni7-FC, (-1 2 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 2 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 2 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -12.2046 phi -122.729
+scantitle "La2Ni7-FC, (-1 0 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -17.087 phi 114.89
+scantitle "La2Ni7-FC, (-1 0 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -29.2074 phi -95.1791
+scantitle "La2Ni7-FC, (-1 1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -34.7777 phi -86.6958
+scantitle "La2Ni7-FC, (-1 1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 18.587 phi -122.734
+scantitle "La2Ni7-FC, (0 -1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 13.6128 phi -113.438
+scantitle "La2Ni7-FC, (0 -1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -13.6128 phi -66.5621
+scantitle "La2Ni7-FC, (0 1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -18.5287 phi 57.2656
+scantitle "La2Ni7-FC, (0 1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 34.7777 phi -93.3042
+scantitle "La2Ni7-FC, (1 -1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 -1 -9), chi"
+
+scanrel chi 4 -4 1
+
+scantitle "La2Ni7-FC, (1 -1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 29.2074 phi 84.8209
+scantitle "La2Ni7-FC, (1 -1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 -1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 -1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 17.087 phi -65.1095
+scantitle "La2Ni7-FC, (1 0 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 12.2046 phi 57.2714
+scantitle "La2Ni7-FC, (1 0 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 9), th2th"
+
+th2th 3 -3 0.2
+
+
+drive  s2 -61.8289 s1 -30.9145 chi -12.2046 phi -122.729
+scantitle "La2Ni7-FC, (-1 0 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -17.087 phi 114.89
+scantitle "La2Ni7-FC, (-1 0 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 0 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 0 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -29.2074 phi -95.1791
+scantitle "La2Ni7-FC, (-1 1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -34.7777 phi -86.6958
+scantitle "La2Ni7-FC, (-1 1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 18.587 phi -122.734
+scantitle "La2Ni7-FC, (0 -1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 13.6128 phi -113.438
+scantitle "La2Ni7-FC, (0 -1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -13.6128 phi -66.5621
+scantitle "La2Ni7-FC, (0 1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi -18.5287 phi 57.2656
+scantitle "La2Ni7-FC, (0 1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 34.7777 phi -93.3042
+scantitle "La2Ni7-FC, (1 -1 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 -1 -9), chi"
+
+scanrel chi 4 -4 1
+
+scantitle "La2Ni7-FC, (1 -1 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 29.2074 phi 84.8209
+scantitle "La2Ni7-FC, (1 -1 9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 -1 9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 -1 9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -61.8289 s1 -30.9145 chi 17.087 phi -65.1095
+scantitle "La2Ni7-FC, (1 0 -9), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 0 -9), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 0 -9), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -65.991 s1 -32.9955 chi -28.4661 phi 177.241
+scantitle "La2Ni7-FC, (-2 0 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-2 0 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-2 0 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -65.991 s1 -32.9955 chi 28.4661 phi 2.7585
+scantitle "La2Ni7-FC, (2 0 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (2 0 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (2 0 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -65.991 s1 -32.9955 chi 31.4557 phi 174.024
+scantitle "La2Ni7-FC, (0 -2 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -2 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -2 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -65.991 s1 -32.9955 chi -31.4557 phi -5.9757
+scantitle "La2Ni7-FC, (0 2 0), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 2 0), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 2 0), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi -28.0644 phi -177.009
+scantitle "La2Ni7-FC, (-2 0 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-2 0 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-2 0 -1), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi -28.0644 phi 171.461
+scantitle "La2Ni7-FC, (-2 0 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-2 0 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-2 0 1), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi 28.0644 phi -8.53894
+scantitle "La2Ni7-FC, (2 0 -1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (2 0 -1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (2 0 -1), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi 28.0644 phi 2.9914
+scantitle "La2Ni7-FC, (2 0 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (2 0 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (2 0 1), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi 31.03 phi 168.103
+scantitle "La2Ni7-FC, (0 -2 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 -2 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 -2 1), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -66.2846 s1 -33.1423 chi -31.6071 phi -0.018
+scantitle "La2Ni7-FC, (0 2 1), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (0 2 1), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (0 2 1), th2th"
+
+th2th 3 -3 0.2
+
+
+drive  s2 -67.2666 s1 -33.6333 chi 2.7342 phi -152.717
+scantitle "La2Ni7-FC, (-1 -1 -6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 -1 -6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 -1 -6), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -67.2666 s1 -33.6333 chi -2.7342 phi 27.2826
+scantitle "La2Ni7-FC, (1 1 6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 1 6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 1 6), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -67.2666 s1 -33.6333 chi -0.18697 phi 144.07
+scantitle "La2Ni7-FC, (-1 -1 6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (-1 -1 6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (-1 -1 6), th2th"
+
+th2th 3 -3 0.2
+
+drive  s2 -67.2666 s1 -33.6333 chi 0.18697 phi -35.9284
+scantitle "La2Ni7-FC, (1 1 -6), rocking"
+
+scanrel s1 1 -1 0.1
+
+scantitle "La2Ni7-FC, (1 1 -6), chi"
+
+scanrel chi 6 -6 1
+
+scantitle "La2Ni7-FC, (1 1 -6), th2th"
+
+th2th 3 -3 0.2
+
+
+
+ 
+
+

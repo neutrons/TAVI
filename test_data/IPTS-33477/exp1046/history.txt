@@ -1,0 +1,1185 @@
+2/20/2025 12:58 PM        init
+2/20/2025 1:03 PM        drive s2 -35.5815 s1 -35.5815/2
+2/20/2025 1:03 PM        drive 2theta -35.5815 omega -35.5815/2
+2/20/2025 1:05 PM        preset time 10
+2/20/2025 1:05 PM        count
+2/20/2025 1:05 PM        mcu 19300 
+2/20/2025 1:05 PM        preset mcu 1
+2/20/2025 1:05 PM        count
+2/20/2025 1:06 PM        scantitle "La2Ni7, look for [006]"
+2/20/2025 1:06 PM        drive phi -50
+2/20/2025 1:08 PM        drive slita_lf 20 slita_rt 20 slitb_tp 30 slitb_bt 30 slitb_lf 20 slitb_rt 20
+2/20/2025 1:08 PM        drive 2theta -33.5815 omega -33.5815/2
+2/20/2025 1:09 PM        drive phi -50
+2/20/2025 1:09 PM        drive phi 50
+2/20/2025 1:10 PM        drive phi 4
+2/20/2025 1:10 PM        drive phi 3
+2/20/2025 1:10 PM        drive phi 2
+2/20/2025 1:11 PM        drive phi 2.5
+2/20/2025 1:11 PM        preset mcu 1
+2/20/2025 1:11 PM        scanrel phi 1 -1 0.1
+2/20/2025 1:12 PM        drive phi 2.3797
+2/20/2025 1:12 PM        scanrel chi 6 -6 1
+2/20/2025 1:13 PM        drive chi 3.2286
+2/20/2025 1:14 PM        th2th 2 -2 0.2
+2/20/2025 1:26 PM        lowerlimit chi -85.000000 phi -180.500000 omega -45.000000 2theta -90.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 
+2/20/2025 1:26 PM        upperlimit chi 91.000000 phi 180.500000 omega 0.000000 2theta 0.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 
+2/20/2025 1:29 PM        lowerlimit chi -50.000000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 
+2/20/2025 1:29 PM        upperlimit chi 45.000000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 
+2/20/2025 2:12 PM        drive 2theta -56.1256 omega -56.1256/2 chi 3.229 phi 92
+2/20/2025 2:14 PM        scanrel phi 1 -1 0.1
+2/20/2025 2:15 PM        drive phi 92.4313
+2/20/2025 2:15 PM        scanrel chi -5 5 1
+2/20/2025 2:21 PM        br 1 1 3
+2/20/2025 2:27 PM        br 2 0 0
+2/20/2025 2:29 PM        br -2 0 0
+2/20/2025 2:33 PM        br -2 0 -2
+2/20/2025 2:35 PM        br -2 0 2
+2/20/2025 2:37 PM        br 2 0 -2
+2/20/2025 2:43 PM        br 0 2 3
+2/20/2025 4:04 PM        init
+2/20/2025 4:09 PM        drive omega 0 chi 0 phi 0
+2/20/2025 4:10 PM        drive omega -30
+2/20/2025 4:12 PM        drive omega 0
+2/20/2025 4:12 PM        drive chi 10
+2/20/2025 4:13 PM        drive chi 0
+2/20/2025 4:14 PM        drive phi 40
+2/20/2025 4:30 PM        drive 2theta -33.578 omega -16.791 chi 3.229 phi 2.38
+2/20/2025 4:31 PM        th4th 2 -2 0.2
+2/20/2025 4:36 PM        scan slita_tp 0 30 1
+2/20/2025 4:38 PM        scan slita_bt 0 30 1
+2/20/2025 4:41 PM        scan slita_lf 0 18 1
+2/20/2025 4:42 PM        scan slita_rt 0 18 1
+2/20/2025 4:50 PM        drive 2theta -56.1256 omega -28.0602 chi 2.1921 phi 92.4316
+2/20/2025 4:51 PM        scan slita_tp 0 30 1
+2/20/2025 4:54 PM        scan slita_bt 0 30 1
+2/20/2025 4:56 PM        scan slita_lf 0 18 1
+2/20/2025 4:57 PM        scan slita_rt 0 18 1
+2/20/2025 4:59 PM        drive slita_bt 24 slita_tp 24 slita_lf 10 slita_rt 10
+2/20/2025 4:59 PM        scan slitb_tp 0 30 1
+2/20/2025 5:01 PM        scan slitb_bt 0 30 1
+2/20/2025 5:03 PM        scan slitb_lf 0 18 1
+2/20/2025 5:04 PM        scan slitb_rt 0 18 1
+2/20/2025 5:20 PM        drive slitb_lf 10 slitb_rt 10 slitb_tp 24 slitb_bt 24
+2/20/2025 5:21 PM        drive slitb_lf 10 slitb_rt 13 slitb_tp 24 slitb_bt 24
+2/20/2025 6:53 PM        drive 2theta -33.57 omega -16.78 chi 3.229 phi 2.38
+2/20/2025 6:58 PM        drive 2theta -56.1256 omega -28.0602 chi 2.1921 phi 92.4316
+2/20/2025 7:27 PM        br 1 -2 -10
+2/20/2025 7:30 PM        preset mcu 2
+2/20/2025 7:30 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:30 PM        scanrel s1 1 -1 0.1
+2/20/2025 7:30 PM        br 0 -2 -9
+2/20/2025 7:31 PM        preset mcu 2
+2/20/2025 7:31 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:31 PM        scanrel s1 1 -1 0.1
+2/20/2025 7:31 PM        br 1 -2 -9
+2/20/2025 7:33 PM        br 1 -2 -10
+2/20/2025 7:33 PM        preset mcu 2
+2/20/2025 7:33 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:33 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:34 PM        br 0 -2 -9
+2/20/2025 7:34 PM        preset mcu 2
+2/20/2025 7:34 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:34 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:35 PM        br 1 -2 -9
+2/20/2025 7:36 PM        preset mcu 2
+2/20/2025 7:36 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:36 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:37 PM        br 0 -2 -8
+2/20/2025 7:37 PM        preset mcu 2
+2/20/2025 7:37 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:37 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:38 PM        br 1 -2 -8
+2/20/2025 7:38 PM        preset mcu 2
+2/20/2025 7:38 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:38 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:39 PM        br 0 -2 -7
+2/20/2025 7:40 PM        preset mcu 2
+2/20/2025 7:40 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:40 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:41 PM        br 1 -2 -7
+2/20/2025 7:41 PM        preset mcu 2
+2/20/2025 7:41 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:41 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:42 PM        br 0 -2 -6
+2/20/2025 7:42 PM        preset mcu 2
+2/20/2025 7:42 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:42 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:43 PM        br 1 -2 -6
+2/20/2025 7:44 PM        preset mcu 2
+2/20/2025 7:44 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:44 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:45 PM        br 0 -2 -5
+2/20/2025 7:45 PM        preset mcu 2
+2/20/2025 7:45 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:45 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:46 PM        br 0 -2 -4
+2/20/2025 7:46 PM        preset mcu 2
+2/20/2025 7:46 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:46 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:47 PM        br 0 -2 -3
+2/20/2025 7:47 PM        preset mcu 2
+2/20/2025 7:47 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:47 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:48 PM        br 0 -2 -2
+2/20/2025 7:49 PM        preset mcu 2
+2/20/2025 7:49 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:49 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:49 PM        br 0 -2 -1
+2/20/2025 7:50 PM        preset mcu 2
+2/20/2025 7:50 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:50 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:51 PM        br 0 -2 0
+2/20/2025 7:51 PM        preset mcu 2
+2/20/2025 7:51 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:51 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:52 PM        br 0 -2 1
+2/20/2025 7:52 PM        preset mcu 2
+2/20/2025 7:52 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:52 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:53 PM        br 0 -2 2
+2/20/2025 7:53 PM        preset mcu 2
+2/20/2025 7:53 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:53 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:54 PM        br 0 -2 3
+2/20/2025 7:54 PM        preset mcu 2
+2/20/2025 7:54 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:54 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:55 PM        br 0 -2 4
+2/20/2025 7:55 PM        preset mcu 2
+2/20/2025 7:55 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:55 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:56 PM        br 0 -2 5
+2/20/2025 7:56 PM        preset mcu 2
+2/20/2025 7:56 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:56 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:57 PM        br 0 -2 6
+2/20/2025 7:58 PM        preset mcu 2
+2/20/2025 7:58 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:58 PM        scanrel omega 1 -1 0.1
+2/20/2025 7:58 PM        br 0 -2 7
+2/20/2025 7:59 PM        preset mcu 2
+2/20/2025 7:59 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 7:59 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:00 PM        br 0 -2 8
+2/20/2025 8:00 PM        preset mcu 2
+2/20/2025 8:00 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:00 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:01 PM        br 1 -2 8
+2/20/2025 8:01 PM        preset mcu 2
+2/20/2025 8:01 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:01 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:02 PM        br 0 -2 9
+2/20/2025 8:02 PM        preset mcu 2
+2/20/2025 8:02 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:02 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:03 PM        br 1 -2 9
+2/20/2025 8:04 PM        preset mcu 2
+2/20/2025 8:04 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:04 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:05 PM        br 1 -2 10
+2/20/2025 8:05 PM        preset mcu 2
+2/20/2025 8:05 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:05 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:06 PM        br 0 -1 -13
+2/20/2025 8:08 PM        preset mcu 2
+2/20/2025 8:08 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:08 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:09 PM        br 1 -1 -13
+2/20/2025 8:09 PM        preset mcu 2
+2/20/2025 8:09 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:09 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:10 PM        br 0 -1 -12
+2/20/2025 8:10 PM        preset mcu 2
+2/20/2025 8:10 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:10 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:11 PM        br 1 -1 -12
+2/20/2025 8:12 PM        preset mcu 2
+2/20/2025 8:12 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:12 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:13 PM        br 0 -1 -11
+2/20/2025 8:13 PM        preset mcu 2
+2/20/2025 8:13 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:13 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:14 PM        br 1 -1 -11
+2/20/2025 8:15 PM        preset mcu 2
+2/20/2025 8:15 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:15 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:16 PM        br -1 -1 -10
+2/20/2025 8:16 PM        preset mcu 2
+2/20/2025 8:16 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:16 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:17 PM        br 0 -1 -10
+2/20/2025 8:18 PM        preset mcu 2
+2/20/2025 8:18 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:18 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:19 PM        br 1 -1 -10
+2/20/2025 8:19 PM        preset mcu 2
+2/20/2025 8:19 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:19 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:20 PM        br 2 -1 -10
+2/20/2025 8:25 PM        preset mcu 2
+2/20/2025 8:25 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:25 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:26 PM        br -1 -1 -9
+2/20/2025 8:30 PM        preset mcu 2
+2/20/2025 8:30 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:30 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:31 PM        br 0 -1 -9
+2/20/2025 8:31 PM        preset mcu 2
+2/20/2025 8:31 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:31 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:32 PM        br 1 -1 -9
+2/20/2025 8:33 PM        preset mcu 2
+2/20/2025 8:33 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:33 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:34 PM        br 2 -1 -9
+2/20/2025 8:38 PM        preset mcu 2
+2/20/2025 8:38 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:38 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:39 PM        br -1 -1 -8
+2/20/2025 8:44 PM        preset mcu 2
+2/20/2025 8:44 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:44 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:45 PM        br 0 -1 -8
+2/20/2025 8:45 PM        preset mcu 2
+2/20/2025 8:45 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:45 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:46 PM        br 1 -1 -8
+2/20/2025 8:46 PM        preset mcu 2
+2/20/2025 8:46 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:46 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:47 PM        br 2 -1 -8
+2/20/2025 8:52 PM        preset mcu 2
+2/20/2025 8:52 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:52 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:53 PM        br -1 -1 -7
+2/20/2025 8:57 PM        preset mcu 2
+2/20/2025 8:57 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:57 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:58 PM        br 0 -1 -7
+2/20/2025 8:58 PM        preset mcu 2
+2/20/2025 8:58 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 8:58 PM        scanrel omega 1 -1 0.1
+2/20/2025 8:59 PM        br 1 -1 -7
+2/20/2025 9:00 PM        preset mcu 2
+2/20/2025 9:00 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:00 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:01 PM        br 2 -1 -7
+2/20/2025 9:06 PM        preset mcu 2
+2/20/2025 9:06 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:06 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:07 PM        br -1 -1 -6
+2/20/2025 9:11 PM        preset mcu 2
+2/20/2025 9:11 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:11 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:12 PM        br 0 -1 -6
+2/20/2025 9:12 PM        preset mcu 2
+2/20/2025 9:12 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:12 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:13 PM        br 1 -1 -6
+2/20/2025 9:14 PM        preset mcu 2
+2/20/2025 9:14 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:14 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:15 PM        br -1 -1 -5
+2/20/2025 9:15 PM        preset mcu 2
+2/20/2025 9:15 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:15 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:16 PM        br 0 -1 -5
+2/20/2025 9:17 PM        preset mcu 2
+2/20/2025 9:17 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:17 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:18 PM        br -1 -1 -4
+2/20/2025 9:18 PM        preset mcu 2
+2/20/2025 9:18 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:18 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:19 PM        br 0 -1 -4
+2/20/2025 9:20 PM        preset mcu 2
+2/20/2025 9:20 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:20 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:21 PM        br -1 -1 -3
+2/20/2025 9:21 PM        preset mcu 2
+2/20/2025 9:21 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:21 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:22 PM        br 0 -1 -3
+2/20/2025 9:23 PM        preset mcu 2
+2/20/2025 9:23 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:23 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:24 PM        br -1 -1 -2
+2/20/2025 9:24 PM        preset mcu 2
+2/20/2025 9:24 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:24 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:25 PM        br 0 -1 -2
+2/20/2025 9:26 PM        preset mcu 2
+2/20/2025 9:26 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:26 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:27 PM        br -1 -1 -1
+2/20/2025 9:27 PM        preset mcu 2
+2/20/2025 9:27 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:27 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:28 PM        br 0 -1 -1
+2/20/2025 9:29 PM        preset mcu 2
+2/20/2025 9:29 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:29 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:30 PM        br -1 -1 0
+2/20/2025 9:30 PM        preset mcu 2
+2/20/2025 9:30 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:30 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:31 PM        br 0 -1 0
+2/20/2025 9:32 PM        preset mcu 2
+2/20/2025 9:32 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:32 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:33 PM        br -1 -1 1
+2/20/2025 9:33 PM        preset mcu 2
+2/20/2025 9:33 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:33 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:34 PM        br 0 -1 1
+2/20/2025 9:35 PM        preset mcu 2
+2/20/2025 9:35 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:35 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:36 PM        br -1 -1 2
+2/20/2025 9:36 PM        preset mcu 2
+2/20/2025 9:36 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:36 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:37 PM        br 0 -1 2
+2/20/2025 9:38 PM        preset mcu 2
+2/20/2025 9:38 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:38 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:39 PM        br -1 -1 3
+2/20/2025 9:39 PM        preset mcu 2
+2/20/2025 9:39 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:39 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:40 PM        br 0 -1 3
+2/20/2025 9:41 PM        preset mcu 2
+2/20/2025 9:41 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:41 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:42 PM        br -1 -1 4
+2/20/2025 9:42 PM        preset mcu 2
+2/20/2025 9:42 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:42 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:43 PM        br 0 -1 4
+2/20/2025 9:44 PM        preset mcu 2
+2/20/2025 9:44 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:44 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:45 PM        br -1 -1 5
+2/20/2025 9:45 PM        preset mcu 2
+2/20/2025 9:45 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:45 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:46 PM        br 0 -1 5
+2/20/2025 9:46 PM        preset mcu 2
+2/20/2025 9:46 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:46 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:48 PM        br -1 -1 6
+2/20/2025 9:48 PM        preset mcu 2
+2/20/2025 9:48 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:48 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:49 PM        br 0 -1 6
+2/20/2025 9:49 PM        preset mcu 2
+2/20/2025 9:49 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:49 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:50 PM        br -1 -1 7
+2/20/2025 9:51 PM        preset mcu 2
+2/20/2025 9:51 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:51 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:52 PM        br 0 -1 7
+2/20/2025 9:52 PM        preset mcu 2
+2/20/2025 9:52 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:52 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:53 PM        br 1 -1 7
+2/20/2025 9:54 PM        preset mcu 2
+2/20/2025 9:54 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:54 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:55 PM        br -1 -1 8
+2/20/2025 9:55 PM        preset mcu 2
+2/20/2025 9:55 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:55 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:56 PM        br 0 -1 8
+2/20/2025 9:57 PM        preset mcu 2
+2/20/2025 9:57 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:57 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:58 PM        br 1 -1 8
+2/20/2025 9:58 PM        preset mcu 2
+2/20/2025 9:58 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 9:58 PM        scanrel omega 1 -1 0.1
+2/20/2025 9:59 PM        br -1 -1 9
+2/20/2025 10:00 PM        preset mcu 2
+2/20/2025 10:00 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:00 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:01 PM        br 0 -1 9
+2/20/2025 10:01 PM        preset mcu 2
+2/20/2025 10:01 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:01 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:02 PM        br 1 -1 9
+2/20/2025 10:03 PM        preset mcu 2
+2/20/2025 10:03 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:03 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:04 PM        br 2 -1 9
+2/20/2025 10:04 PM        preset mcu 2
+2/20/2025 10:04 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:04 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:05 PM        br -1 -1 10
+2/20/2025 10:06 PM        preset mcu 2
+2/20/2025 10:06 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:06 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:07 PM        br 0 -1 10
+2/20/2025 10:08 PM        preset mcu 2
+2/20/2025 10:08 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:08 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:09 PM        br 1 -1 10
+2/20/2025 10:09 PM        preset mcu 2
+2/20/2025 10:09 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:09 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:10 PM        br 2 -1 10
+2/20/2025 10:11 PM        preset mcu 2
+2/20/2025 10:11 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:11 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:12 PM        br 0 -1 11
+2/20/2025 10:12 PM        preset mcu 2
+2/20/2025 10:12 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:12 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:13 PM        br 1 -1 11
+2/20/2025 10:14 PM        preset mcu 2
+2/20/2025 10:14 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:14 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:15 PM        br 0 -1 12
+2/20/2025 10:15 PM        preset mcu 2
+2/20/2025 10:15 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:15 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:16 PM        br 1 -1 12
+2/20/2025 10:17 PM        preset mcu 2
+2/20/2025 10:17 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:17 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:18 PM        br 0 -1 13
+2/20/2025 10:18 PM        preset mcu 2
+2/20/2025 10:18 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:18 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:19 PM        br 1 -1 13
+2/20/2025 10:19 PM        preset mcu 2
+2/20/2025 10:19 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:19 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:21 PM        br 0 0 -14
+2/20/2025 10:23 PM        preset mcu 2
+2/20/2025 10:23 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:23 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:24 PM        br -1 0 -13
+2/20/2025 10:25 PM        preset mcu 2
+2/20/2025 10:25 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:25 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:26 PM        br 0 0 -13
+2/20/2025 10:26 PM        preset mcu 2
+2/20/2025 10:26 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:26 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:27 PM        br 1 0 -13
+2/20/2025 10:32 PM        preset mcu 2
+2/20/2025 10:32 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:32 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:33 PM        br -1 0 -12
+2/20/2025 10:37 PM        preset mcu 2
+2/20/2025 10:37 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:37 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:39 PM        br 0 0 -12
+2/20/2025 10:39 PM        preset mcu 2
+2/20/2025 10:39 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:39 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:40 PM        br 1 0 -12
+2/20/2025 10:45 PM        preset mcu 2
+2/20/2025 10:45 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:45 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:46 PM        br -1 0 -11
+2/20/2025 10:50 PM        preset mcu 2
+2/20/2025 10:50 PM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/20/2025 10:50 PM        scanrel omega 1 -1 0.1
+2/20/2025 10:51 PM        br 0 0 2
+2/20/2025 10:54 PM        scantitle "test H, K L type scans"
+2/20/2025 10:54 PM        th4th 2 -2 0.2
+2/20/2025 10:55 PM        preset mcu 1
+2/20/2025 10:56 PM        br 0 0 2
+2/20/2025 10:57 PM        scanrel omega 1 -1 0.1
+2/20/2025 11:01 PM        scan h 0 k 0 l 1.6 2.4 0.04
+2/20/2025 11:03 PM        scan h -0.4 0.4 0.004 k -0.4 0.4 0.004 l 2
+2/20/2025 11:04 PM        scan h -0.4 0.4 0.004 k -0.4 0.4 0.004 l 2
+2/20/2025 11:07 PM        scan h -0.004 0.004 0.0004 k -0.004 0.004 0.0004 l 2
+2/20/2025 11:10 PM        br 0 -1 -12
+2/20/2025 11:37 PM        br 0 0 2
+2/20/2025 11:40 PM        scantitle "mesh [0 0 2], spice index [0 0 -2]"
+2/20/2025 11:40 PM        scan h -0.01 k -0.01 l 1.6 2.4 0.04
+2/20/2025 11:41 PM        scan h -0.009 k -0.009 l 1.6 2.4 0.04
+2/20/2025 11:42 PM        scan h -0.008 k -0.008 l 1.6 2.4 0.04
+2/20/2025 11:43 PM        scan h -0.007 k -0.007 l 1.6 2.4 0.04
+2/20/2025 11:45 PM        scan h -0.006 k -0.006 l 1.6 2.4 0.04
+2/20/2025 11:46 PM        scan h -0.005 k -0.005 l 1.6 2.4 0.04
+2/20/2025 11:47 PM        scan h -0.004 k -0.004 l 1.6 2.4 0.04
+2/20/2025 11:49 PM        scan h -0.003 k -0.003 l 1.6 2.4 0.04
+2/20/2025 11:50 PM        scan h -0.002 k -0.002 l 1.6 2.4 0.04
+2/20/2025 11:51 PM        scan h -0.001 k -0.001 l 1.6 2.4 0.04
+2/20/2025 11:52 PM        scan h 0 k 0 l 1.6 2.4 0.04
+2/20/2025 11:53 PM        scan h 0.001 k 0.001 l 1.6 2.4 0.04
+2/20/2025 11:54 PM        scan h 0.002 k 0.002 l 1.6 2.4 0.04
+2/20/2025 11:55 PM        scan h 0.003 k 0.003 l 1.6 2.4 0.04
+2/20/2025 11:56 PM        scan h 0.004 k 0.004 l 1.6 2.4 0.04
+2/20/2025 11:57 PM        scan h 0.005 k 0.005 l 1.6 2.4 0.04
+2/20/2025 11:58 PM        scan h 0.006 k 0.006 l 1.6 2.4 0.04
+2/21/2025 12:00 AM        scan h 0.007 k 0.007 l 1.6 2.4 0.04
+2/21/2025 12:01 AM        scan h 0.008 k 0.008 l 1.6 2.4 0.04
+2/21/2025 12:02 AM        scan h 0.009 k 0.009 l 1.6 2.4 0.04
+2/21/2025 12:03 AM        scan h 0.01 k 0.01 l 1.6 2.4 0.04
+2/21/2025 12:04 AM        br 0 0 4
+2/21/2025 12:04 AM        scantitle "mesh [0 0 4], spice index [0 0 -4]"
+2/21/2025 12:04 AM        scan h -0.01 k -0.01 l 3.6 4.4 0.04
+2/21/2025 12:05 AM        scan h -0.009 k -0.009 l 3.6 4.4 0.04
+2/21/2025 12:07 AM        scan h -0.008 k -0.008 l 3.6 4.4 0.04
+2/21/2025 12:08 AM        scan h -0.007 k -0.007 l 3.6 4.4 0.04
+2/21/2025 12:09 AM        scan h -0.006 k -0.006 l 3.6 4.4 0.04
+2/21/2025 12:11 AM        scan h -0.005 k -0.005 l 3.6 4.4 0.04
+2/21/2025 12:12 AM        scan h -0.004 k -0.004 l 3.6 4.4 0.04
+2/21/2025 12:13 AM        scan h -0.003 k -0.003 l 3.6 4.4 0.04
+2/21/2025 12:14 AM        scan h -0.002 k -0.002 l 3.6 4.4 0.04
+2/21/2025 12:16 AM        scan h -0.001 k -0.001 l 3.6 4.4 0.04
+2/21/2025 12:17 AM        scan h 0 k 0 l 3.6 4.4 0.04
+2/21/2025 12:18 AM        scan h 0.001 k 0.001 l 3.6 4.4 0.04
+2/21/2025 12:19 AM        scan h 0.002 k 0.002 l 3.6 4.4 0.04
+2/21/2025 12:20 AM        scan h 0.003 k 0.003 l 3.6 4.4 0.04
+2/21/2025 12:21 AM        scan h 0.004 k 0.004 l 3.6 4.4 0.04
+2/21/2025 12:22 AM        scan h 0.005 k 0.005 l 3.6 4.4 0.04
+2/21/2025 12:24 AM        scan h 0.006 k 0.006 l 3.6 4.4 0.04
+2/21/2025 12:25 AM        scan h 0.007 k 0.007 l 3.6 4.4 0.04
+2/21/2025 12:26 AM        scan h 0.008 k 0.008 l 3.6 4.4 0.04
+2/21/2025 12:27 AM        scan h 0.009 k 0.009 l 3.6 4.4 0.04
+2/21/2025 12:28 AM        scan h 0.01 k 0.01 l 3.6 4.4 0.04
+2/21/2025 12:29 AM        br 0 0 6
+2/21/2025 12:29 AM        scantitle "mesh [0 0 6], spice index [0 0 -6]"
+2/21/2025 12:29 AM        scan h -0.01 k -0.01 l 5.6 6.4 0.04
+2/21/2025 12:30 AM        scan h -0.009 k -0.009 l 5.6 6.4 0.04
+2/21/2025 12:32 AM        scan h -0.008 k -0.008 l 5.6 6.4 0.04
+2/21/2025 12:33 AM        scan h -0.007 k -0.007 l 5.6 6.4 0.04
+2/21/2025 12:34 AM        scan h -0.006 k -0.006 l 5.6 6.4 0.04
+2/21/2025 12:36 AM        scan h -0.005 k -0.005 l 5.6 6.4 0.04
+2/21/2025 12:37 AM        scan h -0.004 k -0.004 l 5.6 6.4 0.04
+2/21/2025 12:38 AM        scan h -0.003 k -0.003 l 5.6 6.4 0.04
+2/21/2025 12:40 AM        scan h -0.002 k -0.002 l 5.6 6.4 0.04
+2/21/2025 12:41 AM        scan h -0.001 k -0.001 l 5.6 6.4 0.04
+2/21/2025 12:42 AM        scan h 0 k 0 l 5.6 6.4 0.04
+2/21/2025 12:43 AM        scan h 0.001 k 0.001 l 5.6 6.4 0.04
+2/21/2025 12:45 AM        scan h 0.002 k 0.002 l 5.6 6.4 0.04
+2/21/2025 12:46 AM        scan h 0.003 k 0.003 l 5.6 6.4 0.04
+2/21/2025 12:47 AM        scan h 0.004 k 0.004 l 5.6 6.4 0.04
+2/21/2025 12:48 AM        scan h 0.005 k 0.005 l 5.6 6.4 0.04
+2/21/2025 12:49 AM        scan h 0.006 k 0.006 l 5.6 6.4 0.04
+2/21/2025 12:50 AM        scan h 0.007 k 0.007 l 5.6 6.4 0.04
+2/21/2025 12:51 AM        scan h 0.008 k 0.008 l 5.6 6.4 0.04
+2/21/2025 12:52 AM        scan h 0.009 k 0.009 l 5.6 6.4 0.04
+2/21/2025 12:53 AM        scan h 0.01 k 0.01 l 5.6 6.4 0.04
+2/21/2025 12:55 AM        br 0 0 8
+2/21/2025 12:55 AM        scantitle "mesh [0 0 8], spice index [0 0 -8]"
+2/21/2025 12:55 AM        scan h -0.01 k -0.01 l 7.5 8.5 0.05
+2/21/2025 12:56 AM        scan h -0.009 k -0.009 l 7.5 8.5 0.05
+2/21/2025 12:57 AM        scan h -0.008 k -0.008 l 7.5 8.5 0.05
+2/21/2025 12:59 AM        scan h -0.007 k -0.007 l 7.5 8.5 0.05
+2/21/2025 1:00 AM        scan h -0.006 k -0.006 l 7.5 8.5 0.05
+2/21/2025 1:01 AM        scan h -0.005 k -0.005 l 7.5 8.5 0.05
+2/21/2025 1:03 AM        scan h -0.004 k -0.004 l 7.5 8.5 0.05
+2/21/2025 1:04 AM        scan h -0.003 k -0.003 l 7.5 8.5 0.05
+2/21/2025 1:05 AM        scan h -0.002 k -0.002 l 7.5 8.5 0.05
+2/21/2025 1:07 AM        scan h -0.001 k -0.001 l 7.5 8.5 0.05
+2/21/2025 1:08 AM        scan h 0 k 0 l 7.5 8.5 0.05
+2/21/2025 1:09 AM        scan h 0.001 k 0.001 l 7.5 8.5 0.05
+2/21/2025 1:11 AM        scan h 0.002 k 0.002 l 7.5 8.5 0.05
+2/21/2025 1:12 AM        scan h 0.003 k 0.003 l 7.5 8.5 0.05
+2/21/2025 1:13 AM        scan h 0.004 k 0.004 l 7.5 8.5 0.05
+2/21/2025 1:14 AM        scan h 0.005 k 0.005 l 7.5 8.5 0.05
+2/21/2025 1:15 AM        scan h 0.006 k 0.006 l 7.5 8.5 0.05
+2/21/2025 1:17 AM        scan h 0.007 k 0.007 l 7.5 8.5 0.05
+2/21/2025 1:18 AM        scan h 0.008 k 0.008 l 7.5 8.5 0.05
+2/21/2025 1:19 AM        scan h 0.009 k 0.009 l 7.5 8.5 0.05
+2/21/2025 1:20 AM        scan h 0.01 k 0.01 l 7.5 8.5 0.05
+2/21/2025 1:21 AM        br 0 0 10
+2/21/2025 1:22 AM        scantitle "mesh [0 0 10], spice index [0 0 -10]"
+2/21/2025 1:22 AM        scan h -0.01 k -0.01 l 9.5 10.5 0.05
+2/21/2025 1:23 AM        scan h -0.009 k -0.009 l 9.5 10.5 0.05
+2/21/2025 1:24 AM        scan h -0.008 k -0.008 l 9.5 10.5 0.05
+2/21/2025 1:26 AM        scan h -0.007 k -0.007 l 9.5 10.5 0.05
+2/21/2025 1:27 AM        scan h -0.006 k -0.006 l 9.5 10.5 0.05
+2/21/2025 1:28 AM        scan h -0.005 k -0.005 l 9.5 10.5 0.05
+2/21/2025 1:30 AM        scan h -0.004 k -0.004 l 9.5 10.5 0.05
+2/21/2025 1:31 AM        scan h -0.003 k -0.003 l 9.5 10.5 0.05
+2/21/2025 1:33 AM        scan h -0.002 k -0.002 l 9.5 10.5 0.05
+2/21/2025 1:34 AM        scan h -0.001 k -0.001 l 9.5 10.5 0.05
+2/21/2025 1:35 AM        scan h 0 k 0 l 9.5 10.5 0.05
+2/21/2025 1:37 AM        scan h 0.001 k 0.001 l 9.5 10.5 0.05
+2/21/2025 1:38 AM        scan h 0.002 k 0.002 l 9.5 10.5 0.05
+2/21/2025 1:39 AM        scan h 0.003 k 0.003 l 9.5 10.5 0.05
+2/21/2025 1:40 AM        scan h 0.004 k 0.004 l 9.5 10.5 0.05
+2/21/2025 1:42 AM        scan h 0.005 k 0.005 l 9.5 10.5 0.05
+2/21/2025 1:43 AM        scan h 0.006 k 0.006 l 9.5 10.5 0.05
+2/21/2025 1:44 AM        scan h 0.007 k 0.007 l 9.5 10.5 0.05
+2/21/2025 1:45 AM        scan h 0.008 k 0.008 l 9.5 10.5 0.05
+2/21/2025 1:47 AM        scan h 0.009 k 0.009 l 9.5 10.5 0.05
+2/21/2025 1:48 AM        scan h 0.01 k 0.01 l 9.5 10.5 0.05
+2/21/2025 1:49 AM        br 0 0 2
+2/21/2025 1:50 AM        scantitle "mesh [0 0 2], spice index [0 0 -2], omega 2theta scans"
+2/21/2025 1:50 AM        drive omega -7
+2/21/2025 1:50 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 1:52 AM        drive omega -6.9
+2/21/2025 1:52 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 1:53 AM        drive omega -6.8
+2/21/2025 1:53 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 1:55 AM        drive omega -6.7
+2/21/2025 1:55 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 1:56 AM        drive omega -6.6
+2/21/2025 1:56 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 1:58 AM        drive omega -6.5
+2/21/2025 1:58 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:00 AM        drive omega -6.4
+2/21/2025 2:00 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:01 AM        drive omega -6.3
+2/21/2025 2:01 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:03 AM        drive omega -6.2
+2/21/2025 2:03 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:04 AM        drive omega -6.1
+2/21/2025 2:05 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:06 AM        drive omega -6
+2/21/2025 2:06 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:08 AM        drive omega -5.9
+2/21/2025 2:08 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:09 AM        drive omega -5.8
+2/21/2025 2:09 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:11 AM        drive omega -5.7
+2/21/2025 2:11 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:13 AM        drive omega -5.6
+2/21/2025 2:13 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:14 AM        drive omega -5.5
+2/21/2025 2:14 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:16 AM        drive omega -5.4
+2/21/2025 2:16 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:18 AM        drive omega -5.3
+2/21/2025 2:18 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:19 AM        drive omega -5.2
+2/21/2025 2:19 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:21 AM        drive omega -5.1
+2/21/2025 2:21 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:23 AM        drive omega -5
+2/21/2025 2:23 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:24 AM        drive omega -4.9
+2/21/2025 2:24 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:26 AM        drive omega -4.8
+2/21/2025 2:26 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:28 AM        drive omega -4.7
+2/21/2025 2:28 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:29 AM        drive omega -4.6
+2/21/2025 2:29 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:31 AM        drive omega -4.5
+2/21/2025 2:31 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:33 AM        drive omega -4.4
+2/21/2025 2:33 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:34 AM        drive omega -4.3
+2/21/2025 2:34 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:36 AM        drive omega -4.2
+2/21/2025 2:36 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:38 AM        drive omega -4.1
+2/21/2025 2:38 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:39 AM        drive omega -4
+2/21/2025 2:39 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:41 AM        br 0 0 4
+2/21/2025 2:41 AM        scantitle "mesh [0 0 4], spice index [0 0 -4], omega 2theta scans"
+2/21/2025 2:41 AM        drive omega -12.5
+2/21/2025 2:41 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:43 AM        drive omega -12.4
+2/21/2025 2:43 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:45 AM        drive omega -12.3
+2/21/2025 2:45 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:46 AM        drive omega -12.2
+2/21/2025 2:46 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:48 AM        drive omega -12.1
+2/21/2025 2:48 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:50 AM        drive omega -12
+2/21/2025 2:50 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:51 AM        drive omega -11.9
+2/21/2025 2:51 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:53 AM        drive omega -11.8
+2/21/2025 2:53 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:55 AM        drive omega -11.7
+2/21/2025 2:55 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:56 AM        drive omega -11.6
+2/21/2025 2:56 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 2:58 AM        drive omega -11.5
+2/21/2025 2:58 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:00 AM        drive omega -11.4
+2/21/2025 3:00 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:01 AM        drive omega -11.3
+2/21/2025 3:01 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:03 AM        drive omega -11.2
+2/21/2025 3:03 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:05 AM        drive omega -11.1
+2/21/2025 3:05 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:06 AM        drive omega -11
+2/21/2025 3:06 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:08 AM        drive omega -10.9
+2/21/2025 3:08 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:10 AM        drive omega -10.8
+2/21/2025 3:10 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:11 AM        drive omega -10.7
+2/21/2025 3:12 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:13 AM        drive omega -10.6
+2/21/2025 3:13 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:15 AM        drive omega -10.5
+2/21/2025 3:15 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:17 AM        drive omega -10.4
+2/21/2025 3:17 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:18 AM        drive omega -10.3
+2/21/2025 3:18 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:20 AM        drive omega -10.2
+2/21/2025 3:20 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:22 AM        drive omega -10.1
+2/21/2025 3:22 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:23 AM        drive omega -10
+2/21/2025 3:23 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:25 AM        drive omega -9.9
+2/21/2025 3:25 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:27 AM        drive omega -9.8
+2/21/2025 3:27 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:29 AM        drive omega -9.7
+2/21/2025 3:29 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:30 AM        drive omega -9.6
+2/21/2025 3:30 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:32 AM        drive omega -9.5
+2/21/2025 3:32 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:34 AM        br 0 0 6
+2/21/2025 3:34 AM        scantitle "mesh [0 0 6], spice index [0 0 -6], omega 2theta scans"
+2/21/2025 3:34 AM        drive omega -18.3
+2/21/2025 3:34 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:36 AM        drive omega -18.2
+2/21/2025 3:36 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:37 AM        drive omega -18.1
+2/21/2025 3:37 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:39 AM        drive omega -18
+2/21/2025 3:39 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:41 AM        drive omega -17.9
+2/21/2025 3:41 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:43 AM        drive omega -17.8
+2/21/2025 3:43 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:44 AM        drive omega -17.7
+2/21/2025 3:44 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:46 AM        drive omega -17.6
+2/21/2025 3:46 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:48 AM        drive omega -17.5
+2/21/2025 3:48 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:50 AM        drive omega -17.4
+2/21/2025 3:50 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:51 AM        drive omega -17.3
+2/21/2025 3:51 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:53 AM        drive omega -17.2
+2/21/2025 3:53 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:55 AM        drive omega -17.1
+2/21/2025 3:55 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:57 AM        drive omega -17
+2/21/2025 3:57 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 3:58 AM        drive omega -16.9
+2/21/2025 3:58 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:00 AM        drive omega -16.8
+2/21/2025 4:00 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:02 AM        drive omega -16.7
+2/21/2025 4:02 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:04 AM        drive omega -16.6
+2/21/2025 4:04 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:05 AM        drive omega -16.5
+2/21/2025 4:05 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:07 AM        drive omega -16.4
+2/21/2025 4:07 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:09 AM        drive omega -16.3
+2/21/2025 4:09 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:11 AM        drive omega -16.2
+2/21/2025 4:11 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:13 AM        drive omega -16.1
+2/21/2025 4:13 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:14 AM        drive omega -16
+2/21/2025 4:14 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:16 AM        drive omega -15.9
+2/21/2025 4:16 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:18 AM        drive omega -15.8
+2/21/2025 4:18 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:20 AM        drive omega -15.7
+2/21/2025 4:20 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:21 AM        drive omega -15.6
+2/21/2025 4:21 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:23 AM        drive omega -15.5
+2/21/2025 4:23 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:25 AM        drive omega -15.4
+2/21/2025 4:25 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:27 AM        drive omega -15.3
+2/21/2025 4:27 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:29 AM        br 0 0 8
+2/21/2025 4:29 AM        scantitle "mesh [0 0 8], spice index [0 0 -8], omega 2theta scans"
+2/21/2025 4:29 AM        drive omega -24.2
+2/21/2025 4:29 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:31 AM        drive omega -24.1
+2/21/2025 4:31 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:33 AM        drive omega -24
+2/21/2025 4:33 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:34 AM        drive omega -23.9
+2/21/2025 4:34 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:36 AM        drive omega -23.8
+2/21/2025 4:36 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:38 AM        drive omega -23.7
+2/21/2025 4:38 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:40 AM        drive omega -23.6
+2/21/2025 4:40 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:41 AM        drive omega -23.5
+2/21/2025 4:42 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:43 AM        drive omega -23.4
+2/21/2025 4:43 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:45 AM        drive omega -23.3
+2/21/2025 4:45 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:47 AM        drive omega -23.2
+2/21/2025 4:47 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:49 AM        drive omega -23.1
+2/21/2025 4:49 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:50 AM        drive omega -23
+2/21/2025 4:50 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:52 AM        drive omega -22.9
+2/21/2025 4:52 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:54 AM        drive omega -22.8
+2/21/2025 4:54 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:56 AM        drive omega -22.7
+2/21/2025 4:56 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:58 AM        drive omega -22.6
+2/21/2025 4:58 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 4:59 AM        drive omega -22.5
+2/21/2025 5:00 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:01 AM        drive omega -22.4
+2/21/2025 5:01 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:03 AM        drive omega -22.3
+2/21/2025 5:03 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:05 AM        drive omega -22.2
+2/21/2025 5:05 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:07 AM        drive omega -22.1
+2/21/2025 5:07 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:09 AM        drive omega -22
+2/21/2025 5:09 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:10 AM        drive omega -21.9
+2/21/2025 5:10 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:12 AM        drive omega -21.8
+2/21/2025 5:12 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:14 AM        drive omega -21.7
+2/21/2025 5:14 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:16 AM        drive omega -21.6
+2/21/2025 5:16 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:18 AM        drive omega -21.5
+2/21/2025 5:18 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:19 AM        drive omega -21.4
+2/21/2025 5:19 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:21 AM        drive omega -21.3
+2/21/2025 5:21 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:23 AM        drive omega -21.2
+2/21/2025 5:23 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:25 AM        br 0 0 10
+2/21/2025 5:25 AM        scantitle "mesh [0 0 10], spice index [0 0 -10], omega 2theta scans"
+2/21/2025 5:25 AM        drive omega -30.2
+2/21/2025 5:25 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:27 AM        drive omega -30.1
+2/21/2025 5:27 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:29 AM        drive omega -30
+2/21/2025 5:29 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:31 AM        drive omega -29.9
+2/21/2025 5:31 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:32 AM        drive omega -29.8
+2/21/2025 5:33 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:34 AM        drive omega -29.7
+2/21/2025 5:34 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:36 AM        drive omega -29.6
+2/21/2025 5:36 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:38 AM        drive omega -29.5
+2/21/2025 5:38 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:40 AM        drive omega -29.4
+2/21/2025 5:40 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:42 AM        drive omega -29.3
+2/21/2025 5:42 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:44 AM        drive omega -29.2
+2/21/2025 5:44 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:45 AM        drive omega -29.1
+2/21/2025 5:45 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:47 AM        drive omega -29
+2/21/2025 5:47 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:49 AM        drive omega -28.9
+2/21/2025 5:49 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:51 AM        drive omega -28.8
+2/21/2025 5:51 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:53 AM        drive omega -28.7
+2/21/2025 5:53 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:55 AM        drive omega -28.6
+2/21/2025 5:55 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:56 AM        drive omega -28.5
+2/21/2025 5:56 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 5:58 AM        drive omega -28.4
+2/21/2025 5:58 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:00 AM        drive omega -28.3
+2/21/2025 6:00 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:02 AM        drive omega -28.2
+2/21/2025 6:02 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:04 AM        drive omega -28.1
+2/21/2025 6:04 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:06 AM        drive omega -28
+2/21/2025 6:06 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:08 AM        drive omega -27.9
+2/21/2025 6:08 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:09 AM        drive omega -27.8
+2/21/2025 6:09 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:11 AM        drive omega -27.7
+2/21/2025 6:11 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:13 AM        drive omega -27.6
+2/21/2025 6:13 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:15 AM        drive omega -27.5
+2/21/2025 6:15 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:17 AM        drive omega -27.4
+2/21/2025 6:17 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:19 AM        drive omega -27.3
+2/21/2025 6:19 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:21 AM        drive omega -27.2
+2/21/2025 6:21 AM        scanrel 2theta 3 -3 0.2
+2/21/2025 6:23 AM        br 0 0 -11
+2/21/2025 6:25 AM        preset mcu 2
+2/21/2025 6:25 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:25 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:26 AM        br 1 0 -11
+2/21/2025 6:31 AM        preset mcu 2
+2/21/2025 6:31 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:31 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:33 AM        br -1 0 -10
+2/21/2025 6:37 AM        preset mcu 2
+2/21/2025 6:37 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:37 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:39 AM        br 0 0 -10
+2/21/2025 6:39 AM        preset mcu 2
+2/21/2025 6:39 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:39 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:40 AM        br 1 0 -10
+2/21/2025 6:45 AM        preset mcu 2
+2/21/2025 6:45 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:45 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:47 AM        br -2 0 -9
+2/21/2025 6:51 AM        preset mcu 2
+2/21/2025 6:51 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:51 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:52 AM        br -1 0 -9
+2/21/2025 6:53 AM        preset mcu 2
+2/21/2025 6:53 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:53 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:54 AM        br 0 0 -9
+2/21/2025 6:54 AM        preset mcu 2
+2/21/2025 6:54 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 6:54 AM        scanrel omega 1 -1 0.1
+2/21/2025 6:56 AM        br 1 0 -9
+2/21/2025 7:00 AM        preset mcu 2
+2/21/2025 7:00 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:00 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:02 AM        br 2 0 -9
+2/21/2025 7:02 AM        preset mcu 2
+2/21/2025 7:02 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:02 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:04 AM        br -2 0 -8
+2/21/2025 7:07 AM        preset mcu 2
+2/21/2025 7:07 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:07 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:09 AM        br -1 0 -8
+2/21/2025 7:09 AM        preset mcu 2
+2/21/2025 7:09 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:09 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:11 AM        br 0 0 -8
+2/21/2025 7:11 AM        preset mcu 2
+2/21/2025 7:11 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:11 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:12 AM        br 1 0 -8
+2/21/2025 7:17 AM        preset mcu 2
+2/21/2025 7:17 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:17 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:18 AM        br 2 0 -8
+2/21/2025 7:19 AM        preset mcu 2
+2/21/2025 7:19 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:19 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:20 AM        br -2 0 -7
+2/21/2025 7:24 AM        preset mcu 2
+2/21/2025 7:24 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:24 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:25 AM        br -1 0 -7
+2/21/2025 7:26 AM        preset mcu 2
+2/21/2025 7:26 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:26 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:27 AM        br 0 0 -7
+2/21/2025 7:28 AM        preset mcu 2
+2/21/2025 7:28 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:28 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:29 AM        br 1 0 -7
+2/21/2025 7:34 AM        preset mcu 2
+2/21/2025 7:34 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:34 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:35 AM        br 2 0 -7
+2/21/2025 7:35 AM        preset mcu 2
+2/21/2025 7:35 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:35 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:37 AM        br -2 0 -6
+2/21/2025 7:40 AM        preset mcu 2
+2/21/2025 7:40 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:40 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:42 AM        br -1 0 -6
+2/21/2025 7:42 AM        preset mcu 2
+2/21/2025 7:42 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:42 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:43 AM        br 0 0 -6
+2/21/2025 7:44 AM        preset mcu 2
+2/21/2025 7:44 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:44 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:45 AM        br 1 0 -6
+2/21/2025 7:50 AM        preset mcu 2
+2/21/2025 7:50 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:50 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:51 AM        br 2 0 -6
+2/21/2025 7:52 AM        preset mcu 2
+2/21/2025 7:52 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:52 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:53 AM        br -2 0 -5
+2/21/2025 7:57 AM        preset mcu 2
+2/21/2025 7:57 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:57 AM        scanrel omega 1 -1 0.1
+2/21/2025 7:58 AM        br -1 0 -5
+2/21/2025 7:59 AM        preset mcu 2
+2/21/2025 7:59 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 7:59 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:00 AM        br 0 0 -5
+2/21/2025 8:01 AM        preset mcu 2
+2/21/2025 8:01 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:01 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:02 AM        br 1 0 -5
+2/21/2025 8:06 AM        preset mcu 2
+2/21/2025 8:06 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:06 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:08 AM        br 2 0 -5
+2/21/2025 8:08 AM        preset mcu 2
+2/21/2025 8:08 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:08 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:10 AM        br -2 0 -4
+2/21/2025 8:13 AM        preset mcu 2
+2/21/2025 8:13 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:13 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:14 AM        br -1 0 -4
+2/21/2025 8:15 AM        preset mcu 2
+2/21/2025 8:15 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:15 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:16 AM        br 0 0 -4
+2/21/2025 8:17 AM        preset mcu 2
+2/21/2025 8:17 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:17 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:18 AM        br 1 0 -4
+2/21/2025 8:23 AM        preset mcu 2
+2/21/2025 8:23 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:23 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:24 AM        br 2 0 -4
+2/21/2025 8:25 AM        preset mcu 2
+2/21/2025 8:25 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:25 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:26 AM        br -2 0 -3
+2/21/2025 8:29 AM        preset mcu 2
+2/21/2025 8:29 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:29 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:31 AM        br -1 0 -3
+2/21/2025 8:31 AM        preset mcu 2
+2/21/2025 8:31 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:31 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:32 AM        br 0 0 -3
+2/21/2025 8:33 AM        preset mcu 2
+2/21/2025 8:33 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:33 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:35 AM        br 1 0 -3
+2/21/2025 8:39 AM        preset mcu 2
+2/21/2025 8:39 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:39 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:40 AM        br 2 0 -3
+2/21/2025 8:41 AM        preset mcu 2
+2/21/2025 8:41 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:41 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:42 AM        br -2 0 -2
+2/21/2025 8:45 AM        preset mcu 2
+2/21/2025 8:45 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:45 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:47 AM        br -1 0 -2
+2/21/2025 8:47 AM        preset mcu 2
+2/21/2025 8:47 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:47 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:49 AM        br 0 0 -2
+2/21/2025 8:50 AM        preset mcu 2
+2/21/2025 8:50 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:50 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:51 AM        br 1 0 -2
+2/21/2025 8:55 AM        preset mcu 2
+2/21/2025 8:55 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:55 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:57 AM        br 2 0 -2
+2/21/2025 8:57 AM        preset mcu 2
+2/21/2025 8:57 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 8:57 AM        scanrel omega 1 -1 0.1
+2/21/2025 8:58 AM        br -2 0 -1
+2/21/2025 9:01 AM        preset mcu 2
+2/21/2025 9:01 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 9:01 AM        scanrel omega 1 -1 0.1
+2/21/2025 9:03 AM        br -1 0 -1
+2/21/2025 9:03 AM        preset mcu 2
+2/21/2025 9:03 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 9:03 AM        scanrel omega 1 -1 0.1
+2/21/2025 9:05 AM        br 0 0 -1
+2/21/2025 9:06 AM        preset mcu 2
+2/21/2025 9:06 AM        scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
+2/21/2025 9:06 AM        scanrel omega 1 -1 0.1
+2/21/2025 9:07 AM        br 0 0 14
+2/21/2025 9:10 AM        scantitle "mesh [0 0 14], spice index [0 0 -14], omega 2theta scans"
+2/21/2025 9:10 AM        drive omega -44
+2/21/2025 9:10 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:13 AM        drive omega -43.9
+2/21/2025 9:13 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:15 AM        drive omega -43.8
+2/21/2025 9:15 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:18 AM        drive omega -43.7
+2/21/2025 9:18 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:21 AM        drive omega -43.6
+2/21/2025 9:21 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:23 AM        drive omega -43.5
+2/21/2025 9:23 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:26 AM        drive omega -43.4
+2/21/2025 9:26 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:29 AM        drive omega -43.3
+2/21/2025 9:29 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:31 AM        drive omega -43.2
+2/21/2025 9:32 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:34 AM        drive omega -43.1
+2/21/2025 9:34 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:37 AM        drive omega -43
+2/21/2025 9:37 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:40 AM        drive omega -42.9
+2/21/2025 9:40 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:42 AM        drive omega -42.8
+2/21/2025 9:42 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:45 AM        drive omega -42.7
+2/21/2025 9:45 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:48 AM        drive omega -42.6
+2/21/2025 9:48 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:50 AM        drive omega -42.5
+2/21/2025 9:50 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:53 AM        drive omega -42.4
+2/21/2025 9:53 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:56 AM        drive omega -42.3
+2/21/2025 9:56 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 9:59 AM        drive omega -42.2
+2/21/2025 9:59 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:01 AM        drive omega -42.1
+2/21/2025 10:01 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:04 AM        drive omega -42
+2/21/2025 10:04 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:07 AM        drive omega -41.9
+2/21/2025 10:07 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:09 AM        drive omega -41.8
+2/21/2025 10:09 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:12 AM        drive omega -41.7
+2/21/2025 10:12 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:15 AM        drive omega -41.6
+2/21/2025 10:15 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:18 AM        drive omega -41.5
+2/21/2025 10:18 AM        scanrel 2theta 4 -4 0.25
+2/21/2025 10:20 AM        drive omega -41.4
+2/21/2025 10:20 AM        scanrel 2theta 4 -4 0.25

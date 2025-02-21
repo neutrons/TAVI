@@ -361,6 +361,11 @@ def spice_scan_to_nxdict(
     nxgoni.add_dataset(key="sgl", ds=NXdataset(ds=spicelogs.get("sgl"), type="NX_FLOAT", units="degrees"))
     nxgoni.add_dataset(key="stu", ds=NXdataset(ds=spicelogs.get("stu"), type="NX_FLOAT", units="degrees"))
     nxgoni.add_dataset(key="stl", ds=NXdataset(ds=spicelogs.get("stl"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="omega", ds=NXdataset(ds=spicelogs.get("omega"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="two_theta", ds=NXdataset(ds=spicelogs.get("two_theta"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="2theta", ds=NXdataset(ds=spicelogs.get("2theta"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="chi", ds=NXdataset(ds=spicelogs.get("chi"), type="NX_FLOAT", units="degrees"))
+    nxgoni.add_dataset(key="phi", ds=NXdataset(ds=spicelogs.get("phi"), type="NX_FLOAT", units="degrees"))
 
     if instrument_config_params is not None:
         if (goni_params := instrument_config_params.get("goniometer")) is not None:

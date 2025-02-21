@@ -1,0 +1,28 @@
+matlab.log started on : 12-Apr-2024 09:14:29
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('cd')" style="font-weight:bold">cd</a>
+Too many input arguments.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('startup', 'C:\Users\2fy\Documents\MATLAB\startup.m', 99)" style="font-weight:bold">startup</a> (<a href="matlab: opentoline('C:\Users\2fy\Documents\MATLAB\startup.m',99,0)">line 99</a>)
+cd C:\Dropbox (ORNL)\data\
+} 
+loadspicehb3a
+{Unrecognized function or variable 'loadspicehb3a'.
+} 
+spiceloadhb3a
+{Not enough input arguments.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spiceloadhb3a', 'C:\Dropbox (ORNL)\data\matlab\mfit\tools\spiceloadhb3a.m', 14)" style="font-weight:bold">spiceloadhb3a</a> (<a href="matlab: opentoline('C:\Dropbox (ORNL)\data\matlab\mfit\tools\spiceloadhb3a.m',14,0)">line 14</a>)
+[data,headertext,headers,defxname,defyname,defxvalue,defyvalue]=spicedata(filename);
+} 
+startup
+Install local libs : SpectralTools, FileTools, MiscTools, funcs...
+Install Matlab Graphic apps : Mfit, Rescal, Mview, SSym, Spec1d packages. 
+WARN : can't find "looktxt" mex file (Needed for some load routines).
+Hello  ! Your PRINTER is (undefined).
+use "doc" command to access Hypertext OnLine Help (with Netscape).
+TIP : Ctrl-a = go to start of line, Ctrl-e = go to end of line
+      Up ar. = backward history completion. Type "help cedit" for more.
+OK, you don"t have any startuser.m file.
+Current directory is : C:\Dropbox (ORNL)\data\HB1A\exp1012\analysis
+Getting previous workspace data from matlab.mat
+Previous Matlab Log file is renamed as matlab.log.old

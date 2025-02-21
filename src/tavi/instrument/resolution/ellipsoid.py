@@ -66,10 +66,12 @@ class ResoEllipsoid(object):
             case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
                 self.frame = "hkl"
                 self.q = self.hkl
-                self.angles = (sample.gamma_star, sample.alpha_star, sample.beta_star)
+                *_, alpha_star, beta_star, gamma_star = sample.reciprocal_latt_params
+                self.angles = (gamma_star, alpha_star, beta_star)
             case _:  # customized projection
                 p1, p2, p3 = self.projection
-                reciprocal_vecs = [sample.a_star_vec, sample.b_star_vec, sample.c_star_vec]
+                a_star_vec, b_star_vec, c_star_vec = sample.reciprocal_space_vectors
+                reciprocal_vecs = [a_star_vec, b_star_vec, c_star_vec]
                 v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
                 v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
                 v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)

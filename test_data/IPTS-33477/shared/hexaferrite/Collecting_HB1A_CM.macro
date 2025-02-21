@@ -1,0 +1,948 @@
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 -8.50 )"
+mv s2 -82.47 s1 -40.03 chi -15.95 phi -58.60
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 -5.50 )"
+mv s2 -78.82 s1 -38.21 chi -16.25 phi -65.79
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 -2.50 )"
+mv s2 -76.72 s1 -37.16 chi -16.29 phi -73.45
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 0.50 )"
+mv s2 -76.19 s1 -36.89 chi -16.05 phi -81.32
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 3.50 )"
+mv s2 -77.25 s1 -37.42 chi -15.53 phi -89.11
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 6.50 )"
+mv s2 -79.87 s1 -38.73 chi -14.77 phi -96.56
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 1.00 9.50 )"
+mv s2 -84.02 s1 -40.81 chi -13.85 phi -103.45
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 8.50 )"
+mv s2 -82.47 s1 -40.03 chi -34.03 phi -106.26
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 5.50 )"
+mv s2 -78.82 s1 -38.21 chi -35.90 phi -98.13
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 2.50 )"
+mv s2 -76.72 s1 -37.16 chi -37.26 phi -89.13
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 -0.50 )"
+mv s2 -76.19 s1 -36.89 chi -37.92 phi -79.62
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 -3.50 )"
+mv s2 -77.25 s1 -37.42 chi -37.82 phi -70.09
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 -6.50 )"
+mv s2 -79.87 s1 -38.73 chi -37.00 phi -61.05
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-3.00 2.00 -9.50 )"
+mv s2 -84.02 s1 -40.81 chi -35.63 phi -52.85
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 -13.50 )"
+mv s2 -66.33 s1 -31.97 chi -21.37 phi -34.33
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi -17.99 phi -23.84
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 -18.50 )"
+mv s2 -86.94 s1 -42.27 chi 0.22 phi -32.01
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 -15.50 )"
+mv s2 -78.11 s1 -37.86 chi 0.56 phi -37.06
+scan s1 -37.86 -40.26 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 -9.50 )"
+mv s2 -64.52 s1 -31.06 chi 1.41 phi -50.16
+scan s1 -31.06 -33.46 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 -3.50 )"
+mv s2 -56.85 s1 -27.22 chi 2.42 phi -67.61
+scan s1 -27.22 -29.62 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 -0.50 )"
+mv s2 -55.61 s1 -26.61 chi 2.90 phi -77.48
+scan s1 -26.61 -29.01 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 2.50 )"
+mv s2 -56.23 s1 -26.92 chi 3.29 phi -87.47
+scan s1 -26.92 -29.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 3.50 )"
+mv s2 -77.25 s1 -37.42 chi 22.19 phi -87.76
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 0.50 )"
+mv s2 -76.19 s1 -36.89 chi 22.11 phi -79.64
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 -2.50 )"
+mv s2 -76.72 s1 -37.16 chi 21.63 phi -71.51
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 -5.50 )"
+mv s2 -78.82 s1 -38.21 chi 20.78 phi -63.67
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 -8.50 )"
+mv s2 -82.47 s1 -40.03 chi 19.66 phi -56.40
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -2.00 -9.50 )"
+mv s2 -84.02 s1 -40.81 chi 38.45 phi -47.36
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 -13.50 )"
+mv s2 -66.33 s1 -31.97 chi 21.91 phi -31.24
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi 17.16 phi -21.39
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -2.00 -17.50 )"
+mv s2 -83.84 s1 -40.72 chi 36.27 phi -12.49
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 -21.50 )"
+mv s2 -78.45 s1 -38.03 chi 16.82 phi 0.60
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 -18.50 )"
+mv s2 -67.69 s1 -32.65 chi 19.56 phi -0.97
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 -15.50 )"
+mv s2 -57.85 s1 -27.73 chi 23.12 phi -3.11
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 -12.50 )"
+mv s2 -48.88 s1 -23.24 chi 27.87 phi -6.17
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 -9.50 )"
+mv s2 -40.86 s1 -19.23 chi 34.32 phi -10.89
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -11.50 )"
+mv s2 -46.09 s1 -21.84 chi -0.19 phi -25.90
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -14.50 )"
+mv s2 -54.76 s1 -26.18 chi -0.60 phi -19.81
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -17.50 )"
+mv s2 -64.32 s1 -30.96 chi -0.90 phi -15.33
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -23.50 )"
+mv s2 -86.24 s1 -41.92 chi -1.29 phi -9.29
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -21.50 )"
+mv s2 -78.45 s1 -38.03 chi -20.47 phi -1.72
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -18.50 )"
+mv s2 -67.69 s1 -32.65 chi -23.01 phi -3.69
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -15.50 )"
+mv s2 -57.85 s1 -27.73 chi -26.27 phi -6.38
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -12.50 )"
+mv s2 -48.88 s1 -23.24 chi -30.59 phi -10.25
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -9.50 )"
+mv s2 -40.86 s1 -19.23 chi -36.36 phi -16.22
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -6.50 )"
+mv s2 -34.09 s1 -15.85 chi -43.90 phi -26.32
+scan s1 -15.85 -18.25 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -3.50 )"
+mv s2 -29.19 s1 -13.40 chi -52.37 phi -44.95
+scan s1 -13.40 -15.80 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 -0.50 )"
+mv s2 -27.01 s1 -12.31 chi -57.04 phi -76.98
+scan s1 -12.31 -14.71 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 0.50 )"
+mv s2 -55.61 s1 -26.61 chi -56.75 phi -86.15
+scan s1 -26.61 -29.01 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 3.50 )"
+mv s2 -56.85 s1 -27.22 chi -54.32 phi -103.13
+scan s1 -27.22 -29.62 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 9.50 )"
+mv s2 -64.52 s1 -31.06 chi -45.39 phi -126.62
+scan s1 -31.06 -33.46 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 15.50 )"
+mv s2 -78.11 s1 -37.86 chi -36.33 phi -139.23
+scan s1 -37.86 -40.26 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 18.50 )"
+mv s2 -86.94 s1 -42.27 chi -32.53 phi -143.28
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi -13.93 phi -135.55
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 13.50 )"
+mv s2 -66.33 s1 -31.97 chi -17.87 phi -125.50
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 7.50 )"
+mv s2 -53.86 s1 -25.73 chi -22.69 phi -109.80
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 4.50 )"
+mv s2 -49.94 s1 -23.77 chi -24.95 phi -99.21
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 1.50 )"
+mv s2 -47.89 s1 -22.75 chi -26.56 phi -87.01
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 -1.50 )"
+mv s2 -47.89 s1 -22.75 chi -27.12 phi -74.07
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 -4.50 )"
+mv s2 -49.94 s1 -23.77 chi -26.53 phi -61.64
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 1.00 -7.50 )"
+mv s2 -53.86 s1 -25.73 chi -25.11 phi -50.70
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 -11.50 )"
+mv s2 -68.44 s1 -33.02 chi -46.02 phi -29.93
+scan s1 -33.02 -35.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 -14.50 )"
+mv s2 -75.47 s1 -36.54 chi -41.85 phi -23.22
+scan s1 -36.54 -38.94 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 -17.50 )"
+mv s2 -83.84 s1 -40.72 chi -38.08 phi -18.24
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi -39.65 phi 8.35
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 -13.50 )"
+mv s2 -66.33 s1 -31.97 chi -50.06 phi 7.25
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 -7.50 )"
+mv s2 -53.86 s1 -25.73 chi -65.48 phi 4.25
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 3.00 -9.50 )"
+mv s2 -84.02 s1 -40.81 chi -65.66 phi -21.79
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 2.00 -2.50 )"
+mv s2 -56.23 s1 -26.92 chi -56.65 phi -67.92
+scan s1 -26.92 -29.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 2.50 )"
+mv s2 -28.12 s1 -12.86 chi -52.40 phi -110.36
+scan s1 -12.86 -15.26 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 5.50 )"
+mv s2 -32.21 s1 -14.91 chi -42.98 phi -130.53
+scan s1 -14.91 -17.31 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 8.50 )"
+mv s2 -38.44 s1 -18.02 chi -34.36 phi -141.39
+scan s1 -18.02 -20.42 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 11.50 )"
+mv s2 -46.09 s1 -21.84 chi -27.77 phi -147.74
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 14.50 )"
+mv s2 -54.76 s1 -26.18 chi -22.90 phi -151.81
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 17.50 )"
+mv s2 -64.32 s1 -30.96 chi -19.25 phi -154.62
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 1.00 23.50 )"
+mv s2 -86.24 s1 -41.92 chi -14.28 phi -158.21
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 21.50 )"
+mv s2 -78.45 s1 -38.03 chi 3.38 phi -147.58
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 18.50 )"
+mv s2 -67.69 s1 -32.65 chi 3.47 phi -144.45
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 15.50 )"
+mv s2 -57.85 s1 -27.73 chi 3.58 phi -140.36
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 12.50 )"
+mv s2 -48.88 s1 -23.24 chi 3.70 phi -134.86
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 9.50 )"
+mv s2 -40.86 s1 -19.23 chi 3.81 phi -127.22
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 6.50 )"
+mv s2 -34.09 s1 -15.85 chi 3.85 phi -116.43
+scan s1 -15.85 -18.25 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 3.50 )"
+mv s2 -29.19 s1 -13.40 chi 3.68 phi -101.42
+scan s1 -13.40 -15.80 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 0.50 )"
+mv s2 -27.01 s1 -12.31 chi 3.11 phi -82.50
+scan s1 -12.31 -14.71 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -2.50 )"
+mv s2 -28.12 s1 -12.86 chi 2.16 phi -62.88
+scan s1 -12.86 -15.26 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -5.50 )"
+mv s2 -32.21 s1 -14.91 chi 1.17 phi -46.47
+scan s1 -14.91 -17.31 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 0.00 -8.50 )"
+mv s2 -38.44 s1 -18.02 chi 0.38 phi -34.42
+scan s1 -18.02 -20.42 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 -7.50 )"
+mv s2 -53.86 s1 -25.73 chi 27.76 phi -47.05
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 -4.50 )"
+mv s2 -49.94 s1 -23.77 chi 30.52 phi -58.00
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 -1.50 )"
+mv s2 -47.89 s1 -22.75 chi 32.46 phi -70.83
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 1.50 )"
+mv s2 -47.89 s1 -22.75 chi 33.05 phi -84.56
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 4.50 )"
+mv s2 -49.94 s1 -23.77 chi 32.20 phi -97.72
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 7.50 )"
+mv s2 -53.86 s1 -25.73 chi 30.31 phi -109.16
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 13.50 )"
+mv s2 -66.33 s1 -31.97 chi 25.53 phi -125.86
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 -1.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi 21.30 phi -136.27
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -2.00 18.50 )"
+mv s2 -86.94 s1 -42.27 chi 39.50 phi -145.73
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 23.50 )"
+mv s2 -86.24 s1 -41.92 chi 20.17 phi -159.77
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 22.50 )"
+mv s2 -75.93 s1 -36.77 chi 2.45 phi -169.30
+scan s1 -36.77 -39.17 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 19.50 )"
+mv s2 -64.44 s1 -31.02 chi 2.45 phi -169.30
+scan s1 -31.02 -33.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 16.50 )"
+mv s2 -53.63 s1 -25.62 chi 2.45 phi -169.30
+scan s1 -25.62 -28.02 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 13.50 )"
+mv s2 -43.32 s1 -20.46 chi 2.45 phi -169.30
+scan s1 -20.46 -22.86 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 10.50 )"
+mv s2 -33.37 s1 -15.48 chi 2.45 phi -169.30
+scan s1 -15.48 -17.88 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 7.50 )"
+mv s2 -23.67 s1 -10.63 chi 2.45 phi -169.30
+scan s1 -10.63 -13.03 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 4.50 )"
+mv s2 -14.14 s1 -5.87 chi 2.45 phi -169.30
+scan s1 -5.87 -8.27 0.12
+preset time  2
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 11.50 )"
+mv s2 -46.09 s1 -21.84 chi 34.46 phi -150.09
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 14.50 )"
+mv s2 -54.76 s1 -26.18 chi 29.30 phi -153.94
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 -1.00 17.50 )"
+mv s2 -64.32 s1 -30.96 chi 25.44 phi -156.53
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -2.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi 39.65 phi -171.65
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 21.50 )"
+mv s2 -78.45 s1 -38.03 chi -16.82 phi -179.40
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi -34.72 phi -167.09
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 13.50 )"
+mv s2 -66.33 s1 -31.97 chi -45.13 phi -166.16
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 2.00 7.50 )"
+mv s2 -53.86 s1 -25.73 chi -60.54 phi -163.86
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 3.00 8.50 )"
+mv s2 -82.47 s1 -40.03 chi -63.23 phi -139.37
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 3.00 5.50 )"
+mv s2 -78.82 s1 -38.21 chi -68.79 phi -129.16
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 17.50 )"
+mv s2 -83.84 s1 -40.72 chi 3.83 phi -124.87
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 14.50 )"
+mv s2 -75.47 s1 -36.54 chi 3.85 phi -119.49
+scan s1 -36.54 -38.94 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 0.00 11.50 )"
+mv s2 -68.44 s1 -33.02 chi 3.83 phi -113.10
+scan s1 -33.02 -35.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 9.50 )"
+mv s2 -84.02 s1 -40.81 chi 21.28 phi -102.78
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-2.00 -1.00 6.50 )"
+mv s2 -79.87 s1 -38.73 chi 21.89 phi -95.56
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -22.50 )"
+mv s2 -75.93 s1 -36.77 chi -2.45 phi 10.70
+scan s1 -36.77 -39.17 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -19.50 )"
+mv s2 -64.44 s1 -31.02 chi -2.45 phi 10.70
+scan s1 -31.02 -33.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -16.50 )"
+mv s2 -53.63 s1 -25.62 chi -2.45 phi 10.70
+scan s1 -25.62 -28.02 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -13.50 )"
+mv s2 -43.32 s1 -20.46 chi -2.45 phi 10.70
+scan s1 -20.46 -22.86 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -10.50 )"
+mv s2 -33.37 s1 -15.48 chi -2.45 phi 10.70
+scan s1 -15.48 -17.88 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -7.50 )"
+mv s2 -23.67 s1 -10.63 chi -2.45 phi 10.70
+scan s1 -10.63 -13.03 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 0.00 -4.50 )"
+mv s2 -14.14 s1 -5.87 chi -2.45 phi 10.70
+scan s1 -5.87 -8.27 0.12
+preset time  2
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -9.50 )"
+mv s2 -40.86 s1 -19.23 chi -3.81 phi 52.78
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -12.50 )"
+mv s2 -48.88 s1 -23.24 chi -3.70 phi 45.14
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -15.50 )"
+mv s2 -57.85 s1 -27.73 chi -3.58 phi 39.64
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -18.50 )"
+mv s2 -67.69 s1 -32.65 chi -3.47 phi 35.55
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -21.50 )"
+mv s2 -78.45 s1 -38.03 chi -3.38 phi 32.42
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi 13.93 phi 44.45
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -2.00 -18.50 )"
+mv s2 -86.94 s1 -42.27 chi 32.53 phi 36.72
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -2.00 -15.50 )"
+mv s2 -78.11 s1 -37.86 chi 36.33 phi 40.77
+scan s1 -37.86 -40.26 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 -13.50 )"
+mv s2 -66.33 s1 -31.97 chi 17.87 phi 54.50
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 -7.50 )"
+mv s2 -53.86 s1 -25.73 chi 22.69 phi 70.20
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 -4.50 )"
+mv s2 -49.94 s1 -23.77 chi 24.95 phi 80.79
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 -1.50 )"
+mv s2 -47.89 s1 -22.75 chi 26.56 phi 92.99
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 1.50 )"
+mv s2 -47.89 s1 -22.75 chi 27.12 phi 105.93
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 4.50 )"
+mv s2 -49.94 s1 -23.77 chi 26.53 phi 118.36
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 7.50 )"
+mv s2 -53.86 s1 -25.73 chi 25.11 phi 129.30
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 13.50 )"
+mv s2 -66.33 s1 -31.97 chi 21.37 phi 145.67
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -1.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi 17.99 phi 156.16
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 18.50 )"
+mv s2 -86.94 s1 -42.27 chi -0.22 phi 147.99
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 15.50 )"
+mv s2 -78.11 s1 -37.86 chi -0.56 phi 142.94
+scan s1 -37.86 -40.26 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 9.50 )"
+mv s2 -64.52 s1 -31.06 chi -1.41 phi 129.84
+scan s1 -31.06 -33.46 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 3.50 )"
+mv s2 -56.85 s1 -27.22 chi -2.42 phi 112.39
+scan s1 -27.22 -29.62 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 0.50 )"
+mv s2 -55.61 s1 -26.61 chi -2.90 phi 102.52
+scan s1 -26.61 -29.01 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 -2.50 )"
+mv s2 -56.23 s1 -26.92 chi -3.29 phi 92.53
+scan s1 -26.92 -29.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 -3.50 )"
+mv s2 -77.25 s1 -37.42 chi -22.19 phi 92.24
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 -0.50 )"
+mv s2 -76.19 s1 -36.89 chi -22.11 phi 100.36
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 2.50 )"
+mv s2 -76.72 s1 -37.16 chi -21.63 phi 108.49
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 5.50 )"
+mv s2 -78.82 s1 -38.21 chi -20.78 phi 116.33
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 8.50 )"
+mv s2 -82.47 s1 -40.03 chi -19.66 phi 123.60
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 9.50 )"
+mv s2 -84.02 s1 -40.81 chi -38.45 phi 132.64
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 6.50 )"
+mv s2 -79.87 s1 -38.73 chi -40.81 phi 124.44
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 3.50 )"
+mv s2 -77.25 s1 -37.42 chi -42.66 phi 115.07
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 0.50 )"
+mv s2 -76.19 s1 -36.89 chi -43.73 phi 104.85
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 -2.50 )"
+mv s2 -76.72 s1 -37.16 chi -43.86 phi 94.36
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 -5.50 )"
+mv s2 -78.82 s1 -38.21 chi -43.08 phi 84.28
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 2.00 -8.50 )"
+mv s2 -82.47 s1 -40.03 chi -41.56 phi 75.14
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 -9.50 )"
+mv s2 -84.02 s1 -40.81 chi -21.28 phi 77.22
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 1.00 -6.50 )"
+mv s2 -79.87 s1 -38.73 chi -21.89 phi 84.44
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 -11.50 )"
+mv s2 -68.44 s1 -33.02 chi -3.83 phi 66.90
+scan s1 -33.02 -35.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 -14.50 )"
+mv s2 -75.47 s1 -36.54 chi -3.85 phi 60.51
+scan s1 -36.54 -38.94 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 0.00 -17.50 )"
+mv s2 -83.84 s1 -40.72 chi -3.83 phi 55.13
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi -21.30 phi 43.73
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 -18.50 )"
+mv s2 -86.94 s1 -42.27 chi -39.50 phi 34.27
+scan s1 -42.27 -44.67 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 -15.50 )"
+mv s2 -78.11 s1 -37.86 chi -43.53 phi 38.38
+scan s1 -37.86 -40.26 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 -9.50 )"
+mv s2 -64.52 s1 -31.06 chi -53.06 phi 52.07
+scan s1 -31.06 -33.46 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 -13.50 )"
+mv s2 -66.33 s1 -31.97 chi -25.53 phi 54.14
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 -7.50 )"
+mv s2 -53.86 s1 -25.73 chi -30.31 phi 70.84
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 -4.50 )"
+mv s2 -49.94 s1 -23.77 chi -32.20 phi 82.28
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 -1.50 )"
+mv s2 -47.89 s1 -22.75 chi -33.05 phi 95.44
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 1.50 )"
+mv s2 -47.89 s1 -22.75 chi -32.46 phi 109.17
+scan s1 -22.75 -25.15 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 4.50 )"
+mv s2 -49.94 s1 -23.77 chi -30.52 phi 122.00
+scan s1 -23.77 -26.17 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 7.50 )"
+mv s2 -53.86 s1 -25.73 chi -27.76 phi 132.95
+scan s1 -25.73 -28.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 13.50 )"
+mv s2 -66.33 s1 -31.97 chi -21.91 phi 148.76
+scan s1 -31.97 -34.37 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 1.00 19.50 )"
+mv s2 -83.95 s1 -40.78 chi -17.16 phi 158.61
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 17.50 )"
+mv s2 -83.84 s1 -40.72 chi -36.27 phi 167.51
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 14.50 )"
+mv s2 -75.47 s1 -36.54 chi -40.64 phi 163.54
+scan s1 -36.54 -38.94 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 11.50 )"
+mv s2 -68.44 s1 -33.02 chi -45.62 phi 158.09
+scan s1 -33.02 -35.42 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 3.00 6.50 )"
+mv s2 -79.87 s1 -38.73 chi -69.92 phi 168.08
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (-1.00 3.00 9.50 )"
+mv s2 -84.02 s1 -40.81 chi -63.61 phi 174.14
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 18.50 )"
+mv s2 -67.69 s1 -32.65 chi -19.56 phi 179.03
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 15.50 )"
+mv s2 -57.85 s1 -27.73 chi -23.12 phi 176.89
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 12.50 )"
+mv s2 -48.88 s1 -23.24 chi -27.87 phi 173.83
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 9.50 )"
+mv s2 -40.86 s1 -19.23 chi -34.32 phi 169.11
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 6.50 )"
+mv s2 -34.09 s1 -15.85 chi -43.06 phi 161.04
+scan s1 -15.85 -18.25 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 3.50 )"
+mv s2 -29.19 s1 -13.40 chi -53.85 phi 145.26
+scan s1 -13.40 -15.80 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 0.50 )"
+mv s2 -27.01 s1 -12.31 chi -62.38 phi 112.77
+scan s1 -12.31 -14.71 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 -0.50 )"
+mv s2 -55.61 s1 -26.61 chi -62.99 phi 101.91
+scan s1 -26.61 -29.01 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 2.50 )"
+mv s2 -56.23 s1 -26.92 chi -60.98 phi 122.83
+scan s1 -26.92 -29.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 2.00 -3.50 )"
+mv s2 -56.85 s1 -27.22 chi -61.73 phi 80.68
+scan s1 -27.22 -29.62 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -2.50 )"
+mv s2 -28.12 s1 -12.86 chi -60.05 phi 71.58
+scan s1 -12.86 -15.26 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -5.50 )"
+mv s2 -32.21 s1 -14.91 chi -50.55 phi 47.68
+scan s1 -14.91 -17.31 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -8.50 )"
+mv s2 -38.44 s1 -18.02 chi -41.44 phi 36.17
+scan s1 -18.02 -20.42 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -11.50 )"
+mv s2 -46.09 s1 -21.84 chi -34.46 phi 29.91
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -14.50 )"
+mv s2 -54.76 s1 -26.18 chi -29.30 phi 26.06
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -17.50 )"
+mv s2 -64.32 s1 -30.96 chi -25.44 phi 23.47
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (0.00 1.00 -23.50 )"
+mv s2 -86.24 s1 -41.92 chi -20.17 phi 20.23
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 -23.50 )"
+mv s2 -86.24 s1 -41.92 chi 14.28 phi 21.79
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -2.00 -19.50 )"
+mv s2 -83.95 s1 -40.78 chi 34.72 phi 12.91
+scan s1 -40.78 -43.18 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 -17.50 )"
+mv s2 -64.32 s1 -30.96 chi 19.25 phi 25.38
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 -14.50 )"
+mv s2 -54.76 s1 -26.18 chi 22.90 phi 28.19
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 -11.50 )"
+mv s2 -46.09 s1 -21.84 chi 27.77 phi 32.26
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 -8.50 )"
+mv s2 -38.44 s1 -18.02 chi 34.36 phi 38.61
+scan s1 -18.02 -20.42 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -6.50 )"
+mv s2 -34.09 s1 -15.85 chi -3.85 phi 63.57
+scan s1 -15.85 -18.25 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -3.50 )"
+mv s2 -29.19 s1 -13.40 chi -3.68 phi 78.58
+scan s1 -13.40 -15.80 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 -0.50 )"
+mv s2 -27.01 s1 -12.31 chi -3.11 phi 97.50
+scan s1 -12.31 -14.71 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 2.50 )"
+mv s2 -28.12 s1 -12.86 chi -2.16 phi 117.12
+scan s1 -12.86 -15.26 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 5.50 )"
+mv s2 -32.21 s1 -14.91 chi -1.17 phi 133.53
+scan s1 -14.91 -17.31 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 8.50 )"
+mv s2 -38.44 s1 -18.02 chi -0.38 phi 145.58
+scan s1 -18.02 -20.42 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 11.50 )"
+mv s2 -46.09 s1 -21.84 chi 0.19 phi 154.10
+scan s1 -21.84 -24.24 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 14.50 )"
+mv s2 -54.76 s1 -26.18 chi 0.60 phi 160.19
+scan s1 -26.18 -28.58 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 17.50 )"
+mv s2 -64.32 s1 -30.96 chi 0.90 phi 164.67
+scan s1 -30.96 -33.36 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 0.00 23.50 )"
+mv s2 -86.24 s1 -41.92 chi 1.29 phi 170.71
+scan s1 -41.92 -44.32 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 21.50 )"
+mv s2 -78.45 s1 -38.03 chi 20.47 phi 178.28
+scan s1 -38.03 -40.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 18.50 )"
+mv s2 -67.69 s1 -32.65 chi 23.01 phi 176.31
+scan s1 -32.65 -35.05 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 15.50 )"
+mv s2 -57.85 s1 -27.73 chi 26.27 phi 173.62
+scan s1 -27.73 -30.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 12.50 )"
+mv s2 -48.88 s1 -23.24 chi 30.59 phi 169.75
+scan s1 -23.24 -25.64 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (1.00 -1.00 9.50 )"
+mv s2 -40.86 s1 -19.23 chi 36.36 phi 163.78
+scan s1 -19.23 -21.63 0.12
+preset time  3
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (2.00 -2.00 17.50 )"
+mv s2 -83.84 s1 -40.72 chi 38.08 phi 161.76
+scan s1 -40.72 -43.12 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 9.50 )"
+mv s2 -84.02 s1 -40.81 chi 35.63 phi 127.15
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 6.50 )"
+mv s2 -79.87 s1 -38.73 chi 37.00 phi 118.95
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 3.50 )"
+mv s2 -77.25 s1 -37.42 chi 37.82 phi 109.91
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 0.50 )"
+mv s2 -76.19 s1 -36.89 chi 37.92 phi 100.38
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 -2.50 )"
+mv s2 -76.72 s1 -37.16 chi 37.26 phi 90.87
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 -5.50 )"
+mv s2 -78.82 s1 -38.21 chi 35.90 phi 81.87
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -2.00 -8.50 )"
+mv s2 -82.47 s1 -40.03 chi 34.03 phi 73.74
+scan s1 -40.03 -42.43 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 -9.50 )"
+mv s2 -84.02 s1 -40.81 chi 13.85 phi 76.55
+scan s1 -40.81 -43.21 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 -6.50 )"
+mv s2 -79.87 s1 -38.73 chi 14.77 phi 83.44
+scan s1 -38.73 -41.13 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 -3.50 )"
+mv s2 -77.25 s1 -37.42 chi 15.53 phi 90.89
+scan s1 -37.42 -39.82 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 -0.50 )"
+mv s2 -76.19 s1 -36.89 chi 16.05 phi 98.68
+scan s1 -36.89 -39.29 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 2.50 )"
+mv s2 -76.72 s1 -37.16 chi 16.29 phi 106.55
+scan s1 -37.16 -39.56 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 5.50 )"
+mv s2 -78.82 s1 -38.21 chi 16.25 phi 114.21
+scan s1 -38.21 -40.61 0.12
+preset time  4
+scantitle "Magnetic_CM_@(temp.position)K_2axis: (3.00 -1.00 8.50 )"
+mv s2 -82.47 s1 -40.03 chi 15.95 phi 121.40
+scan s1 -40.03 -42.43 0.12
+preset time  4

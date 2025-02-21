@@ -1,0 +1,294 @@
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -2.00 -1.00 )"
+mv s2 -87.20 s1 -43.60 chi 14.97 phi 48.48
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -2.00 0.00 )"
+mv s2 -80.12 s1 -40.06 chi -5.09 phi 50.74
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -2.00 1.00 )"
+mv s2 -86.13 s1 -43.06 chi -26.18 phi 53.30
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -1.00 -1.00 )"
+mv s2 -72.19 s1 -36.09 chi 16.26 phi 31.48
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi -7.55 phi 32.83
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 -1.00 1.00 )"
+mv s2 -71.06 s1 -35.53 chi -32.44 phi 34.42
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 0.00 -2.00 )"
+mv s2 -87.58 s1 -43.79 chi 33.74 phi 10.49
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 0.00 -1.00 )"
+mv s2 -66.95 s1 -33.48 chi 15.94 phi 9.99
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 0.00 0.00 )"
+mv s2 -59.06 s1 -29.53 chi -9.61 phi 9.40
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 0.00 1.00 )"
+mv s2 -65.78 s1 -32.89 chi -35.75 phi 8.68
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 1.00 -1.00 )"
+mv s2 -72.19 s1 -36.09 chi 13.55 phi -11.13
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi -10.12 phi -13.42
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 1.00 1.00 )"
+mv s2 -71.06 s1 -35.53 chi -33.67 phi -16.07
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 2.00 -1.00 )"
+mv s2 -87.20 s1 -43.60 chi 10.42 phi -27.44
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 2.00 0.00 )"
+mv s2 -80.12 s1 -40.06 chi -9.49 phi -30.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-2.00 2.00 1.00 )"
+mv s2 -86.13 s1 -43.06 chi -29.00 phi -33.39
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi -0.14 phi 79.81
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -2.00 -2.00 )"
+mv s2 -85.80 s1 -42.90 chi 40.40 phi 62.41
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -2.00 -1.00 )"
+mv s2 -65.30 s1 -32.65 chi 23.61 phi 66.24
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -2.00 0.00 )"
+mv s2 -57.59 s1 -28.80 chi -1.79 phi 70.54
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -2.00 1.00 )"
+mv s2 -64.71 s1 -32.35 chi -29.06 phi 75.37
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -2.00 2.00 )"
+mv s2 -84.73 s1 -42.36 chi -48.59 phi 80.74
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -1.00 -2.00 )"
+mv s2 -70.72 s1 -35.36 chi 48.19 phi 43.06
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -1.00 -1.00 )"
+mv s2 -47.55 s1 -23.78 chi 30.29 phi 46.47
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -1.00 0.00 )"
+mv s2 -37.54 s1 -18.77 chi -5.09 phi 50.74
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 -1.00 1.00 )"
+mv s2 -46.83 s1 -23.41 chi -43.43 phi 56.19
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 0.00 -1.00 )"
+mv s2 -40.49 s1 -20.24 chi 33.74 phi 10.49
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 0.00 0.00 )"
+mv s2 -28.53 s1 -14.27 chi -9.61 phi 9.40
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 1.00 -2.00 )"
+mv s2 -70.72 s1 -35.36 chi 46.38 phi -20.45
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 1.00 -1.00 )"
+mv s2 -47.55 s1 -23.78 chi 26.65 phi -24.88
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 1.00 0.00 )"
+mv s2 -37.54 s1 -18.77 chi -9.49 phi -30.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 1.00 1.00 )"
+mv s2 -46.83 s1 -23.41 chi -44.38 phi -36.82
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 2.00 -2.00 )"
+mv s2 -85.80 s1 -42.90 chi 36.90 phi -39.73
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 2.00 -1.00 )"
+mv s2 -65.30 s1 -32.65 chi 18.12 phi -44.06
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 2.00 0.00 )"
+mv s2 -57.59 s1 -28.80 chi -7.88 phi -48.79
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 2.00 1.00 )"
+mv s2 -64.71 s1 -32.35 chi -32.68 phi -53.92
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 2.00 2.00 )"
+mv s2 -84.73 s1 -42.36 chi -49.57 phi -59.41
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (-1.00 3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi -6.81 phi -57.57
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -3.00 -1.00 )"
+mv s2 -83.36 s1 -41.68 chi 23.55 phi 97.16
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -3.00 0.00 )"
+mv s2 -76.76 s1 -38.38 chi 3.64 phi 101.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -3.00 1.00 )"
+mv s2 -83.36 s1 -41.68 chi -17.42 phi 105.66
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -2.00 -2.00 )"
+mv s2 -78.23 s1 -39.11 chi 48.82 phi 89.04
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -2.00 -1.00 )"
+mv s2 -57.04 s1 -28.52 chi 31.73 phi 95.08
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -2.00 0.00 )"
+mv s2 -48.90 s1 -24.45 chi 3.64 phi 101.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -2.00 1.00 )"
+mv s2 -57.04 s1 -28.52 chi -26.68 phi 107.80
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -2.00 2.00 )"
+mv s2 -78.23 s1 -39.11 chi -46.63 phi 114.18
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -1.00 -1.00 )"
+mv s2 -36.77 s1 -18.39 chi 48.82 phi 89.04
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -1.00 0.00 )"
+mv s2 -23.89 s1 -11.94 chi 3.64 phi 101.38
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 -1.00 1.00 )"
+mv s2 -36.77 s1 -18.39 chi -46.63 phi 114.18
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 1.00 -1.00 )"
+mv s2 -36.77 s1 -18.39 chi 46.63 phi -65.82
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 1.00 0.00 )"
+mv s2 -23.89 s1 -11.94 chi -3.64 phi -78.62
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 1.00 1.00 )"
+mv s2 -36.77 s1 -18.39 chi -48.82 phi -90.96
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 2.00 -2.00 )"
+mv s2 -78.23 s1 -39.11 chi 46.63 phi -65.82
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 2.00 -1.00 )"
+mv s2 -57.04 s1 -28.52 chi 26.68 phi -72.20
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 2.00 0.00 )"
+mv s2 -48.90 s1 -24.45 chi -3.64 phi -78.62
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 2.00 1.00 )"
+mv s2 -57.04 s1 -28.52 chi -31.73 phi -84.92
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 2.00 2.00 )"
+mv s2 -78.23 s1 -39.11 chi -48.82 phi -90.96
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 3.00 -1.00 )"
+mv s2 -83.36 s1 -41.68 chi 17.42 phi -74.34
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 3.00 0.00 )"
+mv s2 -76.76 s1 -38.38 chi -3.64 phi -78.62
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (0.00 3.00 1.00 )"
+mv s2 -83.36 s1 -41.68 chi -23.55 phi -82.84
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi 6.81 phi 122.43
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -2.00 -2.00 )"
+mv s2 -84.73 s1 -42.36 chi 49.57 phi 120.59
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -2.00 -1.00 )"
+mv s2 -64.71 s1 -32.35 chi 32.68 phi 126.08
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -2.00 0.00 )"
+mv s2 -57.59 s1 -28.80 chi 7.88 phi 131.21
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -2.00 1.00 )"
+mv s2 -65.30 s1 -32.65 chi -18.12 phi 135.94
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -2.00 2.00 )"
+mv s2 -85.80 s1 -42.90 chi -36.90 phi 140.27
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -1.00 -1.00 )"
+mv s2 -46.83 s1 -23.41 chi 44.38 phi 143.18
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -1.00 0.00 )"
+mv s2 -37.54 s1 -18.77 chi 9.49 phi 149.73
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -1.00 1.00 )"
+mv s2 -47.55 s1 -23.78 chi -26.65 phi 155.12
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 -1.00 2.00 )"
+mv s2 -70.72 s1 -35.36 chi -46.38 phi 159.55
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 0.00 0.00 )"
+mv s2 -28.53 s1 -14.27 chi 9.61 phi -170.60
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 0.00 1.00 )"
+mv s2 -40.49 s1 -20.24 chi -33.74 phi -169.51
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 1.00 -1.00 )"
+mv s2 -46.83 s1 -23.41 chi 43.43 phi -123.81
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 1.00 0.00 )"
+mv s2 -37.54 s1 -18.77 chi 5.09 phi -129.26
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 1.00 1.00 )"
+mv s2 -47.55 s1 -23.78 chi -30.29 phi -133.53
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 1.00 2.00 )"
+mv s2 -70.72 s1 -35.36 chi -48.19 phi -136.94
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 2.00 -2.00 )"
+mv s2 -84.73 s1 -42.36 chi 48.59 phi -99.26
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 2.00 -1.00 )"
+mv s2 -64.71 s1 -32.35 chi 29.06 phi -104.63
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 2.00 0.00 )"
+mv s2 -57.59 s1 -28.80 chi 1.79 phi -109.46
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 2.00 1.00 )"
+mv s2 -65.30 s1 -32.65 chi -23.61 phi -113.76
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 2.00 2.00 )"
+mv s2 -85.80 s1 -42.90 chi -40.40 phi -117.59
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (1.00 3.00 0.00 )"
+mv s2 -83.82 s1 -41.91 chi 0.14 phi -100.19
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -2.00 -1.00 )"
+mv s2 -86.13 s1 -43.06 chi 29.00 phi 146.61
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -2.00 0.00 )"
+mv s2 -80.12 s1 -40.06 chi 9.49 phi 149.73
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -2.00 1.00 )"
+mv s2 -87.20 s1 -43.60 chi -10.42 phi 152.56
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -1.00 -1.00 )"
+mv s2 -71.06 s1 -35.53 chi 33.67 phi 163.93
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi 10.12 phi 166.58
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 -1.00 1.00 )"
+mv s2 -72.19 s1 -36.09 chi -13.55 phi 168.87
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 0.00 -1.00 )"
+mv s2 -65.78 s1 -32.89 chi 35.75 phi -171.32
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 0.00 0.00 )"
+mv s2 -59.06 s1 -29.53 chi 9.61 phi -170.60
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 0.00 1.00 )"
+mv s2 -66.95 s1 -33.48 chi -15.94 phi -170.01
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 0.00 2.00 )"
+mv s2 -87.58 s1 -43.79 chi -33.74 phi -169.51
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 1.00 -1.00 )"
+mv s2 -71.06 s1 -35.53 chi 32.44 phi -145.58
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 1.00 0.00 )"
+mv s2 -64.63 s1 -32.31 chi 7.55 phi -147.17
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 1.00 1.00 )"
+mv s2 -72.19 s1 -36.09 chi -16.26 phi -148.52
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 2.00 -1.00 )"
+mv s2 -86.13 s1 -43.06 chi 26.18 phi -126.70
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 2.00 0.00 )"
+mv s2 -80.12 s1 -40.06 chi 5.09 phi -129.26
+scanrel s1 1.5 -1.5 0.15
+scantitle "Nuclear_@(temp.position)K_2axis: (2.00 2.00 1.00 )"
+mv s2 -87.20 s1 -43.60 chi -14.97 phi -131.52
+scanrel s1 1.5 -1.5 0.15

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import xml.etree.ElementTree as ET
 from typing import Any
 
 import numpy as np
@@ -82,12 +83,12 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
     with open(ub_file_name, "r", encoding="utf-8") as f:
         all_content = f.readlines()
 
-    for idx, line in enumerate(all_content):
-        if line.strip() == "":
-            continue  # skip if empty
-        elif line.strip()[0] == "[":
-            continue  # skiplines like "[xx]"
-
+    if all_content[0] == "[UBMode]\n":
+        for idx, line in enumerate(all_content):
+            if line.strip() == "":
+                continue  # skip if empty
+            elif line.strip()[0] == "[":
+                continue  # skiplines like "[xx]"
         key, val = line.strip().split("=")
 
         if key == "Mode":
@@ -100,7 +101,12 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
             ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
         else:  # float
             ubconf.update({key: float(val)})
-
+    else:  # xml junk from C#
+        tree = ET.parse(ub_file_name)
+        root = tree.getroot()
+        for matrix in root.findall("matrix"):
+            ub_matrix = matrix.attrib["matrix"].split(" ")
+        ubconf.update({"UBMatrix": np.array([float(ub_matrix[i]) for i in range(9)])})
     return ubconf
 
 
