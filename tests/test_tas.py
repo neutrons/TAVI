@@ -2,7 +2,7 @@ import numpy as np
 
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.ub_algorithm import r_matrix_with_minimal_tilt
+from tavi.ub_algorithm import r_matrix_with_minimal_tilt, uv_to_ub_matrix
 from tavi.utilities import MotorAngles, Peak, UBConf, spice_to_mantid
 
 
@@ -201,3 +201,15 @@ def test_calculate_motor_angles_hb3():
     angles3_cal = tas.calculate_motor_angles(hkl=(1.3, 0, 1.3))
     assert np.allclose(angles3_cal.sgl, 1.001000, atol=1e-2)
     assert np.allclose(angles3_cal.sgu, -3.000750, atol=1e-2)
+
+
+def test_cube():
+    xtal = Sample()
+    u = (1, 0, 0)
+    v = (0, 1, 0)
+    ub_mat = uv_to_ub_matrix(u, v, xtal.lattice_params)
+    assert np.allclose(ub_mat, ((0, 1, 0), (0, 0, 1), (1, 0, 0)))
+    xtal.ub_conf.ub_mat = spice_to_mantid(ub_mat)
+
+    hb1a = TAS(fixed_ei=14.45, fixed_ef=14.45)
+    angles_100 = hb1a.calculate_motor_angles(hkl=(1, 0, 0))

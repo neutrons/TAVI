@@ -89,18 +89,18 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
                 continue  # skip if empty
             elif line.strip()[0] == "[":
                 continue  # skiplines like "[xx]"
-        key, val = line.strip().split("=")
+            key, val = line.strip().split("=")
 
-        if key == "Mode":
-            mode_name = all_content[idx - 1].strip()
-            if mode_name == "[UBMode]":
-                ubconf.update({"UBMode": int(val)})
-            elif mode_name == "[AngleMode]":
-                ubconf.update({"AngleMode": int(val)})
-        elif "," in val:  # string of vector to array
-            ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
-        else:  # float
-            ubconf.update({key: float(val)})
+            if key == "Mode":
+                mode_name = all_content[idx - 1].strip()
+                if mode_name == "[UBMode]":
+                    ubconf.update({"UBMode": int(val)})
+                elif mode_name == "[AngleMode]":
+                    ubconf.update({"AngleMode": int(val)})
+            elif "," in val:  # string of vector to array
+                ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
+            else:  # float
+                ubconf.update({key: float(val)})
     else:  # xml junk from C#
         tree = ET.parse(ub_file_name)
         root = tree.getroot()

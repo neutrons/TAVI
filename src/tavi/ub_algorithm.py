@@ -97,6 +97,26 @@ def psi_from_hkle(
     return psi_radian
 
 
+def plane_normal_from_two_peaks(
+    u_mat: np.ndarray,
+    b_mat: np.ndarray,
+    hkl1: tuple[float, float, float],
+    hkl2: tuple[float, float, float],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate plane_normal and in_plane_ref in Q_sample coordinate,
+    giving Miller indices of two pekas in plane
+    """
+    t1 = b_mat.dot(hkl1)
+    t2p = b_mat.dot(hkl2)
+    t3 = np.cross(t1, t2p)
+    t3 /= np.linalg.norm(t3)
+    plane_normal = u_mat.dot(t3)
+    plane_normal = -plane_normal if plane_normal[1] < 0 else plane_normal
+    in_plane_ref = u_mat.dot(t1 / np.linalg.norm(t1))
+    return (plane_normal, in_plane_ref)
+
+
 # -----------------------------------------------------
 # R matrix math
 # -----------------------------------------------------
@@ -252,8 +272,8 @@ def find_u_from_two_peaks(
     q_lab2 = q_lab(ei=ei, ef=ef, theta=peak2.angles.two_theta)
 
     # Goniometer angles all zeros in q_sample frame
-    q_sample1 = np.matmul(r_mat_inv(peak1.angles), q_lab1)
-    q_sample2p = np.matmul(r_mat_inv(peak2.angles), q_lab2)
+    q_sample1 = r_mat_inv(peak1.angles).dot(q_lab1)
+    q_sample2p = r_mat_inv(peak2.angles).dot(q_lab2)
     q_sample3 = np.cross(q_sample1, q_sample2p)
     q_sample2 = np.cross(q_sample3, q_sample1)
 
@@ -263,12 +283,9 @@ def find_u_from_two_peaks(
 
     q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
 
-    u_mat = np.matmul(q_sample_mat, q_hkl_mat.T)
+    u_mat = q_sample_mat.dot(q_hkl_mat.T)
 
-    # plane normal always up along +Y
-    plane_normal = -q_sample3 if q_sample3[1] < 0 else q_sample3
-    in_plane_ref = q_sample1
-    return u_mat, plane_normal, in_plane_ref
+    return u_mat
 
 
 # TODO

@@ -58,6 +58,7 @@ class Peak(NamedTuple):
 class UBConf(NamedTuple):
     """Logs for UB matrix determination
 
+
     ub_peaks (tuple of Peaks): peaks used to determine the UB matrix
     u_mat (np.adarray): U matrix
     b_mat (np.adarray): B matrix
@@ -67,10 +68,10 @@ class UBConf(NamedTuple):
     """
 
     ub_mat: np.ndarray
-    plane_normal: np.ndarray
-    in_plane_ref: np.ndarray
-    # u_mat: Optional[np.ndarray] = None
-    # b_mat: Optional[np.ndarray] = None
+    plane_normal: Optional[np.ndarray] = None
+    in_plane_ref: Optional[np.ndarray] = None
+    u_mat: Optional[np.ndarray] = None
+    b_mat: Optional[np.ndarray] = None
     ub_peaks: Optional[tuple[Peak]] = None
 
 

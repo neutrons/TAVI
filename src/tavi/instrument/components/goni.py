@@ -149,7 +149,39 @@ class Goniometer(TASComponent):
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
 
-    def angles_from_r_mat(self, r_mat: np.ndarray, two_theta: float, psi: float) -> MotorAngles:
+    def angles_in_bisect_mode(
+        self,
+        hkl,
+        two_theta,
+        psi,
+        ub_conf_mantid,
+    ) -> MotorAngles:
+        signs = self.motor_senses
+        operating_mode = self.stacking_order + self.mode if self.mode is not None else self.stacking_order
+
+        q = ub_conf_mantid.ub_mat.dot(hkl)
+        match operating_mode:
+            case "YZYbisect":
+                omega = (self._sense * 90.0 + psi) * signs[0]
+                chi_rad = -np.arctan2(q[1], np.sqrt(q[0] ** 2 + q[2] ** 2))
+                phi_rad = np.arctan2(q[2], q[0])
+                chi, phi = np.rad2deg(
+                    [
+                        signs[1] * chi_rad,
+                        signs[2] * phi_rad,
+                    ]
+                )
+
+                angles = MotorAngles(two_theta, omega, None, None, chi, phi)
+                self.validate_motor_positions(angles)
+
+        return angles
+
+    def angles_from_r_mat(
+        self,
+        r_mat: np.ndarray,
+        two_theta: float,
+    ) -> MotorAngles:
         """Calculate goniometer angles from the R matrix
 
         Note:
@@ -181,20 +213,6 @@ class Goniometer(TASComponent):
                 angles = MotorAngles(two_theta, omega, sgl, sgu, None, None)
                 self.validate_motor_positions(angles)
 
-            case "YZYbisect":
-                omega = self._sense * 90.0 + psi
-                chi_rad = 1
-                phi_rad = np.arctan2(r_mat[1, 2], r_mat[1, 0])
-                omega = signs[0] * omega
-                chi, phi = np.rad2deg(
-                    [
-                        signs[1] * chi_rad,
-                        signs[2] * phi_rad,
-                    ]
-                )
-
-                angles = MotorAngles(two_theta, omega, None, None, chi, phi)
-                self.validate_motor_positions(angles)
             case "YXYbisect":
                 print("Not implemented yet.")
             case "YZYazimuthal":
