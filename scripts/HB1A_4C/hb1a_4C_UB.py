@@ -93,7 +93,6 @@ def la2ni7():
 
 
 if __name__ == "__main__":
-
     # scan_nums, hkl_list, angles_list = read_macro()
     hkl_list, angles_list = read_reflection_list()
 

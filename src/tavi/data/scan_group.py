@@ -61,7 +61,6 @@ class ScanGroup(object):
         norm_to: Optional[tuple[float, str]],
         **rebin_params_dict: Optional[tuple],
     ) -> ScanData1D:
-
         x_axis, y_axis = axes
         x_array = np.array([])
         y_array = np.array([])

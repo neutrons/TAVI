@@ -121,7 +121,7 @@ class TAS(TASBase):
 
         ei, ef = self._get_ei_ef()
 
-        match (num_of_peaks := len(peaks)):
+        match num_of_peaks := len(peaks):
             case 2:
                 peak1, peak2 = peaks
                 b_mat = self.sample.b_mat
@@ -210,7 +210,6 @@ class TAS(TASBase):
             angles = self.goniometer.angles_in_bisect_mode(hkl, two_theta, psi, ub_conf_mantid)
 
         elif goni_mode is None:  # default is minumal tilt
-
             r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf_mantid)
             angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)
 
