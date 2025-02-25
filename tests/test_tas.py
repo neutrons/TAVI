@@ -1,9 +1,10 @@
 import numpy as np
 
+from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.ub_algorithm import r_matrix_with_minimal_tilt, uv_to_ub_matrix
-from tavi.utilities import MotorAngles, Peak, UBConf, spice_to_mantid
+from tavi.ub_algorithm import plane_normal_from_two_peaks, r_matrix_with_minimal_tilt, uv_to_ub_matrix
+from tavi.utilities import MotorAngles, Peak, UBConf, mantid_to_spice, spice_to_mantid
 
 
 def test_find_two_theta():
@@ -204,12 +205,68 @@ def test_calculate_motor_angles_hb3():
 
 
 def test_cube():
-    xtal = Sample()
+    cube = Sample(lattice_params=(10, 10, 10, 90, 90, 90))
     u = (1, 0, 0)
     v = (0, 1, 0)
-    ub_mat = uv_to_ub_matrix(u, v, xtal.lattice_params)
-    assert np.allclose(ub_mat, ((0, 1, 0), (0, 0, 1), (1, 0, 0)))
-    xtal.ub_conf.ub_mat = spice_to_mantid(ub_mat)
+    ub_mat = uv_to_ub_matrix(u, v, cube.lattice_params)
+    assert np.allclose(ub_mat, ((0, 0.1, 0), (0, 0, 0.1), (0.1, 0, 0)))
+    assert np.allclose(cube.b_mat, ((0.1, 0, 0), (0, 0.1, 0), (0, 0, 0.1)))
+    u_mat = ub_mat.dot(np.linalg.inv(cube.b_mat))
+    assert np.allclose(u_mat, ((0, 1, 0), (0, 0, 1), (1, 0, 0)))
 
     hb1a = TAS(fixed_ei=14.45, fixed_ef=14.45)
-    angles_100 = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
+    hb1a.mount_sample(cube)
+
+    # TAS goniometer with sgl and sgu
+    hb1a.goniometer = Goniometer({"type": "Y,-Z,X", "sense": "-"})
+    two_theta = hb1a.get_two_theta(hkl=(1, 0, 0))
+    assert np.allclose(two_theta, -13.665, atol=1e-3)
+    two_theta = hb1a.get_two_theta(hkl=(0, 1, 0))
+    assert np.allclose(two_theta, -13.665, atol=1e-3)
+    two_theta_110 = hb1a.get_two_theta(hkl=(1, 1, 0))
+    assert np.allclose(two_theta_110, -19.3714, atol=1e-3)
+
+    plane_normal, in_plnae_ref = plane_normal_from_two_peaks(u_mat, cube.b_mat, (1, 0, 0), (0, 1, 0))
+    cube.ub_conf = UBConf(
+        ub_mat=mantid_to_spice(ub_mat),
+        plane_normal=mantid_to_spice(plane_normal),
+        in_plane_ref=mantid_to_spice(in_plnae_ref),
+    )
+
+    angles_100_tas = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
+    assert np.allclose(angles_100_tas.two_theta, two_theta)
+    assert np.allclose(angles_100_tas.omega, hb1a.get_psi((1, 0, 0)))
+    assert np.allclose(angles_100_tas.sgl, 0)
+    assert np.allclose(angles_100_tas.sgu, 0)
+
+    angles_010_tas = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
+    assert np.allclose(angles_010_tas.two_theta, two_theta)
+    assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi((0, 1, 0)))
+    assert np.allclose(angles_010_tas.sgl, 0)
+    assert np.allclose(angles_010_tas.sgu, 0)
+
+    angles_110_tas = hb1a.calculate_motor_angles(hkl=(1, 1, 0))
+    assert np.allclose(angles_110_tas.two_theta, two_theta_110)
+    assert np.allclose(angles_110_tas.omega, -45 + hb1a.get_psi((1, 1, 0)))
+    assert np.allclose(angles_110_tas.sgl, 0)
+    assert np.allclose(angles_110_tas.sgu, 0)
+
+    # 4C goniometer with chi and phi
+    hb1a.goniometer = Goniometer({"type": "Y,Z,Y,bisect", "sense": "-"})
+    angles_100_4c = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
+    assert np.allclose(angles_100_4c.two_theta, two_theta)
+    assert np.allclose(angles_100_4c.omega, two_theta / 2)
+    assert np.allclose(angles_100_4c.chi, 0)
+    assert np.allclose(angles_100_4c.phi, 90)
+
+    angles_010_4c = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
+    assert np.allclose(angles_010_4c.two_theta, two_theta)
+    assert np.allclose(angles_010_4c.omega, two_theta / 2)
+    assert np.allclose(angles_010_4c.chi, 0)
+    assert np.allclose(angles_010_4c.phi, 0)
+
+    angles_110_4c = hb1a.calculate_motor_angles(hkl=(1, 1, 0))
+    assert np.allclose(angles_110_4c.two_theta, two_theta_110)
+    assert np.allclose(angles_110_4c.omega, two_theta_110 / 2)
+    assert np.allclose(angles_110_4c.chi, 0)
+    assert np.allclose(angles_110_4c.phi, -45 + hb1a.get_psi((1, 1, 0)) - two_theta_110 / 2)

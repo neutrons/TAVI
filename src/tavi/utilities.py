@@ -42,6 +42,22 @@ class MotorAngles(NamedTuple):
     chi: Optional[float] = None
     phi: Optional[float] = None
 
+    def __repr__(self):
+        angle_str = ""
+        for name, value in self._asdict().items():
+            angle_str += f"{name}={value:.3f}, " if value is not None else ""
+        return angle_str
+
+    # TODO
+    def __eq__(self, other):
+        for name, value in self._asdict().items():
+            if value is not None:
+                if np.allclose(value, other._asdict().get(name), atol=1e-1):
+                    continue
+                else:
+                    return False
+        return True
+
 
 class Peak(NamedTuple):
     """

@@ -7,6 +7,7 @@ import numpy as np
 from tavi.lattice_algorithm import (
     b_mat_from_lattice,
     lattice_params_from_b_mat,
+    lattice_params_from_g_star_mat,
     real_space_vectors,
     reciprocal_latt_params,
     reciprocal_space_vectors,
@@ -83,7 +84,10 @@ class Sample(object):
 
     def __repr__(self):
         cls = self.__class__.__name__
-        cls_str = f"{cls}(lattice_params={self.lattice_params!r})"
+        cls_str = (
+            f"{cls} class, a={self.a:.4f}, b={self.b:.4f}, c={self.c:.4f}, "
+            + f"alpha={self.alpha:.2f}, beta={self.beta:.2f}, gamma={self.gamma:.2f},"
+        )
         return cls_str
 
     @classmethod
@@ -229,4 +233,8 @@ class Sample(object):
     def update_lattice_parametres_from_b_mat(self, b_mat: np.ndarray):
         """Update lattice paramters based on B matrix"""
         lattice_params = lattice_params_from_b_mat(b_mat)
+        self.update_lattice_parameters(lattice_params)
+
+    def update_lattice_parametres_from_g_star_mat(self, g_star_mat: np.ndarray):
+        lattice_params = lattice_params_from_g_star_mat(g_star_mat)
         self.update_lattice_parameters(lattice_params)

@@ -116,7 +116,7 @@ class TAS(TASBase):
             psi = np.rad2deg(psi_radian) * self.goniometer._sense * (-1)
             return psi
 
-    def calculate_ub_matrix(self, peaks: tuple[Peak]) -> UBConf:
+    def calculate_ub_matrix(self, peaks: tuple[Peak]) -> Optional[UBConf]:
         """Find UB matrix from a list of observed peaks"""
 
         ei, ef = self._get_ei_ef()
@@ -129,29 +129,42 @@ class TAS(TASBase):
                 plane_normal, in_plane_ref = plane_normal_from_two_peaks(u_mat, b_mat, peak1.hkl, peak2.hkl)
                 ub_mat = np.matmul(u_mat, b_mat)
 
+                # suffle the order following SPICE convention
+                if self.spice_convention:
+                    plane_normal = mantid_to_spice(plane_normal)
+                    in_plane_ref = mantid_to_spice(in_plane_ref)
+                    ub_mat = mantid_to_spice(ub_mat)
+
+                ub_conf = UBConf(ub_mat, plane_normal, in_plane_ref, peaks)
+
             case 3:
                 peak1, peak2, peak3 = peaks
-                (u_mat, b_mat, ub_mat) = find_ub_from_three_peaks(
-                    (peak1, peak2, peak3), self.goniometer.r_mat_inv, ei, ef
-                )
-                self.sample.update_lattice_parametres_from_b_mat(b_mat)
+                ZERO = 1e-6
+                if np.dot(peak1.hkl, np.cross(peak2.hkl, peak3.hkl)) < ZERO:
+                    print("Cannot use three coplanar peaks to determine UB matrix.")
+                    return None
+                ub_mat = find_ub_from_three_peaks((peak1, peak2, peak3), self.goniometer.r_mat_inv, ei, ef)
+                g_star_mat = np.matmul(ub_mat.T, ub_mat)
+                self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
+
+                if self.spice_convention:
+                    ub_mat = mantid_to_spice(ub_mat)
+
+                ub_conf = UBConf(ub_mat, peaks)
 
             case _ if num_of_peaks > 3:
-                (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref) = find_ub_from_multiple_peaks(
-                    peaks, self.goniometer.r_mat_inv, ei, ef
-                )
-                self.sample.update_lattice_parametres_from_b_mat(b_mat)
+                ub_mat = find_ub_from_multiple_peaks(peaks, self.goniometer.r_mat_inv, ei, ef)
+                g_star_mat = np.matmul(ub_mat.T, ub_mat)
+                self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
+
+                if self.spice_convention:
+                    ub_mat = mantid_to_spice(ub_mat)
+
+                ub_conf = UBConf(ub_mat, peaks)
 
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")
 
-        # suffle the order following SPICE convention
-        if self.spice_convention:
-            plane_normal = mantid_to_spice(plane_normal)
-            in_plane_ref = mantid_to_spice(in_plane_ref)
-            ub_mat = mantid_to_spice(ub_mat)
-
-        ub_conf = UBConf(ub_mat, plane_normal, in_plane_ref, peaks)
         self.sample.ub_conf = ub_conf
         return ub_conf
 
@@ -165,6 +178,10 @@ class TAS(TASBase):
         Args:
             peak (tuple): Miller indice (h, k, l) of a peak
             en (float): energy transfer, in meV. en = ei - ef
+
+        Return:
+            Return MotorAngles
+            Return None if the intented position is out of reach
 
         Note"
             Convert UB matrix, plane_normal, in_plane_ref to Mantind/International Table
@@ -184,32 +201,32 @@ class TAS(TASBase):
         ub_conf = self.sample.ub_conf
         if ub_conf is None:
             raise ValueError(f"UB info not found. ub_conf={ub_conf}.")
-        if (
-            ((mat := ub_conf.ub_mat) is None)
-            or ((n := ub_conf.plane_normal) is None)
-            or ((i := ub_conf.in_plane_ref) is None)
-        ):
-            raise ValueError(f"Missing UB info. ub_mat={mat}, plane_normal={n}, in_plne_ref={i}.")
-
-        # convert to Mantid convention if needed
-        if self.spice_convention:
-            ub_mat = spice_to_mantid(mat)
-            plane_normal = spice_to_mantid(n)
-            in_plane_ref = spice_to_mantid(i)
-            ub_conf_mantid = UBConf(
-                ub_mat=ub_mat,
-                plane_normal=plane_normal,
-                in_plane_ref=in_plane_ref,
-                ub_peaks=ub_conf.ub_peaks,
-            )
-        else:
-            ub_conf_mantid = ub_conf
+        if (mat := ub_conf.ub_mat) is None:
+            raise ValueError("UB matrix is not unknown.")
 
         goni_mode = self.goniometer.mode
         if goni_mode == "bisect":
+
+            # convert to Mantid convention if needed
+            if self.spice_convention:
+                ub_conf_mantid = UBConf(ub_mat=spice_to_mantid(mat))
+
             angles = self.goniometer.angles_in_bisect_mode(hkl, two_theta, psi, ub_conf_mantid)
 
         elif goni_mode is None:  # default is minumal tilt
+            if ((n := ub_conf.plane_normal) is None) or ((i := ub_conf.in_plane_ref) is None):
+                raise ValueError(f"Missing UB info. plane_normal={n}, in_plne_ref={i}.")
+
+            # convert to Mantid convention if needed
+            if self.spice_convention:
+                ub_conf_mantid = UBConf(
+                    ub_mat=spice_to_mantid(mat),
+                    plane_normal=spice_to_mantid(n),
+                    in_plane_ref=spice_to_mantid(i),
+                    ub_peaks=ub_conf.ub_peaks,
+                )
+            else:
+                ub_conf_mantid = ub_conf
 
             r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf_mantid)
             angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)

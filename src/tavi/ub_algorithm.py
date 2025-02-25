@@ -288,33 +288,45 @@ def find_u_from_two_peaks(
     return u_mat
 
 
-# TODO
 def find_ub_from_three_peaks(
     peaks: tuple[Peak, Peak, Peak],
     r_mat_inv,
     ei: float,
     ef: float,
-):
+) -> np.ndarray:
     """Find UB matrix from three observed peaks for a given goniomete"""
-    u_mat = None
-    b_mat = None
-    ub_mat = None
-    plane_normal = None
-    in_plane_ref = None
-    return (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref)
+    peak1, peak2, peak3 = peaks
+
+    hkl_mat = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
+
+    q_lab1 = q_lab(ei=ei, ef=ef, theta=peak1.angles.two_theta)
+    q_lab2 = q_lab(ei=ei, ef=ef, theta=peak2.angles.two_theta)
+    q_lab3 = q_lab(ei=ei, ef=ef, theta=peak3.angles.two_theta)
+    # Goniometer angles all zeros in q_sample frame
+    q_sample1 = r_mat_inv(peak1.angles).dot(q_lab1) / (2 * np.pi)
+    q_sample2 = r_mat_inv(peak2.angles).dot(q_lab2) / (2 * np.pi)
+    q_sample3 = r_mat_inv(peak3.angles).dot(q_lab3) / (2 * np.pi)
+
+    q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
+
+    ub_mat = q_sample_mat.dot(np.linalg.inv(hkl_mat))
+
+    return ub_mat
 
 
-# TODO
 def find_ub_from_multiple_peaks(
     peaks: tuple[Peak, ...],
     r_mat_inv,
     ei: float,
     ef: float,
-):
+) -> Optional[np.ndarray]:
     """Find UB matrix from more than three observed peaks for a given goniomete"""
-    u_mat = None
-    b_mat = None
+
+    num = len(peaks)
+    for i in range(num):
+        hkl = peaks[i].hkl
+        angles = peaks[i].angles
+        qi = q_lab(ei=ei, ef=ef, theta=angles.two_theta)
     ub_mat = None
-    plane_normal = None
-    in_plane_ref = None
-    return (u_mat, b_mat, ub_mat, plane_normal, in_plane_ref)
+
+    return ub_mat

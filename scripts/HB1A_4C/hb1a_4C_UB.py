@@ -1,6 +1,7 @@
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.utilities import MotorAngles, Peak
+from tavi.ub_algorithm import ub_matrix_to_uv
+from tavi.utilities import MotorAngles, Peak, spice_to_mantid
 
 
 def read_macro():
@@ -28,8 +29,8 @@ def read_macro():
 
 
 def read_reflection_list():
-    # filename = "test_data/IPTS33477_HB1A_exp1012/Reflections_012825.list"
-    filename = "test_data/IPTS33477_HB1A_exp1012/RuCl3/fit_observ.dat"
+
+    filename = "test_data/IPTS33477_HB1A_exp1012/MnWO4/Refections_022425.list"
     with open(filename, encoding="utf-8") as f:
         all_content = f.readlines()
 
@@ -37,59 +38,61 @@ def read_reflection_list():
     angles_list = []
 
     for i in range(2, len(all_content) - 2):
-        line_parts = all_content[i].split(" ")
-        two_theta = float(line_parts[3])
-        omega = float(line_parts[4])
-        chi = float(line_parts[5])
-        phi = float(line_parts[6][:-1])
-        angles_list.append(MotorAngles(two_theta=two_theta, omega=omega, chi=chi, phi=phi, sgl=None, sgu=None))
-        h = int(float(line_parts[0]))
-        k = int(float(line_parts[1]))
-        l = int(float(line_parts[2]))
+        line_parts = all_content[i].split("\t")
+
+        two_theta = float(line_parts[0])
+        omega = float(line_parts[1])
+        chi = float(line_parts[2])
+        phi = float(line_parts[3])
+        angles_list.append(
+            MotorAngles(
+                two_theta=two_theta,
+                omega=omega,
+                chi=chi,
+                phi=phi,
+                sgl=None,
+                sgu=None,
+            )
+        )
+        h = int(float(line_parts[4]))
+        k = int(float(line_parts[5]))
+        l = int(float(line_parts[6]))
         hkl_list.append((h, k, l))
     return hkl_list, angles_list
 
 
-def rucl3():
-    sample_json_path = "test_data/IPTS33477_HB1A_exp1012/RuCl3/RuCl3.json"
+def mnwo4():
+    sample_json_path = "test_data/IPTS33477_HB1A_exp1012/MnWO4/MnWO4.json"
     sample = Sample.from_json(sample_json_path)
     ub_json = sample.ub_conf.ub_mat
     tas.mount_sample(sample)
+    u, v = ub_matrix_to_uv(spice_to_mantid(ub_json))
+    print(u, v)
+    print(f"json UB=\n{ub_json}")
+    print(sample)
 
     peak1 = Peak(hkl=hkl_list[0], angles=angles_list[0])
     peak2 = Peak(hkl=hkl_list[1], angles=angles_list[1])
-    tas.calculate_ub_matrix(peaks=(peak1, peak2))
-    print(tas.sample.ub_conf.ub_mat)
-    print(peak1)
-    angles = tas.calculate_motor_angles(hkl=hkl_list[0])
-    print(angles)
-    print(peak2)
-    angles = tas.calculate_motor_angles(hkl=hkl_list[1])
-    print(angles)
+    peak3 = Peak(hkl=hkl_list[2], angles=angles_list[2])
 
+    ubconf_2 = tas.calculate_ub_matrix(peaks=(peak1, peak2))
+    print(f"Calculated from two peaks UB=\n{ubconf_2.ub_mat}")
+    print(tas.sample)
 
-def la2ni7():
-    sample_json_path = "test_data/IPTS33477_HB1A_exp1012/La2Ni7.json"
-    sample = Sample.from_json(sample_json_path)
-    ub_json = sample.ub_conf.ub_mat
-    tas.mount_sample(sample)
+    ubconf_3 = tas.calculate_ub_matrix(peaks=(peak1, peak2, peak3))
+    print(f"Calculated from three peaks UB=\n{ubconf_3.ub_mat}")
+    print(tas.sample)
 
-    a1 = MotorAngles(two_theta=-64.7086, omega=-32.3539, chi=26.6593, phi=159.038)
-    peak1 = Peak(hkl=(-1, -2, -1), angles=a1)
-    a2 = MotorAngles(two_theta=-84.7436, omega=-42.3787, chi=44.5, phi=164.4)
-    peak2 = Peak(hkl=(-1, -2, -2), angles=a2)
+    # peaks = tuple([Peak(hkl=hkl_list[i], angles=angles_list[i]) for i in range(len(hkl_list))])
+    # ubconf_all = tas.calculate_ub_matrix(peaks=peaks)
+    # print(f"Calculated from all peaks UB=\n{ubconf_all.ub_mat}")
+    # print(tas.sample)
 
-    ubconf = tas.calculate_ub_matrix(peaks=(peak1, peak2))
-    print(f"json UB={ub_json}")
-    print(f"Calculated UB={ubconf.ub_mat}")
-
-    a1_cal = tas.calculate_motor_angles(hkl=(-1, -2, -1))
-    print(f"Exp agnles for (-1,-2,-1)={a1}")
-    print(f"Calculated agnles for (-1,-2,-1)={a1_cal}")
-
-    a2_cal = tas.calculate_motor_angles(hkl=(-1, -2, -2))
-    print(f"Exp agnles for (-1,-2,-2)={a2}")
-    print(f"Calculated agnles for (-1,-2,-2)={a2_cal}")
+    for i in range(len(hkl_list)):
+        angle_cal = tas.calculate_motor_angles(hkl=hkl_list[i])
+        if not (angles_list[i] == angle_cal):
+            print(f"Experiment agnles for {hkl_list[i]} are {angles_list[i]}")
+            print(f"Calculated agnles for {hkl_list[i]} are {angle_cal}")
 
 
 if __name__ == "__main__":
@@ -98,28 +101,7 @@ if __name__ == "__main__":
     hkl_list, angles_list = read_reflection_list()
 
     instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
-    tas = TAS(fixed_ef=14.4643, fixed_ei=14.4503, spice_convention=True)
+    tas = TAS(fixed_ef=14.4643)  # , fixed_ei=14.4503, spice_convention=True)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
-    la2ni7()
-
-    # def chi_phi(hkl, angles):
-    #     q = ub.dot(hkl)
-    #     # print(q)
-    #     chi = -np.degrees(np.arctan2(q[1], np.sqrt(q[0] ** 2 + q[2] ** 2)))
-    #     print(chi)
-    #     phi = np.degrees(np.arctan2(q[2], q[0]))
-    #     print(phi)
-
-    #     print(f"chi={angles.chi}, phi={angles.phi}.")
-
-    # for i in range(len(hkl_list)):
-    #     chi_phi(hkl_list[i], angles_list[i])
-
-    #     hkl = tas.calcvulate_hkl_from_angles(angles_list[i])
-    #     print(hkl, hkl_list[i])
-
-    # print(angles_list[0])
-    # angles_1 = tas.calculate_motor_angles(hkl=hkl_list[0])
-    # print(angles_list[0])
-    # print(peak1.angles)
+    mnwo4()
