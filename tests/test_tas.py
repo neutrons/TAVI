@@ -32,8 +32,8 @@ def test_calculate_ub_matrix():
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
     sample = Sample(lattice_params)
     tas.mount_sample(sample)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
     peak1 = Peak((0, 0, 2), angles1)
@@ -54,8 +54,7 @@ def test_angles_to_r_mat():
     )
     angles = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     r_mat_cal = tas.goniometer.r_mat(angles)
     assert np.allclose(r_mat_cal, r_mat)
@@ -71,8 +70,7 @@ def test_r_mat_to_angles():
     )
     angles = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     angles_cal = tas.goniometer.angles_from_r_mat(r_mat, two_theta=angles.two_theta)
     for name, value in angles_cal._asdict().items():
@@ -83,8 +81,7 @@ def test_r_mat_to_angles():
 def test_calculate_ub():
 
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     ub_matrix = np.array(
@@ -113,8 +110,7 @@ def test_calculate_ub():
 def test_r_mat_with_minimal_tilt():
 
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     sample = Sample(lattice_params)
@@ -137,8 +133,7 @@ def test_r_mat_with_minimal_tilt():
 def test_calculate_motor_agnles():
 
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     ub_matrix = np.array(
@@ -189,15 +184,11 @@ def test_calculate_motor_angles_hb3():
     assert np.allclose(r_mat, spice_to_mantid(r_mat_cal.T).T, atol=1e-3)
 
     angles1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2))
-    for name, value in angles1_cal._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-2)
+    assert angles1_cal == angles1
 
-    angeles2_cal = tas.calculate_motor_angles(hkl=(1, 0, 0))
+    angles2_cal = tas.calculate_motor_angles(hkl=(1, 0, 0))
     angles2 = MotorAngles(two_theta=38.526091, omega=-70.614125, sgl=1.001000, sgu=-3.000750)
-    for name, value in angeles2_cal._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
+    assert angles2_cal == angles2
 
     angles3_cal = tas.calculate_motor_angles(hkl=(1.3, 0, 1.3))
     assert np.allclose(angles3_cal.sgl, 1.001000, atol=1e-2)
@@ -205,12 +196,13 @@ def test_calculate_motor_angles_hb3():
 
 
 def test_cube():
-    cube = Sample(lattice_params=(10, 10, 10, 90, 90, 90))
+    a, b, c = 10, 20, 30
+    cube = Sample(lattice_params=(a, b, c, 90, 90, 90))
     u = (1, 0, 0)
     v = (0, 1, 0)
     ub_mat = uv_to_ub_matrix(u, v, cube.lattice_params)
-    assert np.allclose(ub_mat, ((0, 0.1, 0), (0, 0, 0.1), (0.1, 0, 0)))
-    assert np.allclose(cube.b_mat, ((0.1, 0, 0), (0, 0.1, 0), (0, 0, 0.1)))
+    assert np.allclose(ub_mat, ((0, 1 / b, 0), (0, 0, 1 / c), (1 / a, 0, 0)))
+    assert np.allclose(cube.b_mat, ((1 / a, 0, 0), (0, 1 / b, 0), (0, 0, 1 / c)))
     u_mat = ub_mat.dot(np.linalg.inv(cube.b_mat))
     assert np.allclose(u_mat, ((0, 1, 0), (0, 0, 1), (1, 0, 0)))
 
@@ -219,12 +211,16 @@ def test_cube():
 
     # TAS goniometer with sgl and sgu
     hb1a.goniometer = Goniometer({"type": "Y,-Z,X", "sense": "-"})
-    two_theta = hb1a.get_two_theta(hkl=(1, 0, 0))
-    assert np.allclose(two_theta, -13.665, atol=1e-3)
-    two_theta = hb1a.get_two_theta(hkl=(0, 1, 0))
-    assert np.allclose(two_theta, -13.665, atol=1e-3)
+    two_theta_100 = hb1a.get_two_theta(hkl=(1, 0, 0))
+    assert np.allclose(two_theta_100, np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / a)), atol=1e-3)
+    two_theta_010 = hb1a.get_two_theta(hkl=(0, 1, 0))
+    assert np.allclose(two_theta_010, np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / b)), atol=1e-3)
     two_theta_110 = hb1a.get_two_theta(hkl=(1, 1, 0))
-    assert np.allclose(two_theta_110, -19.3714, atol=1e-3)
+    assert np.allclose(
+        two_theta_110,
+        np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / (a * b) * np.sqrt(a**2 + b**2))),
+        atol=1e-3,
+    )
 
     plane_normal, in_plnae_ref = plane_normal_from_two_peaks(u_mat, cube.b_mat, (1, 0, 0), (0, 1, 0))
     cube.ub_conf = UBConf(
@@ -234,34 +230,37 @@ def test_cube():
     )
 
     angles_100_tas = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
-    assert np.allclose(angles_100_tas.two_theta, two_theta)
+    assert np.allclose(angles_100_tas.two_theta, two_theta_100)
     assert np.allclose(angles_100_tas.omega, hb1a.get_psi((1, 0, 0)))
     assert np.allclose(angles_100_tas.sgl, 0)
     assert np.allclose(angles_100_tas.sgu, 0)
 
     angles_010_tas = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
-    assert np.allclose(angles_010_tas.two_theta, two_theta)
+    assert np.allclose(angles_010_tas.two_theta, two_theta_010)
     assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi((0, 1, 0)))
     assert np.allclose(angles_010_tas.sgl, 0)
     assert np.allclose(angles_010_tas.sgu, 0)
 
     angles_110_tas = hb1a.calculate_motor_angles(hkl=(1, 1, 0))
     assert np.allclose(angles_110_tas.two_theta, two_theta_110)
-    assert np.allclose(angles_110_tas.omega, -45 + hb1a.get_psi((1, 1, 0)))
+    assert np.allclose(
+        angles_110_tas.omega,
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)),
+    )
     assert np.allclose(angles_110_tas.sgl, 0)
     assert np.allclose(angles_110_tas.sgu, 0)
 
     # 4C goniometer with chi and phi
     hb1a.goniometer = Goniometer({"type": "Y,Z,Y,bisect", "sense": "-"})
     angles_100_4c = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
-    assert np.allclose(angles_100_4c.two_theta, two_theta)
-    assert np.allclose(angles_100_4c.omega, two_theta / 2)
+    assert np.allclose(angles_100_4c.two_theta, two_theta_100)
+    assert np.allclose(angles_100_4c.omega, two_theta_100 / 2)
     assert np.allclose(angles_100_4c.chi, 0)
     assert np.allclose(angles_100_4c.phi, 90)
 
     angles_010_4c = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
-    assert np.allclose(angles_010_4c.two_theta, two_theta)
-    assert np.allclose(angles_010_4c.omega, two_theta / 2)
+    assert np.allclose(angles_010_4c.two_theta, two_theta_010)
+    assert np.allclose(angles_010_4c.omega, two_theta_010 / 2)
     assert np.allclose(angles_010_4c.chi, 0)
     assert np.allclose(angles_010_4c.phi, 0)
 
@@ -269,4 +268,7 @@ def test_cube():
     assert np.allclose(angles_110_4c.two_theta, two_theta_110)
     assert np.allclose(angles_110_4c.omega, two_theta_110 / 2)
     assert np.allclose(angles_110_4c.chi, 0)
-    assert np.allclose(angles_110_4c.phi, -45 + hb1a.get_psi((1, 1, 0)) - two_theta_110 / 2)
+    assert np.allclose(
+        angles_110_4c.phi,
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)) - two_theta_110 / 2,
+    )

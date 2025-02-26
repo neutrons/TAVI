@@ -1,11 +1,12 @@
 import numpy as np
 
+from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
 
-def test_calc_ub_from_2_peaks_takin():
+def test_calc_ub_from_2_peaks():
 
     ub_matrix = np.array(
         [
@@ -22,9 +23,6 @@ def test_calc_ub_from_2_peaks_takin():
         ]
     )
 
-    # u = [0.15623, 2.83819, -1.88465]
-    # v = [-0.00060, 1.03219, 5.33915]
-
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.942840, 0.014534, -0.332928]
 
@@ -32,8 +30,7 @@ def test_calc_ub_from_2_peaks_takin():
     ef = 13.505137
 
     tas = TAS(fixed_ef=ef, fixed_ei=ei, spice_convention=False)
-    takin_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    tas.load_instrument_params_from_json(takin_json)
+    tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     tas.mount_sample(Sample(lattice_params))
@@ -44,37 +41,22 @@ def test_calc_ub_from_2_peaks_takin():
     peak2 = Peak((0, 2, 0), angles2)
 
     ub_conf = tas.calculate_ub_matrix(peaks=(peak1, peak2))
-    # u_cal, v_cal = tas.sample.ub_matrix_to_uv(tas.sample.ub_mat)
 
     assert np.allclose(ub_conf.ub_mat, ub_matrix, atol=1e-2)
     assert np.allclose(ub_conf.plane_normal, plane_normal, atol=1e-2)
     assert np.allclose(ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
-    # assert np.allclose(u_cal, u, atol=1e-2)
-    # assert np.allclose(v_cal, v, atol=1e-2)
 
-    # u_cal, v_cal = tas.sample.ub_matrix_to_uv(spice_to_mantid(spice_ub_matrix))
-    # assert np.allclose(u_cal, u, atol=1e-2)
-    # assert np.allclose(v_cal, v, atol=1e-2)
+    angles_1_calc = tas.calculate_motor_angles((0, 0, 2))
+    assert angles1 == angles_1_calc
 
-    angles_1 = tas.calculate_motor_angles((0, 0, 2))
-    for name, value in angles_1._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
-
-    angles_2 = tas.calculate_motor_angles((0, 2, 0))
-    for name, value in angles_2._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e0)
+    angles_2_calc = tas.calculate_motor_angles((0, 2, 0))
+    assert angles2 == angles_2_calc
 
     # swap peaks and calculate again
     ub_conf = tas.calculate_ub_matrix(peaks=(peak2, peak1))
-    #  u_cal, v_cal = tas.sample.ub_matrix_to_uv(tas.sample.ub_mat)
 
     assert np.allclose(ub_conf.ub_mat, ub_matrix, atol=1e-2)
     assert np.allclose(ub_conf.plane_normal, plane_normal, atol=1e-2)
-    # assert np.allclose(tas.sample.in_plane_ref, in_plane_ref, atol=1e-2)
-    # assert np.allclose(u_cal, u, atol=1e-2)
-    # assert np.allclose(v_cal, v, atol=1e-2)
 
 
 def test_calc_ub_from_2_peaks_hb3():
@@ -163,8 +145,7 @@ def test_calc_ub_from_2_peaks_hb1():
     ei = 13.499993
     ef = 13.506112
     hb1 = TAS(fixed_ef=ef, fixed_ei=ei, spice_convention=False)
-    hb1_json = "./src/tavi/instrument/instrument_params/takin_test.json"
-    hb1.load_instrument_params_from_json(hb1_json)
+    hb1.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.939520, 3.939520, 3.941957, 90.0, 90.0, 90.0)
     xtal = Sample(lattice_params=lattice_params)
@@ -191,13 +172,10 @@ def test_calc_ub_from_2_peaks_hb1():
     assert np.allclose(hb1.sample.ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
 
     angles = hb1.calculate_motor_angles(hkl=(1, 1, 0))
-    for name, value in angles._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+    assert angles == angles1
+
     angles = hb1.calculate_motor_angles(hkl=(0, 0, 1))
-    for name, value in angles._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
+    assert angles == angles2
 
     # swap peaks and calculate again
     hb1.calculate_ub_matrix(peaks=(peak2, peak1))

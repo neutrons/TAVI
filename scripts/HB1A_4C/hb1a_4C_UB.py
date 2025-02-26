@@ -83,10 +83,10 @@ def mnwo4():
     print(f"Calculated from three peaks UB=\n{ubconf_3.ub_mat}")
     print(tas.sample)
 
-    # peaks = tuple([Peak(hkl=hkl_list[i], angles=angles_list[i]) for i in range(len(hkl_list))])
-    # ubconf_all = tas.calculate_ub_matrix(peaks=peaks)
-    # print(f"Calculated from all peaks UB=\n{ubconf_all.ub_mat}")
-    # print(tas.sample)
+    peaks = tuple([Peak(hkl=hkl_list[i], angles=angles_list[i]) for i in range(len(hkl_list))])
+    ubconf_all = tas.calculate_ub_matrix(peaks=peaks)
+    print(f"Calculated from all peaks UB=\n{ubconf_all.ub_mat}")
+    print(tas.sample)
 
     for i in range(len(hkl_list)):
         angle_cal = tas.calculate_motor_angles(hkl=hkl_list[i])

@@ -31,8 +31,8 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
 
     ki = en2q(ei)
     kf = en2q(ef)
-    theta_rad = np.deg2rad(theta)
-    phi_rad = np.deg2rad(phi)
+    theta_rad = np.radians(theta)
+    phi_rad = np.radians(phi)
     q_lab = np.array(
         [
             -kf * np.sin(theta_rad) * np.cos(phi_rad),
@@ -182,10 +182,6 @@ def r_matrix_with_minimal_tilt(
     return r_mat
 
 
-def r_mat_chi_bisect():
-    pass
-
-
 # -----------------------------------------------------
 # UB matrix convsersion to u and v vectors
 # -----------------------------------------------------
@@ -258,12 +254,12 @@ def find_u_from_two_peaks(
     q_hkl1 = np.dot(b_mat, np.array(peak1.hkl))
     q_hkl2p = np.dot(b_mat, np.array(peak2.hkl))
     q_hkl3 = np.cross(q_hkl1, q_hkl2p)
-    q_hkl_2 = np.cross(q_hkl3, q_hkl1)
+    q_hkl2 = np.cross(q_hkl3, q_hkl1)
 
     q_hkl_mat = np.array(
         [
             q_hkl1 / np.linalg.norm(q_hkl1),
-            q_hkl_2 / np.linalg.norm(q_hkl_2),
+            q_hkl2 / np.linalg.norm(q_hkl2),
             q_hkl3 / np.linalg.norm(q_hkl3),
         ]
     ).T
@@ -283,7 +279,7 @@ def find_u_from_two_peaks(
 
     q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
 
-    u_mat = q_sample_mat.dot(q_hkl_mat.T)
+    u_mat = q_sample_mat.dot(np.linalg.inv(q_hkl_mat))
 
     return u_mat
 
@@ -323,10 +319,18 @@ def find_ub_from_multiple_peaks(
     """Find UB matrix from more than three observed peaks for a given goniomete"""
 
     num = len(peaks)
+    qv_mat = np.zeros((3, 3))
+    vv_mat = np.zeros((3, 3))
     for i in range(num):
         hkl = peaks[i].hkl
         angles = peaks[i].angles
-        qi = q_lab(ei=ei, ef=ef, theta=angles.two_theta)
-    ub_mat = None
+        qi_lab = q_lab(ei=ei, ef=ef, theta=angles.two_theta)
+        qi = r_mat_inv(angles).dot(qi_lab) / (2 * np.pi)
+        for j in range(3):
+            for k in range(3):
+                qv_mat[j, k] += qi[k] * hkl[j]
+                vv_mat[j, k] += hkl[k] * hkl[j]
+
+    ub_mat = np.matmul(qv_mat.T, np.linalg.inv(vv_mat).T)
 
     return ub_mat
