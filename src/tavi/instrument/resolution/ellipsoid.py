@@ -41,7 +41,6 @@ class ResoEllipsoid(object):
         sample: Sample,
         projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
     ) -> None:
-
         self.STATUS: bool
         self.q: tuple[float, float, float]
 
@@ -282,7 +281,6 @@ class ResoEllipsoid(object):
         fig = plt.figure(figsize=(10, 6))
 
         for i, indices in enumerate([(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]):
-
             ellipse_co = self.get_ellipse(axes=indices, PROJECTION=False)
             ellipse_inco = self.get_ellipse(axes=indices, PROJECTION=True)
 
@@ -296,7 +294,7 @@ class ResoEllipsoid(object):
                 p.add_reso(ellipse_inco, c="k", linestyle="dashed")
 
             ax = fig.add_subplot(
-                int(f"23{i+1}"),
+                int(f"23{i + 1}"),
                 axes_class=Axes,
                 grid_helper=p.grid_helper(ellipse_co.angle),
             )
