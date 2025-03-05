@@ -201,10 +201,13 @@ def test_cube():
     u = (1, 0, 0)
     v = (0, 1, 0)
     ub_mat = uv_to_ub_matrix(u, v, cube.lattice_params)
-    assert np.allclose(ub_mat, ((0, 1 / b, 0), (0, 0, 1 / c), (1 / a, 0, 0)))
-    assert np.allclose(cube.b_mat, ((1 / a, 0, 0), (0, 1 / b, 0), (0, 0, 1 / c)))
+    ub_mat_correct = ((0, 1 / b, 0), (0, 0, 1 / c), (1 / a, 0, 0))
+    b_mat_correct = ((1 / a, 0, 0), (0, 1 / b, 0), (0, 0, 1 / c))
+    u_mat_correct = ((0, 1, 0), (0, 0, 1), (1, 0, 0))
+    assert np.allclose(ub_mat, ub_mat_correct)
+    assert np.allclose(cube.b_mat, b_mat_correct)
     u_mat = ub_mat.dot(np.linalg.inv(cube.b_mat))
-    assert np.allclose(u_mat, ((0, 1, 0), (0, 0, 1), (1, 0, 0)))
+    assert np.allclose(u_mat, u_mat_correct)
 
     hb1a = TAS(fixed_ei=14.45, fixed_ef=14.45)
     hb1a.mount_sample(cube)
@@ -212,15 +215,16 @@ def test_cube():
     # TAS goniometer with sgl and sgu
     hb1a.goniometer = Goniometer({"type": "Y,-Z,X", "sense": "-"})
     two_theta_100 = hb1a.get_two_theta(hkl=(1, 0, 0))
-    assert np.allclose(two_theta_100, np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / a)), atol=1e-3)
+    two_theta_100_correct = np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / a))
+    assert np.allclose(two_theta_100, two_theta_100_correct, atol=1e-3)
+
     two_theta_010 = hb1a.get_two_theta(hkl=(0, 1, 0))
-    assert np.allclose(two_theta_010, np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / b)), atol=1e-3)
+    two_theta_010_correct = np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / b))
+    assert np.allclose(two_theta_010, two_theta_010_correct, atol=1e-3)
+
     two_theta_110 = hb1a.get_two_theta(hkl=(1, 1, 0))
-    assert np.allclose(
-        two_theta_110,
-        np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / (a * b) * np.sqrt(a**2 + b**2))),
-        atol=1e-3,
-    )
+    two_theta_110_correct = np.degrees(-2 * np.arcsin(9.045 / 2 / np.sqrt(14.45) / (a * b) * np.sqrt(a**2 + b**2)))
+    assert np.allclose(two_theta_110, two_theta_110_correct, atol=1e-3)
 
     plane_normal, in_plnae_ref = plane_normal_from_two_peaks(u_mat, cube.b_mat, (1, 0, 0), (0, 1, 0))
     cube.ub_conf = UBConf(

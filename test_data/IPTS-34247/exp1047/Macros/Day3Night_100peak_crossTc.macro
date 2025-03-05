@@ -1,0 +1,107 @@
+set_field mag_i 1.6
+br (1 0 0)
+loop i = 0.25, 0.7, 0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+end loop
+
+loop i = 0.7, 0.25, -0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+end loop
+
+set_field mag_i 1.7
+br (1 0 0)
+loop i = 0.25, 0.7, 0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+end loop
+
+loop i = 0.7, 0.25, -0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+end loop
+
+set_field mag_i 1.8
+br (1 0 0)
+loop i = 0.25, 0.7, 0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+end loop
+
+loop i = 0.7, 0.25, -0.015
+set_temp_dr %i
+wait 30
+
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+th2th 2 -2 0.2
+
+preset time 2
+scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+scanrel s1 1 -1 0.1
+COM s1
+end loop

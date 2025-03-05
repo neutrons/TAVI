@@ -1,0 +1,11 @@
+br 2 0 0
+scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, UP"
+start_field_scan mag_i
+scan mag_i 0 3 0.05 preset time 10
+end_field_scan mag_i
+
+br 2 0 0
+scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.05 preset time 10
+end_field_scan mag_i

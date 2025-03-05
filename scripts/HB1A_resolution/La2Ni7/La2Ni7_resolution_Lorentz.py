@@ -5,7 +5,7 @@ from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 
 def analyze_in_angles_and_q(hkl, scans, fit_ranges):
@@ -74,12 +74,12 @@ def analyze_in_angles_and_q(hkl, scans, fit_ranges):
 
 
 instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
-tas = CooperNathans(SPICE_CONVENTION=True)
+tas = CooperNathans(spice_convention=True)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
-sample = Xtal.from_json(sample_json_path)
-ub_json = sample.ub_mat
+sample = Sample.from_json(sample_json_path)
+ub_json = sample.ub_conf.ub_mat
 tas.mount_sample(sample)
 
 

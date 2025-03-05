@@ -1,0 +1,36 @@
+# scan = 152
+# date = 3/1/2025
+# time = 6:31:12 PM
+# proposal = 34247
+# experiment = Investigating the Transverse Field Ising Ferromagnet HoV6Sn6: A Rare Example of a Ferromagnetic Metal with a Quantum Critical Point?
+# experiment_number = 1047
+# command = scan mag_i 0.2 0.3 0.1
+# builtin_command = scan mag_i 0.2 0.3 0.1
+# users = Aashish Sapkota, Benjamin Ueland, Dhurba Jaishi, Fei Li, Rob McQueeney, Tianxiong Han, Bing Li
+# local_contact = A. Aczel
+# scan_title = measure rocking (2 0 0), H = 0 T, T = 0.3 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = HoV6Sn6 crystal
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.500888,5.500888,9.163669,90.000000,90.000000,120.000000
+# ubmatrix = 0.113515,0.063136,0.091714,0.176568,0.085181,-0.058986,-0.000970,0.181165,-0.004228
+# mode = 0
+# plane_normal = 0.035087,-0.017067,0.999238
+# ubconf = UB28Feb2025_100007PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = mag_i
+# def_y = detector
+# col_headers = 
+#   Pt.      mag_i       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp persistent_field dr_tsample    dr_temp
+      1     0.2000      1.000    262.000  21486.000      1.113    41.5367   -87.0859   -59.8673    -2.0107    -0.9782    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9970     0.0020    20.7314    41.4623     2.6377     1.9999    -0.0000     0.0002    14.4503    14.4999    -0.0496     1.7057     0.0000     1.0000     0.2000     0.2999     0.300
+      2     0.3000      1.000    263.000  21213.000      1.099    41.5367   -87.0859   -59.8673    -2.0107    -0.9782    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9970     0.0020    20.7313    41.4622     2.6377     1.9999    -0.0000     0.0002    14.4503    14.4999    -0.0496     1.7058     0.0000     1.0000     0.3000     0.2999     0.300
+# Sum of Counts = 525
+# Center of Mass = 0.250095+/-0.015590
+# Full Width Half-Maximum = 0.100000+/-0.022262
+# 6:32:11 PM  3/1/2025   scan completed.

@@ -1,0 +1,34 @@
+br 1 0 0
+preset time 1
+scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T"
+scanrel s1 1 -1 0.1
+COM s1
+
+defxy dr_tsample detector
+scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+scanon
+
+loop i= 0.7, 0.15 -0.01
+set_temp_dr %i
+wait 60
+
+stepbegin
+count preset time 60
+stepend
+endloop
+scanoff
+
+set_field mag_i 1.7
+
+scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+scanon
+
+loop i= 0.7, 0.15 -0.01
+set_temp_dr %i
+wait 60
+
+stepbegin
+count preset time 60
+stepend
+endloop
+scanoff

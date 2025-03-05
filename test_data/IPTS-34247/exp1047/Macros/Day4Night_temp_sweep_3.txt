@@ -1,0 +1,140 @@
+br 2 0 0
+
+loop i= 0.5, 0.2, -0.1
+set_temp_dr %i
+wait 300
+
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+
+endloop
+
+set_temp_dr 0.04
+wait 600
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+wait 2400
+
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+
+set_field mag_i 2.1
+br 2 0 0
+
+loop i= 0.5, 0.2, -0.1
+set_temp_dr %i
+wait 300
+
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+
+endloop
+
+set_temp_dr 0.4
+wait 600
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+wait 2400
+
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+
+
+set_field mag_i 2.2
+br 2 0 0
+
+loop i= 0.5, 0.2, -0.1
+set_temp_dr %i
+wait 300
+
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+
+endloop
+
+set_temp_dr 0.4
+wait 600
+preset time 1
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+wait 2400
+
+scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1
+preset time 10
+scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+th2th 2 -2 0.2
+
+scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+scanrel s1 1 -1 0.1
+COM s1

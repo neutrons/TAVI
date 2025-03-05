@@ -422,7 +422,13 @@ def spice_scan_to_nxdict(
             idx += 1
     else:
         print(f"Unrecogonized preset type {preset_type} for scan #{metadata.get('scan')}.")
-        nxmonitor = NXentry(NX_class="NXmonitor", EX_required="true")
+        nxmonitor = NXentry(
+            time=NXdataset(ds=spicelogs.get("time"), type="NX_FLOAT", units="seconds"),
+            monitor=NXdataset(ds=spicelogs.get("monitor"), type="NX_INT", units="counts"),
+            mcu=NXdataset(ds=spicelogs.get("mcu"), type="NX_FLOAT", units="mcu"),
+            NX_class="NXmonitor",
+            EX_required="true",
+        )
 
     if instrument_config_params is not None:
         if (monitor_params := instrument_config_params.get("monitor")) is not None:

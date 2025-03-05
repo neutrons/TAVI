@@ -6,7 +6,7 @@ from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.plotter import Plot1D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak, ksq2eng
 
 
@@ -117,26 +117,26 @@ def analyze_in_angles(hkl, scans, fit_ranges):
 
 
 instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
-tas = CooperNathans(SPICE_CONVENTION=True)
+ei = 14.450292
+ef = 14.443601
+tas = CooperNathans(spice_convention=True, fixed_ef=ef, fixed_ei=ei)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
-sample = Xtal.from_json(sample_json_path)
-ub_json = sample.ub_mat
+sample = Sample.from_json(sample_json_path)
+ub_json = sample.ub_conf.ub_mat
 tas.mount_sample(sample)
 
 # -------------- check UB calculation -----------------
 
-ei = 14.450292
-ef = 14.443601
 
 angles1 = MotorAngles(two_theta=-101.396853, omega=-48.004475, sgl=-0.770162, sgu=1.477665)
-peak1 = Peak(hkl=(0, 0, 16), angles=angles1, ei=ei, ef=ef)
+peak1 = Peak(hkl=(0, 0, 16), angles=angles1)
 angles2 = MotorAngles(two_theta=-56.150124, omega=64.624337, sgl=-0.770162, sgu=1.477665)
-peak2 = Peak(hkl=(1, 1, 0), angles=angles2, ei=ei, ef=ef)
+peak2 = Peak(hkl=(1, 1, 0), angles=angles2)
 
 tas.calculate_ub_matrix(peaks=(peak1, peak2))
-assert np.allclose(tas.sample.ub_mat, ub_json, atol=1e-4)
+assert np.allclose(tas.sample.ub_conf.ub_mat, ub_json, atol=1e-4)
 
 
 # ------------------------ load data ------------------------

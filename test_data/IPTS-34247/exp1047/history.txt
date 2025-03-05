@@ -1,0 +1,3355 @@
+2/28/2025 12:10 PM        drive s1 0 
+2/28/2025 12:20 PM        drive slita_bt 25 slita_tp 25 slita_lf 20 slita_rt 20
+2/28/2025 12:20 PM        drive slitb_bt 25 slitb_tp 25 slitb_lf 20 slitb_rt 20
+2/28/2025 12:27 PM        lattice 5.515570 5.515570 9.169000 90.000000 90.000000 120.000000
+2/28/2025 12:28 PM        drive s2 -102
+2/28/2025 12:29 PM        drive s1 -51
+2/28/2025 12:30 PM        drive s1 -34
+2/28/2025 12:30 PM        driverel s1 -0.5
+2/28/2025 12:31 PM        scantitle "HoV6Sn6 alignment 0 0 6"
+2/28/2025 12:32 PM        preset time 1
+2/28/2025 12:32 PM        scanrel s1 2 -2 0.2
+2/28/2025 12:34 PM        drive s1 -34.3607
+2/28/2025 12:34 PM        th2th 2 -2 0.1
+2/28/2025 12:36 PM        th2th 3 -3 0.25
+2/28/2025 12:38 PM        scanrel sgl 5 -5 0.5
+2/28/2025 12:40 PM        drive sgl -2.15
+2/28/2025 12:40 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_124042PM.ini"
+2/28/2025 12:41 PM        br 3 0 0
+2/28/2025 12:42 PM        br -3 0 0
+2/28/2025 12:44 PM        scantitle "HoV6Sn6 alignment -3 0 0"
+2/28/2025 12:44 PM        scanrel s1 1 -1 0.1
+2/28/2025 12:45 PM        drive s1 -121.7437
+2/28/2025 12:45 PM        th2th 3 - 3 0.2
+2/28/2025 12:46 PM        br -3 0 0
+2/28/2025 12:46 PM        drive s1 -121.7437
+2/28/2025 12:46 PM        th2th 3 -3 0.2
+2/28/2025 12:48 PM        drive sgl 0
+2/28/2025 12:48 PM        scan sgu 5 -5 0.5
+2/28/2025 12:50 PM        drive sgu 0.27
+2/28/2025 12:50 PM        drive sgl -2.15
+2/28/2025 12:51 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_125114PM.ini"
+2/28/2025 12:52 PM        drive s1 -157.5
+2/28/2025 12:53 PM        drive s1 24
+2/28/2025 12:58 PM        waitpost dr_tsample 25 1 120 30000
+2/28/2025 1:03 PM        set_temp 17 
+2/28/2025 1:03 PM        waitpost dr_tsample 19 1 120 30000
+2/28/2025 1:11 PM        set_temp 1 
+2/28/2025 1:20 PM        br 0 0 6
+2/28/2025 1:21 PM        driverel s1 5
+2/28/2025 1:22 PM        driverel s1 5
+2/28/2025 1:22 PM        driverel s1 -3
+2/28/2025 1:22 PM        driverel s1 1.5
+2/28/2025 1:22 PM        scanrel s1 1 -1 0.1
+2/28/2025 1:24 PM        drive s1 -25.6485
+2/28/2025 1:24 PM        th2th 3 -3 0.1
+2/28/2025 1:27 PM        scantitle "HoV6Sn6 alignment 0 0 6"
+2/28/2025 1:27 PM        scan sgl 5 -5 0.5
+2/28/2025 1:29 PM        drive sgl -2.4
+2/28/2025 1:29 PM        scanrel s1 1 -1 0.1
+2/28/2025 1:30 PM        drive s1 -25.7811
+2/28/2025 1:33 PM        lattice a 5.515570 b 5.515570 c 9.088925
+2/28/2025 1:36 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_13543PM.ini"
+2/28/2025 1:36 PM        br 3 0 0
+2/28/2025 1:38 PM        scantitle "HoV6Sn6 alignment 3 0 0"
+2/28/2025 1:38 PM        scanrel s1 1 -1 0.1
+2/28/2025 1:40 PM        drive s1 -113.1089
+2/28/2025 1:40 PM        th2th 3 -3 0.2
+2/28/2025 1:50 PM        scanrel sgu 2 -2 0.5
+2/28/2025 1:52 PM        drive sgu -0.9032
+2/28/2025 1:54 PM        scantitle "optimize sample translations"br 0 0 6
+2/28/2025 1:55 PM        scantitle "HoV6Sn6 alignment 3 0 0"
+2/28/2025 1:55 PM        scanrel s1 1 -1 0.1
+2/28/2025 2:00 PM        lattice a 5.458270 b 5.458270 c 9.088925
+2/28/2025 2:02 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_20205PM.ini"
+2/28/2025 2:04 PM        scantitle "optimize sample translations"
+2/28/2025 2:04 PM        br 0 0 6
+2/28/2025 2:06 PM        scan stl 9 -9 1 preset time 1 
+2/28/2025 2:08 PM        scan stl 12 10 1 preset time 1 
+2/28/2025 2:10 PM        drive stl 0 
+2/28/2025 2:10 PM        scan stu 9 -9 1 preset time 1
+2/28/2025 2:12 PM        drive stu 0
+2/28/2025 2:12 PM        br 3 0 0
+2/28/2025 2:14 PM        scan stl 9 -9 1 preset time 1 
+2/28/2025 2:15 PM        drive stl -4
+2/28/2025 2:16 PM        scantitle "optimize pre-sample and post-sample slits"
+2/28/2025 2:17 PM        scan slita_tp 0 30 1 preset time 1
+2/28/2025 2:20 PM        scan slita_bt 0 30 1 preset time 1
+2/28/2025 2:22 PM        scan slita_lf 0 20 1 preset time 1
+2/28/2025 2:24 PM        scan slita_rt 0 20 1 preset time 1
+2/28/2025 2:25 PM        scan slitb_tp 0 30 1 preset time 1
+2/28/2025 2:27 PM        scan slitb_bt 0 30 1 preset time 1
+2/28/2025 2:29 PM        scan slitb_lf 0 20 1 preset time 1
+2/28/2025 2:31 PM        scan slitb_rt 0 20 1 preset time 1
+2/28/2025 2:32 PM        br 0 0 6
+2/28/2025 2:34 PM        scantitle "optimize pre-sample and post-sample slits"
+2/28/2025 2:34 PM        scan slita_lf 0 20 1 preset time 1
+2/28/2025 2:35 PM        scan slita_rt 0 20 1 preset time 1
+2/28/2025 2:37 PM        scan slitb_lf 0 20 1 preset time 1
+2/28/2025 2:38 PM        scan slitb_rt 0 20 1 preset time 1
+2/28/2025 3:49 PM        drive slita_tp 22 slita_bt 25 slita_lf 9 slita_rt 7 slitb_tp 25 slitb_bt 25 slitb_lf 6 slitb_rt 6
+2/28/2025 3:50 PM        scantitle "alignment 0 0 6 55mK"
+2/28/2025 3:50 PM        scanrel s1 1 -1 0.1
+2/28/2025 3:52 PM        drive s1 -26.48
+2/28/2025 3:52 PM        th2th 3 -3 0.2
+2/28/2025 3:54 PM        drive s2 -102.1193
+2/28/2025 3:54 PM        scan sgl 5 -5 0.5
+2/28/2025 3:58 PM        drive sgl -1.9545
+2/28/2025 3:58 PM        scanrel s1 1 -1 0.1
+2/28/2025 4:04 PM        drive s1 -25.9056
+2/28/2025 4:06 PM        th2th 3 -3 0.2
+2/28/2025 4:09 PM        drive s2 -102.2051
+2/28/2025 4:10 PM        lattice a 5.458270 b 5.458270 c 9.093258
+2/28/2025 4:14 PM        scanrel sgu 3 -3 0.5
+2/28/2025 4:15 PM        drive sgu -1.058
+2/28/2025 4:15 PM        scanrel s1 1 -1 0.1
+2/28/2025 4:16 PM        drive s1 -25.87
+2/28/2025 4:17 PM        th2th 3 -3 0.2
+2/28/2025 4:19 PM        lattice a 5.458270 b 5.458270 c 9.094340
+2/28/2025 4:20 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_42020PM.ini"
+2/28/2025 4:23 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_42325PM.ini"
+2/28/2025 4:23 PM        br 3 0 0
+2/28/2025 4:25 PM        scanrel s1 1 -1 0.1
+2/28/2025 4:26 PM        drive s1 -113.7113
+2/28/2025 4:26 PM        th2th 3 -3 0.2
+2/28/2025 4:29 PM        scanrel sgu 2.5 -2.5 0.5
+2/28/2025 4:30 PM        drive sgu -0.7215
+2/28/2025 4:31 PM        scanrel sgl 3 -3 0.5
+2/28/2025 4:34 PM        scanrel sgl 4 -4 0.5
+2/28/2025 4:36 PM        drive sgl -1.8345
+2/28/2025 4:36 PM        scanrel s1 1 -1 0.1
+2/28/2025 4:37 PM        th2th 3 -3 0.2
+2/28/2025 4:39 PM        lattice a 5.454583 b 5.454583 c 9.094340
+2/28/2025 4:40 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_44024PM.ini"
+2/28/2025 4:40 PM        br 2 0 0
+2/28/2025 4:43 PM        scanrel s1 1 -1 0.1
+2/28/2025 4:45 PM        th2th 3 -3 0.2
+2/28/2025 4:54 PM        br 0 0 1
+2/28/2025 4:56 PM        br 0 0 -1
+2/28/2025 5:00 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:08 PM        br 0 0 3
+2/28/2025 5:09 PM        br 0 0 4
+2/28/2025 5:10 PM        br 0 0 5
+2/28/2025 5:11 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:13 PM        br 0 0 6
+2/28/2025 5:15 PM        drive s1 -25.9056 s2 -102.2051
+2/28/2025 5:16 PM        drive sgl -1.95 sgu -1.058
+2/28/2025 5:16 PM        drive s1 2
+2/28/2025 5:17 PM        drive s1 -21
+2/28/2025 5:17 PM        driverel s1 -2
+2/28/2025 5:17 PM        driverel s1 1
+2/28/2025 5:18 PM        driverel s1 -1
+2/28/2025 5:18 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:21 PM        drive s1 -5
+2/28/2025 5:21 PM        drive s1 -22.7015
+2/28/2025 5:21 PM        driverel s1 -5
+2/28/2025 5:22 PM        driverel s1 10
+2/28/2025 5:22 PM        drive s1 -22.7015
+2/28/2025 5:22 PM        th2th 3 -3 0.2
+2/28/2025 5:28 PM        lattice a 5.454583 b 5.454583 c 9.157373
+2/28/2025 5:28 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_52854PM.ini"
+2/28/2025 5:29 PM        br 3 0 0
+2/28/2025 5:30 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:32 PM        drive s1 -110.7117
+2/28/2025 5:32 PM        th2th 3 -3 0.2
+2/28/2025 5:35 PM        lattice a 5.491224 b 5.491224 c 9.157373
+2/28/2025 5:35 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_53544PM.ini"
+2/28/2025 5:36 PM        br 0 0 1
+2/28/2025 5:38 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:39 PM        br 0 0 3
+2/28/2025 5:40 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:41 PM        br 0 0 6
+2/28/2025 5:44 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -160.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
+2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -159.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
+2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+2/28/2025 5:49 PM        set_temp_dr 0.06
+2/28/2025 5:51 PM        set_temp_dr 0.05
+2/28/2025 5:52 PM        drive s1 -21.75
+2/28/2025 5:52 PM        scanrel s1 1 -1 0.1
+2/28/2025 5:54 PM        drive s1 -21.6457
+2/28/2025 5:54 PM        th2th 1 -1 0.1
+2/28/2025 5:55 PM        th2th 3 -3 0.2
+2/28/2025 5:58 PM        lattice a 5.491224 b 5.491224 c 9.168370
+2/28/2025 5:58 PM        scantitle "alignment 3 0 0"
+2/28/2025 5:59 PM        br 3 0 0
+2/28/2025 6:00 PM        driverel s1 3
+2/28/2025 6:01 PM        driverel s1 -2
+2/28/2025 6:01 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:02 PM        drive s1 -109.2906
+2/28/2025 6:03 PM        th2th 2 -2 0.2
+2/28/2025 6:05 PM        lattice a 5.497746 b 5.497746 c 9.168370
+2/28/2025 6:07 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_60658PM.ini"
+2/28/2025 6:09 PM        scanrel sgu 2 -2 0.5
+2/28/2025 6:10 PM        drive sgu -0.9383
+2/28/2025 6:10 PM        scanrel s1 1 -1 0.2
+2/28/2025 6:12 PM        drive s1 -109.2955
+2/28/2025 6:12 PM        scanrel s1 0.6 -0.6 0.1
+2/28/2025 6:13 PM        scanrel sgl 2 -2 0.5
+2/28/2025 6:14 PM        drive sgl -2.0518
+2/28/2025 6:15 PM        drive sgl -2.05
+2/28/2025 6:16 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_61624PM.ini"
+2/28/2025 6:16 PM        br 0 0 6
+2/28/2025 6:18 PM        br 0 0 4
+2/28/2025 6:19 PM        scantitle "alignment 0 0 4"
+2/28/2025 6:19 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:20 PM        drive s1 -1.965
+2/28/2025 6:20 PM        th2th 3 -3 0.2
+2/28/2025 6:23 PM        lattice a 5.497746 b 5.497746 c 9.165351
+2/28/2025 6:23 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_62345PM.ini"
+2/28/2025 6:24 PM        br 0 0 5
+2/28/2025 6:24 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:26 PM        br 0 0 2
+2/28/2025 6:27 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:30 PM        scantitle "alignment 2 0 0"
+2/28/2025 6:30 PM        br 2 0 0
+2/28/2025 6:32 PM        driverel s1 -1
+2/28/2025 6:33 PM        driverel s1 +1
+2/28/2025 6:33 PM        driverel s1 +1
+2/28/2025 6:33 PM        driverel s1 -0.5
+2/28/2025 6:33 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:34 PM        drive s1 -90.4881
+2/28/2025 6:34 PM        th2th 1 -1 0.1
+2/28/2025 6:36 PM        scanrel sgu 2 -2 0.5
+2/28/2025 6:37 PM        scan sgu 2 1
+2/28/2025 6:37 PM        scan sgu 2 1 0.5
+2/28/2025 6:38 PM        drive sgu -0.617
+2/28/2025 6:40 PM        lattice a 5.500173 b 5.500173 c 9.165351
+2/28/2025 6:40 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_64028PM.ini"
+2/28/2025 6:41 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_64053PM.ini"
+2/28/2025 6:41 PM        br 0 0 4
+2/28/2025 6:43 PM        scantitle "alignment 0 0 4"
+2/28/2025 6:43 PM        scanrel s1 1 -1 0.1
+2/28/2025 6:44 PM        drive s1 -1.8052
+2/28/2025 6:45 PM        th2th 2 -2 0.1
+2/28/2025 6:47 PM        scanrel sgl 2 -2 0.5
+2/28/2025 6:48 PM        drive sgl -2.605
+2/28/2025 6:49 PM        lattice a 5.500173 b 5.500173 c 9.164390
+2/28/2025 6:50 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_65006PM.ini"
+2/28/2025 6:52 PM        br 3 0 0
+2/28/2025 6:55 PM        scantitle "found 3 0 0"
+2/28/2025 6:55 PM        scanrel s1 1 -1 0.1
+2/28/2025 7:01 PM        br 1 0 0
+2/28/2025 7:02 PM        scantitle "checking 1 0 0"
+2/28/2025 7:03 PM        scanrel s1 1 -1 0.1
+2/28/2025 7:05 PM        scantitle "chekcing dark angle 0 0 1"
+2/28/2025 7:05 PM        br 0 0 1
+2/28/2025 7:08 PM        scanrel s1 1 -1 0.1 preset time 10
+2/28/2025 7:10 PM        preset time 10
+2/28/2025 7:10 PM        scanrel s1 2 -1 0.1
+2/28/2025 7:18 PM        br 0 0 5
+2/28/2025 7:19 PM        br 1 0 0
+2/28/2025 7:21 PM        scantitle "searching 1 0 0"
+2/28/2025 7:21 PM        scanrel s1 1 -1 0.1
+2/28/2025 7:22 PM        preset time 1
+2/28/2025 7:23 PM        br 1 0 0
+2/28/2025 7:23 PM        drive -75.25
+2/28/2025 7:23 PM        drive s1 -75.25
+2/28/2025 7:24 PM        driverel s1 2
+2/28/2025 7:24 PM        scanrel s1 1 -1 0.2
+2/28/2025 7:25 PM        br 2 0 0
+2/28/2025 7:27 PM        driverel s1 2
+2/28/2025 7:27 PM        driverel s1 -4
+2/28/2025 7:27 PM        driverel s1 6
+2/28/2025 7:28 PM        driverel s1 -1
+2/28/2025 7:28 PM        scanrel s1 1 -1 0.1
+2/28/2025 7:35 PM        br 0 0 1
+2/28/2025 7:38 PM        br 3 0 0
+2/28/2025 7:51 PM        scantitle "align 2 0 0"
+2/28/2025 7:51 PM        br 2 0 0
+2/28/2025 7:52 PM        set_temp_dr 0.03
+2/28/2025 7:53 PM        driverel s1 3
+2/28/2025 7:53 PM        driverel s1 3
+2/28/2025 7:53 PM        driverel s1 -2.5
+2/28/2025 7:53 PM        scanrel s1 1 -1 0.1
+2/28/2025 7:55 PM        drive s1 -87.17
+2/28/2025 7:55 PM        th2th 2 -2 0.1
+2/28/2025 7:57 PM        scanrel sgu 2 -2 0.5
+2/28/2025 7:58 PM        drive sgu -0.98
+2/28/2025 7:59 PM        lattice a 5.499416 b 5.499416 c 9.164390
+2/28/2025 8:00 PM        scantitle "align 0 0 4"
+2/28/2025 8:00 PM        br 0 0 4
+2/28/2025 8:02 PM        driverel s1 3.5
+2/28/2025 8:02 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:03 PM        drive s1 CEN
+2/28/2025 8:03 PM        drive s1 COM
+2/28/2025 8:03 PM        drive s1 @COM
+2/28/2025 8:03 PM        drive s1 $COM
+2/28/2025 8:04 PM        drive s1 1.5835
+2/28/2025 8:04 PM        th2th 2 -2 0.2
+2/28/2025 8:05 PM        scanrel sgl 2 -2 0.5
+2/28/2025 8:06 PM        drive sgu -0.98
+2/28/2025 8:07 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:08 PM        drive 1.535
+2/28/2025 8:08 PM        drive s1 1.535
+2/28/2025 8:08 PM        th2th 2 -2 0.2
+2/28/2025 8:10 PM        lattice a 5.499416 b 5.499416 c 9.164350
+2/28/2025 8:10 PM        scanrel sgl 2 -2 0.5
+2/28/2025 8:11 PM        COM sgl
+2/28/2025 8:13 PM        drive h 2.000000 k 0.000000 l 0.000000 e 0.000000
+2/28/2025 8:15 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_81457PM.ini"
+2/28/2025 8:15 PM        br 0 0 4
+2/28/2025 8:16 PM        scantitle "checking 0 0 4"
+2/28/2025 8:16 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:17 PM        scantitle "checking 2 0 0"
+2/28/2025 8:17 PM        br 2 0 0
+2/28/2025 8:19 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:24 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_82356PM.ini"
+2/28/2025 8:24 PM        br 1 0 0
+2/28/2025 8:25 PM        scantitle "checking 1 0 0"
+2/28/2025 8:25 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:26 PM        COM s1
+2/28/2025 8:31 PM        br 0 0 4
+2/28/2025 8:32 PM        scantitle "checking 0 0 4"
+2/28/2025 8:32 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:33 PM        br 2 0 0
+2/28/2025 8:35 PM        scantitle "checking 2 0 0"
+2/28/2025 8:35 PM        scanrel s1 2 -2 0.1
+2/28/2025 8:46 PM        br 2 0 0
+2/28/2025 8:47 PM        drive s1 -87.084
+2/28/2025 8:49 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_84922PM.ini"
+2/28/2025 8:49 PM        br 2 0 0
+2/28/2025 8:50 PM        br 0 0 4
+2/28/2025 8:52 PM        scantitle "check 0 0 4"
+2/28/2025 8:52 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:53 PM        scantitle "check 1 0 0"
+2/28/2025 8:53 PM        br 1 0 0
+2/28/2025 8:54 PM        scanrel s1 1 -1 0.1
+2/28/2025 8:56 PM        scantitle "check 2 0 0"
+2/28/2025 8:56 PM        br 2 0 0
+2/28/2025 8:57 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:03 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_90353PM.ini"
+2/28/2025 9:04 PM        lattice 5.499416 5.499416 9.164350 90.000000 90.000000 120.000000
+2/28/2025 9:04 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_90417PM.ini"
+2/28/2025 9:05 PM        br 2 0 0 
+2/28/2025 9:12 PM        drive ef 14.45
+2/28/2025 9:12 PM        scantitle "alignment 2 0 0"
+2/28/2025 9:12 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:14 PM        drive s1 -87.0526
+2/28/2025 9:15 PM        th2th 2 -2 0.5
+2/28/2025 9:16 PM        th2th 2 -2 0.2
+2/28/2025 9:16 PM        drive s1 -87.0526
+2/28/2025 9:17 PM        th2th 2 -2 0.2
+2/28/2025 9:18 PM        drive s1 -87.0526
+2/28/2025 9:19 PM        drive s2 -59.9051
+2/28/2025 9:20 PM        th2th 2 -2 0.2
+2/28/2025 9:22 PM        lattice a 5.500888 b 5.500888 c 9.164350
+2/28/2025 9:22 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_92253PM.ini"
+2/28/2025 9:23 PM        br 0 0 4
+2/28/2025 9:24 PM        scantitle "alignment 0 0 4"
+2/28/2025 9:25 PM        drive ef 14.45
+2/28/2025 9:26 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:28 PM        drive s1 1.6183
+2/28/2025 9:28 PM        th2th 2 -2 0.2
+2/28/2025 9:30 PM        lattice a 5.500888 b 5.500888 c 9.163669
+2/28/2025 9:31 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_93047PM.ini"
+2/28/2025 9:35 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:37 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_93704PM.ini"
+2/28/2025 9:38 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_93801PM.ini"
+2/28/2025 9:38 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_93830PM.ini"
+2/28/2025 9:39 PM        br 2 0 0
+2/28/2025 9:46 PM        br 0 0 4
+2/28/2025 9:49 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:51 PM        drive s1 1.6
+2/28/2025 9:53 PM        br 2 0 0
+2/28/2025 9:54 PM        scanrel s1 1 -1 0.1
+2/28/2025 9:56 PM        drive s1 -87.0644
+2/28/2025 9:56 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_95630PM.ini"
+2/28/2025 9:58 PM        br 2 0 0
+2/28/2025 9:59 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_95913PM.ini"
+2/28/2025 9:59 PM        br 2 0 0
+2/28/2025 9:59 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_95940PM.ini"
+2/28/2025 9:59 PM        br 2 0 0
+2/28/2025 9:59 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_95958PM.ini"
+2/28/2025 10:00 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_100005PM.ini"
+2/28/2025 10:50 PM        br 2 0 0
+2/28/2025 10:50 PM        scantitle "Moving to (@(h) @(k) @(l)) center"
+2/28/2025 10:50 PM        preset time 1
+2/28/2025 10:50 PM        scanrel s1 1 -1 0.1
+2/28/2025 10:51 PM        COM s1
+2/28/2025 10:51 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, UP"
+2/28/2025 10:51 PM        start_field_scan mag_i
+2/28/2025 10:53 PM        scan mag_i 0 4 0.05 preset time 20
+3/1/2025 12:22 AM        end_field_scan mag_i
+3/1/2025 12:27 AM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/1/2025 12:27 AM        preset time 1
+3/1/2025 12:27 AM        scanrel s1 1 -1 0.1
+3/1/2025 12:27 AM        COM s1
+3/1/2025 12:28 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, DOWN"
+3/1/2025 12:28 AM        start_field_scan mag_i
+3/1/2025 12:31 AM        scan mag_i 4 0 -0.05 preset time 20
+3/1/2025 1:57 AM        end_field_scan mag_i
+3/1/2025 2:00 AM        br 1 0 0
+3/1/2025 2:00 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 2:00 AM        preset time 1
+3/1/2025 2:00 AM        scanrel s1 1 -1 0.1
+3/1/2025 2:01 AM        COM s1
+3/1/2025 2:01 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, UP"
+3/1/2025 2:01 AM        start_field_scan mag_i
+3/1/2025 2:03 AM        scan mag_i 0 4 0.05 preset time 10
+3/1/2025 3:16 AM        end_field_scan mag_i
+3/1/2025 3:21 AM        br 0 0 5
+3/1/2025 3:22 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 3:22 AM        preset time 1
+3/1/2025 3:22 AM        scanrel s1 1 -1 0.1
+3/1/2025 3:23 AM        COM s1
+3/1/2025 3:23 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, DOWN"
+3/1/2025 3:23 AM        start_field_scan mag_i
+3/1/2025 3:26 AM        scan mag_i 4 0 -0.05 preset time 40
+3/1/2025 5:21 AM        end_field_scan mag_i
+3/1/2025 5:24 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, UP"
+3/1/2025 5:24 AM        start_field_scan mag_i
+3/1/2025 5:25 AM        scan mag_i 0 4 0.05 preset time 40
+3/1/2025 7:19 AM        end_field_scan mag_i
+3/1/2025 7:24 AM        br 1 0 0
+3/1/2025 7:25 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 7:25 AM        preset time 1
+3/1/2025 7:25 AM        scanrel s1 1 -1 0.1
+3/1/2025 7:26 AM        COM s1
+3/1/2025 7:26 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, DOWN"
+3/1/2025 7:26 AM        start_field_scan mag_i
+3/1/2025 7:29 AM        scan mag_i 4 0 -0.05 preset time 10
+3/1/2025 8:42 AM        end_field_scan mag_i
+3/1/2025 8:46 AM        set_field mag_i 0
+3/1/2025 8:46 AM        set_temp_dr 0.15
+3/1/2025 8:46 AM        wait 3600
+3/1/2025 9:28 AM        br 2 0 0
+3/1/2025 9:29 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 9:29 AM        preset time 1
+3/1/2025 9:29 AM        scanrel s1 1 -1 0.1
+3/1/2025 9:30 AM        COM s1
+3/1/2025 9:30 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(sample.position) K, UP"
+3/1/2025 9:30 AM        start_field_scan mag_i
+3/1/2025 9:31 AM        scan mag_i 0 4 0.05 preset time 20
+3/1/2025 10:59 AM        end_field_scan mag_i
+3/1/2025 11:04 AM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/1/2025 11:04 AM        preset time 1
+3/1/2025 11:04 AM        scanrel s1 1 -1 0.1
+3/1/2025 11:05 AM        COM s1
+3/1/2025 11:05 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(drt_sample.position) K, DOWN"
+3/1/2025 11:05 AM        start_field_scan mag_i
+3/1/2025 11:09 AM        scan mag_i 4 0 -0.05 preset time 20
+3/1/2025 12:36 PM        end_field_scan mag_i
+3/1/2025 12:39 PM        set_field mag_i 0
+3/1/2025 12:44 PM        set_temp_dr 0.3
+3/1/2025 12:44 PM        wait 1200
+3/1/2025 1:04 PM        br 2 0 0
+3/1/2025 1:04 PM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 1:04 PM        preset time 1
+3/1/2025 1:04 PM        scanrel s1 1 -1 0.1
+3/1/2025 1:05 PM        COM s1
+3/1/2025 1:05 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_tsample) K, UP"
+3/1/2025 1:05 PM        start_field_scan mag_i
+3/1/2025 1:07 PM        scan mag_i 0 4 0.05 preset time 20
+3/1/2025 2:35 PM        end_field_scan mag_i
+3/1/2025 2:40 PM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/1/2025 2:40 PM        preset time 1
+3/1/2025 2:40 PM        scanrel s1 1 -1 0.1
+3/1/2025 2:41 PM        COM s1
+3/1/2025 2:41 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/1/2025 2:41 PM        start_field_scan mag_i
+3/1/2025 2:44 PM        scan mag_i 4 0 -0.05 preset time 20
+3/1/2025 4:11 PM        end_field_scan mag_i
+3/1/2025 4:14 PM        set_field mag_i 0
+3/1/2025 4:14 PM        set_temp_dr 0.3
+3/1/2025 4:14 PM        set_field mag_i 1
+3/1/2025 4:22 PM        br 2 0 0
+3/1/2025 4:22 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 4:22 PM        preset time 1
+3/1/2025 4:22 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:23 PM        COM s1
+3/1/2025 4:23 PM        th2th 2 -2 0.1
+3/1/2025 4:25 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 4:25 PM        preset time 5
+3/1/2025 4:25 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:28 PM        COM s1
+3/1/2025 4:28 PM        set_field mag_i 1.05
+3/1/2025 4:35 PM        br 2 0 0
+3/1/2025 4:35 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 4:35 PM        preset time 1
+3/1/2025 4:35 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:36 PM        COM s1
+3/1/2025 4:36 PM        th2th 2 -2 0.1
+3/1/2025 4:38 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 4:38 PM        preset time 5
+3/1/2025 4:38 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:41 PM        COM s1
+3/1/2025 4:41 PM        set_field mag_i 1.1
+3/1/2025 4:47 PM        br 2 0 0
+3/1/2025 4:47 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 4:47 PM        preset time 1
+3/1/2025 4:47 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:48 PM        COM s1
+3/1/2025 4:48 PM        th2th 2 -2 0.1
+3/1/2025 4:51 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 4:51 PM        preset time 5
+3/1/2025 4:51 PM        scanrel s1 1 -1 0.1
+3/1/2025 4:53 PM        COM s1
+3/1/2025 4:53 PM        set_field mag_i 1.15
+3/1/2025 5:00 PM        br 2 0 0
+3/1/2025 5:00 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 5:00 PM        preset time 1
+3/1/2025 5:00 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:01 PM        COM s1
+3/1/2025 5:01 PM        th2th 2 -2 0.1
+3/1/2025 5:04 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 5:04 PM        preset time 5
+3/1/2025 5:04 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:06 PM        COM s1
+3/1/2025 5:06 PM        set_field mag_i 1.2
+3/1/2025 5:13 PM        br 2 0 0
+3/1/2025 5:13 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 5:13 PM        preset time 1
+3/1/2025 5:13 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:14 PM        COM s1
+3/1/2025 5:14 PM        th2th 2 -2 0.1
+3/1/2025 5:16 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 5:16 PM        preset time 5
+3/1/2025 5:16 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:19 PM        COM s1
+3/1/2025 5:19 PM        set_field mag_i 1.25
+3/1/2025 5:26 PM        br 2 0 0
+3/1/2025 5:26 PM        scantitle "align (2 0 0), H = @(mag_i) T, T = @(dr_temp) K "
+3/1/2025 5:26 PM        preset time 1
+3/1/2025 5:26 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:27 PM        COM s1
+3/1/2025 5:27 PM        th2th 2 -2 0.1
+3/1/2025 5:29 PM        scantitle "measure rocking (2 0 0), H = @(mag_i) T, T = @(dr_temp) K"
+3/1/2025 5:29 PM        preset time 5
+3/1/2025 5:29 PM        scanrel s1 1 -1 0.1
+3/1/2025 5:31 PM        COM s1
+3/1/2025 5:31 PM        set_field mag_i 0
+3/1/2025 5:43 PM        start_field_scan mag_i
+3/1/2025 5:44 PM        set_field mag_i 0.1
+3/1/2025 5:50 PM        set_field mag_i 0
+3/1/2025 5:56 PM        end_field_scan mag_i
+3/1/2025 5:59 PM        start_field_scan mag_i
+3/1/2025 6:01 PM        preset time 1
+3/1/2025 6:01 PM        scan mag_i 0 0.1 0.1
+3/1/2025 6:02 PM        end_field_scan mag_i
+3/1/2025 6:28 PM        start_field_scan mag_i
+3/1/2025 6:29 PM        preset time 1
+3/1/2025 6:30 PM        scan mag_i 0.1 0.2 0.1
+3/1/2025 6:30 PM        scanrel s1 0.2 -0.2 0.1
+3/1/2025 6:31 PM        scan mag_i 0.2 0.3 0.1
+3/1/2025 6:32 PM        scanrel s1 0.2 -0.2 0.1
+3/1/2025 6:32 PM        end_field_scan mag_i
+3/1/2025 6:51 PM        set_temp_dr 0.7
+3/1/2025 7:16 PM        set_field mag_i 0
+3/1/2025 7:25 PM        scantitle "(2 0 0), T = 0.7K s1 scan"
+3/1/2025 7:25 PM        scanrel s1 1 -1 0.1
+3/1/2025 7:27 PM        preset time 10
+3/1/2025 7:27 PM        scanrel s1 1 -1 0.1
+3/1/2025 7:31 PM        COM s1
+3/1/2025 8:23 PM        set_temp_dr 0.7
+3/1/2025 8:23 PM        br 2 0 0
+3/1/2025 8:23 PM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 8:23 PM        preset time 1
+3/1/2025 8:23 PM        scanrel s1 1 -1 0.1
+3/1/2025 8:24 PM        COM s1
+3/1/2025 8:24 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+3/1/2025 8:24 PM        start_field_scan mag_i
+3/1/2025 8:26 PM        scan mag_i 0 1.2 0.2 preset time 20
+3/1/2025 8:34 PM        scan mag_i 1.2 3 0.05 preset time 20
+3/1/2025 9:15 PM        end_field_scan mag_i
+3/1/2025 9:20 PM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/1/2025 9:20 PM        preset time 1
+3/1/2025 9:20 PM        scanrel s1 1 -1 0.1
+3/1/2025 9:21 PM        COM s1
+3/1/2025 9:21 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/1/2025 9:21 PM        start_field_scan mag_i
+3/1/2025 9:24 PM        scan mag_i 3 1.2 -0.05 preset time 20
+3/1/2025 10:03 PM        scan mag_i 1.2 0 -0.2 preset time 20
+3/1/2025 10:12 PM        end_field_scan mag_i
+3/1/2025 10:16 PM        set_temp_dr 0.6
+3/1/2025 10:16 PM        wait 2400
+3/1/2025 10:56 PM        br 2 0 0
+3/1/2025 10:56 PM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/1/2025 10:56 PM        preset time 1
+3/1/2025 10:56 PM        scanrel s1 1 -1 0.1
+3/1/2025 10:57 PM        COM s1
+3/1/2025 10:57 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+3/1/2025 10:57 PM        start_field_scan mag_i
+3/1/2025 10:59 PM        scan mag_i 0 1.2 0.2 preset time 20
+3/1/2025 11:07 PM        scan mag_i 1.2 3 0.05 preset time 20
+3/1/2025 11:47 PM        end_field_scan mag_i
+3/1/2025 11:52 PM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/1/2025 11:52 PM        preset time 1
+3/1/2025 11:52 PM        scanrel s1 1 -1 0.1
+3/1/2025 11:53 PM        COM s1
+3/1/2025 11:53 PM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/1/2025 11:53 PM        start_field_scan mag_i
+3/1/2025 11:56 PM        scan mag_i 3 1.2 -0.05 preset time 20
+3/2/2025 12:36 AM        scan mag_i 1.2 0 -0.2 preset time 20
+3/2/2025 12:44 AM        end_field_scan mag_i
+3/2/2025 12:48 AM        set_temp_dr 0.5
+3/2/2025 12:48 AM        wait 2400
+3/2/2025 1:28 AM        br 2 0 0
+3/2/2025 1:28 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/2/2025 1:28 AM        preset time 1
+3/2/2025 1:28 AM        scanrel s1 1 -1 0.1
+3/2/2025 1:29 AM        COM s1
+3/2/2025 1:29 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+3/2/2025 1:29 AM        start_field_scan mag_i
+3/2/2025 1:31 AM        scan mag_i 0 1.2 0.2 preset time 20
+3/2/2025 1:40 AM        scan mag_i 1.2 3 0.05 preset time 20
+3/2/2025 2:19 AM        end_field_scan mag_i
+3/2/2025 2:24 AM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/2/2025 2:24 AM        preset time 1
+3/2/2025 2:24 AM        scanrel s1 1 -1 0.1
+3/2/2025 2:25 AM        COM s1
+3/2/2025 2:25 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/2/2025 2:25 AM        start_field_scan mag_i
+3/2/2025 2:28 AM        scan mag_i 3 1.2 -0.05 preset time 20
+3/2/2025 3:08 AM        scan mag_i 1.2 0 -0.2 preset time 20
+3/2/2025 3:17 AM        end_field_scan mag_i
+3/2/2025 3:20 AM        set_temp_dr 0.4
+3/2/2025 3:20 AM        wait 2400
+3/2/2025 4:00 AM        br 2 0 0
+3/2/2025 4:01 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/2/2025 4:01 AM        preset time 1
+3/2/2025 4:01 AM        scanrel s1 1 -1 0.1
+3/2/2025 4:02 AM        COM s1
+3/2/2025 4:02 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+3/2/2025 4:02 AM        start_field_scan mag_i
+3/2/2025 4:03 AM        scan mag_i 0 1.2 0.2 preset time 20
+3/2/2025 4:12 AM        scan mag_i 1.2 3 0.05 preset time 20
+3/2/2025 4:52 AM        end_field_scan mag_i
+3/2/2025 4:57 AM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/2/2025 4:57 AM        preset time 1
+3/2/2025 4:57 AM        scanrel s1 1 -1 0.1
+3/2/2025 4:58 AM        COM s1
+3/2/2025 4:58 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/2/2025 4:58 AM        start_field_scan mag_i
+3/2/2025 5:01 AM        scan mag_i 3 1.2 -0.05 preset time 20
+3/2/2025 5:41 AM        scan mag_i 1.2 0 -0.2 preset time 20
+3/2/2025 5:49 AM        end_field_scan mag_i
+3/2/2025 5:53 AM        set_temp_dr 0.2
+3/2/2025 5:53 AM        wait 2400
+3/2/2025 6:33 AM        br 2 0 0
+3/2/2025 6:33 AM        scantitle "Moving to (@(h) @(k) @(l)) center"
+3/2/2025 6:33 AM        preset time 1
+3/2/2025 6:33 AM        scanrel s1 1 -1 0.1
+3/2/2025 6:34 AM        COM s1
+3/2/2025 6:34 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+3/2/2025 6:34 AM        start_field_scan mag_i
+3/2/2025 6:36 AM        scan mag_i 0 1.2 0.2 preset time 20
+3/2/2025 6:45 AM        scan mag_i 1.2 3 0.05 preset time 20
+3/2/2025 7:25 AM        end_field_scan mag_i
+3/2/2025 7:30 AM        scantitle "Alignment (@(h) @(k) @(l)) center"
+3/2/2025 7:30 AM        preset time 1
+3/2/2025 7:30 AM        scanrel s1 1 -1 0.1
+3/2/2025 7:31 AM        COM s1
+3/2/2025 7:31 AM        scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+3/2/2025 7:31 AM        start_field_scan mag_i
+3/2/2025 7:34 AM        scan mag_i 3 1.2 -0.05 preset time 20
+3/2/2025 8:13 AM        scan mag_i 1.2 0 -0.2 preset time 20
+3/2/2025 8:22 AM        end_field_scan mag_i
+3/2/2025 8:25 AM        set_temp_dr 0.25
+3/2/2025 8:25 AM        wait 1200
+3/2/2025 8:46 AM        set_field mag_i 1.6
+3/2/2025 8:55 AM        br (1 0 0)
+3/2/2025 8:55 AM        set_temp_dr 0.25
+3/2/2025 8:55 AM        wait 30
+3/2/2025 8:56 AM        preset time 1
+3/2/2025 8:56 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 8:56 AM        scanrel s1 1 -1 0.1
+3/2/2025 8:57 AM        COM s1
+3/2/2025 8:57 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 8:57 AM        th2th 2 -2 0.2
+3/2/2025 8:59 AM        preset time 2
+3/2/2025 8:59 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 8:59 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:01 AM        COM s1
+3/2/2025 9:01 AM        set_temp_dr 0.265
+3/2/2025 9:01 AM        wait 30
+3/2/2025 9:01 AM        preset time 1
+3/2/2025 9:01 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:01 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:03 AM        COM s1
+3/2/2025 9:03 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:03 AM        th2th 2 -2 0.2
+3/2/2025 9:04 AM        preset time 2
+3/2/2025 9:04 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:04 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:06 AM        COM s1
+3/2/2025 9:06 AM        set_temp_dr 0.28
+3/2/2025 9:06 AM        wait 30
+3/2/2025 9:06 AM        preset time 1
+3/2/2025 9:06 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:06 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:08 AM        COM s1
+3/2/2025 9:08 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:08 AM        th2th 2 -2 0.2
+3/2/2025 9:09 AM        preset time 2
+3/2/2025 9:09 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:09 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:11 AM        COM s1
+3/2/2025 9:11 AM        set_temp_dr 0.295
+3/2/2025 9:11 AM        wait 30
+3/2/2025 9:12 AM        preset time 1
+3/2/2025 9:12 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:12 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:13 AM        COM s1
+3/2/2025 9:13 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:13 AM        th2th 2 -2 0.2
+3/2/2025 9:14 AM        preset time 2
+3/2/2025 9:14 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:14 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:16 AM        COM s1
+3/2/2025 9:16 AM        set_temp_dr 0.31
+3/2/2025 9:16 AM        wait 30
+3/2/2025 9:17 AM        preset time 1
+3/2/2025 9:17 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:17 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:18 AM        COM s1
+3/2/2025 9:18 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:18 AM        th2th 2 -2 0.2
+3/2/2025 9:20 AM        preset time 2
+3/2/2025 9:20 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:20 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:21 AM        COM s1
+3/2/2025 9:21 AM        set_temp_dr 0.325
+3/2/2025 9:21 AM        wait 30
+3/2/2025 9:22 AM        preset time 1
+3/2/2025 9:22 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:22 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:23 AM        COM s1
+3/2/2025 9:23 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:23 AM        th2th 2 -2 0.2
+3/2/2025 9:25 AM        preset time 2
+3/2/2025 9:25 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:25 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:26 AM        COM s1
+3/2/2025 9:26 AM        set_temp_dr 0.34
+3/2/2025 9:26 AM        wait 30
+3/2/2025 9:27 AM        preset time 1
+3/2/2025 9:27 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:27 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:28 AM        COM s1
+3/2/2025 9:28 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:28 AM        th2th 2 -2 0.2
+3/2/2025 9:30 AM        preset time 2
+3/2/2025 9:30 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:30 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:31 AM        COM s1
+3/2/2025 9:32 AM        set_temp_dr 0.355
+3/2/2025 9:32 AM        wait 30
+3/2/2025 9:32 AM        preset time 1
+3/2/2025 9:32 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:32 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:33 AM        COM s1
+3/2/2025 9:33 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:33 AM        th2th 2 -2 0.2
+3/2/2025 9:35 AM        preset time 2
+3/2/2025 9:35 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:35 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:37 AM        COM s1
+3/2/2025 9:37 AM        set_temp_dr 0.37
+3/2/2025 9:37 AM        wait 30
+3/2/2025 9:37 AM        preset time 1
+3/2/2025 9:37 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:37 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:39 AM        COM s1
+3/2/2025 9:39 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:39 AM        th2th 2 -2 0.2
+3/2/2025 9:40 AM        preset time 2
+3/2/2025 9:40 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:40 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:42 AM        COM s1
+3/2/2025 9:42 AM        set_temp_dr 0.385
+3/2/2025 9:42 AM        wait 30
+3/2/2025 9:42 AM        preset time 1
+3/2/2025 9:42 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:42 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:44 AM        COM s1
+3/2/2025 9:44 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:44 AM        th2th 2 -2 0.2
+3/2/2025 9:45 AM        preset time 2
+3/2/2025 9:45 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:45 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:47 AM        COM s1
+3/2/2025 9:47 AM        set_temp_dr 0.4
+3/2/2025 9:47 AM        wait 30
+3/2/2025 9:48 AM        preset time 1
+3/2/2025 9:48 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:48 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:49 AM        COM s1
+3/2/2025 9:49 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:49 AM        th2th 2 -2 0.2
+3/2/2025 9:50 AM        preset time 2
+3/2/2025 9:50 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:50 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:52 AM        COM s1
+3/2/2025 9:52 AM        set_temp_dr 0.415
+3/2/2025 9:52 AM        wait 30
+3/2/2025 9:53 AM        preset time 1
+3/2/2025 9:53 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:53 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:54 AM        COM s1
+3/2/2025 9:54 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:54 AM        th2th 2 -2 0.2
+3/2/2025 9:56 AM        preset time 2
+3/2/2025 9:56 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:56 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:57 AM        COM s1
+3/2/2025 9:57 AM        set_temp_dr 0.43
+3/2/2025 9:57 AM        wait 30
+3/2/2025 9:58 AM        preset time 1
+3/2/2025 9:58 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:58 AM        scanrel s1 1 -1 0.1
+3/2/2025 9:59 AM        COM s1
+3/2/2025 9:59 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 9:59 AM        th2th 2 -2 0.2
+3/2/2025 10:01 AM        preset time 2
+3/2/2025 10:01 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:01 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:03 AM        COM s1
+3/2/2025 10:03 AM        set_temp_dr 0.445
+3/2/2025 10:03 AM        wait 30
+3/2/2025 10:03 AM        preset time 1
+3/2/2025 10:03 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:03 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:04 AM        COM s1
+3/2/2025 10:05 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:05 AM        th2th 2 -2 0.2
+3/2/2025 10:06 AM        preset time 2
+3/2/2025 10:06 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:06 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:08 AM        COM s1
+3/2/2025 10:08 AM        set_temp_dr 0.46
+3/2/2025 10:08 AM        wait 30
+3/2/2025 10:08 AM        preset time 1
+3/2/2025 10:08 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:08 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:10 AM        COM s1
+3/2/2025 10:10 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:10 AM        th2th 2 -2 0.2
+3/2/2025 10:11 AM        preset time 2
+3/2/2025 10:11 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:11 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:13 AM        COM s1
+3/2/2025 10:13 AM        set_temp_dr 0.475
+3/2/2025 10:13 AM        wait 30
+3/2/2025 10:14 AM        preset time 1
+3/2/2025 10:14 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:14 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:15 AM        COM s1
+3/2/2025 10:15 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:15 AM        th2th 2 -2 0.2
+3/2/2025 10:16 AM        preset time 2
+3/2/2025 10:16 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:16 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:18 AM        COM s1
+3/2/2025 10:18 AM        set_temp_dr 0.49
+3/2/2025 10:18 AM        wait 30
+3/2/2025 10:19 AM        preset time 1
+3/2/2025 10:19 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:19 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:20 AM        COM s1
+3/2/2025 10:20 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:20 AM        th2th 2 -2 0.2
+3/2/2025 10:22 AM        preset time 2
+3/2/2025 10:22 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:22 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:23 AM        COM s1
+3/2/2025 10:23 AM        set_temp_dr 0.505
+3/2/2025 10:23 AM        wait 30
+3/2/2025 10:24 AM        preset time 1
+3/2/2025 10:24 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:24 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:25 AM        COM s1
+3/2/2025 10:25 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:25 AM        th2th 2 -2 0.2
+3/2/2025 10:27 AM        preset time 2
+3/2/2025 10:27 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:27 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:28 AM        COM s1
+3/2/2025 10:28 AM        set_temp_dr 0.52
+3/2/2025 10:28 AM        wait 30
+3/2/2025 10:29 AM        preset time 1
+3/2/2025 10:29 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:29 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:30 AM        COM s1
+3/2/2025 10:30 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:30 AM        th2th 2 -2 0.2
+3/2/2025 10:32 AM        preset time 2
+3/2/2025 10:32 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:32 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:34 AM        COM s1
+3/2/2025 10:34 AM        set_temp_dr 0.535
+3/2/2025 10:34 AM        wait 30
+3/2/2025 10:34 AM        preset time 1
+3/2/2025 10:34 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:34 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:36 AM        COM s1
+3/2/2025 10:36 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:36 AM        th2th 2 -2 0.2
+3/2/2025 10:37 AM        preset time 2
+3/2/2025 10:37 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:37 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:39 AM        COM s1
+3/2/2025 10:39 AM        set_temp_dr 0.55
+3/2/2025 10:39 AM        wait 30
+3/2/2025 10:40 AM        preset time 1
+3/2/2025 10:40 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:40 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:41 AM        COM s1
+3/2/2025 10:41 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:41 AM        th2th 2 -2 0.2
+3/2/2025 10:42 AM        preset time 2
+3/2/2025 10:43 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:43 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:44 AM        COM s1
+3/2/2025 10:44 AM        set_temp_dr 0.565
+3/2/2025 10:44 AM        wait 30
+3/2/2025 10:45 AM        preset time 1
+3/2/2025 10:45 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:45 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:46 AM        COM s1
+3/2/2025 10:46 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:46 AM        th2th 2 -2 0.2
+3/2/2025 10:48 AM        preset time 2
+3/2/2025 10:48 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:48 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:49 AM        COM s1
+3/2/2025 10:49 AM        set_temp_dr 0.58
+3/2/2025 10:49 AM        wait 30
+3/2/2025 10:50 AM        preset time 1
+3/2/2025 10:50 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:50 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:51 AM        COM s1
+3/2/2025 10:51 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:51 AM        th2th 2 -2 0.2
+3/2/2025 10:53 AM        preset time 2
+3/2/2025 10:53 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:53 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:55 AM        COM s1
+3/2/2025 10:55 AM        set_temp_dr 0.595
+3/2/2025 10:55 AM        wait 30
+3/2/2025 10:55 AM        preset time 1
+3/2/2025 10:55 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:55 AM        scanrel s1 1 -1 0.1
+3/2/2025 10:57 AM        COM s1
+3/2/2025 10:57 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:57 AM        th2th 2 -2 0.2
+3/2/2025 10:58 AM        preset time 2
+3/2/2025 10:58 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 10:58 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:00 AM        COM s1
+3/2/2025 11:00 AM        set_temp_dr 0.61
+3/2/2025 11:00 AM        wait 30
+3/2/2025 11:00 AM        preset time 1
+3/2/2025 11:01 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:01 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:02 AM        COM s1
+3/2/2025 11:02 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:02 AM        th2th 2 -2 0.2
+3/2/2025 11:03 AM        preset time 2
+3/2/2025 11:03 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:03 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:05 AM        COM s1
+3/2/2025 11:05 AM        set_temp_dr 0.625
+3/2/2025 11:05 AM        wait 30
+3/2/2025 11:06 AM        preset time 1
+3/2/2025 11:06 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:06 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:07 AM        COM s1
+3/2/2025 11:07 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:07 AM        th2th 2 -2 0.2
+3/2/2025 11:09 AM        preset time 2
+3/2/2025 11:09 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:09 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:10 AM        COM s1
+3/2/2025 11:10 AM        set_temp_dr 0.64
+3/2/2025 11:10 AM        wait 30
+3/2/2025 11:11 AM        preset time 1
+3/2/2025 11:11 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:11 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:12 AM        COM s1
+3/2/2025 11:12 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:12 AM        th2th 2 -2 0.2
+3/2/2025 11:14 AM        preset time 2
+3/2/2025 11:14 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:14 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:15 AM        COM s1
+3/2/2025 11:15 AM        set_temp_dr 0.655
+3/2/2025 11:15 AM        wait 30
+3/2/2025 11:16 AM        preset time 1
+3/2/2025 11:16 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:16 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:17 AM        COM s1
+3/2/2025 11:17 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:17 AM        th2th 2 -2 0.2
+3/2/2025 11:19 AM        preset time 2
+3/2/2025 11:19 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:19 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:21 AM        COM s1
+3/2/2025 11:21 AM        set_temp_dr 0.67
+3/2/2025 11:21 AM        wait 30
+3/2/2025 11:21 AM        preset time 1
+3/2/2025 11:21 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:21 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:23 AM        COM s1
+3/2/2025 11:23 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:23 AM        th2th 2 -2 0.2
+3/2/2025 11:24 AM        preset time 2
+3/2/2025 11:24 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:24 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:26 AM        COM s1
+3/2/2025 11:26 AM        set_temp_dr 0.685
+3/2/2025 11:26 AM        wait 30
+3/2/2025 11:27 AM        preset time 1
+3/2/2025 11:27 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:27 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:28 AM        COM s1
+3/2/2025 11:28 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:28 AM        th2th 2 -2 0.2
+3/2/2025 11:29 AM        preset time 2
+3/2/2025 11:29 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 11:29 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:31 AM        COM s1
+3/2/2025 11:31 AM        set_temp_dr 0.7
+3/2/2025 11:31 AM        wait 30
+3/2/2025 11:32 AM        preset time 1
+3/2/2025 11:32 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:32 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:33 AM        COM s1
+3/2/2025 11:33 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:33 AM        th2th 2 -2 0.2
+3/2/2025 11:35 AM        preset time 2
+3/2/2025 11:35 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:35 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:36 AM        COM s1
+3/2/2025 11:36 AM        set_temp_dr 0.685
+3/2/2025 11:36 AM        wait 30
+3/2/2025 11:37 AM        preset time 1
+3/2/2025 11:37 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:37 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:38 AM        COM s1
+3/2/2025 11:38 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:38 AM        th2th 2 -2 0.2
+3/2/2025 11:40 AM        preset time 2
+3/2/2025 11:40 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:40 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:42 AM        COM s1
+3/2/2025 11:42 AM        set_temp_dr 0.67
+3/2/2025 11:42 AM        wait 30
+3/2/2025 11:42 AM        preset time 1
+3/2/2025 11:42 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:42 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:44 AM        COM s1
+3/2/2025 11:44 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:44 AM        th2th 2 -2 0.2
+3/2/2025 11:45 AM        preset time 2
+3/2/2025 11:45 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:45 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:47 AM        COM s1
+3/2/2025 11:47 AM        set_temp_dr 0.655
+3/2/2025 11:47 AM        wait 30
+3/2/2025 11:48 AM        preset time 1
+3/2/2025 11:48 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:48 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:49 AM        COM s1
+3/2/2025 11:49 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:49 AM        th2th 2 -2 0.2
+3/2/2025 11:51 AM        preset time 2
+3/2/2025 11:51 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:51 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:52 AM        COM s1
+3/2/2025 11:52 AM        set_temp_dr 0.64
+3/2/2025 11:52 AM        wait 30
+3/2/2025 11:53 AM        preset time 1
+3/2/2025 11:53 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:53 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:54 AM        COM s1
+3/2/2025 11:54 AM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:54 AM        th2th 2 -2 0.2
+3/2/2025 11:56 AM        preset time 2
+3/2/2025 11:56 AM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:56 AM        scanrel s1 1 -1 0.1
+3/2/2025 11:58 AM        COM s1
+3/2/2025 11:58 AM        set_temp_dr 0.625
+3/2/2025 11:58 AM        wait 30
+3/2/2025 11:58 AM        preset time 1
+3/2/2025 11:58 AM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 11:58 AM        scanrel s1 1 -1 0.1
+3/2/2025 12:00 PM        COM s1
+3/2/2025 12:00 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:00 PM        th2th 2 -2 0.2
+3/2/2025 12:01 PM        preset time 2
+3/2/2025 12:01 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:01 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:03 PM        COM s1
+3/2/2025 12:03 PM        set_temp_dr 0.61
+3/2/2025 12:03 PM        wait 30
+3/2/2025 12:04 PM        preset time 1
+3/2/2025 12:04 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:04 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:05 PM        COM s1
+3/2/2025 12:05 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:05 PM        th2th 2 -2 0.2
+3/2/2025 12:07 PM        preset time 2
+3/2/2025 12:07 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:07 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:08 PM        COM s1
+3/2/2025 12:08 PM        set_temp_dr 0.595
+3/2/2025 12:08 PM        wait 30
+3/2/2025 12:09 PM        preset time 1
+3/2/2025 12:09 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:09 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:10 PM        COM s1
+3/2/2025 12:10 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:10 PM        th2th 2 -2 0.2
+3/2/2025 12:12 PM        preset time 2
+3/2/2025 12:12 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:12 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:14 PM        COM s1
+3/2/2025 12:14 PM        set_temp_dr 0.58
+3/2/2025 12:14 PM        wait 30
+3/2/2025 12:14 PM        preset time 1
+3/2/2025 12:14 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:14 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:16 PM        COM s1
+3/2/2025 12:16 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:16 PM        th2th 2 -2 0.2
+3/2/2025 12:17 PM        preset time 2
+3/2/2025 12:17 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:17 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:19 PM        COM s1
+3/2/2025 12:19 PM        set_temp_dr 0.565
+3/2/2025 12:19 PM        wait 30
+3/2/2025 12:20 PM        preset time 1
+3/2/2025 12:20 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:20 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:21 PM        COM s1
+3/2/2025 12:21 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:21 PM        th2th 2 -2 0.2
+3/2/2025 12:23 PM        preset time 2
+3/2/2025 12:23 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:23 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:24 PM        COM s1
+3/2/2025 12:24 PM        set_temp_dr 0.55
+3/2/2025 12:24 PM        wait 30
+3/2/2025 12:25 PM        preset time 1
+3/2/2025 12:25 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:25 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:26 PM        COM s1
+3/2/2025 12:26 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:26 PM        th2th 2 -2 0.2
+3/2/2025 12:28 PM        preset time 2
+3/2/2025 12:28 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:28 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:30 PM        COM s1
+3/2/2025 12:30 PM        set_temp_dr 0.535
+3/2/2025 12:30 PM        wait 30
+3/2/2025 12:30 PM        preset time 1
+3/2/2025 12:30 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:30 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:32 PM        COM s1
+3/2/2025 12:32 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:32 PM        th2th 2 -2 0.2
+3/2/2025 12:33 PM        preset time 2
+3/2/2025 12:33 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:33 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:35 PM        COM s1
+3/2/2025 12:35 PM        set_temp_dr 0.52
+3/2/2025 12:35 PM        wait 30
+3/2/2025 12:36 PM        preset time 1
+3/2/2025 12:36 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:36 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:37 PM        COM s1
+3/2/2025 12:37 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:37 PM        th2th 2 -2 0.2
+3/2/2025 12:39 PM        preset time 2
+3/2/2025 12:39 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:39 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:40 PM        COM s1
+3/2/2025 12:40 PM        set_temp_dr 0.505
+3/2/2025 12:40 PM        wait 30
+3/2/2025 12:41 PM        preset time 1
+3/2/2025 12:41 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:41 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:42 PM        COM s1
+3/2/2025 12:42 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:42 PM        th2th 2 -2 0.2
+3/2/2025 12:44 PM        preset time 2
+3/2/2025 12:44 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:44 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:46 PM        COM s1
+3/2/2025 12:46 PM        set_temp_dr 0.49
+3/2/2025 12:46 PM        wait 30
+3/2/2025 12:46 PM        preset time 1
+3/2/2025 12:46 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:46 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:48 PM        COM s1
+3/2/2025 12:48 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:48 PM        th2th 2 -2 0.2
+3/2/2025 12:49 PM        preset time 2
+3/2/2025 12:49 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:49 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:51 PM        COM s1
+3/2/2025 12:51 PM        set_temp_dr 0.475
+3/2/2025 12:51 PM        wait 30
+3/2/2025 12:52 PM        preset time 1
+3/2/2025 12:52 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:52 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:53 PM        COM s1
+3/2/2025 12:53 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:53 PM        th2th 2 -2 0.2
+3/2/2025 12:55 PM        preset time 2
+3/2/2025 12:55 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:55 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:56 PM        COM s1
+3/2/2025 12:56 PM        set_temp_dr 0.46
+3/2/2025 12:56 PM        wait 30
+3/2/2025 12:57 PM        preset time 1
+3/2/2025 12:57 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:57 PM        scanrel s1 1 -1 0.1
+3/2/2025 12:58 PM        COM s1
+3/2/2025 12:58 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 12:58 PM        th2th 2 -2 0.2
+3/2/2025 1:00 PM        preset time 2
+3/2/2025 1:00 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:00 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:02 PM        COM s1
+3/2/2025 1:02 PM        set_temp_dr 0.445
+3/2/2025 1:02 PM        wait 30
+3/2/2025 1:02 PM        preset time 1
+3/2/2025 1:02 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:02 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:04 PM        COM s1
+3/2/2025 1:04 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:04 PM        th2th 2 -2 0.2
+3/2/2025 1:05 PM        preset time 2
+3/2/2025 1:05 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:05 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:07 PM        COM s1
+3/2/2025 1:07 PM        set_temp_dr 0.43
+3/2/2025 1:07 PM        wait 30
+3/2/2025 1:08 PM        preset time 1
+3/2/2025 1:08 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:08 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:09 PM        COM s1
+3/2/2025 1:09 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:09 PM        th2th 2 -2 0.2
+3/2/2025 1:11 PM        preset time 2
+3/2/2025 1:11 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:11 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:12 PM        COM s1
+3/2/2025 1:13 PM        set_temp_dr 0.415
+3/2/2025 1:13 PM        wait 30
+3/2/2025 1:13 PM        preset time 1
+3/2/2025 1:13 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:13 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:14 PM        COM s1
+3/2/2025 1:14 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:15 PM        th2th 2 -2 0.2
+3/2/2025 1:16 PM        preset time 2
+3/2/2025 1:16 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:16 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:18 PM        COM s1
+3/2/2025 1:18 PM        set_temp_dr 0.4
+3/2/2025 1:18 PM        wait 30
+3/2/2025 1:19 PM        preset time 1
+3/2/2025 1:19 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:19 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:20 PM        COM s1
+3/2/2025 1:20 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:20 PM        th2th 2 -2 0.2
+3/2/2025 1:22 PM        preset time 2
+3/2/2025 1:22 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:22 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:23 PM        COM s1
+3/2/2025 1:23 PM        set_temp_dr 0.385
+3/2/2025 1:23 PM        wait 30
+3/2/2025 1:24 PM        preset time 1
+3/2/2025 1:24 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:24 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:25 PM        COM s1
+3/2/2025 1:25 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:25 PM        th2th 2 -2 0.2
+3/2/2025 1:27 PM        preset time 2
+3/2/2025 1:27 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:27 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:29 PM        COM s1
+3/2/2025 1:29 PM        set_temp_dr 0.37
+3/2/2025 1:29 PM        wait 30
+3/2/2025 1:29 PM        preset time 1
+3/2/2025 1:29 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:29 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:31 PM        COM s1
+3/2/2025 1:31 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:31 PM        th2th 2 -2 0.2
+3/2/2025 1:32 PM        preset time 2
+3/2/2025 1:32 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:32 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:34 PM        COM s1
+3/2/2025 1:34 PM        set_temp_dr 0.355
+3/2/2025 1:34 PM        wait 30
+3/2/2025 1:35 PM        preset time 1
+3/2/2025 1:35 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:35 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:36 PM        COM s1
+3/2/2025 1:36 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:36 PM        th2th 2 -2 0.2
+3/2/2025 1:38 PM        preset time 2
+3/2/2025 1:38 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:38 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:40 PM        COM s1
+3/2/2025 1:40 PM        set_temp_dr 0.34
+3/2/2025 1:40 PM        wait 30
+3/2/2025 1:40 PM        preset time 1
+3/2/2025 1:40 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:40 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:42 PM        COM s1
+3/2/2025 1:42 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:42 PM        th2th 2 -2 0.2
+3/2/2025 1:43 PM        preset time 2
+3/2/2025 1:43 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:43 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:45 PM        COM s1
+3/2/2025 1:45 PM        set_temp_dr 0.325
+3/2/2025 1:45 PM        wait 30
+3/2/2025 1:46 PM        preset time 1
+3/2/2025 1:46 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:46 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:47 PM        COM s1
+3/2/2025 1:47 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:47 PM        th2th 2 -2 0.2
+3/2/2025 1:49 PM        preset time 2
+3/2/2025 1:49 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:49 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:51 PM        COM s1
+3/2/2025 1:51 PM        set_temp_dr 0.31
+3/2/2025 1:51 PM        wait 30
+3/2/2025 1:51 PM        preset time 1
+3/2/2025 1:51 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:51 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:53 PM        COM s1
+3/2/2025 1:53 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:53 PM        th2th 2 -2 0.2
+3/2/2025 1:54 PM        preset time 2
+3/2/2025 1:54 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:54 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:56 PM        COM s1
+3/2/2025 1:56 PM        set_temp_dr 0.295
+3/2/2025 1:56 PM        wait 30
+3/2/2025 1:57 PM        preset time 1
+3/2/2025 1:57 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:57 PM        scanrel s1 1 -1 0.1
+3/2/2025 1:58 PM        COM s1
+3/2/2025 1:58 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 1:58 PM        th2th 2 -2 0.2
+3/2/2025 2:00 PM        preset time 2
+3/2/2025 2:00 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:00 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:02 PM        COM s1
+3/2/2025 2:02 PM        set_temp_dr 0.28
+3/2/2025 2:02 PM        wait 30
+3/2/2025 2:02 PM        preset time 1
+3/2/2025 2:02 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:02 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:04 PM        COM s1
+3/2/2025 2:04 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:04 PM        th2th 2 -2 0.2
+3/2/2025 2:05 PM        preset time 2
+3/2/2025 2:05 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:05 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:07 PM        COM s1
+3/2/2025 2:07 PM        set_temp_dr 0.265
+3/2/2025 2:07 PM        wait 30
+3/2/2025 2:08 PM        preset time 1
+3/2/2025 2:08 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:08 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:09 PM        COM s1
+3/2/2025 2:09 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:09 PM        th2th 2 -2 0.2
+3/2/2025 2:11 PM        preset time 2
+3/2/2025 2:11 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, cooling"
+3/2/2025 2:11 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:12 PM        COM s1
+3/2/2025 2:12 PM        set_field mag_i 1.7
+3/2/2025 2:20 PM        br (1 0 0)
+3/2/2025 2:20 PM        set_temp_dr 0.25
+3/2/2025 2:20 PM        wait 30
+3/2/2025 2:21 PM        preset time 1
+3/2/2025 2:21 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:21 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:22 PM        COM s1
+3/2/2025 2:22 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:22 PM        th2th 2 -2 0.2
+3/2/2025 2:24 PM        preset time 2
+3/2/2025 2:24 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:24 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:26 PM        COM s1
+3/2/2025 2:26 PM        set_temp_dr 0.265
+3/2/2025 2:26 PM        wait 30
+3/2/2025 2:26 PM        preset time 1
+3/2/2025 2:26 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:26 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:28 PM        COM s1
+3/2/2025 2:28 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:28 PM        th2th 2 -2 0.2
+3/2/2025 2:29 PM        preset time 2
+3/2/2025 2:29 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:29 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:31 PM        COM s1
+3/2/2025 2:31 PM        set_temp_dr 0.28
+3/2/2025 2:31 PM        wait 30
+3/2/2025 2:32 PM        preset time 1
+3/2/2025 2:32 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:32 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:33 PM        COM s1
+3/2/2025 2:33 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:33 PM        th2th 2 -2 0.2
+3/2/2025 2:35 PM        preset time 2
+3/2/2025 2:35 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:35 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:37 PM        COM s1
+3/2/2025 2:37 PM        set_temp_dr 0.295
+3/2/2025 2:37 PM        wait 30
+3/2/2025 2:37 PM        preset time 1
+3/2/2025 2:37 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:37 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:39 PM        COM s1
+3/2/2025 2:39 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:39 PM        th2th 2 -2 0.2
+3/2/2025 2:40 PM        preset time 2
+3/2/2025 2:40 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:40 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:42 PM        COM s1
+3/2/2025 2:42 PM        set_temp_dr 0.31
+3/2/2025 2:42 PM        wait 30
+3/2/2025 2:43 PM        preset time 1
+3/2/2025 2:43 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:43 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:44 PM        COM s1
+3/2/2025 2:44 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:44 PM        th2th 2 -2 0.2
+3/2/2025 2:46 PM        preset time 2
+3/2/2025 2:46 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:46 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:48 PM        COM s1
+3/2/2025 2:48 PM        set_temp_dr 0.325
+3/2/2025 2:48 PM        wait 30
+3/2/2025 2:48 PM        preset time 1
+3/2/2025 2:48 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:48 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:50 PM        COM s1
+3/2/2025 2:50 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:50 PM        th2th 2 -2 0.2
+3/2/2025 2:51 PM        preset time 2
+3/2/2025 2:51 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:51 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:53 PM        COM s1
+3/2/2025 2:53 PM        set_temp_dr 0.34
+3/2/2025 2:53 PM        wait 30
+3/2/2025 2:54 PM        preset time 1
+3/2/2025 2:54 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:54 PM        scanrel s1 1 -1 0.1
+3/2/2025 2:55 PM        COM s1
+3/2/2025 2:55 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(mag_i)T, warming"
+3/2/2025 2:55 PM        th2th 2 -2 0.2
+3/2/2025 2:57 PM        preset time 2
+3/2/2025 2:57 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field)T, warming"
+3/2/2025 2:57 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:01 PM        COM s1
+3/2/2025 3:01 PM        set_temp_dr 0.355
+3/2/2025 3:01 PM        wait 30
+3/2/2025 3:01 PM        preset time 1
+3/2/2025 3:01 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:01 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:03 PM        COM s1
+3/2/2025 3:03 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:03 PM        th2th 2 -2 0.2
+3/2/2025 3:05 PM        preset time 2
+3/2/2025 3:05 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:05 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:06 PM        COM s1
+3/2/2025 3:07 PM        set_temp_dr 0.37
+3/2/2025 3:07 PM        wait 30
+3/2/2025 3:07 PM        preset time 1
+3/2/2025 3:07 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:07 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:09 PM        COM s1
+3/2/2025 3:09 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:09 PM        th2th 2 -2 0.2
+3/2/2025 3:11 PM        preset time 2
+3/2/2025 3:11 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:11 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:12 PM        COM s1
+3/2/2025 3:12 PM        set_temp_dr 0.385
+3/2/2025 3:13 PM        wait 30
+3/2/2025 3:13 PM        preset time 1
+3/2/2025 3:13 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:13 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:15 PM        COM s1
+3/2/2025 3:15 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:15 PM        th2th 2 -2 0.2
+3/2/2025 3:17 PM        preset time 2
+3/2/2025 3:17 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:17 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:19 PM        COM s1
+3/2/2025 3:19 PM        set_temp_dr 0.4
+3/2/2025 3:19 PM        wait 30
+3/2/2025 3:19 PM        preset time 1
+3/2/2025 3:19 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:19 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:21 PM        COM s1
+3/2/2025 3:21 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:21 PM        th2th 2 -2 0.2
+3/2/2025 3:23 PM        preset time 2
+3/2/2025 3:23 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:23 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:24 PM        COM s1
+3/2/2025 3:24 PM        set_temp_dr 0.415
+3/2/2025 3:24 PM        wait 30
+3/2/2025 3:25 PM        preset time 1
+3/2/2025 3:25 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:25 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:27 PM        COM s1
+3/2/2025 3:27 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:27 PM        th2th 2 -2 0.2
+3/2/2025 3:28 PM        preset time 2
+3/2/2025 3:28 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:28 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:30 PM        COM s1
+3/2/2025 3:30 PM        set_temp_dr 0.43
+3/2/2025 3:30 PM        wait 30
+3/2/2025 3:31 PM        preset time 1
+3/2/2025 3:31 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:31 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:32 PM        COM s1
+3/2/2025 3:32 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:32 PM        th2th 2 -2 0.2
+3/2/2025 3:34 PM        preset time 2
+3/2/2025 3:34 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:34 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:36 PM        COM s1
+3/2/2025 3:36 PM        set_temp_dr 0.445
+3/2/2025 3:36 PM        wait 30
+3/2/2025 3:37 PM        preset time 1
+3/2/2025 3:37 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:37 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:38 PM        COM s1
+3/2/2025 3:38 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:38 PM        th2th 2 -2 0.2
+3/2/2025 3:40 PM        preset time 2
+3/2/2025 3:40 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:40 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:42 PM        COM s1
+3/2/2025 3:42 PM        set_temp_dr 0.46
+3/2/2025 3:42 PM        wait 30
+3/2/2025 3:42 PM        preset time 1
+3/2/2025 3:42 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:42 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:44 PM        COM s1
+3/2/2025 3:44 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:44 PM        th2th 2 -2 0.2
+3/2/2025 3:46 PM        preset time 2
+3/2/2025 3:46 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:46 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:47 PM        COM s1
+3/2/2025 3:48 PM        set_temp_dr 0.475
+3/2/2025 3:48 PM        wait 30
+3/2/2025 3:48 PM        preset time 1
+3/2/2025 3:48 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:48 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:50 PM        COM s1
+3/2/2025 3:50 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:50 PM        th2th 2 -2 0.2
+3/2/2025 3:51 PM        preset time 2
+3/2/2025 3:51 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:51 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:53 PM        COM s1
+3/2/2025 3:53 PM        set_temp_dr 0.49
+3/2/2025 3:53 PM        wait 30
+3/2/2025 3:54 PM        preset time 1
+3/2/2025 3:54 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:54 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:55 PM        COM s1
+3/2/2025 3:56 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:56 PM        th2th 2 -2 0.2
+3/2/2025 3:57 PM        preset time 2
+3/2/2025 3:57 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 3:57 PM        scanrel s1 1 -1 0.1
+3/2/2025 3:59 PM        COM s1
+3/2/2025 3:59 PM        set_temp_dr 0.505
+3/2/2025 3:59 PM        wait 30
+3/2/2025 4:00 PM        preset time 1
+3/2/2025 4:00 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:00 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:01 PM        COM s1
+3/2/2025 4:01 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:01 PM        th2th 2 -2 0.2
+3/2/2025 4:03 PM        preset time 2
+3/2/2025 4:03 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:03 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:05 PM        COM s1
+3/2/2025 4:05 PM        set_temp_dr 0.52
+3/2/2025 4:05 PM        wait 30
+3/2/2025 4:06 PM        preset time 1
+3/2/2025 4:06 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:06 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:07 PM        COM s1
+3/2/2025 4:07 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:07 PM        th2th 2 -2 0.2
+3/2/2025 4:09 PM        preset time 2
+3/2/2025 4:09 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:09 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:11 PM        COM s1
+3/2/2025 4:11 PM        set_temp_dr 0.535
+3/2/2025 4:11 PM        wait 30
+3/2/2025 4:12 PM        preset time 1
+3/2/2025 4:12 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:12 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:13 PM        COM s1
+3/2/2025 4:13 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:13 PM        th2th 2 -2 0.2
+3/2/2025 4:15 PM        preset time 2
+3/2/2025 4:15 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:15 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:17 PM        COM s1
+3/2/2025 4:17 PM        set_temp_dr 0.55
+3/2/2025 4:17 PM        wait 30
+3/2/2025 4:17 PM        preset time 1
+3/2/2025 4:17 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:17 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:19 PM        COM s1
+3/2/2025 4:19 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:19 PM        th2th 2 -2 0.2
+3/2/2025 4:21 PM        preset time 2
+3/2/2025 4:21 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:21 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:23 PM        COM s1
+3/2/2025 4:23 PM        set_temp_dr 0.565
+3/2/2025 4:23 PM        wait 30
+3/2/2025 4:23 PM        preset time 1
+3/2/2025 4:23 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:23 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:25 PM        COM s1
+3/2/2025 4:25 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:25 PM        th2th 2 -2 0.2
+3/2/2025 4:26 PM        preset time 2
+3/2/2025 4:26 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:26 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:28 PM        COM s1
+3/2/2025 4:28 PM        set_temp_dr 0.58
+3/2/2025 4:28 PM        wait 30
+3/2/2025 4:29 PM        preset time 1
+3/2/2025 4:29 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:29 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:30 PM        COM s1
+3/2/2025 4:30 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:30 PM        th2th 2 -2 0.2
+3/2/2025 4:32 PM        preset time 2
+3/2/2025 4:32 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:32 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:34 PM        COM s1
+3/2/2025 4:34 PM        set_temp_dr 0.595
+3/2/2025 4:34 PM        wait 30
+3/2/2025 4:35 PM        preset time 1
+3/2/2025 4:35 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:35 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:36 PM        COM s1
+3/2/2025 4:36 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:36 PM        th2th 2 -2 0.2
+3/2/2025 4:38 PM        preset time 2
+3/2/2025 4:38 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:38 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:40 PM        COM s1
+3/2/2025 4:40 PM        set_temp_dr 0.61
+3/2/2025 4:40 PM        wait 30
+3/2/2025 4:41 PM        preset time 1
+3/2/2025 4:41 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:41 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:42 PM        COM s1
+3/2/2025 4:42 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:42 PM        th2th 2 -2 0.2
+3/2/2025 4:44 PM        preset time 2
+3/2/2025 4:44 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:44 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:46 PM        COM s1
+3/2/2025 4:46 PM        set_temp_dr 0.625
+3/2/2025 4:46 PM        wait 30
+3/2/2025 4:46 PM        preset time 1
+3/2/2025 4:46 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:46 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:48 PM        COM s1
+3/2/2025 4:48 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:48 PM        th2th 2 -2 0.2
+3/2/2025 4:50 PM        preset time 2
+3/2/2025 4:50 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:50 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:51 PM        COM s1
+3/2/2025 4:51 PM        set_temp_dr 0.64
+3/2/2025 4:51 PM        wait 30
+3/2/2025 4:52 PM        preset time 1
+3/2/2025 4:52 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:52 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:53 PM        COM s1
+3/2/2025 4:53 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:53 PM        th2th 2 -2 0.2
+3/2/2025 4:55 PM        preset time 2
+3/2/2025 4:55 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:55 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:57 PM        COM s1
+3/2/2025 4:57 PM        set_temp_dr 0.655
+3/2/2025 4:57 PM        wait 30
+3/2/2025 4:58 PM        preset time 1
+3/2/2025 4:58 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:58 PM        scanrel s1 1 -1 0.1
+3/2/2025 4:59 PM        COM s1
+3/2/2025 4:59 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 4:59 PM        th2th 2 -2 0.2
+3/2/2025 5:01 PM        preset time 2
+3/2/2025 5:01 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:01 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:03 PM        COM s1
+3/2/2025 5:03 PM        set_temp_dr 0.67
+3/2/2025 5:03 PM        wait 30
+3/2/2025 5:04 PM        preset time 1
+3/2/2025 5:04 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:04 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:05 PM        COM s1
+3/2/2025 5:05 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:05 PM        th2th 2 -2 0.2
+3/2/2025 5:07 PM        preset time 2
+3/2/2025 5:07 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:07 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:09 PM        COM s1
+3/2/2025 5:09 PM        set_temp_dr 0.685
+3/2/2025 5:09 PM        wait 30
+3/2/2025 5:09 PM        preset time 1
+3/2/2025 5:09 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:09 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:11 PM        COM s1
+3/2/2025 5:11 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:11 PM        th2th 2 -2 0.2
+3/2/2025 5:13 PM        preset time 2
+3/2/2025 5:13 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, warming"
+3/2/2025 5:13 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:14 PM        COM s1
+3/2/2025 5:15 PM        set_temp_dr 0.7
+3/2/2025 5:15 PM        wait 30
+3/2/2025 5:15 PM        preset time 1
+3/2/2025 5:15 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:15 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:17 PM        COM s1
+3/2/2025 5:17 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:17 PM        th2th 2 -2 0.2
+3/2/2025 5:18 PM        preset time 2
+3/2/2025 5:18 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:18 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:20 PM        COM s1
+3/2/2025 5:20 PM        set_temp_dr 0.685
+3/2/2025 5:20 PM        wait 30
+3/2/2025 5:21 PM        preset time 1
+3/2/2025 5:21 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:21 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:22 PM        COM s1
+3/2/2025 5:22 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:22 PM        th2th 2 -2 0.2
+3/2/2025 5:24 PM        preset time 2
+3/2/2025 5:24 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:24 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:26 PM        COM s1
+3/2/2025 5:26 PM        set_temp_dr 0.67
+3/2/2025 5:26 PM        wait 30
+3/2/2025 5:27 PM        preset time 1
+3/2/2025 5:27 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:27 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:28 PM        COM s1
+3/2/2025 5:28 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:28 PM        th2th 2 -2 0.2
+3/2/2025 5:30 PM        preset time 2
+3/2/2025 5:30 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:30 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:32 PM        COM s1
+3/2/2025 5:32 PM        set_temp_dr 0.655
+3/2/2025 5:32 PM        wait 30
+3/2/2025 5:33 PM        preset time 1
+3/2/2025 5:33 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:33 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:34 PM        COM s1
+3/2/2025 5:34 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:34 PM        th2th 2 -2 0.2
+3/2/2025 5:36 PM        preset time 2
+3/2/2025 5:36 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:36 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:38 PM        COM s1
+3/2/2025 5:38 PM        set_temp_dr 0.64
+3/2/2025 5:38 PM        wait 30
+3/2/2025 5:39 PM        preset time 1
+3/2/2025 5:39 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:39 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:40 PM        COM s1
+3/2/2025 5:40 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:40 PM        th2th 2 -2 0.2
+3/2/2025 5:42 PM        preset time 2
+3/2/2025 5:42 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:42 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:44 PM        COM s1
+3/2/2025 5:44 PM        set_temp_dr 0.625
+3/2/2025 5:44 PM        wait 30
+3/2/2025 5:44 PM        preset time 1
+3/2/2025 5:44 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:44 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:46 PM        COM s1
+3/2/2025 5:46 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:46 PM        th2th 2 -2 0.2
+3/2/2025 5:48 PM        preset time 2
+3/2/2025 5:48 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:48 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:50 PM        COM s1
+3/2/2025 5:50 PM        set_temp_dr 0.61
+3/2/2025 5:50 PM        wait 30
+3/2/2025 5:50 PM        preset time 1
+3/2/2025 5:50 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:50 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:52 PM        COM s1
+3/2/2025 5:52 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:52 PM        th2th 2 -2 0.2
+3/2/2025 5:54 PM        preset time 2
+3/2/2025 5:54 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:54 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:55 PM        COM s1
+3/2/2025 5:55 PM        set_temp_dr 0.595
+3/2/2025 5:56 PM        wait 30
+3/2/2025 5:56 PM        preset time 1
+3/2/2025 5:56 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:56 PM        scanrel s1 1 -1 0.1
+3/2/2025 5:58 PM        COM s1
+3/2/2025 5:58 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:58 PM        th2th 2 -2 0.2
+3/2/2025 5:59 PM        preset time 2
+3/2/2025 5:59 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 5:59 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:01 PM        COM s1
+3/2/2025 6:01 PM        set_temp_dr 0.58
+3/2/2025 6:01 PM        wait 30
+3/2/2025 6:02 PM        preset time 1
+3/2/2025 6:02 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:02 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:03 PM        COM s1
+3/2/2025 6:03 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:03 PM        th2th 2 -2 0.2
+3/2/2025 6:05 PM        preset time 2
+3/2/2025 6:05 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:05 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:07 PM        COM s1
+3/2/2025 6:07 PM        set_temp_dr 0.565
+3/2/2025 6:07 PM        wait 30
+3/2/2025 6:08 PM        preset time 1
+3/2/2025 6:08 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:08 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:09 PM        COM s1
+3/2/2025 6:09 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:09 PM        th2th 2 -2 0.2
+3/2/2025 6:11 PM        preset time 2
+3/2/2025 6:11 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:11 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:13 PM        COM s1
+3/2/2025 6:13 PM        set_temp_dr 0.55
+3/2/2025 6:13 PM        wait 30
+3/2/2025 6:14 PM        preset time 1
+3/2/2025 6:14 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:14 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:15 PM        COM s1
+3/2/2025 6:15 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:15 PM        th2th 2 -2 0.2
+3/2/2025 6:17 PM        preset time 2
+3/2/2025 6:17 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:17 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:19 PM        COM s1
+3/2/2025 6:19 PM        set_temp_dr 0.535
+3/2/2025 6:19 PM        wait 30
+3/2/2025 6:19 PM        preset time 1
+3/2/2025 6:19 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:19 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:21 PM        COM s1
+3/2/2025 6:21 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:21 PM        th2th 2 -2 0.2
+3/2/2025 6:23 PM        preset time 2
+3/2/2025 6:23 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:23 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:25 PM        COM s1
+3/2/2025 6:25 PM        set_temp_dr 0.52
+3/2/2025 6:25 PM        wait 30
+3/2/2025 6:25 PM        preset time 1
+3/2/2025 6:25 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:25 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:27 PM        COM s1
+3/2/2025 6:27 PM        scantitle "alignment (1 0 0) th2th, T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:27 PM        th2th 2 -2 0.2
+3/2/2025 6:29 PM        preset time 2
+3/2/2025 6:29 PM        scantitle "rocking (1 0 0), T = @(dr_temp)K, H = @(persistent_field.position)T, cooling"
+3/2/2025 6:29 PM        scanrel s1 1 -1 0.1
+3/2/2025 6:31 PM        COM s1
+3/2/2025 6:31 PM        set_temp_dr 0.505
+3/2/2025 6:31 PM        wait 30
+3/2/2025 6:34 PM        defxy dr_tsample detector
+3/2/2025 6:34 PM        set_field mag_i 1.7
+3/2/2025 6:34 PM        br 1 0 0
+3/2/2025 6:34 PM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/2/2025 6:34 PM        scanon
+3/2/2025 6:34 PM        set_temp_dr 0.5
+3/2/2025 6:34 PM        wait 60
+3/2/2025 6:35 PM        stepbegin
+3/2/2025 6:35 PM        count preset time 1
+3/2/2025 6:35 PM        stepend
+3/2/2025 6:35 PM        set_temp_dr 0.48
+3/2/2025 6:35 PM        wait 60
+3/2/2025 6:36 PM        stepbegin
+3/2/2025 6:36 PM        count preset time 1
+3/2/2025 6:36 PM        stepend
+3/2/2025 6:36 PM        set_temp_dr 0.46
+3/2/2025 6:36 PM        wait 60
+3/2/2025 6:37 PM        stepbegin
+3/2/2025 6:37 PM        count preset time 1
+3/2/2025 6:37 PM        stepend
+3/2/2025 6:37 PM        set_temp_dr 0.44
+3/2/2025 6:37 PM        wait 60
+3/2/2025 6:38 PM        stepbegin
+3/2/2025 6:38 PM        count preset time 1
+3/2/2025 6:38 PM        stepend
+3/2/2025 6:38 PM        set_temp_dr 0.42
+3/2/2025 6:38 PM        wait 60
+3/2/2025 6:39 PM        stepbegin
+3/2/2025 6:39 PM        count preset time 1
+3/2/2025 6:39 PM        stepend
+3/2/2025 6:39 PM        set_temp_dr 0.4
+3/2/2025 6:39 PM        wait 60
+3/2/2025 6:40 PM        stepbegin
+3/2/2025 6:40 PM        count preset time 1
+3/2/2025 6:40 PM        stepend
+3/2/2025 6:40 PM        set_temp_dr 0.38
+3/2/2025 6:40 PM        wait 60
+3/2/2025 6:41 PM        stepbegin
+3/2/2025 6:41 PM        count preset time 1
+3/2/2025 6:41 PM        stepend
+3/2/2025 6:41 PM        set_temp_dr 0.36
+3/2/2025 6:41 PM        wait 60
+3/2/2025 6:43 PM        stepbegin
+3/2/2025 6:43 PM        count preset time 1
+3/2/2025 6:43 PM        stepend
+3/2/2025 6:43 PM        set_temp_dr 0.34
+3/2/2025 6:43 PM        wait 60
+3/2/2025 6:44 PM        stepbegin
+3/2/2025 6:44 PM        count preset time 1
+3/2/2025 6:44 PM        stepend
+3/2/2025 6:44 PM        set_temp_dr 0.32
+3/2/2025 6:44 PM        wait 60
+3/2/2025 6:45 PM        stepbegin
+3/2/2025 6:45 PM        count preset time 1
+3/2/2025 6:45 PM        stepend
+3/2/2025 6:45 PM        set_temp_dr 0.3
+3/2/2025 6:45 PM        wait 60
+3/2/2025 6:46 PM        stepbegin
+3/2/2025 6:46 PM        count preset time 1
+3/2/2025 6:46 PM        stepend
+3/2/2025 6:46 PM        set_temp_dr 0.28
+3/2/2025 6:46 PM        wait 60
+3/2/2025 6:47 PM        stepbegin
+3/2/2025 6:47 PM        count preset time 1
+3/2/2025 6:47 PM        stepend
+3/2/2025 6:47 PM        set_temp_dr 0.26
+3/2/2025 6:47 PM        wait 60
+3/2/2025 6:54 PM        stepbegin
+3/2/2025 6:54 PM        count preset time 1
+3/2/2025 6:54 PM        stepend
+3/2/2025 6:54 PM        set_temp_dr 0.24
+3/2/2025 6:54 PM        wait 60
+3/2/2025 6:55 PM        stepbegin
+3/2/2025 6:55 PM        count preset time 1
+3/2/2025 6:55 PM        stepend
+3/2/2025 6:55 PM        set_temp_dr 0.22
+3/2/2025 6:55 PM        wait 60
+3/2/2025 6:56 PM        stepbegin
+3/2/2025 6:56 PM        count preset time 1
+3/2/2025 6:56 PM        stepend
+3/2/2025 6:56 PM        set_temp_dr 0.2
+3/2/2025 6:56 PM        wait 60
+3/2/2025 6:57 PM        stepbegin
+3/2/2025 6:57 PM        count preset time 1
+3/2/2025 6:57 PM        stepend
+3/2/2025 6:57 PM        set_temp_dr 0.18
+3/2/2025 6:57 PM        wait 60
+3/2/2025 6:58 PM        stepbegin
+3/2/2025 6:58 PM        count preset time 1
+3/2/2025 6:58 PM        stepend
+3/2/2025 6:58 PM        set_temp_dr 0.16
+3/2/2025 6:58 PM        wait 60
+3/2/2025 6:59 PM        stepbegin
+3/2/2025 6:59 PM        count preset time 1
+3/2/2025 6:59 PM        stepend
+3/2/2025 6:59 PM        set_temp_dr 0.14
+3/2/2025 6:59 PM        wait 60
+3/2/2025 7:00 PM        stepbegin
+3/2/2025 7:00 PM        count preset time 1
+3/2/2025 7:00 PM        stepend
+3/2/2025 7:00 PM        set_temp_dr 0.12
+3/2/2025 7:00 PM        wait 60
+3/2/2025 7:01 PM        stepbegin
+3/2/2025 7:01 PM        count preset time 1
+3/2/2025 7:01 PM        stepend
+3/2/2025 7:01 PM        set_temp_dr 0.1
+3/2/2025 7:01 PM        wait 60
+3/2/2025 7:02 PM        stepbegin
+3/2/2025 7:02 PM        count preset time 1
+3/2/2025 7:02 PM        stepend
+3/2/2025 7:02 PM        set_temp_dr 0.08
+3/2/2025 7:02 PM        wait 60
+3/2/2025 7:16 PM        set_temp_dr 0.04
+3/2/2025 7:22 PM        stepend
+3/2/2025 7:22 PM        scanoff
+3/2/2025 7:23 PM        scan n 1000 preset time 1
+3/2/2025 7:24 PM        scan n 1000 preset time 10
+3/2/2025 8:14 PM        set_temp_dr 0.7
+3/2/2025 8:27 PM        set_field mag_i 1.6
+3/2/2025 8:34 PM        br 1 0 0
+3/2/2025 8:36 PM        br 1 0 0
+3/2/2025 8:37 PM        preset time 1
+3/2/2025 8:37 PM        scantitle "alignment (1 0 0) s1, T = @(dr_temp)K, H = @(persistent_field.position)T"
+3/2/2025 8:37 PM        scanrel s1 1 -1 0.1
+3/2/2025 8:38 PM        COM s1
+3/2/2025 8:38 PM        defxy dr_tsample detector
+3/2/2025 8:38 PM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/2/2025 8:38 PM        scanon
+3/2/2025 8:38 PM        set_temp_dr 0.7
+3/2/2025 8:38 PM        wait 60
+3/2/2025 8:39 PM        stepbegin
+3/2/2025 8:39 PM        count preset time 60
+3/2/2025 8:40 PM        stepend
+3/2/2025 8:40 PM        set_temp_dr 0.69
+3/2/2025 8:40 PM        wait 60
+3/2/2025 8:41 PM        stepbegin
+3/2/2025 8:41 PM        count preset time 60
+3/2/2025 8:42 PM        stepend
+3/2/2025 8:42 PM        set_temp_dr 0.68
+3/2/2025 8:42 PM        wait 60
+3/2/2025 8:43 PM        stepbegin
+3/2/2025 8:43 PM        count preset time 60
+3/2/2025 8:44 PM        stepend
+3/2/2025 8:44 PM        set_temp_dr 0.67
+3/2/2025 8:44 PM        wait 60
+3/2/2025 8:45 PM        stepbegin
+3/2/2025 8:45 PM        count preset time 60
+3/2/2025 8:46 PM        stepend
+3/2/2025 8:46 PM        set_temp_dr 0.66
+3/2/2025 8:46 PM        wait 60
+3/2/2025 8:47 PM        stepbegin
+3/2/2025 8:47 PM        count preset time 60
+3/2/2025 8:48 PM        stepend
+3/2/2025 8:48 PM        set_temp_dr 0.65
+3/2/2025 8:48 PM        wait 60
+3/2/2025 8:49 PM        stepbegin
+3/2/2025 8:49 PM        count preset time 60
+3/2/2025 8:50 PM        stepend
+3/2/2025 8:50 PM        set_temp_dr 0.64
+3/2/2025 8:50 PM        wait 60
+3/2/2025 8:51 PM        stepbegin
+3/2/2025 8:51 PM        count preset time 60
+3/2/2025 8:52 PM        stepend
+3/2/2025 8:52 PM        set_temp_dr 0.63
+3/2/2025 8:52 PM        wait 60
+3/2/2025 8:53 PM        stepbegin
+3/2/2025 8:53 PM        count preset time 60
+3/2/2025 8:54 PM        set_temp_dr 0.7
+3/2/2025 8:55 PM        defxy dr_tsample detector
+3/2/2025 8:55 PM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/2/2025 8:55 PM        scanon
+3/2/2025 8:55 PM        set_temp_dr 0.7
+3/2/2025 8:55 PM        wait 60
+3/2/2025 8:56 PM        stepbegin
+3/2/2025 8:56 PM        count preset time 60
+3/2/2025 8:57 PM        stepend
+3/2/2025 8:57 PM        set_temp_dr 0.69
+3/2/2025 8:57 PM        wait 60
+3/2/2025 8:58 PM        stepbegin
+3/2/2025 8:58 PM        count preset time 60
+3/2/2025 8:59 PM        stepend
+3/2/2025 8:59 PM        set_temp_dr 0.68
+3/2/2025 8:59 PM        wait 60
+3/2/2025 9:00 PM        stepbegin
+3/2/2025 9:00 PM        count preset time 60
+3/2/2025 9:01 PM        stepend
+3/2/2025 9:01 PM        set_temp_dr 0.67
+3/2/2025 9:01 PM        wait 60
+3/2/2025 9:02 PM        stepbegin
+3/2/2025 9:03 PM        count preset time 60
+3/2/2025 9:04 PM        stepend
+3/2/2025 9:04 PM        set_temp_dr 0.66
+3/2/2025 9:04 PM        wait 60
+3/2/2025 9:05 PM        stepbegin
+3/2/2025 9:05 PM        count preset time 60
+3/2/2025 9:06 PM        stepend
+3/2/2025 9:06 PM        set_temp_dr 0.65
+3/2/2025 9:06 PM        wait 60
+3/2/2025 9:07 PM        stepbegin
+3/2/2025 9:07 PM        count preset time 60
+3/2/2025 9:08 PM        stepend
+3/2/2025 9:08 PM        set_temp_dr 0.64
+3/2/2025 9:08 PM        wait 60
+3/2/2025 9:09 PM        stepbegin
+3/2/2025 9:09 PM        count preset time 60
+3/2/2025 9:10 PM        stepend
+3/2/2025 9:10 PM        set_temp_dr 0.63
+3/2/2025 9:10 PM        wait 60
+3/2/2025 9:11 PM        stepbegin
+3/2/2025 9:11 PM        count preset time 60
+3/2/2025 9:12 PM        stepend
+3/2/2025 9:12 PM        set_temp_dr 0.62
+3/2/2025 9:12 PM        wait 60
+3/2/2025 9:13 PM        stepbegin
+3/2/2025 9:13 PM        count preset time 60
+3/2/2025 9:14 PM        stepend
+3/2/2025 9:14 PM        set_temp_dr 0.61
+3/2/2025 9:14 PM        wait 60
+3/2/2025 9:15 PM        stepbegin
+3/2/2025 9:15 PM        count preset time 60
+3/2/2025 9:16 PM        stepend
+3/2/2025 9:16 PM        set_temp_dr 0.6
+3/2/2025 9:16 PM        wait 60
+3/2/2025 9:17 PM        stepbegin
+3/2/2025 9:17 PM        count preset time 60
+3/2/2025 9:18 PM        stepend
+3/2/2025 9:18 PM        set_temp_dr 0.59
+3/2/2025 9:18 PM        wait 60
+3/2/2025 9:19 PM        stepbegin
+3/2/2025 9:19 PM        count preset time 60
+3/2/2025 9:20 PM        stepend
+3/2/2025 9:20 PM        set_temp_dr 0.58
+3/2/2025 9:20 PM        wait 60
+3/2/2025 9:21 PM        stepbegin
+3/2/2025 9:21 PM        count preset time 60
+3/2/2025 9:22 PM        stepend
+3/2/2025 9:22 PM        set_temp_dr 0.57
+3/2/2025 9:22 PM        wait 60
+3/2/2025 9:23 PM        stepbegin
+3/2/2025 9:23 PM        count preset time 60
+3/2/2025 9:24 PM        stepend
+3/2/2025 9:24 PM        set_temp_dr 0.56
+3/2/2025 9:24 PM        wait 60
+3/2/2025 9:25 PM        stepbegin
+3/2/2025 9:25 PM        count preset time 60
+3/2/2025 9:26 PM        stepend
+3/2/2025 9:26 PM        set_temp_dr 0.55
+3/2/2025 9:26 PM        wait 60
+3/2/2025 9:27 PM        stepbegin
+3/2/2025 9:27 PM        count preset time 60
+3/2/2025 9:28 PM        stepend
+3/2/2025 9:28 PM        set_temp_dr 0.54
+3/2/2025 9:28 PM        wait 60
+3/2/2025 9:29 PM        stepbegin
+3/2/2025 9:29 PM        count preset time 60
+3/2/2025 9:30 PM        stepend
+3/2/2025 9:30 PM        set_temp_dr 0.53
+3/2/2025 9:30 PM        wait 60
+3/2/2025 9:31 PM        stepbegin
+3/2/2025 9:31 PM        count preset time 60
+3/2/2025 9:32 PM        stepend
+3/2/2025 9:32 PM        set_temp_dr 0.52
+3/2/2025 9:32 PM        wait 60
+3/2/2025 9:33 PM        stepbegin
+3/2/2025 9:34 PM        count preset time 60
+3/2/2025 9:35 PM        stepend
+3/2/2025 9:35 PM        set_temp_dr 0.51
+3/2/2025 9:35 PM        wait 60
+3/2/2025 9:36 PM        stepbegin
+3/2/2025 9:36 PM        count preset time 60
+3/2/2025 9:37 PM        stepend
+3/2/2025 9:37 PM        set_temp_dr 0.5
+3/2/2025 9:37 PM        wait 60
+3/2/2025 9:38 PM        stepbegin
+3/2/2025 9:38 PM        count preset time 60
+3/2/2025 9:39 PM        stepend
+3/2/2025 9:39 PM        set_temp_dr 0.49
+3/2/2025 9:39 PM        wait 60
+3/2/2025 9:40 PM        stepbegin
+3/2/2025 9:40 PM        count preset time 60
+3/2/2025 9:41 PM        stepend
+3/2/2025 9:41 PM        set_temp_dr 0.48
+3/2/2025 9:41 PM        wait 60
+3/2/2025 9:42 PM        stepbegin
+3/2/2025 9:42 PM        count preset time 60
+3/2/2025 9:43 PM        stepend
+3/2/2025 9:43 PM        set_temp_dr 0.47
+3/2/2025 9:43 PM        wait 60
+3/2/2025 9:44 PM        stepbegin
+3/2/2025 9:44 PM        count preset time 60
+3/2/2025 9:45 PM        stepend
+3/2/2025 9:45 PM        set_temp_dr 0.46
+3/2/2025 9:45 PM        wait 60
+3/2/2025 9:46 PM        stepbegin
+3/2/2025 9:46 PM        count preset time 60
+3/2/2025 9:47 PM        stepend
+3/2/2025 9:47 PM        set_temp_dr 0.45
+3/2/2025 9:47 PM        wait 60
+3/2/2025 9:48 PM        stepbegin
+3/2/2025 9:48 PM        count preset time 60
+3/2/2025 9:49 PM        stepend
+3/2/2025 9:49 PM        set_temp_dr 0.44
+3/2/2025 9:49 PM        wait 60
+3/2/2025 9:50 PM        stepbegin
+3/2/2025 9:50 PM        count preset time 60
+3/2/2025 9:51 PM        stepend
+3/2/2025 9:51 PM        set_temp_dr 0.43
+3/2/2025 9:51 PM        wait 60
+3/2/2025 9:52 PM        stepbegin
+3/2/2025 9:52 PM        count preset time 60
+3/2/2025 9:53 PM        stepend
+3/2/2025 9:53 PM        set_temp_dr 0.42
+3/2/2025 9:53 PM        wait 60
+3/2/2025 9:54 PM        stepbegin
+3/2/2025 9:54 PM        count preset time 60
+3/2/2025 9:55 PM        stepend
+3/2/2025 9:55 PM        set_temp_dr 0.41
+3/2/2025 9:55 PM        wait 60
+3/2/2025 9:56 PM        stepbegin
+3/2/2025 9:56 PM        count preset time 60
+3/2/2025 9:57 PM        stepend
+3/2/2025 9:57 PM        set_temp_dr 0.4
+3/2/2025 9:57 PM        wait 60
+3/2/2025 9:58 PM        stepbegin
+3/2/2025 9:58 PM        count preset time 60
+3/2/2025 9:59 PM        stepend
+3/2/2025 9:59 PM        set_temp_dr 0.39
+3/2/2025 9:59 PM        wait 60
+3/2/2025 10:00 PM        stepbegin
+3/2/2025 10:00 PM        count preset time 60
+3/2/2025 10:01 PM        stepend
+3/2/2025 10:01 PM        set_temp_dr 0.38
+3/2/2025 10:01 PM        wait 60
+3/2/2025 10:02 PM        stepbegin
+3/2/2025 10:02 PM        count preset time 60
+3/2/2025 10:03 PM        stepend
+3/2/2025 10:03 PM        set_temp_dr 0.37
+3/2/2025 10:03 PM        wait 60
+3/2/2025 10:05 PM        stepbegin
+3/2/2025 10:05 PM        count preset time 60
+3/2/2025 10:06 PM        stepend
+3/2/2025 10:06 PM        set_temp_dr 0.36
+3/2/2025 10:06 PM        wait 60
+3/2/2025 10:07 PM        stepbegin
+3/2/2025 10:07 PM        count preset time 60
+3/2/2025 10:08 PM        stepend
+3/2/2025 10:08 PM        set_temp_dr 0.35
+3/2/2025 10:08 PM        wait 60
+3/2/2025 10:09 PM        stepbegin
+3/2/2025 10:09 PM        count preset time 60
+3/2/2025 10:10 PM        stepend
+3/2/2025 10:10 PM        set_temp_dr 0.34
+3/2/2025 10:10 PM        wait 60
+3/2/2025 10:11 PM        stepbegin
+3/2/2025 10:11 PM        count preset time 60
+3/2/2025 10:12 PM        stepend
+3/2/2025 10:12 PM        set_temp_dr 0.33
+3/2/2025 10:12 PM        wait 60
+3/2/2025 10:13 PM        stepbegin
+3/2/2025 10:13 PM        count preset time 60
+3/2/2025 10:14 PM        stepend
+3/2/2025 10:14 PM        set_temp_dr 0.32
+3/2/2025 10:14 PM        wait 60
+3/2/2025 10:15 PM        stepbegin
+3/2/2025 10:15 PM        count preset time 60
+3/2/2025 10:16 PM        stepend
+3/2/2025 10:16 PM        set_temp_dr 0.31
+3/2/2025 10:16 PM        wait 60
+3/2/2025 10:17 PM        stepbegin
+3/2/2025 10:17 PM        count preset time 60
+3/2/2025 10:18 PM        stepend
+3/2/2025 10:18 PM        set_temp_dr 0.3
+3/2/2025 10:18 PM        wait 60
+3/2/2025 10:19 PM        stepbegin
+3/2/2025 10:19 PM        count preset time 60
+3/2/2025 10:20 PM        stepend
+3/2/2025 10:20 PM        set_temp_dr 0.29
+3/2/2025 10:20 PM        wait 60
+3/2/2025 10:21 PM        stepbegin
+3/2/2025 10:21 PM        count preset time 60
+3/2/2025 10:22 PM        stepend
+3/2/2025 10:22 PM        set_temp_dr 0.28
+3/2/2025 10:22 PM        wait 60
+3/2/2025 10:23 PM        stepbegin
+3/2/2025 10:23 PM        count preset time 60
+3/2/2025 10:24 PM        stepend
+3/2/2025 10:24 PM        set_temp_dr 0.27
+3/2/2025 10:24 PM        wait 60
+3/2/2025 10:25 PM        stepbegin
+3/2/2025 10:25 PM        count preset time 60
+3/2/2025 10:26 PM        stepend
+3/2/2025 10:26 PM        set_temp_dr 0.26
+3/2/2025 10:26 PM        wait 60
+3/2/2025 10:27 PM        stepbegin
+3/2/2025 10:27 PM        count preset time 60
+3/2/2025 10:28 PM        stepend
+3/2/2025 10:28 PM        set_temp_dr 0.25
+3/2/2025 10:28 PM        wait 60
+3/2/2025 10:29 PM        stepbegin
+3/2/2025 10:29 PM        count preset time 60
+3/2/2025 10:30 PM        stepend
+3/2/2025 10:30 PM        set_temp_dr 0.24
+3/2/2025 10:30 PM        wait 60
+3/2/2025 10:31 PM        stepbegin
+3/2/2025 10:31 PM        count preset time 60
+3/2/2025 10:32 PM        stepend
+3/2/2025 10:32 PM        set_temp_dr 0.23
+3/2/2025 10:32 PM        wait 60
+3/2/2025 10:33 PM        stepbegin
+3/2/2025 10:33 PM        count preset time 60
+3/2/2025 10:34 PM        stepend
+3/2/2025 10:34 PM        set_temp_dr 0.22
+3/2/2025 10:34 PM        wait 60
+3/2/2025 10:36 PM        stepbegin
+3/2/2025 10:36 PM        count preset time 60
+3/2/2025 10:37 PM        stepend
+3/2/2025 10:37 PM        set_temp_dr 0.21
+3/2/2025 10:37 PM        wait 60
+3/2/2025 10:38 PM        stepbegin
+3/2/2025 10:38 PM        count preset time 60
+3/2/2025 10:39 PM        stepend
+3/2/2025 10:39 PM        set_temp_dr 0.2
+3/2/2025 10:39 PM        wait 60
+3/2/2025 10:40 PM        stepbegin
+3/2/2025 10:40 PM        count preset time 60
+3/2/2025 10:41 PM        stepend
+3/2/2025 10:41 PM        set_temp_dr 0.19
+3/2/2025 10:41 PM        wait 60
+3/2/2025 10:42 PM        stepbegin
+3/2/2025 10:42 PM        count preset time 60
+3/2/2025 10:43 PM        stepend
+3/2/2025 10:43 PM        set_temp_dr 0.18
+3/2/2025 10:43 PM        wait 60
+3/2/2025 10:44 PM        stepbegin
+3/2/2025 10:44 PM        count preset time 60
+3/2/2025 10:45 PM        stepend
+3/2/2025 10:45 PM        set_temp_dr 0.17
+3/2/2025 10:45 PM        wait 60
+3/2/2025 10:46 PM        stepbegin
+3/2/2025 10:46 PM        count preset time 60
+3/2/2025 10:47 PM        stepend
+3/2/2025 10:47 PM        set_temp_dr 0.16
+3/2/2025 10:47 PM        wait 60
+3/2/2025 10:48 PM        stepbegin
+3/2/2025 10:48 PM        count preset time 60
+3/2/2025 10:49 PM        stepend
+3/2/2025 10:49 PM        scanoff
+3/2/2025 10:49 PM        set_field mag_i 1.7
+3/2/2025 10:56 PM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/2/2025 10:56 PM        scanon
+3/2/2025 10:56 PM        set_temp_dr 0.7
+3/2/2025 10:56 PM        wait 60
+3/2/2025 10:58 PM        stepbegin
+3/2/2025 10:58 PM        count preset time 60
+3/2/2025 10:59 PM        stepend
+3/2/2025 10:59 PM        set_temp_dr 0.69
+3/2/2025 10:59 PM        wait 60
+3/2/2025 11:00 PM        stepbegin
+3/2/2025 11:00 PM        count preset time 60
+3/2/2025 11:01 PM        stepend
+3/2/2025 11:01 PM        set_temp_dr 0.68
+3/2/2025 11:01 PM        wait 60
+3/2/2025 11:02 PM        stepbegin
+3/2/2025 11:02 PM        count preset time 60
+3/2/2025 11:03 PM        stepend
+3/2/2025 11:03 PM        set_temp_dr 0.67
+3/2/2025 11:03 PM        wait 60
+3/2/2025 11:04 PM        stepbegin
+3/2/2025 11:04 PM        count preset time 60
+3/2/2025 11:05 PM        stepend
+3/2/2025 11:05 PM        set_temp_dr 0.66
+3/2/2025 11:05 PM        wait 60
+3/2/2025 11:06 PM        stepbegin
+3/2/2025 11:06 PM        count preset time 60
+3/2/2025 11:07 PM        stepend
+3/2/2025 11:07 PM        set_temp_dr 0.65
+3/2/2025 11:07 PM        wait 60
+3/2/2025 11:08 PM        stepbegin
+3/2/2025 11:08 PM        count preset time 60
+3/2/2025 11:09 PM        stepend
+3/2/2025 11:09 PM        set_temp_dr 0.64
+3/2/2025 11:09 PM        wait 60
+3/2/2025 11:10 PM        stepbegin
+3/2/2025 11:10 PM        count preset time 60
+3/2/2025 11:11 PM        stepend
+3/2/2025 11:11 PM        set_temp_dr 0.63
+3/2/2025 11:11 PM        wait 60
+3/2/2025 11:12 PM        stepbegin
+3/2/2025 11:12 PM        count preset time 60
+3/2/2025 11:13 PM        stepend
+3/2/2025 11:13 PM        set_temp_dr 0.62
+3/2/2025 11:13 PM        wait 60
+3/2/2025 11:14 PM        stepbegin
+3/2/2025 11:14 PM        count preset time 60
+3/2/2025 11:15 PM        stepend
+3/2/2025 11:15 PM        set_temp_dr 0.61
+3/2/2025 11:15 PM        wait 60
+3/2/2025 11:16 PM        stepbegin
+3/2/2025 11:16 PM        count preset time 60
+3/2/2025 11:17 PM        stepend
+3/2/2025 11:17 PM        set_temp_dr 0.6
+3/2/2025 11:17 PM        wait 60
+3/2/2025 11:18 PM        stepbegin
+3/2/2025 11:18 PM        count preset time 60
+3/2/2025 11:19 PM        stepend
+3/2/2025 11:19 PM        set_temp_dr 0.59
+3/2/2025 11:19 PM        wait 60
+3/2/2025 11:20 PM        stepbegin
+3/2/2025 11:20 PM        count preset time 60
+3/2/2025 11:21 PM        stepend
+3/2/2025 11:21 PM        set_temp_dr 0.58
+3/2/2025 11:21 PM        wait 60
+3/2/2025 11:22 PM        stepbegin
+3/2/2025 11:22 PM        count preset time 60
+3/2/2025 11:23 PM        stepend
+3/2/2025 11:23 PM        set_temp_dr 0.57
+3/2/2025 11:23 PM        wait 60
+3/2/2025 11:24 PM        stepbegin
+3/2/2025 11:24 PM        count preset time 60
+3/2/2025 11:25 PM        stepend
+3/2/2025 11:25 PM        set_temp_dr 0.56
+3/2/2025 11:25 PM        wait 60
+3/2/2025 11:26 PM        stepbegin
+3/2/2025 11:26 PM        count preset time 60
+3/2/2025 11:27 PM        stepend
+3/2/2025 11:27 PM        set_temp_dr 0.55
+3/2/2025 11:27 PM        wait 60
+3/2/2025 11:28 PM        stepbegin
+3/2/2025 11:28 PM        count preset time 60
+3/2/2025 11:30 PM        stepend
+3/2/2025 11:30 PM        set_temp_dr 0.54
+3/2/2025 11:30 PM        wait 60
+3/2/2025 11:31 PM        stepbegin
+3/2/2025 11:31 PM        count preset time 60
+3/2/2025 11:32 PM        stepend
+3/2/2025 11:32 PM        set_temp_dr 0.53
+3/2/2025 11:32 PM        wait 60
+3/2/2025 11:33 PM        stepbegin
+3/2/2025 11:33 PM        count preset time 60
+3/2/2025 11:34 PM        stepend
+3/2/2025 11:34 PM        set_temp_dr 0.52
+3/2/2025 11:34 PM        wait 60
+3/2/2025 11:35 PM        stepbegin
+3/2/2025 11:35 PM        count preset time 60
+3/2/2025 11:36 PM        stepend
+3/2/2025 11:36 PM        set_temp_dr 0.51
+3/2/2025 11:36 PM        wait 60
+3/2/2025 11:37 PM        stepbegin
+3/2/2025 11:37 PM        count preset time 60
+3/2/2025 11:38 PM        stepend
+3/2/2025 11:38 PM        set_temp_dr 0.5
+3/2/2025 11:38 PM        wait 60
+3/2/2025 11:39 PM        stepbegin
+3/2/2025 11:39 PM        count preset time 60
+3/2/2025 11:40 PM        stepend
+3/2/2025 11:40 PM        set_temp_dr 0.49
+3/2/2025 11:40 PM        wait 60
+3/2/2025 11:41 PM        stepbegin
+3/2/2025 11:41 PM        count preset time 60
+3/2/2025 11:42 PM        stepend
+3/2/2025 11:42 PM        set_temp_dr 0.48
+3/2/2025 11:42 PM        wait 60
+3/2/2025 11:43 PM        stepbegin
+3/2/2025 11:43 PM        count preset time 60
+3/2/2025 11:44 PM        stepend
+3/2/2025 11:44 PM        set_temp_dr 0.47
+3/2/2025 11:44 PM        wait 60
+3/2/2025 11:45 PM        stepbegin
+3/2/2025 11:45 PM        count preset time 60
+3/2/2025 11:46 PM        stepend
+3/2/2025 11:46 PM        set_temp_dr 0.46
+3/2/2025 11:46 PM        wait 60
+3/2/2025 11:47 PM        stepbegin
+3/2/2025 11:47 PM        count preset time 60
+3/2/2025 11:48 PM        stepend
+3/2/2025 11:48 PM        set_temp_dr 0.45
+3/2/2025 11:48 PM        wait 60
+3/2/2025 11:49 PM        stepbegin
+3/2/2025 11:49 PM        count preset time 60
+3/2/2025 11:50 PM        stepend
+3/2/2025 11:50 PM        set_temp_dr 0.44
+3/2/2025 11:50 PM        wait 60
+3/2/2025 11:51 PM        stepbegin
+3/2/2025 11:51 PM        count preset time 60
+3/2/2025 11:52 PM        stepend
+3/2/2025 11:52 PM        set_temp_dr 0.43
+3/2/2025 11:52 PM        wait 60
+3/2/2025 11:53 PM        stepbegin
+3/2/2025 11:53 PM        count preset time 60
+3/2/2025 11:54 PM        stepend
+3/2/2025 11:54 PM        set_temp_dr 0.42
+3/2/2025 11:54 PM        wait 60
+3/2/2025 11:55 PM        stepbegin
+3/2/2025 11:55 PM        count preset time 60
+3/2/2025 11:56 PM        stepend
+3/2/2025 11:56 PM        set_temp_dr 0.41
+3/2/2025 11:56 PM        wait 60
+3/2/2025 11:57 PM        stepbegin
+3/2/2025 11:57 PM        count preset time 60
+3/2/2025 11:58 PM        stepend
+3/2/2025 11:58 PM        set_temp_dr 0.4
+3/2/2025 11:58 PM        wait 60
+3/2/2025 11:59 PM        stepbegin
+3/2/2025 11:59 PM        count preset time 60
+3/3/2025 12:00 AM        stepend
+3/3/2025 12:00 AM        set_temp_dr 0.39
+3/3/2025 12:00 AM        wait 60
+3/3/2025 12:01 AM        stepbegin
+3/3/2025 12:01 AM        count preset time 60
+3/3/2025 12:02 AM        stepend
+3/3/2025 12:02 AM        set_temp_dr 0.38
+3/3/2025 12:03 AM        wait 60
+3/3/2025 12:04 AM        stepbegin
+3/3/2025 12:04 AM        count preset time 60
+3/3/2025 12:05 AM        stepend
+3/3/2025 12:05 AM        set_temp_dr 0.37
+3/3/2025 12:05 AM        wait 60
+3/3/2025 12:06 AM        stepbegin
+3/3/2025 12:06 AM        count preset time 60
+3/3/2025 12:07 AM        stepend
+3/3/2025 12:07 AM        set_temp_dr 0.36
+3/3/2025 12:07 AM        wait 60
+3/3/2025 12:08 AM        stepbegin
+3/3/2025 12:08 AM        count preset time 60
+3/3/2025 12:09 AM        stepend
+3/3/2025 12:09 AM        set_temp_dr 0.35
+3/3/2025 12:09 AM        wait 60
+3/3/2025 12:10 AM        stepbegin
+3/3/2025 12:10 AM        count preset time 60
+3/3/2025 12:11 AM        stepend
+3/3/2025 12:11 AM        set_temp_dr 0.34
+3/3/2025 12:11 AM        wait 60
+3/3/2025 12:12 AM        stepbegin
+3/3/2025 12:12 AM        count preset time 60
+3/3/2025 12:13 AM        stepend
+3/3/2025 12:13 AM        set_temp_dr 0.33
+3/3/2025 12:13 AM        wait 60
+3/3/2025 12:14 AM        stepbegin
+3/3/2025 12:14 AM        count preset time 60
+3/3/2025 12:15 AM        stepend
+3/3/2025 12:15 AM        set_temp_dr 0.32
+3/3/2025 12:15 AM        wait 60
+3/3/2025 12:16 AM        stepbegin
+3/3/2025 12:16 AM        count preset time 60
+3/3/2025 12:17 AM        stepend
+3/3/2025 12:17 AM        set_temp_dr 0.31
+3/3/2025 12:17 AM        wait 60
+3/3/2025 12:18 AM        stepbegin
+3/3/2025 12:18 AM        count preset time 60
+3/3/2025 12:19 AM        stepend
+3/3/2025 12:19 AM        set_temp_dr 0.3
+3/3/2025 12:19 AM        wait 60
+3/3/2025 12:20 AM        stepbegin
+3/3/2025 12:20 AM        count preset time 60
+3/3/2025 12:21 AM        stepend
+3/3/2025 12:21 AM        set_temp_dr 0.29
+3/3/2025 12:21 AM        wait 60
+3/3/2025 12:22 AM        stepbegin
+3/3/2025 12:22 AM        count preset time 60
+3/3/2025 12:23 AM        stepend
+3/3/2025 12:23 AM        set_temp_dr 0.28
+3/3/2025 12:23 AM        wait 60
+3/3/2025 12:24 AM        stepbegin
+3/3/2025 12:24 AM        count preset time 60
+3/3/2025 12:25 AM        stepend
+3/3/2025 12:25 AM        set_temp_dr 0.27
+3/3/2025 12:25 AM        wait 60
+3/3/2025 12:26 AM        stepbegin
+3/3/2025 12:26 AM        count preset time 60
+3/3/2025 12:27 AM        stepend
+3/3/2025 12:27 AM        set_temp_dr 0.26
+3/3/2025 12:27 AM        wait 60
+3/3/2025 12:28 AM        stepbegin
+3/3/2025 12:28 AM        count preset time 60
+3/3/2025 12:29 AM        stepend
+3/3/2025 12:29 AM        set_temp_dr 0.25
+3/3/2025 12:29 AM        wait 60
+3/3/2025 12:30 AM        stepbegin
+3/3/2025 12:30 AM        count preset time 60
+3/3/2025 12:31 AM        stepend
+3/3/2025 12:31 AM        set_temp_dr 0.24
+3/3/2025 12:31 AM        wait 60
+3/3/2025 12:32 AM        stepbegin
+3/3/2025 12:32 AM        count preset time 60
+3/3/2025 12:33 AM        stepend
+3/3/2025 12:33 AM        set_temp_dr 0.23
+3/3/2025 12:33 AM        wait 60
+3/3/2025 12:34 AM        stepbegin
+3/3/2025 12:34 AM        count preset time 60
+3/3/2025 12:35 AM        stepend
+3/3/2025 12:35 AM        set_temp_dr 0.22
+3/3/2025 12:35 AM        wait 60
+3/3/2025 12:37 AM        stepbegin
+3/3/2025 12:37 AM        count preset time 60
+3/3/2025 12:38 AM        stepend
+3/3/2025 12:38 AM        set_temp_dr 0.21
+3/3/2025 12:38 AM        wait 60
+3/3/2025 12:39 AM        stepbegin
+3/3/2025 12:39 AM        count preset time 60
+3/3/2025 12:40 AM        stepend
+3/3/2025 12:40 AM        set_temp_dr 0.2
+3/3/2025 12:40 AM        wait 60
+3/3/2025 12:41 AM        stepbegin
+3/3/2025 12:41 AM        count preset time 60
+3/3/2025 12:42 AM        stepend
+3/3/2025 12:42 AM        set_temp_dr 0.19
+3/3/2025 12:42 AM        wait 60
+3/3/2025 12:43 AM        stepbegin
+3/3/2025 12:43 AM        count preset time 60
+3/3/2025 12:44 AM        stepend
+3/3/2025 12:44 AM        set_temp_dr 0.18
+3/3/2025 12:44 AM        wait 60
+3/3/2025 12:45 AM        stepbegin
+3/3/2025 12:45 AM        count preset time 60
+3/3/2025 12:46 AM        stepend
+3/3/2025 12:46 AM        set_temp_dr 0.17
+3/3/2025 12:46 AM        wait 60
+3/3/2025 12:47 AM        stepbegin
+3/3/2025 12:47 AM        count preset time 60
+3/3/2025 12:48 AM        stepend
+3/3/2025 12:48 AM        set_temp_dr 0.16
+3/3/2025 12:48 AM        wait 60
+3/3/2025 12:49 AM        stepbegin
+3/3/2025 12:49 AM        count preset time 60
+3/3/2025 12:50 AM        stepend
+3/3/2025 12:50 AM        scanoff
+3/3/2025 12:50 AM        set_field mag_i 1.8
+3/3/2025 12:57 AM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/3/2025 12:57 AM        scanon
+3/3/2025 12:57 AM        set_temp_dr 0.5
+3/3/2025 12:57 AM        wait 60
+3/3/2025 12:58 AM        stepbegin
+3/3/2025 12:58 AM        count preset time 60
+3/3/2025 12:59 AM        stepend
+3/3/2025 12:59 AM        set_temp_dr 0.49
+3/3/2025 12:59 AM        wait 60
+3/3/2025 1:00 AM        stepbegin
+3/3/2025 1:00 AM        count preset time 60
+3/3/2025 1:01 AM        stepend
+3/3/2025 1:01 AM        set_temp_dr 0.48
+3/3/2025 1:01 AM        wait 60
+3/3/2025 1:02 AM        stepbegin
+3/3/2025 1:02 AM        count preset time 60
+3/3/2025 1:04 AM        stepend
+3/3/2025 1:04 AM        set_temp_dr 0.47
+3/3/2025 1:04 AM        wait 60
+3/3/2025 1:05 AM        stepbegin
+3/3/2025 1:05 AM        count preset time 60
+3/3/2025 1:06 AM        stepend
+3/3/2025 1:06 AM        set_temp_dr 0.46
+3/3/2025 1:06 AM        wait 60
+3/3/2025 1:07 AM        stepbegin
+3/3/2025 1:07 AM        count preset time 60
+3/3/2025 1:08 AM        stepend
+3/3/2025 1:08 AM        set_temp_dr 0.45
+3/3/2025 1:08 AM        wait 60
+3/3/2025 1:09 AM        stepbegin
+3/3/2025 1:09 AM        count preset time 60
+3/3/2025 1:10 AM        stepend
+3/3/2025 1:10 AM        set_temp_dr 0.44
+3/3/2025 1:10 AM        wait 60
+3/3/2025 1:11 AM        stepbegin
+3/3/2025 1:11 AM        count preset time 60
+3/3/2025 1:12 AM        stepend
+3/3/2025 1:12 AM        set_temp_dr 0.43
+3/3/2025 1:12 AM        wait 60
+3/3/2025 1:13 AM        stepbegin
+3/3/2025 1:13 AM        count preset time 60
+3/3/2025 1:14 AM        stepend
+3/3/2025 1:14 AM        set_temp_dr 0.42
+3/3/2025 1:14 AM        wait 60
+3/3/2025 1:15 AM        stepbegin
+3/3/2025 1:15 AM        count preset time 60
+3/3/2025 1:16 AM        stepend
+3/3/2025 1:16 AM        set_temp_dr 0.41
+3/3/2025 1:16 AM        wait 60
+3/3/2025 1:17 AM        stepbegin
+3/3/2025 1:17 AM        count preset time 60
+3/3/2025 1:18 AM        stepend
+3/3/2025 1:18 AM        set_temp_dr 0.4
+3/3/2025 1:18 AM        wait 60
+3/3/2025 1:19 AM        stepbegin
+3/3/2025 1:19 AM        count preset time 60
+3/3/2025 1:20 AM        stepend
+3/3/2025 1:20 AM        set_temp_dr 0.39
+3/3/2025 1:20 AM        wait 60
+3/3/2025 1:21 AM        stepbegin
+3/3/2025 1:21 AM        count preset time 60
+3/3/2025 1:22 AM        stepend
+3/3/2025 1:22 AM        set_temp_dr 0.38
+3/3/2025 1:22 AM        wait 60
+3/3/2025 1:23 AM        stepbegin
+3/3/2025 1:23 AM        count preset time 60
+3/3/2025 1:24 AM        stepend
+3/3/2025 1:24 AM        set_temp_dr 0.37
+3/3/2025 1:24 AM        wait 60
+3/3/2025 1:25 AM        stepbegin
+3/3/2025 1:25 AM        count preset time 60
+3/3/2025 1:26 AM        stepend
+3/3/2025 1:26 AM        set_temp_dr 0.36
+3/3/2025 1:26 AM        wait 60
+3/3/2025 1:27 AM        stepbegin
+3/3/2025 1:27 AM        count preset time 60
+3/3/2025 1:28 AM        stepend
+3/3/2025 1:28 AM        set_temp_dr 0.35
+3/3/2025 1:28 AM        wait 60
+3/3/2025 1:29 AM        stepbegin
+3/3/2025 1:29 AM        count preset time 60
+3/3/2025 1:30 AM        stepend
+3/3/2025 1:30 AM        set_temp_dr 0.34
+3/3/2025 1:30 AM        wait 60
+3/3/2025 1:31 AM        stepbegin
+3/3/2025 1:31 AM        count preset time 60
+3/3/2025 1:32 AM        stepend
+3/3/2025 1:32 AM        set_temp_dr 0.33
+3/3/2025 1:32 AM        wait 60
+3/3/2025 1:33 AM        stepbegin
+3/3/2025 1:33 AM        count preset time 60
+3/3/2025 1:34 AM        stepend
+3/3/2025 1:34 AM        set_temp_dr 0.32
+3/3/2025 1:34 AM        wait 60
+3/3/2025 1:35 AM        stepbegin
+3/3/2025 1:35 AM        count preset time 60
+3/3/2025 1:36 AM        stepend
+3/3/2025 1:36 AM        set_temp_dr 0.31
+3/3/2025 1:36 AM        wait 60
+3/3/2025 1:37 AM        stepbegin
+3/3/2025 1:37 AM        count preset time 60
+3/3/2025 1:38 AM        stepend
+3/3/2025 1:38 AM        set_temp_dr 0.3
+3/3/2025 1:38 AM        wait 60
+3/3/2025 1:40 AM        stepbegin
+3/3/2025 1:40 AM        count preset time 60
+3/3/2025 1:41 AM        stepend
+3/3/2025 1:41 AM        set_temp_dr 0.29
+3/3/2025 1:41 AM        wait 60
+3/3/2025 1:42 AM        stepbegin
+3/3/2025 1:42 AM        count preset time 60
+3/3/2025 1:43 AM        stepend
+3/3/2025 1:43 AM        set_temp_dr 0.28
+3/3/2025 1:43 AM        wait 60
+3/3/2025 1:44 AM        stepbegin
+3/3/2025 1:44 AM        count preset time 60
+3/3/2025 1:45 AM        stepend
+3/3/2025 1:45 AM        set_temp_dr 0.27
+3/3/2025 1:45 AM        wait 60
+3/3/2025 1:46 AM        stepbegin
+3/3/2025 1:46 AM        count preset time 60
+3/3/2025 1:47 AM        stepend
+3/3/2025 1:47 AM        set_temp_dr 0.26
+3/3/2025 1:47 AM        wait 60
+3/3/2025 1:48 AM        stepbegin
+3/3/2025 1:48 AM        count preset time 60
+3/3/2025 1:49 AM        stepend
+3/3/2025 1:49 AM        set_temp_dr 0.25
+3/3/2025 1:49 AM        wait 60
+3/3/2025 1:50 AM        stepbegin
+3/3/2025 1:50 AM        count preset time 60
+3/3/2025 1:51 AM        stepend
+3/3/2025 1:51 AM        set_temp_dr 0.24
+3/3/2025 1:51 AM        wait 60
+3/3/2025 1:52 AM        stepbegin
+3/3/2025 1:52 AM        count preset time 60
+3/3/2025 1:53 AM        stepend
+3/3/2025 1:53 AM        set_temp_dr 0.23
+3/3/2025 1:53 AM        wait 60
+3/3/2025 1:54 AM        stepbegin
+3/3/2025 1:54 AM        count preset time 60
+3/3/2025 1:55 AM        stepend
+3/3/2025 1:55 AM        set_temp_dr 0.22
+3/3/2025 1:55 AM        wait 60
+3/3/2025 1:56 AM        stepbegin
+3/3/2025 1:56 AM        count preset time 60
+3/3/2025 1:57 AM        stepend
+3/3/2025 1:57 AM        set_temp_dr 0.21
+3/3/2025 1:57 AM        wait 60
+3/3/2025 1:58 AM        stepbegin
+3/3/2025 1:58 AM        count preset time 60
+3/3/2025 1:59 AM        stepend
+3/3/2025 1:59 AM        set_temp_dr 0.2
+3/3/2025 1:59 AM        wait 60
+3/3/2025 2:00 AM        stepbegin
+3/3/2025 2:00 AM        count preset time 60
+3/3/2025 2:01 AM        stepend
+3/3/2025 2:01 AM        set_temp_dr 0.19
+3/3/2025 2:01 AM        wait 60
+3/3/2025 2:02 AM        stepbegin
+3/3/2025 2:02 AM        count preset time 60
+3/3/2025 2:03 AM        stepend
+3/3/2025 2:03 AM        set_temp_dr 0.18
+3/3/2025 2:03 AM        wait 60
+3/3/2025 2:04 AM        stepbegin
+3/3/2025 2:04 AM        count preset time 60
+3/3/2025 2:05 AM        stepend
+3/3/2025 2:05 AM        set_temp_dr 0.17
+3/3/2025 2:05 AM        wait 60
+3/3/2025 2:06 AM        stepbegin
+3/3/2025 2:06 AM        count preset time 60
+3/3/2025 2:07 AM        stepend
+3/3/2025 2:07 AM        set_temp_dr 0.16
+3/3/2025 2:07 AM        wait 60
+3/3/2025 2:08 AM        stepbegin
+3/3/2025 2:08 AM        count preset time 60
+3/3/2025 2:09 AM        stepend
+3/3/2025 2:09 AM        set_temp_dr 0.15
+3/3/2025 2:09 AM        wait 60
+3/3/2025 2:10 AM        stepbegin
+3/3/2025 2:10 AM        count preset time 60
+3/3/2025 2:11 AM        stepend
+3/3/2025 2:11 AM        set_temp_dr 0.04
+3/3/2025 2:11 AM        wait 300
+3/3/2025 2:16 AM        stepbegin
+3/3/2025 2:16 AM        count preset time 60
+3/3/2025 2:17 AM        stepend
+3/3/2025 2:17 AM        wait 300
+3/3/2025 2:22 AM        stepbegin
+3/3/2025 2:22 AM        count preset time 60
+3/3/2025 2:23 AM        stepend
+3/3/2025 2:23 AM        wait 300
+3/3/2025 2:28 AM        stepbegin
+3/3/2025 2:28 AM        count preset time 60
+3/3/2025 2:29 AM        stepend
+3/3/2025 2:29 AM        wait 300
+3/3/2025 2:35 AM        stepbegin
+3/3/2025 2:35 AM        count preset time 60
+3/3/2025 2:36 AM        stepend
+3/3/2025 2:36 AM        wait 300
+3/3/2025 2:41 AM        stepbegin
+3/3/2025 2:41 AM        count preset time 60
+3/3/2025 2:42 AM        stepend
+3/3/2025 2:42 AM        wait 300
+3/3/2025 2:47 AM        stepbegin
+3/3/2025 2:47 AM        count preset time 60
+3/3/2025 2:48 AM        stepend
+3/3/2025 2:48 AM        wait 300
+3/3/2025 2:53 AM        stepbegin
+3/3/2025 2:53 AM        count preset time 60
+3/3/2025 2:54 AM        stepend
+3/3/2025 2:54 AM        wait 300
+3/3/2025 2:59 AM        stepbegin
+3/3/2025 2:59 AM        count preset time 60
+3/3/2025 3:00 AM        stepend
+3/3/2025 3:00 AM        wait 300
+3/3/2025 3:05 AM        stepbegin
+3/3/2025 3:05 AM        count preset time 60
+3/3/2025 3:06 AM        stepend
+3/3/2025 3:06 AM        wait 300
+3/3/2025 3:11 AM        stepbegin
+3/3/2025 3:11 AM        count preset time 60
+3/3/2025 3:12 AM        stepend
+3/3/2025 3:12 AM        scanoff
+3/3/2025 3:12 AM        set_field mag_i 1.9
+3/3/2025 3:19 AM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/3/2025 3:19 AM        scanon
+3/3/2025 3:19 AM        set_temp_dr 0.5
+3/3/2025 3:19 AM        wait 60
+3/3/2025 3:20 AM        stepbegin
+3/3/2025 3:20 AM        count preset time 60
+3/3/2025 3:21 AM        stepend
+3/3/2025 3:21 AM        set_temp_dr 0.49
+3/3/2025 3:21 AM        wait 60
+3/3/2025 3:22 AM        stepbegin
+3/3/2025 3:22 AM        count preset time 60
+3/3/2025 3:23 AM        stepend
+3/3/2025 3:23 AM        set_temp_dr 0.48
+3/3/2025 3:23 AM        wait 60
+3/3/2025 3:24 AM        stepbegin
+3/3/2025 3:24 AM        count preset time 60
+3/3/2025 3:25 AM        stepend
+3/3/2025 3:25 AM        set_temp_dr 0.47
+3/3/2025 3:25 AM        wait 60
+3/3/2025 3:26 AM        stepbegin
+3/3/2025 3:26 AM        count preset time 60
+3/3/2025 3:27 AM        stepend
+3/3/2025 3:27 AM        set_temp_dr 0.46
+3/3/2025 3:27 AM        wait 60
+3/3/2025 3:29 AM        stepbegin
+3/3/2025 3:29 AM        count preset time 60
+3/3/2025 3:30 AM        stepend
+3/3/2025 3:30 AM        set_temp_dr 0.45
+3/3/2025 3:30 AM        wait 60
+3/3/2025 3:31 AM        stepbegin
+3/3/2025 3:31 AM        count preset time 60
+3/3/2025 3:32 AM        stepend
+3/3/2025 3:32 AM        set_temp_dr 0.44
+3/3/2025 3:32 AM        wait 60
+3/3/2025 3:33 AM        stepbegin
+3/3/2025 3:33 AM        count preset time 60
+3/3/2025 3:34 AM        stepend
+3/3/2025 3:34 AM        set_temp_dr 0.43
+3/3/2025 3:34 AM        wait 60
+3/3/2025 3:35 AM        stepbegin
+3/3/2025 3:35 AM        count preset time 60
+3/3/2025 3:36 AM        stepend
+3/3/2025 3:36 AM        set_temp_dr 0.42
+3/3/2025 3:36 AM        wait 60
+3/3/2025 3:37 AM        stepbegin
+3/3/2025 3:37 AM        count preset time 60
+3/3/2025 3:38 AM        stepend
+3/3/2025 3:38 AM        set_temp_dr 0.41
+3/3/2025 3:38 AM        wait 60
+3/3/2025 3:39 AM        stepbegin
+3/3/2025 3:39 AM        count preset time 60
+3/3/2025 3:40 AM        stepend
+3/3/2025 3:40 AM        set_temp_dr 0.4
+3/3/2025 3:40 AM        wait 60
+3/3/2025 3:41 AM        stepbegin
+3/3/2025 3:41 AM        count preset time 60
+3/3/2025 3:42 AM        stepend
+3/3/2025 3:42 AM        set_temp_dr 0.39
+3/3/2025 3:42 AM        wait 60
+3/3/2025 3:43 AM        stepbegin
+3/3/2025 3:43 AM        count preset time 60
+3/3/2025 3:44 AM        stepend
+3/3/2025 3:44 AM        set_temp_dr 0.38
+3/3/2025 3:44 AM        wait 60
+3/3/2025 3:45 AM        stepbegin
+3/3/2025 3:45 AM        count preset time 60
+3/3/2025 3:46 AM        stepend
+3/3/2025 3:46 AM        set_temp_dr 0.37
+3/3/2025 3:46 AM        wait 60
+3/3/2025 3:47 AM        stepbegin
+3/3/2025 3:47 AM        count preset time 60
+3/3/2025 3:48 AM        stepend
+3/3/2025 3:48 AM        set_temp_dr 0.36
+3/3/2025 3:48 AM        wait 60
+3/3/2025 3:49 AM        stepbegin
+3/3/2025 3:49 AM        count preset time 60
+3/3/2025 3:50 AM        stepend
+3/3/2025 3:50 AM        set_temp_dr 0.35
+3/3/2025 3:50 AM        wait 60
+3/3/2025 3:51 AM        stepbegin
+3/3/2025 3:51 AM        count preset time 60
+3/3/2025 3:52 AM        stepend
+3/3/2025 3:52 AM        set_temp_dr 0.34
+3/3/2025 3:52 AM        wait 60
+3/3/2025 3:53 AM        stepbegin
+3/3/2025 3:53 AM        count preset time 60
+3/3/2025 3:54 AM        stepend
+3/3/2025 3:54 AM        set_temp_dr 0.33
+3/3/2025 3:54 AM        wait 60
+3/3/2025 3:55 AM        stepbegin
+3/3/2025 3:55 AM        count preset time 60
+3/3/2025 3:56 AM        stepend
+3/3/2025 3:56 AM        set_temp_dr 0.32
+3/3/2025 3:56 AM        wait 60
+3/3/2025 3:57 AM        stepbegin
+3/3/2025 3:57 AM        count preset time 60
+3/3/2025 3:58 AM        stepend
+3/3/2025 3:58 AM        set_temp_dr 0.31
+3/3/2025 3:58 AM        wait 60
+3/3/2025 3:59 AM        stepbegin
+3/3/2025 3:59 AM        count preset time 60
+3/3/2025 4:00 AM        stepend
+3/3/2025 4:00 AM        set_temp_dr 0.3
+3/3/2025 4:00 AM        wait 60
+3/3/2025 4:01 AM        stepbegin
+3/3/2025 4:01 AM        count preset time 60
+3/3/2025 4:02 AM        stepend
+3/3/2025 4:02 AM        set_temp_dr 0.29
+3/3/2025 4:02 AM        wait 60
+3/3/2025 4:03 AM        stepbegin
+3/3/2025 4:03 AM        count preset time 60
+3/3/2025 4:04 AM        stepend
+3/3/2025 4:04 AM        set_temp_dr 0.28
+3/3/2025 4:04 AM        wait 60
+3/3/2025 4:05 AM        stepbegin
+3/3/2025 4:05 AM        count preset time 60
+3/3/2025 4:06 AM        stepend
+3/3/2025 4:06 AM        set_temp_dr 0.27
+3/3/2025 4:06 AM        wait 60
+3/3/2025 4:07 AM        stepbegin
+3/3/2025 4:07 AM        count preset time 60
+3/3/2025 4:08 AM        stepend
+3/3/2025 4:08 AM        set_temp_dr 0.26
+3/3/2025 4:08 AM        wait 60
+3/3/2025 4:10 AM        stepbegin
+3/3/2025 4:10 AM        count preset time 60
+3/3/2025 4:11 AM        stepend
+3/3/2025 4:11 AM        set_temp_dr 0.25
+3/3/2025 4:11 AM        wait 60
+3/3/2025 4:12 AM        stepbegin
+3/3/2025 4:12 AM        count preset time 60
+3/3/2025 4:13 AM        stepend
+3/3/2025 4:13 AM        set_temp_dr 0.24
+3/3/2025 4:13 AM        wait 60
+3/3/2025 4:14 AM        stepbegin
+3/3/2025 4:14 AM        count preset time 60
+3/3/2025 4:15 AM        stepend
+3/3/2025 4:15 AM        set_temp_dr 0.23
+3/3/2025 4:15 AM        wait 60
+3/3/2025 4:16 AM        stepbegin
+3/3/2025 4:16 AM        count preset time 60
+3/3/2025 4:17 AM        stepend
+3/3/2025 4:17 AM        set_temp_dr 0.22
+3/3/2025 4:17 AM        wait 60
+3/3/2025 4:18 AM        stepbegin
+3/3/2025 4:18 AM        count preset time 60
+3/3/2025 4:19 AM        stepend
+3/3/2025 4:19 AM        set_temp_dr 0.21
+3/3/2025 4:19 AM        wait 60
+3/3/2025 4:20 AM        stepbegin
+3/3/2025 4:20 AM        count preset time 60
+3/3/2025 4:21 AM        stepend
+3/3/2025 4:21 AM        set_temp_dr 0.2
+3/3/2025 4:21 AM        wait 60
+3/3/2025 4:22 AM        stepbegin
+3/3/2025 4:22 AM        count preset time 60
+3/3/2025 4:23 AM        stepend
+3/3/2025 4:23 AM        set_temp_dr 0.19
+3/3/2025 4:23 AM        wait 60
+3/3/2025 4:24 AM        stepbegin
+3/3/2025 4:24 AM        count preset time 60
+3/3/2025 4:25 AM        stepend
+3/3/2025 4:25 AM        set_temp_dr 0.18
+3/3/2025 4:25 AM        wait 60
+3/3/2025 4:26 AM        stepbegin
+3/3/2025 4:26 AM        count preset time 60
+3/3/2025 4:27 AM        stepend
+3/3/2025 4:27 AM        set_temp_dr 0.17
+3/3/2025 4:27 AM        wait 60
+3/3/2025 4:28 AM        stepbegin
+3/3/2025 4:28 AM        count preset time 60
+3/3/2025 4:29 AM        stepend
+3/3/2025 4:29 AM        set_temp_dr 0.16
+3/3/2025 4:29 AM        wait 60
+3/3/2025 4:30 AM        stepbegin
+3/3/2025 4:30 AM        count preset time 60
+3/3/2025 4:31 AM        stepend
+3/3/2025 4:31 AM        set_temp_dr 0.15
+3/3/2025 4:31 AM        wait 60
+3/3/2025 4:32 AM        stepbegin
+3/3/2025 4:32 AM        count preset time 60
+3/3/2025 4:33 AM        stepend
+3/3/2025 4:33 AM        set_temp_dr 0.04
+3/3/2025 4:33 AM        wait 300
+3/3/2025 4:38 AM        stepbegin
+3/3/2025 4:38 AM        count preset time 60
+3/3/2025 4:39 AM        stepend
+3/3/2025 4:39 AM        wait 300
+3/3/2025 4:44 AM        stepbegin
+3/3/2025 4:44 AM        count preset time 60
+3/3/2025 4:45 AM        stepend
+3/3/2025 4:45 AM        wait 300
+3/3/2025 4:50 AM        stepbegin
+3/3/2025 4:50 AM        count preset time 60
+3/3/2025 4:51 AM        stepend
+3/3/2025 4:51 AM        wait 300
+3/3/2025 4:56 AM        stepbegin
+3/3/2025 4:56 AM        count preset time 60
+3/3/2025 4:57 AM        stepend
+3/3/2025 4:57 AM        wait 300
+3/3/2025 5:02 AM        stepbegin
+3/3/2025 5:02 AM        count preset time 60
+3/3/2025 5:03 AM        stepend
+3/3/2025 5:03 AM        wait 300
+3/3/2025 5:08 AM        stepbegin
+3/3/2025 5:08 AM        count preset time 60
+3/3/2025 5:09 AM        stepend
+3/3/2025 5:09 AM        wait 300
+3/3/2025 5:14 AM        stepbegin
+3/3/2025 5:14 AM        count preset time 60
+3/3/2025 5:15 AM        stepend
+3/3/2025 5:15 AM        wait 300
+3/3/2025 5:20 AM        stepbegin
+3/3/2025 5:20 AM        count preset time 60
+3/3/2025 5:21 AM        stepend
+3/3/2025 5:21 AM        wait 300
+3/3/2025 5:26 AM        stepbegin
+3/3/2025 5:26 AM        count preset time 60
+3/3/2025 5:27 AM        stepend
+3/3/2025 5:27 AM        wait 300
+3/3/2025 5:32 AM        stepbegin
+3/3/2025 5:32 AM        count preset time 60
+3/3/2025 5:33 AM        stepend
+3/3/2025 5:33 AM        scanoff
+3/3/2025 5:33 AM        set_field mag_i 2.0
+3/3/2025 5:42 AM        scantitle "Temp scan while cooling (1 0 0), at H = @(persistent_field.position) T"
+3/3/2025 5:42 AM        scanon
+3/3/2025 5:42 AM        set_temp_dr 0.5
+3/3/2025 5:42 AM        wait 60
+3/3/2025 5:43 AM        stepbegin
+3/3/2025 5:43 AM        count preset time 60
+3/3/2025 5:44 AM        stepend
+3/3/2025 5:44 AM        set_temp_dr 0.49
+3/3/2025 5:44 AM        wait 60
+3/3/2025 5:45 AM        stepbegin
+3/3/2025 5:45 AM        count preset time 60
+3/3/2025 5:46 AM        stepend
+3/3/2025 5:46 AM        set_temp_dr 0.48
+3/3/2025 5:46 AM        wait 60
+3/3/2025 5:47 AM        stepbegin
+3/3/2025 5:47 AM        count preset time 60
+3/3/2025 5:48 AM        stepend
+3/3/2025 5:48 AM        set_temp_dr 0.47
+3/3/2025 5:48 AM        wait 60
+3/3/2025 5:49 AM        stepbegin
+3/3/2025 5:49 AM        count preset time 60
+3/3/2025 5:50 AM        stepend
+3/3/2025 5:50 AM        set_temp_dr 0.46
+3/3/2025 5:50 AM        wait 60
+3/3/2025 5:51 AM        stepbegin
+3/3/2025 5:51 AM        count preset time 60
+3/3/2025 5:52 AM        stepend
+3/3/2025 5:52 AM        set_temp_dr 0.45
+3/3/2025 5:52 AM        wait 60
+3/3/2025 5:53 AM        stepbegin
+3/3/2025 5:53 AM        count preset time 60
+3/3/2025 5:54 AM        stepend
+3/3/2025 5:54 AM        set_temp_dr 0.44
+3/3/2025 5:54 AM        wait 60
+3/3/2025 5:55 AM        stepbegin
+3/3/2025 5:55 AM        count preset time 60
+3/3/2025 5:56 AM        stepend
+3/3/2025 5:56 AM        set_temp_dr 0.43
+3/3/2025 5:56 AM        wait 60
+3/3/2025 5:57 AM        stepbegin
+3/3/2025 5:57 AM        count preset time 60
+3/3/2025 5:58 AM        stepend
+3/3/2025 5:58 AM        set_temp_dr 0.42
+3/3/2025 5:58 AM        wait 60
+3/3/2025 5:59 AM        stepbegin
+3/3/2025 5:59 AM        count preset time 60
+3/3/2025 6:00 AM        stepend
+3/3/2025 6:00 AM        set_temp_dr 0.41
+3/3/2025 6:00 AM        wait 60
+3/3/2025 6:01 AM        stepbegin
+3/3/2025 6:01 AM        count preset time 60
+3/3/2025 6:02 AM        stepend
+3/3/2025 6:02 AM        set_temp_dr 0.4
+3/3/2025 6:02 AM        wait 60
+3/3/2025 6:03 AM        stepbegin
+3/3/2025 6:03 AM        count preset time 60
+3/3/2025 6:04 AM        stepend
+3/3/2025 6:04 AM        set_temp_dr 0.39
+3/3/2025 6:04 AM        wait 60
+3/3/2025 6:05 AM        stepbegin
+3/3/2025 6:05 AM        count preset time 60
+3/3/2025 6:06 AM        stepend
+3/3/2025 6:06 AM        set_temp_dr 0.38
+3/3/2025 6:06 AM        wait 60
+3/3/2025 6:07 AM        stepbegin
+3/3/2025 6:07 AM        count preset time 60
+3/3/2025 6:08 AM        stepend
+3/3/2025 6:08 AM        set_temp_dr 0.37
+3/3/2025 6:08 AM        wait 60
+3/3/2025 6:09 AM        stepbegin
+3/3/2025 6:09 AM        count preset time 60
+3/3/2025 6:10 AM        stepend
+3/3/2025 6:10 AM        set_temp_dr 0.36
+3/3/2025 6:10 AM        wait 60
+3/3/2025 6:11 AM        stepbegin
+3/3/2025 6:11 AM        count preset time 60
+3/3/2025 6:12 AM        stepend
+3/3/2025 6:12 AM        set_temp_dr 0.35
+3/3/2025 6:12 AM        wait 60
+3/3/2025 6:13 AM        stepbegin
+3/3/2025 6:13 AM        count preset time 60
+3/3/2025 6:14 AM        stepend
+3/3/2025 6:14 AM        set_temp_dr 0.34
+3/3/2025 6:14 AM        wait 60
+3/3/2025 6:15 AM        stepbegin
+3/3/2025 6:15 AM        count preset time 60
+3/3/2025 6:16 AM        stepend
+3/3/2025 6:16 AM        set_temp_dr 0.33
+3/3/2025 6:16 AM        wait 60
+3/3/2025 6:17 AM        stepbegin
+3/3/2025 6:17 AM        count preset time 60
+3/3/2025 6:18 AM        stepend
+3/3/2025 6:18 AM        set_temp_dr 0.32
+3/3/2025 6:18 AM        wait 60
+3/3/2025 6:19 AM        stepbegin
+3/3/2025 6:19 AM        count preset time 60
+3/3/2025 6:20 AM        stepend
+3/3/2025 6:21 AM        set_temp_dr 0.31
+3/3/2025 6:21 AM        wait 60
+3/3/2025 6:22 AM        stepbegin
+3/3/2025 6:22 AM        count preset time 60
+3/3/2025 6:23 AM        stepend
+3/3/2025 6:23 AM        set_temp_dr 0.3
+3/3/2025 6:23 AM        wait 60
+3/3/2025 6:24 AM        stepbegin
+3/3/2025 6:24 AM        count preset time 60
+3/3/2025 6:25 AM        stepend
+3/3/2025 6:25 AM        set_temp_dr 0.29
+3/3/2025 6:25 AM        wait 60
+3/3/2025 6:26 AM        stepbegin
+3/3/2025 6:26 AM        count preset time 60
+3/3/2025 6:27 AM        stepend
+3/3/2025 6:27 AM        set_temp_dr 0.28
+3/3/2025 6:27 AM        wait 60
+3/3/2025 6:28 AM        stepbegin
+3/3/2025 6:28 AM        count preset time 60
+3/3/2025 6:29 AM        stepend
+3/3/2025 6:29 AM        set_temp_dr 0.27
+3/3/2025 6:29 AM        wait 60
+3/3/2025 6:30 AM        stepbegin
+3/3/2025 6:30 AM        count preset time 60
+3/3/2025 6:31 AM        stepend
+3/3/2025 6:31 AM        set_temp_dr 0.26
+3/3/2025 6:31 AM        wait 60
+3/3/2025 6:32 AM        stepbegin
+3/3/2025 6:32 AM        count preset time 60
+3/3/2025 6:33 AM        stepend
+3/3/2025 6:33 AM        set_temp_dr 0.25
+3/3/2025 6:33 AM        wait 60
+3/3/2025 6:34 AM        stepbegin
+3/3/2025 6:34 AM        count preset time 60
+3/3/2025 6:35 AM        stepend
+3/3/2025 6:35 AM        set_temp_dr 0.24
+3/3/2025 6:35 AM        wait 60
+3/3/2025 6:36 AM        stepbegin
+3/3/2025 6:36 AM        count preset time 60
+3/3/2025 6:37 AM        stepend
+3/3/2025 6:37 AM        set_temp_dr 0.23
+3/3/2025 6:37 AM        wait 60
+3/3/2025 6:38 AM        stepbegin
+3/3/2025 6:38 AM        count preset time 60
+3/3/2025 6:39 AM        stepend
+3/3/2025 6:39 AM        set_temp_dr 0.22
+3/3/2025 6:39 AM        wait 60
+3/3/2025 6:40 AM        stepbegin
+3/3/2025 6:40 AM        count preset time 60
+3/3/2025 6:41 AM        stepend
+3/3/2025 6:41 AM        set_temp_dr 0.21
+3/3/2025 6:41 AM        wait 60
+3/3/2025 6:42 AM        stepbegin
+3/3/2025 6:42 AM        count preset time 60
+3/3/2025 6:43 AM        stepend
+3/3/2025 6:43 AM        set_temp_dr 0.2
+3/3/2025 6:43 AM        wait 60
+3/3/2025 6:44 AM        stepbegin
+3/3/2025 6:44 AM        count preset time 60
+3/3/2025 6:45 AM        stepend
+3/3/2025 6:45 AM        set_temp_dr 0.19
+3/3/2025 6:45 AM        wait 60
+3/3/2025 6:46 AM        stepbegin
+3/3/2025 6:46 AM        count preset time 60
+3/3/2025 6:47 AM        stepend
+3/3/2025 6:47 AM        set_temp_dr 0.18
+3/3/2025 6:47 AM        wait 60
+3/3/2025 6:48 AM        stepbegin
+3/3/2025 6:48 AM        count preset time 60
+3/3/2025 6:49 AM        stepend
+3/3/2025 6:49 AM        set_temp_dr 0.17
+3/3/2025 6:49 AM        wait 60
+3/3/2025 6:50 AM        stepbegin
+3/3/2025 6:50 AM        count preset time 60
+3/3/2025 6:51 AM        stepend
+3/3/2025 6:51 AM        set_temp_dr 0.16
+3/3/2025 6:51 AM        wait 60
+3/3/2025 6:52 AM        stepbegin
+3/3/2025 6:52 AM        count preset time 60
+3/3/2025 6:53 AM        stepend
+3/3/2025 6:53 AM        set_temp_dr 0.15
+3/3/2025 6:53 AM        wait 60
+3/3/2025 6:54 AM        stepbegin
+3/3/2025 6:54 AM        count preset time 60
+3/3/2025 6:55 AM        stepend
+3/3/2025 6:55 AM        set_temp_dr 0.04
+3/3/2025 6:55 AM        wait 300
+3/3/2025 7:00 AM        stepbegin
+3/3/2025 7:00 AM        count preset time 60
+3/3/2025 7:01 AM        stepend
+3/3/2025 7:01 AM        wait 300
+3/3/2025 7:06 AM        stepbegin
+3/3/2025 7:06 AM        count preset time 60
+3/3/2025 7:07 AM        stepend
+3/3/2025 7:07 AM        wait 300
+3/3/2025 7:12 AM        stepbegin
+3/3/2025 7:12 AM        count preset time 60
+3/3/2025 7:13 AM        stepend
+3/3/2025 7:13 AM        wait 300
+3/3/2025 7:18 AM        stepbegin
+3/3/2025 7:18 AM        count preset time 60
+3/3/2025 7:19 AM        stepend
+3/3/2025 7:19 AM        wait 300
+3/3/2025 7:25 AM        stepbegin
+3/3/2025 7:25 AM        count preset time 60
+3/3/2025 7:26 AM        stepend
+3/3/2025 7:26 AM        wait 300
+3/3/2025 7:31 AM        stepbegin
+3/3/2025 7:31 AM        count preset time 60
+3/3/2025 7:32 AM        stepend
+3/3/2025 7:32 AM        wait 300
+3/3/2025 7:37 AM        stepbegin
+3/3/2025 7:37 AM        count preset time 60
+3/3/2025 7:38 AM        stepend
+3/3/2025 7:38 AM        wait 300
+3/3/2025 7:43 AM        stepbegin
+3/3/2025 7:43 AM        count preset time 60
+3/3/2025 7:44 AM        stepend
+3/3/2025 7:44 AM        wait 300
+3/3/2025 7:49 AM        stepbegin
+3/3/2025 7:49 AM        count preset time 60
+3/3/2025 7:50 AM        stepend
+3/3/2025 7:50 AM        wait 300
+3/3/2025 7:55 AM        stepbegin
+3/3/2025 7:55 AM        count preset time 60
+3/3/2025 7:56 AM        stepend
+3/3/2025 7:56 AM        scanoff
+3/3/2025 7:56 AM        br 2 0 0
+3/3/2025 7:56 AM        set_temp_dr 0.5
+3/3/2025 7:56 AM        wait 300
+3/3/2025 8:01 AM        preset time 1
+3/3/2025 8:01 AM        scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:01 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:03 AM        COM s1
+3/3/2025 8:03 AM        preset time 10
+3/3/2025 8:03 AM        scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:03 AM        th2th 2 -2 0.2
+3/3/2025 8:08 AM        scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:08 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:12 AM        COM s1
+3/3/2025 8:12 AM        set_temp_dr 0.4
+3/3/2025 8:13 AM        wait 300
+3/3/2025 8:18 AM        preset time 1
+3/3/2025 8:18 AM        scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:18 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:19 AM        COM s1
+3/3/2025 8:19 AM        preset time 10
+3/3/2025 8:19 AM        scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:19 AM        th2th 2 -2 0.2
+3/3/2025 8:24 AM        scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:24 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:29 AM        COM s1
+3/3/2025 8:29 AM        set_temp_dr 0.3
+3/3/2025 8:29 AM        wait 300
+3/3/2025 8:34 AM        preset time 1
+3/3/2025 8:34 AM        scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:34 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:35 AM        COM s1
+3/3/2025 8:35 AM        preset time 10
+3/3/2025 8:35 AM        scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:35 AM        th2th 2 -2 0.2
+3/3/2025 8:40 AM        scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:40 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:45 AM        COM s1
+3/3/2025 8:45 AM        set_temp_dr 0.2
+3/3/2025 8:45 AM        wait 300
+3/3/2025 8:50 AM        preset time 1
+3/3/2025 8:50 AM        scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:50 AM        scanrel s1 1 -1 0.1
+3/3/2025 8:51 AM        COM s1
+3/3/2025 8:51 AM        preset time 10
+3/3/2025 8:51 AM        scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:51 AM        th2th 2 -2 0.2
+3/3/2025 8:56 AM        scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 8:56 AM        scanrel s1 1 -1 0.1
+3/3/2025 9:01 AM        COM s1
+3/3/2025 9:01 AM        set_temp_dr 0.04
+3/3/2025 9:01 AM        wait 600
+3/3/2025 9:11 AM        preset time 1
+3/3/2025 9:11 AM        scantitle "alignment (2 0 0) s1, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 9:11 AM        scanrel s1 1 -1 0.1
+3/3/2025 9:13 AM        COM s1
+3/3/2025 9:13 AM        preset time 10
+3/3/2025 9:13 AM        scantitle "(2 0 0) th2th, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 9:13 AM        th2th 2 -2 0.2
+3/3/2025 9:18 AM        scantitle "(2 0 0) rocking, T = @(dr_tsample.position)K, H = @(persistent_field.position)T, warming"
+3/3/2025 9:18 AM        scanrel s1 1 -1 0.1
+3/3/2025 9:22 AM        COM s1
+3/3/2025 9:22 AM        wait 2400

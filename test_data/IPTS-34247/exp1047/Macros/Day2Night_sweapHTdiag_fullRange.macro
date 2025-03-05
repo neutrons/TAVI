@@ -1,0 +1,130 @@
+set_temp_dr 0.7
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
+
+set_temp_dr 0.6
+wait 1200
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
+
+set_temp_dr 0.5
+wait 1200
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
+
+set_temp_dr 0.4
+wait 1800
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
+
+set_temp_dr 0.2
+wait 1800
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
+
+set_temp_dr 0.1
+wait 1800
+br 2 0 0
+scantitle "Moving to  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, UP"
+start_field_scan mag_i
+scan mag_i 0 1.2 0.2 preset time 20
+scan mag_i 1.2 3 0.05 preset time 20
+end_field_scan mag_i
+
+scantitle "Alignment  (@(h) @(k) @(l)) center"
+preset time 1
+scanrel s1 1 -1 0.1
+COM s1
+scantitle "HoV6Sn6, field dependence of (@(h) @(k) @(l)), T = @(dr_temp) K, DOWN"
+start_field_scan mag_i
+scan mag_i 3 0 -0.5 preset time 20
+end_field_scan mag_i
