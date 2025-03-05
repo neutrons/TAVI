@@ -79,7 +79,6 @@ def test_r_mat_to_angles():
 
 
 def test_calculate_ub():
-
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
@@ -108,7 +107,6 @@ def test_calculate_ub():
 
 
 def test_r_mat_with_minimal_tilt():
-
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
@@ -131,7 +129,6 @@ def test_r_mat_with_minimal_tilt():
 
 
 def test_calculate_motor_agnles():
-
     tas = TAS(fixed_ef=13.505137, spice_convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
