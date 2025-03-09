@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
-from tavi.utilities import Peak, UBConf, en2q, get_angle_from_triangle
+from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle
 
 # -----------------------------------------------------
 # Angle and Q math
@@ -117,6 +117,32 @@ def plane_normal_from_two_peaks(
     return (plane_normal, in_plane_ref)
 
 
+def angle_between_two_hkls(
+    hkl1: tuple[float, float, float],
+    hkl2: tuple[float, float, float],
+    b_mat: np.ndarray,
+):
+    q1 = b_mat.dot(hkl1)
+    q2 = b_mat.dot(hkl2)
+    c = np.dot(q1, q2) / np.linalg.norm(q1) / np.linalg.norm(q2)
+    angle = np.arccos(np.clip(c, -1, 1))
+    return np.degrees(angle)
+
+
+def angle_between_two_motor_positions(
+    angles1: MotorAngles,
+    angles2: MotorAngles,
+    r_mat_inv,
+    ei: float,
+    ef: float,
+):
+    q1 = r_mat_inv(angles1).dot(q_lab(ei, ef, angles1.two_theta))
+    q2 = r_mat_inv(angles2).dot(q_lab(ei, ef, angles2.two_theta))
+    c = np.dot(q1, q2) / np.linalg.norm(q1) / np.linalg.norm(q2)  # -> cosine of the angle
+    angle = np.arccos(np.clip(c, -1, 1))
+    return np.degrees(angle)
+
+
 # -----------------------------------------------------
 # R matrix math
 # -----------------------------------------------------
@@ -141,6 +167,9 @@ def r_matrix_with_minimal_tilt(
     ub_mat = ub_conf.ub_mat
     plane_normal = ub_conf.plane_normal
     in_plane_ref = ub_conf.in_plane_ref
+
+    if (plane_normal is None) or (in_plane_ref is None):
+        raise ValueError("plane_normal or in_plane_ref cannot be None.")
 
     ki = en2q(ei)
     kf = en2q(ef)
@@ -239,6 +268,16 @@ def uv_to_ub_matrix(
 # -----------------------------------------------------
 # UB matrix math
 # -----------------------------------------------------
+# TODO
+def find_u_from_one_peak_and_scattering_plane(
+    peak: Peak,
+    scattering_plane: tuple,
+    b_mat: np.ndarray,
+    r_mat_inv,
+    ei: float,
+    ef: float,
+):
+    return u_mat
 
 
 def find_u_from_two_peaks(

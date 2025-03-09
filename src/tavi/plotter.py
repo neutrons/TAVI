@@ -3,6 +3,7 @@ from functools import partial
 from typing import Optional, Union
 
 import numpy as np
+from lmfit.model import ModelResult
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
@@ -129,8 +130,20 @@ class Plot1D(object):
                 for key, val in kwargs.items():
                     data.fmt.update({key: val[i]})
 
-    def add_reso_bar(self, pos: tuple, fwhm: float, **kwargs):
+    def add_reso_bar(self, pos: Union[tuple, ModelResult], fwhm: float, **kwargs):
+        """add the resolution bar at a given posotion
+
+        Note:
+            if pos is a tuple, put the reso bar at pos=(x,y)
+            if pos is a ModelResult from lmfit, determine the position from fitting results
+        """
+        if isinstance(pos, ModelResult):
+            x_s1 = pos.params["s1_center"].value
+            components_s1 = pos.eval_components(pos.params, x=x_s1)
+            y_s1 = components_s1["s1_"] / 2 + components_s1["b1_"]
+            pos = (x_s1, y_s1)
         reso_data = ResoBar(pos, fwhm)
+
         for key, val in kwargs.items():
             reso_data.fmt.update({key: val})
         self.reso_data.append(reso_data)

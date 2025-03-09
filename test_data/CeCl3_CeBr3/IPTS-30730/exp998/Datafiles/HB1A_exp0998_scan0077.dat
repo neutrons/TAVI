@@ -1,0 +1,37 @@
+# scan = 77
+# date = 9/20/2023
+# time = 5:24:18 PM
+# proposal = 30730
+# experiment = Low Temperature Magnetic Structure of CeCl3
+# experiment_number = 998
+# command = scanrel s1 1.5 -1.5 0.15
+# builtin_command = scan s1 @(s1)+1.5 @(s1)+-1.5 0.150000
+# users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
+# local_contact = A. Aczel
+# scan_title = CeBr3, (5/3 5/3 1/2) rocking scan, T = 40 mK, recheck intensity
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = CeBr3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 7.911813,7.911813,4.442653,90.000000,90.000000,120.000000
+# ubmatrix = 0.075384,0.080477,-0.177039,-0.099473,-0.099471,-0.138870,-0.075649,0.070209,0.006183
+# mode = 0
+# plane_normal = 0.034896,0.000010,0.999390
+# ubconf = UB19Sep2023_24416PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 20.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu         m2         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp dr_tsample    dr_temp
+      1    37.1122     20.000    851.000 152310.000     22.074    41.5367   -62.4992    -1.9995     0.0009    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0007     1.0000    -0.4989    20.7739    41.5369     2.7399     1.6544     1.6544     0.5488    14.4503    14.4501     0.0002     1.7046     0.0000     1.0000     0.0383     0.000
+      2    36.9635     20.000    909.000 152163.000     22.053    41.5367   -62.4992    -1.9995     0.0009    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0007     1.0000    -0.4988    20.7739    41.5369     2.7399     1.6556     1.6557     0.5440    14.4503    14.4502     0.0001     1.7048     0.0000     1.0000     0.0383     0.000
+      3    36.8128     20.000      0.000      0.000      0.000    41.5367   -62.4992    -1.9995     0.0009    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0007     1.0000    -0.4988    20.7739    41.5368     2.7399     1.6569     1.6569     0.5391    14.4503    14.4502     0.0001     1.7051     0.0000     1.0000     0.0383     0.000
+# Sum of Counts = 1760
+# Center of Mass = 37.035400+/-1.248464
+# Full Width Half-Maximum = 0.148619+/-1.764638
+# 5:25:08 PM  9/20/2023   scan stopped!!

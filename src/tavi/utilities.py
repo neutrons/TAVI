@@ -48,7 +48,6 @@ class MotorAngles(NamedTuple):
             angle_str += f"{name}={value:.3f}, " if value is not None else ""
         return angle_str
 
-    # TODO
     def __eq__(self, other):
         for name, value in self._asdict().items():
             if value is not None:
@@ -89,6 +88,26 @@ class UBConf(NamedTuple):
     u_mat: Optional[np.ndarray] = None
     b_mat: Optional[np.ndarray] = None
     ub_peaks: Optional[tuple[Peak]] = None
+
+    def __repr__(self):
+        ub_str = ""
+        for name, value in self._asdict().items():
+            if value is not None:
+                if name != "ub_peaks":
+                    value_str = np.array2string(
+                        value,
+                        precision=6,
+                        suppress_small=True,
+                        separator=",",
+                    ).replace("\n", "")
+                    ub_str += f"{name}=" + value_str + "\n"
+                else:  # ub_peaks
+                    ub_peaks_str = ""
+                    sz = len(value)
+                    for peak in value:
+                        ub_peaks_str += str(peak.hkl) + ", "
+                    ub_str += f"UB matrix determined from {sz} peaks: {ub_peaks_str}"
+        return ub_str
 
 
 # --------------------------------------------------------------------------

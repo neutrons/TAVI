@@ -39,6 +39,8 @@ def analyze_in_q(hkl, scans, fit_ranges=(None, None)):
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     # print(scan_th2th_fit.result.fit_report())
     # print(f"Fit {scan1}")
+    theta = result_th2th.params["s1_center"].value / 2
+    theta = np.deg2rad(theta)
 
     rez = hb1a.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
 
@@ -112,6 +114,7 @@ def analyze_in_q(hkl, scans, fit_ranges=(None, None)):
         result_th2th,
         result_s1,
         rez,
+        theta,
     )
 
 
@@ -178,9 +181,9 @@ exp_th2th = []
 exp_s1 = []
 rez_list = []
 
-
+theta_list = []
 for info in good_scans:
-    q, _, th2th, s1, rez = analyze_in_q(*info)
+    q, _, th2th, s1, rez, theta = analyze_in_q(*info)
     #  collect output
     hkl_list.append(info[0])
     q_list.append(q)
@@ -188,6 +191,7 @@ for info in good_scans:
     exp_th2th.append(th2th)
     exp_s1.append(s1)
     rez_list.append(rez)
+    theta_list.append(theta)
 
 
 cn_fwhm_th2th = [rez.coh_fwhms(axis=0) for rez in rez_list]
@@ -199,17 +203,50 @@ ax.set_xlabel("Calculated Integ. Inten.")
 ax.set_ylabel("Measured Integ. Inten.")
 
 
-s1_ii = np.array([s1.params["s1_amplitude"].value for s1 in exp_s1])
-s1_ii_err = np.array([s1.params["s1_amplitude"].stderr for s1 in exp_s1])
-th2th_ii = np.array([th2th.params["s1_amplitude"].value for th2th in exp_th2th])
-th2th_ii_err = np.array([th2th.params["s1_amplitude"].stderr for th2th in exp_th2th])
+# s1_ii = np.array([s1.params["s1_amplitude"].value for s1 in exp_s1])
+# s1_ii_err = np.array([s1.params["s1_amplitude"].stderr for s1 in exp_s1])
+# th2th_ii = np.array([th2th.params["s1_amplitude"].value for th2th in exp_th2th])
+# th2th_ii_err = np.array([th2th.params["s1_amplitude"].stderr for th2th in exp_th2th])
 
 cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
 
-ax.errorbar(cal_ii, s1_ii, yerr=s1_ii_err, fmt="s", label="exp s1")
+
+# remove Lorentz factor
+y_array = []
+y_err = []
+y_array_l = []
+y_err_l = []
+for i, th2th in enumerate(exp_th2th):
+    mat = rez_list[i].mat
+    #  det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+    det = np.linalg.det(mat)
+    # theta = theta_list[i]
+    lorentz = np.sqrt(det / mat[0, 0])
+    amp = th2th.params["s1_amplitude"].value
+    err = th2th.params["s1_amplitude"].stderr
+    y_array.append(amp)
+    y_err.append(err)
+    y_array_l.append(amp / lorentz)
+    y_err_l.append(err / lorentz)
+
+ax.errorbar(cal_ii, y_array, yerr=y_err, fmt="s", label="exp th2th")
+
 for i, hkl in enumerate(hkl_list):
     x = cal_ii[i]
-    y = s1_ii[i] + 0.2
+    y = y_array[i] + 0.2
+    ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
+ax.grid(alpha=0.6)
+# --------------------- plot II  ---------------------
+fig, ax = plt.subplots()
+ax.set_xlabel("Calculated Integ. Inten.")
+ax.set_ylabel("Measured Integ. Inten.")
+
+ax.errorbar(cal_ii, y_array_l, yerr=y_err_l, fmt="s", label="th2th Lorentz removed")
+
+
+for i, hkl in enumerate(hkl_list):
+    x = cal_ii[i]
+    y = y_array_l[i] + 0.002
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
 ax.grid(alpha=0.6)
 

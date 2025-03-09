@@ -1,0 +1,37 @@
+# scan = 81
+# date = 2/24/2025
+# time = 9:27:47 PM
+# proposal = 34324
+# experiment = Advanced Silicon Fabrication Techniques in Neutron Interferometry
+# experiment_number = 442
+# command = scan h 0 k 0 l 5.98 6.02 0.002 preset time 1
+# builtin_command = scan h 0 k 0 l 5.98 6.02 0.002 preset time 1
+# users = Davis Last, Dusan Sarenac, Joseph Cotter, Jeremy Paster, Owen Lailey, Michael Huber, Dmitry Pushin, Naume Shentevski
+# local_contact = Tao Hong
+# scan_title = (100) align
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = Si
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.057700,5.057700,24.721009,90.000000,90.000000,120.000000
+# ubmatrix = -0.011013,-0.007232,-0.040403,-0.227904,-0.107052,0.001938,0.007862,0.201522,-0.000420
+# mode = 0
+# plane_normal = -0.008727,0.034898,0.999353
+# ubconf = UB24Feb2025_91146PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = l
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2     afocus        qm1        qm2        qm3        qm4        qm5        qm6        qm7        qm8        xm1        xm2        xm3        xm4        xm5        xm6        xm7        xm8          q         ei         ef          e
+      1    -0.0001    -0.0000     5.9800      1.000   2691.000   2129.000      0.968    98.4288   142.0306   -75.9387     0.4200    -1.0000    28.2560    32.7225    59.9090     0.5000     2.0000     0.0000     0.0000     0.0000     0.0000    17.0000     8.0000     8.0000    17.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.5199     4.8000     4.8000     0.000
+      2     0.0001    -0.0000     5.9820      1.000   2159.000   2150.000      0.977    98.4288   142.0306   -75.9387     0.4200    -1.0000    28.2560    32.7275    59.9311     0.5000     2.0000     0.0000     0.0000     0.0000     0.0000    17.0000     8.0000     8.0000    17.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.5204     4.8000     4.8000     0.000
+      3    -0.0081    -0.0023     6.0145      0.000      0.000      0.000      0.000    98.4288   142.0306   -75.9387     0.4200    -1.0000    28.2560    33.4075    60.2924     0.6078     2.0000     0.0000     0.0000     0.0000     0.0000    17.0000     8.0000     8.0000    17.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.5287     4.8000     4.8000     0.000
+# Sum of Counts = 4850
+# Center of Mass = 5.980890+/-0.121453
+# Full Width Half-Maximum = 0.001988+/-0.170725
+# 9:27:57 PM  2/24/2025   scan stopped!!

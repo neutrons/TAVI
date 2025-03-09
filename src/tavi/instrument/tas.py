@@ -5,6 +5,7 @@ import numpy as np
 
 from tavi.instrument.tas_base import TASBase
 from tavi.ub_algorithm import (
+    find_u_from_one_peak_and_scattering_plane,
     find_u_from_two_peaks,
     find_ub_from_multiple_peaks,
     find_ub_from_three_peaks,
@@ -116,12 +117,28 @@ class TAS(TASBase):
             psi = np.rad2deg(psi_radian) * self.goniometer._sense * (-1)
             return psi
 
-    def calculate_ub_matrix(self, peaks: tuple[Peak]) -> Optional[UBConf]:
+    def calculate_ub_matrix(self, peaks: tuple[Peak], scattering_plane=None) -> Optional[UBConf]:
         """Find UB matrix from a list of observed peaks"""
 
         ei, ef = self._get_ei_ef()
 
+        if isinstance(peaks, Peak):
+            peaks = (peaks,)
+            if scattering_plane is None:
+                raise ValueError("Scattering plane cannot be None.")
+
         match (num_of_peaks := len(peaks)):
+            case 1:
+                b_mat = self.sample.b_mat
+                u_mat = find_u_from_one_peak_and_scattering_plane(
+                    peaks[0],
+                    scattering_plane,
+                    b_mat,
+                    self.goniometer.r_mat_inv,
+                    ei,
+                    ef,
+                )
+
             case 2:
                 peak1, peak2 = peaks
                 b_mat = self.sample.b_mat
@@ -135,7 +152,12 @@ class TAS(TASBase):
                     in_plane_ref = mantid_to_spice(in_plane_ref)
                     ub_mat = mantid_to_spice(ub_mat)
 
-                ub_conf = UBConf(ub_mat, plane_normal, in_plane_ref, peaks)
+                ub_conf = UBConf(
+                    ub_mat=ub_mat,
+                    plane_normal=plane_normal,
+                    in_plane_ref=in_plane_ref,
+                    ub_peaks=peaks,
+                )
 
             case 3:
                 peak1, peak2, peak3 = peaks
@@ -150,7 +172,7 @@ class TAS(TASBase):
                 if self.spice_convention:
                     ub_mat = mantid_to_spice(ub_mat)
 
-                ub_conf = UBConf(ub_mat, peaks)
+                ub_conf = UBConf(ub_mat=ub_mat, ub_peaks=peaks)
 
             case _ if num_of_peaks > 3:
                 ub_mat = find_ub_from_multiple_peaks(peaks, self.goniometer.r_mat_inv, ei, ef)
@@ -160,7 +182,7 @@ class TAS(TASBase):
                 if self.spice_convention:
                     ub_mat = mantid_to_spice(ub_mat)
 
-                ub_conf = UBConf(ub_mat, peaks)
+                ub_conf = UBConf(ub_mat=ub_mat, ub_peaks=peaks)
 
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")

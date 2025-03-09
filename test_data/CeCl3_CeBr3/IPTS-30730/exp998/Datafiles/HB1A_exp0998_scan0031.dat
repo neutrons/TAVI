@@ -1,0 +1,427 @@
+# scan = 31
+# date = 9/19/2023
+# time = 3:54:46 PM
+# proposal = 30730
+# experiment = Low Temperature Magnetic Structure of CeCl3
+# experiment_number = 998
+# command = scan h 0 k 0 l 0.25 2.25 0.005 e 0 preset time 30 
+# builtin_command = scan h 0 k 0 l 0.25 2.25 0.005 e 0 preset time 30
+# users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
+# local_contact = A. Aczel
+# scan_title = CeBr3, (0 0 L) scan, T = 0.04 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = CeBr3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 7.911813,7.911813,4.442653,90.000000,90.000000,120.000000
+# ubmatrix = 0.075384,0.080477,-0.177039,-0.099473,-0.099471,-0.138870,-0.075649,0.070209,0.006183
+# mode = 0
+# plane_normal = 0.034896,0.000010,0.999390
+# ubconf = UB19Sep2023_24416PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 30.000000
+# def_x = l
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q         ei         ef        vti     sample       temp dr_tsample    dr_temp
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 138.06775, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.99086, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.91396, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.83706, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.76015, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.68323, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.60630, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.52937, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.45243, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.37548, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.29852, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.22156, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.14458, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 137.06760, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.99061, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.91360, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.83660, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.75958, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.68255, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.60551, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.52846, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.45141, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.37434, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.29726, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.22017, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.14308, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 136.06597, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.98885, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.91172, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.83458, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.75743, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.68027, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.60309, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.52591, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.44871, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.37150, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.29428, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.21705, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.13980, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 135.06254, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.98527, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.90799, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.83070, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.75339, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.67607, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.59873, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.52138, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.44402, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.36665, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.28926, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.21185, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.13444, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 134.05701, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.97956, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.90210, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.82462, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.74713, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.66963, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.59211, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.51457, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.43702, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.35945, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.28187, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.20427, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.12666, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 133.04903, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.97138, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.89372, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.81604, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.73834, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.66063, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.58289, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.50515, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.42738, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.34960, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.27179, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.19397, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.11614, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 132.03828, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.96041, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.88251, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.80460, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.72667, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.64872, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.57075, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.49276, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.41476, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.33673, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.25868, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.18061, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.10253, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 131.02442, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.94629, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.86814, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.78997, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.71178, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.63357, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+# Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 19, 2023 [3:54:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "s1", 130.55534, exceeds the upper limit of 130.50000.
+# ...Move aborted.
+     99     0.9197     0.9198     0.9505     0.0000      0.000      0.000      0.000      0.000    41.5367    72.4475   -44.1575    -1.9995     0.0009    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0008     1.0000    -0.4987    20.7740    41.5367     1.9852    14.4503    14.4503     1.7075     0.0000     1.0000     0.0407     0.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 3:54:53 PM  9/19/2023   scan stopped!!

@@ -1,14 +1,17 @@
 import numpy as np
 import pytest
 
+from tavi.instrument.components.goni import Goniometer
 from tavi.sample import Sample
 from tavi.ub_algorithm import (
+    angle_between_two_hkls,
+    angle_between_two_motor_positions,
     plane_normal_from_two_peaks,
     ub_matrix_to_lattice_params,
     ub_matrix_to_uv,
     uv_to_ub_matrix,
 )
-from tavi.utilities import spice_to_mantid
+from tavi.utilities import MotorAngles, spice_to_mantid
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -106,3 +109,24 @@ def test_load_sample_from_json():
     assert xtal.type == "crystal"
     assert np.allclose(xtal.a, 5.034785)
     assert np.shape(xtal.ub_conf.ub_mat) == (3, 3)
+
+
+def test_angle_between_two_hkls():
+    b_mat = np.array(((1, 0, 0), (0, 1, 0), (0, 0, 1)))
+    a1 = angle_between_two_hkls((1, 0, 0), (0, 1, 0), b_mat)
+    assert np.allclose(a1, 90)
+    a2 = angle_between_two_hkls((1, 0, 0), (1, 1, 0), b_mat)
+    assert np.allclose(a2, 45)
+
+
+def test_angle_between_two_motor_positions():
+    goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
+    m1 = MotorAngles(two_theta=-13.8845, omega=23.058, sgl=0, sgu=0)
+    m2 = MotorAngles(two_theta=-13.8845, omega=113.058, sgl=0, sgu=0)
+    m = angle_between_two_motor_positions(m1, m2, goniometer.r_mat_inv, ei=14.45, ef=14.45)
+    assert np.allclose(m, 90)
+
+    m1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
+    m2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
+    m = angle_between_two_motor_positions(m1, m2, goniometer.r_mat_inv, ei=13.5, ef=13.5)
+    assert np.allclose(m, 90, atol=1e-1)

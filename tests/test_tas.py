@@ -20,7 +20,19 @@ def test_find_two_theta():
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 
-def test_calculate_ub_matrix():
+def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
+
+    ctax = TAS(fixed_ef=4.8)
+    ctax.goniometer = Goniometer({"sense": "+", "type": "Y,-Z,X"})
+    ctax.mount_sample(Sample(lattice_params=(5.0577, 5.0577, 24.721009, 90, 90, 120)))
+
+    scattering_plane = ((0, 0, 1), (1, 0, 0))
+    peak = Peak((0, 0, 6), MotorAngles(two_theta=60.13, omega=32.83, sgl=0.5, sgu=2.0))
+    ubconf = ctax.calculate_ub_matrix(peaks=peak, scattering_plane=scattering_plane)
+    pass
+
+
+def test_calculate_ub_matrix_from_two_peaks():
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
     ub_matrix = np.array(
         [

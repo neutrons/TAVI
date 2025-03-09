@@ -1,0 +1,35 @@
+# scan = 6
+# date = 5/1/2024
+# time = 11:52:22 AM
+# proposal = 32275
+# experiment = Low Temperature Magnetic Structure of CeCl3
+# experiment_number = 1017
+# command = scan sgl -5 5 1
+# builtin_command = scan sgl -5 5 1
+# users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
+# local_contact = A. Aczel
+# scan_title = align on 0 0 2
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = CeCl3
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 7.432407,7.432407,4.312000,90.000000,90.000000,120.000000
+# ubmatrix = -0.031444,-0.031443,0.225489,-0.128742,-0.132808,-0.054180,0.081077,-0.074230,0.001420
+# mode = 0
+# plane_normal = -0.000006,0.026173,0.999657
+# ubconf = UB01May2024_114513AM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = sgl
+# def_y = detector
+# col_headers = 
+#   Pt.        sgl       time   detector    monitor        mcu         m2         s1         s2        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
+      1    -0.3340      0.000      0.000      0.000      0.000    41.5367   -20.0646   -67.0335     1.4998    25.0000    15.0000    15.0000    25.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    -0.0025    20.7712    41.5371     2.9164    -0.0188     0.0151     2.0014    14.4503    14.4500     0.0003     1.7499     0.0000     1.0000   100.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 11:52:32 AM  5/1/2024   scan stopped!!
