@@ -76,7 +76,7 @@ if __name__ == "__main__":
     p1.add_fit(
         scan_th2th_fit,
         x=scan_th2th_fit.x_to_plot(),
-        label=f"Gaussian FWHM={result_th2th.params["s1_fwhm"].value:.4f}+/-{result_th2th.params["s1_fwhm"].stderr:.4f}",
+        label=f"Gaussian FWHM={result_th2th.params['s1_fwhm'].value:.4f}+/-{result_th2th.params['s1_fwhm'].stderr:.4f}",
     )
 
     # perform fit convoluted with resolution

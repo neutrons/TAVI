@@ -7,7 +7,6 @@ from tavi.plotter import Plot1D, Plot2D
 from tavi.sample import Sample
 
 if __name__ == "__main__":
-
     instrument_config_json_path = "./test_data/IPTS9879_HB1A_exp978/hb1a.json"
     tas = CooperNathans(fixed_ei=14.450292, spice_convention=True)
     tas.load_instrument_params_from_json(instrument_config_json_path)
@@ -83,7 +82,7 @@ if __name__ == "__main__":
     p4.add_fit(
         hh1_fit,
         x=hh1_fit.x_to_plot(),
-        label=f"FWHM={result.params["s1_fwhm"].value:.5f}+/-{result.params["s1_fwhm"].stderr:.5f}",
+        label=f"FWHM={result.params['s1_fwhm'].value:.5f}+/-{result.params['s1_fwhm'].stderr:.5f}",
     )
 
     x = hh1_fit.result.params["s1_center"].value
@@ -145,7 +144,7 @@ if __name__ == "__main__":
     p5.add_fit(
         hh1_fit_2,
         x=hh1_fit.x_to_plot(),
-        label=f"FWHM={result.params["s1_fwhm"].value:.5f}+/-{result.params["s1_fwhm"].stderr:.5f}",
+        label=f"FWHM={result.params['s1_fwhm'].value:.5f}+/-{result.params['s1_fwhm'].stderr:.5f}",
     )
 
     x = hh1_fit_2.result.params["s1_center"].value
