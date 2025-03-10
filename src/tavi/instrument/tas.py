@@ -127,7 +127,7 @@ class TAS(TASBase):
             if scattering_plane is None:
                 raise ValueError("Scattering plane cannot be None.")
 
-        match (num_of_peaks := len(peaks)):
+        match num_of_peaks := len(peaks):
             case 1:
                 b_mat = self.sample.b_mat
                 u_mat = find_u_from_one_peak_and_scattering_plane(
@@ -228,7 +228,6 @@ class TAS(TASBase):
 
         goni_mode = self.goniometer.mode
         if goni_mode == "bisect":
-
             # convert to Mantid convention if needed
             if self.spice_convention:
                 ub_conf_mantid = UBConf(ub_mat=spice_to_mantid(mat))
