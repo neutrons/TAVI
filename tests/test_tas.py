@@ -20,16 +20,28 @@ def test_find_two_theta():
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 
+# TODO
 def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
 
-    ctax = TAS(fixed_ef=4.8)
+    ctax = TAS(fixed_ef=4.8, spice_convention=True)
     ctax.goniometer = Goniometer({"sense": "+", "type": "Y,-Z,X"})
     ctax.mount_sample(Sample(lattice_params=(5.0577, 5.0577, 24.721009, 90, 90, 120)))
 
     scattering_plane = ((0, 0, 1), (1, 0, 0))
     peak = Peak((0, 0, 6), MotorAngles(two_theta=60.13, omega=32.83, sgl=0.5, sgu=2.0))
     ubconf = ctax.calculate_ub_matrix(peaks=peak, scattering_plane=scattering_plane)
-    pass
+    ub_matrix_spice = np.array(
+        [
+            [-0.011013, -0.007232, -0.040403],
+            [-0.227904, -0.107052, 0.001938],
+            [0.007862, 0.201522, -0.000420],
+        ]
+    )
+    plane_normal = np.array([-0.008727, 0.034898, 0.999353])
+    in_plane_ref = np.array([-0.000000, -0.999391, 0.034899])
+    assert np.allclose(ub_matrix_spice, ubconf.ub_mat, atol=1e-3)
+    assert np.allclose(plane_normal, ubconf.plane_normal, atol=1e-3)
+    assert np.allclose(in_plane_ref, ubconf.in_plane_ref, atol=1e-1)
 
 
 def test_calculate_ub_matrix_from_two_peaks():
@@ -114,9 +126,11 @@ def test_calculate_ub():
     peak2 = Peak((0, 2, 0), angles2)
 
     ub_conf = tas.calculate_ub_matrix((peak1, peak2))
+
     assert np.allclose(ub_conf.ub_mat, ub_matrix, atol=1e-4)
     assert np.allclose(ub_conf.plane_normal, plane_normal, atol=1e-4)
     assert np.allclose(ub_conf.in_plane_ref, in_plane_ref, atol=1e-4)
+    print(ub_conf)
 
 
 def test_r_mat_with_minimal_tilt():

@@ -211,6 +211,18 @@ def r_matrix_with_minimal_tilt(
     return r_mat
 
 
+def plane_normal_from_one_peak(
+    hkl: tuple[float, float, float],
+    angles: MotorAngles,
+    r_mat_inv,
+    ub_mat: np.ndarray,
+):
+    plane_normal = r_mat_inv(angles).dot((0, 1, 0))
+    q = ub_mat.dot(hkl)
+    in_plane_ref = np.cross(plane_normal, q / np.linalg.norm(q))
+    return plane_normal, in_plane_ref
+
+
 # -----------------------------------------------------
 # UB matrix convsersion to u and v vectors
 # -----------------------------------------------------
@@ -277,6 +289,43 @@ def find_u_from_one_peak_and_scattering_plane(
     ei: float,
     ef: float,
 ):
+    """Calculate U matrix from one peak and a scattering plane defined by two vectors
+
+    Note:
+        v1, v2= scatttering plane needs to be right handed, making v3 = v1 x v3 pointing up.
+    """
+    q_hkl1 = b_mat.dot(peak.hkl)
+    v1, v2 = scattering_plane
+    coeff1, coeff2 = np.dot(v1, peak.hkl), np.dot(v2, peak.hkl)
+
+    if np.abs(coeff1) > np.abs(coeff2):
+        q_hkl2p = b_mat.dot(v2) * np.sign(coeff1)
+    else:
+        q_hkl2p = b_mat.dot(v1) * np.sign(coeff2)
+    q_hkl3 = np.cross(q_hkl1, q_hkl2p)
+    q_hkl2 = np.cross(q_hkl3, q_hkl1)
+
+    q_hkl_mat = np.array(
+        [
+            q_hkl1 / np.linalg.norm(q_hkl1),
+            q_hkl2 / np.linalg.norm(q_hkl2),
+            q_hkl3 / np.linalg.norm(q_hkl3),
+        ]
+    ).T
+
+    q_lab1 = q_lab(ei=ei, ef=ef, theta=peak.angles.two_theta)
+    q_sample1 = r_mat_inv(peak.angles).dot(q_lab1)
+    q_sample3 = r_mat_inv(peak.angles).dot((0, 1, 0))
+    q_sample2 = np.cross(q_sample3, q_sample1)
+
+    q_sample1 = q_sample1 / np.linalg.norm(q_sample1)
+    q_sample2 = q_sample2 / np.linalg.norm(q_sample2)
+    q_sample3 = q_sample3 / np.linalg.norm(q_sample3)
+
+    q_sample_mat = np.array([q_sample1, q_sample2, q_sample3]).T
+
+    u_mat = q_sample_mat.dot(np.linalg.inv(q_hkl_mat))
+
     return u_mat
 
 
@@ -329,7 +378,7 @@ def find_ub_from_three_peaks(
     ei: float,
     ef: float,
 ) -> np.ndarray:
-    """Find UB matrix from three observed peaks for a given goniomete"""
+    """Find UB matrix from three non-coplanar peaks for a given goniometer"""
     peak1, peak2, peak3 = peaks
 
     hkl_mat = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T

@@ -9,13 +9,14 @@ from tavi.ub_algorithm import (
     find_u_from_two_peaks,
     find_ub_from_multiple_peaks,
     find_ub_from_three_peaks,
+    plane_normal_from_one_peak,
     plane_normal_from_two_peaks,
     psi_from_hkle,
     q_lab,
     r_matrix_with_minimal_tilt,
     two_theta_from_hkle,
 )
-from tavi.utilities import MotorAngles, Peak, UBConf, mantid_to_spice, spice_to_mantid
+from tavi.utilities import MotorAngles, Peak, UBConf, spice_to_mantid
 
 
 class TAS(TASBase):
@@ -117,7 +118,7 @@ class TAS(TASBase):
             psi = np.rad2deg(psi_radian) * self.goniometer._sense * (-1)
             return psi
 
-    def calculate_ub_matrix(self, peaks: tuple[Peak], scattering_plane=None) -> Optional[UBConf]:
+    def calculate_ub_matrix(self, peaks: tuple[Peak, ...], scattering_plane=None) -> Optional[UBConf]:
         """Find UB matrix from a list of observed peaks"""
 
         ei, ef = self._get_ei_ef()
@@ -131,13 +132,24 @@ class TAS(TASBase):
             case 1:
                 b_mat = self.sample.b_mat
                 u_mat = find_u_from_one_peak_and_scattering_plane(
-                    peaks[0],
-                    scattering_plane,
-                    b_mat,
-                    self.goniometer.r_mat_inv,
-                    ei,
-                    ef,
+                    peaks[0], scattering_plane, b_mat, self.goniometer.r_mat_inv, ei, ef
                 )
+                ub_mat = np.matmul(u_mat, b_mat)
+                plane_normal, in_plane_ref = plane_normal_from_one_peak(
+                    peaks[0].hkl,
+                    peaks[0].angles,
+                    self.goniometer.r_mat_inv,
+                    ub_mat,
+                )
+
+                ub_conf = UBConf(
+                    spice_convention=self.spice_convention,
+                    ub_mat=ub_mat,
+                    plane_normal=plane_normal,
+                    in_plane_ref=in_plane_ref,
+                    ub_peaks=peaks,
+                )
+                pass
 
             case 2:
                 peak1, peak2 = peaks
@@ -146,13 +158,8 @@ class TAS(TASBase):
                 plane_normal, in_plane_ref = plane_normal_from_two_peaks(u_mat, b_mat, peak1.hkl, peak2.hkl)
                 ub_mat = np.matmul(u_mat, b_mat)
 
-                # suffle the order following SPICE convention
-                if self.spice_convention:
-                    plane_normal = mantid_to_spice(plane_normal)
-                    in_plane_ref = mantid_to_spice(in_plane_ref)
-                    ub_mat = mantid_to_spice(ub_mat)
-
                 ub_conf = UBConf(
+                    spice_convention=self.spice_convention,
                     ub_mat=ub_mat,
                     plane_normal=plane_normal,
                     in_plane_ref=in_plane_ref,
@@ -169,20 +176,14 @@ class TAS(TASBase):
                 g_star_mat = np.matmul(ub_mat.T, ub_mat)
                 self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
 
-                if self.spice_convention:
-                    ub_mat = mantid_to_spice(ub_mat)
-
-                ub_conf = UBConf(ub_mat=ub_mat, ub_peaks=peaks)
+                ub_conf = UBConf(spice_convention=self.spice_convention, ub_mat=ub_mat, ub_peaks=peaks)
 
             case _ if num_of_peaks > 3:
                 ub_mat = find_ub_from_multiple_peaks(peaks, self.goniometer.r_mat_inv, ei, ef)
                 g_star_mat = np.matmul(ub_mat.T, ub_mat)
                 self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
 
-                if self.spice_convention:
-                    ub_mat = mantid_to_spice(ub_mat)
-
-                ub_conf = UBConf(ub_mat=ub_mat, ub_peaks=peaks)
+                ub_conf = UBConf(spice_convention=self.spice_convention, ub_mat=ub_mat, ub_peaks=peaks)
 
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")

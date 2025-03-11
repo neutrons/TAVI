@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dataclasses import dataclass
 from typing import NamedTuple, Optional
 
 import numpy as np
@@ -70,7 +71,8 @@ class Peak(NamedTuple):
     angles: MotorAngles
 
 
-class UBConf(NamedTuple):
+@dataclass(repr=False)
+class UBConf:
     """Logs for UB matrix determination
 
 
@@ -83,30 +85,50 @@ class UBConf(NamedTuple):
     """
 
     ub_mat: np.ndarray
+    spice_convention: bool = True
     plane_normal: Optional[np.ndarray] = None
     in_plane_ref: Optional[np.ndarray] = None
     u_mat: Optional[np.ndarray] = None
     b_mat: Optional[np.ndarray] = None
-    ub_peaks: Optional[tuple[Peak]] = None
+    ub_peaks: Optional[tuple[Peak, ...]] = None
+
+    def __init__(self, spice_convention=False, **kwargs):
+        self.spice_convention = spice_convention
+        # suffle the order following SPICE convention
+        if self.spice_convention:
+            for k, v in kwargs.items():
+                if k in ["ub_mat", "plane_normal", "in_plane_ref"]:
+                    self.__setattr__(k, mantid_to_spice(v))
+                else:
+                    self.__setattr__(k, v)
+        else:
+            for k, v in kwargs.items():
+                self.__setattr__(k, v)
 
     def __repr__(self):
         ub_str = ""
-        for name, value in self._asdict().items():
+        for name, value in self.__dict__.items():
             if value is not None:
-                if name != "ub_peaks":
-                    value_str = np.array2string(
-                        value,
-                        precision=6,
-                        suppress_small=True,
-                        separator=",",
-                    ).replace("\n", "")
-                    ub_str += f"{name}=" + value_str + "\n"
-                else:  # ub_peaks
-                    ub_peaks_str = ""
-                    sz = len(value)
-                    for peak in value:
-                        ub_peaks_str += str(peak.hkl) + ", "
-                    ub_str += f"UB matrix determined from {sz} peaks: {ub_peaks_str}"
+                match name:
+                    case "spice_convention":
+                        if value:
+                            ub_str += "UBconf using SPICE convention.\n"
+                        else:
+                            ub_str += "UBconf using Mantid convention.\n"
+                    case "ub_peaks":
+                        ub_peaks_str = ""
+                        sz = len(value)
+                        for peak in value:
+                            ub_peaks_str += str(peak.hkl) + ", "
+                        ub_str += f"UB matrix determined from {sz} peaks: {ub_peaks_str}"
+                    case _:
+                        value_str = np.array2string(
+                            value,
+                            precision=6,
+                            suppress_small=True,
+                            separator=",",
+                        ).replace("\n", "")
+                        ub_str += f"{name}=" + value_str + "\n"
         return ub_str
 
 
