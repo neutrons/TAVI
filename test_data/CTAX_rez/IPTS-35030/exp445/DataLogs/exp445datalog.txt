@@ -1,0 +1,9 @@
+Cycle: (Cycle #)
+Experiment #: 445
+Proposal ID: 35030
+Instrument: CG4C
+Experiment Title: CTAX Instrumental resolution benchmarking
+Session Start Time: 03/10/2025  10:38:10 AM
+
+Parameters Logged:
+Device Name	Timestamp	Value

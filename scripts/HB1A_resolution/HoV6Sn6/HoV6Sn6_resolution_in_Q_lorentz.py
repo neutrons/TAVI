@@ -308,6 +308,58 @@ ax.grid(alpha=0.6)
 # ax.set_title("Mono, analyzer mosaic = (60'60'), horizontal coll=(40'-40'-40'-80')")
 plt.tight_layout()
 
+# --------------------- plot ratio exp ---------------------
+fig, ax = plt.subplots()
+ax.set_ylabel("integ. intent. th2th/s1 scans")
+ax.set_xlabel("Q (A^-1)")
+
+x_array = []
+x_err = []
+
+for i, s1 in enumerate(exp_s1):
+    amp = s1.params["s1_amplitude"].value
+    err = s1.params["s1_amplitude"].stderr
+    x_array.append(amp)
+    x_err.append(err)
+
+
+y_array = []
+y_err = []
+
+for i, th2th in enumerate(exp_th2th):
+
+    amp = th2th.params["s1_amplitude"].value
+    err = th2th.params["s1_amplitude"].stderr
+    y_array.append(amp)
+    y_err.append(err)
+
+
+y = [y_array[i] / x_array[i] for i in range(len(q_list))]
+err = [y[i] * np.sqrt((y_err[i] / y_array[i]) ** 2 + (x_err[i] / x_array[i]) ** 2) for i in range(len(q_list))]
+ax.errorbar(x=q_list, y=y, yerr=err, fmt="o", label="exp integ. intent.")
+
+
+ax.set_xlim(left=1)
+ax.set_ylim(bottom=0)
+ax.set_ylim(top=6)
+
+ax.legend(loc=1)
+ax.grid(alpha=0.6)
+ax.set_title(
+    f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
+    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+)
+
+plt.tight_layout()
+
+for i, hkl in enumerate(hkl_list):
+    x0 = q_list[i]
+    y0 = y[i] * 1.2
+    # mannual ajdjust position
+    # if hkl ==(1,1,0):
+    #     x-=0.15
+    ax.annotate(str(hkl), (x0, y0), rotation=90, fontsize=8, color="k")
+
 # --------------------- plot ratio ---------------------
 fig, ax = plt.subplots()
 ax.set_ylabel("integ. intent. th2th/s1 scans")
@@ -354,12 +406,12 @@ y_l = [y_array_l[i] / x_array_l[i] for i in range(len(q_list))]
 err_l = [
     y_l[i] * np.sqrt((y_err_l[i] / y_array_l[i]) ** 2 + (x_err_l[i] / x_array_l[i]) ** 2) for i in range(len(q_list))
 ]
-ax.errorbar(x=q_list, y=y_l, yerr=err_l, fmt="s", label="w/ Lorentz factor")
+ax.errorbar(x=q_list, y=y_l, yerr=err_l, fmt="s", label="Lorentz factor corrected")
 plt.axhline(y=1, color="k", linestyle="-")
 
-ax.set_xlim(left=0)
+ax.set_xlim(left=1)
 ax.set_ylim(bottom=0)
-ax.set_ylim(top=14)
+ax.set_ylim(top=6)
 
 ax.legend(loc=1)
 ax.grid(alpha=0.6)

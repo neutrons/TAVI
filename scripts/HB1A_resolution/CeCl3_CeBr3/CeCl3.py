@@ -1,3 +1,4 @@
+import matplotlib.backends.backend_pdf
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -94,19 +95,8 @@ def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
         c="C3",
         label=f"Resolution FWHM={rez.coh_fwhms(axis=0):.04f}",
     )
-    # make plot
-    fig, axes = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
-    p1.plot(axes[0])
-    p2.plot(axes[1])
 
-    return (
-        np.mean(s1.data.get("q")),
-        np.mean(s1.data.get("s1")),
-        result_th2th,
-        result_s1,
-        rez,
-        theta,
-    )
+    return (np.mean(s1.data.get("q")), np.mean(s1.data.get("s1")), result_th2th, result_s1, rez, theta, (p1, p2))
 
 
 def plot_s1_th2th_peaks():
@@ -132,8 +122,9 @@ def plot_s1_th2th_peaks():
     exp_s1 = []
     rez_list = []
     theta_list = []
+    figs = []
     for info in scans:
-        q, _, th2th, s1, rez, theta = analyze_resulution(*info)
+        q, _, th2th, s1, rez, theta, (p1, p2) = analyze_resulution(*info)
         #  collect output
         hkl_list.append(info[0])
         q_list.append(q)
@@ -142,6 +133,16 @@ def plot_s1_th2th_peaks():
         exp_s1.append(s1)
         rez_list.append(rez)
         theta_list.append(theta)
+        # make plot
+        fig, axes = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
+        p1.plot(axes[0])
+        p2.plot(axes[1])
+        figs.append(fig)
+
+    pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CeCl3_CeBr3/CeCl3.pdf")
+    for f in figs:
+        pdf.savefig(f)
+    pdf.close()
 
 
 def setup():
@@ -175,4 +176,4 @@ if __name__ == "__main__":
     tavi.load_spice_data_from_disk(path_to_spice_folder)
 
     plot_s1_th2th_peaks()
-    plt.show()
+    # plt.show()

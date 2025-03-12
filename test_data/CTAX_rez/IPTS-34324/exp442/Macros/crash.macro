@@ -1,0 +1,15 @@
+
+scantitle "Mesh scan around (006) for La2Ni7"
+loop i=-0.02,0.02,0.002
+scan h %i k 0 l 6.4 5.6 0.01 e 0 preset mcu 2
+endloop
+
+scantitle "Mesh scan around (004) for La2Ni7"
+loop i=-0.02,0.02,0.002
+scan h %i k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+endloop
+
+scantitle "Mesh scan around (002) for La2Ni7"
+loop i=-0.02,0.02,0.002
+scan h %i k 0 l 2.4 1.6 0.01 e 0 preset mcu 2
+endloop
