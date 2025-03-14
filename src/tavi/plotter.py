@@ -13,6 +13,16 @@ from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.instrument.resolution.ellipse import ResoEllipse
 
 
+def tr(x, y, angle):
+    x, y = np.asarray(x), np.asarray(y)
+    return x + y / np.tan(angle / 180 * np.pi), y
+
+
+def inv_tr(x, y, angle):
+    x, y = np.asarray(x), np.asarray(y)
+    return x - y / np.tan(angle / 180 * np.pi), y
+
+
 class FitData1D(object):
 
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
@@ -29,16 +39,6 @@ class ResoBar(object):
         self.pos = pos
         self.fwhm = fwhm
         self.fmt: dict = {}
-
-
-def tr(x, y, angle):
-    x, y = np.asarray(x), np.asarray(y)
-    return x + y / np.tan(angle / 180 * np.pi), y
-
-
-def inv_tr(x, y, angle):
-    x, y = np.asarray(x), np.asarray(y)
-    return x - y / np.tan(angle / 180 * np.pi), y
 
 
 class Plot1D(object):

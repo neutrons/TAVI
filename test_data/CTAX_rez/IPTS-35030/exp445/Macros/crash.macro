@@ -1,20 +1,7 @@
 
-loop i=-0.4,0.4,0.05
-scantitle "(H07) scan at E=%i meV and hori-focusing"
-scan h 1.2 0.8  0.002 k 0 l 7 e %i preset mcu 5
-endloop
 
-loop i=-0.5,0.5,0.05
-scantitle "(10L) scan at E=%i meV and hori-focusing"
-scan h 1 k 0 l 7.5 6.5 0.01 e %i preset mcu 5
-endloop
 
-loop i=-0.5,0.5,0.05
-scantitle "(H04) scan at E=%i meV and hori-focusing"
-scan h -0.2 0.2  0.002 k 0 l 4 e %i preset mcu 5
-endloop
-
-loop i=-0.5,0.5,0.05
-scantitle "(00L) scan at E=%i meV and hori-focusing"
-scan h 0 k 0 l 4.5 3.5 0.01 e %i preset mcu 5
+scantitle "Mesh scan around (004) for La2Ni7"
+loop i=-0.04,0.04,0.002
+scan h %i k 0 l 4.5 3.5 0.01 e 0 preset mcu 2
 endloop

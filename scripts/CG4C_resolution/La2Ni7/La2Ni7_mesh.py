@@ -7,7 +7,7 @@ from tavi.plotter import Plot2D
 from tavi.sample import Sample
 
 
-def h_mesh(scans, name, grid, vmax):
+def h_en_mesh(scans, name, grid, vmax):
 
     sg = tavi.combine_scans(scans, name=name)
     data = sg.get_data(
@@ -21,7 +21,7 @@ def h_mesh(scans, name, grid, vmax):
     return p
 
 
-def l_mesh(scans, name, grid, vmax):
+def l_en_mesh(scans, name, grid, vmax):
 
     sg = tavi.combine_scans(scans, name=name)
     data = sg.get_data(
@@ -35,37 +35,134 @@ def l_mesh(scans, name, grid, vmax):
     return p
 
 
+def h_l_mesh(scans, name, grid, vmax):
+
+    sg = tavi.combine_scans(scans, name=name)
+    data = sg.get_data(
+        axes=("qh", "ql", "detector"),
+        norm_to=(1, "mcu"),
+        grid=grid,
+    )
+    p = Plot2D()
+    p.add_contour(data, cmap="turbo", vmin=0, vmax=vmax)
+    p.title = sg.name
+    return p
+
+
 def plot_mesh():
     figs = []
-    # ------------ 107-------------
-    h_scans_107 = list(range(65, 81 + 1))
-    p = h_mesh(h_scans_107, "(1,0,7)", grid=((0.8, 1.2, 0.002), (-0.5, 0.5, 0.05)), vmax=2e3)
+    # -----------------------------------------------------
+    # -----------------------------------------------------
+    ipts_str = "IPTS34324_CG4C_exp0442"
+
+    # ---------006 -------------
+
+    scan_nums = list(range(87, 107 + 1))
+    h0l_scans_006 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(h0l_scans_006, "(0,0,6)", grid=((-0.02, 0.02, 0.002), (5.6, 6.4, 0.01)), vmax=3e3)
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
 
-    l_scans_h07 = list(range(82, 102 + 1))
-    p = l_mesh(l_scans_h07, "(1,0,7)", grid=((6.5, 7.5, 0.01), (-0.5, 0.5, 0.05)), vmax=2e3)
+    scan_nums = list(range(108, 128 + 1))
+    h0l_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(h0l_scans_004, "(0,0,4)", grid=((-0.02, 0.02, 0.002), (3.6, 4.4, 0.01)), vmax=1e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(129, 149 + 1))
+    h0l_scans_002 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(h0l_scans_002, "(0,0,2)", grid=((-0.02, 0.02, 0.002), (1.6, 2.4, 0.01)), vmax=1e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(151, 201 + 1))
+    h0l_scans_100 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(h0l_scans_100, "(1,0,0)", grid=((0.96, 1.04, 0.002), (-0.2, 0.2, 0.02)), vmax=3e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    # -----------------------------------------------------
+    # -----------------------------------------------------
+
+    ipts_str = "IPTS35030_CG4C_exp0445"
+    # ------------ 107-------------
+    scan_nums = list(range(65, 81 + 1))
+    h_scans_107 = [(ipts_str, num) for num in scan_nums]
+    p = h_en_mesh(h_scans_107, "(1,0,7)", grid=((0.8, 1.2, 0.002), (-0.5, 0.5, 0.05)), vmax=2e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(82, 102 + 1))
+    l_scans_h07 = [(ipts_str, num) for num in scan_nums]
+    p = l_en_mesh(l_scans_h07, "(1,0,7)", grid=((6.5, 7.5, 0.01), (-0.5, 0.5, 0.05)), vmax=2e3)
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
 
     # ------------ 004-------------
-    h_scans_004 = list(range(103, 123 + 1))
-    p = h_mesh(h_scans_004, "(0,0,4)", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3)
+    scan_nums = list(range(103, 123 + 1))
+    h_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = h_en_mesh(h_scans_004, "(0,0,4)", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3)
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
 
-    l_scans_004 = list(range(124, 144 + 1))
-    p = l_mesh(l_scans_004, "(0,0,4)", grid=((3.5, 4.5, 0.01), (-0.5, 0.5, 0.05)), vmax=1e3)
+    scan_nums = list(range(124, 144 + 1))
+    l_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = l_en_mesh(l_scans_004, "(0,0,4)", grid=((3.5, 4.5, 0.01), (-0.5, 0.5, 0.05)), vmax=1e3)
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
 
     # ------------ 107 hori foc-------------
-    h_scans_107 = list(range(196, 205 + 1))
-    p = h_mesh(h_scans_107, "(1,0,7) w/ horizontal focusing", grid=((0.8, 1.2, 0.002), (-0.5, 0.5, 0.05)), vmax=2e3)
+    scan_nums = list(range(196, 212 + 1))
+    h_scans_107 = [(ipts_str, num) for num in scan_nums]
+    p = h_en_mesh(h_scans_107, "(1,0,7) w/ horizontal focusing", grid=((0.8, 1.2, 0.002), (-0.5, 0.5, 0.05)), vmax=2e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(213, 233 + 1))
+    l_scans_h07 = [(ipts_str, num) for num in scan_nums]
+    p = l_en_mesh(l_scans_h07, "(1,0,7) w/ horizontal focusing", grid=((6.5, 7.5, 0.01), (-0.5, 0.5, 0.05)), vmax=2e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(317, 363 + 1)) + list(range(365, 386 + 1))
+    h0l_scans_107 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(h0l_scans_107, "(1,0,7) w/ horizontal focusing", grid=((0.9, 1.1, 0.002), (6.6, 7.5, 0.02)), vmax=2e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    # ------------ 004 hori foc-------------
+    scan_nums = list(range(234, 254 + 1))
+    h_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = h_en_mesh(
+        h_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3
+    )
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(255, 275 + 1))
+    l_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = l_en_mesh(l_scans_004, "(0,0,4) w/ horizontal focusing", grid=((3.5, 4.5, 0.01), (-0.5, 0.5, 0.05)), vmax=1e3)
+    fig, ax = plt.subplots()
+    p.plot(ax)
+    figs.append(fig)
+
+    scan_nums = list(range(276, 316 + 1))
+    h0l_scans_004 = [(ipts_str, num) for num in scan_nums]
+    p = h_l_mesh(
+        h0l_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.04, 0.04, 0.002), (3.6, 4.4, 0.01)), vmax=1e3
+    )
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
@@ -87,8 +184,8 @@ if __name__ == "__main__":
 
     # ------------------------ load data ------------------------
     tavi = TAVI()
-    path_to_spice_folder = "test_data/CTAX_rez/IPTS-35030/exp445/"
-    tavi.load_spice_data_from_disk(path_to_spice_folder)
+    tavi.load_spice_data_from_disk("test_data/CTAX_rez/IPTS-35030/exp445/")
+    tavi.load_spice_data_from_disk("test_data/CTAX_rez/IPTS-34324/exp442/")
 
     plot_mesh()
 

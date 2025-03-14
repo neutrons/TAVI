@@ -503,3 +503,269 @@
 3/12/2025 8:36 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0 preset mcu 5
 3/12/2025 9:11 AM        scantitle "(H07) scan at E=0.05 meV and hori-focusing"
 3/12/2025 9:11 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.05 preset mcu 5
+3/12/2025 9:48 AM        scantitle "(H07) scan at E=0.1 meV and hori-focusing"
+3/12/2025 9:48 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.1 preset mcu 5
+3/12/2025 10:25 AM        init
+3/12/2025 10:27 AM        scantitle "(H07) scan at E=0.15 meV and hori-focusing"
+3/12/2025 10:27 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.15 preset mcu 5
+3/12/2025 10:53 AM        scantitle "(H07) scan at E=0.2 meV and hori-focusing"
+3/12/2025 10:53 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.2 preset mcu 5
+3/12/2025 11:21 AM        scantitle "(H07) scan at E=0.25 meV and hori-focusing"
+3/12/2025 11:21 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.25 preset mcu 5
+3/12/2025 11:48 AM        scantitle "(H07) scan at E=0.3 meV and hori-focusing"
+3/12/2025 11:48 AM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.3 preset mcu 5
+3/12/2025 12:17 PM        scantitle "(H07) scan at E=0.35 meV and hori-focusing"
+3/12/2025 12:17 PM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.35 preset mcu 5
+3/12/2025 12:47 PM        scantitle "(H07) scan at E=0.4 meV and hori-focusing"
+3/12/2025 12:47 PM        scan h 1.2 0.8 0.002 k 0 l 7 e 0.4 preset mcu 5
+3/12/2025 1:16 PM        scantitle "(10L) scan at E=-0.5 meV and hori-focusing"
+3/12/2025 1:16 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.5 preset mcu 5
+3/12/2025 1:30 PM        scantitle "(10L) scan at E=-0.45 meV and hori-focusing"
+3/12/2025 1:30 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.45 preset mcu 5
+3/12/2025 1:42 PM        scantitle "(10L) scan at E=-0.4 meV and hori-focusing"
+3/12/2025 1:42 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.4 preset mcu 5
+3/12/2025 1:56 PM        scantitle "(10L) scan at E=-0.35 meV and hori-focusing"
+3/12/2025 1:56 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.35 preset mcu 5
+3/12/2025 2:09 PM        scantitle "(10L) scan at E=-0.3 meV and hori-focusing"
+3/12/2025 2:09 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.3 preset mcu 5
+3/12/2025 2:22 PM        scantitle "(10L) scan at E=-0.25 meV and hori-focusing"
+3/12/2025 2:22 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.25 preset mcu 5
+3/12/2025 2:35 PM        scantitle "(10L) scan at E=-0.2 meV and hori-focusing"
+3/12/2025 2:35 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.2 preset mcu 5
+3/12/2025 2:49 PM        scantitle "(10L) scan at E=-0.15 meV and hori-focusing"
+3/12/2025 2:49 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.15 preset mcu 5
+3/12/2025 3:02 PM        scantitle "(10L) scan at E=-0.1 meV and hori-focusing"
+3/12/2025 3:02 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.1 preset mcu 5
+3/12/2025 3:14 PM        scantitle "(10L) scan at E=-0.05 meV and hori-focusing"
+3/12/2025 3:14 PM        scan h 1 k 0 l 7.5 6.5 0.01 e -0.05 preset mcu 5
+3/12/2025 3:27 PM        scantitle "(10L) scan at E=0 meV and hori-focusing"
+3/12/2025 3:27 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0 preset mcu 5
+3/12/2025 3:41 PM        scantitle "(10L) scan at E=0.05 meV and hori-focusing"
+3/12/2025 3:41 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.05 preset mcu 5
+3/12/2025 3:54 PM        scantitle "(10L) scan at E=0.1 meV and hori-focusing"
+3/12/2025 3:54 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.1 preset mcu 5
+3/12/2025 4:09 PM        scantitle "(10L) scan at E=0.15 meV and hori-focusing"
+3/12/2025 4:09 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.15 preset mcu 5
+3/12/2025 4:22 PM        scantitle "(10L) scan at E=0.2 meV and hori-focusing"
+3/12/2025 4:22 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.2 preset mcu 5
+3/12/2025 4:35 PM        scantitle "(10L) scan at E=0.25 meV and hori-focusing"
+3/12/2025 4:35 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.25 preset mcu 5
+3/12/2025 4:49 PM        scantitle "(10L) scan at E=0.3 meV and hori-focusing"
+3/12/2025 4:49 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.3 preset mcu 5
+3/12/2025 5:04 PM        scantitle "(10L) scan at E=0.35 meV and hori-focusing"
+3/12/2025 5:04 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.35 preset mcu 5
+3/12/2025 5:19 PM        scantitle "(10L) scan at E=0.4 meV and hori-focusing"
+3/12/2025 5:19 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.4 preset mcu 5
+3/12/2025 5:34 PM        scantitle "(10L) scan at E=0.45 meV and hori-focusing"
+3/12/2025 5:34 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.45 preset mcu 5
+3/12/2025 5:47 PM        scantitle "(10L) scan at E=0.5 meV and hori-focusing"
+3/12/2025 5:47 PM        scan h 1 k 0 l 7.5 6.5 0.01 e 0.5 preset mcu 5
+3/12/2025 6:01 PM        scantitle "(H04) scan at E=-0.5 meV and hori-focusing"
+3/12/2025 6:01 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.5 preset mcu 5
+3/12/2025 6:33 PM        scantitle "(H04) scan at E=-0.45 meV and hori-focusing"
+3/12/2025 6:33 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.45 preset mcu 5
+3/12/2025 7:04 PM        scantitle "(H04) scan at E=-0.4 meV and hori-focusing"
+3/12/2025 7:04 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.4 preset mcu 5
+3/12/2025 7:36 PM        scantitle "(H04) scan at E=-0.35 meV and hori-focusing"
+3/12/2025 7:36 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.35 preset mcu 5
+3/12/2025 8:07 PM        scantitle "(H04) scan at E=-0.3 meV and hori-focusing"
+3/12/2025 8:07 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.3 preset mcu 5
+3/12/2025 8:37 PM        scantitle "(H04) scan at E=-0.25 meV and hori-focusing"
+3/12/2025 8:37 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.25 preset mcu 5
+3/12/2025 9:09 PM        scantitle "(H04) scan at E=-0.2 meV and hori-focusing"
+3/12/2025 9:09 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.2 preset mcu 5
+3/12/2025 9:41 PM        scantitle "(H04) scan at E=-0.15 meV and hori-focusing"
+3/12/2025 9:41 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.15 preset mcu 5
+3/12/2025 10:13 PM        scantitle "(H04) scan at E=-0.1 meV and hori-focusing"
+3/12/2025 10:13 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.1 preset mcu 5
+3/12/2025 10:44 PM        scantitle "(H04) scan at E=-0.05 meV and hori-focusing"
+3/12/2025 10:44 PM        scan h -0.2 0.2 0.002 k 0 l 4 e -0.05 preset mcu 5
+3/12/2025 11:15 PM        scantitle "(H04) scan at E=0 meV and hori-focusing"
+3/12/2025 11:15 PM        scan h -0.2 0.2 0.002 k 0 l 4 e 0 preset mcu 5
+3/12/2025 11:47 PM        scantitle "(H04) scan at E=0.05 meV and hori-focusing"
+3/12/2025 11:47 PM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.05 preset mcu 5
+3/13/2025 12:20 AM        scantitle "(H04) scan at E=0.1 meV and hori-focusing"
+3/13/2025 12:20 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.1 preset mcu 5
+3/13/2025 12:53 AM        scantitle "(H04) scan at E=0.15 meV and hori-focusing"
+3/13/2025 12:53 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.15 preset mcu 5
+3/13/2025 1:26 AM        scantitle "(H04) scan at E=0.2 meV and hori-focusing"
+3/13/2025 1:26 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.2 preset mcu 5
+3/13/2025 2:00 AM        scantitle "(H04) scan at E=0.25 meV and hori-focusing"
+3/13/2025 2:00 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.25 preset mcu 5
+3/13/2025 2:33 AM        scantitle "(H04) scan at E=0.3 meV and hori-focusing"
+3/13/2025 2:33 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.3 preset mcu 5
+3/13/2025 3:09 AM        scantitle "(H04) scan at E=0.35 meV and hori-focusing"
+3/13/2025 3:09 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.35 preset mcu 5
+3/13/2025 3:44 AM        scantitle "(H04) scan at E=0.4 meV and hori-focusing"
+3/13/2025 3:44 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.4 preset mcu 5
+3/13/2025 4:18 AM        scantitle "(H04) scan at E=0.45 meV and hori-focusing"
+3/13/2025 4:18 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.45 preset mcu 5
+3/13/2025 4:52 AM        scantitle "(H04) scan at E=0.5 meV and hori-focusing"
+3/13/2025 4:52 AM        scan h -0.2 0.2 0.002 k 0 l 4 e 0.5 preset mcu 5
+3/13/2025 5:27 AM        scantitle "(00L) scan at E=-0.5 meV and hori-focusing"
+3/13/2025 5:27 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.5 preset mcu 5
+3/13/2025 5:43 AM        scantitle "(00L) scan at E=-0.45 meV and hori-focusing"
+3/13/2025 5:43 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.45 preset mcu 5
+3/13/2025 5:58 AM        scantitle "(00L) scan at E=-0.4 meV and hori-focusing"
+3/13/2025 5:58 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.4 preset mcu 5
+3/13/2025 6:13 AM        scantitle "(00L) scan at E=-0.35 meV and hori-focusing"
+3/13/2025 6:13 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.35 preset mcu 5
+3/13/2025 6:28 AM        scantitle "(00L) scan at E=-0.3 meV and hori-focusing"
+3/13/2025 6:28 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.3 preset mcu 5
+3/13/2025 6:42 AM        scantitle "(00L) scan at E=-0.25 meV and hori-focusing"
+3/13/2025 6:42 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.25 preset mcu 5
+3/13/2025 6:58 AM        scantitle "(00L) scan at E=-0.2 meV and hori-focusing"
+3/13/2025 6:58 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.2 preset mcu 5
+3/13/2025 7:13 AM        scantitle "(00L) scan at E=-0.15 meV and hori-focusing"
+3/13/2025 7:13 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.15 preset mcu 5
+3/13/2025 7:28 AM        scantitle "(00L) scan at E=-0.1 meV and hori-focusing"
+3/13/2025 7:28 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.1 preset mcu 5
+3/13/2025 7:42 AM        scantitle "(00L) scan at E=-0.05 meV and hori-focusing"
+3/13/2025 7:42 AM        scan h 0 k 0 l 4.5 3.5 0.01 e -0.05 preset mcu 5
+3/13/2025 7:57 AM        scantitle "(00L) scan at E=0 meV and hori-focusing"
+3/13/2025 7:57 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0 preset mcu 5
+3/13/2025 8:12 AM        scantitle "(00L) scan at E=0.05 meV and hori-focusing"
+3/13/2025 8:12 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.05 preset mcu 5
+3/13/2025 8:28 AM        scantitle "(00L) scan at E=0.1 meV and hori-focusing"
+3/13/2025 8:28 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.1 preset mcu 5
+3/13/2025 8:43 AM        scantitle "(00L) scan at E=0.15 meV and hori-focusing"
+3/13/2025 8:43 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.15 preset mcu 5
+3/13/2025 8:59 AM        scantitle "(00L) scan at E=0.2 meV and hori-focusing"
+3/13/2025 8:59 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.2 preset mcu 5
+3/13/2025 9:14 AM        scantitle "(00L) scan at E=0.25 meV and hori-focusing"
+3/13/2025 9:14 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.25 preset mcu 5
+3/13/2025 9:30 AM        scantitle "(00L) scan at E=0.3 meV and hori-focusing"
+3/13/2025 9:30 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.3 preset mcu 5
+3/13/2025 9:47 AM        scantitle "(00L) scan at E=0.35 meV and hori-focusing"
+3/13/2025 9:47 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.35 preset mcu 5
+3/13/2025 10:03 AM        scantitle "(00L) scan at E=0.4 meV and hori-focusing"
+3/13/2025 10:03 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.4 preset mcu 5
+3/13/2025 10:19 AM        scantitle "(00L) scan at E=0.45 meV and hori-focusing"
+3/13/2025 10:19 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.45 preset mcu 5
+3/13/2025 10:35 AM        scantitle "(00L) scan at E=0.5 meV and hori-focusing"
+3/13/2025 10:35 AM        scan h 0 k 0 l 4.5 3.5 0.01 e 0.5 preset mcu 5
+3/13/2025 10:51 AM        init
+3/13/2025 10:52 AM        scantitle "Mesh scan around (004) hori-focusing"
+3/13/2025 10:52 AM        scan h -0.02 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:00 AM        scan h -0.018 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:07 AM        scan h -0.016 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:14 AM        scan h -0.014 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:21 AM        scan h -0.012 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:28 AM        scan h -0.01 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:35 AM        scan h -0.008 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:42 AM        scan h -0.006 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:49 AM        scan h -0.004 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 11:56 AM        scan h -0.002 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:03 PM        scan h 0 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:10 PM        scan h 0.002 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:17 PM        scan h 0.004 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:24 PM        scan h 0.006 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:31 PM        scan h 0.008 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:38 PM        scan h 0.01 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:45 PM        scan h 0.012 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 12:52 PM        scan h 0.014 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:00 PM        scan h 0.016 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:07 PM        scan h 0.018 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:14 PM        scan h 0.02 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:21 PM        scan h -0.04 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:29 PM        scan h -0.038 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:36 PM        scan h -0.036 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:43 PM        scan h -0.034 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:51 PM        scan h -0.032 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 1:58 PM        scan h -0.03 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:05 PM        scan h -0.028 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:12 PM        scan h -0.026 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:20 PM        scan h -0.024 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:27 PM        scan h -0.022 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:35 PM        scan h 0.022 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:42 PM        scan h 0.024 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:50 PM        scan h 0.026 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 2:57 PM        scan h 0.028 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:05 PM        scan h 0.03 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:12 PM        scan h 0.032 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:20 PM        scan h 0.034 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:27 PM        scan h 0.036 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:35 PM        scan h 0.038 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:42 PM        scan h 0.04 k 0 l 4.4 3.6 0.01 e 0 preset mcu 2
+3/13/2025 3:50 PM        scantitle "Mesh scan around (107) hori-focusing"
+3/13/2025 3:50 PM        scan h 1.04 0.96 0.002 k 0 l 6.6 e 0 preset mcu 2
+3/13/2025 3:55 PM        scan h 1.04 0.96 0.002 k 0 l 6.62 e 0 preset mcu 2
+3/13/2025 3:59 PM        scan h 1.04 0.96 0.002 k 0 l 6.64 e 0 preset mcu 2
+3/13/2025 4:03 PM        scan h 1.04 0.96 0.002 k 0 l 6.66 e 0 preset mcu 2
+3/13/2025 4:07 PM        scan h 1.04 0.96 0.002 k 0 l 6.7 e 0 preset mcu 2
+3/13/2025 4:11 PM        scan h 1.04 0.96 0.002 k 0 l 6.72 e 0 preset mcu 2
+3/13/2025 4:15 PM        scan h 1.04 0.96 0.002 k 0 l 6.74 e 0 preset mcu 2
+3/13/2025 4:19 PM        scan h 1.04 0.96 0.002 k 0 l 6.76 e 0 preset mcu 2
+3/13/2025 4:23 PM        scan h 1.04 0.96 0.002 k 0 l 6.78 e 0 preset mcu 2
+3/13/2025 4:28 PM        scan h 1.04 0.96 0.002 k 0 l 6.8 e 0 preset mcu 2
+3/13/2025 4:32 PM        scan h 1.04 0.96 0.002 k 0 l 6.82 e 0 preset mcu 2
+3/13/2025 4:36 PM        scan h 1.04 0.96 0.002 k 0 l 6.84 e 0 preset mcu 2
+3/13/2025 4:40 PM        scan h 1.04 0.96 0.002 k 0 l 6.86 e 0 preset mcu 2
+3/13/2025 4:44 PM        scan h 1.04 0.96 0.002 k 0 l 6.88 e 0 preset mcu 2
+3/13/2025 4:48 PM        scan h 1.04 0.96 0.002 k 0 l 6.9 e 0 preset mcu 2
+3/13/2025 4:52 PM        scan h 1.04 0.96 0.002 k 0 l 6.92 e 0 preset mcu 2
+3/13/2025 4:57 PM        scan h 1.04 0.96 0.002 k 0 l 6.94 e 0 preset mcu 2
+3/13/2025 5:01 PM        scan h 1.04 0.96 0.002 k 0 l 6.96 e 0 preset mcu 2
+3/13/2025 5:05 PM        scan h 1.04 0.96 0.002 k 0 l 6.98 e 0 preset mcu 2
+3/13/2025 5:09 PM        scan h 1.04 0.96 0.002 k 0 l 7 e 0 preset mcu 2
+3/13/2025 5:13 PM        scan h 1.04 0.96 0.002 k 0 l 7.02 e 0 preset mcu 2
+3/13/2025 5:18 PM        scan h 1.04 0.96 0.002 k 0 l 7.04 e 0 preset mcu 2
+3/13/2025 5:22 PM        scan h 1.04 0.96 0.002 k 0 l 7.06 e 0 preset mcu 2
+3/13/2025 5:26 PM        scan h 1.04 0.96 0.002 k 0 l 7.08 e 0 preset mcu 2
+3/13/2025 5:30 PM        scan h 1.04 0.96 0.002 k 0 l 7.1 e 0 preset mcu 2
+3/13/2025 5:34 PM        scan h 1.04 0.96 0.002 k 0 l 7.12 e 0 preset mcu 2
+3/13/2025 5:38 PM        scan h 1.04 0.96 0.002 k 0 l 7.14 e 0 preset mcu 2
+3/13/2025 5:43 PM        scan h 1.04 0.96 0.002 k 0 l 7.16 e 0 preset mcu 2
+3/13/2025 5:47 PM        scan h 1.04 0.96 0.002 k 0 l 7.18 e 0 preset mcu 2
+3/13/2025 5:51 PM        scan h 1.04 0.96 0.002 k 0 l 7.2 e 0 preset mcu 2
+3/13/2025 5:55 PM        scan h 1.04 0.96 0.002 k 0 l 7.22 e 0 preset mcu 2
+3/13/2025 6:00 PM        scan h 1.04 0.96 0.002 k 0 l 7.24 e 0 preset mcu 2
+3/13/2025 6:04 PM        scan h 1.04 0.96 0.002 k 0 l 7.26 e 0 preset mcu 2
+3/13/2025 6:08 PM        scan h 1.04 0.96 0.002 k 0 l 7.28 e 0 preset mcu 2
+3/13/2025 6:12 PM        scan h 1.04 0.96 0.002 k 0 l 7.3 e 0 preset mcu 2
+3/13/2025 6:17 PM        scan h 1.04 0.96 0.002 k 0 l 7.32 e 0 preset mcu 2
+3/13/2025 6:21 PM        scan h 1.04 0.96 0.002 k 0 l 7.34 e 0 preset mcu 2
+3/13/2025 6:25 PM        scan h 1.04 0.96 0.002 k 0 l 7.36 e 0 preset mcu 2
+3/13/2025 6:29 PM        scan h 1.04 0.96 0.002 k 0 l 7.38 e 0 preset mcu 2
+3/13/2025 6:34 PM        scan h 1.04 0.96 0.002 k 0 l 7.4 e 0 preset mcu 2
+3/13/2025 6:38 PM        scan h 1.04 0.96 0.002 k 0 l 7.42 e 0 preset mcu 2
+3/13/2025 6:42 PM        scan h 1.04 0.96 0.002 k 0 l 7.44 e 0 preset mcu 2
+3/13/2025 6:46 PM        scan h 1.04 0.96 0.002 k 0 l 7.46 e 0 preset mcu 2
+3/13/2025 6:51 PM        scan h 1.04 0.96 0.002 k 0 l 7.48 e 0 preset mcu 2
+3/13/2025 6:55 PM        scan h 1.04 0.96 0.002 k 0 l 7.5 e 0 preset mcu 2
+3/13/2025 6:59 PM        scan h 1.04 0.96 0.002 k 0 l 6.5 e 0 preset mcu 2
+3/13/2025 7:03 PM        scan h 1.04 0.96 0.002 k 0 l 6.52 e 0 preset mcu 2
+3/13/2025 7:14 PM        init
+3/13/2025 7:16 PM        br 0 0 6
+3/13/2025 7:17 PM        br 0.5 0 5.5
+3/13/2025 7:18 PM        scantitle "Incoherent elastic scattering at q=(0.5 0 5.5) and Ef=4.8meV"
+3/13/2025 7:18 PM        scan h 0.5 k 0 l 5.5 e -0.5 0.5 0.05 preset mcu 60
+3/13/2025 7:43 PM        scantitle "Mesh scan around (107) hori-focusing-extended H range"
+3/13/2025 7:43 PM        scan h 1.1 0.9 0.002 k 0 l 6.7 e 0 preset mcu 2
+3/13/2025 7:44 PM        scantitle "Mesh scan around (107) hori-focusing-extended H range"
+3/13/2025 7:44 PM        scan h 1.1 0.9 0.002 k 0 l 6.8 e 0 preset mcu 2
+3/13/2025 7:53 PM        scan h 1.1 0.9 0.002 k 0 l 6.82 e 0 preset mcu 2
+3/13/2025 8:02 PM        scan h 1.1 0.9 0.002 k 0 l 6.84 e 0 preset mcu 2
+3/13/2025 8:10 PM        scan h 1.1 0.9 0.002 k 0 l 6.86 e 0 preset mcu 2
+3/13/2025 8:19 PM        scan h 1.1 0.9 0.002 k 0 l 6.88 e 0 preset mcu 2
+3/13/2025 8:28 PM        scan h 1.1 0.9 0.002 k 0 l 6.9 e 0 preset mcu 2
+3/13/2025 8:37 PM        scan h 1.1 0.9 0.002 k 0 l 6.92 e 0 preset mcu 2
+3/13/2025 8:46 PM        scan h 1.1 0.9 0.002 k 0 l 6.94 e 0 preset mcu 2
+3/13/2025 8:55 PM        scan h 1.1 0.9 0.002 k 0 l 6.96 e 0 preset mcu 2
+3/13/2025 9:04 PM        scan h 1.1 0.9 0.002 k 0 l 6.98 e 0 preset mcu 2
+3/13/2025 9:13 PM        scan h 1.1 0.9 0.002 k 0 l 7 e 0 preset mcu 2
+3/13/2025 9:22 PM        scan h 1.1 0.9 0.002 k 0 l 7.02 e 0 preset mcu 2
+3/13/2025 9:31 PM        scan h 1.1 0.9 0.002 k 0 l 7.04 e 0 preset mcu 2
+3/13/2025 9:40 PM        scan h 1.1 0.9 0.002 k 0 l 7.06 e 0 preset mcu 2
+3/13/2025 9:49 PM        scan h 1.1 0.9 0.002 k 0 l 7.08 e 0 preset mcu 2
+3/13/2025 9:58 PM        scan h 1.1 0.9 0.002 k 0 l 7.1 e 0 preset mcu 2
+3/13/2025 10:07 PM        scan h 1.1 0.9 0.002 k 0 l 7.12 e 0 preset mcu 2
+3/13/2025 10:16 PM        scan h 1.1 0.9 0.002 k 0 l 7.14 e 0 preset mcu 2
+3/13/2025 10:25 PM        scan h 1.1 0.9 0.002 k 0 l 7.16 e 0 preset mcu 2
+3/13/2025 10:34 PM        scan h 1.1 0.9 0.002 k 0 l 7.18 e 0 preset mcu 2
+3/13/2025 10:43 PM        scan h 1.1 0.9 0.002 k 0 l 7.2 e 0 preset mcu 2
+3/13/2025 10:53 PM        scantitle "Incoherent elastic scattering at q=(0.5 0 3.5) and Ef=4.8meV"
+3/13/2025 10:53 PM        scan h 0.5 k 0 l 3.5 e -0.5 0.5 0.05 preset mcu 60
+3/13/2025 11:17 PM        scantitle "Mesh scan around (004) hori-focusing"
+3/13/2025 11:17 PM        scan h -0.04 k 0 l 4.5 3.5 0.01 e 0 preset mcu 2
+3/14/2025 8:29 AM        drive e 0 s2 30 s1 0 sgl 0 sgu 0

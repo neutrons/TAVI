@@ -1,6 +1,7 @@
 import matplotlib.backends.backend_pdf
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit import Model
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
@@ -11,18 +12,12 @@ from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
 
-def analyze_attenuation():
-    pass
-
-
-def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
-    fit_range1, fit_range2 = fit_ranges
-    # ------------------------- s1 -------------------------
+def analyze_s1_scan(hkl, s1_scan, fit_range=None):
 
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=s1_scan)
     scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
-    scan_s1_fit = Fit1D(scan_s1, fit_range1)
+    scan_s1_fit = Fit1D(scan_s1, fit_range)
     scan_s1_fit.add_signal(model="Gaussian")
     scan_s1_fit.add_background(model="Constant")
     pars_s1 = scan_s1_fit.guess()
@@ -31,8 +26,6 @@ def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
     # print(scan_s1_fit.result.fit_report())
     # print(f"Fit {scan2}")
     fwhm = result_s1.params["s1_fwhm"]
-
-    rez = hb1a.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
 
     p1 = Plot1D()
     # data
@@ -47,23 +40,17 @@ def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
         x=scan_s1_fit.x_to_plot(),
         label=f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}",
     )
-
-    # resolution
-    p1.add_reso_bar(
-        pos=result_s1,
-        fwhm=rez.coh_fwhms(axis=1),
-        c="C3",
-        label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
-    )
-
     p1.ylim = (-np.max(scan_s1.y) * 0.1, np.max(scan_s1.y) * 1.3)
 
-    # ------------------------- th2th -------------------------
+    return (result_s1, p1, np.mean(s1.data.get("q")), np.mean(s1.data.get("s1")))
+
+
+def analyze_th2th_scan(hkl, th2th_scan, fit_range=None):
 
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=th2th_scan)
     scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
-    scan_th2th_fit = Fit1D(scan_th2th, fit_range=fit_range2)
+    scan_th2th_fit = Fit1D(scan_th2th, fit_range=fit_range)
     scan_th2th_fit.add_signal(model="Gaussian")
     scan_th2th_fit.add_background(model="Constant")
     pars_th2th = scan_th2th_fit.guess()
@@ -88,7 +75,23 @@ def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
         x=scan_th2th_fit.x_to_plot(),
         label=f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}",
     )
-    # resolution
+
+    return (result_th2th, p2)
+
+
+def make_rez_plots(hkl, s1, th2th):
+    (result_s1, p1) = s1
+    (result_th2th, p2) = th2th
+
+    rez = hb1a.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+
+    p1.add_reso_bar(
+        pos=result_s1,
+        fwhm=rez.coh_fwhms(axis=1),
+        c="C3",
+        label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
+    )
+
     p2.add_reso_bar(
         pos=result_th2th,
         fwhm=rez.coh_fwhms(axis=0),
@@ -96,48 +99,250 @@ def analyze_resulution(hkl, s1_scan, th2th_scan, fit_ranges=(None, None)):
         label=f"Resolution FWHM={rez.coh_fwhms(axis=0):.04f}",
     )
 
-    return (np.mean(s1.data.get("q")), np.mean(s1.data.get("s1")), result_th2th, result_s1, rez, theta, (p1, p2))
+    # make plot
+    fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
+    p1.plot(ax0)
+    p2.plot(ax1)
+
+    return (fig, rez)
+
+
+def analyze_attenuation():
+    x = []
+    y = []
+    xerr = []
+    yerr = []
+    hkl_list = []
+
+    hkl = (0, 0, 2)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 101)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 102)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 77)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 78)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    hkl = (1, 1, 0)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 103)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 104)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 81)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 82)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    hkl = (1, 1, 1)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 105)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 106)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 85)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 86)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    hkl = (1, 1, 2)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 107)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 108)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 87)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 88)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    hkl = (1, 1, 3)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 113)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 114)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 89)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 90)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    hkl = (2, 2, 1)
+
+    s1_atten, _, _, _ = analyze_s1_scan(hkl, 115)
+    x.append(s1_atten.params["s1_amplitude"].value)
+    xerr.append(s1_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " s1")
+
+    th2th_atten, _ = analyze_th2th_scan(hkl, 116)
+    x.append(th2th_atten.params["s1_amplitude"].value)
+    xerr.append(th2th_atten.params["s1_amplitude"].stderr)
+    hkl_list.append(str(hkl) + " th2th")
+
+    s1, _, _, _ = analyze_s1_scan(hkl, 91)
+    y.append(s1.params["s1_amplitude"].value)
+    yerr.append(s1.params["s1_amplitude"].stderr)
+
+    th2th, _ = analyze_th2th_scan(hkl, 92)
+    y.append(th2th.params["s1_amplitude"].value)
+    yerr.append(th2th.params["s1_amplitude"].stderr)
+
+    def line(x, c):
+        return c * x
+
+    # fit linear
+    model = Model(line, x=np.array(x))
+    result = model.fit(np.array(y), c=1.0)
+
+    # make plot
+    fig, ax = plt.subplots()
+    ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="o")
+    f = result.params["c"].value
+    ferr = result.params["c"].stderr
+    ax.plot(x, result.best_fit, "r", label=f"attenuation factor = {f:.2f}+-{ferr:.2f}")
+    ax.grid(alpha=0.6)
+    ax.set_xlabel("Integrated intensity w/ attenuation")
+    ax.set_ylabel("Integrated intensity")
+    ax.legend()
+    ax.set_ylim(top=1200)
+
+    for i, hkl in enumerate(hkl_list):
+        x_str = x[i]
+        y_str = y[i] + 100
+        # mannual ajdjust position
+        # if hkl ==(1,1,0):
+        #     x-=0.15
+        ax.annotate(str(hkl), (x_str, y_str), rotation=90, fontsize=8, color="k")
 
 
 def plot_s1_th2th_peaks():
-    scans = (
-        ((0, 0, 1), 75, 76),
-        ((0, 0, 2), 77, 78),
-        ((0, 0, 3), 79, 80),
-        ((1, 1, 0), 81, 82),
-        ((2, 2, 0), 83, 84, (None, (-0.08, 0.05))),
-        ((1, 1, 1), 85, 86),
-        ((1, 1, 2), 87, 88),
-        ((1, 1, 3), 89, 90),
-        ((2, 2, 1), 91, 92),
-        ((2, 2, 2), 93, 94),
-        ((-1, -1, 1), 95, 96),
-        ((-1, -1, 2), 97, 98),
-        ((-1, -1, 3), 99, 100),
-    )
-    #  outputs to be collected
-    q_list = []
-    hkl_list = []
-    exp_th2th = []
-    exp_s1 = []
-    rez_list = []
-    theta_list = []
+
     figs = []
-    for info in scans:
-        q, _, th2th, s1, rez, theta, (p1, p2) = analyze_resulution(*info)
-        #  collect output
-        hkl_list.append(info[0])
-        q_list.append(q)
-        # s1_list.append(s1)
-        exp_th2th.append(th2th)
-        exp_s1.append(s1)
-        rez_list.append(rez)
-        theta_list.append(theta)
-        # make plot
-        fig, axes = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
-        p1.plot(axes[0])
-        p2.plot(axes[1])
-        figs.append(fig)
+
+    hkl = (0, 0, 1)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 75)
+    th2th, p2 = analyze_th2th_scan(hkl, 76)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (0, 0, 2)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 77)
+    th2th, p2 = analyze_th2th_scan(hkl, 78)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (0, 0, 3)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 79)
+    th2th, p2 = analyze_th2th_scan(hkl, 80)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (1, 1, 0)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 81)
+    th2th, p2 = analyze_th2th_scan(hkl, 82)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (2, 2, 0)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 83)
+    th2th, p2 = analyze_th2th_scan(hkl, 84, fit_range=(-0.08, 0.05))
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (1, 1, 1)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 85)
+    th2th, p2 = analyze_th2th_scan(hkl, 86)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (1, 1, 2)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 87)
+    th2th, p2 = analyze_th2th_scan(hkl, 88)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (1, 1, 3)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 89)
+    th2th, p2 = analyze_th2th_scan(hkl, 90)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (2, 2, 1)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 91)
+    th2th, p2 = analyze_th2th_scan(hkl, 92)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (2, 2, 2)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 93)
+    th2th, p2 = analyze_th2th_scan(hkl, 94)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (-1, -1, 1)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 95)
+    th2th, p2 = analyze_th2th_scan(hkl, 96)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (-1, -1, 2)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 97)
+    th2th, p2 = analyze_th2th_scan(hkl, 98)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
+
+    hkl = (-1, -1, 3)
+    s1, p1, _, _ = analyze_s1_scan(hkl, 99)
+    th2th, p2 = analyze_th2th_scan(hkl, 100)
+    fig, rez = make_rez_plots(hkl, (s1, p1), (th2th, p2))
+    figs.append(fig)
 
     pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CeCl3_CeBr3/CeCl3.pdf")
     for f in figs:
@@ -175,5 +380,6 @@ if __name__ == "__main__":
     path_to_spice_folder = "test_data/CeCl3_CeBr3/IPTS-32275/exp1017/"
     tavi.load_spice_data_from_disk(path_to_spice_folder)
 
-    plot_s1_th2th_peaks()
-    # plt.show()
+    analyze_attenuation()
+    # plot_s1_th2th_peaks()
+    plt.show()

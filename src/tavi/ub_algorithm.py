@@ -280,7 +280,8 @@ def uv_to_ub_matrix(
 # -----------------------------------------------------
 # UB matrix math
 # -----------------------------------------------------
-# TODO
+
+
 def find_u_from_one_peak_and_scattering_plane(
     peak: Peak,
     scattering_plane: tuple,

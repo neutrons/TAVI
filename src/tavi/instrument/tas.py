@@ -149,7 +149,6 @@ class TAS(TASBase):
                     in_plane_ref=in_plane_ref,
                     ub_peaks=peaks,
                 )
-                pass
 
             case 2:
                 peak1, peak2 = peaks
