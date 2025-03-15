@@ -19,6 +19,7 @@ def plot_s1_scan(hkl, scan_num, fit_range=None):
     pars = fit.guess()
     # pars_s1["b1_c"].set(min=0)
     result = fit.fit(pars, USE_ERRORBAR=False)
+
     # plot
     p = Plot1D()
     # data
@@ -26,6 +27,16 @@ def plot_s1_scan(hkl, scan_num, fit_range=None):
     # fits
     fwhm = result.params["s1_fwhm"]
     p.add_fit(fit, x=fit.x_to_plot(), label=f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}")
+
+    # resolution
+    rez = cg4c.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    p.add_reso_bar(
+        pos=result,
+        fwhm=rez.coh_fwhms(axis=1),
+        c="C3",
+        label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
+    )
+
     return p
 
 
@@ -46,6 +57,16 @@ def plot_th2th_scan(hkl, scan_num, fit_range=None):
     # fits
     fwhm = result.params["s1_fwhm"]
     p.add_fit(fit, x=fit.x_to_plot(), label=f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}")
+
+    # resolution
+    rez = cg4c.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    p.add_reso_bar(
+        pos=result,
+        fwhm=rez.coh_fwhms(axis=0),
+        c="C3",
+        label=f"Resolution FWHM={rez.coh_fwhms(axis=0):.04f}",
+    )
+
     return p
 
 
@@ -71,6 +92,15 @@ def plot_tilt_scan(hkl, scan_num, tilt_axis="sgl", fit_range=None):
     else:
         label = f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}"
     p.add_fit(fit, x=fit.x_to_plot(), label=label)
+
+    # resolution
+    rez = cg4c.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    p.add_reso_bar(
+        pos=result,
+        fwhm=rez.coh_fwhms(axis=2),
+        c="C3",
+        label=f"Resolution FWHM={rez.coh_fwhms(axis=2):.04f}",
+    )
     return p
 
 
@@ -84,13 +114,14 @@ def plot_eng_scan(hkl, scan_num, fit_range=None, fit_incoherent_only=False):
     if fit_incoherent_only:
         fit.add_background(model="Gaussian")
         pars = fit.guess()
-        pars["b1_fwhm"].set(value=0.2)
-        pars["b1_amplitude"].set(min=0.0)
-        pars["b1_center"].set(value=0, vary=False)
+        pars["b1_sigma"].set(min=0.15 / 2.35)
+        pars["b1_height"].set(min=0.1)
+        pars["b1_center"].set(value=0)
     else:
         fit.add_background(model="Constant")
         pars = fit.guess()
         pars["b1_c"].set(min=0)
+    pars["s1_sigma"].set(max=0.08 / 2.35)
 
     # pars["s1_center"].set(value=0)
     result = fit.fit(pars, USE_ERRORBAR=False)
@@ -101,6 +132,15 @@ def plot_eng_scan(hkl, scan_num, fit_range=None, fit_incoherent_only=False):
     # fits
     fwhm = result.params["s1_fwhm"]
     p.add_fit(fit, x=fit.x_to_plot(), label=f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}")
+
+    # resolution
+    rez = cg4c.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    p.add_reso_bar(
+        pos=result,
+        fwhm=rez.coh_fwhms(axis=3),
+        c="C3",
+        label=f"Resolution FWHM={rez.coh_fwhms(axis=3):.04f}",
+    )
     return p
 
 
@@ -213,7 +253,7 @@ def plot_peaks():
     plot_eng_scan(hkl, scan_num=64).plot(ax2)
     figs.append(fig)
 
-    pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CTAX_rez/La2Ni7_CG4C_lines.pdf")
+    pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CTAX_rez/La2Ni7_CG4C_lines_rez.pdf")
     for f in figs:
         pdf.savefig(f)
     pdf.close()
@@ -232,6 +272,8 @@ if __name__ == "__main__":
     tavi = TAVI()
     path_to_spice_folder = "test_data/CTAX_rez/IPTS-35030/exp445/"
     tavi.load_spice_data_from_disk(path_to_spice_folder)
+
+    ei = ef = 4.8
 
     plot_peaks()
 

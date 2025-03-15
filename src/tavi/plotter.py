@@ -138,10 +138,12 @@ class Plot1D(object):
             if pos is a ModelResult from lmfit, determine the position from fitting results
         """
         if isinstance(pos, ModelResult):
-            x_s1 = pos.params["s1_center"].value
-            components_s1 = pos.eval_components(pos.params, x=x_s1)
-            y_s1 = components_s1["s1_"] / 2 + components_s1["b1_"]
-            pos = (x_s1, y_s1)
+            x_pos = pos.params["s1_center"].value
+            components_s1 = pos.eval_components(pos.params, x=x_pos)
+            y_s1 = components_s1.pop("s1_")
+            y_b = sum(components_s1.values())
+            y_pos = y_s1 / 2 + y_b
+            pos = (x_pos, y_pos)
         reso_data = ResoBar(pos, fwhm)
 
         for key, val in kwargs.items():
