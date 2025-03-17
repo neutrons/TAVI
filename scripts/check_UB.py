@@ -3,8 +3,8 @@ import numpy as np
 from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.ub_algorithm import plane_normal_from_two_peaks, uv_to_ub_matrix
-from tavi.utilities import MotorAngles, Peak, UBConf
+from tavi.ub_algorithm import UBConf, plane_normal_from_two_peaks, uv_to_ub_matrix
+from tavi.utilities import MotorAngles, Peak
 
 if __name__ == "__main__":
     # cubic sample
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     # create cg1b alignment station, using Mantid convention
     en = 14.0
-    cg1b = TAS(fixed_ei=en, fixed_ef=en, spice_convention=False)
+    cg1b = TAS(fixed_ei=en, fixed_ef=en, convention=False)
     # conventioonal goniometer with s1 about +Y, sgl about+Z,  and sgu about -X
     # sense of s2 is negative
     cg1b.goniometer = Goniometer({"type": "Y,Z,-X", "sense": "-"})

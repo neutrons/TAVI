@@ -29,7 +29,7 @@ def test_calc_ub_from_2_peaks():
     ei = 13.500172
     ef = 13.505137
 
-    tas = TAS(fixed_ef=ef, fixed_ei=ei, spice_convention=False)
+    tas = TAS(fixed_ef=ef, fixed_ei=ei, convention="Mantid")
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -72,34 +72,34 @@ def test_calc_ub_from_2_peaks_hb3():
     plane_normal = [-0.017470, -0.052341, 0.998476]
     in_plane_ref = [-0.999847, -0.002086, -0.017385]
 
-    tas = TAS(fixed_ef=14.7, spice_convention=True)
+    hb3 = TAS(fixed_ef=14.7)
     hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
-    tas.load_instrument_params_from_json(hb3_json)
-    tas.mount_sample(Sample(lattice_params))
+    hb3.load_instrument_params_from_json(hb3_json)
+    hb3.mount_sample(Sample(lattice_params))
 
     angles1 = MotorAngles(two_theta=41.545383, omega=20.840750, sgl=1.001000, sgu=-3.000750)
     peak1 = Peak(hkl=(0, 0, 2), angles=angles1)
     angles2 = MotorAngles(two_theta=38.526091, omega=-70.614125, sgl=1.001000, sgu=-3.000750)
     peak2 = Peak(hkl=(1, 0, 0), angles=angles2)
 
-    ub_conf = tas.calculate_ub_matrix(peaks=(peak1, peak2))
+    ub_conf = hb3.calculate_ub_matrix(peaks=(peak1, peak2))
+    print(ub_conf)
 
     assert np.allclose(ub_conf.ub_mat, ub_matrix, atol=1e-1)
     assert np.allclose(ub_conf.plane_normal, plane_normal, atol=1e-1)
     assert np.allclose(ub_conf.in_plane_ref, in_plane_ref, atol=1e-1)
 
-    angles_1 = tas.calculate_motor_angles(hkl=(0, 0, 2))
-    for name, value in angles_1._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+    assert np.allclose(hb3.sample.ub_conf.plane_normal, plane_normal, atol=1e-2)
+    assert np.allclose(hb3.sample.ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
 
-    angles_2 = tas.calculate_motor_angles(hkl=(1, 0, 0))
-    for name, value in angles_2._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
+    angles_1 = hb3.calculate_motor_angles(hkl=(0, 0, 2))
+    assert angles_1 == angles1
 
-    assert np.allclose(tas.sample.ub_conf.plane_normal, plane_normal, atol=1e-2)
-    assert np.allclose(tas.sample.ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
+    angles_2 = hb3.calculate_motor_angles(hkl=(1, 0, 0))
+    assert angles_2 == angles2
+
+    assert np.allclose(hb3.sample.ub_conf.plane_normal, plane_normal, atol=1e-2)
+    assert np.allclose(hb3.sample.ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
 
 
 def test_calc_ub_from_2_peaks_ctax():
@@ -113,7 +113,7 @@ def test_calc_ub_from_2_peaks_ctax():
     plane_normal = [-0.04032, 0.035237, 0.998565]
     in_plane_ref = [-0.993257, 0.107299, -0.043892]
 
-    ctax = TAS(fixed_ef=4.799998, spice_convention=True)
+    ctax = TAS(fixed_ef=4.799998)
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
     nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
@@ -132,19 +132,16 @@ def test_calc_ub_from_2_peaks_ctax():
     assert np.allclose(ctax.sample.ub_conf.in_plane_ref, in_plane_ref, atol=1e-2)
 
     angles = ctax.calculate_motor_angles(hkl=(0, 0, 3))
-    for name, value in angles._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-1)
+    assert angles == angles1
+
     angles = ctax.calculate_motor_angles(hkl=(0.5, 0.5, 0))
-    for name, value in angles._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles2, name), atol=1e-1)
+    assert angles == angles2
 
 
 def test_calc_ub_from_2_peaks_hb1():
     ei = 13.499993
     ef = 13.506112
-    hb1 = TAS(fixed_ef=ef, fixed_ei=ei, spice_convention=False)
+    hb1 = TAS(fixed_ef=ef, fixed_ei=ei, convention="Mantid")
     hb1.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.939520, 3.939520, 3.941957, 90.0, 90.0, 90.0)

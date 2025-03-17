@@ -12,7 +12,7 @@ from tavi.lattice_algorithm import (
     reciprocal_latt_params,
     reciprocal_space_vectors,
 )
-from tavi.utilities import UBConf
+from tavi.ub_algorithm import UBConf
 
 
 class Sample(object):
@@ -128,7 +128,8 @@ class Sample(object):
         if (plane_normal := sample_params_dict.get("plane_normal")) is not None:
             plane_normal = np.array(plane_normal)
         if (in_plane_ref := sample_params_dict.get("in_plane_ref")) is not None:
-            sample.in_plane_ref = np.array(in_plane_ref)
+            in_plane_ref = np.array(in_plane_ref)
+
         sample.ub_conf = UBConf(
             ub_mat=ub_matrix,
             plane_normal=plane_normal,

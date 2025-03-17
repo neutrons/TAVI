@@ -3,7 +3,7 @@ import numpy as np
 from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D, Plot2D
 from tavi.sample.xtal import Xtal
 from tavi.utilities import MotorAngles, Peak

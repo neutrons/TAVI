@@ -23,7 +23,7 @@ def test_find_two_theta():
 # TODO
 def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
 
-    ctax = TAS(fixed_ef=4.8, spice_convention=True)
+    ctax = TAS(fixed_ef=4.8, convention=True)
     ctax.goniometer = Goniometer({"sense": "+", "type": "Y,-Z,X"})
     ctax.mount_sample(Sample(lattice_params=(5.0577, 5.0577, 24.721009, 90, 90, 120)))
 
@@ -53,7 +53,7 @@ def test_calculate_ub_matrix_from_two_peaks():
             [0.164330, 0.304247, -0.058788],
         ]
     )
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     sample = Sample(lattice_params)
     tas.mount_sample(sample)
 
@@ -77,7 +77,7 @@ def test_angles_to_r_mat():
         ]
     )
     angles = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     r_mat_cal = tas.goniometer.r_mat(angles)
@@ -93,7 +93,7 @@ def test_r_mat_to_angles():
         ]
     )
     angles = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     angles_cal = tas.goniometer.angles_from_r_mat(r_mat, two_theta=angles.two_theta)
@@ -104,7 +104,7 @@ def test_r_mat_to_angles():
 
 def test_calculate_ub():
 
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -135,7 +135,7 @@ def test_calculate_ub():
 
 def test_r_mat_with_minimal_tilt():
 
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -158,7 +158,7 @@ def test_r_mat_with_minimal_tilt():
 
 def test_calculate_motor_agnles():
 
-    tas = TAS(fixed_ef=13.505137, spice_convention=False)
+    tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)

@@ -1,7 +1,7 @@
 from tavi.data.nexus_builder import NXdataset, NXentry
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"

@@ -1,7 +1,7 @@
 import matplotlib.pylab as plt
 import numpy as np
 
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.sample.xtal import Xtal
 
 np.set_printoptions(floatmode="fixed", precision=4)

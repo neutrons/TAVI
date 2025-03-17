@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 from tavi.data.fit import Fit1D
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D, Plot2D
 from tavi.sample import Sample
 

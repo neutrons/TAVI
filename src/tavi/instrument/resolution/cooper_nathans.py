@@ -1,101 +1,81 @@
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 
 from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
-from tavi.instrument.tas import TAS
-from tavi.utilities import (
-    get_angle_bragg,
-    get_angle_from_triangle,
-    ksq2eng,
-    rotation_matrix_2d,
-    sig2fwhm,
-    spice_to_mantid,
-)
+from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
+from tavi.utilities import get_angle_bragg, get_angle_from_triangle, ksq2eng, rotation_matrix_2d, sig2fwhm
 
 
-class CooperNathans(TAS):
-    """Copper-Nathans method
+class CooperNathans(ResolutionCalculator):
+    """Cooper-Nathans method
 
-    Methods:
-        validate_instrument_parameters
-        cooper_nathans
-
+    Note:
+        [pop75] Popovici, Acta Cryst. (1975). A31, 507
     """
 
+    # 1 monochromator and 1 analyzer
+    NUM_MONOS = 1
+    IDX_MONO0_H, IDX_MONO0_V = 0, 1
+    NUM_ANAS = 1
+    IDX_ANA0_H, IDX_ANA0_V = 2, 3
     # 4 soller slits collimators
     NUM_COLLS = 4
     IDX_COLL0_H, IDX_COLL0_V = 0, 2
     IDX_COLL1_H, IDX_COLL1_V = 1, 3
     IDX_COLL2_H, IDX_COLL2_V = 4, 6
     IDX_COLL3_H, IDX_COLL3_V = 5, 7
-    # 1 monochromator and 1 analyzer
-    NUM_MONOS, NUM_ANAS = 1, 1
-    IDX_MONO0_H, IDX_MONO0_V = 0, 1
-    IDX_ANA0_H, IDX_ANA0_V = 2, 3
-
-    def __init__(
-        self,
-        spice_convention: bool = True,
-        fixed_ei: Optional[float] = None,
-        fixed_ef: Optional[float] = None,
-    ) -> None:
-        """Load instrument configuration from json if provided"""
-        super().__init__(
-            fixed_ei=fixed_ei,
-            fixed_ef=fixed_ef,
-            spice_convention=spice_convention,
-        )
-
-        # # constants independent of q and eng
-        # self._mat_f: Optional[np.ndarray] = None
-        # self._mat_g: Optional[np.ndarray] = None
 
     def mat_f(self) -> np.ndarray:
         """matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
-        Note: No conversion from sigma to FWHM
+        Note: No conversion between sigma and FWHM
         """
-        i, j = CooperNathans.NUM_MONOS, CooperNathans.NUM_ANAS
+        cls = type(self)
+        monochromator = self.instrument.monochromator
+        analyzer = self.instrument.analyzer
+        i, j = cls.NUM_MONOS, cls.NUM_ANAS
         mat_f = np.zeros(((i + j) * 2, (i + j) * 2))
-        mat_f[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_MONO0_H] = 1.0 / self.monochromator._mosaic_h**2
-        mat_f[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_MONO0_V] = 1.0 / self.monochromator._mosaic_v**2
-        mat_f[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_ANA0_H] = 1.0 / self.analyzer._mosaic_h**2
-        mat_f[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_ANA0_V] = 1.0 / self.analyzer._mosaic_v**2
+        mat_f[cls.IDX_MONO0_H, cls.IDX_MONO0_H] = 1.0 / monochromator._mosaic_h**2
+        mat_f[cls.IDX_MONO0_V, cls.IDX_MONO0_V] = 1.0 / monochromator._mosaic_v**2
+        mat_f[cls.IDX_ANA0_H, cls.IDX_ANA0_H] = 1.0 / analyzer._mosaic_h**2
+        mat_f[cls.IDX_ANA0_V, cls.IDX_ANA0_V] = 1.0 / analyzer._mosaic_v**2
         return mat_f
 
     def mat_g(self) -> np.ndarray:
         """matrix G, divergence of monochromator and analyzer, [pop75] Appendix 1
-        Note: No conversion from sigma to FWHM
+        Note: No conversion between sigma and FWHM
         """
-        (h_pre_mono, h_pre_sample, h_post_sample, h_post_ana) = self.collimators._horizontal_divergence
-        (v_pre_mono, v_pre_sample, v_post_sample, v_post_ana) = self.collimators._vertical_divergence
+        cls = type(self)
+        collimators = self.instrument.collimators
+        (h_pre_mono, h_pre_sample, h_post_sample, h_post_ana) = collimators._horizontal_divergence
+        (v_pre_mono, v_pre_sample, v_post_sample, v_post_ana) = collimators._vertical_divergence
 
         # matrix G, divergence of collimators, [pop75] Appendix 1
-        mat_g = np.zeros((CooperNathans.NUM_COLLS * 2, CooperNathans.NUM_COLLS * 2))
-        mat_g[CooperNathans.IDX_COLL0_H, CooperNathans.IDX_COLL0_H] = 1.0 / h_pre_mono**2
-        mat_g[CooperNathans.IDX_COLL0_V, CooperNathans.IDX_COLL0_V] = 1.0 / v_pre_mono**2
-        mat_g[CooperNathans.IDX_COLL1_H, CooperNathans.IDX_COLL1_H] = 1.0 / h_pre_sample**2
-        mat_g[CooperNathans.IDX_COLL1_V, CooperNathans.IDX_COLL1_V] = 1.0 / v_pre_sample**2
-        mat_g[CooperNathans.IDX_COLL2_H, CooperNathans.IDX_COLL2_H] = 1.0 / h_post_sample**2
-        mat_g[CooperNathans.IDX_COLL2_V, CooperNathans.IDX_COLL2_V] = 1.0 / v_post_sample**2
-        mat_g[CooperNathans.IDX_COLL3_H, CooperNathans.IDX_COLL3_H] = 1.0 / h_post_ana**2
-        mat_g[CooperNathans.IDX_COLL3_V, CooperNathans.IDX_COLL3_V] = 1.0 / v_post_ana**2
+        mat_g = np.zeros((cls.NUM_COLLS * 2, cls.NUM_COLLS * 2))
+        mat_g[cls.IDX_COLL0_H, cls.IDX_COLL0_H] = 1.0 / h_pre_mono**2
+        mat_g[cls.IDX_COLL0_V, cls.IDX_COLL0_V] = 1.0 / v_pre_mono**2
+        mat_g[cls.IDX_COLL1_H, cls.IDX_COLL1_H] = 1.0 / h_pre_sample**2
+        mat_g[cls.IDX_COLL1_V, cls.IDX_COLL1_V] = 1.0 / v_pre_sample**2
+        mat_g[cls.IDX_COLL2_H, cls.IDX_COLL2_H] = 1.0 / h_post_sample**2
+        mat_g[cls.IDX_COLL2_V, cls.IDX_COLL2_V] = 1.0 / v_post_sample**2
+        mat_g[cls.IDX_COLL3_H, cls.IDX_COLL3_H] = 1.0 / h_post_ana**2
+        mat_g[cls.IDX_COLL3_V, cls.IDX_COLL3_V] = 1.0 / v_post_ana**2
 
         return mat_g
 
-    @staticmethod
-    def calc_mat_a(ki, kf, theta_m, theta_a):
+    @classmethod
+    def calc_mat_a(cls, ki, kf, theta_m, theta_a):
         """matrix A,Y=AU, tranform from collimators angular divergence to  ki-kf frame"""
-        mat_a = np.zeros((6, 2 * CooperNathans.NUM_COLLS))
-        mat_a[0, CooperNathans.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
-        mat_a[0, CooperNathans.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
-        mat_a[1, CooperNathans.IDX_COLL1_H] = ki
-        mat_a[2, CooperNathans.IDX_COLL1_V] = ki  # negative in Takin
+        mat_a = np.zeros((6, 2 * cls.NUM_COLLS))
+        mat_a[0, cls.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
+        mat_a[0, cls.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
+        mat_a[1, cls.IDX_COLL1_H] = ki
+        mat_a[2, cls.IDX_COLL1_V] = ki  # negative in Takin
 
-        mat_a[3, CooperNathans.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
-        mat_a[3, CooperNathans.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
-        mat_a[4, CooperNathans.IDX_COLL2_H] = kf
-        mat_a[5, CooperNathans.IDX_COLL2_V] = kf
+        mat_a[3, cls.IDX_COLL2_H] = 0.5 * kf / np.tan(theta_a)
+        mat_a[3, cls.IDX_COLL3_H] = -0.5 * kf / np.tan(theta_a)
+        mat_a[4, cls.IDX_COLL2_H] = kf
+        mat_a[5, cls.IDX_COLL2_V] = kf
         return mat_a
 
     @staticmethod
@@ -108,130 +88,73 @@ class CooperNathans(TAS):
         mat_b[3, 3] = -2 * ksq2eng * kf
         return mat_b
 
-    @staticmethod
-    def calc_mat_c(theta_m, theta_a):
+    @classmethod
+    def calc_mat_c(cls, theta_m, theta_a):
         """matrix C, constrinat between mono/ana mosaic and collimator divergence"""
-        mat_c = np.zeros(((CooperNathans.NUM_MONOS + CooperNathans.NUM_ANAS) * 2, CooperNathans.NUM_COLLS * 2))
-        mat_c[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_COLL0_H] = 0.5
-        mat_c[CooperNathans.IDX_MONO0_H, CooperNathans.IDX_COLL1_H] = 0.5
-        mat_c[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
-        mat_c[CooperNathans.IDX_MONO0_V, CooperNathans.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
+        mat_c = np.zeros(((cls.NUM_MONOS + cls.NUM_ANAS) * 2, cls.NUM_COLLS * 2))
+        mat_c[cls.IDX_MONO0_H, cls.IDX_COLL0_H] = 0.5
+        mat_c[cls.IDX_MONO0_H, cls.IDX_COLL1_H] = 0.5
+        mat_c[cls.IDX_MONO0_V, cls.IDX_COLL0_V] = 0.5 / np.sin(theta_m)
+        mat_c[cls.IDX_MONO0_V, cls.IDX_COLL1_V] = -0.5 / np.sin(theta_m)
 
-        mat_c[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_COLL2_H] = 0.5
-        mat_c[CooperNathans.IDX_ANA0_H, CooperNathans.IDX_COLL3_H] = 0.5
-        mat_c[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
-        mat_c[CooperNathans.IDX_ANA0_V, CooperNathans.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
+        mat_c[cls.IDX_ANA0_H, cls.IDX_COLL2_H] = 0.5
+        mat_c[cls.IDX_ANA0_H, cls.IDX_COLL3_H] = 0.5
+        mat_c[cls.IDX_ANA0_V, cls.IDX_COLL2_V] = 0.5 / np.sin(theta_a)
+        mat_c[cls.IDX_ANA0_V, cls.IDX_COLL3_V] = -0.5 / np.sin(theta_a)
         return mat_c
 
-    @staticmethod
-    def _generate_hkle_list(
-        hkl_list: Union[tuple, list[tuple]],
-        ei: Union[float, list[float]],
-        ef: Union[float, list[float]],
-    ) -> list[tuple[tuple[float, float, float], float, float]]:
-        """Generate a list containing tuple ((h, k, l), ei, ef)"""
-        hkle_list = []
-        if not isinstance(ei, list):
-            ei = [ei]
-        if not isinstance(ef, list):
-            ef = [ef]
-        if not isinstance(hkl_list, list):
-            hkl_list = [hkl_list]
-
-        if isinstance(hkl_list, list):
-            for one_ei in ei:
-                for one_ef in ef:
-                    for hkl in hkl_list:
-                        if isinstance(hkl, tuple) and len(hkl) == 3:
-                            hkle_list.append((hkl, one_ei, one_ef))
-                        else:
-                            raise ValueError(f"hkl={hkl} is not a tuple of length 3.")
-        return hkle_list
-
     def validate_instrument_parameters(self):
-        """Check if enough instrument parameters are provided for Cooper-Nathans mehtod"""
+        base = self.__class__.__base__
+        base.validate_instrument_parameters(self)
 
-        try:  # monochromator
-            mono = self.monochromator
-        except AttributeError:
-            print("Monochromator info are missing.")
-
-        if None in (mono_mosaic := (mono.mosaic_h, mono.mosaic_v)):
-            raise ValueError("Mosaic of monochromator is missing.")
-        elif not all(val > 0 for val in mono_mosaic):
-            raise ValueError("Mosaic of monochromator cannot be negative.")
-
-        try:  # analyzer
-            ana = self.analyzer
-        except AttributeError:
-            print("Analyzer info are missing.")
-
-        if None in (ana_mosaic := (ana.mosaic_h, ana.mosaic_v)):
-            raise ValueError("Mosaic of analyzer is missing.")
-        elif not all(val > 0 for val in ana_mosaic):
-            raise ValueError("Mosaic of analyzer cannot be negative.")
-
-        # collimators
-        if (coll := self.collimators) is None:
-            raise ValueError("Collimators info are missing.")
-        elif not all(val > 0 for val in coll.horizontal_divergence):
-            raise ValueError("Horizontal divergence of collimators cannot be negative.")
-        elif not all(val > 0 for val in coll.vertical_divergence):
-            raise ValueError("Vertical divergence of collimators cannot be negative.")
-
-        # sample
-        # if self.sample is None:
-        #     raise ValueError("Sample info are missing.")
-
-    def rez(
+    def calculate(
         self,
-        hkl_list: Union[tuple[float, float, float], list[tuple[float, float, float]]],
-        ei: Union[float, list[float]],
-        ef: Union[float, list[float]],
+        hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
+        en: Union[float, list[float]],
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
         R0: bool = False,
-    ) -> Union[ResoEllipsoid, list[ResoEllipsoid]]:
+    ):
         """Calculate resolution using Cooper-Nathans method
 
         Args:
-            hkl: momentum transfer, miller indices in reciprocal lattice
-            ei: incident energy, in units of meV
-            ef: final energy, in units of meV
+            hkl (tuple | list(tuple)): momentum transfer, miller indices in reciprocal lattice
+            en (float | list(float)): en = ei - ef is energy trnsfer, in units of meV
+            projection (tuple): three non-coplaner vectors. If projection is None,
+                                the calculation is done in local Q frame (Q_para, Q_perp, Q_up)
             R0: calculate normalization factor if True
-            projection (tuple): three non-coplaner vectors. If projection is None, the calculation is done in local Q frame
-
         """
-        self.validate_instrument_parameters()
 
-        hkle_list = self._generate_hkle_list(hkl_list, ei, ef)
+        cls = type(self)
+
+        self.validate_instrument_parameters()
+        hkle_list = self.generate_hkle_list(hkl, en)
+
+        instru = self.instrument
 
         rez_list = []
         for hkl, ei, ef in hkle_list:
-
             # q_lab = conv_mat @ hkl
             # q_mod = np.linalg.norm(q_lab)
-            q_mod = np.linalg.norm(self.sample.b_mat @ hkl) * 2 * np.pi
+            q_mod = np.linalg.norm(instru.sample.b_mat @ hkl) * 2 * np.pi
 
             ki = np.sqrt(ei / ksq2eng)
             kf = np.sqrt(ef / ksq2eng)
 
-            rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=self.sample)
-
             try:
-                two_theta = get_angle_from_triangle(ki, kf, q_mod) * self.goniometer._sense
+                two_theta = get_angle_from_triangle(ki, kf, q_mod) * instru.goniometer._sense
             except TypeError:
-                rez.STATUS = False
                 print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
-
+                rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
+                rez.STATUS = False
                 rez._set_labels()
                 rez_list.append(rez)
                 continue
 
             # phi = <ki to q>, always has the oppositie sign of s2
-            phi = get_angle_from_triangle(ki, q_mod, kf) * self.goniometer._sense * (-1)
+            phi = get_angle_from_triangle(ki, q_mod, kf) * instru.goniometer._sense * (-1)
 
-            theta_m = get_angle_bragg(ki, self.monochromator.d_spacing) * self.monochromator._sense
-            theta_a = get_angle_bragg(kf, self.analyzer.d_spacing) * self.analyzer._sense
+            theta_m = get_angle_bragg(ki, instru.monochromator.d_spacing) * instru.monochromator._sense
+            theta_a = get_angle_bragg(kf, instru.analyzer.d_spacing) * instru.analyzer._sense
 
             # TODO
             # curved monochromator and analyzer
@@ -239,9 +162,9 @@ class CooperNathans(TAS):
             # TODO
             # reflection efficiency
 
-            mat_a = CooperNathans.calc_mat_a(ki, kf, theta_m, theta_a)
-            mat_b = CooperNathans.calc_mat_b(ki, kf, phi, two_theta)
-            mat_c = CooperNathans.calc_mat_c(theta_m, theta_a)
+            mat_a = cls.calc_mat_a(ki, kf, theta_m, theta_a)
+            mat_b = cls.calc_mat_b(ki, kf, phi, two_theta)
+            mat_c = cls.calc_mat_c(theta_m, theta_a)
 
             mat_h = mat_c.T @ self.mat_f() @ mat_c + self.mat_g()
             mat_h_inv = np.linalg.inv(mat_h)
@@ -249,25 +172,25 @@ class CooperNathans(TAS):
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
             # TODO how to add smaple mosaic in cooper-nathans?
-            mat_cov[1, 1] += q_mod**2 * self.sample._mosaic_h**2
-            mat_cov[2, 2] += q_mod**2 * self.sample._mosaic_v**2
+            mat_cov[1, 1] += q_mod**2 * instru.sample._mosaic_h**2
+            mat_cov[2, 2] += q_mod**2 * instru.sample._mosaic_v**2
 
             mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
 
-            motor_angles = self.calculate_motor_angles(hkl=hkl, en=ei - ef)
+            motor_angles = instru.calculate_motor_angles(hkl=hkl, en=ei - ef)
             if motor_angles is None:
+                print(f"Cannot reach hkl={np.round(hkl,3)}, ei={ei}, ef={ef}.")
+                rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
                 rez.STATUS = False
                 rez._set_labels()
                 rez_list.append(rez)
                 continue
 
-            r_mat = self.goniometer.r_mat(motor_angles)
-            ub_mat = self.sample.ub_conf.ub_mat
-
-            if self.spice_convention:
-                ub_mat = spice_to_mantid(ub_mat)
+            r_mat = instru.goniometer.r_mat(motor_angles)
+            ub_mat = instru.sample.ub_conf._ub_mat
 
             conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)
+            rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
             rez._project_to_frame(mat_reso, phi, conv_mat)
 
             # TODO check normalization factor
@@ -293,6 +216,4 @@ class CooperNathans(TAS):
             rez._set_labels()
             rez_list.append(rez)
 
-        if len(rez_list) == 1:
-            return rez_list[0]
-        return rez_list
+        return rez_list[0] if len(rez_list) == 1 else rez_list

@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from typing import Optional
+from typing import Literal, Optional, Union
 
 import numpy as np
 
+from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas_base import TASBase
 from tavi.ub_algorithm import (
+    UBConf,
     find_u_from_one_peak_and_scattering_plane,
     find_u_from_two_peaks,
     find_ub_from_multiple_peaks,
@@ -16,7 +19,7 @@ from tavi.ub_algorithm import (
     r_matrix_with_minimal_tilt,
     two_theta_from_hkle,
 )
-from tavi.utilities import MotorAngles, Peak, UBConf, spice_to_mantid
+from tavi.utilities import MotorAngles, Peak
 
 
 class TAS(TASBase):
@@ -24,7 +27,7 @@ class TAS(TASBase):
     Triple-axis instrument class. Handles angle and UB calculations
 
     Attributes:
-        spice_convention (bool): False if using Mandid/International Crystallography Table convention
+        convention (str): "Mantid" or "Spice".
         fixed_ei (float | None): set if ei is fixed
         fixed_ef (float | None): set if ef is fixed
 
@@ -32,24 +35,25 @@ class TAS(TASBase):
         calculate_two_theta
         calculate_ub_matrix
 
+    Note:
+        Definition of different conventions can be found in the UBConf class
+
     """
 
     def __init__(
         self,
-        spice_convention: bool = True,
+        convention: Literal["Mantid", "Spice"] = "Spice",
         fixed_ei: Optional[float] = None,
         fixed_ef: Optional[float] = None,
     ):
         super().__init__()
-        self.spice_convention = spice_convention  # use coordination system defined in SPICE
+        self.convention = convention  # use coordination system defined in SPICE
         self.fixed_ei = fixed_ei
         self.fixed_ef = fixed_ef
 
     def __repr__(self):
         cls = self.__class__.__name__
-        cls_str = (
-            f"{cls}(fixed_ei={self.fixed_ei!r}, fixed_ef={self.fixed_ef!r}, spice_convention={self.spice_convention})"
-        )
+        cls_str = f"{cls}(fixed_ei={self.fixed_ei!r}, fixed_ef={self.fixed_ef!r}, convention={self.convention})"
         return cls_str
 
     def _get_ei_ef(
@@ -60,6 +64,8 @@ class TAS(TASBase):
             ef = self.fixed_ef
             if self.fixed_ei is not None:
                 ei = self.fixed_ei  # fixed both Ef and Ei
+                if not np.allclose(en, 0.0, atol=1e-6):
+                    raise ValueError(f"{self} has both Ei and Ef fixed, No energy trnsfer allowed.")
             else:  # fixed Ef only
                 ei = en + ef
         elif self.fixed_ei is not None:  # fixed Ei only
@@ -143,10 +149,11 @@ class TAS(TASBase):
                 )
 
                 ub_conf = UBConf(
-                    spice_convention=self.spice_convention,
-                    ub_mat=ub_mat,
-                    plane_normal=plane_normal,
-                    in_plane_ref=in_plane_ref,
+                    convention=self.convention,
+                    b_mat=b_mat,
+                    _ub_mat=ub_mat,
+                    _plane_normal=plane_normal,
+                    _in_plane_ref=in_plane_ref,
                     ub_peaks=peaks,
                 )
 
@@ -158,14 +165,15 @@ class TAS(TASBase):
                 ub_mat = np.matmul(u_mat, b_mat)
 
                 ub_conf = UBConf(
-                    spice_convention=self.spice_convention,
-                    ub_mat=ub_mat,
-                    plane_normal=plane_normal,
-                    in_plane_ref=in_plane_ref,
+                    convention=self.convention,
+                    b_mat=b_mat,
+                    _ub_mat=ub_mat,
+                    _plane_normal=plane_normal,
+                    _in_plane_ref=in_plane_ref,
                     ub_peaks=peaks,
                 )
 
-            case 3:
+            case 3:  # Three non-colinear peaks
                 peak1, peak2, peak3 = peaks
                 ZERO = 1e-6
                 if np.dot(peak1.hkl, np.cross(peak2.hkl, peak3.hkl)) < ZERO:
@@ -175,14 +183,24 @@ class TAS(TASBase):
                 g_star_mat = np.matmul(ub_mat.T, ub_mat)
                 self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
 
-                ub_conf = UBConf(spice_convention=self.spice_convention, ub_mat=ub_mat, ub_peaks=peaks)
+                ub_conf = UBConf(
+                    convention=self.convention,
+                    b_mat=self.sample.b_mat,
+                    _ub_mat=ub_mat,
+                    ub_peaks=peaks,
+                )
 
             case _ if num_of_peaks > 3:
                 ub_mat = find_ub_from_multiple_peaks(peaks, self.goniometer.r_mat_inv, ei, ef)
                 g_star_mat = np.matmul(ub_mat.T, ub_mat)
                 self.sample.update_lattice_parametres_from_g_star_mat(g_star_mat)
 
-                ub_conf = UBConf(spice_convention=self.spice_convention, ub_mat=ub_mat, ub_peaks=peaks)
+                ub_conf = UBConf(
+                    convention=self.convention,
+                    b_mat=self.sample.b_mat,
+                    _ub_mat=ub_mat,
+                    ub_peaks=peaks,
+                )
 
             case _:
                 raise ValueError("Not enough peaks for UB matrix determination.")
@@ -228,34 +246,18 @@ class TAS(TASBase):
 
         goni_mode = self.goniometer.mode
         if goni_mode == "bisect":
-
-            # convert to Mantid convention if needed
-            if self.spice_convention:
-                ub_conf_mantid = UBConf(ub_mat=spice_to_mantid(mat))
-
-            angles = self.goniometer.angles_in_bisect_mode(hkl, two_theta, psi, ub_conf_mantid)
+            angles = self.goniometer.angles_in_bisect_mode(hkl, two_theta, psi, ub_conf)
 
         elif goni_mode is None:  # default is minumal tilt
             if ((n := ub_conf.plane_normal) is None) or ((i := ub_conf.in_plane_ref) is None):
                 raise ValueError(f"Missing UB info. plane_normal={n}, in_plne_ref={i}.")
 
-            # convert to Mantid convention if needed
-            if self.spice_convention:
-                ub_conf_mantid = UBConf(
-                    ub_mat=spice_to_mantid(mat),
-                    plane_normal=spice_to_mantid(n),
-                    in_plane_ref=spice_to_mantid(i),
-                    ub_peaks=ub_conf.ub_peaks,
-                )
-            else:
-                ub_conf_mantid = ub_conf
-
-            r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf_mantid)
+            r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf)
             angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)
 
         return angles
 
-    def calcvulate_hkl_from_angles(self, angles: MotorAngles) -> Optional[np.ndarray]:
+    def calculate_hkl_from_angles(self, angles: MotorAngles) -> Optional[np.ndarray]:
         ei, ef = self._get_ei_ef()
         qlab = q_lab(ei=ei, ef=ef, theta=angles.two_theta)
         r = self.goniometer.r_mat(angles=angles)
@@ -263,8 +265,28 @@ class TAS(TASBase):
             print("Cannot get hkl from motor angles without knowing the UB matrix.")
             return None
 
-        ub = spice_to_mantid(ub_conf.ub_mat) if self.spice_convention else ub_conf.ub_mat
-        rub = np.matmul(r, ub)
+        rub = np.matmul(r, ub_conf._ub_mat)
         rub_inv = np.linalg.inv(rub)
         hkl = rub_inv.dot(qlab) / (2 * np.pi)
         return hkl
+
+    def cooper_nathans(
+        self,
+        hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
+        en: Union[float, list[float]],
+        projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        R0: bool = False,
+    ) -> Union[ResoEllipsoid, list[ResoEllipsoid]]:
+        """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
+
+        Args:
+            hkl: momentum transfer, miller indices in reciprocal lattice
+            ei: incident energy, in units of meV
+            ef: final energy, in units of meV
+            R0: calculate normalization factor if True
+            projection (tuple): three non-coplaner vectors. If projection is None, the calculation is done in local Q frame
+        Return
+            A ResoEllipdois instance or a list of ResoEllipdois instances
+        """
+        cn = CooperNathans(instrument=self)
+        return cn.calculate(hkl=hkl, en=en, projection=projection, R0=R0)

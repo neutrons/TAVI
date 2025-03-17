@@ -1,4 +1,4 @@
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.sample import Sample
 
 instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"

@@ -1,9 +1,110 @@
-from typing import Optional
+from dataclasses import dataclass
+from typing import Literal, Optional
 
 import numpy as np
 
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
-from tavi.utilities import MotorAngles, Peak, UBConf, en2q, get_angle_from_triangle
+from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle
+
+
+@dataclass
+class UBConf:
+    """Logs for UB matrix determination
+
+    Attibutes:
+        ub_peaks (tuple of Peaks): peaks used to determine the UB matrix
+        _u_mat (np.adarray): U matrix
+        b_mat (np.adarray): B matrix
+        _ub_matrix (np.adarray): UB matrix
+        _plane_normal (np.adarray): normal vector in Qsample frame, goniometers at zero
+        _in_plane_ref (np.adarray): in plane vector in Qsample frame, goniometers at zero
+
+    Note:
+        _u_mat, _ub_mat, _plnae_normal and _in_plen_ref uses Mandid/International
+        Crystallography Table convention.
+    """
+
+    _ub_mat: np.ndarray
+    convention: Literal["Mantid", "Spice"] = "Spice"
+    _plane_normal: Optional[np.ndarray] = None
+    _in_plane_ref: Optional[np.ndarray] = None
+    _u_mat: Optional[np.ndarray] = None
+    b_mat: Optional[np.ndarray] = None
+    ub_peaks: Optional[tuple[Peak, ...]] = None
+
+    def __init__(self, convention="Spice", **kwargs):
+        self.convention = convention
+        for k, v in kwargs.items():
+            if k in ["ub_mat", "u_mat", "plane_normal", "in_plane_ref"]:
+                k = "_" + k
+                v = self._to_mantid(v)
+            self.__setattr__(k, v)
+
+    def _from_mantid(self, v: np.ndarray):
+        """Convert v from Mantid to other conventions"""
+        match self.convention:
+            case "Mantid":
+                return v
+            case "Spice":
+                t = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
+                return t.dot(v)
+            case _:
+                raise ValueError("Unrecogonized convention: " + self.convention)
+
+    def _to_mantid(self, v: np.ndarray):
+        """Convert v from some convention to Mantid convention"""
+        match self.convention:
+            case "Mantid":
+                return v
+            case "Spice":
+                t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
+                return t.dot(v)
+            case _:
+                raise ValueError("Unrecogonized convention: " + self.convention)
+
+    @property
+    def ub_mat(self):
+        return self._from_mantid(self._ub_mat)
+
+    @property
+    def u_mat(self):
+        return self._from_mantid(self._u_mat)
+
+    @property
+    def plane_normal(self):
+        return self._from_mantid(self._plane_normal)
+
+    @property
+    def in_plane_ref(self):
+        return self._from_mantid(self._in_plane_ref)
+
+    def __repr__(self):
+        ub_str = ""
+        for name, value in self.__dict__.items():
+            match name:
+                case "convention":
+                    conv_str = "UBconf using " + value + " convention.\n"
+                    ub_str += conv_str
+                case "ub_peaks":
+                    ub_peaks_str = ""
+                    sz = len(value)
+                    for peak in value:
+                        ub_peaks_str += str(peak.hkl) + ", "
+                    ub_str += f"UB matrix determined from {sz} peaks: {ub_peaks_str}"
+                case _:
+                    if value is not None:
+                        if name in ["_ub_mat", "_u_mat", "_plane_normal", "_in_plane_ref"]:
+                            value = self._from_mantid(value)
+                            name = name.strip("_")
+                        value_str = np.array2string(
+                            value,
+                            precision=6,
+                            suppress_small=True,
+                            separator=",",
+                        ).replace("\n", "")
+                        ub_str += f"{name}=" + value_str + "\n"
+        return ub_str
+
 
 # -----------------------------------------------------
 # Angle and Q math
@@ -164,9 +265,9 @@ def r_matrix_with_minimal_tilt(
         ub_conf: need to have ub_mat, plane_normal and in_plane_ref
     """
 
-    ub_mat = ub_conf.ub_mat
-    plane_normal = ub_conf.plane_normal
-    in_plane_ref = ub_conf.in_plane_ref
+    ub_mat = ub_conf._ub_mat
+    plane_normal = ub_conf._plane_normal
+    in_plane_ref = ub_conf._in_plane_ref
 
     if (plane_normal is None) or (in_plane_ref is None):
         raise ValueError("plane_normal or in_plane_ref cannot be None.")

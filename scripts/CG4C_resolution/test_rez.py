@@ -2,7 +2,7 @@
 # from tests.test_data_folder.test_samples.python_samples.sample_test import test_xtal
 import matplotlib.pylab as plt
 
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1DManager, Plot2DManager
 
 

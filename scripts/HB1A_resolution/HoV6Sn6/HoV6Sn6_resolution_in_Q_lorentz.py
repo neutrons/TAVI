@@ -4,7 +4,7 @@ import numpy as np
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak

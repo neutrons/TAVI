@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit import Model
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
@@ -123,7 +124,7 @@ peak_info = load_fsq()
 instrument_config_json_path = "test_data/IPTS32912_HB1A_exp1031/hb1a.json"
 ei = 14.450292
 ef = 14.450117
-hb1a = CooperNathans(fixed_ei=ei, fixed_ef=ef, spice_convention=True)
+hb1a = CooperNathans(fixed_ei=ei, fixed_ef=ef)
 hb1a.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6.json"
@@ -212,41 +213,75 @@ cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
 
 
 # remove Lorentz factor
-y_array = []
-y_err = []
-y_array_l = []
-y_err_l = []
-for i, th2th in enumerate(exp_th2th):
+y_array_th2th = []
+y_err_th2th = []
+y_array_l_th2th = []
+y_err_l_th2th = []
+
+y_array_s1 = []
+y_err_s1 = []
+y_array_l_s1 = []
+y_err_l_s1 = []
+for i in range(len(exp_th2th)):
+    th2th = exp_th2th[i]
+    s1 = exp_s1[i]
     mat = rez_list[i].mat
     #  det = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
     det = np.linalg.det(mat)
     # theta = theta_list[i]
-    lorentz = np.sqrt(det / mat[0, 0])
+    lorentz_th2th = np.sqrt(det / mat[0, 0])
+    lorentz_s1 = np.sqrt(det / mat[1, 1])
     amp = th2th.params["s1_amplitude"].value
     err = th2th.params["s1_amplitude"].stderr
-    y_array.append(amp)
-    y_err.append(err)
-    y_array_l.append(amp / lorentz)
-    y_err_l.append(err / lorentz)
+    y_array_th2th.append(amp)
+    y_err_th2th.append(err)
+    y_array_l_th2th.append(amp / lorentz_th2th)
+    y_err_l_th2th.append(err / lorentz_th2th)
 
-ax.errorbar(cal_ii, y_array, yerr=y_err, fmt="s", label="exp th2th")
+    amp = s1.params["s1_amplitude"].value
+    err = s1.params["s1_amplitude"].stderr
+    y_array_s1.append(amp)
+    y_err_s1.append(err)
+    y_array_l_s1.append(amp / lorentz_s1)
+    y_err_l_s1.append(err / lorentz_s1)
+
+ax.errorbar(cal_ii, y_array_th2th, yerr=y_err_th2th, fmt="s", label="th2th")
+ax.errorbar(cal_ii, y_array_s1, yerr=y_err_s1, fmt="o", label="s1")
 
 for i, hkl in enumerate(hkl_list):
     x = cal_ii[i]
-    y = y_array[i] + 0.2
+    y = y_array_th2th[i] + 0.2
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
 ax.grid(alpha=0.6)
-# --------------------- plot II  ---------------------
+ax.legend()
+
+
+# --------------------- plot II Lorentz removed ---------------------
 fig, ax = plt.subplots()
 ax.set_xlabel("Calculated Integ. Inten.")
-ax.set_ylabel("Measured Integ. Inten.")
+ax.set_ylabel("Measured Integ. Inten. with Lorentz factor removed")
 
-ax.errorbar(cal_ii, y_array_l, yerr=y_err_l, fmt="s", label="th2th Lorentz removed")
+ax.errorbar(cal_ii, y_array_l_th2th, yerr=y_err_l_th2th, fmt="s", label="th2th")
+ax.errorbar(cal_ii, y_array_l_s1, yerr=y_err_l_s1, fmt="o", label="s1")
 
+
+def line(x, c):
+    return c * x
+
+
+# fit linear, th2th only
+model = Model(line, x=np.array(cal_ii))
+result = model.fit(np.array(y_array_l_th2th), c=1.0)
+
+f = result.params["c"].value
+ferr = result.params["c"].stderr
+ax.plot(np.array(cal_ii), result.best_fit, "r", label=f"scale factor = {f:.5f}+-{ferr:.5f}")
+
+ax.legend()
 
 for i, hkl in enumerate(hkl_list):
     x = cal_ii[i]
-    y = y_array_l[i] + 0.002
+    y = y_array_l_th2th[i] + 0.002
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
 ax.grid(alpha=0.6)
 

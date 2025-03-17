@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 
 instrument_config_json_path = "./test_data/IPTS32816_HB1A_exp1034/hb1a.json"
 tas = CooperNathans(SPICE_CONVENTION=True)
@@ -16,7 +16,7 @@ ef = 14.4503
 R0 = False
 
 sample_json_path_1 = "./test_data/IPTS32816_HB1A_exp1034/fesn1.json"
-sample_1 = Xtal.from_json(sample_json_path_1)
+sample_1 = Sample.from_json(sample_json_path_1)
 tas.mount_sample(sample_1)
 
 rez1_l = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
@@ -24,7 +24,7 @@ rez1_l.plot_ellipses()
 rez1_q = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0, projection=None)
 
 sample_json_path_2 = "./test_data/IPTS32816_HB1A_exp1034/fesn2.json"
-sample_2 = Xtal.from_json(sample_json_path_2)
+sample_2 = Sample.from_json(sample_json_path_2)
 tas.mount_sample(sample_2)
 
 rez2_l = tas.rez(hkl_list=(0, 0, 6), ei=ei, ef=ef, R0=R0)
@@ -151,7 +151,7 @@ scan83 = Scan.from_spice(path_to_spice_folder, scan_num=83)
 fesn000p5_lscan_2 = scan83.get_data(norm_to=(120, "mcu"))
 
 sample_json_path_3 = "./test_data/IPTS32816_HB1A_exp1034/fesn3.json"
-sample_3 = Xtal.from_json(sample_json_path_3)
+sample_3 = Sample.from_json(sample_json_path_3)
 tas.mount_sample(sample_3)
 rez3_l = tas.rez(hkl_list=(0, 0, 0.5), ei=ei, ef=ef, R0=R0)
 rez3_l.plot_ellipses()

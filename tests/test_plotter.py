@@ -5,14 +5,14 @@ import numpy as np
 from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
 
 
 def test_plot2d():
     instrument_config_json_path = "./test_data/IPTS9879_HB1A_exp978/hb1a.json"
-    tas = CooperNathans(fixed_ei=14.450292, spice_convention=True)
+    tas = TAS(fixed_ei=14.450292, convention="Spice")
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     tavi = TAVI()
@@ -67,7 +67,7 @@ def test_plot2d_with_resolution():
     )
     # load experimental parameters
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CooperNathans(fixed_ef=4.8, spice_convention=False)
+    tas = TAS(fixed_ef=4.8)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
@@ -77,16 +77,9 @@ def test_plot2d_with_resolution():
     # calculate resolution ellipses
     R0 = False
     hkl_list = [(qh, qh, 3) for qh in np.arange(-0.5, 0.15, 0.05)]
-    ef = 4.8
-    ei_list = [e + ef for e in np.arange(0, 4.1, 0.4)]
+    en_list = [en for en in np.arange(0, 4.1, 0.4)]
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez_list = tas.rez(
-        hkl_list=hkl_list,
-        ei=ei_list,
-        ef=ef,
-        projection=projection,
-        R0=R0,
-    )
+    rez_list = tas.cooper_nathans(hkl=hkl_list, en=en_list, projection=projection, R0=R0)
 
     # genreate plot
     p = Plot2D()

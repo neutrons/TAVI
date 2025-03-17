@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from mpl_toolkits.axisartist import Axes
 
-from tavi.instrument.resolution.cooper_nathans import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
 
@@ -11,8 +11,8 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 
 def test_local_q(tas_params):
-    tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, projection=None, R0=R0)
+    tas, hkl, _, R0 = tas_params
+    rez = tas.cooper_nathans(hkl=hkl, en=0, projection=None, R0=R0)
     ellipse = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
 
     assert np.allclose(ellipse.angle, 90)
@@ -21,8 +21,8 @@ def test_local_q(tas_params):
 
 
 def test_hkl(tas_params):
-    tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+    tas, hkl, _, R0 = tas_params
+    rez = tas.cooper_nathans(hkl=hkl, en=0, R0=R0)
 
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
 
@@ -32,8 +32,8 @@ def test_hkl(tas_params):
 
 
 def test_plotting(tas_params):
-    tas, ei, ef, hkl, _, R0 = tas_params
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=R0)
+    tas, hkl, _, R0 = tas_params
+    rez = tas.cooper_nathans(hkl=hkl, en=0, R0=R0)
 
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
     e01_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
@@ -69,20 +69,17 @@ def tas_params():
     # cooper_nathans_CTAX
 
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
-    tas = CooperNathans(fixed_ef=4.8, spice_convention=False)
+    tas = TAS(fixed_ef=4.8)
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     sample_json_path = "./test_data/test_samples/nitio3.json"
     sample = Sample.from_json(sample_json_path)
     tas.mount_sample(sample)
 
-    ei = 4.8
-    ef = 4.8
     hkl = (0, 0, 3)
-
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     R0 = False
 
-    tas_params = (tas, ei, ef, hkl, projection, R0)
+    tas_params = (tas, hkl, projection, R0)
 
     return tas_params
