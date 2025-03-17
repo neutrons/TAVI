@@ -108,7 +108,6 @@ def plot_eng_scan(hkl, scan_num, fit_range=None, fit_incoherent_only=False, c="C
 
 
 def plot_peaks():
-
     figs = []
     hkl = (0, 0, 6)
     fig, (ax0, ax1, ax2, ax3) = plt.subplots(ncols=4, sharey=True, figsize=(16, 5))
@@ -294,7 +293,6 @@ def plot_peaks():
 
 
 if __name__ == "__main__":
-
     instrument_config_json_path = "./test_data/CTAX_rez/cg4c.json"
     cg4c = CooperNathans(fixed_ef=4.8, spice_convention=True)
     cg4c.load_instrument_params_from_json(instrument_config_json_path)
