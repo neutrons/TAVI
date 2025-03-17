@@ -8,7 +8,6 @@ from tavi.sample import Sample
 
 
 def h_en_mesh(scans, name, grid, vmax):
-
     sg = tavi.combine_scans(scans, name=name)
     data = sg.get_data(
         axes=("qh", "en", "detector"),
@@ -22,7 +21,6 @@ def h_en_mesh(scans, name, grid, vmax):
 
 
 def l_en_mesh(scans, name, grid, vmax):
-
     sg = tavi.combine_scans(scans, name=name)
     data = sg.get_data(
         axes=("ql", "en", "detector"),
@@ -36,7 +34,6 @@ def l_en_mesh(scans, name, grid, vmax):
 
 
 def h_l_mesh(scans, name, grid, vmax):
-
     sg = tavi.combine_scans(scans, name=name)
     data = sg.get_data(
         axes=("qh", "ql", "detector"),
@@ -144,9 +141,7 @@ def plot_mesh():
     # ------------ 004 hori foc-------------
     scan_nums = list(range(234, 254 + 1))
     h_scans_004 = [(ipts_str, num) for num in scan_nums]
-    p = h_en_mesh(
-        h_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3
-    )
+    p = h_en_mesh(h_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3)
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
@@ -174,7 +169,6 @@ def plot_mesh():
 
 
 if __name__ == "__main__":
-
     instrument_config_json_path = "./test_data/CTAX_rez/cg4c.json"
     cg4c = CooperNathans(fixed_ef=4.8, spice_convention=True)
     cg4c.load_instrument_params_from_json(instrument_config_json_path)

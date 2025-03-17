@@ -49,7 +49,7 @@ p1 = Plot1D()
 p1.add_scan(fesn000p5_lscan, fmt="o")
 p1.add_fit(
     f1_lscan,
-    label=f"FWHM={f1_lscan.result.params["s1_fwhm"].value:.4f}+/-{f1_lscan.result.params["s1_fwhm"].stderr:.4f}",
+    label=f"FWHM={f1_lscan.result.params['s1_fwhm'].value:.4f}+/-{f1_lscan.result.params['s1_fwhm'].stderr:.4f}",
 )
 x = f1_lscan.result.params["s1_center"].value
 components = result.eval_components(result.params, x=x)
@@ -74,7 +74,7 @@ p1_2 = Plot1D()
 p1_2.add_scan(fesn000p5_qscan, fmt="o")
 p1_2.add_fit(
     f1_qscan,
-    label=f"FWHM={f1_qscan.result.params["s1_fwhm"].value:.4f}+/-{f1_qscan.result.params["s1_fwhm"].stderr:.4f}",
+    label=f"FWHM={f1_qscan.result.params['s1_fwhm'].value:.4f}+/-{f1_qscan.result.params['s1_fwhm'].stderr:.4f}",
 )
 x = f1_qscan.result.params["s1_center"].value
 components = result.eval_components(result.params, x=x)
@@ -103,7 +103,7 @@ p2 = Plot1D()
 p2.add_scan(substrate006_lscan, fmt="o")
 p2.add_fit(
     f2_lscan,
-    label=f"FWHM={f2_lscan.result.params["s1_fwhm"].value:.4f}+/-{f2_lscan.result.params["s1_fwhm"].stderr:.4f}",
+    label=f"FWHM={f2_lscan.result.params['s1_fwhm'].value:.4f}+/-{f2_lscan.result.params['s1_fwhm'].stderr:.4f}",
 )
 x = f2_lscan.result.params["s1_center"].value
 components = result.eval_components(result.params, x=x)
@@ -130,7 +130,7 @@ p2_2 = Plot1D()
 p2_2.add_scan(substrate006_qscan, fmt="o")
 p2_2.add_fit(
     f2_qscan,
-    label=f"FWHM={f2_qscan.result.params["s1_fwhm"].value:.4f}+/-{f2_qscan.result.params["s1_fwhm"].stderr:.4f}",
+    label=f"FWHM={f2_qscan.result.params['s1_fwhm'].value:.4f}+/-{f2_qscan.result.params['s1_fwhm'].stderr:.4f}",
 )
 x = f2_qscan.result.params["s1_center"].value
 components = result.eval_components(result.params, x=x)
@@ -169,7 +169,7 @@ p3 = Plot1D()
 p3.add_scan(fesn000p5_lscan_2, fmt="o")
 p3.add_fit(
     f3_lscan,
-    label=f"FWHM={result.params["s1_fwhm"].value:.4f}+/-{result.params["s1_fwhm"].stderr:.4f}",
+    label=f"FWHM={result.params['s1_fwhm'].value:.4f}+/-{result.params['s1_fwhm'].stderr:.4f}",
 )
 x = result.params["s1_center"].value
 components = result.eval_components(result.params, x=x)
