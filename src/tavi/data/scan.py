@@ -75,7 +75,6 @@ class Scan(object):
     """
 
     def __init__(self, name: str, nexus_dict: NexusEntry) -> None:
-
         self.name: str = name
         self._nexus_dict: NexusEntry = nexus_dict
         self.data: dict = self.get_data_columns()
@@ -289,7 +288,6 @@ class Scan(object):
         return scan_data_1d
 
     def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
-
         qh = self.data.get("qh")
         qk = self.data.get("qk")
         ql = self.data.get("ql")
