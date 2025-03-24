@@ -22,7 +22,6 @@ def test_find_two_theta():
 
 # TODO
 def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
-
     ctax = TAS(fixed_ef=4.8, convention=True)
     ctax.goniometer = Goniometer({"sense": "+", "type": "Y,-Z,X"})
     ctax.mount_sample(Sample(lattice_params=(5.0577, 5.0577, 24.721009, 90, 90, 120)))
@@ -103,7 +102,6 @@ def test_r_mat_to_angles():
 
 
 def test_calculate_ub():
-
     tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
@@ -134,7 +132,6 @@ def test_calculate_ub():
 
 
 def test_r_mat_with_minimal_tilt():
-
     tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
@@ -157,7 +154,6 @@ def test_r_mat_with_minimal_tilt():
 
 
 def test_calculate_motor_agnles():
-
     tas = TAS(fixed_ef=13.505137, convention=False)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 

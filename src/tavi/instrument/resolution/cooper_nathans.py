@@ -143,7 +143,7 @@ class CooperNathans(ResolutionCalculator):
             try:
                 two_theta = get_angle_from_triangle(ki, kf, q_mod) * instru.goniometer._sense
             except TypeError:
-                print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
+                print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl, 3)}.")
                 rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
                 rez.STATUS = False
                 rez._set_labels()
@@ -179,7 +179,7 @@ class CooperNathans(ResolutionCalculator):
 
             motor_angles = instru.calculate_motor_angles(hkl=hkl, en=ei - ef)
             if motor_angles is None:
-                print(f"Cannot reach hkl={np.round(hkl,3)}, ei={ei}, ef={ef}.")
+                print(f"Cannot reach hkl={np.round(hkl, 3)}, ei={ei}, ef={ef}.")
                 rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
                 rez.STATUS = False
                 rez._set_labels()

@@ -13,7 +13,6 @@ from tavi.utilities import MotorAngles, Peak
 
 
 def analyze_s1_scan(hkl, s1_scan, fit_range=None):
-
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=s1_scan)
     scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
@@ -46,7 +45,6 @@ def analyze_s1_scan(hkl, s1_scan, fit_range=None):
 
 
 def analyze_th2th_scan(hkl, th2th_scan, fit_range=None):
-
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=th2th_scan)
     scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
@@ -263,7 +261,6 @@ def analyze_attenuation():
 
 
 def plot_s1_th2th_peaks():
-
     figs = []
 
     hkl = (0, 0, 1)

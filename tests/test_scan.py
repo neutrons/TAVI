@@ -53,7 +53,6 @@ def test_scan_from_nexus():
 
 
 def test_get_scan_data():
-
     path_to_spice_folder = "./test_data/exp424"
     scan = Scan.from_spice(path_to_spice_folder, scan_num=42)
 
