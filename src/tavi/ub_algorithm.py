@@ -20,7 +20,7 @@ class UBConf:
         _in_plane_ref (np.adarray): in plane vector in Qsample frame, goniometers at zero
 
     Note:
-        _u_mat, _ub_mat, _plnae_normal and _in_plen_ref uses Mandid/International
+        _u_mat, _ub_mat, _plnae_normal and _in_plane_ref uses Mandid/International
         Crystallography Table convention.
     """
 
@@ -33,11 +33,8 @@ class UBConf:
     ub_peaks: Optional[tuple[Peak, ...]] = None
 
     def __init__(self, convention="Spice", **kwargs):
-        self.convention = convention
+        self.convention = "Spice" if convention is None else convention
         for k, v in kwargs.items():
-            if k in ["ub_mat", "u_mat", "plane_normal", "in_plane_ref"]:
-                k = "_" + k
-                v = self._to_mantid(v)
             self.__setattr__(k, v)
 
     def _from_mantid(self, v: np.ndarray):
@@ -66,17 +63,33 @@ class UBConf:
     def ub_mat(self):
         return self._from_mantid(self._ub_mat)
 
+    @ub_mat.setter
+    def ub_mat(self, value):
+        self._ub_mat = self._to_mantid(value)
+
     @property
     def u_mat(self):
         return self._from_mantid(self._u_mat)
+
+    @u_mat.setter
+    def u_mat(self, value):
+        self._u_mat = self._to_mantid(value)
 
     @property
     def plane_normal(self):
         return self._from_mantid(self._plane_normal)
 
+    @plane_normal.setter
+    def plane_normal(self, value):
+        self._plane_normal = self._to_mantid(value)
+
     @property
     def in_plane_ref(self):
         return self._from_mantid(self._in_plane_ref)
+
+    @in_plane_ref.setter
+    def in_plane_ref(self, value):
+        self._in_plane_ref = self._to_mantid(value)
 
     def __repr__(self):
         ub_str = ""
@@ -173,8 +186,8 @@ def two_theta_from_hkle(
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
-    two_theta_radian = get_angle_from_triangle(ki, kf, q_norm)
-    return two_theta_radian
+    two_theta_radians = get_angle_from_triangle(ki, kf, q_norm)
+    return two_theta_radians
 
 
 def psi_from_hkle(
@@ -194,8 +207,8 @@ def psi_from_hkle(
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
-    psi_radian = get_angle_from_triangle(ki, q_norm, kf)
-    return psi_radian
+    psi_radians = get_angle_from_triangle(ki, q_norm, kf)
+    return psi_radians
 
 
 def plane_normal_from_two_peaks(

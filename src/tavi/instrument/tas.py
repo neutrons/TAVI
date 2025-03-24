@@ -19,7 +19,7 @@ from tavi.ub_algorithm import (
     r_matrix_with_minimal_tilt,
     two_theta_from_hkle,
 )
-from tavi.utilities import MotorAngles, Peak
+from tavi.utilities import MotorAngles, Peak, en2q, get_angle_bragg
 
 
 class TAS(TASBase):
@@ -59,13 +59,13 @@ class TAS(TASBase):
     def _get_ei_ef(
         self, ei: Optional[float] = None, ef: Optional[float] = None, en: float = 0.0
     ) -> tuple[float, float]:
-        """Determine Ei and Ef based on if Ei or Ef is fixed"""
+        """Determine Ei and Effor a given energy transfer en, based on whether Ei or Ef is fixed"""
         if self.fixed_ef is not None:
             ef = self.fixed_ef
             if self.fixed_ei is not None:
                 ei = self.fixed_ei  # fixed both Ef and Ei
-                if not np.allclose(en, 0.0, atol=1e-6):
-                    raise ValueError(f"{self} has both Ei and Ef fixed, No energy trnsfer allowed.")
+                if not np.allclose(en, 0.0, atol=1e-3):
+                    raise ValueError(f"{self} has both Ei and Ef fixed, No energy transfer allowed.")
             else:  # fixed Ef only
                 ei = en + ef
         elif self.fixed_ei is not None:  # fixed Ei only
@@ -91,14 +91,15 @@ class TAS(TASBase):
         """
 
         ei, ef = self._get_ei_ef(en=en)
-        two_theta_radian = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
-
-        if two_theta_radian is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={en} meV.")
+        h, k, l = hkl
+        if (two_theta_radians := two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)) is None:
+            print(
+                f"Triangle cannot be closed at q=({h:.02f},{k:.02f},{l:.02f}), "
+                + f"with ei={ei:.02f} meV and ef={ef:.02f} meV."
+            )
             return None
         else:
-            two_theta = np.rad2deg(two_theta_radian) * self.goniometer._sense
-            return two_theta
+            return np.degrees(two_theta_radians) * self.goniometer._sense
 
     def get_psi(self, hkl: tuple[float, float, float], en: float = 0.0) -> Optional[float]:
         """find psi angle for a given peak
@@ -115,14 +116,29 @@ class TAS(TASBase):
         """
 
         ei, ef = self._get_ei_ef(en=en)
-        psi_radian = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
-
-        if psi_radian is None:
-            print(f"Triangle cannot be closed at q={hkl}, en={en} meV.")
+        psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
+        h, k, l = hkl
+        if psi_radians is None:
+            print(
+                f"Triangle cannot be closed at q=({h:.02f},{k:.02f},{l:.02f}), "
+                + f"with ei={ei:.02f} meV and ef={ef:.02f} meV."
+            )
             return None
         else:
-            psi = np.rad2deg(psi_radian) * self.goniometer._sense * (-1)
+            psi = np.rad2deg(psi_radians) * self.goniometer._sense * (-1)
             return psi
+
+    def get_theta_m(self, ei):
+        """Calculate the theta angle m1 of monochromator of the given Ei"""
+        mono = self.monochromator
+        theta_m = get_angle_bragg(en2q(ei), mono.d_spacing) * mono._sense
+        return np.degrees(theta_m)
+
+    def get_theta_a(self, ef):
+        """Calculate the theta angle a1 of analyzer of the given Ef"""
+        ana = self.analyzer
+        theta_a = get_angle_bragg(en2q(ef), ana.d_spacing) * ana._sense
+        return np.degrees(theta_a)
 
     def calculate_ub_matrix(self, peaks: tuple[Peak, ...], scattering_plane=None) -> Optional[UBConf]:
         """Find UB matrix from a list of observed peaks"""
@@ -273,10 +289,10 @@ class TAS(TASBase):
     def cooper_nathans(
         self,
         hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
-        en: Union[float, list[float]],
+        en: Union[float, list[float]] = 0.0,
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
         R0: bool = False,
-    ) -> Union[ResoEllipsoid, list[ResoEllipsoid]]:
+    ) -> Union[ResoEllipsoid, tuple[ResoEllipsoid]]:
         """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
         Args:

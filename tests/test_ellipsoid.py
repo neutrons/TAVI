@@ -8,9 +8,18 @@ from tavi.sample import Sample
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
+def test_out_of_reach(tas_params):
+    ctax, hkl, _, R0 = tas_params
+    rez = ctax.cooper_nathans(hkl=(0, 0, 0), en=0, projection=None, R0=R0)
+    assert np.allclose(rez.STATUS, False)
+
+    rez = ctax.cooper_nathans(hkl=(10, 10, 10), en=0, projection=None, R0=R0)
+    assert np.allclose(rez.STATUS, False)
+
+
 def test_local_q(tas_params):
     ctax, hkl, _, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=None, R0=R0)
+    rez = ctax.cooper_nathans(hkl, en=0, projection=None, R0=R0)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (3 * 2 * np.pi / ctax.sample.c, 0, 0))

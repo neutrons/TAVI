@@ -3,31 +3,32 @@ import numpy as np
 from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D, Plot2D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
+ei = 13.500177
+ef = 13.501206
 instrument_config_json_path = "./test_data/IPTS31591_HB1_exp0917/hb1.json"
-tas = CooperNathans(SPICE_CONVENTION=True)
+tas = TAS(fixed_ef=ef)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "./test_data/IPTS31591_HB1_exp0917/NiO.json"
-sample = Xtal.from_json(sample_json_path)
-ub_json = sample.ub_mat
+sample = Sample.from_json(sample_json_path)
+ub_json = sample.ub_conf.ub_mat
 tas.mount_sample(sample)
 
 #  -------------- check UB calculation ----------------
-ei = 13.500177
-ef = 13.501206
+
 
 angles1 = MotorAngles(two_theta=-72.362452, omega=50.435700, sgl=0.171000, sgu=-0.056000)
-peak1 = Peak(hkl=(0, 0, 2), angles=angles1, ei=ei, ef=ef)
+peak1 = Peak(hkl=(0, 0, 2), angles=angles1)
 angles2 = MotorAngles(two_theta=-61.493160, omega=110.605125, sgl=0.171000, sgu=-0.055000)
-peak2 = Peak(hkl=(1, 1, 0), angles=angles2, ei=ei, ef=ef)
+peak2 = Peak(hkl=(1, 1, 0), angles=angles2)
 
 tas.calculate_ub_matrix(peaks=(peak1, peak2))
-assert np.allclose(tas.sample.ub_mat, ub_json, atol=1e-4)
+assert np.allclose(tas.sample.ub_conf.ub_mat, ub_json, atol=1e-4)
 # ----------------- plot scan 45 and 59 -----------------------------
 # load data
 tavi = TAVI()
@@ -53,14 +54,12 @@ im1 = p.plot(ax)
 
 R0 = False
 hkl_list = [(0, 0, ql) for ql in np.arange(0, 4, 0.2)]
-ef = 13.5
-ei_list = [e + ef for e in np.arange(0, 50, 5)]
+en_list = [e for e in np.arange(0, 50, 5)]
 projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
 
-rez_list = tas.rez(
-    hkl_list=hkl_list,
-    ei=ei_list,
-    ef=ef,
+rez_list = tas.cooper_nathans(
+    hkl=hkl_list,
+    en=en_list,
     projection=projection,
     R0=R0,
 )

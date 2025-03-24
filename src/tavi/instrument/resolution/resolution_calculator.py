@@ -1,5 +1,7 @@
 from typing import Union
 
+from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
+
 
 class ResolutionCalculator:
     """
@@ -41,7 +43,7 @@ class ResolutionCalculator:
                 hkle_list.append((hkl, ei, ef))
         return tuple(hkle_list)
 
-    def validate_instrument_parameters(self):
+    def validate_instrument_parameters(self):  # noqa: C901
         """Check if enough instrument parameters are provided for Cooper-Nathans mehtod"""
 
         try:  # monochromator
@@ -75,3 +77,6 @@ class ResolutionCalculator:
         # sample
         if self.instrument.sample is None:
             raise ValueError("Sample info are missing.")
+
+    def test(self):
+        return ResoEllipsoid()

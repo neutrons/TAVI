@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import numpy as np
 
@@ -15,13 +15,7 @@ class Goniometer(TASComponent):
     Attributes:
         type (str):
         sense (str): "+" if s2 is right-hand
-        s2_limit (tuple | None): (min, max) of s2 angle
-        omega_limit
-        sgl_limit: Default is (-10, 10)
-        sgu_limit:  Default is  (-10, 10)
-        chi_limit:
-        phi_limit:
-
+        limits (dict): (min, max) of s2 angle
 
     Methods:
         _sense
@@ -42,12 +36,14 @@ class Goniometer(TASComponent):
     ):
         self.type: str = "Y,-Z,X"  # Y-mZ-X for (s1, sgl, sgu), Huber table at HB1A and HB3,
         self.sense: Literal["-", "+"] = "-"  # determines the sign of s2
-        self.s2_limit: Optional[tuple] = None
-        self.omega_limit: Optional[tuple] = None
-        self.sgl_limit: Optional[tuple] = (-10, 10)
-        self.sgu_limit: Optional[tuple] = (-10, 10)
-        self.chi_limit: Optional[tuple] = None
-        self.phi_limit: Optional[tuple] = None
+        self.limits = {
+            "two_theta": (None, None),
+            "omega": (None, None),
+            "sgl": (-10, 10),
+            "sgu": (-10, 10),
+            "chi": (None, None),
+            "phi": (None, None),
+        }
 
         super().__init__(param_dict)
         self.component_name = component_name
@@ -78,13 +74,13 @@ class Goniometer(TASComponent):
         return mode
 
     @property
-    def motor_senses(self) -> List[Literal[+1, -1]]:
+    def motor_senses(self) -> tuple[Literal[+1, -1]]:
         ax0, ax1, ax2, *_ = self.type.split(",")
         signs = []
         for ax in [ax0, ax1, ax2]:
             sign = -1 if ax.startswith("-") else +1
             signs.append(sign)
-        return signs
+        return tuple(signs)
 
     @property
     def _sense(self):
@@ -173,7 +169,8 @@ class Goniometer(TASComponent):
                 )
 
                 angles = MotorAngles(two_theta, omega, None, None, chi, phi)
-                self.validate_motor_positions(angles)
+                if not self.validate_motor_positions(angles):
+                    print(f"Angles {angles} cannot be reached.")
 
         return angles
 
@@ -211,7 +208,8 @@ class Goniometer(TASComponent):
                     ]
                 )
                 angles = MotorAngles(two_theta, omega, sgl, sgu, None, None)
-                self.validate_motor_positions(angles)
+                if not self.validate_motor_positions(angles):
+                    print(f"Angles {angles} cannot be reached.")
 
             case "YXYbisect":
                 print("Not implemented yet.")
@@ -226,13 +224,26 @@ class Goniometer(TASComponent):
 
     def set_limit(
         self,
-        motor_name: Literal["s2", "omega", "sgl", "sgu", "chi", "phi"],
-        motor_range: tuple[float, float] = (-180, 180),
+        motor_name: Literal["two_theta", "omega", "sgl", "sgu", "chi", "phi"],
+        motor_range: tuple[Optional[float], Optional[float]] = (-180, 180),
     ):
         "set goiometer motor limt"
-        setattr(self, motor_name + "_limit", motor_range)
+        if motor_name in ("two_theta", "omega", "sgl", "sgu", "chi", "phi"):
+            self.limits.update({motor_name: motor_range})
+        else:
+            raise ValueError(f"Unrecogonized motor name: {motor_name}.")
 
-    # TODO
-    def validate_motor_positions(self, angles: MotorAngles):
+    def validate_motor_positions(self, angles: MotorAngles) -> bool:
         "check if all goiometer motors are within the limits"
-        pass
+
+        for name, value in angles._asdict().items():
+            if value is None:
+                continue
+            low, high = self.limits.get(name)
+            if low is not None:
+                if value < low:
+                    return False
+            if high is not None:
+                if value > high:
+                    return False
+        return True

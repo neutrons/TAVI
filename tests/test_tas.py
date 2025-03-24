@@ -261,13 +261,13 @@ def test_cube():
 
     angles_100_tas = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
     assert np.allclose(angles_100_tas.two_theta, two_theta_100)
-    assert np.allclose(angles_100_tas.omega, hb1a.get_psi((1, 0, 0)))
+    assert np.allclose(angles_100_tas.omega, hb1a.get_psi_radian((1, 0, 0)))
     assert np.allclose(angles_100_tas.sgl, 0)
     assert np.allclose(angles_100_tas.sgu, 0)
 
     angles_010_tas = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
     assert np.allclose(angles_010_tas.two_theta, two_theta_010)
-    assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi((0, 1, 0)))
+    assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi_radian((0, 1, 0)))
     assert np.allclose(angles_010_tas.sgl, 0)
     assert np.allclose(angles_010_tas.sgu, 0)
 
@@ -275,7 +275,7 @@ def test_cube():
     assert np.allclose(angles_110_tas.two_theta, two_theta_110)
     assert np.allclose(
         angles_110_tas.omega,
-        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)),
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi_radian((1, 1, 0)),
     )
     assert np.allclose(angles_110_tas.sgl, 0)
     assert np.allclose(angles_110_tas.sgu, 0)
@@ -300,5 +300,5 @@ def test_cube():
     assert np.allclose(angles_110_4c.chi, 0)
     assert np.allclose(
         angles_110_4c.phi,
-        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)) - two_theta_110 / 2,
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi_radian((1, 1, 0)) - two_theta_110 / 2,
     )

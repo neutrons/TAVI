@@ -4,7 +4,7 @@ import numpy as np
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
@@ -28,7 +28,7 @@ def analyze_in_q(hkl, scans, fit_ranges=(None, None)):
     # print(scan_th2th_fit.result.fit_report())
     # print(f"Fit {scan1}")
 
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    rez = tas.cooper_nathans(hkl=hkl, R0=False, projection=None)
 
     p1 = Plot1D()
     # data
@@ -106,7 +106,7 @@ def analyze_in_q(hkl, scans, fit_ranges=(None, None)):
 instrument_config_json_path = "test_data/IPTS32912_HB1A_exp1031/hb1a.json"
 ei = 14.450292
 ef = 14.450117
-tas = CooperNathans(fixed_ei=ei, fixed_ef=ef, spice_convention=True)
+tas = TAS(fixed_ei=ei, fixed_ef=ef)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6.json"

@@ -130,7 +130,9 @@ class Sample(object):
         if (in_plane_ref := sample_params_dict.get("in_plane_ref")) is not None:
             in_plane_ref = np.array(in_plane_ref)
 
+        convention = sample_params_dict.get("convention")
         sample.ub_conf = UBConf(
+            convention=convention,
             ub_mat=ub_matrix,
             plane_normal=plane_normal,
             in_plane_ref=in_plane_ref,

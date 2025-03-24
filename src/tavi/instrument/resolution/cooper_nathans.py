@@ -4,7 +4,7 @@ import numpy as np
 
 from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
-from tavi.utilities import get_angle_bragg, get_angle_from_triangle, ksq2eng, rotation_matrix_2d, sig2fwhm
+from tavi.utilities import en2q, ksq2eng, rotation_matrix_2d, sig2fwhm
 
 
 class CooperNathans(ResolutionCalculator):
@@ -113,7 +113,7 @@ class CooperNathans(ResolutionCalculator):
         en: Union[float, list[float]],
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
         R0: bool = False,
-    ):
+    ) -> Union[ResoEllipsoid, tuple[ResoEllipsoid]]:
         """Calculate resolution using Cooper-Nathans method
 
         Args:
@@ -122,6 +122,9 @@ class CooperNathans(ResolutionCalculator):
             projection (tuple): three non-coplaner vectors. If projection is None,
                                 the calculation is done in local Q frame (Q_para, Q_perp, Q_up)
             R0: calculate normalization factor if True
+
+        Return:
+            tuple (ResoEllipsoid)
         """
 
         cls = type(self)
@@ -129,32 +132,31 @@ class CooperNathans(ResolutionCalculator):
         self.validate_instrument_parameters()
         hkle_list = self.generate_hkle_list(hkl, en)
 
-        instru = self.instrument
+        tas = self.instrument
 
         rez_list = []
         for hkl, ei, ef in hkle_list:
-            # q_lab = conv_mat @ hkl
-            # q_mod = np.linalg.norm(q_lab)
-            q_mod = np.linalg.norm(instru.sample.b_mat @ hkl) * 2 * np.pi
 
-            ki = np.sqrt(ei / ksq2eng)
-            kf = np.sqrt(ef / ksq2eng)
+            # q_mod = np.linalg.norm(tas.sample.b_mat @ hkl) * 2 * np.pi
+            q_norm = tas.sample.get_q_norm(hkl)
+            ki, kf = en2q(ei), en2q(ef)
 
-            try:
-                two_theta = get_angle_from_triangle(ki, kf, q_mod) * instru.goniometer._sense
-            except TypeError:
-                print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
-                rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
-                rez.STATUS = False
-                rez._set_labels()
-                rez_list.append(rez)
+            motor_angles = tas.calculate_motor_angles(hkl=hkl, en=ei - ef)
+            if motor_angles is None:
+                # rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=tas.sample)
+                # rez.STATUS = False
+                # rez._set_labels()
+                # rez_list.append(rez)
                 continue
 
-            # phi = <ki to q>, always has the oppositie sign of s2
-            phi = get_angle_from_triangle(ki, q_mod, kf) * instru.goniometer._sense * (-1)
+            r_mat = tas.goniometer.r_mat(motor_angles)
+            ub_mat = tas.sample.ub_conf._ub_mat
+            conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)
 
-            theta_m = get_angle_bragg(ki, instru.monochromator.d_spacing) * instru.monochromator._sense
-            theta_a = get_angle_bragg(kf, instru.analyzer.d_spacing) * instru.analyzer._sense
+            # phi = <ki to q>, always has the oppositie sign of s2
+            phi = np.radians(tas.get_psi(hkl, en=ei - ef))
+            theta_m = np.radians(tas.get_theta_m(ei))
+            theta_a = np.radians(tas.get_theta_a(ef))
 
             # TODO
             # curved monochromator and analyzer
@@ -163,7 +165,7 @@ class CooperNathans(ResolutionCalculator):
             # reflection efficiency
 
             mat_a = cls.calc_mat_a(ki, kf, theta_m, theta_a)
-            mat_b = cls.calc_mat_b(ki, kf, phi, two_theta)
+            mat_b = cls.calc_mat_b(ki, kf, phi, np.radians(motor_angles.two_theta))
             mat_c = cls.calc_mat_c(theta_m, theta_a)
 
             mat_h = mat_c.T @ self.mat_f() @ mat_c + self.mat_g()
@@ -172,26 +174,10 @@ class CooperNathans(ResolutionCalculator):
             mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
             # TODO how to add smaple mosaic in cooper-nathans?
-            mat_cov[1, 1] += q_mod**2 * instru.sample._mosaic_h**2
-            mat_cov[2, 2] += q_mod**2 * instru.sample._mosaic_v**2
+            mat_cov[1, 1] += q_norm**2 * tas.sample._mosaic_h**2
+            mat_cov[2, 2] += q_norm**2 * tas.sample._mosaic_v**2
 
             mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
-
-            motor_angles = instru.calculate_motor_angles(hkl=hkl, en=ei - ef)
-            if motor_angles is None:
-                print(f"Cannot reach hkl={np.round(hkl,3)}, ei={ei}, ef={ef}.")
-                rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
-                rez.STATUS = False
-                rez._set_labels()
-                rez_list.append(rez)
-                continue
-
-            r_mat = instru.goniometer.r_mat(motor_angles)
-            ub_mat = instru.sample.ub_conf._ub_mat
-
-            conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)
-            rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=instru.sample)
-            rez._project_to_frame(mat_reso, phi, conv_mat)
 
             # TODO check normalization factor
             # -------------------------------------------------------------------------
@@ -205,6 +191,9 @@ class CooperNathans(ResolutionCalculator):
                 r0 = 1
             else:
                 r0 = 0
+
+            rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=tas.sample)
+            rez._project_to_frame(mat_reso, phi, conv_mat)
 
             rez.r0 = r0
 

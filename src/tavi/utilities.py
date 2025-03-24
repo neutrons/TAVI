@@ -93,12 +93,13 @@ def get_angle_from_triangle(a: float, b: float, c: float) -> Optional[float]:
     """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
+    ZERO = 1e-6
+    if (np.abs(a) < ZERO) or (np.abs(b) < ZERO):
+        return None
     acos = (a**2 + b**2 - c**2) / (2 * a * b)
     if acos > 1 or acos < -1:
-        angle = None
-    else:
-        angle = np.arccos(acos)
-    return angle
+        return None
+    return np.arccos(acos)
 
 
 def get_angle_vec(v1, v2):
