@@ -9,17 +9,17 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 
 def test_out_of_reach(tas_params):
-    ctax, hkl, _, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl=(0, 0, 0), en=0, projection=None, R0=R0)
-    assert np.allclose(rez.STATUS, False)
+    ctax, hkl, _ = tas_params
+    rez = ctax.cooper_nathans(hkl=(0, 0, 0), en=0, projection=None)
+    assert not rez
 
-    rez = ctax.cooper_nathans(hkl=(10, 10, 10), en=0, projection=None, R0=R0)
-    assert np.allclose(rez.STATUS, False)
+    rez = ctax.cooper_nathans(hkl=(10, 10, 10), en=0, projection=None)
+    assert not rez
 
 
 def test_local_q(tas_params):
-    ctax, hkl, _, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl, en=0, projection=None, R0=R0)
+    ctax, hkl, _ = tas_params
+    rez = ctax.cooper_nathans(hkl, en=0, projection=None)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (3 * 2 * np.pi / ctax.sample.c, 0, 0))
@@ -29,8 +29,8 @@ def test_local_q(tas_params):
 
 
 def test_hkl(tas_params):
-    ctax, hkl, _, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, R0=R0)
+    ctax, hkl, _ = tas_params
+    rez = ctax.cooper_nathans(hkl=hkl, en=0)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 0, 3))
@@ -40,8 +40,8 @@ def test_hkl(tas_params):
 
 
 def test_projection(tas_params):
-    ctax, hkl, projection, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=projection, R0=R0)
+    ctax, hkl, projection = tas_params
+    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=projection)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 3, 0))
@@ -51,8 +51,8 @@ def test_projection(tas_params):
 
 
 def test_plotting(tas_params):
-    ctax, hkl, _, R0 = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, R0=R0)
+    ctax, hkl, _ = tas_params
+    rez = ctax.cooper_nathans(hkl=hkl, en=0)
     rez.plot_ellipses()
     plt.show()
 
@@ -71,8 +71,7 @@ def tas_params():
 
     hkl = (0, 0, 3)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    R0 = False
 
-    tas_params = (ctax, hkl, projection, R0)
+    tas_params = (ctax, hkl, projection)
 
     return tas_params

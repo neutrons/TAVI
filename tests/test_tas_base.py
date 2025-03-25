@@ -22,4 +22,4 @@ def test_set_motor_range():
     cg4c_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(cg4c_json)
     ctax.goniometer.set_limit(motor_name="omega", motor_range=(-200, 200))
-    assert ctax.goniometer.omega_limit == (-200, 200)
+    assert ctax.goniometer.limits["omega"] == (-200, 200)

@@ -22,8 +22,7 @@ def test_generate_hkle_list(ctax):
 
 def test_local_q(ctax):
     hkl = (0, 0, 3)
-    R0 = False
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=None, R0=R0)
+    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=None)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -37,8 +36,7 @@ def test_local_q(ctax):
 
 def test_hkl(ctax):
     hkl = (0, 0, 3)
-    R0 = False
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, R0=R0)
+    rez = ctax.cooper_nathans(hkl=hkl, en=0)
     mat = np.array(
         [
             [33305.0843, 33224.4963, -2651.8290, -5152.9962],
@@ -53,8 +51,7 @@ def test_hkl(ctax):
 def test_projection(ctax):
     hkl = (0, 0, 3)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    R0 = False
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=projection, R0=R0)
+    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=projection)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
@@ -67,8 +64,7 @@ def test_projection(ctax):
 
 
 def test_list(ctax):
-    R0 = False
-    rez_list = ctax.cooper_nathans(hkl=[(0, 0, 3), (0, 0, -3)], en=[0, 1], projection=None, R0=R0)
+    rez_list = ctax.cooper_nathans(hkl=[(0, 0, 3), (0, 0, -3)], en=[0, 1], projection=None)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],

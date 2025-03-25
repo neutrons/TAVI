@@ -8,7 +8,6 @@ from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
 
 # from tavi.sample.xtal import Xtal
-from tavi.sample import Sample
 from tavi.utilities import get_angle_vec, sig2fwhm
 
 
@@ -16,7 +15,6 @@ class ResoEllipsoid(object):
     """Manage the 4D resolution ellipoid
 
     Attributs:
-        STATUS (None | bool): True if resolution calculation is successful
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
         q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
@@ -28,95 +26,95 @@ class ResoEllipsoid(object):
 
     Methods:
         generate_ellipse(axes=(0, 1), PROJECTION=False, ORIGIN=True)
-        set_labels()
         plot(): plot all six combination of axes
 
     """
 
-    ZERO = 1e-8
-
     def __init__(
         self,
+        instrument,
         hkle: tuple[float, float, float, float],
-        sample: Sample,
         projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        reso_mat: Optional[np.ndarray] = None,
+        r0: Optional[float] = None,
     ) -> None:
-
-        self.STATUS: bool
-        self.q: tuple[float, float, float]
 
         *hkl, en = hkle
         self.hkl: tuple = tuple(hkl)
         self.en: float = en
 
         self.projection: Optional[tuple] = projection
-        self.angles: tuple[float, float, float] = (90.0, 90.0, 90.0)
-        self.axes_labels: tuple[str]
+        self.mat = reso_mat
+        self.r0 = r0
 
-        self.mat: np.ndarray
-        self.r0: Optional[float] = None
+        if projection is None:
+            self.frame = "q"
+            self.angles = (90.0, 90.0, 90.0)
+            self.q = (np.linalg.norm(instrument.sample.b_mat @ self.hkl) * 2 * np.pi, 0.0, 0.0)
+            self.axes_labels = ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+        else:
+            self._project_to_frame(instrument)
 
-        match self.projection:
-            case None:  # Local Q frame
-                self.frame = "q"
-                self.angles = (90.0, 90.0, 90.0)
-                q_norm = np.linalg.norm(sample.b_mat @ self.hkl) * 2 * np.pi
-                self.q = (q_norm, 0.0, 0.0)
-
-            case ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
-                self.frame = "hkl"
-                self.q = self.hkl
-                *_, alpha_star, beta_star, gamma_star = sample.reciprocal_latt_params
-                self.angles = (gamma_star, alpha_star, beta_star)
-            case _:  # customized projection
-                p1, p2, p3 = self.projection
-                a_star_vec, b_star_vec, c_star_vec = sample.reciprocal_space_vectors
-                reciprocal_vecs = [a_star_vec, b_star_vec, c_star_vec]
-                v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
-                v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
-                v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
-
-                if np.dot(v1, np.cross(v2, v3)) < ResoEllipsoid.ZERO:
-                    raise ValueError("Projection is left handed! Please use right-handed projection")
-                if np.abs(np.dot(v1, np.cross(v2, v3))) < ResoEllipsoid.ZERO:
-                    raise ValueError("Projection vectors need to be non-coplanar.")
-
-                mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(
-                    p1, np.cross(p2, p3)
-                )
-                hkl_prime = mat_w_inv @ self.hkl
-                self.frame = "proj"
-                self.q = hkl_prime
-                self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
-
-        self._set_labels()
-
-    def _project_to_frame(self, mat_reso, phi, conv_mat):
+    def _project_to_frame(self, instrument):
         """determinate the frame from the projection vectors"""
+
+        ZERO = 1e-8
+
+        motor_angles = instrument.calculate_motor_angles(hkl=self.hkl, en=self.en)
+        r_mat = instrument.goniometer.r_mat(motor_angles)
+        ub_mat = instrument.sample.ub_conf._ub_mat
+        conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)
+        psi = np.radians(instrument.get_psi(self.hkl, en=self.en))
 
         mat_lab_to_local = np.array(
             [
-                [np.sin(phi), 0, np.cos(phi)],
-                [np.cos(phi), 0, -np.sin(phi)],
+                [np.sin(psi), 0, np.cos(psi)],
+                [np.cos(psi), 0, -np.sin(psi)],
                 [0, 1, 0],
             ]
         )
-        match self.frame:
-            case "q":
-                self.mat = mat_reso
+        if self.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+            self.frame = "hkl"
+            self.q = self.hkl
+            *_, alpha_star, beta_star, gamma_star = instrument.sample.reciprocal_latt_params
+            self.angles = (gamma_star, alpha_star, beta_star)
 
-            case "hkl":
-                conv_mat_4d = np.eye(4)
-                conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat
-                self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+            conv_mat_4d = np.eye(4)
+            conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat
+            self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
+            self.axes_labels = ("H (r.l.u.)", "K (r.l.u.)", "L (r.l.u.)", "E (meV)")
 
-            case "proj":
-                p1, p2, p3 = self.projection
-                mat_w = np.array([p1, p2, p3]).T
+        else:  # customized projection
+            p1, p2, p3 = self.projection
+            a_star_vec, b_star_vec, c_star_vec = instrument.sample.reciprocal_space_vectors
+            reciprocal_vecs = [a_star_vec, b_star_vec, c_star_vec]
+            v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+            v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
+            v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
 
-                conv_mat_4d = np.eye(4)
-                conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
-                self.mat = conv_mat_4d.T @ mat_reso @ conv_mat_4d
+            if np.dot(v1, np.cross(v2, v3)) < ZERO:
+                raise ValueError("Projection is left handed! Please use right-handed projection")
+            if np.abs(np.dot(v1, np.cross(v2, v3))) < ZERO:
+                raise ValueError("Projection vectors need to be non-coplanar.")
+
+            mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(p1, np.cross(p2, p3))
+            hkl_prime = mat_w_inv @ self.hkl
+            self.frame = "proj"
+            self.q = hkl_prime
+            self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
+
+            mat_w = np.array([p1, p2, p3]).T
+
+            conv_mat_4d = np.eye(4)
+            conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
+            self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
+
+            self.axes_labels = (
+                f"{self.projection[0]}",
+                f"{self.projection[1]}",
+                f"{self.projection[2]}",
+                "E (meV)",
+            )
 
     def volume(self):
         """volume of the ellipsoid"""
@@ -188,8 +186,9 @@ class ResoEllipsoid(object):
     @staticmethod
     def quadric_proj(quadric, idx):
         """projects along one axis of the quadric"""
+        ZERO = 1e-8
 
-        if np.abs(quadric[idx, idx]) < ResoEllipsoid.ZERO:
+        if np.abs(quadric[idx, idx]) < ZERO:
             return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
 
         # row/column along which to perform the orthogonal projection
@@ -213,7 +212,7 @@ class ResoEllipsoid(object):
         axes: tuple[int, int] = (0, 1),
         PROJECTION: bool = False,
         ORIGIN: bool = True,
-    ) -> Optional[ResoEllipse]:
+    ) -> ResoEllipse:
         """Gnerate a 2D ellipse by either making a cut or projection
 
         Arguments:
@@ -222,8 +221,7 @@ class ResoEllipsoid(object):
             ORIGIN: shift the center if True
 
         """
-        if not self.STATUS:
-            return None
+
         x_axis, y_axis = axes
         qe_list = np.concatenate((self.q, self.en), axis=None)
         # axes = np.sort(axes)
@@ -259,21 +257,6 @@ class ResoEllipsoid(object):
             mat = q_res
 
         return ResoEllipse(mat, centers, angle, axes_labels)
-
-    def _set_labels(self):
-        """Set axes labels based on the frame"""
-        match self.frame:
-            case "q":
-                self.axes_labels = ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
-            case "hkl":
-                self.axes_labels = ("H (r.l.u.)", "K (r.l.u.)", "L (r.l.u.)", "E (meV)")
-            case "proj":
-                self.axes_labels = (
-                    f"{self.projection[0]}",
-                    f"{self.projection[1]}",
-                    f"{self.projection[2]}",
-                    "E (meV)",
-                )
 
     def plot_ellipses(self):
         """Plot all 2D ellipses"""

@@ -1,7 +1,5 @@
 from typing import Union
 
-from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
-
 
 class ResolutionCalculator:
     """
@@ -77,6 +75,3 @@ class ResolutionCalculator:
         # sample
         if self.instrument.sample is None:
             raise ValueError("Sample info are missing.")
-
-    def test(self):
-        return ResoEllipsoid()

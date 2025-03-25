@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Union
 
 import numpy as np
@@ -26,13 +27,11 @@ class CooperNathans(ResolutionCalculator):
     IDX_COLL2_H, IDX_COLL2_V = 4, 6
     IDX_COLL3_H, IDX_COLL3_V = 5, 7
 
-    def mat_f(self) -> np.ndarray:
+    @classmethod
+    def mat_f(cls, monochromator, analyzer) -> np.ndarray:
         """matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
         Note: No conversion between sigma and FWHM
         """
-        cls = type(self)
-        monochromator = self.instrument.monochromator
-        analyzer = self.instrument.analyzer
         i, j = cls.NUM_MONOS, cls.NUM_ANAS
         mat_f = np.zeros(((i + j) * 2, (i + j) * 2))
         mat_f[cls.IDX_MONO0_H, cls.IDX_MONO0_H] = 1.0 / monochromator._mosaic_h**2
@@ -41,12 +40,12 @@ class CooperNathans(ResolutionCalculator):
         mat_f[cls.IDX_ANA0_V, cls.IDX_ANA0_V] = 1.0 / analyzer._mosaic_v**2
         return mat_f
 
-    def mat_g(self) -> np.ndarray:
+    @classmethod
+    def mat_g(cls, collimators) -> np.ndarray:
         """matrix G, divergence of monochromator and analyzer, [pop75] Appendix 1
         Note: No conversion between sigma and FWHM
         """
-        cls = type(self)
-        collimators = self.instrument.collimators
+
         (h_pre_mono, h_pre_sample, h_post_sample, h_post_ana) = collimators._horizontal_divergence
         (v_pre_mono, v_pre_sample, v_post_sample, v_post_ana) = collimators._vertical_divergence
 
@@ -104,16 +103,66 @@ class CooperNathans(ResolutionCalculator):
         return mat_c
 
     def validate_instrument_parameters(self):
-        base = self.__class__.__base__
-        base.validate_instrument_parameters(self)
+        self.__class__.__base__.validate_instrument_parameters(self)
+        # TODO
+        # add more method-specif validation here
+
+    @staticmethod
+    def _calculate_at_hkle(hkl, ei, ef, instrument):
+        """Calculate the resolution matrix and R0 factor in the local Q frame"""
+
+        # q_mod = np.linalg.norm(tas.sample.b_mat @ hkl) * 2 * np.pi
+        q_norm = instrument.sample.get_q_norm(hkl)
+        ki, kf = en2q(ei), en2q(ef)
+        motor_angles = instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
+
+        # phi = <ki to q>, always has the oppositie sign of s2
+        psi = np.radians(instrument.get_psi(hkl, en=ei - ef))
+        two_theta = np.radians(motor_angles.two_theta)
+        theta_m = np.radians(instrument.get_theta_m(ei))
+        theta_a = np.radians(instrument.get_theta_a(ef))
+
+        # TODO
+        # curved monochromator and analyzer
+
+        # TODO
+        # reflection efficiency
+
+        mat_a = CooperNathans.calc_mat_a(ki, kf, theta_m, theta_a)
+        mat_b = CooperNathans.calc_mat_b(ki, kf, psi, two_theta)
+        mat_c = CooperNathans.calc_mat_c(theta_m, theta_a)
+
+        mat_h = mat_c.T @ CooperNathans.mat_f(
+            instrument.monochromator, instrument.analyzer
+        ) @ mat_c + CooperNathans.mat_g(instrument.collimators)
+        mat_h_inv = np.linalg.inv(mat_h)
+        mat_ba = mat_b @ mat_a
+        mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
+
+        # TODO how to add smaple mosaic in cooper-nathans?
+        mat_cov[1, 1] += q_norm**2 * instrument.sample._mosaic_h**2
+        mat_cov[2, 2] += q_norm**2 * instrument.sample._mosaic_v**2
+
+        mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
+
+        # TODO check normalization factor
+        # -------------------------------------------------------------------------
+        # - if the instruments works in kf=const mode and the scans are counted for
+        #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
+        # - if the instrument works in ki=const mode the kf^3 factor is needed.
+
+        # r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
+        # r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
+        r0 = 1
+
+        return (mat_reso, r0)
 
     def calculate(
         self,
         hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
         en: Union[float, list[float]],
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        R0: bool = False,
-    ) -> Union[ResoEllipsoid, tuple[ResoEllipsoid]]:
+    ) -> Union[None, ResoEllipsoid, tuple[ResoEllipsoid, ...]]:
         """Calculate resolution using Cooper-Nathans method
 
         Args:
@@ -121,88 +170,38 @@ class CooperNathans(ResolutionCalculator):
             en (float | list(float)): en = ei - ef is energy trnsfer, in units of meV
             projection (tuple): three non-coplaner vectors. If projection is None,
                                 the calculation is done in local Q frame (Q_para, Q_perp, Q_up)
-            R0: calculate normalization factor if True
 
         Return:
             tuple (ResoEllipsoid)
         """
 
-        cls = type(self)
-
         self.validate_instrument_parameters()
+        calculate_at_hkle = partial(CooperNathans._calculate_at_hkle, instrument=self.instrument)
         hkle_list = self.generate_hkle_list(hkl, en)
-
-        tas = self.instrument
 
         rez_list = []
         for hkl, ei, ef in hkle_list:
-
-            # q_mod = np.linalg.norm(tas.sample.b_mat @ hkl) * 2 * np.pi
-            q_norm = tas.sample.get_q_norm(hkl)
-            ki, kf = en2q(ei), en2q(ef)
-
-            motor_angles = tas.calculate_motor_angles(hkl=hkl, en=ei - ef)
+            # check if the (Q,E) position can be reached
+            motor_angles = self.instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
             if motor_angles is None:
-                # rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=tas.sample)
-                # rez.STATUS = False
-                # rez._set_labels()
-                # rez_list.append(rez)
                 continue
 
-            r_mat = tas.goniometer.r_mat(motor_angles)
-            ub_mat = tas.sample.ub_conf._ub_mat
-            conv_mat = 2 * np.pi * np.matmul(r_mat, ub_mat)
+            reso_mat, r0 = calculate_at_hkle(hkl, ei, ef)
+            rez = ResoEllipsoid(
+                instrument=self.instrument, hkle=hkl + (ei - ef,), projection=projection, reso_mat=reso_mat, r0=r0
+            )
 
-            # phi = <ki to q>, always has the oppositie sign of s2
-            phi = np.radians(tas.get_psi(hkl, en=ei - ef))
-            theta_m = np.radians(tas.get_theta_m(ei))
-            theta_a = np.radians(tas.get_theta_a(ef))
+            # if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
+            #     rez.STATUS = False
+            # else:
+            #     rez.STATUS = True
 
-            # TODO
-            # curved monochromator and analyzer
-
-            # TODO
-            # reflection efficiency
-
-            mat_a = cls.calc_mat_a(ki, kf, theta_m, theta_a)
-            mat_b = cls.calc_mat_b(ki, kf, phi, np.radians(motor_angles.two_theta))
-            mat_c = cls.calc_mat_c(theta_m, theta_a)
-
-            mat_h = mat_c.T @ self.mat_f() @ mat_c + self.mat_g()
-            mat_h_inv = np.linalg.inv(mat_h)
-            mat_ba = mat_b @ mat_a
-            mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
-
-            # TODO how to add smaple mosaic in cooper-nathans?
-            mat_cov[1, 1] += q_norm**2 * tas.sample._mosaic_h**2
-            mat_cov[2, 2] += q_norm**2 * tas.sample._mosaic_v**2
-
-            mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
-
-            # TODO check normalization factor
-            # -------------------------------------------------------------------------
-            # - if the instruments works in kf=const mode and the scans are counted for
-            #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
-            # - if the instrument works in ki=const mode the kf^3 factor is needed.
-
-            if R0:  # calculate
-                # r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-                # r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
-                r0 = 1
-            else:
-                r0 = 0
-
-            rez = ResoEllipsoid(hkle=hkl + (ei - ef,), projection=projection, sample=tas.sample)
-            rez._project_to_frame(mat_reso, phi, conv_mat)
-
-            rez.r0 = r0
-
-            if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
-                rez.STATUS = False
-            else:
-                rez.STATUS = True
-
-            rez._set_labels()
             rez_list.append(rez)
 
-        return rez_list[0] if len(rez_list) == 1 else rez_list
+        match len(rez_list):
+            case 0:
+                return None
+            case 1:
+                return rez_list[0]
+            case _:
+                return tuple(rez_list)

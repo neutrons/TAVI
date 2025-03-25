@@ -291,7 +291,6 @@ class TAS(TASBase):
         hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
         en: Union[float, list[float]] = 0.0,
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-        R0: bool = False,
     ) -> Union[ResoEllipsoid, tuple[ResoEllipsoid]]:
         """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
@@ -305,4 +304,4 @@ class TAS(TASBase):
             A ResoEllipdois instance or a list of ResoEllipdois instances
         """
         cn = CooperNathans(instrument=self)
-        return cn.calculate(hkl=hkl, en=en, projection=projection, R0=R0)
+        return cn.calculate(hkl=hkl, en=en, projection=projection)
