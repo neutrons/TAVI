@@ -1,7 +1,6 @@
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
-from tavi.ub_algorithm import ub_matrix_to_uv
-from tavi.utilities import MotorAngles, Peak, spice_to_mantid
+from tavi.utilities import MotorAngles, Peak
 
 
 def read_macro():
@@ -44,16 +43,7 @@ def read_reflection_list():
         omega = float(line_parts[1])
         chi = float(line_parts[2])
         phi = float(line_parts[3])
-        angles_list.append(
-            MotorAngles(
-                two_theta=two_theta,
-                omega=omega,
-                chi=chi,
-                phi=phi,
-                sgl=None,
-                sgu=None,
-            )
-        )
+        angles_list.append(MotorAngles(two_theta=two_theta, omega=omega, chi=chi, phi=phi, sgl=None, sgu=None))
         h = int(float(line_parts[4]))
         k = int(float(line_parts[5]))
         l = int(float(line_parts[6]))
@@ -65,9 +55,9 @@ def mnwo4():
     sample_json_path = "test_data/IPTS33477_HB1A_exp1012/MnWO4/MnWO4.json"
     sample = Sample.from_json(sample_json_path)
     ub_json = sample.ub_conf.ub_mat
-    tas.mount_sample(sample)
-    u, v = ub_matrix_to_uv(spice_to_mantid(ub_json))
-    print(u, v)
+    hb1a_4c.mount_sample(sample)
+    u, v = hb1a_4c.uv
+    print(f"u={u}, v={v}")
     print(f"json UB=\n{ub_json}")
     print(sample)
 
@@ -75,21 +65,23 @@ def mnwo4():
     peak2 = Peak(hkl=hkl_list[1], angles=angles_list[1])
     peak3 = Peak(hkl=hkl_list[2], angles=angles_list[2])
 
-    ubconf_2 = tas.calculate_ub_matrix(peaks=(peak1, peak2))
+    ubconf_2 = hb1a_4c.calculate_ub_matrix(peaks=(peak1, peak2))
     print(f"Calculated from two peaks UB=\n{ubconf_2.ub_mat}")
-    print(tas.sample)
+    print(hb1a_4c.sample)
 
-    ubconf_3 = tas.calculate_ub_matrix(peaks=(peak1, peak2, peak3))
+    ubconf_3 = hb1a_4c.calculate_ub_matrix(peaks=(peak1, peak2, peak3))
     print(f"Calculated from three peaks UB=\n{ubconf_3.ub_mat}")
-    print(tas.sample)
+    print(hb1a_4c.sample)
 
     peaks = tuple([Peak(hkl=hkl_list[i], angles=angles_list[i]) for i in range(len(hkl_list))])
-    ubconf_all = tas.calculate_ub_matrix(peaks=peaks)
+    ubconf_all = hb1a_4c.calculate_ub_matrix(peaks=peaks)
     print(f"Calculated from all peaks UB=\n{ubconf_all.ub_mat}")
-    print(tas.sample)
+    print(hb1a_4c.sample)
+
+    print(f"Calculated from all peaks in Mantid convention UB=\n{ubconf_all._ub_mat}")
 
     for i in range(len(hkl_list)):
-        angle_cal = tas.calculate_motor_angles(hkl=hkl_list[i])
+        angle_cal = hb1a_4c.calculate_motor_angles(hkl=hkl_list[i])
         if not (angles_list[i] == angle_cal):
             print(f"Experiment agnles for {hkl_list[i]} are {angles_list[i]}")
             print(f"Calculated agnles for {hkl_list[i]} are {angle_cal}")
@@ -101,7 +93,8 @@ if __name__ == "__main__":
     hkl_list, angles_list = read_reflection_list()
 
     instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
-    tas = TAS(fixed_ef=14.4643)  # , fixed_ei=14.4503, spice_convention=True)
-    tas.load_instrument_params_from_json(instrument_config_json_path)
+    # using Spice convention by default
+    hb1a_4c = TAS(fixed_ef=14.4643)
+    hb1a_4c.load_instrument_params_from_json(instrument_config_json_path)
 
     mnwo4()

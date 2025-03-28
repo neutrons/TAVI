@@ -18,6 +18,7 @@ from tavi.ub_algorithm import (
     q_lab,
     r_matrix_with_minimal_tilt,
     two_theta_from_hkle,
+    ub_matrix_to_uv,
 )
 from tavi.utilities import MotorAngles, Peak, en2q, get_angle_bragg
 
@@ -224,6 +225,15 @@ class TAS(TASBase):
         self.sample.ub_conf = ub_conf
         return ub_conf
 
+    @property
+    def uv(self) -> Optional[tuple]:
+        """return u and v vector if UB matrix is known"""
+        if (ub_conf := self.sample.ub_conf) is not None:
+            u, v = ub_matrix_to_uv(ub_conf._ub_mat)
+            return (u, v)
+        else:
+            return None
+
     def calculate_motor_angles(
         self,
         hkl: tuple[float, float, float],
@@ -291,7 +301,7 @@ class TAS(TASBase):
         hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
         en: Union[float, list[float]] = 0.0,
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-    ) -> Union[ResoEllipsoid, tuple[ResoEllipsoid]]:
+    ) -> Union[None, ResoEllipsoid, tuple[ResoEllipsoid, ...]]:
         """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
         Args:

@@ -22,6 +22,8 @@ class UBConf:
     Note:
         _u_mat, _ub_mat, _plnae_normal and _in_plane_ref uses Mandid/International
         Crystallography Table convention.
+        When u_mat, ub_mat, plane_normal and in_plane_ref are requested, a conversion from
+        Mantid is performed based on what convention is used
     """
 
     _ub_mat: np.ndarray
@@ -35,7 +37,8 @@ class UBConf:
     def __init__(self, convention="Spice", **kwargs):
         self.convention = "Spice" if convention is None else convention
         for k, v in kwargs.items():
-            self.__setattr__(k, v)
+            if v is not None:
+                self.__setattr__(k, v)
 
     def _from_mantid(self, v: np.ndarray):
         """Convert v from Mantid to other conventions"""

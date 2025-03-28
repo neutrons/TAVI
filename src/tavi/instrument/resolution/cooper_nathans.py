@@ -131,10 +131,10 @@ class CooperNathans(ResolutionCalculator):
         mat_a = CooperNathans.calc_mat_a(ki, kf, theta_m, theta_a)
         mat_b = CooperNathans.calc_mat_b(ki, kf, psi, two_theta)
         mat_c = CooperNathans.calc_mat_c(theta_m, theta_a)
+        mat_f = CooperNathans.mat_f(instrument.monochromator, instrument.analyzer)
+        mat_g = CooperNathans.mat_g(instrument.collimators)
 
-        mat_h = mat_c.T @ CooperNathans.mat_f(
-            instrument.monochromator, instrument.analyzer
-        ) @ mat_c + CooperNathans.mat_g(instrument.collimators)
+        mat_h = mat_c.T @ mat_f @ mat_c + mat_g
         mat_h_inv = np.linalg.inv(mat_h)
         mat_ba = mat_b @ mat_a
         mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
@@ -151,9 +151,16 @@ class CooperNathans(ResolutionCalculator):
         #   or normalised to monitor counts no ki^3 or kf^3 factor is needed.
         # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
-        # r0 = np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
-        # r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
-        r0 = 1
+        # monochromator and analyzer reflectivity taken to be 1
+        # Note that the ki**3 or kf**3 factors are not considered
+        rm_theta = 1
+        ra_theta = 1
+        rm_k = rm_theta * ki**3 / np.tan(theta_m)
+        ra_k = ra_theta * kf**3 / np.tan(theta_a)
+
+        r0 = rm_k * ra_k
+        r0 *= np.pi**2 / 4 / np.sin(theta_m) / np.sin(theta_a)
+        r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
 
         return (mat_reso, r0)
 

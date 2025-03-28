@@ -181,8 +181,11 @@ class Fit1D(object):
         else:
             result = self.model.fit(self.y, pars, x=self.x)
         if result.success:
-            self.result = result
-            self._parameters = result.params
-            return result
+            if result.errorbars:
+                self.result = result
+                self._parameters = result.params
+                return result
+            else:
+                raise ValueError("Errorbar cannot be determined from fitting.")
         else:
             raise ValueError("Fitting failed")

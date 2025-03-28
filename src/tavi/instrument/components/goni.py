@@ -150,12 +150,12 @@ class Goniometer(TASComponent):
         hkl,
         two_theta,
         psi,
-        ub_conf_mantid,
+        ub_conf,
     ) -> MotorAngles:
         signs = self.motor_senses
         operating_mode = self.stacking_order + self.mode if self.mode is not None else self.stacking_order
 
-        q = ub_conf_mantid.ub_mat.dot(hkl)
+        q = ub_conf._ub_mat.dot(hkl)
         match operating_mode:
             case "YZYbisect":
                 omega = (self._sense * 90.0 + psi) * signs[0]
