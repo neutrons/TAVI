@@ -79,7 +79,6 @@ def tavi_exp0424():
 
 
 def test_get_scan(tavi_exp0424):
-
     scan0034 = tavi_exp0424.get_scan(scan_num=("IPTS32124_CG4C_exp0424", 34))
     assert scan0034.name == "scan0034"
     assert scan0034.scan_info.scan_num == 34

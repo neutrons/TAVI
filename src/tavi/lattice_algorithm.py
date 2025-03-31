@@ -17,7 +17,7 @@ def v_alpha_beta_gamma_calc(alpha: float, beta: float, gamma: float) -> float:
 
 
 def real_space_vectors(
-    lattice_params: tuple[float, float, float, float, float, float]
+    lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Calculate the real space lattice vectors in Cartesian coordiantes
@@ -51,7 +51,7 @@ def real_space_vectors(
 
 
 def reciprocal_latt_params(
-    lattice_params: tuple[float, float, float, float, float, float]
+    lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[float, float, float, float, float, float]:
     """Calculate the reciprocal lattice parameter lengths and angles in inverse Angstrom and degrees"""
 
@@ -83,7 +83,7 @@ def reciprocal_latt_params(
 
 
 def reciprocal_space_vectors(
-    lattice_params: tuple[float, float, float, float, float, float]
+    lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Calculate the reciprocal space lattice vectors in the Cartesian coordinates
@@ -101,7 +101,7 @@ def reciprocal_space_vectors(
 
 
 def reciprocal_basis(
-    lattice_params: tuple[float, float, float, float, float, float]
+    lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Calculate the reciprocal basis vectors i_star, j_star, k_star"""
 

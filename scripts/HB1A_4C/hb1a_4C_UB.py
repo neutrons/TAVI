@@ -28,7 +28,6 @@ def read_macro():
 
 
 def read_reflection_list():
-
     filename = "test_data/IPTS33477_HB1A_exp1012/MnWO4/Refections_022425.list"
     with open(filename, encoding="utf-8") as f:
         all_content = f.readlines()
@@ -88,7 +87,6 @@ def mnwo4():
 
 
 if __name__ == "__main__":
-
     # scan_nums, hkl_list, angles_list = read_macro()
     hkl_list, angles_list = read_reflection_list()
 

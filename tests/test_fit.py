@@ -20,7 +20,6 @@ def fit_data():
 
 
 def test_fit_single_peak_external_model(fit_data):
-
     s1_scan, PLOT = fit_data
 
     f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
@@ -86,7 +85,6 @@ def test_guess_initial(fit_data):
 
 
 def test_fit_single_peak_internal_model(fit_data):
-
     s1_scan, PLOT = fit_data
     f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
 
@@ -109,7 +107,6 @@ def test_fit_single_peak_internal_model(fit_data):
 
 
 def test_fit_two_peak(fit_data):
-
     s1_scan, PLOT = fit_data
 
     f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")

@@ -36,7 +36,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     p1.add_fit(
         scan_th2th_fit,
         x=scan_th2th_fit.x_to_plot(),
-        label=f"FWHM={result_th2th.params["s1_fwhm"].value:.4f}+/-{result_th2th.params["s1_fwhm"].stderr:.4f}",
+        label=f"FWHM={result_th2th.params['s1_fwhm'].value:.4f}+/-{result_th2th.params['s1_fwhm'].stderr:.4f}",
     )
     # resolution
     x_th2th = scan_th2th_fit.result.params["s1_center"].value
@@ -69,7 +69,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     p2.add_fit(
         scan_s1_fit,
         x=scan_s1_fit.x_to_plot(),
-        label=f"FWHM={result_s1.params["s1_fwhm"].value:.4f}+/-{result_s1.params["s1_fwhm"].stderr:.4f}",
+        label=f"FWHM={result_s1.params['s1_fwhm'].value:.4f}+/-{result_s1.params['s1_fwhm'].stderr:.4f}",
     )
 
     # resolution

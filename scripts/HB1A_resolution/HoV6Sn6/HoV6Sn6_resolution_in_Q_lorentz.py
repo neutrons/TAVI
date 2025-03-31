@@ -327,7 +327,6 @@ y_array = []
 y_err = []
 
 for i, th2th in enumerate(exp_th2th):
-
     amp = th2th.params["s1_amplitude"].value
     err = th2th.params["s1_amplitude"].stderr
     y_array.append(amp)

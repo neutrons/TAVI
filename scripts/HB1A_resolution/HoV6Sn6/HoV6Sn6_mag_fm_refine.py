@@ -90,7 +90,6 @@ def analyze_s1_scan_in_omega(s1, fit_range=None):
 
 
 def analyze_peak_in_q(hkl, s1, th2th, rez_calc=False, **kwargs):
-
     s1_data, s1_fit = analyze_s1_scan_in_q(s1)
     th2th_data, th2th_fit = analyze_th2th_scan_in_q(th2th)
 
@@ -128,7 +127,6 @@ def analyze_peak_in_q(hkl, s1, th2th, rez_calc=False, **kwargs):
 
 
 def analyze_peak_in_omega(hkl, s1, th2th, **kwargs):
-
     s1_data, s1_fit = analyze_s1_scan_in_omega(s1)
     th2th_data, th2th_fit, two_theta = analyze_th2th_scan_in_omega(th2th)
 
@@ -149,7 +147,6 @@ def analyze_peak_in_omega(hkl, s1, th2th, **kwargs):
 
 
 def plot_s1_th2th_mag_nuc_peaks():
-
     pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_mag_peaks.pdf")
     #  ----------------------- T= 4 K th2th and s1 scans -------------------------
     # ((0, 0, 1), (300, 299)),
@@ -389,7 +386,6 @@ def plot_integ_intensity_q_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0
@@ -441,7 +437,6 @@ def plot_integ_intensity_q_lorentz(analysis):
 
 
 def setup():
-
     instrument_config_json_path = "test_data/IPTS32912_HB1A_exp1031/hb1a.json"
 
     hb1a = TAS(fixed_ei=ei, fixed_ef=ef)

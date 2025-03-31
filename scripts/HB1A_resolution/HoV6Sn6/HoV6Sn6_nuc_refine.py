@@ -189,7 +189,6 @@ def make_omega_plots(hkl, s1, th2th):
 
 
 def analyze_peak_in_q(hkl, num_s1, num_th2th):
-
     s1_q, p1, _, _ = analyze_s1_scan_in_q(hkl, num_s1)
     th2th_q, p2 = analyze_th2th_scan_in_q(hkl, num_th2th)
     rez = make_rez_plots(hkl, (s1_q, p1), (th2th_q, p2))
@@ -198,7 +197,6 @@ def analyze_peak_in_q(hkl, num_s1, num_th2th):
 
 
 def analyze_peak_in_omega(hkl, num_s1, num_th2th):
-
     s1_omega, p1, _, _ = analyze_s1_scan_in_omega(hkl, num_s1)
     th2th_omega, p2, two_theta = analyze_th2th_scan_in_omega(hkl, num_th2th)
     make_omega_plots(hkl, (s1_omega, p1), (th2th_omega, p2))
@@ -413,7 +411,6 @@ def plot_integ_intensity_q_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0
@@ -465,7 +462,6 @@ def plot_integ_intensity_q_lorentz(analysis):
 
 
 def setup():
-
     instrument_config_json_path = "test_data/IPTS32912_HB1A_exp1031/hb1a.json"
 
     hb1a = TAS(fixed_ei=ei, fixed_ef=ef)
