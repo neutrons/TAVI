@@ -5,7 +5,7 @@ dependencies = [
 description = "Triple-Axis data Visualization"
 dynamic = ["version"]
 license = {text = "LGPL-3.0"}
-name = "examplepyapp"
+name = "tavi"
 requires-python = ">=3.10"
 
 [project.urls]
