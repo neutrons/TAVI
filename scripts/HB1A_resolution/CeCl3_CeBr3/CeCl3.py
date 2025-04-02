@@ -25,7 +25,6 @@ def load_fsq():
 
 
 def analyze_s1_scan_in_q(hkl, s1_scan, fit_range=None):
-
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=s1_scan)
     scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
@@ -84,7 +83,6 @@ def analyze_s1_scan_in_omega(hkl, s1_scan, fit_range=None):
 
 
 def analyze_th2th_scan_in_q(hkl, th2th_scan, fit_range=None):
-
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=th2th_scan)
     scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "time"))
     # perform fit
@@ -187,7 +185,6 @@ def make_omega_plots(hkl, s1, th2th):
 
 
 def analyze_peak_in_q(hkl, num_s1, num_th2th, fit_range_s1=None, fit_range_th2th=None):
-
     s1_q, p1, _, _ = analyze_s1_scan_in_q(hkl, num_s1, fit_range_s1)
     th2th_q, p2 = analyze_th2th_scan_in_q(hkl, num_th2th, fit_range_th2th)
     rez = make_rez_plots(hkl, (s1_q, p1), (th2th_q, p2))
@@ -196,7 +193,6 @@ def analyze_peak_in_q(hkl, num_s1, num_th2th, fit_range_s1=None, fit_range_th2th
 
 
 def analyze_peak_in_omega(hkl, num_s1, num_th2th, fit_range_s1=None, fit_range_th2th=None):
-
     s1_omega, p1, _, _ = analyze_s1_scan_in_omega(hkl, num_s1, fit_range_s1)
     th2th_omega, p2, two_theta = analyze_th2th_scan_in_omega(hkl, num_th2th, fit_range_th2th)
     make_omega_plots(hkl, (s1_omega, p1), (th2th_omega, p2))
@@ -205,7 +201,6 @@ def analyze_peak_in_omega(hkl, num_s1, num_th2th, fit_range_s1=None, fit_range_t
 
 
 def plot_s1_th2th_nuclear_peaks():
-
     two_theta_list = []
     hkl_list = []
     rez_list = []
@@ -251,7 +246,6 @@ def plot_s1_th2th_nuclear_peaks():
     )
 
     for hkl, (num_s1, num_th2th) in peak_list.items():
-
         s1_range_q = th2th_range_q = None
         s1_range_omega = th2th_range_omega = None
         if (ranges := fit_ranges_q.get(hkl)) is not None:
@@ -264,7 +258,6 @@ def plot_s1_th2th_nuclear_peaks():
             hkl, num_s1, num_th2th, s1_range_omega, th2th_range_omega
         )
         if hkl in refinement:
-
             hkl_list.append(hkl)
             rez_list.append(rez)
 
@@ -598,7 +591,6 @@ def plot_integ_intensity_q_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0

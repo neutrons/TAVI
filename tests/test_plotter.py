@@ -54,7 +54,6 @@ def test_plot2d():
 
 
 def test_plot2d_with_resolution():
-
     # load data
     tavi = TAVI("./test_data/tavi_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))

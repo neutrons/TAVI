@@ -7,7 +7,6 @@ from tavi.utilities import MotorAngles, Peak
 
 
 def test_calc_ub_from_2_peaks():
-
     ub_matrix = np.array(
         [
             [0.053821, 0.107638, 0.166485],
