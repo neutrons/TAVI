@@ -251,8 +251,8 @@ def spice_scan_to_nxdict(
         EX_required="true",
     )
     for i in range(8):  # CG4C horizontal focusing
-        nxana.add_dataset(key=f"qm{i+1}", ds=NXdataset(ds=spicelogs.get(f"qm{i+1}"), type="NX_FLOAT"))
-        nxana.add_dataset(key=f"xm{i+1}", ds=NXdataset(ds=spicelogs.get(f"xm{i+1}"), type="NX_FLOAT"))
+        nxana.add_dataset(key=f"qm{i + 1}", ds=NXdataset(ds=spicelogs.get(f"qm{i + 1}"), type="NX_FLOAT"))
+        nxana.add_dataset(key=f"xm{i + 1}", ds=NXdataset(ds=spicelogs.get(f"xm{i + 1}"), type="NX_FLOAT"))
 
     if instrument_config_params is not None:
         if (ana_params := instrument_config_params.get("analyzer")) is not None:
@@ -308,7 +308,6 @@ def spice_scan_to_nxdict(
 
     if instrument_config_params is not None:
         if (coll_params := instrument_config_params.get("collimators")) is not None:
-
             try:
                 div_x = [
                     coll_params["h_pre_mono"],

@@ -144,7 +144,6 @@ def test_get_from_daslogs():
 
 
 def test_spice_to_nexus_one():
-
     path_to_spice_folder = "./test_data/exp424"
     path_to_nexus = "./test_data/spice_to_nxdict_test_scan0034.h5"
     scan0034 = NexusEntry.from_spice(path_to_spice_folder, 34)
@@ -157,7 +156,6 @@ def test_spice_to_nexus_one():
 
 
 def test_spice_to_nexus_empty():
-
     path_to_spice_folder = "./test_data/exp815"
     path_to_nexus = "./test_data/spice_to_nxdict_test_empty.h5"
     scan0002 = NexusEntry.from_spice(path_to_spice_folder, 2)
@@ -191,7 +189,6 @@ def test_get_dataset_names():
 
 @pytest.fixture
 def nexus_entries():
-
     analyser = {
         "attrs": {"EX_required": "true", "NX_class": "NXcrystal", "type": "NX_CHAR"},
         "a1": {

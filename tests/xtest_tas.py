@@ -4,7 +4,8 @@ from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 from tavi.ub_algorithm import plane_normal_from_two_peaks, r_matrix_with_minimal_tilt, uv_to_ub_matrix
-from tavi.utilities import MotorAngles, Peak, UBConf, mantid_to_spice, spice_to_mantid
+from tavi.utilities import MotorAngles, Peak, mantid_to_spice, spice_to_mantid
+from tavi.ub_algorithm import UBConf
 
 
 def test_find_two_theta():

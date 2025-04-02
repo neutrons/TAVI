@@ -207,7 +207,6 @@ class CooperNathans(TAS):
 
         rez_list = []
         for hkl, ei, ef in hkle_list:
-
             # q_lab = conv_mat @ hkl
             # q_mod = np.linalg.norm(q_lab)
             q_mod = np.linalg.norm(self.sample.b_mat @ hkl) * 2 * np.pi
@@ -221,7 +220,7 @@ class CooperNathans(TAS):
                 two_theta = get_angle_from_triangle(ki, kf, q_mod) * self.goniometer._sense
             except TypeError:
                 rez.STATUS = False
-                print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl,3)}.")
+                print(f"Cannot close triangle for ei={ei}, ef={ef}, hkl={np.round(hkl, 3)}.")
 
                 rez._set_labels()
                 rez_list.append(rez)

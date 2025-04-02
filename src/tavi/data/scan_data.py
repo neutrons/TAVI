@@ -15,7 +15,6 @@ class ScanData1D(object):
         y: np.ndarray,
         norm: Optional[np.ndarray] = None,
     ) -> None:
-
         # ind = np.argsort(x)
         # self.x = x[ind]
         # self.y = y[ind]
@@ -198,7 +197,6 @@ class ScanData1D(object):
         counts = np.zeros_like(x)
 
         for i, x0 in enumerate(self.x):
-
             # Return the indices of the maximum values in the specified axis ignoring NaNs.
             idx = np.nanargmax(x_boundary - ZERO > x0)
             if idx > 0:  # ignore first and last bin box
@@ -246,7 +244,6 @@ class ScanData1D(object):
 
 
 class ScanData2D(object):
-
     ZEROS = 1e-6
 
     def __init__(

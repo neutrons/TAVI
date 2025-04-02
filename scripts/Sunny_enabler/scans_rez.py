@@ -35,7 +35,6 @@ for scan_num in scan_list:
     rez_r0_list = []
 
     for i in range(len(ei_list)):
-
         rez = tas.rez(
             ei=ei_list[i],
             ef=ef_list[i],
