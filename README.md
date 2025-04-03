@@ -112,4 +112,6 @@ which will result in a package built and uploaded to https://anaconda.org/neutro
 ### Add an access token to codecov
 Follow the instructions in the [Confluence page](https://ornl-neutrons.atlassian.net/wiki/spaces/NDPD/pages/103546883/Coverage+reports)
 to create the access token.
+
 [![CI](https://github.com/neutrons/tavi/actions/workflows/unittest.yml/badge.svg?branch=next)](https://github.com/neutrons/hyspecppt/actions/workflows/unittest.yml)
+[![codecov](https://codecov.io/gh/neutrons/TAVI/graph/badge.svg?token=AYB1X932FV)](https://codecov.io/gh/neutrons/TAVI)
