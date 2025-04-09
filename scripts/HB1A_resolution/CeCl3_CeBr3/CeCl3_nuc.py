@@ -222,7 +222,7 @@ def plot_s1_th2th_nuclear_peaks():
         (2, 2, 2): (93, 94),
         (-1, -1, 1): (95, 96),
         (-1, -1, 2): (97, 98),
-        (-1, -1, 3): (99, 100),
+        # (-1, -1, 3): (99, 100),
     }
     fit_ranges_q = {
         (2, 2, 0): (None, (-0.08, 0.05)),
@@ -242,7 +242,7 @@ def plot_s1_th2th_nuclear_peaks():
         (2, 2, 2),
         (-1, -1, 1),
         (-1, -1, 2),
-        (-1, -1, 3),
+        # (-1, -1, 3),
     )
 
     for hkl, (num_s1, num_th2th) in peak_list.items():
@@ -253,6 +253,7 @@ def plot_s1_th2th_nuclear_peaks():
         if (ranges := fit_ranges_omega.get(hkl)) is not None:
             s1_range_omega, th2th_range_omega = ranges
 
+        print(hkl)
         (s1_q, th2th_q), rez = analyze_peak_in_q(hkl, num_s1, num_th2th, s1_range_q, th2th_range_q)
         (s1_omega, th2th_omega), two_theta = analyze_peak_in_omega(
             hkl, num_s1, num_th2th, s1_range_omega, th2th_range_omega
@@ -479,7 +480,7 @@ def plot_integ_intensity_omega(analysis):
         y = y_array_th2th[i]
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 nuclear peaks")
     ax.legend()
 
     return fig
@@ -533,7 +534,7 @@ def plot_integ_intensity_omega_lorentz(analysis):
         y = y_array_th2th[i] + 1
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 nuclear peaks")
     ax.grid(alpha=0.6)
 
     return fig
@@ -573,7 +574,7 @@ def plot_integ_intensity_q(analysis):
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
     ax.legend()
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 nuclear peaks")
 
     return fig
 
@@ -636,7 +637,7 @@ def plot_integ_intensity_q_lorentz(analysis):
         y = y_array_th2th[i] + 2
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 nuclear peaks")
 
     return fig
 

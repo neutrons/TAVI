@@ -72,7 +72,6 @@ def analyze_s1_scan_in_q(s1, fit_range=None):
     # pars_s1["b1_c"].set(min=0)
     scan_s1_fit.fit(pars_s1, USE_ERRORBAR=False)
     # print(scan_s1_fit.result.fit_report())
-
     return (scan_s1, scan_s1_fit)
 
 
@@ -94,19 +93,20 @@ def analyze_s1_scan_in_omega(s1, fit_range=None):
     return (scan_s1, scan_s1_fit)
 
 
-def analyze_peak_in_q(hkl, s1, th2th, rez_calc=False, **kwargs):
-    s1_data, s1_fit = analyze_s1_scan_in_q(s1)
-    th2th_data, th2th_fit = analyze_th2th_scan_in_q(th2th)
+def analyze_peak_in_q(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=None, rez_calc=False, **kwargs):
+
+    s1_data, s1_fit = analyze_s1_scan_in_q(s1, fit_range=fit_range_s1)
+    th2th_data, th2th_fit = analyze_th2th_scan_in_q(th2th, fit_range=fit_range_th2th)
 
     p1 = Plot1D()
-    p1.add_scan(s1_data, fmt="o", label="#{} ({},{},{}) s1 scan".format(s1, *hkl), **kwargs)
+    p1.add_scan(s1_data, fmt="o", label="#{} ({:.2f},{:.2f},{:.2f}) s1 scan".format(s1, *hkl), **kwargs)
     fwhm = s1_fit.result.params["s1_fwhm"]
     label = f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}"
     p1.add_fit(s1_fit, x=s1_fit.x_to_plot(), label=label, **kwargs)
     # p1.ylim = (-np.max(s1_data.y) * 0.1, np.max(s1_data.y) * 1.3)
 
     p2 = Plot1D()
-    p2.add_scan(th2th_data, fmt="o", label="#{} ({},{},{}) th2th scan".format(th2th, *hkl), **kwargs)
+    p2.add_scan(th2th_data, fmt="o", label="#{} ({:.2f},{:.2f},{:.2f}) th2th scan".format(th2th, *hkl), **kwargs)
     fwhm = th2th_fit.result.params["s1_fwhm"]
     label = f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}"
     p2.add_fit(th2th_fit, x=th2th_fit.x_to_plot(), label=label, **kwargs)
@@ -131,19 +131,20 @@ def analyze_peak_in_q(hkl, s1, th2th, rez_calc=False, **kwargs):
         return ((p1, p2), (s1_fit, th2th_fit))
 
 
-def analyze_peak_in_omega(hkl, s1, th2th, **kwargs):
-    s1_data, s1_fit = analyze_s1_scan_in_omega(s1)
-    th2th_data, th2th_fit, two_theta = analyze_th2th_scan_in_omega(th2th)
+def analyze_peak_in_omega(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=None, **kwargs):
+
+    s1_data, s1_fit = analyze_s1_scan_in_omega(s1, fit_range=fit_range_s1)
+    th2th_data, th2th_fit, two_theta = analyze_th2th_scan_in_omega(th2th, fit_range=fit_range_th2th)
 
     p1 = Plot1D()
-    p1.add_scan(s1_data, fmt="o", label="#{} ({},{},{}) s1 scan".format(s1, *hkl), **kwargs)
+    p1.add_scan(s1_data, fmt="o", label="#{} ({:.2f},{:.2f},{:.2f}) s1 scan".format(s1, *hkl), **kwargs)
     fwhm = s1_fit.result.params["s1_fwhm"]
     label = f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}"
     p1.add_fit(s1_fit, x=s1_fit.x_to_plot(), label=label, **kwargs)
     # p1.ylim = (-np.max(s1_data.y) * 0.1, np.max(s1_data.y) * 1.3)
 
     p2 = Plot1D()
-    p2.add_scan(th2th_data, fmt="o", label="#{} ({},{},{}) th2th scan".format(th2th, *hkl), **kwargs)
+    p2.add_scan(th2th_data, fmt="o", label="#{} ({:.2f},{:.2f},{:.2f}) th2th scan".format(th2th, *hkl), **kwargs)
     fwhm = th2th_fit.result.params["s1_fwhm"]
     label = f"FWHM={fwhm.value:.4f}+/-{fwhm.stderr:.4f}"
     p2.add_fit(th2th_fit, x=th2th_fit.x_to_plot(), label=label, **kwargs)
@@ -152,16 +153,8 @@ def analyze_peak_in_omega(hkl, s1, th2th, **kwargs):
 
 
 def plot_s1_th2th_mag_nuc_peaks():
-    pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_mag_peaks.pdf")
-    #  ----------------------- T= 4 K th2th and s1 scans -------------------------
-    # ((0, 0, 1), (300, 299)),
-    # ((0, 0, 5), (308, 307)), # close to a powder ring
-    # ((1, 0, 4), (278, 277)), # powder ring
-    # ((1, 0, 5), (280, 279), ((-0.1, 0.13), None)),
-    # ((2, 0, 2), (286, 285)),
-    # ((1, 0, 2), (274, 273)), #uneven intensity
-    # ((3, 0, 3), (298, 297)), # uncertainty can't be determined
-    # ((1, 0, 1), (272, 271)),  # uneven intensity
+
+    pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CeCl3_CeBr3/IPTS-32275/CeCl3_mag_peaks.pdf")
 
     #  outputs to be collected
     # q_list = []
@@ -173,73 +166,103 @@ def plot_s1_th2th_mag_nuc_peaks():
     exp_th2th_q = []
     exp_s1_q = []
 
-    peak_list = {  # (h,k,l): ((mag_s1,mag_th2th, nuc_s1, nuc_th2th))
-        (0, 0, 2): (80, 81, 301, 302),
-        (0, 0, 3): (82, 83, 303, 304),
-        (0, 0, 4): (84, 85, 305, 306),
-        # (0, 0, 6): (88, 89, 309, 310),
-        (1, 0, 0): (44, 45, 265, 266),
-        (2, 0, 0): (46, 47, 267, 268),
-        (3, 0, 0): (48, 49, 269, 270),
-        (1, 0, 3): (54, 55, 275, 276),
-        (1, 0, 6): (60, 61, 281, 282),
-        (2, 0, 1): (62, 63, 283, 284),
-        (2, 0, 3): (66, 67, 287, 288),
-        (2, 0, 4): (68, 69, 289, 290),
-        (3, 0, 1): (72, 73, 293, 294),
-        (3, 0, 2): (74, 75, 295, 296),
+    peak_list = {  # (h,k,l): mag_s1, mag_th2th
+        (1 / 3, 1 / 3, 1 / 2): (40, 39),
+        (2 / 3, 2 / 3, 1 / 2): (42, 41),
+        (4 / 3, 4 / 3, 1 / 2): (44, 43),
+        (5 / 3, 5 / 3, 1 / 2): (46, 45),
+        (1 / 3, 1 / 3, 3 / 2): (48, 47),
+        (2 / 3, 2 / 3, 3 / 2): (50, 49),
+        (4 / 3, 4 / 3, 3 / 2): (52, 51),
+        (5 / 3, 5 / 3, 3 / 2): (54, 53),
+        (1 / 3, 1 / 3, 5 / 2): (56, 55),
+        (2 / 3, 2 / 3, 5 / 2): (58, 57),
+        (4 / 3, 4 / 3, 5 / 2): (60, 59),
+        (5 / 3, 5 / 3, 5 / 2): (62, 61),
+        (7 / 3, 7 / 3, 1 / 2): (64, 63),
+        (8 / 3, 8 / 3, 1 / 2): (66, 65),
+        (-1 / 3, -1 / 3, 1 / 2): (68, 67),
+        (-2 / 3, -2 / 3, 1 / 2): (74, 73),
     }
 
-    for hkl, (mag_s1, mag_th2th, nuc_s1, nuc_th2th) in peak_list.items():
-        hkl_list.append(hkl)
-        (p_s1_mag, p_th2th_mag), (s1_mag_q, th2th_mag_q), rez = analyze_peak_in_q(
-            hkl,
-            mag_s1,
-            mag_th2th,
-            rez_calc=True,
-            c="C1",
-        )
-        (p_s1_nuc, p_th2th_nuc), (s1_nuc_q, th2th_nuc_q) = analyze_peak_in_q(hkl, nuc_s1, nuc_th2th, c="C0")
+    fit_ranges_q = {
+        (4 / 3, 4 / 3, 3 / 2): (None, (-0.05, 0.08)),
+    }
+    fit_ranges_omega = {
+        (4 / 3, 4 / 3, 3 / 2): (None, (21, 23.6)),
+    }
 
-        # make plot
-        fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
-        p_s1_mag.plot(ax0)
-        p_s1_nuc.plot(ax0)
-        p_th2th_mag.plot(ax1)
-        p_th2th_nuc.plot(ax1)
-        plt.tight_layout()
+    refinement = (
+        (1 / 3, 1 / 3, 1 / 2),
+        (2 / 3, 2 / 3, 1 / 2),
+        (4 / 3, 4 / 3, 1 / 2),
+        (5 / 3, 5 / 3, 1 / 2),
+        (1 / 3, 1 / 3, 3 / 2),
+        (2 / 3, 2 / 3, 3 / 2),
+        (4 / 3, 4 / 3, 3 / 2),
+        # (5 / 3, 5 / 3, 3 / 2),
+        #  (1 / 3, 1 / 3, 5 / 2),
+        (2 / 3, 2 / 3, 5 / 2),
+        (4 / 3, 4 / 3, 5 / 2),
+        (5 / 3, 5 / 3, 5 / 2),
+        (7 / 3, 7 / 3, 1 / 2),
+        (8 / 3, 8 / 3, 1 / 2),
+        (-1 / 3, -1 / 3, 1 / 2),
+        (-2 / 3, -2 / 3, 1 / 2),
+    )
 
-        pdf.savefig(fig)
-        plt.close()
+    for hkl, (mag_s1, mag_th2th) in peak_list.items():
 
-        (p_s1_mag, p_th2th_mag), (s1_mag_omega, th2th_mag_omega), two_theta = analyze_peak_in_omega(
-            hkl, mag_s1, mag_th2th, c="C1"
-        )
-        (p_s1_nuc, p_th2th_nuc), (s1_nuc_omega, th2th_nuc_omega), _ = analyze_peak_in_omega(
-            hkl,
-            nuc_s1,
-            nuc_th2th,
-            c="C0",
-        )
-        # make plot
-        fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
-        p_s1_mag.plot(ax0)
-        p_s1_nuc.plot(ax0)
-        p_th2th_mag.plot(ax1)
-        p_th2th_nuc.plot(ax1)
-        plt.tight_layout()
+        s1_range_q = th2th_range_q = None
+        s1_range_omega = th2th_range_omega = None
+        if (ranges := fit_ranges_q.get(hkl)) is not None:
+            s1_range_q, th2th_range_q = ranges
+        if (ranges := fit_ranges_omega.get(hkl)) is not None:
+            s1_range_omega, th2th_range_omega = ranges
 
-        pdf.savefig(fig)
-        plt.close()
+        if hkl in refinement:
 
-        rez_list.append(rez)
+            hkl_list.append(hkl)
+            (p_s1_mag, p_th2th_mag), (s1_mag_q, th2th_mag_q), rez = analyze_peak_in_q(
+                hkl,
+                mag_s1,
+                mag_th2th,
+                s1_range_q,
+                th2th_range_q,
+                rez_calc=True,
+                c="C0",
+            )
 
-        exp_th2th_omega.append((th2th_mag_omega, th2th_nuc_omega))
-        exp_s1_omega.append((s1_mag_omega, s1_nuc_omega))
-        exp_th2th_q.append((th2th_mag_q, th2th_nuc_q))
-        exp_s1_q.append((s1_mag_q, s1_nuc_q))
+            # make plot
+            fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
+            p_s1_mag.plot(ax0)
+            p_th2th_mag.plot(ax1)
+            plt.tight_layout()
 
-        two_theta_list.append(two_theta)
+            pdf.savefig(fig)
+            plt.close()
+
+            (p_s1_mag, p_th2th_mag), (s1_mag_omega, th2th_mag_omega), two_theta = analyze_peak_in_omega(
+                hkl, mag_s1, mag_th2th, s1_range_omega, th2th_range_omega, c="C0"
+            )
+
+            # make plot
+            fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(10, 5))
+            p_s1_mag.plot(ax0)
+            p_th2th_mag.plot(ax1)
+            plt.tight_layout()
+
+            pdf.savefig(fig)
+            plt.close()
+
+            rez_list.append(rez)
+
+            exp_th2th_omega.append((th2th_mag_omega))
+            exp_s1_omega.append((s1_mag_omega))
+            exp_th2th_q.append((th2th_mag_q))
+            exp_s1_q.append((s1_mag_q))
+
+            two_theta_list.append(two_theta)
 
     pdf.close()
 
@@ -258,17 +281,11 @@ def plot_integ_intensity_omega(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-        th2th_mag, th2th_nuc = exp_th2th_omega[i]
-        s1_mag, s1_nuc = exp_s1_omega[i]
-        amp = th2th_mag.params["s1_amplitude"].value - th2th_nuc.params["s1_amplitude"].value
-        err = np.sqrt(th2th_mag.params["s1_amplitude"].stderr ** 2 + th2th_nuc.params["s1_amplitude"].stderr ** 2)
-        y_array_th2th.append(amp)
-        y_err_th2th.append(err)
+        y_array_th2th.append(exp_th2th_omega[i].params["s1_amplitude"].value)
+        y_err_th2th.append(exp_th2th_omega[i].params["s1_amplitude"].stderr)
 
-        amp = s1_mag.params["s1_amplitude"].value - s1_nuc.params["s1_amplitude"].value
-        err = np.sqrt(s1_mag.params["s1_amplitude"].stderr ** 2 + s1_nuc.params["s1_amplitude"].stderr ** 2)
-        y_array_s1.append(amp)
-        y_err_s1.append(err)
+        y_array_s1.append(exp_s1_omega[i].params["s1_amplitude"].value)
+        y_err_s1.append(exp_s1_omega[i].params["s1_amplitude"].stderr)
 
     ax.errorbar(cal_ii, y_array_th2th, yerr=y_err_th2th, fmt="s", label="th2th")
     ax.errorbar(cal_ii, y_array_s1, yerr=y_err_s1, fmt="o", label="s1")
@@ -276,9 +293,10 @@ def plot_integ_intensity_omega(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i]
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        qh, qk, ql = hkl
+        ax.annotate(f"({qh:.02f}, {qk:.02f}, {ql:.02f})", (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 magnetic peaks")
     ax.legend()
 
     return fig
@@ -296,18 +314,15 @@ def plot_integ_intensity_omega_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-        th2th_mag, th2th_nuc = exp_th2th_omega[i]
-        s1_mag, s1_nuc = exp_s1_omega[i]
-
-        amp = th2th_mag.params["s1_amplitude"].value - th2th_nuc.params["s1_amplitude"].value
-        err = np.sqrt(th2th_mag.params["s1_amplitude"].stderr ** 2 + th2th_nuc.params["s1_amplitude"].stderr ** 2)
-
-        amp = s1_mag.params["s1_amplitude"].value - s1_nuc.params["s1_amplitude"].value
-        err = np.sqrt(s1_mag.params["s1_amplitude"].stderr ** 2 + s1_nuc.params["s1_amplitude"].stderr ** 2)
+        amp = exp_th2th_omega[i].params["s1_amplitude"].value
+        err = exp_th2th_omega[i].params["s1_amplitude"].stderr
 
         lorentz = 1 / np.sin(two_theta_list[i])
         y_array_th2th.append(amp / lorentz)
         y_err_th2th.append(err / lorentz)
+
+        amp = exp_s1_omega[i].params["s1_amplitude"].value
+        err = exp_s1_omega[i].params["s1_amplitude"].stderr
 
         y_array_s1.append(amp / lorentz)
         y_err_s1.append(err / lorentz)
@@ -324,6 +339,7 @@ def plot_integ_intensity_omega_lorentz(analysis):
 
     f = result.params["c"].value
     ferr = result.params["c"].stderr
+    ferr = 0 if ferr is None else ferr
     ax.plot(np.array(cal_ii), result.best_fit, "r", label=f"scale factor = {f:.5f}+-{ferr:.5f}")
 
     ax.legend()
@@ -331,9 +347,10 @@ def plot_integ_intensity_omega_lorentz(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i] + 1
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        qh, qk, ql = hkl
+        ax.annotate(f"({qh:.02f}, {qk:.02f}, {ql:.02f})", (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 magnetic peaks")
     ax.grid(alpha=0.6)
 
     return fig
@@ -352,15 +369,16 @@ def plot_integ_intensity_q(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-        th2th_mag, th2th_nuc = exp_th2th_q[i]
-        s1_mag, s1_nuc = exp_s1_q[i]
-        amp = th2th_mag.params["s1_amplitude"].value - th2th_nuc.params["s1_amplitude"].value
-        err = np.sqrt(th2th_mag.params["s1_amplitude"].stderr ** 2 + th2th_nuc.params["s1_amplitude"].stderr ** 2)
+
+        amp = exp_th2th_q[i].params["s1_amplitude"].value
+        err = exp_th2th_q[i].params["s1_amplitude"].stderr
+
         y_array_th2th.append(amp)
         y_err_th2th.append(err)
 
-        amp = s1_mag.params["s1_amplitude"].value - s1_nuc.params["s1_amplitude"].value
-        err = np.sqrt(s1_mag.params["s1_amplitude"].stderr ** 2 + s1_nuc.params["s1_amplitude"].stderr ** 2)
+        amp = exp_s1_q[i].params["s1_amplitude"].value
+        err = exp_s1_q[i].params["s1_amplitude"].stderr
+
         y_array_s1.append(amp)
         y_err_s1.append(err)
 
@@ -370,10 +388,11 @@ def plot_integ_intensity_q(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i]
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        qh, qk, ql = hkl
+        ax.annotate(f"({qh:.02f}, {qk:.02f}, {ql:.02f})", (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
     ax.legend()
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("CeCl3 magnetic peaks")
 
     return fig
 
@@ -391,22 +410,21 @@ def plot_integ_intensity_q_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
+
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0
         det_2d = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
         lorentz_th2th = np.sqrt(det_2d / mat[0, 0] / (2 * np.pi)) * r0
 
-        th2th_mag, th2th_nuc = exp_th2th_q[i]
-        s1_mag, s1_nuc = exp_s1_q[i]
-        amp = th2th_mag.params["s1_amplitude"].value - th2th_nuc.params["s1_amplitude"].value
-        err = np.sqrt(th2th_mag.params["s1_amplitude"].stderr ** 2 + th2th_nuc.params["s1_amplitude"].stderr ** 2)
+        amp = exp_th2th_q[i].params["s1_amplitude"].value
+        err = exp_th2th_q[i].params["s1_amplitude"].stderr
 
         y_array_th2th.append(amp / lorentz_th2th)
         y_err_th2th.append(err / lorentz_th2th)
 
-        amp = s1_mag.params["s1_amplitude"].value - s1_nuc.params["s1_amplitude"].value
-        err = np.sqrt(s1_mag.params["s1_amplitude"].stderr ** 2 + s1_nuc.params["s1_amplitude"].stderr ** 2)
+        amp = exp_s1_q[i].params["s1_amplitude"].value
+        err = exp_s1_q[i].params["s1_amplitude"].stderr
 
         lorentz_s1 = np.sqrt(det_2d / mat[1, 1] / (2 * np.pi)) * r0
 
@@ -427,6 +445,7 @@ def plot_integ_intensity_q_lorentz(analysis):
 
     f = result.params["c"].value
     ferr = result.params["c"].stderr
+    ferr = 0 if ferr is None else ferr
     ax.plot(np.array(cal_ii), result.best_fit, "r", label=f"scale factor = {f:.5f}+-{ferr:.5f}")
 
     ax.legend()
@@ -434,22 +453,24 @@ def plot_integ_intensity_q_lorentz(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i]
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        qh, qk, ql = hkl
+        ax.annotate(f"({qh:.02f}, {qk:.02f}, {ql:.02f})", (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 magnetic peaks")
+    ax.set_title("CeCl3 magnetic peaks")
 
     return fig
 
 
 def setup():
-    instrument_config_json_path = "test_data/IPTS32912_HB1A_exp1031/hb1a.json"
+
+    instrument_config_json_path = "test_data/CeCl3_CeBr3/IPTS-32275/hb1a.json"
 
     hb1a = TAS(fixed_ei=ei, fixed_ef=ef)
     hb1a.load_instrument_params_from_json(instrument_config_json_path)
 
-    sample_json_path = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6.json"
-    hov6sn6 = Sample.from_json(sample_json_path)
-    hb1a.mount_sample(hov6sn6)
+    sample_json_path = "test_data/CeCl3_CeBr3/IPTS-32275/CeCl3.json"
+    cecl3 = Sample.from_json(sample_json_path)
+    hb1a.mount_sample(cecl3)
     return hb1a
 
 
@@ -459,14 +480,21 @@ if __name__ == "__main__":
     hb1a = setup()
     # ------------------------ load data ------------------------
     tavi = TAVI()
-    path_to_spice_folder = "test_data/IPTS32912_HB1A_exp1031/exp1031/"
+    path_to_spice_folder = "test_data/CeCl3_CeBr3/IPTS-32275/exp1017/"
     tavi.load_spice_data_from_disk(path_to_spice_folder)
 
     analysis = plot_s1_th2th_mag_nuc_peaks()
 
-    file_name = "test_data/IPTS32912_HB1A_exp1031/mag.hkl"
+    # file_name = "test_data/CeCl3_CeBr3/IPTS-32275/bbtest3.fou"
+    # peak_info = load_mag_fsq(file_name, first=1)
+    file_name = "test_data/CeCl3_CeBr3/IPTS-32275/1_my.hkl"
     peak_info = load_mag_fsq(file_name, first=4)
-    cal_ii = np.array([float(peak_info[hkl]) for hkl in analysis[0]])
+    cal_ii = []
+    for hkl in analysis[0]:
+        qh, qk, ql = hkl
+        intensity = float(peak_info[np.abs(int(qh * 3)), np.abs(int(qk * 3)), int(ql * 2)])
+        cal_ii.append(intensity)
+    cal_ii = np.array(cal_ii)
 
     f1 = plot_integ_intensity_omega(analysis)
     f2 = plot_integ_intensity_omega_lorentz(analysis)
@@ -475,7 +503,7 @@ if __name__ == "__main__":
 
     figs = (f1, f2, f3, f4)
     pdf = matplotlib.backends.backend_pdf.PdfPages(
-        "./test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_mag_refine_comparison.pdf"
+        "./test_data/CeCl3_CeBr3/IPTS-32275/CeCl3_mag_refine_comparison_my.pdf"
     )
     for f in figs:
         pdf.savefig(f)

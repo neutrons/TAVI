@@ -99,6 +99,8 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
                     ubconf.update({"AngleMode": int(val)})
             elif "," in val:  # string of vector to array
                 ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
+            elif val == '""':  # no value
+                pass
             else:  # float
                 ubconf.update({key: float(val)})
     else:  # xml junk from C#
@@ -140,11 +142,21 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
         # print(spice_data.shape)
         for idx, col_header in enumerate(col_names):
             dataset_dict.update({col_header: data[:, idx]})
+    spicelogs = {"metadata": attrs_dict}
+    spicelogs.update(dataset_dict)
 
     scan_path = os.path.abspath(path_to_scan_file)
     (*folder_path, _, _) = scan_path.split("/")
-    # ubconf can be a Windows path in some scans
-    ub_file = metadata["ubconf"].split("\\")[-1]
+
+    ub_file_name = metadata["ubconf"]
+    # clean up the mess DAO made
+    if "\\" in ub_file_name:  # ubconf can be a Windows path in some scans
+        ub_file = ub_file_name.split("\\")[-1]
+    elif "/" in ub_file_name:  # ubconf can be a Windows path in some scans
+        ub_file = ub_file_name.split("/")[-1]
+    else:
+        ub_file = ub_file_name
+
     ub_file_path = os.path.join("/", *folder_path, "UBConf", ub_file)
     ub_temp_file_path = os.path.join("/", *folder_path, "UBConf", "temp", ub_file)
 
@@ -159,6 +171,6 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     for k, v in ubconf.items():
         ub_conf_dict.update({k: v})
 
-    spicelogs = {"metadata": attrs_dict, "ub_conf": ub_conf_dict}
-    spicelogs.update(dataset_dict)
+    spicelogs.update({"ub_conf": ub_conf_dict})
+
     return spicelogs

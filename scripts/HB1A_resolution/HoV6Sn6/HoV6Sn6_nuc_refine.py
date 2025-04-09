@@ -12,15 +12,19 @@ from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
 
-def load_nuc_fsq():
-    file_name = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6.hkl"
+def load_nuc_fsq(file_name, first=0, last=None):
+
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
     peak_info = {}
-    for i in range(3, 37):
-        h, k, l, mult, *_, f2, _ = all_content[i].split()
-        peak_info.update({(int(h), int(k), int(l)): (mult, f2)})
+    if last is None:
+        last = len(all_content)
+    for i in range(first, last):
+        # h, k, l, mult, *_, f2, _ = all_content[i].split()
+        h, k, l, f2, *_ = all_content[i].split()
+        # peak_info.update({(int(h), int(k), int(l)): (mult, f2)})
+        peak_info.update({(int(h), int(k), int(l)): f2})
     return peak_info
 
 
@@ -169,6 +173,7 @@ def make_rez_plots(hkl, s1, th2th):
     p1.plot(ax0)
     p2.plot(ax1)
 
+    plt.tight_layout()
     pdf.savefig(fig)
     plt.close()
 
@@ -184,19 +189,23 @@ def make_omega_plots(hkl, s1, th2th):
     p1.plot(ax0)
     p2.plot(ax1)
 
+    plt.tight_layout()
     pdf.savefig(fig)
     plt.close()
 
 
 def analyze_peak_in_q(hkl, num_s1, num_th2th):
-    s1_q, p1, _, _ = analyze_s1_scan_in_q(hkl, num_s1)
+
+    s1_q, p1, q, _ = analyze_s1_scan_in_q(hkl, num_s1)
     th2th_q, p2 = analyze_th2th_scan_in_q(hkl, num_th2th)
     rez = make_rez_plots(hkl, (s1_q, p1), (th2th_q, p2))
 
-    return (s1_q, th2th_q), rez
+    return (s1_q, th2th_q), rez, q
 
 
 def analyze_peak_in_omega(hkl, num_s1, num_th2th):
+    print(hkl)
+
     s1_omega, p1, _, _ = analyze_s1_scan_in_omega(hkl, num_s1)
     th2th_omega, p2, two_theta = analyze_th2th_scan_in_omega(hkl, num_th2th)
     make_omega_plots(hkl, (s1_omega, p1), (th2th_omega, p2))
@@ -219,6 +228,7 @@ def plot_s1_th2th_nuclear_peaks():
     # q_list = []
     two_theta_list = []
     hkl_list = []
+    q_list = []
     rez_list = []
     exp_th2th_omega = []
     exp_s1_omega = []
@@ -244,9 +254,9 @@ def plot_s1_th2th_nuclear_peaks():
 
     for hkl, (num_s1, num_th2th) in peak_list.items():
         hkl_list.append(hkl)
-        (s1_q, th2th_q), rez = analyze_peak_in_q(hkl, num_s1, num_th2th)
+        (s1_q, th2th_q), rez, q = analyze_peak_in_q(hkl, num_s1, num_th2th)
         (s1_omega, th2th_omega), two_theta = analyze_peak_in_omega(hkl, num_s1, num_th2th)
-
+        q_list.append(q)
         rez_list.append(rez)
 
         exp_th2th_omega.append(th2th_omega)
@@ -256,16 +266,16 @@ def plot_s1_th2th_nuclear_peaks():
 
         two_theta_list.append(two_theta)
 
-    return (hkl_list, rez_list, (exp_th2th_omega, exp_s1_omega), (exp_th2th_q, exp_s1_q), two_theta_list)
+    return (hkl_list, rez_list, (exp_th2th_omega, exp_s1_omega), (exp_th2th_q, exp_s1_q), two_theta_list, q_list)
 
 
 def plot_integ_intensity_omega(analysis):
-    (hkl_list, _, (exp_th2th_omega, exp_s1_omega), _, _) = analysis
+    (hkl_list, _, (exp_th2th_omega, exp_s1_omega), _, _, _) = analysis
     fig, ax = plt.subplots()
     ax.set_xlabel("Calculated Integ. Inten.")
     ax.set_ylabel("Measured Intensity integrated in theta.")
 
-    cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
+    cal_ii = np.array([float(peak_info[hkl]) for hkl in hkl_list])
 
     y_array_th2th = []
     y_err_th2th = []
@@ -291,21 +301,22 @@ def plot_integ_intensity_omega(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i]
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
     ax.grid(alpha=0.6)
     ax.set_title("HoV6Sn6 nuclear peaks")
     ax.legend()
+    ax.set_xlim(left=0, right=max(cal_ii))
 
     return fig
 
 
 def plot_integ_intensity_omega_lorentz(analysis):
-    (hkl_list, _, (exp_th2th_omega, exp_s1_omega), _, two_theta_list) = analysis
+    (hkl_list, _, (exp_th2th_omega, exp_s1_omega), _, two_theta_list, _) = analysis
     fig, ax = plt.subplots()
     ax.set_xlabel("Calculated Integ. Inten.")
     ax.set_ylabel("Measured Intensity integrated in theta / sin(2 theta)")
 
-    cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
+    cal_ii = np.array([float(peak_info[hkl]) for hkl in hkl_list])
 
     y_array_th2th = []
     y_err_th2th = []
@@ -340,29 +351,32 @@ def plot_integ_intensity_omega_lorentz(analysis):
 
     f = result.params["c"].value
     ferr = result.params["c"].stderr
-    ax.plot(np.array(cal_ii), result.best_fit, "r", label=f"scale factor = {f:.5f}+-{ferr:.5f}")
+    ferr = -1 if ferr is None else ferr
+    label = f"scale factor = {f:.5f}+-{ferr:.5f}"
+    ax.plot(np.array(cal_ii), result.best_fit, "r", label=label)
 
     ax.legend()
 
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i] + 1
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
-    ax.grid(alpha=0.6)
+        ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
+
     ax.set_title("HoV6Sn6 nuclear peaks")
     ax.grid(alpha=0.6)
+    ax.set_xlim(left=0, right=max(cal_ii))
 
     return fig
 
 
 def plot_integ_intensity_q(analysis):
-    (hkl_list, _, _, (exp_th2th_q, exp_s1_q), _) = analysis
+    (hkl_list, _, _, (exp_th2th_q, exp_s1_q), _, _) = analysis
 
     fig, ax = plt.subplots()
     ax.set_xlabel("Calculated Integ. Inten.")
     ax.set_ylabel("Measured Intensity integrated in Q.")
 
-    cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
+    cal_ii = np.array([float(peak_info[hkl]) for hkl in hkl_list])
 
     y_array_th2th = []
     y_err_th2th = []
@@ -388,22 +402,23 @@ def plot_integ_intensity_q(analysis):
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i]
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
     ax.grid(alpha=0.6)
     ax.legend()
     ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_xlim(left=0, right=max(cal_ii))
 
     return fig
 
 
 def plot_integ_intensity_q_lorentz(analysis):
-    (hkl_list, rez_list, _, (exp_th2th_q, exp_s1_q), _) = analysis
+    (hkl_list, rez_list, _, (exp_th2th_q, exp_s1_q), _, _) = analysis
 
     fig, ax = plt.subplots()
     ax.set_xlabel("Calculated Integ. Inten.")
     ax.set_ylabel("Measured Intensity integrated in Q / lorentz factor")
 
-    cal_ii = np.array([float(peak_info[hkl][1]) for hkl in hkl_list])
+    cal_ii = np.array([float(peak_info[hkl]) for hkl in hkl_list])
 
     y_array_th2th = []
     y_err_th2th = []
@@ -447,16 +462,97 @@ def plot_integ_intensity_q_lorentz(analysis):
 
     f = result.params["c"].value
     ferr = result.params["c"].stderr
-    ax.plot(np.array(cal_ii), result.best_fit, "r", label=f"scale factor = {f:.5f}+-{ferr:.5f}")
+    ferr = -1 if ferr is None else ferr
+    label = f"scale factor = {f:.5f}+-{ferr:.5f}"
+    ax.plot(np.array(cal_ii), result.best_fit, "r", label=label)
 
     ax.legend()
 
     for i, hkl in enumerate(hkl_list):
         x = cal_ii[i]
         y = y_array_th2th[i] + 1
-        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
+        ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
     ax.grid(alpha=0.6)
     ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_xlim(left=0, right=max(cal_ii))
+
+    return fig
+
+
+def plot_integ_intensity_vs_q(analysis):
+    (hkl_list, rez_list, (exp_th2th_omega, exp_s1_omega), (exp_th2th_q, exp_s1_q), two_theta_list, q_list) = analysis
+
+    fig, ax = plt.subplots()
+    ax.set_xlabel("Q (inv. Angstrom)")
+    ax.set_ylabel("Measured Intensity w/ corrections")
+
+    # cal_ii = np.array([float(peak_info[hkl]) for hkl in hkl_list])
+
+    y_array_th2th = []
+    y_err_th2th = []
+    y_array_s1 = []
+    y_err_s1 = []
+
+    for i in range(len(hkl_list)):
+        th2th = exp_th2th_omega[i]
+        amp = th2th.params["s1_amplitude"].value
+        err = th2th.params["s1_amplitude"].stderr
+
+        lorentz = 1 / np.sin(two_theta_list[i])
+        y_array_th2th.append(amp / lorentz)
+        y_err_th2th.append(err / lorentz)
+
+        s1 = exp_s1_omega[i]
+        amp = s1.params["s1_amplitude"].value
+        err = s1.params["s1_amplitude"].stderr
+
+        y_array_s1.append(amp / lorentz)
+        y_err_s1.append(err / lorentz)
+
+    ax.errorbar(q_list, y_array_th2th, yerr=y_err_th2th, fmt="s", mfc="white", label="th2th * sin(2 theta)")
+    ax.errorbar(q_list, y_array_s1, yerr=y_err_s1, fmt="o", mfc="white", label="s1 * sin(2 theta)")
+
+    y_array_th2th = []
+    y_err_th2th = []
+    y_array_s1 = []
+    y_err_s1 = []
+
+    factor = 17.045
+    for i in range(len(hkl_list)):
+
+        mat = rez_list[i].mat
+        # det = np.linalg.det(mat)
+        r0 = rez_list[i].r0
+        det_2d = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+        lorentz_th2th = np.sqrt(det_2d / mat[0, 0] / (2 * np.pi)) * r0
+
+        th2th = exp_th2th_q[i]
+        amp = th2th.params["s1_amplitude"].value
+        err = th2th.params["s1_amplitude"].stderr
+
+        y_array_th2th.append(amp / lorentz_th2th * factor)
+        y_err_th2th.append(err / lorentz_th2th * factor)
+
+        s1 = exp_s1_q[i]
+        amp = s1.params["s1_amplitude"].value
+        err = s1.params["s1_amplitude"].stderr
+
+        lorentz_s1 = np.sqrt(det_2d / mat[1, 1] / (2 * np.pi)) * r0
+
+        y_array_s1.append(amp / lorentz_s1 * factor)
+        y_err_s1.append(err / lorentz_s1 * factor)
+
+    ax.errorbar(q_list, y_array_th2th, yerr=y_err_th2th, fmt="s", c="C0", label="th2th / th2th_lorentz")
+    ax.errorbar(q_list, y_array_s1, yerr=y_err_s1, fmt="o", c="C1", label="s1  / s1_lorentz")
+
+    ax.grid(alpha=0.6)
+    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.legend()
+
+    for i, hkl in enumerate(hkl_list):
+        x = q_list[i]
+        y = y_array_th2th[i]
+        ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
 
     return fig
 
@@ -494,16 +590,19 @@ if __name__ == "__main__":
     analysis = plot_s1_th2th_nuclear_peaks()
     pdf.close()
 
-    peak_info = load_nuc_fsq()
+    # file_name = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_AS.hkl"
+    file_name = "test_data/IPTS32912_HB1A_exp1031/nuc.hkl"
+    peak_info = load_nuc_fsq(file_name, first=4)
 
     f1 = plot_integ_intensity_omega(analysis)
     f2 = plot_integ_intensity_omega_lorentz(analysis)
     f3 = plot_integ_intensity_q(analysis)
     f4 = plot_integ_intensity_q_lorentz(analysis)
+    f5 = plot_integ_intensity_vs_q(analysis)
 
-    figs = (f1, f2, f3, f4)
+    figs = (f1, f2, f3, f4, f5)
     pdf = matplotlib.backends.backend_pdf.PdfPages(
-        "./test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_nuc_refine_comparison_time.pdf"
+        "./test_data/IPTS32912_HB1A_exp1031/HoV6Sn6_nuc_refine_comparison.pdf"
     )
     for f in figs:
         pdf.savefig(f)
