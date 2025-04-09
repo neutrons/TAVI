@@ -219,7 +219,7 @@ ax.plot(q_list, cn_fwhm_th2th, "o", markerfacecolor="none", label="CN th2th", c=
 for i, hkl in enumerate(hkl_list):
     x = q_list[i]
     y = th2th_fwhm[i] + 0.002
-    # mannual ajdjust position
+    # manual ajdjust position
     if hkl == (1, 1, 0):
         x -= 0.15
     if hkl == (1, 1, 1):
@@ -293,7 +293,7 @@ ax.plot([0, 6000], [0, 6000 * slope], "r", label="y = x")
 for i, hkl in enumerate(hkl_list):
     x = x_array[i]
     y = y_array[i] * 1.5
-    # mannual ajdjust position
+    # manual ajdjust position
     # if hkl ==(1,1,0):
     #     x-=0.15
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
@@ -354,7 +354,7 @@ plt.tight_layout()
 for i, hkl in enumerate(hkl_list):
     x0 = q_list[i]
     y0 = y[i] * 1.2
-    # mannual ajdjust position
+    # manual ajdjust position
     # if hkl ==(1,1,0):
     #     x-=0.15
     ax.annotate(str(hkl), (x0, y0), rotation=90, fontsize=8, color="k")
@@ -424,7 +424,7 @@ plt.tight_layout()
 for i, hkl in enumerate(hkl_list):
     x = q_list[i]
     y = y_l[i] * 1.2
-    # mannual ajdjust position
+    # manual ajdjust position
     # if hkl ==(1,1,0):
     #     x-=0.15
     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8, color="k")

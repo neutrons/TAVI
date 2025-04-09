@@ -139,7 +139,7 @@ class Fit1D(object):
 
     def guess(self) -> Parameters:
         """Guess fitting parameters' values
-        Reutrn:
+        Return:
             Parameters class in LMFIT"""
 
         pars = Parameters()
@@ -152,7 +152,7 @@ class Fit1D(object):
 
     @property
     def model(self):
-        """Return the  composite model of all singals and backgrounds"""
+        """Return the composite model of all signals and backgrounds"""
 
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model

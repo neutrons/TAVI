@@ -26,7 +26,7 @@ class ResolutionCalculator:
 
         Arguments:
             hkl (tuple | list(tuple)): (h,k,l)
-            en (float | list(float)): energy trnasfer
+            en (float | list(float)): energy transfer
 
         Return:
             hkle_list (tuple): list of (((h, k, l), ei, ef), ...)
@@ -42,7 +42,7 @@ class ResolutionCalculator:
         return tuple(hkle_list)
 
     def validate_instrument_parameters(self):  # noqa: C901
-        """Check if enough instrument parameters are provided for Cooper-Nathans mehtod"""
+        """Check if enough instrument parameters are provided for Cooper-Nathans method"""
 
         try:  # monochromator
             mono = self.instrument.monochromator

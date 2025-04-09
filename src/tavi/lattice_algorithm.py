@@ -20,7 +20,7 @@ def real_space_vectors(
     lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Calculate the real space lattice vectors in Cartesian coordiantes
+    Calculate the real space lattice vectors in Cartesian coordinates
 
     Args:
         lattice_params: tuple of (a, b, c, alpha, beta, gamma) in Angstrom and degrees
@@ -155,7 +155,7 @@ def lattice_params_from_g_star_mat(
     try:
         g_mat = np.linalg.inv(g_star_mat)
     except np.linalg.LinAlgError:
-        print("G* matrix is singluar. Returnin lattice_param=(1, 1, 1, 90, 90, 90).")
+        print("G* matrix is singular. Returning lattice_param=(1, 1, 1, 90, 90, 90).")
         g_mat = np.identity(3)
 
     a = np.sqrt(g_mat[0, 0])

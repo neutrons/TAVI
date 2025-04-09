@@ -36,7 +36,7 @@ class MonoAna(TASComponent):
         param_dict: Optional[dict] = None,
         component_name: str = "",
     ):
-        # defalut values
+        # default values
         self.type: str = "PG002"
         self.d_spacing: float = mono_ana_xtal["PG002"]
         self.mosaic_h: float = 45.0  # horizontal mosaic, min of arc

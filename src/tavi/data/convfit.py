@@ -24,7 +24,7 @@ def conv_1d(x, signal_fnc, rez_params):
     NUM_PTS = 10000
     y = np.empty_like(x)
     for i in range(len(x)):
-        # genrate resolution function at each point
+        # generate resolution function at each point
         r0, fwhm_rez = rez_params[i]
         sigma_rez = fwhm_rez / (2 * np.sqrt(2 * np.log(2)))
         del_x = 2 * NUM_SIGMA * sigma_rez / NUM_PTS
@@ -144,12 +144,12 @@ class ConvFit1D(object):
 
     def guess(self) -> Parameters:
         """Guess fitting parameters' values
-        Reutrn:
+        Return:
             Parameters class in LMFIT"""
 
         pars = Parameters()
-        for sigal in self._signal_models_intrinsic:
-            pars += sigal.guess(self.y, x=self.x)
+        for signal in self._signal_models_intrinsic:
+            pars += signal.guess(self.y, x=self.x)
         for bkg in self._background_models_instrinsic:
             pars += bkg.guess(self.y, x=self.x)
         self._parameters = pars
@@ -157,14 +157,14 @@ class ConvFit1D(object):
 
     @property
     def model(self):
-        """Return the  composite model of all singals and backgrounds"""
+        """Return the  composite model of all signals and backgrounds"""
 
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 
     @property
     def model_intrinsic(self):
-        """Return the  composite model of all singals and backgrounds"""
+        """Return the  composite model of all signals and backgrounds"""
 
         compposite_model = np.sum(self._signal_models_intrinsic + self._background_models_instrinsic)
         return compposite_model

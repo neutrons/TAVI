@@ -226,7 +226,7 @@ class NexusEntry(dict):
         """write a NexueEntry instance to a NeXus file
 
         Args:
-            path_to_nexus (str): path to a NeXus file with the extention .h5
+            path_to_nexus (str): path to a NeXus file with the extension .h5
         """
         with h5py.File(path_to_nexus, "a") as nexus_file:
             h5py.get_config().track_order = True
@@ -262,13 +262,13 @@ class NexusEntry(dict):
 
     def get(self, key, ATTRS=False, default=None):
         """
-        Return dataset spicified by key regardless of the hierarchy.
+        Return dataset specified by key regardless of the hierarchy.
         Return attributes instead if ATTRS is True.
         Look only in the NeXus contents, ignore the DAS logs.
 
         Args:
             key (str): keyword or path. e.g. "s1" or "detector/data"
-            ATTRS (bool): return attributes if ture, dataset if false
+            ATTRS (bool): return attributes if true, dataset if false
 
         Note:
             Unique keys like 's1' or 'm2' can be found straight forwardly.
