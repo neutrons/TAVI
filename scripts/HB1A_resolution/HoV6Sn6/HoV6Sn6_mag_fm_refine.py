@@ -11,14 +11,19 @@ from tavi.plotter import Plot1D
 from tavi.sample import Sample
 
 
-def load_mag_fsq():
-    file_name = "test_data/IPTS32912_HB1A_exp1031/HoV6Sn6.hkl"
+def load_mag_fsq(file_name, first=0, last=None):
+
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
+    if last is None:
+        last = len(all_content)
+
     peak_info = {}
-    for i in range(40, 226):
-        h, k, l, mult, *_, f2, _ = all_content[i].split()
+    # for i in range(40, 226):
+    for i in range(first, last):
+        # h, k, l, mult, *_, f2, _ = all_content[i].split()
+        h, k, l, f2, *_ = all_content[i].split()
         peak_info.update({(int(h), int(k), int(l)): f2})
     return peak_info
 
@@ -435,7 +440,7 @@ def plot_integ_intensity_q_lorentz(analysis):
         y = y_array_th2th[i]
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
-    ax.set_title("HoV6Sn6 nuclear peaks")
+    ax.set_title("HoV6Sn6 magnetic peaks")
 
     return fig
 
@@ -464,7 +469,8 @@ if __name__ == "__main__":
 
     analysis = plot_s1_th2th_mag_nuc_peaks()
 
-    peak_info = load_mag_fsq()
+    file_name = "test_data/IPTS32912_HB1A_exp1031/mag.hkl"
+    peak_info = load_mag_fsq(file_name, first=4)
     cal_ii = np.array([float(peak_info[hkl]) for hkl in analysis[0]])
 
     f1 = plot_integ_intensity_omega(analysis)

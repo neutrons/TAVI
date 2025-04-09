@@ -64,6 +64,9 @@ class NXdataset(dict):
     def __init__(self, ds, **kwargs):
         if ds is None:
             return None
+        elif isinstance(ds, str):
+            if not ds:
+                return None
 
         attr_dict = {}
         for k, v in kwargs.items():
@@ -132,15 +135,16 @@ class NXentry(dict):
 
 def _formatted_spicelogs(spicelogs: dict) -> NXentry:
     """Format SPICE logs into NeXus dict"""
-    ub_conf = spicelogs.pop("ub_conf")
-    ub_file_path = ub_conf.pop("file_path")
-    formatted_ub_conf = NXentry(file_path=ub_file_path, NX_class="NXcollection", EX_required="false")
-    for entry_key, entry_data in ub_conf.items():
-        formatted_ub_conf.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
+
+    formatted_spicelogs = NXentry(NX_class="NXcollection", EX_required="false")
+    if (ub_conf := spicelogs.get("ub_conf")) is not None:
+        ub_file_path = ub_conf.pop("file_path")
+        formatted_ub_conf = NXentry(file_path=ub_file_path, NX_class="NXcollection", EX_required="false")
+        for entry_key, entry_data in ub_conf.items():
+            formatted_ub_conf.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
+        formatted_spicelogs.add_attribute(key="ub_conf", attr=formatted_ub_conf)
 
     metadata = spicelogs.pop("metadata")
-    formatted_spicelogs = NXentry(ub_conf=formatted_ub_conf, NX_class="NXcollection", EX_required="false")
-
     for attr_key, attr_entry in metadata.items():
         formatted_spicelogs.add_attribute(attr_key, attr_entry)
 
@@ -180,6 +184,7 @@ def spice_scan_to_nxdict(
 
     spicelogs = _create_spicelogs(path_to_scan_file)
     metadata = spicelogs["metadata"]
+    # print(f"scan#{metadata['scan']}")
     # ---------------------------------------- user ----------------------------------------
 
     nxuser = NXentry(NX_class="NXuser")
@@ -468,6 +473,7 @@ def spice_scan_to_nxdict(
     )
     nxsample.add_dataset(key="Pt.", ds=NXdataset(ds=spicelogs.get("Pt."), type="NX_INT"))
     #  UB info
+
     nxsample.add_dataset(
         key="orientation_matrix",
         ds=NXdataset(ds=metadata.get("ubmatrix"), type="NX_FLOAT", EX_required="true", units="NX_DIMENSIONLESS"),

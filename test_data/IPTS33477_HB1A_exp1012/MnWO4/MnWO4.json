@@ -10,8 +10,8 @@
     "width": 1.0,
     "height": 1.0,
     "depth": 1.0,
-    "mosaic_h": 30,
-    "mosaic_v": 30,
+    "mosaic_h": 20,
+    "mosaic_v": 20,
     "ub_matrix": [
         -0.0169575548834872,
         0.172722180532526,

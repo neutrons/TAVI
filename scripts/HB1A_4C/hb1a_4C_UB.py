@@ -3,30 +3,6 @@ from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
 
-def read_macro():
-    scan_macro = "test_data/IPTS33477_HB1A_exp1012/exp1012/Macros/MnWO4_RT_overnight2.macro"
-    with open(scan_macro, encoding="utf-8") as f:
-        all_content = f.readlines()
-
-    hkl_list = []
-    angles_list = []
-    scan_nums = []
-    for i in range(int(len(all_content) / 3)):
-        scan_nums.append(3 * i + 662)
-        line1 = all_content[3 * i].split(" ")
-        h = int(float(line1[-4][1:]))
-        k = int(float(line1[-3]))
-        l = int(float(line1[-2]))
-        hkl_list.append((h, k, l))
-        line2 = all_content[3 * i + 1].split(" ")
-        two_theta = float(line2[2])
-        omega = float(line2[4])
-        chi = float(line2[6])
-        phi = float(line2[8])
-        angles_list.append(MotorAngles(two_theta=two_theta, omega=omega, chi=chi, phi=phi, sgl=None, sgu=None))
-    return scan_nums, hkl_list, angles_list
-
-
 def read_reflection_list():
 
     filename = "test_data/IPTS33477_HB1A_exp1012/MnWO4/Refections_022425.list"
