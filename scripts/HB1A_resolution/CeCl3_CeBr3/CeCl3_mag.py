@@ -12,7 +12,6 @@ from tavi.sample import Sample
 
 
 def load_mag_fsq(file_name, first=0, last=None):
-
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
@@ -94,7 +93,6 @@ def analyze_s1_scan_in_omega(s1, fit_range=None):
 
 
 def analyze_peak_in_q(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=None, rez_calc=False, **kwargs):
-
     s1_data, s1_fit = analyze_s1_scan_in_q(s1, fit_range=fit_range_s1)
     th2th_data, th2th_fit = analyze_th2th_scan_in_q(th2th, fit_range=fit_range_th2th)
 
@@ -132,7 +130,6 @@ def analyze_peak_in_q(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=None, r
 
 
 def analyze_peak_in_omega(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=None, **kwargs):
-
     s1_data, s1_fit = analyze_s1_scan_in_omega(s1, fit_range=fit_range_s1)
     th2th_data, th2th_fit, two_theta = analyze_th2th_scan_in_omega(th2th, fit_range=fit_range_th2th)
 
@@ -153,7 +150,6 @@ def analyze_peak_in_omega(hkl, s1, th2th, fit_range_s1=None, fit_range_th2th=Non
 
 
 def plot_s1_th2th_mag_nuc_peaks():
-
     pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/CeCl3_CeBr3/IPTS-32275/CeCl3_mag_peaks.pdf")
 
     #  outputs to be collected
@@ -212,7 +208,6 @@ def plot_s1_th2th_mag_nuc_peaks():
     )
 
     for hkl, (mag_s1, mag_th2th) in peak_list.items():
-
         s1_range_q = th2th_range_q = None
         s1_range_omega = th2th_range_omega = None
         if (ranges := fit_ranges_q.get(hkl)) is not None:
@@ -221,7 +216,6 @@ def plot_s1_th2th_mag_nuc_peaks():
             s1_range_omega, th2th_range_omega = ranges
 
         if hkl in refinement:
-
             hkl_list.append(hkl)
             (p_s1_mag, p_th2th_mag), (s1_mag_q, th2th_mag_q), rez = analyze_peak_in_q(
                 hkl,
@@ -369,7 +363,6 @@ def plot_integ_intensity_q(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-
         amp = exp_th2th_q[i].params["s1_amplitude"].value
         err = exp_th2th_q[i].params["s1_amplitude"].stderr
 
@@ -410,7 +403,6 @@ def plot_integ_intensity_q_lorentz(analysis):
     y_err_s1 = []
 
     for i in range(len(hkl_list)):
-
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0
@@ -462,7 +454,6 @@ def plot_integ_intensity_q_lorentz(analysis):
 
 
 def setup():
-
     instrument_config_json_path = "test_data/CeCl3_CeBr3/IPTS-32275/hb1a.json"
 
     hb1a = TAS(fixed_ei=ei, fixed_ef=ef)

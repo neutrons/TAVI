@@ -12,7 +12,6 @@ from tavi.sample import Sample
 
 
 def load_mag_fsq(file_name, first=0, last=None):
-
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 

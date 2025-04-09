@@ -13,7 +13,6 @@ from tavi.utilities import MotorAngles, Peak
 
 
 def load_nuc_fsq(file_name, first=0, last=None):
-
     with open(file_name, encoding="utf-8") as f:
         all_content = f.readlines()
 
@@ -195,7 +194,6 @@ def make_omega_plots(hkl, s1, th2th):
 
 
 def analyze_peak_in_q(hkl, num_s1, num_th2th):
-
     s1_q, p1, q, _ = analyze_s1_scan_in_q(hkl, num_s1)
     th2th_q, p2 = analyze_th2th_scan_in_q(hkl, num_th2th)
     rez = make_rez_plots(hkl, (s1_q, p1), (th2th_q, p2))
@@ -519,7 +517,6 @@ def plot_integ_intensity_vs_q(analysis):
 
     factor = 17.045
     for i in range(len(hkl_list)):
-
         mat = rez_list[i].mat
         # det = np.linalg.det(mat)
         r0 = rez_list[i].r0

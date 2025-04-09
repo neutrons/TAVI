@@ -167,7 +167,6 @@ def plot_s1_nuclear_peaks():
 
 
 if __name__ == "__main__":
-
     scan_nums, hkl_list, angles_list = read_macro()
 
     instrument_config_json_path = "test_data/IPTS33477_HB1A_exp1012/hb1a_4c.json"
