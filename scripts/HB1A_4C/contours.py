@@ -54,8 +54,8 @@ if __name__ == "__main__":
     # --------------------------------------
     scans = list(range(128, 148 + 1))
 
-    sg1 = tavi.combine_scans(scans, name="(002)")
-    pk002_1 = sg1.get_data(
+    sg1 = tavi.group_scans(scans, name="(002)")
+    pk002_1 = sg1.combine_data(
         axes=("qh", "ql", "detector"),
         norm_to=(1, "mcu"),
         grid=((-0.02, 0.02, 0.001), (-2.5, -1.5, 0.05)),
@@ -72,9 +72,9 @@ if __name__ == "__main__":
     # -------------- (002) -----------------
     scans = list(range(233, 263 + 1))
 
-    sg2 = tavi.combine_scans(scans, name="(002)")
+    sg2 = tavi.group_scans(scans, name="(002)")
 
-    pk002_2 = sg2.get_data(
+    pk002_2 = sg2.combine_data(
         axes=("omega", "2theta", "detector"),
         norm_to=(1, "mcu"),
         grid=((-7, -4, 0.1), (-14, -8, 0.2)),
@@ -94,8 +94,8 @@ if __name__ == "__main__":
     # --------------------------------------
     scans = list(range(191, 211 + 1))
 
-    sg1 = tavi.combine_scans(scans, name="(008)")
-    pk002_1 = sg1.get_data(
+    sg1 = tavi.group_scans(scans, name="(008)")
+    pk002_1 = sg1.combine_data(
         axes=("qh", "ql", "detector"),
         norm_to=(1, "mcu"),
         grid=((-0.02, 0.02, 0.001), (-8.5, -7.5, 0.05)),
@@ -112,9 +112,9 @@ if __name__ == "__main__":
     # -------------- (002) -----------------
     scans = list(range(326, 356 + 1))
 
-    sg2 = tavi.combine_scans(scans, name="(008)")
+    sg2 = tavi.group_scans(scans, name="(008)")
 
-    pk002_2 = sg2.get_data(
+    pk002_2 = sg2.combine_data(
         axes=("omega", "2theta", "detector"),
         norm_to=(1, "mcu"),
         grid=(0.1, 0.2),

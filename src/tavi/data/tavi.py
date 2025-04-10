@@ -159,11 +159,11 @@ class TAVI(object):
             raise ValueError(f"scan_num={scan_num} needs to be tuple or int")
         return Scan(scan_name, self.data[exp_id][scan_name])
 
-    def combine_scans(
+    def group_scans(
         self,
         scan_nums: Union[list[int], list[tuple[str, int]]],
         name: str = "",
-    ):
+    ) -> ScanGroup:
         """Group scans for further processing
 
         Arguments:

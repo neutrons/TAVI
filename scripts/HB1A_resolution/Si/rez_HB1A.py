@@ -35,8 +35,8 @@ tavi.load_spice_data_from_disk(path_to_spice_folder)
 
 scans = list(range(824, 848 + 1))
 
-sg1 = tavi.combine_scans(scans, name="Si (111) 40'-40'-40'-80'")
-si_111_1 = sg1.get_data(
+sg1 = tavi.group_scans(scans, name="Si (111) 40'-40'-40'-80'")
+si_111_1 = sg1.combine_data(
     axes=("qh", "ql", "detector"),
     norm_to=(1, "mcu"),
     grid=((0.97, 1.03, 0.0025), (0.97, 1.03, 0.0025)),
@@ -112,8 +112,8 @@ rez2_hhl = rez2.get_ellipse(axes=(0, 1), PROJECTION=False)
 
 scans = list(range(792, 816 + 1))
 
-sg2 = tavi.combine_scans(scans, name="Si (111) 40'-20'-20'-20'")
-si_111_2 = sg2.get_data(
+sg2 = tavi.group_scans(scans, name="Si (111) 40'-20'-20'-20'")
+si_111_2 = sg2.combine_data(
     axes=("qh", "ql", "detector"),
     norm_to=(1, "mcu"),
     grid=((0.97, 1.03, 0.0025), (0.97, 1.03, 0.0025)),

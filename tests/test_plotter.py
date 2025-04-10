@@ -22,13 +22,13 @@ def test_plot2d():
     # -------------- Si (111) 40'-40'-40'-80' -----------------
     scans = list(range(824, 848 + 1))
 
-    sg1 = tavi.combine_scans(scans, name="Si (111) 40'-40'-40'-80'")
-    si_111_1 = sg1.get_data(
+    sg1 = tavi.group_scans(scans, name="Si (111) 40'-40'-40'-80'")
+    si_111_1 = sg1.combine_data(
         axes=("qh", "ql", "detector"),
         norm_to=(1, "mcu"),
         grid=((0.97, 1.03, 0.0025), (0.97, 1.03, 0.0025)),
     )
-    si_111_2 = sg1.get_data(
+    si_111_2 = sg1.combine_data(
         axes=("s1", "s2", "detector"),
         norm_to=(1, "mcu"),
         grid=((-24.5, -21.5, 0.1), (-46.5, -43, 0.1)),
@@ -58,8 +58,8 @@ def test_plot2d_with_resolution():
     tavi = TAVI("./test_data/tavi_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
 
-    sg = tavi.combine_scans(scan_list, name="dispH")
-    scan_data_2d = sg.get_data(
+    sg = tavi.group_scans(scan_list, name="dispH")
+    scan_data_2d = sg.combine_data(
         axes=("qh", "en", "detector"),
         norm_to=(1, "mcu"),
         grid=(0.025, (-0.5, 4.5, 0.1)),

@@ -7,6 +7,8 @@ import numpy as np
 
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D
+
+# from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.ub_algorithm import ub_matrix_to_uv
@@ -296,10 +298,11 @@ class Scan(object):
         rez_params_list = []
 
         for i in range(len(qh)):
-            rez = tas.rez(hkl_list=(qh[i], qk[i], ql[i]), ei=ei[i], ef=ef[i], R0=True, projection=projection)
-            coh_fwhm = rez.coh_fwhms(axis=axis)
-            prefactor = rez.r0
-            rez_params_list.append((prefactor, coh_fwhm))
+            rez = tas.cooper_nathans(hkl=(qh[i], qk[i], ql[i]), en=ei[i] - ef[i], projection=projection)
+            if rez is not None:
+                coh_fwhm = rez.coh_fwhms(axis=axis)
+                prefactor = 1
+                rez_params_list.append((prefactor, coh_fwhm))
         return tuple(rez_params_list)
 
     def plot(

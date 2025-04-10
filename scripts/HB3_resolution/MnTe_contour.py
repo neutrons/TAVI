@@ -37,8 +37,8 @@ tavi.open_file("./test_data/tavi_MnTe.h5")
 scans = list(range(88, 133))
 
 scan_list2 = [("IPTS34735_HB3_exp0823", scan) for scan in scans]
-sg2 = tavi.combine_scans(scan_list2, name="dispH (H,0,2-H) Ef=14.7 meV")
-scan_data_2 = sg2.get_data(
+sg2 = tavi.group_scans(scan_list2, name="dispH (H,0,2-H) Ef=14.7 meV")
+scan_data_2 = sg2.combine_data(
     axes=("qh", "en", "detector"),
     norm_to=(1, "mcu"),
     grid=((1.0, 1.5, 0.025), 0.5),
@@ -57,8 +57,8 @@ fig.colorbar(im)
 scans = list(range(133, 167))
 
 scan_list3 = [("IPTS34735_HB3_exp0823", scan) for scan in scans]
-sg3 = tavi.combine_scans(scan_list3, name="dispH (H,0,2-H) Ef=30.5 meV")
-scan_data_3 = sg3.get_data(
+sg3 = tavi.group_scans(scan_list3, name="dispH (H,0,2-H) Ef=30.5 meV")
+scan_data_3 = sg3.combine_data(
     axes=("qh", "en", "detector"),
     norm_to=(1, "mcu"),
     grid=((1.0, 1.5, 0.025), 0.5),

@@ -8,8 +8,8 @@ from tavi.sample import Sample
 
 
 def h_en_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("qh", "en", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,
@@ -21,8 +21,8 @@ def h_en_mesh(scans, name, grid, vmax):
 
 
 def l_en_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("ql", "en", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,
@@ -34,8 +34,8 @@ def l_en_mesh(scans, name, grid, vmax):
 
 
 def h_l_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("qh", "ql", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,
@@ -141,7 +141,9 @@ def plot_mesh():
     # ------------ 004 hori foc-------------
     scan_nums = list(range(234, 254 + 1))
     h_scans_004 = [(ipts_str, num) for num in scan_nums]
-    p = h_en_mesh(h_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3)
+    p = h_en_mesh(
+        h_scans_004, "(0,0,4) w/ horizontal focusing", grid=((-0.2, 0.2, 0.004), (-0.5, 0.5, 0.05)), vmax=1e3
+    )
     fig, ax = plt.subplots()
     p.plot(ax)
     figs.append(fig)
