@@ -4,7 +4,7 @@ from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 from tavi.ub_algorithm import UBConf, plane_normal_from_two_peaks, r_matrix_with_minimal_tilt, uv_to_ub_matrix
-from tavi.utilities import MotorAngles, Peak, mantid_to_spice, spice_to_mantid
+from tavi.utilities import MotorAngles, Peak
 
 
 def test_find_two_theta():
@@ -20,9 +20,8 @@ def test_find_two_theta():
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
 
 
-# TODO
 def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
-    ctax = TAS(fixed_ef=4.8, convention=True)
+    ctax = TAS(fixed_ef=4.8, convention="Spice")
     ctax.goniometer = Goniometer({"sense": "+", "type": "Y,-Z,X"})
     ctax.mount_sample(Sample(lattice_params=(5.0577, 5.0577, 24.721009, 90, 90, 120)))
 
@@ -52,7 +51,7 @@ def test_calculate_ub_matrix_from_two_peaks():
             [0.164330, 0.304247, -0.058788],
         ]
     )
-    tas = TAS(fixed_ef=13.505137, convention=False)
+    tas = TAS(fixed_ef=13.505137, convention="Mantid")
     sample = Sample(lattice_params)
     tas.mount_sample(sample)
 
@@ -102,7 +101,7 @@ def test_r_mat_to_angles():
 
 
 def test_calculate_ub():
-    tas = TAS(fixed_ef=13.505137, convention=False)
+    tas = TAS(fixed_ef=13.505137, convention="Mantid")
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -132,7 +131,7 @@ def test_calculate_ub():
 
 
 def test_r_mat_with_minimal_tilt():
-    tas = TAS(fixed_ef=13.505137, convention=False)
+    tas = TAS(fixed_ef=13.505137)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -154,7 +153,7 @@ def test_r_mat_with_minimal_tilt():
 
 
 def test_calculate_motor_agnles():
-    tas = TAS(fixed_ef=13.505137, convention=False)
+    tas = TAS(fixed_ef=13.505137)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -168,14 +167,14 @@ def test_calculate_motor_agnles():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.94290377, 0.01452569, -0.33274837]
     sample = Sample(lattice_params)
-    sample.ub_conf = UBConf(ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref)
+    sample.ub_conf = UBConf(
+        convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref
+    )
     tas.mount_sample(sample)
 
     angels1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2), en=-0.005)
     angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
-    for name, value in angels1_cal._asdict().items():
-        if value is not None:
-            assert np.allclose(value, getattr(angles1, name), atol=1e-2)
+    assert angels1_cal == angles1
 
 
 def test_calculate_motor_angles_hb3():
@@ -203,7 +202,8 @@ def test_calculate_motor_angles_hb3():
     r_mat_cal = r_matrix_with_minimal_tilt(
         hkl=(0, 0, 2), ei=14.7, ef=14.7, two_theta=angles1.two_theta, ub_conf=sample.ub_conf
     )
-    assert np.allclose(r_mat, spice_to_mantid(r_mat_cal.T).T, atol=1e-3)
+    # assert np.allclose(r_mat, spice_to_mantid(r_mat_cal.T).T, atol=1e-3)
+    assert np.allclose(r_mat, r_mat_cal, atol=1e-3)
 
     angles1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2))
     assert angles1_cal == angles1
@@ -249,21 +249,17 @@ def test_cube():
     assert np.allclose(two_theta_110, two_theta_110_correct, atol=1e-3)
 
     plane_normal, in_plnae_ref = plane_normal_from_two_peaks(u_mat, cube.b_mat, (1, 0, 0), (0, 1, 0))
-    cube.ub_conf = UBConf(
-        ub_mat=mantid_to_spice(ub_mat),
-        plane_normal=mantid_to_spice(plane_normal),
-        in_plane_ref=mantid_to_spice(in_plnae_ref),
-    )
+    cube.ub_conf = UBConf(convention="Mantid", ub_mat=ub_mat, plane_normal=plane_normal, in_plane_ref=in_plnae_ref)
 
     angles_100_tas = hb1a.calculate_motor_angles(hkl=(1, 0, 0))
     assert np.allclose(angles_100_tas.two_theta, two_theta_100)
-    assert np.allclose(angles_100_tas.omega, hb1a.get_psi_radian((1, 0, 0)))
+    assert np.allclose(angles_100_tas.omega, hb1a.get_psi((1, 0, 0)))
     assert np.allclose(angles_100_tas.sgl, 0)
     assert np.allclose(angles_100_tas.sgu, 0)
 
     angles_010_tas = hb1a.calculate_motor_angles(hkl=(0, 1, 0))
     assert np.allclose(angles_010_tas.two_theta, two_theta_010)
-    assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi_radian((0, 1, 0)))
+    assert np.allclose(angles_010_tas.omega, -90 + hb1a.get_psi((0, 1, 0)))
     assert np.allclose(angles_010_tas.sgl, 0)
     assert np.allclose(angles_010_tas.sgu, 0)
 
@@ -271,7 +267,7 @@ def test_cube():
     assert np.allclose(angles_110_tas.two_theta, two_theta_110)
     assert np.allclose(
         angles_110_tas.omega,
-        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi_radian((1, 1, 0)),
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)),
     )
     assert np.allclose(angles_110_tas.sgl, 0)
     assert np.allclose(angles_110_tas.sgu, 0)
@@ -296,5 +292,5 @@ def test_cube():
     assert np.allclose(angles_110_4c.chi, 0)
     assert np.allclose(
         angles_110_4c.phi,
-        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi_radian((1, 1, 0)) - two_theta_110 / 2,
+        np.degrees(-np.arctan(1 / 2)) + hb1a.get_psi((1, 1, 0)) - two_theta_110 / 2,
     )
