@@ -19,7 +19,7 @@ class TASBase(object):
     """
     Base class for the triple-axis spectrometer. Manage instrument congigutarion parameters.
 
-    Attibutes:
+    Attributes:
         source (Source): neutron source
         collimators (Collimators): 4 collimators
         guide (Guide): neutron guide
@@ -27,7 +27,7 @@ class TASBase(object):
         goniometer (Goniometer): goinometer
         analyzer (MonoAna): analyzer
         detector (Detector): detector
-        distnaces (Distances): distances between components
+        arms (Distances): distances between components
         sample (Sample): sample being measured
 
     Methods:

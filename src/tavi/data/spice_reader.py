@@ -15,7 +15,7 @@ def read_spice_datafile(file_name: str):
     Returns:
         data (np.ndarray): an array containing all columns/rows
         metadata (dict): a dictionary containing information from the commented lines.
-        col_names (tuple): name of each collum in spice_data
+        col_names (tuple): name of each column in spice_data
         others (tuple): unrecogonized lines
         error_messages(tuple): contains line of error message such as unreachable motor positions
     """
@@ -53,7 +53,7 @@ def read_spice_datafile(file_name: str):
         elif "=" in line:  # useful line
             parts = line.split("=")
             key = parts[0].strip()
-            val = "=".join(parts[1:])[1:]  # remove the fisrt space charactor
+            val = "=".join(parts[1:])[1:]  # remove the fisrt space character
             metadata.update({key: val})
         else:  # how did you get here?
             others.append(line)
@@ -130,14 +130,14 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     # write SPICElogs datasets
     dataset_dict = {}
     spice_data_shape = data.shape
-    if len(spice_data_shape) == 1:  # 1 row ony
+    if len(spice_data_shape) == 1:  # 1 row only
         if spice_data_shape[0] != 0:
             for idx, col_header in enumerate(col_names):
                 # convert to ndarray if one point only
                 dataset_dict.update({col_header: np.array([data[idx]])})
         else:  # ignore if empty
             pass
-    elif len(spice_data_shape) == 2:  # nomarl data with mutiple rows
+    elif len(spice_data_shape) == 2:  # nomarl data with multiple rows
         # print(scan_num)
         # print(spice_data.shape)
         for idx, col_header in enumerate(col_names):

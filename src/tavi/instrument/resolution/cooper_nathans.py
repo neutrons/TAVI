@@ -64,7 +64,7 @@ class CooperNathans(ResolutionCalculator):
 
     @classmethod
     def calc_mat_a(cls, ki, kf, theta_m, theta_a):
-        """matrix A,Y=AU, tranform from collimators angular divergence to  ki-kf frame"""
+        """matrix A,Y=AU, transform from collimators angular divergence to  ki-kf frame"""
         mat_a = np.zeros((6, 2 * cls.NUM_COLLS))
         mat_a[0, cls.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
         mat_a[0, cls.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
@@ -139,7 +139,7 @@ class CooperNathans(ResolutionCalculator):
         mat_ba = mat_b @ mat_a
         mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
-        # TODO how to add smaple mosaic in cooper-nathans?
+        # TODO how to add sample mosaic in cooper-nathans?
         mat_cov[1, 1] += q_norm**2 * instrument.sample._mosaic_h**2
         mat_cov[2, 2] += q_norm**2 * instrument.sample._mosaic_v**2
 
@@ -174,7 +174,7 @@ class CooperNathans(ResolutionCalculator):
 
         Args:
             hkl (tuple | list(tuple)): momentum transfer, miller indices in reciprocal lattice
-            en (float | list(float)): en = ei - ef is energy trnsfer, in units of meV
+            en (float | list(float)): en = ei - ef is energy transfer, in units of meV
             projection (tuple): three non-coplaner vectors. If projection is None,
                                 the calculation is done in local Q frame (Q_para, Q_perp, Q_up)
 

@@ -73,6 +73,7 @@ def test_spice_scan_to_nxdict():
     path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
     nxdict = spice_scan_to_nxdict(path_to_spice_data)
 
+    assert len(nxdict["SPICElogs"]) == 56
     assert nxdict["SPICElogs"]["attrs"]["scan"] == "34"
     assert nxdict["start_time"]["dataset"] == "2024-07-03T01:44:46-04:00"
     assert np.allclose(nxdict["instrument"]["monochromator"]["ei"]["dataset"][0:3], [4.9, 5, 5.1])

@@ -137,12 +137,12 @@ def _formatted_spicelogs(spicelogs: dict) -> NXentry:
     """Format SPICE logs into NeXus dict"""
 
     formatted_spicelogs = NXentry(NX_class="NXcollection", EX_required="false")
-    if (ub_conf := spicelogs.get("ub_conf")) is not None:
+    if spicelogs.get("ub_conf") is not None:
+        ub_conf = spicelogs.pop("ub_conf")
         ub_file_path = ub_conf.pop("file_path")
         formatted_ub_conf = NXentry(file_path=ub_file_path, NX_class="NXcollection", EX_required="false")
         for entry_key, entry_data in ub_conf.items():
             formatted_ub_conf.add_dataset(key=entry_key, ds=NXdataset(ds=entry_data))
-        formatted_spicelogs.add_attribute(key="ub_conf", attr=formatted_ub_conf)
 
     metadata = spicelogs.pop("metadata")
     for attr_key, attr_entry in metadata.items():

@@ -79,7 +79,7 @@ def test_plot2d_with_resolution():
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     rez_list = tas.cooper_nathans(hkl=hkl_list, en=en_list, projection=projection)
 
-    # genreate plot
+    # generate plot
     p = Plot2D()
     im = p.add_contour(scan_data_2d, cmap="turbo", vmax=1)
 

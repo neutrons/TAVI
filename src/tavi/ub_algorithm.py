@@ -11,7 +11,7 @@ from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle
 class UBConf:
     """Logs for UB matrix determination
 
-    Attibutes:
+    Attributes:
         ub_peaks (tuple of Peaks): peaks used to determine the UB matrix
         _u_mat (np.adarray): U matrix
         b_mat (np.adarray): B matrix
@@ -129,7 +129,7 @@ class UBConf:
 
 def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     """
-    Reutrn momentum transfer vector q in lab frame
+    Return momentum transfer vector q in lab frame
 
     Args:
         ei: incident energy, in meV

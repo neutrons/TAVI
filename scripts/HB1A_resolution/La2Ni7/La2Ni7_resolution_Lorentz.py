@@ -172,7 +172,7 @@ ax.plot(q_list, y, "sr", label="1/sin(2*theta)")
 # for i, hkl in enumerate(hkl_list):
 #     x = q_list[i]
 #     y = (intent_q / inten_s1)[i] * 1.2
-#     # mannual ajdjust position
+#     # manual ajdjust position
 #     # if hkl ==(1,1,0):
 #     #     x-=0.15
 #     ax.annotate(str(hkl), (x, y), rotation=90, fontsize=8)
