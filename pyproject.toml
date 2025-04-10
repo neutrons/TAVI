@@ -66,7 +66,8 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+ignore = ["F841", "E741", "ARG001", "ARG002", "F821", "N802", "N806", "A002", "A001", "N803", "C901", "F841", "E501"]
 select = ["A", "ARG", "ASYNC", "BLE", "C90", "E", "F", "I", "N", "UP032", "W"]
-ignore = ["F841", "E741", "ARG001", "ARG002", "F821", "N802", "N806", "A002", "A001", "N803", "C901", "F841",
-          "E501"]
 # Add additional 3rd party tool configuration here as needed

@@ -167,9 +167,7 @@ def test_calculate_motor_agnles():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.94290377, 0.01452569, -0.33274837]
     sample = Sample(lattice_params)
-    sample.ub_conf = UBConf(
-        convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref
-    )
+    sample.ub_conf = UBConf(convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref)
     tas.mount_sample(sample)
 
     angels1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2), en=-0.005)
