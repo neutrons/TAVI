@@ -1,0 +1,7 @@
+  LIST OF REFLECTIONS WITH DELTA/SIGMA > 0.60*max(DELTA/SIGMA)
+  ------------------------------------------------------------
+  => PCR-file:MnWO4_nuc_300K_3X_HB1A.pcr
+  => F2cal= scale*Corr*F2
+   h   k   l ivk   cod      F2obs         F2cal       Dif/sig   
+  -1  -1  -1   0     1       4.6400       0.7019       13.1269
+   1   1   1   0     1       4.4600       0.7019       13.9187
