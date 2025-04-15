@@ -81,6 +81,10 @@ class Scan(object):
         self._nexus_dict: NexusEntry = nexus_dict
         self.data: dict = self.get_data_columns()
 
+    def __repr__(self):
+        info = self.scan_info
+        return f"Scan name={self.name}, \ndef_x={info.def_x}, def_y={info.def_y}, \ntitle={info.scan_title}"
+
     @classmethod
     def from_spice(
         cls,

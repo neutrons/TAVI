@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 
@@ -25,6 +25,9 @@ class ScanGroup(object):
         self.name = f"CombinedScans{ScanGroup.scan_group_number}" if not name else name
         ScanGroup.scan_group_number += 1
 
+    def __len__(self):
+        return len(self.scans)
+
     # TODO
     def add_scan(self, scan_num: Union[tuple[str, int], int]):
         pass
@@ -32,8 +35,6 @@ class ScanGroup(object):
     # TODO
     def remove_scan(self, scan_num: Union[tuple[str, int], int]):
         pass
-
-    # TODO non-orthogonal axes for constant E contours
 
     def _get_default_renorm_params(self) -> tuple[float, str]:
         norm_vals = []
@@ -237,9 +238,13 @@ class ScanGroup(object):
 
     def get_data(
         self,
-        axes: Optional[tuple[str, str]] = None,
-        norm_to: Optional[tuple[float, str]] = None,
+        axes: tuple[Optional[str], Optional[str]] = (None, None),
+        norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         **rebin_params_dict: Optional[tuple],
     ) -> tuple[ScanData1D]:
         """Get data from a group of scans"""
-        return (ScanData1D(),)
+        data_list = []
+        for scan in self.scans:
+            data = scan.get_data(axes, norm_to, **rebin_params_dict)
+            data_list.append(data)
+        return tuple(data_list)
