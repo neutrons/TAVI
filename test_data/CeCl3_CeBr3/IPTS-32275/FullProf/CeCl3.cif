@@ -14,7 +14,7 @@
 # Please notify any error or suggestion to: 
 #           Juan Rodriguez-Carvajal (jrc@ill.eu)
 # Improvements will be progressively added as needed.
-#      Date: 16/04/2025  Time: 11:06:41.673
+#      Date: 16/04/2025  Time: 11:31:57.065
  
  
 #=============================================================================
@@ -94,7 +94,7 @@ _publ_manuscript_incl_extra_defn
 # 3. TITLE AND AUTHOR LIST
  
 _publ_section_title
-; ' MnWO4 Nuclear refinement'
+; ' CeCl3_nuc'
 ;
 _publ_section_title_footnote
 ;
@@ -150,7 +150,7 @@ _publ_section_acknowledgements
 # completed per structure. For each data set, replace the '?' in the
 # data_? line below by a unique identifier.
  
-data_MnWO4, 
+data_nuc 
  
 #=============================================================================
  
@@ -174,32 +174,39 @@ loop_
     _atom_type_symbol               
     _atom_type_scat_length_neutron      
     _atom_type_scat_source          
-MN    -0.37300 V.F._Sears_Neutron_News_3_26_(1992)
-W      0.48600 V.F._Sears_Neutron_News_3_26_(1992)
-O      0.58030 V.F._Sears_Neutron_News_3_26_(1992)
+Ce     0.48400 V.F._Sears_Neutron_News_3_26_(1992)
+Cl     0.95770 V.F._Sears_Neutron_News_3_26_(1992)
  
 #=============================================================================
  
 # 6. CRYSTAL DATA
  
-_symmetry_cell_setting                Monoclinic
-_symmetry_space_group_name_H-M       'P 1 2/c 1'
-_symmetry_space_group_name_Hall      '-P 2yc'
+_symmetry_cell_setting                Hexagonal
+_symmetry_space_group_name_H-M       'P 63/m'
+_symmetry_space_group_name_Hall      '-P 6c'
  
 loop_
     _symmetry_equiv_pos_as_xyz
 'x,y,z'
-'-x,y,-z+1/2'
+'x-y,x,z+1/2'
+'-y,x-y,z'
+'-x,-y,z+1/2'
+'-x+y,-x,z'
+'y,-x+y,z+1/2'
 '-x,-y,-z'
-'x,-y,z+1/2'
+'-x+y,-x,-z+1/2'
+'y,-x+y,-z'
+'x,y,-z+1/2'
+'x-y,x,-z'
+'-y,x-y,-z+1/2'
  
-_cell_length_a                       4.80000
-_cell_length_b                       5.72700
-_cell_length_c                       4.97200
+_cell_length_a                       7.45100
+_cell_length_b                       7.45100
+_cell_length_c                       4.31200
 _cell_angle_alpha                    90.0000
-_cell_angle_beta                     91.1600
-_cell_angle_gamma                    90.0000
-_cell_volume                         136.650
+_cell_angle_beta                     90.0000
+_cell_angle_gamma                    120.000
+_cell_volume                         207.319
 _cell_formula_units_Z                ?
 _cell_measurement_temperature        ?
 _cell_special_details
@@ -239,7 +246,7 @@ _exptl_special_details
 _diffrn_ambient_temperature          ?
 _diffrn_source           'nuclear reactor' 
 _diffrn_radiation_type   'Constant Wavelength Neutron Diffraction' 
-_diffrn_radiation_wavelength           2.38000
+_diffrn_radiation_wavelength           2.37933
 _diffrn_source_type      ?  # Put here the diffractometer and site
  
 _diffrn_radiation_monochromator      ?
@@ -339,10 +346,8 @@ loop_
     _atom_site_occupancy
     _atom_site_adp_type
     _atom_site_type_symbol
- Mn1  0.50000  0.6847(8)  0.25000 -0.004(6)  1.000(18) Uiso Mn    
- W1  0.00000  0.1791(8)  0.25000  0.014(4)  1.12651 Uiso W     
- O1  0.2122(5)  0.1031(4)  0.9450(6)  0.016(3)  1.12651 Uiso O     
- O2  0.2498(7)  0.3735(4)  0.3937(8)  0.015(3)  1.12651 Uiso O     
+ Ce1  0.33333  0.66667  0.25000  0.01267  1.00000 Uiso Ce    
+ Cl1  0.112(8)  0.149(19)  0.25000  0.01267  0.99998 Uiso Cl    
  
 # Note: if the displacement parameters were refined anisotropically
 # the U matrices should be given as for single-crystal studies.

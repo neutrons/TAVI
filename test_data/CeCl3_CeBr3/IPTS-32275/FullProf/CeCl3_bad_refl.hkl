@@ -1,0 +1,6 @@
+  LIST OF REFLECTIONS WITH DELTA/SIGMA > 0.60*max(DELTA/SIGMA)
+  ------------------------------------------------------------
+  => PCR-file:CeCl3.pcr
+  => F2cal= scale*Corr*F2
+   h   k   l ivk   cod      F2obs         F2cal       Dif/sig   
+  -1  -1   1   0     1     101.9200       2.6107      220.6874
