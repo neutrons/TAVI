@@ -643,7 +643,6 @@ def plot_integ_intensity_q_lorentz(analysis):
 
 
 def export_s1scan_intensity(file_name):
-
     lorentz_factor_list = [
         rez.r0 * np.sqrt((rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi))
         for rez in rez_list

@@ -9,7 +9,6 @@ from tavi.plotter import Plot1D, Plot2D
 
 
 def test_scan_group_combine_1d_default():
-
     # tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
     # sg = tavi.group_scans(scan_list, name="dispH")
@@ -82,7 +81,6 @@ def test_scan_group_rebin_2d():
 
 
 def test_get_data():
-
     path_to_spice_folder = "test_data/IPTS33477_HB1A_exp1012/exp1012/"
     scans = [Scan.from_spice(path_to_spice_folder, scan_num=num) for num in range(622, 756)]
     sg = ScanGroup(scans, name="nuclear peaks")
