@@ -20,7 +20,7 @@ def load_fsq():
     peak_info = {}
     for i in range(1, len(all_content)):
         h, k, l, _, _, _, f, *_ = all_content[i].split()
-        peak_info.update({(int(h), int(k), int(l)): f})
+        peak_info.update({(int(h), int(k), int(l)): float(f) ** 2})
     return peak_info
 
 
@@ -633,7 +633,7 @@ def plot_integ_intensity_q_lorentz(analysis):
     ax.legend()
 
     for i, hkl in enumerate(hkl_list):
-        x = cal_ii[i] + 1
+        x = cal_ii[i]
         y = y_array_th2th[i] + 2
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)

@@ -3,13 +3,13 @@
  
 CRYSTAL
 TITLE
-   CeCl3_nuc
+   HoV6Sn6 Nuclear refinement
  
 IMPORT_STRUCTURE
-CeCl3.cif
+HoV6Sn6_nuc.cif
  
 IMPORT_DENSITY 1
-+1.000000E+000 CeCl3.pgrid
++1.000000E+000 HoV6Sn6_nuc.pgrid
  
 BOUND
     -0.1      1.1      -0.1      1.1      -0.1     1.1 

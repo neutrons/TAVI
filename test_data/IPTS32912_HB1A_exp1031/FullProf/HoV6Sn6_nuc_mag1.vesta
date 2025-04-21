@@ -1,0 +1,22 @@
+#VESTA_FORMAT_VERSION 3.1.9
+ 
+ 
+CRYSTAL
+TITLE
+   HoV6Sn6 Nuclear refinement
+ 
+IMPORT_STRUCTURE
+HoV6Sn6_nuc_mag1.mcif
+ 
+BOUND
+    -0.1      1.1      -0.1      1.1      -0.1     1.1 
+  0   0   0   0  0
+SBOND
+  0 0 0 0
+ 
+STYLE
+MODEL   2  1  0
+SURFS   0  1  1
+SECTS  96  0
+POLYS  0
+VECTS     0.31471
