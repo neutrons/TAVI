@@ -49,10 +49,7 @@ def test_fit_single_peak_external_model(fit_data):
 
 def test_get_fitting_variables(fit_data):
     s1_scan, _ = fit_data
-    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
-
-    f1.add_signal(model="Gaussian")
-    f1.add_background(model="Constant")
+    f1 = Fit1D(s1_scan, signals="Gaussian", backgrounds="Constant", fit_range=(0.5, 4.0))
 
     assert len(f1.params) == 6
     for k in ["s1_amplitude", "s1_center", "s1_sigma", "s1_fwhm", "s1_height", "b1_c"]:
@@ -86,10 +83,13 @@ def test_guess_initial(fit_data):
 
 def test_fit_single_peak_internal_model(fit_data):
     s1_scan, PLOT = fit_data
-    f1 = Fit1D(s1_scan, fit_range=(0.5, 4.0))
+    f1 = Fit1D(
+        s1_scan,
+        fit_range=(0.5, 4.0),
+        signals="Gaussian",
+        backgrounds="Constant",
+    )
 
-    f1.add_signal(model="Gaussian")
-    f1.add_background(model="Constant")
     pars = f1.guess()
     result = f1.fit(pars)
     assert np.allclose(result.redchi, 37.6, atol=1)
@@ -109,11 +109,17 @@ def test_fit_single_peak_internal_model(fit_data):
 def test_fit_two_peak(fit_data):
     s1_scan, PLOT = fit_data
 
-    f1 = Fit1D(s1_scan, fit_range=(0.0, 4.0), name="scan42_fit2peaks")
+    f1 = Fit1D(
+        s1_scan,
+        fit_range=(0.0, 4.0),
+        name="scan42_fit2peaks",
+        backgrounds="Constant",
+        signals=("Gaussian", "Gaussian"),
+    )
 
-    f1.add_background(model="Constant")
-    f1.add_signal(model="Gaussian")
-    f1.add_signal(model="Gaussian")
+    # f1.add_background(model="Constant")
+    # f1.add_signal(model="Gaussian")
+    # f1.add_signal(model="Gaussian")
 
     pars = f1.guess()
     pars["s1_amplitude"].set(min=0)

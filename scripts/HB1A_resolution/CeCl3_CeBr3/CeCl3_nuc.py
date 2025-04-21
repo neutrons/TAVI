@@ -20,7 +20,7 @@ def load_fsq():
     peak_info = {}
     for i in range(1, len(all_content)):
         h, k, l, _, _, _, f, *_ = all_content[i].split()
-        peak_info.update({(int(h), int(k), int(l)): f})
+        peak_info.update({(int(h), int(k), int(l)): float(f) ** 2})
     return peak_info
 
 
@@ -217,7 +217,7 @@ def plot_s1_th2th_nuclear_peaks():
         (2, 2, 0): (83, 84),
         (1, 1, 1): (85, 86),
         (1, 1, 2): (87, 88),
-        (1, 1, 3): (89, 90),
+        # (1, 1, 3): (89, 90),
         (2, 2, 1): (91, 92),
         (2, 2, 2): (93, 94),
         (-1, -1, 1): (95, 96),
@@ -237,7 +237,7 @@ def plot_s1_th2th_nuclear_peaks():
         (2, 2, 0),
         (1, 1, 1),
         (1, 1, 2),
-        (1, 1, 3),
+        # (1, 1, 3),
         (2, 2, 1),
         (2, 2, 2),
         (-1, -1, 1),
@@ -633,13 +633,35 @@ def plot_integ_intensity_q_lorentz(analysis):
     ax.legend()
 
     for i, hkl in enumerate(hkl_list):
-        x = cal_ii[i] + 1
+        x = cal_ii[i]
         y = y_array_th2th[i] + 2
         ax.annotate(str(hkl), (x, y), rotation=45, fontsize=8)
     ax.grid(alpha=0.6)
     ax.set_title("CeCl3 nuclear peaks")
 
     return fig
+
+
+def export_s1scan_intensity(file_name):
+    lorentz_factor_list = [
+        rez.r0 * np.sqrt((rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi))
+        for rez in rez_list
+    ]
+    intensity_list = [
+        exp_s1_q.params["s1_amplitude"].value / lorentz_factor_list[i] for i, exp_s1_q in enumerate(exp_s1_q)
+    ]
+    err_list = [exp_s1_q.params["s1_amplitude"].stderr / lorentz_factor_list[i] for i, exp_s1_q in enumerate(exp_s1_q)]
+
+    with open(file_name, "w") as f:
+        f.write("Single crystal data of CeCl3 (hb1a)\n")
+        f.write("(3i5,2f8.2,i4,3f8.2)\n")
+        f.write("2.37933  0   0\n")
+
+        for i, hkl in enumerate(hkl_list):
+            h, k, l = hkl
+            f.write(f"{h:5d}{k:5d}{l:5d}{intensity_list[i]:8.2f}{err_list[i]:8.2f}   1\n")
+
+    f.close()
 
 
 if __name__ == "__main__":
@@ -677,3 +699,7 @@ if __name__ == "__main__":
     for f in figs:
         pdf.savefig(f)
     pdf.close()
+
+    rez_list = analysis[1]
+    (_, exp_s1_q) = analysis[3]
+    export_s1scan_intensity("./test_data/CeCl3_CeBr3/IPTS-32275/FullProf/CeCl3_nuc.int")

@@ -38,9 +38,9 @@ tavi.save("./test_data/IPTS31591_HB1_exp0917/tavi.h5")
 
 scans = [45, 59]
 
-scan_combo = tavi.combine_scans(scans, name="NiO_combo_(0,0,1.3)")
-scan_combo_data_1 = scan_combo.get_data(axes=("en", "detector_1"))
-scan_combo_data_2 = scan_combo.get_data(axes=("en", "detector_2"))
+scan_combo = tavi.group_scans(scans, name="NiO_combo_(0,0,1.3)")
+scan_combo_data_1 = scan_combo.combine_data(axes=("en", "detector_1"))
+scan_combo_data_2 = scan_combo.combine_data(axes=("en", "detector_2"))
 
 p = Plot1D()
 p.add_scan(scan_combo_data_1, fmt="o")
@@ -61,7 +61,6 @@ rez_list = tas.cooper_nathans(
     hkl=hkl_list,
     en=en_list,
     projection=projection,
-    R0=R0,
 )
 
 # genreate plot

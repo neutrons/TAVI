@@ -166,6 +166,33 @@ def plot_s1_nuclear_peaks():
     return (hkl_list, rez_list, exp_s1_omega, exp_s1_q)
 
 
+def export_intensity(file_name):
+    # 690 (-1,1,-1) and 726 (1,-1,1) not good
+    lorentz_factor_list = [
+        rez.r0 * np.sqrt((rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi))
+        for rez in analysis[1]
+    ]
+    intensity_list = [
+        exp_s1_q.params["s1_amplitude"].value / lorentz_factor_list[i] for i, exp_s1_q in enumerate(analysis[3])
+    ]
+    err_list = [
+        exp_s1_q.params["s1_amplitude"].stderr / lorentz_factor_list[i] for i, exp_s1_q in enumerate(analysis[3])
+    ]
+
+    with open(file_name, "w") as f:
+        f.write("Single crystal data of MnWO4 (hb1a)\n")
+        f.write("(3i5,2f8.2,i4,3f8.2)\n")
+        f.write("2.38000  0   0\n")
+
+        for i, hkl in enumerate(hkl_list):
+            if hkl == (-1, 1, -1) or hkl == (1, -1, 1):
+                continue
+            h, k, l = hkl
+            f.write(f"{h:5d}{k:5d}{l:5d}{intensity_list[i]:8.2f}{err_list[i]:8.2f}   1\n")
+
+    f.close()
+
+
 if __name__ == "__main__":
     scan_nums, hkl_list, angles_list = read_macro()
 
@@ -176,11 +203,15 @@ if __name__ == "__main__":
 
     sample_json_path = "test_data/IPTS33477_HB1A_exp1012/MnWO4/MnWO4.json"
     mnwo4 = Sample.from_json(sample_json_path)
+    print("initial lattice parameters")
     print(mnwo4)
 
     hb1a_4c.mount_sample(mnwo4)
     peaks = tuple([Peak(hkl=hkl_list[i], angles=angles_list[i]) for i in range(len(hkl_list))])
     ubconf_all = hb1a_4c.calculate_ub_matrix(peaks=peaks)
+
+    print("lattice from refined UB matrix:")
+    print(hb1a_4c.sample)
 
     # check_ub()
     tavi = TAVI()
@@ -190,3 +221,6 @@ if __name__ == "__main__":
     pdf = matplotlib.backends.backend_pdf.PdfPages("./test_data/IPTS33477_HB1A_exp1012/MnWO4_nuclear_peaks.pdf")
     analysis = plot_s1_nuclear_peaks()
     pdf.close()
+
+    int_file = "./test_data/IPTS33477_HB1A_exp1012/MnWO4_lorentz_removed.int"
+    export_intensity(int_file)

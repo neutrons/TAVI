@@ -240,7 +240,7 @@ def plot_s1_th2th_nuclear_peaks():
         (0, 0, 6): (309, 310),
         (1, 0, 0): (265, 266),
         (2, 0, 0): (267, 268),
-        (3, 0, 0): (269, 270),
+        # (3, 0, 0): (269, 270),
         (1, 0, 3): (275, 276),
         (1, 0, 6): (281, 282),
         (2, 0, 1): (283, 284),
@@ -574,6 +574,31 @@ def setup():
     return hb1a
 
 
+def export_intensity(file_name):
+    (hkl_list, rez_list, _, (_, exp_s1_q_list), _, _) = analysis
+    lorentz_factor_list = [
+        rez.r0 * np.sqrt((rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi))
+        for rez in rez_list
+    ]
+    intensity_list = [
+        exp_s1_q.params["s1_amplitude"].value / lorentz_factor_list[i] for i, exp_s1_q in enumerate(exp_s1_q_list)
+    ]
+    err_list = [
+        exp_s1_q.params["s1_amplitude"].stderr / lorentz_factor_list[i] for i, exp_s1_q in enumerate(exp_s1_q_list)
+    ]
+
+    with open(file_name, "w") as f:
+        f.write("Single crystal data of HoV6Sn6 (hb1a) T = 4K s1 scans\n")
+        f.write("(3i5,2f8.2,i4,3f8.2)\n")
+        f.write("2.37930  0   0\n")
+
+        for i, hkl in enumerate(hkl_list):
+            h, k, l = hkl
+            f.write(f"{h:5d}{k:5d}{l:5d}{intensity_list[i]:8.2f}{err_list[i]:8.2f}   1\n")
+
+    f.close()
+
+
 if __name__ == "__main__":
     ei = 14.450292
     ef = 14.450117
@@ -604,3 +629,6 @@ if __name__ == "__main__":
     for f in figs:
         pdf.savefig(f)
     pdf.close()
+
+    int_file = "./test_data/IPTS32912_HB1A_exp1031/FullProf/HoV6Sn6_nuc.int"
+    export_intensity(int_file)

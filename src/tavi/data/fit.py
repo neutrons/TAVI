@@ -37,6 +37,8 @@ class Fit1D(object):
     def __init__(
         self,
         data: ScanData1D,
+        signals=None,
+        backgrounds=None,
         fit_range: Optional[tuple[float, float]] = None,
         nan_policy: Literal["raise", "propagate", "omit"] = "propagate",
         name="",
@@ -61,6 +63,20 @@ class Fit1D(object):
 
         if fit_range is not None:
             self.set_range(fit_range)
+
+        if signals is not None:
+            if isinstance(signals, tuple):
+                for signal in signals:
+                    self.add_signal(model=signal)
+            else:
+                self.add_signal(signals)
+
+        if backgrounds is not None:
+            if isinstance(backgrounds, tuple):
+                for background in backgrounds:
+                    self.add_background(background)
+            else:
+                self.add_background(backgrounds)
 
     def set_range(self, fit_range: tuple[float, float]):
         """set the range used for fitting"""

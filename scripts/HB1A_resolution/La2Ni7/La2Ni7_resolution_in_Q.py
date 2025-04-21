@@ -131,8 +131,8 @@ tavi.load_spice_data_from_disk(path_to_spice_folder)
 # generate a contour of all scans
 scans = list(range(132, 198 + 1))
 
-scan_group = tavi.combine_scans(scans, name="La2Ni7_40-40-40-80")
-scan_group_data = scan_group.get_data(
+scan_group = tavi.group_scans(scans, name="La2Ni7_40-40-40-80")
+scan_group_data = scan_group.combine_data(
     axes=("qh", "ql", "detector"),
     norm_to=(1, "mcu"),
     grid=(0.01, 0.05),

@@ -8,8 +8,8 @@ from tavi.sample import Sample
 
 
 def h_en_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("qh", "en", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,
@@ -21,8 +21,8 @@ def h_en_mesh(scans, name, grid, vmax):
 
 
 def l_en_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("ql", "en", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,
@@ -34,8 +34,8 @@ def l_en_mesh(scans, name, grid, vmax):
 
 
 def h_l_mesh(scans, name, grid, vmax):
-    sg = tavi.combine_scans(scans, name=name)
-    data = sg.get_data(
+    sg = tavi.group_scans(scans, name=name)
+    data = sg.combine_data(
         axes=("qh", "ql", "detector"),
         norm_to=(1, "mcu"),
         grid=grid,

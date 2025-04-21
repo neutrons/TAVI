@@ -1,0 +1,499 @@
+
+
+        **********************************************************
+        ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
+        **********************************************************
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
+                 Refinement of X-ray and/or Neutron Data
+
+
+    Date: 21/04/2025  Time: 12:59:23.166                              
+
+ => PCR file code: HoV6Sn6_nuc_mag
+ => DAT file code: HoV6Sn6_nuc_mag.int  -> Relative contribution: 1.0000                                                            
+
+ ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
+
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
+
+ ==> INPUT/OUTPUT OPTIONS:
+
+ => Generate new input file *.PCR
+
+ => Number of cycles:   20
+ => Relaxation factors ==>    for coordinates:  1.00
+ => for anisotropic temperature factors:  1.00
+ => EPS-value for convergence:    0.1
+ => Number of Least-Squares parameters varied:     1
+ --------------------------------------------------------------------------------
+ => Phase  No. 1
+      Nuclear and Magnetic Structure of: HoV6Sn6   VARY mxmymz              
+ --------------------------------------------------------------------------------
+ =>-------> Pattern#  1
+ => Integrated intensities or Flipping Ratios as observations for phase: 1
+ => Crystal+Magnetic Structure or Magnetic Form-Factor Refinement
+
+ =>-------> Data for PHASE: 1
+ => Number of atoms:    5
+ => Number of distance  constraints:    0
+ => Number of angle     constraints:    0
+
+ => Symmetry operators read from file as a Shubnikov or Superspace group
+
+      P6/mm'm'  number:191.240     <--Magnetic Space group symbol (BNS symbol & number)
+      Transform to standard: a,b,c;0,0,0
+      Parent Space Group: P6/mmm     IT_number:  191
+      Transform from Parent: a,b,c;0,0,0
+      ! Nsym   Cen  N_Clat N_Ant
+          12     2     0     0
+      !
+      ! Symmetry operators
+        1 x,y,z,+1
+        2 -y,-x,z,-1
+        3 x,x-y,-z,-1
+        4 -x+y,y,-z,-1
+        5 -y,-x,-z,-1
+        6 -y,x-y,-z,+1
+        7 x,x-y,z,-1
+        8 -x+y,y,z,-1
+        9 -y,x-y,z,+1
+       10 -x,-y,z,+1
+       11 -x+y,-x,z,+1
+       12 x-y,x,z,+1
+      
+
+
+        Information on Magnetic Space Group: 
+        ------------------------------------ 
+
+ =>              Shubnikov Number:    0
+ =>                    BNS Number: 191.240
+ =>                     OG Number: 
+ =>                    BNS Symbol: P6/mm'm'
+ =>                     OG Symbol: 
+ =>                UNIFIED Symbol: 
+ =>        Type of Magnetic group:   0
+ =>           Parent group number: 191
+ =>           Parent group Symbol: P6/mmm
+ =>   Magnetic point group Symbol: 
+ =>   Laue Class for Cell constr.: 
+ =>    Transformation   to parent: 
+ =>    Transformation from parent: a,b,c;0,0,0
+ =>    Transformation to standard: a,b,c;0,0,0
+ =>  Transformation from standard: 
+ =>                Crystal system:             
+ =>                  Lattice type:    
+ =>           Lattice type Symbol:     
+ =>    Number of centring vectors:   0
+ =>   Number of anti-translations:   0
+ => Number of reduced set of S.O.:  12
+ =>         General Multiplicitiy:  24
+ =>                       Centred:   2
+ =>                Centrosymmetry:                                                                                 
+ =>        Generators (exc. -1&L):   0
+
+ => List of all Symmetry Operators and Symmetry Symbols
+
+ => SYMM(  1): x,y,z mx,my,mz +1                           Symbol: 1
+ => SYMM(  2): -y,-x,z -my,-mx,mz -1                       Symbol: m' x,-x,z
+ => SYMM(  3): x,x-y,-z -mx,-mx+my,mz -1                   Symbol: 2' 2x,x,0
+ => SYMM(  4): -x+y,y,-z mx-my,-my,mz -1                   Symbol: 2' x,2x,0
+ => SYMM(  5): -y,-x,-z my,mx,mz -1                        Symbol: 2' x,-x,0
+ => SYMM(  6): -y,x-y,-z my,-mx+my,mz +1                   Symbol: -6- 0,0,z; 0,0,0
+ => SYMM(  7): x,x-y,z mx,mx-my,mz -1                      Symbol: m' 2x,x,2z
+ => SYMM(  8): -x+y,y,z -mx+my,my,mz -1                    Symbol: m' x,2x,z
+ => SYMM(  9): -y,x-y,z -my,mx-my,mz +1                    Symbol: 3+ 0,0,z
+ => SYMM( 10): -x,-y,z -mx,-my,mz +1                       Symbol: 2 0,0,z
+ => SYMM( 11): -x+y,-x,z -mx+my,-mx,mz +1                  Symbol: 3- 0,0,z
+ => SYMM( 12): x-y,x,z mx-my,mx,mz +1                      Symbol: 6+ 0,0,z
+ => SYMM( 13): -x,-y,-z mx,my,mz +1                        Symbol: -1 0,0,0
+ => SYMM( 14): y,x,-z -my,-mx,mz -1                        Symbol: 2' x,x,0
+ => SYMM( 15): -x,-x+y,z -mx,-mx+my,mz -1                  Symbol: m' 0,y,z
+ => SYMM( 16): x-y,-y,z mx-my,-my,mz -1                    Symbol: m' x,0,z
+ => SYMM( 17): y,x,z my,mx,mz -1                           Symbol: m' x,x,z
+ => SYMM( 18): y,-x+y,z my,-mx+my,mz +1                    Symbol: 6- 0,0,z
+ => SYMM( 19): -x,-x+y,-z mx,mx-my,mz -1                   Symbol: 2' 0,y,0
+ => SYMM( 20): x-y,-y,-z -mx+my,my,mz -1                   Symbol: 2' x,0,0
+ => SYMM( 21): y,-x+y,-z -my,mx-my,mz +1                   Symbol: -3+ 0,0,z; 0,0,0
+ => SYMM( 22): x,y,-z -mx,-my,mz +1                        Symbol: m x,y,0
+ => SYMM( 23): x-y,x,-z -mx+my,-mx,mz +1                   Symbol: -3- 0,0,z; 0,0,0
+ => SYMM( 24): -x+y,-x,-z mx-my,mx,mz +1                   Symbol: -6+ 0,0,z; 0,0,0
+
+
+        Information on Magnetic Space Group: 
+        ------------------------------------ 
+
+ =>              Shubnikov Number:    0
+ =>                    BNS Number: 191.240
+ =>                     OG Number: 
+ =>                    BNS Symbol: P6/mm'm'
+ =>                     OG Symbol: 
+ =>                UNIFIED Symbol: 
+ =>        Type of Magnetic group:   0
+ =>           Parent group number: 191
+ =>           Parent group Symbol: P6/mmm
+ =>   Magnetic point group Symbol: 
+ =>   Laue Class for Cell constr.: 
+ =>    Transformation   to parent: 
+ =>    Transformation from parent: a,b,c;0,0,0
+ =>    Transformation to standard: a,b,c;0,0,0
+ =>  Transformation from standard: 
+ =>                Crystal system:             
+ =>                  Lattice type:    
+ =>           Lattice type Symbol:     
+ =>    Number of centring vectors:   0
+ =>   Number of anti-translations:   0
+ => Number of reduced set of S.O.:  12
+ =>         General Multiplicitiy:  24
+ =>                       Centred:   2
+ =>                Centrosymmetry:                                                                                 
+ =>        Generators (exc. -1&L):   0
+
+ => List of all Symmetry Operators and Symmetry Symbols
+
+ => SYMM(  1): x,y,z mx,my,mz +1                           Symbol: 1
+ => SYMM(  2): -y,-x,z -my,-mx,mz -1                       Symbol: m' x,-x,z
+ => SYMM(  3): x,x-y,-z -mx,-mx+my,mz -1                   Symbol: 2' 2x,x,0
+ => SYMM(  4): -x+y,y,-z mx-my,-my,mz -1                   Symbol: 2' x,2x,0
+ => SYMM(  5): -y,-x,-z my,mx,mz -1                        Symbol: 2' x,-x,0
+ => SYMM(  6): -y,x-y,-z my,-mx+my,mz +1                   Symbol: -6- 0,0,z; 0,0,0
+ => SYMM(  7): x,x-y,z mx,mx-my,mz -1                      Symbol: m' 2x,x,2z
+ => SYMM(  8): -x+y,y,z -mx+my,my,mz -1                    Symbol: m' x,2x,z
+ => SYMM(  9): -y,x-y,z -my,mx-my,mz +1                    Symbol: 3+ 0,0,z
+ => SYMM( 10): -x,-y,z -mx,-my,mz +1                       Symbol: 2 0,0,z
+ => SYMM( 11): -x+y,-x,z -mx+my,-mx,mz +1                  Symbol: 3- 0,0,z
+ => SYMM( 12): x-y,x,z mx-my,mx,mz +1                      Symbol: 6+ 0,0,z
+ => SYMM( 13): -x,-y,-z mx,my,mz +1                        Symbol: -1 0,0,0
+ => SYMM( 14): y,x,-z -my,-mx,mz -1                        Symbol: 2' x,x,0
+ => SYMM( 15): -x,-x+y,z -mx,-mx+my,mz -1                  Symbol: m' 0,y,z
+ => SYMM( 16): x-y,-y,z mx-my,-my,mz -1                    Symbol: m' x,0,z
+ => SYMM( 17): y,x,z my,mx,mz -1                           Symbol: m' x,x,z
+ => SYMM( 18): y,-x+y,z my,-mx+my,mz +1                    Symbol: 6- 0,0,z
+ => SYMM( 19): -x,-x+y,-z mx,mx-my,mz -1                   Symbol: 2' 0,y,0
+ => SYMM( 20): x-y,-y,-z -mx+my,my,mz -1                   Symbol: 2' x,0,0
+ => SYMM( 21): y,-x+y,-z -my,mx-my,mz +1                   Symbol: -3+ 0,0,z; 0,0,0
+ => SYMM( 22): x,y,-z -mx,-my,mz +1                        Symbol: m x,y,0
+ => SYMM( 23): x-y,x,-z -mx+my,-mx,mz +1                   Symbol: -3- 0,0,z; 0,0,0
+ => SYMM( 24): -x+y,-x,-z mx-my,mx,mz +1                   Symbol: -6+ 0,0,z; 0,0,0
+
+ => Initial parameters ==>
+ Atom    Ntyp                  X         Y         Z         B         occ.         in  fin  Spc  Mult
+                             B11       B22       B33       B12       B13       B23
+ Ho1    JHO3               0.00000   0.00000   0.00000   1.00000   0.04166           0    0    0    1
+                 Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
+ V      V                  0.50000   0.00000   0.25300   1.00000   0.25000           0    0    0    6
+                 Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
+ Sn1    Sn                 0.33333   0.66667   0.50000   1.00000   0.08333           0    0    0    2
+                 Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
+ Sn2    Sn                 0.00000   0.00000   0.33000   1.00000   0.08333           0    0    0    2
+                 Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
+ Sn3    Sn                 0.33333   0.66667   0.00000   1.00000   0.08333           0    0    0    2
+                 Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
+
+ => It is assumed that THE FIRST GIVEN SITE plus all the other atoms 
+    occupying THE SAME POSITION have a total full occupation (no vacancies!)
+  (if this is not the case, change the order of atoms to obtain correct values for the content of the unit cell)
+    The given occupation factors have been obtained mutiplying m/M by   0.0417
+      -> Atom: JHO3,  Chemical element: HO  Atomic Mass:   164.9304
+      -> Atom: V   ,  Chemical element: V   Atomic Mass:    50.9414
+      -> Atom: Sn  ,  Chemical element: SN  Atomic Mass:   118.6900
+      -> Atom: Sn  ,  Chemical element: SN  Atomic Mass:   118.6900
+      -> Atom: Sn  ,  Chemical element: SN  Atomic Mass:   118.6900
+ => The given value of ATZ is       1182.47 the program has calculated:        1182.47
+    The value of ATZ given in the input PCR file will be used for quantitative analysis
+ => The chemical content of the unit cell is: 
+       1.0000 JHO3 +   6.0010 V    +   2.0002 Sn   +   2.0002 Sn   +   2.0002 Sn     
+ => The normalized site occupation numbers in % are: 
+     100.0000 Ho1    :      100.0160 V      :      100.0120 Sn1    :      100.0120 Sn2    :      100.0120 Sn3      
+ => The density (volumic mass) of the compound is:    8.133 g/cm3
+
+ =>-------> SCALE FACTORS, EXTINCTION AND CELL PARAMETERS FOR PATTERN:  1
+
+ => Scale factors ( 1: 6) :    2.42500       0.00000       0.00000       0.00000       0.00000       0.00000    
+
+ => Extinction  parameters:         0.0000        0.0000        0.0000        0.0000        0.0000        0.0000        0.0000
+ => Direct cell parameters:         5.5200        5.5200        9.1520       90.0000       90.0000      120.0000
+ => Lambda/2    parameters:         0.0000
+
+
+ ==> CODEWORDS FOR Scale and Extinction PARAMETERS for Pattern  1
+
+ => Scale factors ( 1: 6):    0.000   0.000   0.000   0.000   0.000   0.000
+
+ => Extinction parameters:    0.000   0.000   0.000   0.000   0.000   0.000   0.000
+
+
+ => Cell constraints according to Laue symmetry:      
+
+        Metric information:
+        -------------------
+
+ => Direct cell parameters:
+
+         a =       5.5200      b =       5.5200      c =       9.1520
+     alpha =       90.000   beta =       90.000  gamma =      120.000
+                        Direct Cell Volume =     241.5054
+
+ => Reciprocal cell parameters:
+
+         a*=     0.209185      b*=     0.209185      c*=     0.109266
+     alpha*=       90.000   beta*=       90.000  gamma*=       60.000
+                    Reciprocal Cell Volume =   0.00414069
+
+ => Direct and Reciprocal Metric Tensors:
+
+                   GD                                       GR
+     30.4705    -15.2353      0.0000          0.043758    0.021879    0.000000
+    -15.2353     30.4705      0.0000          0.021879    0.043758    0.000000
+      0.0000      0.0000     83.7593          0.000000    0.000000    0.011939
+
+ =>  Cartesian frame: x // a; z is along c*; y is within the ab-plane   
+
+     Crystal_to_Orthonormal_Matrix              Orthonormal_to_Crystal Matrix
+              Cr_Orth_cel                               Orth_Cr_cel  
+      5.5200     -2.7600      0.0000          0.181159    0.104592   -0.000000
+      0.0000      4.7805      0.0000          0.000000    0.209185   -0.000000
+      0.0000      0.0000      9.1520          0.000000    0.000000    0.109266
+
+     Busing-Levy B-matrix: Hc=B.H            Inverse of the Busing-Levy B-matrix
+                BL_M                                      BL_Minv  
+    0.209185    0.104592    0.000000            4.7805     -2.7600     -0.0000
+    0.000000    0.181159   -0.000000            0.0000      5.5200      0.0000
+    0.000000    0.000000    0.109266            0.0000      0.0000      9.1520
+ => Header of the Integrated Intensity file:
+ -> Title: Single crystal data of HoV6Sn6 (hb1a) T = 0.25K s1 scans                                                                
+ -> Format of data: (3i5,2f8.2,i4,3f8.2)                                        
+ -> Wavelength (Angstr.):   2.3793
+ -> Type of data:  F2 and Sig(F2) have been input                                                                                         
+ -> Reflections included only when F2> 2.0* sF2
+ -> Nobserv (I>n*sigma):     13 -> Total Number of reflections:         13
+ -> SumF:        38.4 SumF2:       143.1 SumF2w:    231735.5
+
+ => Weighting Scheme:
+ => Conventional weight: w(H)=1.0/Variance(GobsH)
+
+ => Scattering coefficients from internal table
+
+ => Scattering lengths:
+
+ HO     0.8010
+ V     -0.0382
+ Sn     0.6225
+
+ => Magnetic form-factor coeff. (A,a,B,b,C,c,D)
+
+ JHO3    0.0432   0.9101   0.2794   8.6834   0.6685   2.4175   0.0082
+
+     --------------------------------------------------------------
+      SYMBOLIC NAMES AND INITIAL VALUES OF PARAMETERS TO BE VARIED:
+     --------------------------------------------------------------
+
+      ->  Parameter number    1   -> Symbolic Name:                                             Rz_Ho1    -4.7663298    
+  
+ 
+ => No optimization for routine tasks
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ => CYCLE No.:    1
+ ------------------------------------------------------------------------------------------------------------------------------------
+ => Phase  1 Name: Nuclear and Magnetic Structure of: HoV6Sn6   VARY mxmymz
+ ------------------------------------------------------------------------------------------------------------------------------------
+ => New parameters, shifts, and standard deviations
+
+ Atom        x       dx      sx       y       dy      sy       z       dz      sz       B       dB      sB      occ.    docc.   socc.
+
+ Ho1      0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  1.00000 0.00000 0.00000  0.04166 0.00000 0.00000
+ V        0.50000 0.00000 0.00000  0.00000 0.00000 0.00000  0.25300 0.00000 0.00000  1.00000 0.00000 0.00000  0.25000 0.00000 0.00000
+ Sn1      0.33333 0.00000 0.00000  0.66667 0.00000 0.00000  0.50000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+ Sn2      0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  0.33000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+ Sn3      0.33333 0.00000 0.00000  0.66667 0.00000 0.00000  0.00000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+
+
+ => Magnetic moment parameters, shifts, and standard deviations
+
+ Atom        Mx     dMx    sMx     My     dMy    sMy     Mz     dMz    sMz      M         sM   MPhas dMPhas sMPhas
+ Ho1       0.000  0.000  0.000   0.000  0.000  0.000  -4.766  0.000  0.351   4.7663   0.3508  0.0000 0.0000 0.0000
+
+ ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
+
+ => Scale factors ( 1: 6): 
+             2.425000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+
+
+ => Extinction Parameters: 
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+
+
+ => Lambda/2 param: 
+              0.000000        0.000000        0.000000
+
+ => Global user-weigthed Chi2 (Bragg contrib.):   354.    
+
+ => ---------> Pattern#  1
+ => Phase:  1
+ =>    RF2 -factor :   13.5    
+ =>    RF2w-factor :   13.5    
+ =>    RF  -factor :   7.09    
+ =>    Chi2(Intens):   354.    
+ =>  N_eff Reflect.:     13 with I >  2.00 sigma
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ => CYCLE No.:    1
+ =>  Convergence reached at this CYCLE !!!!
+ =>  Parameter shifts set to zero
+ ------------------------------------------------------------------------------------------------------------------------------------
+ => Phase  1 Name: Nuclear and Magnetic Structure of: HoV6Sn6   VARY mxmymz
+ ------------------------------------------------------------------------------------------------------------------------------------
+ => New parameters, shifts, and standard deviations
+
+ Atom        x       dx      sx       y       dy      sy       z       dz      sz       B       dB      sB      occ.    docc.   socc.
+
+ Ho1      0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  1.00000 0.00000 0.00000  0.04166 0.00000 0.00000
+ V        0.50000 0.00000 0.00000  0.00000 0.00000 0.00000  0.25300 0.00000 0.00000  1.00000 0.00000 0.00000  0.25000 0.00000 0.00000
+ Sn1      0.33333 0.00000 0.00000  0.66667 0.00000 0.00000  0.50000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+ Sn2      0.00000 0.00000 0.00000  0.00000 0.00000 0.00000  0.33000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+ Sn3      0.33333 0.00000 0.00000  0.66667 0.00000 0.00000  0.00000 0.00000 0.00000  1.00000 0.00000 0.00000  0.08333 0.00000 0.00000
+
+
+ => Magnetic moment parameters, shifts, and standard deviations
+
+ Atom        Mx     dMx    sMx     My     dMy    sMy     Mz     dMz    sMz      M         sM   MPhas dMPhas sMPhas
+ Ho1       0.000  0.000  0.000   0.000  0.000  0.000  -4.766  0.000  0.351   4.7663   0.3508  0.0000 0.0000 0.0000
+
+                                            Ma  (sMa)        Mb  (sMb)        Mc  (sMc)
+ => Magnetization Vector  per unit cell:   0.000( 0.000)    0.000( 0.000)   -4.766( 0.000)
+ => Module of Magnetization per unit cell:   4.766( 0.000)
+
+ ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
+
+ => Scale factors ( 1: 6): 
+             2.425000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+
+
+ => Extinction Parameters: 
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+             0.000000        0.000000        0.000000
+
+
+ => Lambda/2 param: 
+              0.000000        0.000000        0.000000
+
+ => Global user-weigthed Chi2 (Bragg contrib.):   354.    
+
+ => ---------> Pattern#  1
+ => Phase:  1
+ =>    RF2 -factor :   13.5    
+ =>    RF2w-factor :   13.5    
+ =>    RF  -factor :   7.09    
+ =>    Chi2(Intens):   354.    
+ =>  N_eff Reflect.:     13 with I >  2.00 sigma
+
+ => Spherical components of Fourier Coefficients of Magnetic Moments
+
+    Atom      rMom       rPhi     rTheta      iMom       iPhi     iTheta    Phase(mod 2pi)
+
+      Ho1       4.7663    0.0000  180.0000    0.0000    0.0000    0.0000    0.0000
+
+ --------------------------------------------------------------------------------------------------------------------------------------------------------
+ Pattern#  1 Phase No.:   1 Phase name: Nuclear and Magnetic Structure of: HoV6Sn6   VARY mxmymz
+ --------------------------------------------------------------------------------------------------------------------------------------------------------
+ => F2cal= scale*Corr*F2
+ => Code=0 -> pure nuclear, Code=1 -> pure magnetic, Code=2 -> nuclear and magnetic 
+   h   k   l    cod      F2obs         F2cal      F2cal(mag)     Dif/sig   Extinction(y)      Sinthet/lamb  Lambda/2-Contr    RMsFx       IMsFx       RMsFy       IMsFy       RMsFz       IMsFz         RMiVx       IMiVx       RMiVy       IMiVy       RMiVz       IMiVz
+   0   0   2     2      17.9100      19.2692        0.0000      -22.6532     1.00000            0.10927       0.00000       0.00000     0.00000     0.00000     0.00000    -2.41756     0.00000       0.00000     0.00000     0.00000     0.00000    -2.41618     0.00000
+   0   0   3     2      10.2400       9.4743        0.0000       10.9386     1.00000            0.16390       0.00000       0.00000     0.00000     0.00000     0.00000    -2.24618     0.00000       0.00000     0.00000     0.00000     0.00000    -2.23970     0.00000
+   0   0   4     2      13.4200      14.1322        0.0000       -4.4513     1.00000            0.21853       0.00000       0.00000     0.00000     0.00000     0.00000    -2.03230     0.00000       0.00000     0.00000     0.00000     0.00000    -2.01376     0.00000
+   0   0   6     2      52.1400      44.2012        0.0000       30.5339     1.00000            0.32780       0.00000       0.00000     0.00000     0.00000     0.00000    -1.55255     0.00000       0.00000     0.00000     0.00000     0.00000    -1.48085     0.00000
+   1   0   0     2       6.2200       5.4047        3.5788       16.3056     1.00000            0.10459       0.00000       0.00000     0.00000     0.00000     0.00000    -2.42965     0.00000       0.00000     0.00000     0.00000     0.00000    -2.42965     0.00000
+   2   0   0     2       3.1100       3.3265        2.6004       -7.2167     1.00000            0.20918       0.00000       0.00000     0.00000     0.00000     0.00000    -2.07107     0.00000       0.00000     0.00000     0.00000     0.00000    -2.07107     0.00000
+   1   0   3     2       9.8700      10.2241        0.7965       -3.5409     1.00000            0.19443       0.00000       0.00000     0.00000     0.00000     0.00000    -2.13066     0.00000       0.00638     0.00000     0.00319     0.00000    -2.12201     0.00000
+   1   0   6     2       1.6300       1.1017        0.1229       13.2084     1.00000            0.34408       0.00000       0.00000     0.00000     0.00000     0.00000    -1.48134     0.00000       0.02777     0.00000     0.01389     0.00000    -1.40596     0.00000
+   2   0   1     2       2.7800       2.4598        2.3666        6.4044     1.00000            0.21620       0.00000       0.00000     0.00000     0.00000     0.00000    -2.04203     0.00000       0.00504     0.00000     0.00252     0.00000    -2.04089     0.00000
+   2   0   3     2       7.9100       9.9358        1.2554      -40.5150     1.00000            0.26575       0.00000       0.00000     0.00000     0.00000     0.00000    -1.82808     0.00000       0.02044     0.00000     0.01022     0.00000    -1.81421     0.00000
+   2   0   4     2       4.8400       3.7242        0.8032       12.3973     1.00000            0.30251       0.00000       0.00000     0.00000     0.00000     0.00000    -1.66455     0.00000       0.03216     0.00000     0.01608     0.00000    -1.63546     0.00000
+   3   0   1     2       1.9900       1.5732        1.4943        6.9462     1.00000            0.31850       0.00000       0.00000     0.00000     0.00000     0.00000    -1.59360     0.00000       0.01280     0.00000     0.00640     0.00000    -1.59167     0.00000
+   3   0   2     2      11.0800      13.8889        1.2706      -16.5228     1.00000            0.33226       0.00000       0.00000     0.00000     0.00000     0.00000    -1.53295     0.00000       0.02680     0.00000     0.01340     0.00000    -1.52487     0.00000
+
+     -----------------------------------------------------
+     R-Factors and Chi2 for Integrated Intensity Pattern #  1
+     -----------------------------------------------------
+ => Phase:  1
+ =>    RF2 -factor :   13.5    
+ =>    RF2w-factor :   13.5    
+ =>    RF  -factor :   7.09    
+ =>    Chi2(Intens):   354.    
+ =>  N_eff Reflect.:     13 with I >  2.00 sigma
+ =>    RF2-mixed Mag+Nuc :   13.5    
+ =>    RF -mixed Mag+Nuc :   7.09    
+
+     -----------------------------------------------------------------
+      SYMBOLIC NAMES AND FINAL VALUES AND SIGMA OF REFINED PARAMETERS:
+     -----------------------------------------------------------------
+
+      ->  Parameter number    1 :                                             Rz_Ho1    -4.7663288    ( +/-    0.35079297     )
+
+ ------------------------------------------------------------------
+ => Number of bytes for floating point variables: 4
+ => Dimensions of dynamic allocated arrays in this run of FullProf:
+ ------------------------------------------------------------------
+
+ => Total approximate array memory (dynamic + static): 247921233 bytes
+
+    MaxPOINT=    80000 Max.num. of points(+int. Inten.)/diffraction pattern       
+    MaxREFLT=    25000 Max.num. of reflections/diffraction pattern               
+    MaxPARAM=      500 Max.num. of refinable parameters                          
+    MaxOVERL=     9000 Max.num. of overlapping reflections                       
+
+ ----------------------------------------------------------
+ => Number of bytes for floating point arrays: 4
+ => Dimensions of fixed arrays in this release of FullProf:
+ ----------------------------------------------------------
+
+    NPATT   =       80 Max.num. of powder diffraction patterns                    
+    NATS    =      830 Max.num. of atoms (all kind) in asymmetric unit            
+    MPAR    =     1800 Max.num. of non atomic parameters/phase                    
+    IEXCL   =       30 Max.num. of excluded regions                               
+    IBACP   =      377 Max.num. of background points for interpolation            
+    NPHT    =       16 Max.num. of phases                                         
+    NMAGM   =        8 Max.num. of rotation-matrices sets for magnetic structure  
+    NBASIS  =       12 Max.num. of basis functions associated to a single atom    
+    NIREPS  =        9 Max.num. of irreducible representations to be combined     
+    N_EQ    =      384 Max.num. of user-supplied symmetry operators/propagation vectors
+    NGL     =      400 Max.num. of global parameters/diffraction pattern          
+    N_LINC  =       50 Max.num. of global linear restraints                        
+    NAT_P   =       80 Max.num. of atomic parameters per atom                     
+    NCONST  =     3500 Max.num. of slack constraints per phase                    
+    N_SPE   =       30 Max.num. of different chemical species                     
+    N_FORM  =       60 Max.num. of scattering factor values in a table            
+    NPR     =      150 Max.num. of points defining a numerical profile            
+    INPR    =       25 Max.num. of different numerical peak shapes                
+    NPRC    =      150 Max.num. of terms in the table for correcting intensities  
+    NSOL    =       10 Max.num. of solutions to be stored in Montecarlo searchs   
+
+ 
+              CPU Time:     0.078 seconds
+                            0.001 minutes
+
+ => Run finished at:     Date: 21/04/2025  Time: 12:59:23.241                              

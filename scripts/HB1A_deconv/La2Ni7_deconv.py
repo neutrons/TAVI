@@ -4,7 +4,7 @@ import numpy as np
 from tavi.data.convfit import ConvFit1D
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
     ei = 14.450292
     ef = 14.443601
-    tas = CooperNathans(fixed_ei=ei, fixed_ef=ef, spice_convention=True)
+    tas = TAS(fixed_ef=ef, convention="Spice")
     tas.load_instrument_params_from_json(instrument_config_json_path)
     # load sample parameters
     sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
@@ -54,10 +54,10 @@ if __name__ == "__main__":
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     print(scan_th2th_fit.result.fit_report())
 
-    tas.monochromator.mosaic_h = 60
-    tas.analyzer.mosaic_h = 60
+    tas.monochromator.mosaic_h = 30
+    tas.analyzer.mosaic_h = 30
     tas.collimators.h_pre_mono = 50
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    rez = tas.cooper_nathans(hkl=hkl, en=ei - ef, projection=None)
 
     # resolution fwhm
     x_th2th = scan_th2th_fit.result.params["s1_center"].value

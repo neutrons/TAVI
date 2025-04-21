@@ -11,7 +11,7 @@
     },
     "monochromator": {
         "type": "PG002",
-        "mosaic_h": 30,
+        "mosaic_h": 60,
         "mosaic_v": 30,
         "sense": "+",
         "shape": "rectangular",
@@ -32,7 +32,7 @@
     },
     "analyzer": {
         "type": "Pg002",
-        "mosaic_h": 30,
+        "mosaic_h": 60,
         "mosaic_v": 30,
         "sense": "+",
         "shape": "rectangular",
@@ -60,7 +60,7 @@
         "ana_det": 50.0
     },
     "collimators": {
-        "h_pre_mono": 40,
+        "h_pre_mono": 50,
         "h_pre_sample": 40,
         "h_post_sample": 40,
         "h_post_ana": 80,

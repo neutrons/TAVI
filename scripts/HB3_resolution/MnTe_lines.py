@@ -17,8 +17,8 @@ tavi.open_file("./test_data/tavi_MnTe.h5")
 # overplot two curves with different Ei's
 # 120,121, 145
 scan1 = [("IPTS34735_HB3_exp0823", scan) for scan in [120, 121]]
-sg4 = tavi.combine_scans(scan1, name="Ef=14.7 meV")
-l1 = sg4.get_data(norm_to=(1, "mcu"))
+sg4 = tavi.group_scans(scan1, name="Ef=14.7 meV")
+l1 = sg4.combine_data(norm_to=(1, "mcu"))
 
 scan2 = tavi.get_scan(("IPTS34735_HB3_exp0823", 145))
 l2 = scan2.get_data(norm_to=(1, "mcu"))

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 
@@ -25,6 +25,9 @@ class ScanGroup(object):
         self.name = f"CombinedScans{ScanGroup.scan_group_number}" if not name else name
         ScanGroup.scan_group_number += 1
 
+    def __len__(self):
+        return len(self.scans)
+
     # TODO
     def add_scan(self, scan_num: Union[tuple[str, int], int]):
         pass
@@ -32,8 +35,6 @@ class ScanGroup(object):
     # TODO
     def remove_scan(self, scan_num: Union[tuple[str, int], int]):
         pass
-
-    # TODO non-orthogonal axes for constant E contours
 
     def _get_default_renorm_params(self) -> tuple[float, str]:
         norm_vals = []
@@ -55,7 +56,7 @@ class ScanGroup(object):
             norm_list = np.append(norm_list, scan.data[norm_channel])
         return norm_list
 
-    def _get_data_1d(
+    def _combine_data_1d(
         self,
         axes: tuple[str, str],
         norm_to: Optional[tuple[float, str]],
@@ -119,7 +120,7 @@ class ScanGroup(object):
         scan_data_1d.make_labels(axes, norm_to, title=title)
         return scan_data_1d
 
-    def _get_data_2d(
+    def _combine_data_2d(
         self,
         axes: tuple[str, str, str],
         norm_to: Optional[tuple[float, str]],
@@ -200,7 +201,7 @@ class ScanGroup(object):
         scan_data_2d.make_labels(axes, norm_to, title=title)
         return scan_data_2d
 
-    def get_data(
+    def combine_data(
         self,
         axes: Union[tuple[str, str], tuple[str, str, str], None] = None,
         norm_to: Optional[tuple[float, str]] = None,
@@ -216,9 +217,9 @@ class ScanGroup(object):
         """
         if axes is not None:
             if len(axes) == 2:
-                return self._get_data_1d(axes, norm_to, **rebin_params_dict)
+                return self._combine_data_1d(axes, norm_to, **rebin_params_dict)
             elif len(axes) == 3:
-                return self._get_data_2d(axes, norm_to, **rebin_params_dict)
+                return self._combine_data_2d(axes, norm_to, **rebin_params_dict)
             else:
                 raise ValueError(f"length of axes={axes} should be either 2 or 3.")
 
@@ -233,4 +234,17 @@ class ScanGroup(object):
         if not (len(x_axis) == 1 and len(y_axis) == 1):
             raise ValueError(f"x axes={x_axis} or y axes={y_axis} are not identical.")
         axes = (*x_axis, *y_axis)
-        return self._get_data_1d(axes, norm_to, **rebin_params_dict)
+        return self._combine_data_1d(axes, norm_to, **rebin_params_dict)
+
+    def get_data(
+        self,
+        axes: tuple[Optional[str], Optional[str]] = (None, None),
+        norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
+        **rebin_params_dict: Optional[tuple],
+    ) -> tuple[ScanData1D]:
+        """Get data from a group of scans"""
+        data_list = []
+        for scan in self.scans:
+            data = scan.get_data(axes, norm_to, **rebin_params_dict)
+            data_list.append(data)
+        return tuple(data_list)

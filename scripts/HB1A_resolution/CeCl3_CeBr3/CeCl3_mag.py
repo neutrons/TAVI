@@ -485,7 +485,7 @@ if __name__ == "__main__":
         qh, qk, ql = hkl
         intensity = float(peak_info[np.abs(int(qh * 3)), np.abs(int(qk * 3)), int(ql * 2)])
         cal_ii.append(intensity)
-    cal_ii = np.array(cal_ii)
+    cal_ii = np.asarray(cal_ii)
 
     f1 = plot_integ_intensity_omega(analysis)
     f2 = plot_integ_intensity_omega_lorentz(analysis)

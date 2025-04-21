@@ -1,0 +1,88 @@
+
+
+        **********************************************************
+        ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
+        **********************************************************
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
+                 Refinement of X-ray and/or Neutron Data
+
+
+    Date: 17/04/2025  Time: 14:45:58.591                              
+
+ => PCR file code: HoV6Sn6_nuc
+ => DAT file code: HoV6Sn6_nuc.int      -> Relative contribution: 1.0000                                                            
+ => Title: HoV6Sn6 Nuclear refinement
+
+ ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
+
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
+ =>-------> Pattern#  1
+ => Integrated intensities or Flipping Ratios as observations for phase: 1
+ => Crystal Structure Refinement for phase: 1
+ => The density (volumic mass) of phase 1 is:    8.133 g/cm3
+
+ ==> RESULTS OF REFINEMENT:
+
+
+ => No. of fitted parameters:    1
+
+
+------------------------------------------------------------------------------
+ => Phase No.  1 HoV6Sn6o, nuclear                       P 6/m m m           
+------------------------------------------------------------------------------
+
+ =>  No. of reflections for pattern#:   1:    13  
+
+
+ ==> ATOM PARAMETERS:
+
+  Name      x     sx       y     sy       z      sz      B   sB   occ. socc.  Mult
+ Ho1     0.00000(   0)  0.00000(   0)  0.00000(   0)  1.000(  0)  0.042(  0)    1
+ V       0.50000(   0)  0.00000(   0)  0.25300(   0)  1.000(  0)  0.250(  0)    6
+ Sn1     0.33333(   0)  0.66667(   0)  0.50000(   0)  1.000(  0)  0.083(  0)    2
+ Sn2     0.00000(   0)  0.00000(   0)  0.33000(   0)  1.000(  0)  0.083(  0)    2
+ Sn3     0.33333(   0)  0.66667(   0)  0.00000(   0)  1.000(  0)  0.083(  0)    2
+
+ ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
+
+ ==> OVERALL PARAMETERS:
+
+
+
+ => Scale factors ( 1: 6): 
+             2.425293        0.082543
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+
+
+ => Extinction parameters: 
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+
+
+ => Global user-weigthed Chi2 (Bragg contrib.):   347.    
+
+     -----------------------------------------------------
+     R-Factors and Chi2 for Integrated Intensity Pattern #  1
+     -----------------------------------------------------
+ => Phase:  1
+ =>    RF2 -factor :   14.0    
+ =>    RF2w-factor :   12.2    
+ =>    RF  -factor :   7.63    
+ =>    Chi2(Intens):   347.    
+ =>  N_eff Reflect.:     13 with I >  2.00 sigma
+
+ 
+              CPU Time:     0.078 seconds
+                            0.001 minutes
+
+ => Run finished at:     Date: 17/04/2025  Time: 14:45:58.673                              

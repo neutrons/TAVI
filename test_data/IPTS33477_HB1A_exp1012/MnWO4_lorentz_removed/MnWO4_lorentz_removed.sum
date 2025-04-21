@@ -1,0 +1,87 @@
+
+
+        **********************************************************
+        ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
+        **********************************************************
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
+                 Refinement of X-ray and/or Neutron Data
+
+
+    Date: 16/04/2025  Time: 11:06:41.673                              
+
+ => PCR file code: MnWO4_lorentz_removed
+ => DAT file code: MnWO4_lorentz_remove -> Relative contribution: 1.0000                                                            
+ => Title: MnWO4 Nuclear refinement
+
+ ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
+
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
+ =>-------> Pattern#  1
+ => Integrated intensities or Flipping Ratios as observations for phase: 1
+ => Crystal Structure Refinement for phase: 1
+ => The density (volumic mass) of phase 1 is:    8.121 g/cm3
+
+ ==> RESULTS OF REFINEMENT:
+
+
+ => No. of fitted parameters:   20
+
+
+------------------------------------------------------------------------------
+ => Phase No.  1 MnWO4, 5p-Co, nuclear                   P 1 2/c 1           
+------------------------------------------------------------------------------
+
+ =>  No. of reflections for pattern#:   1:    85  
+
+
+ ==> ATOM PARAMETERS:
+
+  Name      x     sx       y     sy       z      sz      B   sB   occ. socc.  Mult
+ Mn1     0.50000(   0)  0.68466(  74)  0.25000(   0) -0.305(479)  0.444(  7)    2
+ W1      0.00000(   0)  0.17911(  72)  0.25000(   0)  1.095(289)  0.500(  0)    2
+ O1      0.21219(  48)  0.10307(  40)  0.94499(  57)  1.241(217)  1.000(  0)    4
+ O2      0.24978(  69)  0.37346(  37)  0.39367(  76)  1.203(201)  1.000(  0)    4
+
+ ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
+
+ ==> OVERALL PARAMETERS:
+
+
+
+ => Scale factors ( 1: 6): 
+            17.266760        0.759878
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+             0.000000        0.000000
+
+
+ => Extinction parameters: 
+             0.226591        0.065550
+             0.650779        0.102188
+             0.097281        0.100722
+             0.011654        0.101057
+             0.117593        0.090766
+             0.100000        0.000000
+             0.000000        0.000000
+
+
+ => Global user-weigthed Chi2 (Bragg contrib.):   17.4    
+
+     -----------------------------------------------------
+     R-Factors and Chi2 for Integrated Intensity Pattern #  1
+     -----------------------------------------------------
+ => Phase:  1
+ =>    RF2 -factor :   5.63    
+ =>    RF2w-factor :   6.99    
+ =>    RF  -factor :   3.14    
+ =>    Chi2(Intens):   17.4    
+ =>  N_eff Reflect.:     85 with I >  2.00 sigma
+
+ 
+              CPU Time:     0.047 seconds
+                            0.001 minutes
+
+ => Run finished at:     Date: 16/04/2025  Time: 11:06:41.714                              

@@ -161,8 +161,17 @@ cython_debug/
 
 
 # MacOS
+*.DS_Store
 .DS_Store
 src/.DS_Store
 test_data/.DS_Store
 scripts/.DS_Store
 test_data/.DS_Store
+src/.DS_Store
+src/tavi/.DS_Store
+src/tavi/instrument/.DS_Store
+test_data/.DS_Store
+test_data/exp424/.DS_Store
+src/tavi/instrument/.DS_Store
+test_data/.DS_Store
+test_data/exp424/.DS_Store
