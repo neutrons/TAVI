@@ -42,7 +42,7 @@ def rez_conv_2d(x, y):
         rez_mat = resolution_matrix(x0, y0)
         cov = np.linalg.inv(rez_mat)
 
-        sampling_pts = 100
+        sampling_pts = 2000
         rez_conv = 0
         rng = np.random.default_rng()
         pts = rng.multivariate_normal(mean=(x0, y0), cov=cov, size=sampling_pts)
@@ -51,13 +51,13 @@ def rez_conv_2d(x, y):
             rez_conv += rez * signal_gaussian_2d(*q)
         rez_conv /= sampling_pts
         result.append(rez_conv)
-    return np.reshape(result, sz)
+    return np.reshape(result, sz) * Nx * Ny
 
 
-# plot
-N = 100
-X = np.linspace(-10, 10, N)
-Y = np.linspace(-10, 10, N)
+# plot signal
+Nx, Ny = 100, 200
+X = np.linspace(-10, 10, Nx)
+Y = np.linspace(-10, 10, Ny)
 X, Y = np.meshgrid(X, Y)
 
 fig, (ax0, ax1) = plt.subplots(ncols=2, sharex=True, sharey=True)
@@ -66,7 +66,19 @@ ax0.set_title("sginal")
 ax0.grid(alpha=0.6)
 fig.colorbar(img0, ax=ax0)
 
-img1 = ax1.pcolormesh(X, Y, rez_conv_2d(X, Y), cmap="turbo", vmin=0, vmax=0.001)
+
+# plot measurement
+Nx, Ny = 10, 20
+X = np.linspace(-10, 10, Nx)
+Y = np.linspace(-10, 10, Ny)
+X, Y = np.meshgrid(X, Y)
+img1 = ax1.pcolormesh(
+    X,
+    Y,
+    rez_conv_2d(X, Y),
+    cmap="turbo",
+    vmin=0,
+)
 ax1.set_title("resolution convoluted")
 ax1.grid(alpha=0.6)
 fig.colorbar(img1, ax=ax1)
