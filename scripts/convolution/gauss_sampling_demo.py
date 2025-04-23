@@ -46,10 +46,6 @@ def similarity_transformation(cen, cov, n_sample=10000):
     return y
 
 
-def ellipse():
-    return
-
-
 if __name__ == "__main__":
 
     cen = np.array([1, 2])

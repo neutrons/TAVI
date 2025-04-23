@@ -165,12 +165,17 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     elif os.path.isfile(ub_temp_file_path):
         ub_conf_dict = {"file_path": ub_temp_file_path}
     else:
-        ub_conf_dict = {"file_path": ""}
+        # ub_conf_dict = {"file_path": ""}
+        ub_conf_dict = {}
         print(f"Cannot find UB file {metadata['ubconf']}")
-    ubconf = read_spice_ubconf(ub_file_path)
-    for k, v in ubconf.items():
-        ub_conf_dict.update({k: v})
 
-    spicelogs.update({"ub_conf": ub_conf_dict})
+    if not ub_conf_dict:
+        pass
+    else:
+        ubconf = read_spice_ubconf(ub_file_path)
+        for k, v in ubconf.items():
+            ub_conf_dict.update({k: v})
+
+        spicelogs.update({"ub_conf": ub_conf_dict})
 
     return spicelogs
