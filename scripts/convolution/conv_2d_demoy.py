@@ -21,10 +21,6 @@ def resolution_matrix(x, y):
     return rez_mat
 
 
-def resolution_fnc(q, m):
-    return np.sqrt(np.linalg.det(m)) * np.exp(-q.T @ m @ q / 2) / (2 * np.pi)
-
-
 def signal_gaussian_2d(x, y):
     x0, y0 = 0, 0
     sigma_x, sigma_y = 0.1, 0.1
@@ -85,10 +81,10 @@ if __name__ == "__main__":
 
     # ------------------ plot measurement ------------------------
     xstep, ystep = 2, 1
-    xbins, ybins = math.ceil((xmax - xmin) / xstep), math.ceil((ymax - ymin) / ystep)
+    nx, ny = math.ceil((xmax - xmin) / xstep), math.ceil((ymax - ymin) / ystep)
 
-    x = np.linspace(xmin, xmax, xbins)
-    y = np.linspace(ymin, ymax, ybins)
+    x = np.linspace(xmin, xmax, nx)
+    y = np.linspace(ymin, ymax, ny)
     vx, vy = np.meshgrid(x, y)
 
     measurement = rez_conv_2d(vx, vy)
