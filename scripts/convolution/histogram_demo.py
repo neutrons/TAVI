@@ -64,7 +64,7 @@ def plot_rez_ellipses(ax):
 if __name__ == "__main__":
     vq1, vq2, vq3, ven = (1,), (0,), (0,), (2,)
     n_sample = 10_000
-    fig, axes = plt.subplots(ncols=3)
+    fig, axes = plt.subplots(ncols=3, figsize=(12, 4))
 
     t0 = time()
 
