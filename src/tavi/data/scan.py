@@ -337,7 +337,7 @@ class Scan(object):
         if (axes[1] is None) and (self.scan_info.preset_type == "countfile"):
             for i in range(len(self.scan_info.label)):
                 norm_to = (self.scan_info.preset_value[i], self.scan_info.preset_channel[i])
-                scan_data_1d = self.get_data((None, f"detector_{i+1}"), norm_to, **rebin_params_dict)
+                scan_data_1d = self.get_data((None, f"detector_{i + 1}"), norm_to, **rebin_params_dict)
                 plot1d.add_scan(scan_data_1d, c=f"C{i}", fmt="o", label=scan_data_1d.label)
                 plot1d.title = scan_data_1d.title
         else:

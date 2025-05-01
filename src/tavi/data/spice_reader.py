@@ -200,7 +200,6 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     if not ub_conf_dict:
         pass
     else:
-
         ubconf = read_spice_ubconf(ub_file_path)
         for k, v in ubconf.items():
             ub_conf_dict.update({k: v})
