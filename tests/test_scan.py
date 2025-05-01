@@ -165,6 +165,6 @@ def test_plot_scan_from_nexus():
     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
     s1 = Scan.from_nexus(nexus_file_name)
     scan_data_1d = s1.get_data(norm_to=(30, "mcu"))
-    assert scan_data_1d.label == "scan 42"
+    assert scan_data_1d.label == "#42 "
     s1.plot(norm_to=(30, "mcu"))
     plt.show()
