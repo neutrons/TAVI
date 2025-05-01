@@ -29,6 +29,7 @@ class ScanInfo:
     preset_type: str = "normal"
     preset_channel: str = "time"
     preset_value: float = 1.0
+    label: str = ""
 
 
 @dataclass
@@ -109,6 +110,21 @@ class Scan(object):
     @property
     def scan_info(self):
         preset_type = self._nexus_dict.get("preset_type")
+        if preset_type == "normal":
+            preset_channel = self._nexus_dict.get("monitor/mode")
+            preset_value = self._nexus_dict.get("monitor/preset")
+            label = ""
+        elif preset_type == "countfile":
+            preset_channel = []
+            preset_value = []
+            label = []
+
+            for i in range(1, 13):
+                if self._nexus_dict.get(f"monitor/mode_{i}") is None:
+                    break
+                preset_channel.append(self._nexus_dict.get(f"monitor/mode_{i}"))
+                preset_value.append(self._nexus_dict.get(f"monitor/preset_{i}"))
+                label.append(self._nexus_dict.get(f"monitor/label_{i}"))
 
         scan_info = ScanInfo(
             exp_id=self._nexus_dict["attrs"].get("dataset_name"),
@@ -119,17 +135,11 @@ class Scan(object):
             start_time=self._nexus_dict.get("start_time"),
             end_time=self._nexus_dict.get("end_time"),
             preset_type=preset_type,
-            preset_channel=(
-                self._nexus_dict.get("monitor/mode")
-                if preset_type == "normal"
-                else self._nexus_dict.get("monitor/mode_1")
-            ),
-            preset_value=(
-                self._nexus_dict.get("monitor/preset")
-                if preset_type == "normal"
-                else self._nexus_dict.get("monitor/preset_1")
-            ),
+            preset_channel=preset_channel,
+            preset_value=preset_value,
+            label=label,
         )
+
         return scan_info
 
     @property
@@ -242,8 +252,12 @@ class Scan(object):
         else:
             scan_data_1d = ScanData1D(x=self.data[x_str], y=self.data[y_str])
 
-        label = "scan " + str(self.scan_info.scan_num)
-        title = f"{label}: {self.scan_info.scan_title}"
+        scan_num = self.scan_info.scan_num
+        if len(labels := y_str.split("_")) > 1:
+            label = f"#{scan_num} " + self.scan_info.label[int(labels[-1]) - 1]
+        else:
+            label = f"#{scan_num} " + self.scan_info.label
+        title = f"{self.scan_info.scan_title}"
 
         for rebin_type in ["grid", "tol"]:
             rebin_params = rebin_params_dict.get(rebin_type)
@@ -317,10 +331,19 @@ class Scan(object):
     ):
         """Plot a 1D curve gnerated from a singal scan in a new window"""
 
-        scan_data_1d = self.get_data(axes, norm_to, **rebin_params_dict)
-
         fig, ax = plt.subplots()
         plot1d = Plot1D()
-        plot1d.add_scan(scan_data_1d, c="C0", fmt="o")
+
+        if (axes[1] is None) and (self.scan_info.preset_type == "countfile"):
+            for i in range(len(self.scan_info.label)):
+                norm_to = (self.scan_info.preset_value[i], self.scan_info.preset_channel[i])
+                scan_data_1d = self.get_data((None, f"detector_{i+1}"), norm_to, **rebin_params_dict)
+                plot1d.add_scan(scan_data_1d, c=f"C{i}", fmt="o", label=scan_data_1d.label)
+                plot1d.title = scan_data_1d.title
+        else:
+            scan_data_1d = self.get_data(axes, norm_to, **rebin_params_dict)
+            plot1d.add_scan(scan_data_1d, c="C0", fmt="o", label=scan_data_1d.label)
+            plot1d.title = scan_data_1d.title
+
         plot1d.plot(ax)
         fig.show()

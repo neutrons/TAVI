@@ -61,11 +61,39 @@ def read_spice_datafile(file_name: str):
 
     if metadata.get("preset_type") == "countfile":  # HB1 in polarization mode
         countfile = []
+        norm_vals = []
+        norm_channels = []
+        labels = []
+        label_p = ""
+        label_sf = ""
+        num = 1
         for metadata_entry in metadata_list:
             if metadata_entry.startswith("# countfile"):
                 _, val = metadata_entry.split("=")
+                # determin the directio of polarization
+                if "parq" in val:
+                    label_p = "Px"
+                elif "perpqh" in val:
+                    label_p = "Py"
+                elif "perpq" in val:
+                    label_p = "Pz"
+                # detemine SF or NSF
+                if ("drive hguide off vguide off" in val) or ("floff" in val) or ("drive hguide 0 vguide 0" in val):
+                    label_sf = "NSF"
+                elif ("drive hguide on vguide on" in val) or ("flon" in val) or ("drive" in val):
+                    label_sf = "SF"
+                if "count preset" in val:
+                    (*_, norm_channel, norm_val) = val.split()
+                    norm_vals.append(float(norm_val))
+                    norm_channels.append(norm_channel + f"_{num}")
+                    labels.append(" ".join([label_p, label_sf]))
+                    num += 1
+
                 countfile.append(val.strip())
         metadata.update({"countfile": ", ".join(countfile)})
+        metadata.update({"norm_vals": norm_vals})
+        metadata.update({"norm_channels": norm_channels})
+        metadata.update({"labels": labels})
 
     data = np.genfromtxt(file_name, comments="#")
 
@@ -149,7 +177,7 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     (*folder_path, _, _) = scan_path.split("/")
 
     ub_file_name = metadata["ubconf"]
-    # clean up the mess DAO made
+    # clean up the mess DAC made
     if "\\" in ub_file_name:  # ubconf can be a Windows path in some scans
         ub_file = ub_file_name.split("\\")[-1]
     elif "/" in ub_file_name:  # ubconf can be a Windows path in some scans
@@ -165,12 +193,18 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     elif os.path.isfile(ub_temp_file_path):
         ub_conf_dict = {"file_path": ub_temp_file_path}
     else:
-        ub_conf_dict = {"file_path": ""}
+        # ub_conf_dict = {"file_path": ""}
+        ub_conf_dict = {}
         print(f"Cannot find UB file {metadata['ubconf']}")
-    ubconf = read_spice_ubconf(ub_file_path)
-    for k, v in ubconf.items():
-        ub_conf_dict.update({k: v})
 
-    spicelogs.update({"ub_conf": ub_conf_dict})
+    if not ub_conf_dict:
+        pass
+    else:
+
+        ubconf = read_spice_ubconf(ub_file_path)
+        for k, v in ubconf.items():
+            ub_conf_dict.update({k: v})
+
+        spicelogs.update({"ub_conf": ub_conf_dict})
 
     return spicelogs

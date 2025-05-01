@@ -28,6 +28,15 @@ def test_scan_from_spice():
     assert np.allclose(scan.data["detector"][0:3], [569, 194, 40])
 
 
+def test_scan_from_spice_hb1():
+    path_to_spice_folder = "./test_data/IPTS31591_HB1_exp0917/exp917"
+    Scan.from_spice(path_to_spice_folder, scan_num=45).plot()
+    path_to_spice_folder = "./test_data/IPTS31591_HB1_exp0917/exp1111"
+    for i in range(1, 5):
+        Scan.from_spice(path_to_spice_folder, scan_num=i).plot()
+    plt.show()
+
+
 def test_scan_from_nexus():
     path_to_nexus_entry = "./test_data/IPTS32124_CG4C_exp0424/scan0034.h5"
     scan = Scan.from_nexus(path_to_nexus_entry)
