@@ -124,7 +124,7 @@ def test_calc_ub_from_2_peaks_ctax():
     angles2 = MotorAngles(two_theta=48.489200, omega=-59.507500, sgl=2.310799, sgu=2.021008)
     peak2 = Peak(hkl=(0.5, 0.5, 0), angles=angles2)
 
-    ctax.calculate_ub_matrix(peaks=(peak1, peak2))
+    ubconf = ctax.calculate_ub_matrix(peaks=(peak1, peak2))
 
     assert np.allclose(ctax.sample.ub_conf.ub_mat, ub_matrix, atol=1e-2)
     assert np.allclose(ctax.sample.ub_conf.plane_normal, plane_normal, atol=1e-2)

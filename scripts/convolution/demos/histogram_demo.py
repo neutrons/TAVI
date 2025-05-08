@@ -26,7 +26,7 @@ def resolution_matrix(qx0, qy0, qz0, en0):
         )
 
     sigma1, sigma2 = 1, 0.2
-    angle = -70
+    angle = -30
     mat = np.array(
         [
             [1 / sigma1**2, 0, 0, 0],
@@ -38,11 +38,6 @@ def resolution_matrix(qx0, qy0, qz0, en0):
     rez_mat = rotation_matrix_4d(angle).T @ mat @ rotation_matrix_4d(angle)
     r0 = 1
     return np.broadcast_to(r0, sz), np.broadcast_to(rez_mat, sz + (4, 4))
-
-
-def resolution_fnc(q, m, r0):
-    dim = np.size(q)
-    return r0 * np.sqrt(np.linalg.det(m)) * np.exp(-q.T @ m @ q / 2) / (2 * np.pi) ** (dim / 2)
 
 
 def plot_rez_ellipses(ax):
@@ -62,8 +57,8 @@ def plot_rez_ellipses(ax):
 
 
 if __name__ == "__main__":
-    vq1, vq2, vq3, ven = (1,), (0,), (0,), (2,)
-    n_sample = 10_000
+    vq1, vq2, vq3, ven = (2,), (0,), (0,), (0,)
+    n_sample = 270_000
     fig, axes = plt.subplots(ncols=3, figsize=(12, 4))
 
     t0 = time()
@@ -76,8 +71,12 @@ if __name__ == "__main__":
     x = np.linspace(-3, 3, n)
     v1, v2, v3, v4 = np.meshgrid(x, x, x, x, indexing="ij")
     g = np.exp(-(v1**2) / 2) * np.exp(-(v2**2) / 2) * np.exp(-(v3**2) / 2) * np.exp(-(v4**2) / 2) / (2 * np.pi) ** 2
-    idx = g > np.max(g) / 15  # cut the corners
+    sigma_cutoff = 2.5  # cut the corners beyond 2.5*sigma
+    idx = g > np.max(g) * np.exp(-(sigma_cutoff**2) / 2)
     pts_norm = np.stack((v1[idx], v2[idx], v3[idx], v4[idx]), axis=1)
+
+    weight = g[idx]
+    weight /= np.sum(weight)
     print(f"Done generating gaussian in {(t2:=time())-t1:.4f} s")
 
     ax = axes[0]
@@ -96,6 +95,7 @@ if __name__ == "__main__":
         @ np.swapaxes(eigenvectors, 1, 2)  # np.transpose(eigenvectors, (0, 2, 1))
     )
     pts = pts_norm @ mat
+    # max_dist = np.max(np.linalg.norm(pts, axis=2), axis=1, keepdims=True)
     print(f"Done transformation in {(t3:=time())-t2:.4f} s")
 
     ax = axes[1]
@@ -106,6 +106,7 @@ if __name__ == "__main__":
     ax.set_xlabel("q1")
     ax.set_ylabel("en")
     ax.grid(alpha=0.6)
+    ax.legend()
 
     vqe = np.stack((vq1, vq2, vq3, ven), axis=1)
     pts += vqe[:, np.newaxis, :]
@@ -113,13 +114,24 @@ if __name__ == "__main__":
 
     ax = axes[2]
     ax.plot(pts[0, :, 0], pts[0, :, 3], ".")
-    ax.set_xlim((-2, 4))
-    ax.set_ylim((-1, 5))
+    ax.set_xlim((-1, 5))
+    ax.set_ylim((-3, 3))
     ax.set_aspect("equal")
     ax.set_xlabel("q1")
     ax.set_ylabel("en")
     ax.grid(alpha=0.6)
 
+    # putting a delta-sharpe Bragg peak at (2,0,0,en=0)
+    q_bragg = (2, 0, 0, 0)
+    # determin if the peak is inside the ellipsoid
+
+    pass
+    # norms = np.linalg.norm(q_bragg - pts, axis=2)
+    # norms_in = norms[norms < max_dist]
+    # idx0 = np.argmin(norms, axis=1, keepdims=True)
+
+    # ax.plot(pts[0, idx0[0], 0], pts[0, idx0[0], 3], "o", label=f"Bragg {q_bragg}")
+    ax.legend()
     # model_cal = model(*np.unstack(pts, axis=-1))
     # print(f"Done calculating intensity of the model in {(t5:=time())-t4:.4f} s")
 
@@ -128,4 +140,5 @@ if __name__ == "__main__":
 
     plt.suptitle("Histogramming and simmilarity transformation")
     plt.tight_layout()
+
     plt.show()
