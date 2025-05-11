@@ -1,14 +1,53 @@
+import concurrent.futures
+from time import time
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Ellipse
 
 
-def model(vq1, vq2, vq3):
-    """return (energy, intensity) for given Q points
-    3d FM J=-1 meV S=1"""
+def quadric_proj(quadric, idx):
+    """projects along one axis of the quadric"""
+
+    # delete if orthogonal
+    zero = 1e-8
+    if np.abs(quadric[idx, idx]) < zero:
+        return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
+
+    # row/column along which to perform the orthogonal projection
+    vec = 0.5 * (quadric[idx, :] + quadric[:, idx])  # symmetrise if not symmetric
+    vec /= np.sqrt(quadric[idx, idx])  # normalise to indexed component
+    proj_op = np.outer(vec, vec)  # projection operator
+    ortho_proj = quadric - proj_op  # projected quadric
+
+    return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
+
+
+def incoh_sigma(mat, axis):
+    """Incoherent sigma"""
+    idx = int(axis)
+
+    for i in (3, 2, 1, 0):
+        if not i == idx:
+            mat_proj = quadric_proj(mat, i)
+
+    return 1 / np.sqrt(np.abs(mat_proj[0, 0]))
+
+
+def model_disp(vq1, vq2, vq3):
+    """return energy for given Q points
+    3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
+    """
     sj = 1
     gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
-    return (6 * sj * (1 - gamma_q), np.ones_like(vq1, dtype=float) / 2)
+    return 6 * sj * (1 - gamma_q)
+
+
+def model_inten(vq1, vq2, vq3):
+    """return intensity for given Q points
+    3d FM J=-1 meV S=1, inten = S/2 for all Qs
+    """
+    return np.ones_like(vq1, dtype=float) / 2
 
 
 def resolution_matrix(qx0, qy0, qz0, en0):
@@ -31,13 +70,14 @@ def resolution_matrix(qx0, qy0, qz0, en0):
             ]
         )
 
-    sigma1, sigma2 = 0.3, 0.02
+    sigma1, sigma2 = 0.3, 0.01
+    sigma3 = sigma4 = 1e-6
     angle = -80
     mat = np.array(
         [
             [1 / sigma1**2, 0, 0, 0],
-            [0, 1 / 0.1**2, 0, 0],
-            [0, 0, 1 / 0.1**2, 0],
+            [0, 1 / sigma3**2, 0, 0],
+            [0, 0, 1 / sigma4**2, 0],
             [0, 0, 0, 1 / sigma2**2],
         ]
     )
@@ -47,15 +87,16 @@ def resolution_matrix(qx0, qy0, qz0, en0):
 
 
 def plot_rez_ellipses(ax):
+    sigma1, sigma2 = 0.3, 0.02
+    angle = 80
     for i in range(3):
-        sigma1, sigma2 = 0.3, 0.02
 
         ax.add_artist(
             Ellipse(
                 xy=(0, 0),
                 width=sigma1 * 2 * (i + 1),
                 height=sigma2 * 2 * (i + 1),
-                angle=80,
+                angle=angle,
                 edgecolor="w",
                 facecolor="none",
                 label=f"{i+1}-sigma",
@@ -63,10 +104,79 @@ def plot_rez_ellipses(ax):
         )
 
 
+# @njit(parallel=True)
+def convolutioin(qh, qk, ql, en):
+
+    # n_measrement = np.shape(qe_mesh)[1]
+    # inten_measure = []
+
+    # for i in range(n_measrement):
+    # qh, qk, ql, en = qe_mesh[:, :]
+    # ----------------------------------------------------
+    # calculate resolution matrix for all points
+    # ----------------------------------------------------
+    r0, mat = resolution_matrix(qh, qk, ql, en)
+    # ----------------------------------------------------
+    # calculate the incoherent sigmas for three Q directions
+    # ----------------------------------------------------
+    sigma_qh = incoh_sigma(mat, 0)
+    sigma_qk = incoh_sigma(mat, 1)
+    sigma_ql = incoh_sigma(mat, 2)
+
+    min_qh, max_qh = qh - 1.5 * sigma_qh, qh + 1.5 * sigma_qh
+    min_qk, max_qk = qk - 1.5 * sigma_qk, qk + 1.5 * sigma_qk
+    min_ql, max_ql = ql - 1.5 * sigma_ql, ql + 1.5 * sigma_ql
+
+    # create 3D mesh
+    pts_q = 20
+    step_qh = (max_qh - min_qh) / pts_q
+    step_qk = (max_qk - min_qk) / pts_q
+    step_ql = (max_ql - min_ql) / pts_q
+
+    list_qh = np.linspace(min_qh, max_qh, pts_q)
+    list_qk = np.linspace(min_qk, max_qk, pts_q)
+    list_ql = np.linspace(min_ql, max_ql, pts_q)
+
+    mesh_q = np.meshgrid(list_qh, list_qk, list_ql, indexing="ij")
+    vqh, vqk, vql = np.array([np.ravel(v) for v in mesh_q])
+    # ----------------------------------------------------
+    # calculate weight based on the dispersion
+    # ----------------------------------------------------
+    disp = model_disp(vqh, vqk, vql)  # size of pts_q^3
+    # calculate weight from resolution function
+    vqe = np.stack((vqh - qh, vqk - qk, vql - ql, disp - en), axis=1)  # size of (pts_q^3, 4)
+    prod = np.einsum("ij,jk,ik->i", vqe, mat, vqe)
+    weights = np.exp(-prod / 2)
+    # ----------------------------------------------------
+    # trim the corners
+    # ----------------------------------------------------
+    cut_off = 0.03
+    idx = weights > np.max(weights) * cut_off
+
+    if not np.any(idx):  # zero intensity
+        # inten_measure.append(0.0)
+        return 0.0
+
+    else:
+        vqe_filtered = vqe[idx]
+        inten = model_inten(vqe_filtered[:, 0], vqe_filtered[:, 1], vqe_filtered[:, 2])
+        weights_filtered = weights[idx]
+        # normalization
+        det = np.linalg.det(mat)
+        inten_sum = np.sum(inten * weights_filtered) * step_qh * step_qk * step_ql
+        # inten_measure.append(inten_sum * np.sqrt(det) / (2 * np.pi) ** 2 * r0)
+        return inten_sum * np.sqrt(det) / (2 * np.pi) ** 2 * r0
+    # return np.asarray(inten_measure)
+
+
 if __name__ == "__main__":
+    # ----------------------------------------------------
     # points being measured
-    q1_min, q1_max, q1_step = -2, 2, 0.1
-    en_min, en_max, en_step = -5, 12, 0.2
+    # qe_mesh has the dimension (4, n_pts_of_measurement)
+    # flatten for meshed measurement
+    # ----------------------------------------------------
+    q1_min, q1_max, q1_step = -2, 2, 0.02
+    en_min, en_max, en_step = -2, 6, 0.1
     q2 = 0
     q3 = 0
 
@@ -74,77 +184,41 @@ if __name__ == "__main__":
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
     vq1, vq2, vq3, ven = np.meshgrid(q1, q2, q3, en, indexing="ij")
 
-    # keep the dimension then flatten
-    sz = np.shape(vq1)
+    sz = np.shape(vq1)  # sz = (n_q1, n_q2, n_q3 , n_en)
     qe_mesh = np.array([np.ravel(v) for v in (vq1, vq2, vq3, ven)])
 
-    # calculate resolution matrix for all points
-    # r0 has dimension of (n_q1, n_q2, n_q3, n_en)
-    # mat has dimension of (n_q1, n_q2, n_q3, n_en, 4, 4)
-    r0, mat = resolution_matrix(*qe_mesh)
+    n_measrement = np.shape(qe_mesh)[1]
 
-    # points to calculate from the model
-    mq1_min, mq1_max, mq1_step = -2, 2, 0.05
-    mq2_min, mq2_max, mq2_step = -0.5, 0.5, 0.05
-    mq3_min, mq3_max, mq3_step = -0.5, 0.5, 0.05
+    t0 = time()
+    num_worker = 4
+    with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as executor:
+        results = executor.map(convolutioin, *qe_mesh)
+    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
 
-    mq1 = np.linspace(mq1_min, mq1_max, int((mq1_max - mq1_min) / mq1_step) + 1)
-    mq2 = np.linspace(mq2_min, mq2_max, int((mq2_max - mq2_min) / mq2_step) + 1)
-    mq3 = np.linspace(mq3_min, mq3_max, int((mq3_max - mq3_min) / mq3_step) + 1)
-    vmq1, vmq2, vmq3 = np.meshgrid(mq1, mq2, mq3, indexing="ij")
+    measurement_inten = np.array(list(results)).reshape(sz)
+    # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
+    total_intent = np.sum(measurement_inten) * q1_step * en_step * 2 * np.pi
 
-    msz = np.shape(vmq1)
-    mqe_mesh = np.array([np.ravel(v) for v in (vmq1, vmq2, vmq3)])
-
-    fm_disp, fm_intent = model(*mqe_mesh)
-
-    # convolution
-    exp_inten = np.zeros_like(r0, dtype=float)
-
-    # for i in range(np.shape(mqe_mesh)[-1]):
-    #     qh, qk, ql = mqe_mesh[:, i]
-    #     vqe = np.stack((qe_mesh[0] - qh, qe_mesh[1] - qk, qe_mesh[2] - ql, qe_mesh[3] - fm_disp[i]), axis=1)
-    #     prod = np.squeeze(vqe[:, np.newaxis, :] @ mat @ vqe[:, :, np.newaxis])
-    #     exp_inten += np.exp(-prod / 2) * fm_intent[i]
-
-    # Assuming mqe_mesh has shape (3, N)
-    qh, qk, ql = mqe_mesh
-    vqe = np.stack(
-        (
-            qe_mesh[0][:, None] - qh,
-            qe_mesh[1][:, None] - qk,
-            qe_mesh[2][:, None] - ql,
-            qe_mesh[3][:, None] - fm_disp,
-        ),
-        axis=2,
-    )  # shape: (M, N, 4)
-
-    # Compute vqe @ mat @ vqe^T for each M and N
-    # einsum does: vqe[m,n,:] @ mat[m,:,:] @ vqe[m,n,:].T -> shape: (M, N)
-    prod = np.einsum("mni,mij,mnj->mn", vqe, mat, vqe)
-    # Compute exponential terms and weight by fm_intent
-    weighted_exp = np.exp(-prod / 2) * fm_intent  # shape: (M, N)
-
-    # Sum across N (the original loop's dimension)
-    exp_inten += np.sum(weighted_exp, axis=1)
-    det = np.linalg.det(mat)
-    exp_inten *= np.sqrt(det) * r0 / (2 * np.pi) ** 2
-
-    exp_inten = exp_inten.reshape(sz)
-
+    # ----------------------------------------------------
     # plot 2D contour
+    # ----------------------------------------------------
     fig, ax = plt.subplots()
     idx = np.s_[:, 0, 0, :]
-    img = ax.pcolormesh(vq1[idx], ven[idx], exp_inten[idx], cmap="turbo", vmin=0)
-    # ax.set_title("model")
+    img = ax.pcolormesh(vq1[idx], ven[idx], measurement_inten[idx], cmap="turbo", vmin=0, vmax=0.5)
+
     ax.grid(alpha=0.6)
     ax.set_xlabel("Q1")
-    ax.set_ylabel("E")
+    ax.set_ylabel("En")
     ax.set_xlim((q1_min, q1_max))
     ax.set_ylim((en_min, en_max))
-    fig.colorbar(img, ax=ax)
+
     plot_rez_ellipses(ax)
     ax.legend()
+    fig.colorbar(img, ax=ax)
+    ax.set_title(
+        f"total intensity = {total_intent:.3f}"
+        + f"\nCconvolution for {n_measrement} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
+    )
 
     plt.tight_layout()
     plt.show()

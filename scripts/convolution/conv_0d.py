@@ -33,8 +33,8 @@ def resolution_matrix(qx0, qy0, qz0, en0):
             ]
         )
 
-    sigma1, sigma2 = 1, 0.2
-    angle = -70
+    sigma1, sigma2 = 0.1, 0.2
+    angle = 20
     mat = np.array(
         [
             [1 / sigma1**2, 0, 0, 0],
@@ -49,14 +49,15 @@ def resolution_matrix(qx0, qy0, qz0, en0):
 
 
 def plot_rez_ellipses(ax):
+    sigma1, sigma2 = 0.1, 0.2
     for i in range(3):
 
         ax.add_artist(
             Ellipse(
                 xy=(-0.5, 0),
-                width=1 * 2 * (i + 1),
-                height=0.2 * 2 * (i + 1),
-                angle=70,
+                width=sigma1 * 2 * (i + 1),
+                height=sigma2 * 2 * (i + 1),
+                angle=-20,
                 edgecolor="w",
                 facecolor="none",
                 label=f"{i+1}-sigma",
@@ -65,9 +66,9 @@ def plot_rez_ellipses(ax):
         ax.add_artist(
             Ellipse(
                 xy=(0.5, 0),
-                width=1 * 2 * (i + 1),
-                height=0.2 * 2 * (i + 1),
-                angle=70,
+                width=sigma1 * 2 * (i + 1),
+                height=sigma2 * 2 * (i + 1),
+                angle=-20,
                 edgecolor="w",
                 facecolor="none",
                 # label=f"{i+1}-sigma",
@@ -77,8 +78,8 @@ def plot_rez_ellipses(ax):
 
 if __name__ == "__main__":
     # points being measured
-    q1_min, q1_max, q1_step = -1, 1, 0.02
-    en_min, en_max, en_step = -5, 5, 0.2
+    q1_min, q1_max, q1_step = -1, 1, 0.01
+    en_min, en_max, en_step = -1, 1, 0.05
     q2 = 0
     q3 = 0
 
@@ -107,19 +108,23 @@ if __name__ == "__main__":
     exp_inten *= np.sqrt(det) * r0 / (2 * np.pi) ** 2
     exp_inten = exp_inten.reshape(sz)
 
+    total_intent = np.sum(exp_inten) * q1_step * en_step
+    total_intent *= 2 * np.pi  # q2=q3=0, prefactor=(1/sqrt(2pi))^2
+
     # plot 2D contour
     fig, ax = plt.subplots()
     idx = np.s_[:, 0, 0, :]
-    img = ax.pcolormesh(vq1[idx], ven[idx], exp_inten[idx], cmap="turbo", vmin=0, vmax=0.1)
+    img = ax.pcolormesh(vq1[idx], ven[idx], exp_inten[idx], cmap="turbo", vmin=0, vmax=1)
     # ax.set_title("model")
     ax.grid(alpha=0.6)
     ax.set_xlabel("Q1")
     ax.set_ylabel("E")
-    ax.set_xlim((-1, 1))
-    ax.set_ylim((-5, 5))
+    ax.set_xlim((q1_min, q1_max))
+    ax.set_ylim((en_min, en_max))
     fig.colorbar(img, ax=ax)
     plot_rez_ellipses(ax)
     ax.legend()
+    ax.set_title(f"total intensity = {total_intent:.3f}")
 
     plt.tight_layout()
     plt.show()
