@@ -39,7 +39,7 @@ def model_disp(vq1, vq2, vq3):
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
     """
 
-    sj = 5
+    sj = 1
     gamma_q = np.cos(2 * np.pi * vq1)
     # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
 
@@ -127,37 +127,36 @@ def convolution(qh, qk, ql, en):
     # calculate resolution matrix for all points
     # ----------------------------------------------------
     r0, mat = resolution_matrix(qh, qk, ql, en)
-    mat_hkl = quadric_proj(mat, -1)
+    mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
-    # calculate the incoherent sigmas for E directions
+    # calculate the incoherent sigmas for three Q directions
     # ----------------------------------------------------
+    sigma_qh = incoh_sigma(mat, 0)
+    sigma_qk = incoh_sigma(mat, 1)
+    sigma_ql = incoh_sigma(mat, 2)
     sigma_en = incoh_sigma(mat, 3)
+
     num_of_sigmas = 3
+    min_qh, max_qh = qh - num_of_sigmas * sigma_qh, qh + num_of_sigmas * sigma_qh
+    min_qk, max_qk = qk - num_of_sigmas * sigma_qk, qk + num_of_sigmas * sigma_qk
+    min_ql, max_ql = ql - num_of_sigmas * sigma_ql, ql + num_of_sigmas * sigma_ql
     min_en, max_en = en - num_of_sigmas * sigma_en, en + num_of_sigmas * sigma_en
-    # ----------------------------------------------------
-    # similarity transformation
-    # ----------------------------------------------------
-    eigenvalues, eigenvectors = np.linalg.eig(mat_hkl)
-    eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
-    trans_mat = eigenvectors * eval_inv_sqrt * eigenvectors
-    # ----------------------------------------------------
-    # start sampling
-    # ----------------------------------------------------
-    pts_q = 5
+
+    pts_q = 20
     sampled_enough = False
     while not sampled_enough:
-        x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
-        elem_vols = (2 * num_of_sigmas / pts_q) ** 3
-        v1, v2, v3 = np.meshgrid(x, x, x, indexing="ij")
-        g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
-        # cut the corners beyond 3*sigma when dimemsion is higher than 1
-        idx = g > 0.0111**3  # 3 sigma
-        pts_norm = np.stack((v1[idx], v2[idx], v3[idx]), axis=0)
-        vqh, vqk, vql = trans_mat @ pts_norm
-        vqh += qh
-        vqk += qk
-        vql += ql
-        elem_vols *= np.prod(eval_inv_sqrt)
+        # print(pts_q)
+
+        step_qh = (max_qh - min_qh) / pts_q
+        step_qk = (max_qk - min_qk) / pts_q
+        step_ql = (max_ql - min_ql) / pts_q
+
+        list_qh = np.linspace(min_qh, max_qh, pts_q)
+        list_qk = np.linspace(min_qk, max_qk, pts_q)
+        list_ql = np.linspace(min_ql, max_ql, pts_q)
+
+        mesh_q = np.meshgrid(list_qh, list_qk, list_ql, indexing="ij")
+        vqh, vqk, vql = np.array([np.ravel(v) for v in mesh_q])
         # ----------------------------------------------------
         # determine if sampled enough based on steps along energy
         # ----------------------------------------------------
@@ -169,21 +168,28 @@ def convolution(qh, qk, ql, en):
         max_disp, min_disp = np.max(disp), np.min(disp)
         if max_disp < min_en or min_disp > max_en:
             return 0.0  # zero intensity
-        # ----------------------------------------------------
-        # determine if sampled enough based on steps along energy
-        # ----------------------------------------------------
-        max_en_step = (max_disp - min_disp) / pts_q * 2
-        ratio = max_en_step / sigma_en / 2
-        if ratio > 1:
-            pts_q = int(pts_q * ratio) + 1
-            print(f"ratio={ratio:.2f} for (Q,E)=({qh:.2f}, {en:.2f})")
-            continue
-        break
+
+        disp_reshaped = disp.reshape((num_bands, pts_q, pts_q, pts_q))
+        idx_inside = np.bitwise_and(disp_reshaped > min_en, disp_reshaped < max_en)
+        diff_eh = np.diff(disp_reshaped, axis=1, append=0.0)
+        diff_ek = np.diff(disp_reshaped, axis=2, append=0.0)
+        diff_el = np.diff(disp_reshaped, axis=3, append=0.0)
+
+        step_eh = np.max(np.mean(np.abs(diff_eh[idx_inside])))
+        step_ek = np.max(np.mean(np.abs(diff_ek[idx_inside])))
+        step_el = np.max(np.mean(np.abs(diff_el[idx_inside])))
+        step_en = np.max((step_eh, step_ek, step_el))
+
+        if step_en > sigma_en / 3:
+            print(f"step_en={step_en:.4f} is larger than sigma_em/3={sigma_en / 3:.4f}")
+            pts_q *= 2
+        else:
+            sampled_enough = True
 
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    vq = np.stack((vqh - qh, vqk - qk, vql - ql), axis=0)
+
     vqe = np.stack(
         (
             np.broadcast_to(vqh, (num_bands, num_pts)) - qh,
@@ -206,7 +212,7 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     cut_off = 1e-6
     idx_all = weights > cut_off
-    idx = np.any(idx_all, axis=0)
+    idx = np.bitwise_or.reduce(idx_all, axis=0)
     # percent = (np.size(idx) - np.count_nonzero(idx)) / np.size(idx) * 100
     # print(f"{percent:.2f}% of points discarded.")
 
@@ -214,12 +220,18 @@ def convolution(qh, qk, ql, en):
     if not np.any(idx_all):
         return 0.0  # zero intensity
 
-    vq_filtered = vq[:, idx]
-    inten = model_inten(*vq_filtered)
-    weights_filtered = weights[:, idx]
+    # need a correction to enforce the normalization to one
+    vq = np.stack((vqh - qh, vqk - qk, vql - ql), axis=-1)
+    prod_hkl = np.einsum("ij,jk,ik->i", vq, mat_hkl, vq)
+    g_hkl = (np.exp(-prod_hkl / 2)) / np.sqrt(2 * np.pi) ** 3 * np.sqrt(np.linalg.det(mat_hkl))
+    correction = np.sum(g_hkl) * step_qh * step_qk * step_ql
+
+    vq_filtered = vq[idx]
+    inten = model_inten(vq_filtered[:, 0], vq_filtered[:, 1], vq_filtered[:, 2])
+    weights_filtered = weights[:, idx] / correction
     # normalization
     det = np.linalg.det(mat)
-    inten_sum = np.sum(inten * weights_filtered) * elem_vols
+    inten_sum = np.sum(inten * weights_filtered) * step_qh * step_qk * step_ql
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
 
 
@@ -229,8 +241,8 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = -1, 1, 0.05
-    en_min, en_max, en_step = -3, 25, 0.5
+    q1_min, q1_max, q1_step = -1, 1, 0.02
+    en_min, en_max, en_step = -3, 25, 0.2
     q2 = 0
     q3 = 0
 

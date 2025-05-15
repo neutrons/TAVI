@@ -39,7 +39,7 @@ def model_disp(vq1):
     1d FM J=-1 meV S=1, en=2*S*J*(1-cos(Q))
     two splitted bands
     """
-    sj = 1
+    sj = 5
     gamma_q = np.cos(2 * np.pi * vq1)
     disp = 2 * sj * (1 - gamma_q)
     disp = np.array((disp - 2, disp + 2))
@@ -67,8 +67,8 @@ def model_inten(vq1):
 
 
 def resolution_matrix(qx0, en0):
-    """Fake resoltuion matrix mat and prefactor r0
-    r0 is a constant, rez_mat is a symmatric positive 4 by 4 matrix
+    """Fake resolution matrix mat and prefactor r0
+    r0 is a constant, rez_mat is a symmetric positive 4 by 4 matrix
     """
 
     sz = np.shape(qx0)
@@ -115,84 +115,79 @@ def plot_rez_ellipses(ax):
         )
 
 
-def convolutioin(qh, en):
+def convolution(qh, en):
     # ----------------------------------------------------
-    # calculate resolution matrix for all points
+    # calculate resolution matrix
     # ----------------------------------------------------
     r0, mat = resolution_matrix(qh, en)
     mat_hkl = quadric_proj(mat, -1)
     # ----------------------------------------------------
-    # calculate the incoherent sigmas for all Q and E directions
+    # calculate the incoherent sigmas for E directions
     # ----------------------------------------------------
-    sigma_qh = incoh_sigma(mat, 0)
     sigma_en = incoh_sigma(mat, 1)
-
     num_of_sigmas = 3
-    min_qh, max_qh = qh - num_of_sigmas * sigma_qh, qh + num_of_sigmas * sigma_qh
     min_en, max_en = en - num_of_sigmas * sigma_en, en + num_of_sigmas * sigma_en
     # ----------------------------------------------------
-    # determine if the dispersion energy is in the ellipsoid in a coarse grid
+    # similarity transformation
     # ----------------------------------------------------
-    pts_q = 10
-    step_qh = (max_qh - min_qh) / pts_q
-    list_qh = np.linspace(min_qh, max_qh, pts_q)
-    mesh_q = list_qh
-    vqh = mesh_q
-    # calculate dispersion on a coarse grid
-    disp = model_disp(vqh)
-    # get rid of the ones that are not in the ellipsoid
-    max_disp, min_disp = np.max(disp), np.min(disp)
-    if max_disp < min_en or min_disp > max_en:
-        return 0.0  # zero intensity
-    # calculate weight from resolution function
-
-    weights_all = []
-    for i in range(disp.shape[0]):
-        vqe = np.stack((vqh - qh, disp[i] - en), axis=1)
-        prod = np.einsum("ij,jk,ik->i", vqe, mat, vqe)
-        weights_all.append(np.exp(-prod / 2))
-    weights = np.max(weights_all, axis=0)
-    # don't bother if the weight is already too small
-    if np.max(weights) < 1e-6:
-        return 0.0  # zero intensity
-
+    eigenvalues, eigenvectors = np.linalg.eig(mat_hkl)
+    eval_inv_sqrt = 1 / np.squeeze(np.sqrt(eigenvalues))
+    trans_mat = np.squeeze(eigenvectors * eval_inv_sqrt * eigenvectors)
     # ----------------------------------------------------
-    # dispersion energy is within the ellipsoid
+    # start sampling
     # ----------------------------------------------------
-    # create 1D mesh
-    pts_q = 10  # start with 30 points
+    pts_q = 5
     sampled_enough = False
     while not sampled_enough:
 
-        step_qh = (max_qh - min_qh) / pts_q
-        vqh = np.linspace(min_qh, max_qh, pts_q)
-        # ----------------------------------------------------
-        # calculate weight based on the dispersion
-        # ----------------------------------------------------
+        x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
+        elem_vol = 2 * num_of_sigmas / pts_q
+        g = np.exp(-(x**2) / 2)
+        # cut the corners beyond 3*sigma when dimemsion is higher than 1
+        idx = g > 0.0111  # 3 sigma
+        vqh = x[idx]
+
+        vqh *= trans_mat
+        vqh += qh
+        elem_vol *= eval_inv_sqrt
+
         disp = model_disp(vqh)  # size of (n_bands, pts_q^3)
+        num_bands, num_pts = disp.shape
+        # ----------------------------------------------------
+        # get rid of the ones that are not in the ellipsoid
+        # ----------------------------------------------------
+        max_disp, min_disp = np.max(disp), np.min(disp)
+        if max_disp < min_en or min_disp > max_en:
+            return 0.0  # zero intensity
 
-        step_en_all = []
-        for i in range(disp.shape[0]):
-            step_en_all.append(np.mean(np.abs(np.diff(disp[i]))))
-        step_en = np.max(step_en_all, axis=0)
-
-        if step_en > sigma_en / 3:
+        # ----------------------------------------------------
+        # determine if sampled enough based on steps along energy
+        # ----------------------------------------------------
+        en_step = (max_disp - min_disp) / pts_q
+        if en_step > sigma_en / 3:
             sampled_enough = False
-            pts_q *= 2
+            ratio = (max_disp - min_disp) / sigma_en / 6
+            pts_q = int(pts_q * ratio)
+            # print(f"ratio={ratio:.2f} for (Q,E)=({qh:.2f},{en:.2f})")
         else:
             sampled_enough = True
 
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    # shape of (n_bands, pts_q^3, 2)
-    vqe = np.stack((np.broadcast_to(vqh, np.shape(disp)) - qh, disp - en), axis=-1)
-    prod = np.einsum("ijk,kl,ijl->ij", vqe, mat, vqe)  # shape of (n_bands, pts_q^3)
-    weights = np.exp(-prod / 2)
-    # ----------------------------------------------------
+    vqe = np.stack(
+        (np.broadcast_to(vqh, (num_bands, num_pts)) - qh, disp - en), axis=-1
+    )  # shape: (num_bands, num_pts, 4)
+    prod = np.einsum("ijk,kl,ijl->ij", vqe, mat, vqe)
+    weights = np.exp(-prod / 2)  # shape: (num_bands, num_pts)
+
+    # don't bother if the weight is already too small
+    if np.max(weights) < 1e-6:
+        return 0.0  # zero intensity
     # trim the corners
     # ----------------------------------------------------
-    cut_off = 1e-2
+    cut_off = 1e-3
+    # weights = np.asarray(weights_all)
     idx_all = weights > cut_off
     idx = np.bitwise_or.reduce(idx_all, axis=0)
     # percent = (np.size(idx) - np.count_nonzero(idx)) / np.size(idx) * 100
@@ -202,17 +197,12 @@ def convolutioin(qh, en):
     if not np.any(idx_all):
         return 0.0  # zero intensity
 
-    # need a correction to enforce the normalization to one
-    prod = (vqh - qh) * mat_hkl * (vqh - qh)
-    g = np.exp(-prod / 2) / np.sqrt(2 * np.pi) * np.sqrt(np.linalg.det(mat_hkl))
-    correction = np.sum(g) * step_qh
-
-    vqh_filtered = vqh[idx]
-    inten = model_inten(vqh_filtered)
-    weights_filtered = weights[:, idx] / correction
+    vq_filtered = vqh[idx]
+    inten = model_inten(vq_filtered)
+    weights_filtered = weights[:, idx]
     # normalization
     det = np.linalg.det(mat)
-    inten_sum = np.sum(inten * weights_filtered) * step_qh
+    inten_sum = np.sum(inten * weights_filtered) * elem_vol
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi)
 
 
@@ -223,7 +213,7 @@ if __name__ == "__main__":
     # flatten for meshed measurement
     # ----------------------------------------------------
     q1_min, q1_max, q1_step = -1, 1, 0.02
-    en_min, en_max, en_step = -3, 7, 0.2
+    en_min, en_max, en_step = -3, 25, 0.2
 
     q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
@@ -236,14 +226,13 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # multiprocessing using concurrent future
     # ----------------------------------------------------
-    num_worker = 1
+    num_worker = 4
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(convolutioin, *qe_mesh)
+        results = executor.map(convolution, *qe_mesh)
     measurement_inten = np.array(list(results)).reshape(sz)
     # measurement_inten = convolutioin(*qe_mesh).reshape(sz)
     print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
 
-    # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
     # ----------------------------------------------------
     # plot 2D contour
@@ -265,8 +254,8 @@ if __name__ == "__main__":
     ax.legend()
     fig.colorbar(img, ax=ax)
     ax.set_title(
-        f"1D FM S=1 J=-1, total intensity = {total_intent:.3f}"
-        + f"\nConvolution for {np.shape(qe_mesh)[1]} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
+        f"1D FM chian S=1 J=-5, total intensity = {total_intent:.3f}"
+        + f"\n1D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
     )
 
     plt.tight_layout()
