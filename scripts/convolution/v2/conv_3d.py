@@ -4,6 +4,7 @@ from time import time
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Ellipse
+from numba import njit, prange
 
 
 def quadric_proj(quadric, idx):
@@ -34,6 +35,7 @@ def incoh_sigma(mat, axis):
     return 1 / np.sqrt(np.abs(mat[0, 0]))
 
 
+# @njit(parallel=True)
 def model_disp(vq1, vq2, vq3):
     """return energy for given Q points
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
@@ -53,6 +55,7 @@ def model_disp(vq1, vq2, vq3):
     return disp
 
 
+# @njit(parallel=True)
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points
     3d FM J=-1 meV S=1, inten = S/2 for all Qs
@@ -68,40 +71,39 @@ def model_inten(vq1, vq2, vq3):
     return inten
 
 
+def rotation_matrix_4d(theta_deg):
+    theta = np.radians(theta_deg)
+    c = np.cos(theta)
+    s = np.sin(theta)
+    return np.array(
+        [
+            [c, 0, 0, -s],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [s, 0, 0, c],
+        ]
+    )
+
+
 def resolution_matrix(qx0, qy0, qz0, en0):
     """Fake resoltuion matrix mat and prefactor r0
     r0 is a constant, rez_mat is a symmatric positive 4 by 4 matrix
     """
-
-    sz = np.shape(qx0)
-
-    def rotation_matrix_4d(theta_deg):
-        theta = np.radians(theta_deg)
-        c = np.cos(theta)
-        s = np.sin(theta)
-        return np.array(
-            [
-                [c, 0, 0, -s],
-                [0, 1, 0, 0],
-                [0, 0, 1, 0],
-                [s, 0, 0, c],
-            ]
-        )
+    # sz = np.shape(qx0)
 
     sigma1, sigma2 = 0.3, 0.02
     sigma3 = sigma4 = 1
     angle = -80
-    mat = np.array(
-        [
-            [1 / sigma1**2, 0, 0, 0],
-            [0, 1 / sigma3**2, 0, 0],
-            [0, 0, 1 / sigma4**2, 0],
-            [0, 0, 0, 1 / sigma2**2],
-        ]
-    )
-    rez_mat = rotation_matrix_4d(angle).T @ mat @ rotation_matrix_4d(angle)
+    mat = np.zeros((4, 4))
+    mat[0, 0] = 1 / sigma1**2
+    mat[1, 1] = 1 / sigma3**2
+    mat[2, 2] = 1 / sigma4**2
+    mat[3, 3] = 1 / sigma2**2
+
+    rot = rotation_matrix_4d(angle)
+    rez_mat = rot.T @ mat @ rot
     r0 = 1
-    return np.broadcast_to(r0, sz), np.broadcast_to(rez_mat, sz + (4, 4))
+    return r0, rez_mat
 
 
 def plot_rez_ellipses(ax):
@@ -122,12 +124,29 @@ def plot_rez_ellipses(ax):
         )
 
 
+@njit(parallel=True, nogil=True)
+def compute_weights(vqe, mat):
+    _, num_bands, num_pts = vqe.shape
+    weights = np.empty((num_bands, num_pts))
+
+    for i in prange(num_bands):
+        for j in range(num_pts):
+            v = vqe[:, i, j]  # shape: (4,)
+            tmp = 0.0
+            for k in range(4):
+                for l in range(4):
+                    tmp += v[k] * mat[k, l] * v[l]
+            weights[i, j] = np.exp(-0.5 * tmp)
+
+    return weights
+
+
 def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
     r0, mat = resolution_matrix(qh, qk, ql, en)
-    mat_hkl = quadric_proj(mat, -1)
+    mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
     # calculate the incoherent sigmas for E directions
     # ----------------------------------------------------
@@ -149,10 +168,14 @@ def convolution(qh, qk, ql, en):
         x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
         elem_vols = (2 * num_of_sigmas / pts_q) ** 3
         v1, v2, v3 = np.meshgrid(x, x, x, indexing="ij")
-        g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
+        vs = np.asarray([np.ravel(v) for v in (v1, v2, v3)])
+        pts_norm = np.asarray(vs)
+
         # cut the corners beyond 3*sigma when dimemsion is higher than 1
-        idx = g > 0.0111**3  # 3 sigma
-        pts_norm = np.stack((v1[idx], v2[idx], v3[idx]), axis=0)
+        # g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
+        # idx = g > 1e-4
+        # pts_norm = np.asarray((v1[idx], v2[idx], v3[idx]))
+
         vqh, vqk, vql = trans_mat @ pts_norm
         vqh += qh
         vqk += qk
@@ -183,19 +206,15 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    vq = np.stack((vqh - qh, vqk - qk, vql - ql), axis=0)
-    vqe = np.stack(
-        (
-            np.broadcast_to(vqh, (num_bands, num_pts)) - qh,
-            np.broadcast_to(vqk, (num_bands, num_pts)) - qk,
-            np.broadcast_to(vql, (num_bands, num_pts)) - ql,
-            disp - en,
-        ),
-        axis=-1,
-    )  # shape: (num_bands, num_pts, 4)
-
-    prod = np.einsum("ijk,kl,ijl->ij", vqe, mat, vqe)
-    weights = np.exp(-prod / 2)  # shape: (num_bands, num_pts)
+    vq = np.asarray((vqh - qh, vqk - qk, vql - ql))  # shape: (3, num_pts)
+    vqe = np.empty((4, num_bands, num_pts))
+    vqe[0:3] = vq[:, None, :]
+    vqe[3] = disp - en
+    # prod = np.einsum("ijk,il,ljk->jk", vqe, mat, vqe)
+    # weights = np.exp(-prod / 2)  # shape: (num_bands, num_pts)
+    # ------------------------------------
+    weights = compute_weights(vqe, mat)
+    # ------------------------------------
 
     # don't bother if the weight is already too small
     if np.max(weights) < 1e-6:
@@ -215,12 +234,23 @@ def convolution(qh, qk, ql, en):
         return 0.0  # zero intensity
 
     vq_filtered = vq[:, idx]
-    inten = model_inten(*vq_filtered)
     weights_filtered = weights[:, idx]
+    inten = model_inten(*vq_filtered)
+
     # normalization
     det = np.linalg.det(mat)
     inten_sum = np.sum(inten * weights_filtered) * elem_vols
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
+
+
+# @njit(parallel=True)
+# def parallel_convolution(qe_mesh):
+#     n_pts = qe_mesh.shape[1]
+#     results = np.empty(n_pts)
+#     for i in prange(n_pts):
+#         qh, qk, ql, en = qe_mesh[0, i], qe_mesh[1, i], qe_mesh[2, i], qe_mesh[3, i]
+#         results[i] = convolution(qh, qk, ql, en)
+#     return results
 
 
 if __name__ == "__main__":
@@ -229,8 +259,8 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = -1, 1, 0.05
-    en_min, en_max, en_step = -3, 25, 0.5
+    q1_min, q1_max, q1_step = -1, 1, 0.02
+    en_min, en_max, en_step = -3, 25, 0.2
     q2 = 0
     q3 = 0
 
@@ -239,15 +269,17 @@ if __name__ == "__main__":
     vq1, vq2, vq3, ven = np.meshgrid(q1, q2, q3, en, indexing="ij")
 
     sz = np.shape(vq1)  # sz = (n_q1, n_q2, n_q3 , n_en)
-    qe_mesh = np.array([np.ravel(v) for v in (vq1, vq2, vq3, ven)])
+    qe_mesh = np.asarray([np.ravel(v) for v in (vq1, vq2, vq3, ven)])
 
     t0 = time()
-    num_worker = 8
+    num_worker = 4
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as executor:
         results = executor.map(convolution, *qe_mesh)
-    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
+    measurement_inten = np.asarray(list(results)).reshape(sz)
 
-    measurement_inten = np.array(list(results)).reshape(sz)
+    # qe_mesh = np.ascontiguousarray(qe_mesh)
+    # measurement_inten = parallel_convolution(qe_mesh).reshape(sz)
+    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
 
