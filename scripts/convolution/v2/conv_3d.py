@@ -141,6 +141,59 @@ def compute_weights(vqe, mat):
     return weights
 
 
+def generate_pts(num_of_sigmas=3, pts_q=5):
+    x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
+    v1, v2, v3 = np.meshgrid(x, x, x, indexing="ij")
+    # -------- keep all points ---------
+    # vs = np.asarray([np.ravel(v) for v in (v1, v2, v3)])
+    # pts_norm = np.asarray(vs)
+    # -------- cut the corners based on Gaussian -------
+    # g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
+    # idx = g > 1e-4
+    # -------- cut the corners based on distance --------
+    r_sq = v1**2 + v2**2 + v3**2
+    idx = r_sq < num_of_sigmas**2
+    # ----------------------------------------
+    pts_norm = np.asarray((v1[idx], v2[idx], v3[idx]))
+    return pts_norm
+
+
+# @njit
+# def generate_pts(pts_q=5, num_of_sigmas=3.0):
+#     step = 6.0 / pts_q  # Range is from -3 to 3
+#     half_range = 3.0
+#     count = 0
+
+#     # First pass: count number of valid points
+#     for i in range(pts_q + 1):
+#         x = -half_range + i * step
+#         for j in range(pts_q + 1):
+#             y = -half_range + j * step
+#             for k in range(pts_q + 1):
+#                 z = -half_range + k * step
+#                 if x * x + y * y + z * z < num_of_sigmas * num_of_sigmas:
+#                     count += 1
+
+#     # Allocate result array
+#     pts = np.empty((3, count), dtype=np.float64)
+#     idx = 0
+
+#     # Second pass: store valid points
+#     for i in range(pts_q + 1):
+#         x = -half_range + i * step
+#         for j in range(pts_q + 1):
+#             y = -half_range + j * step
+#             for k in range(pts_q + 1):
+#                 z = -half_range + k * step
+#                 if x * x + y * y + z * z < num_of_sigmas * num_of_sigmas:
+#                     pts[0, idx] = x
+#                     pts[1, idx] = y
+#                     pts[2, idx] = z
+#                     idx += 1
+
+#     return pts
+
+
 def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # calculate resolution matrix for all points
@@ -165,16 +218,8 @@ def convolution(qh, qk, ql, en):
     pts_q = 5
     sampled_enough = False
     while not sampled_enough:
-        x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
+        pts_norm = generate_pts(num_of_sigmas, pts_q)
         elem_vols = (2 * num_of_sigmas / pts_q) ** 3
-        v1, v2, v3 = np.meshgrid(x, x, x, indexing="ij")
-        vs = np.asarray([np.ravel(v) for v in (v1, v2, v3)])
-        pts_norm = np.asarray(vs)
-
-        # cut the corners beyond 3*sigma when dimemsion is higher than 1
-        # g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
-        # idx = g > 1e-4
-        # pts_norm = np.asarray((v1[idx], v2[idx], v3[idx]))
 
         vqh, vqk, vql = trans_mat @ pts_norm
         vqh += qh
