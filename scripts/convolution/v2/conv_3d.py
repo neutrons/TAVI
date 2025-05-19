@@ -136,7 +136,8 @@ def compute_weights(vqe, mat):
             for k in range(4):
                 for l in range(4):
                     tmp += v[k] * mat[k, l] * v[l]
-            weights[i, j] = np.exp(-0.5 * tmp)
+            weights[i, j] = tmp
+            # weights[i, j] = np.exp(-0.5 * tmp)
 
     return weights
 
@@ -211,7 +212,7 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     eigenvalues, eigenvectors = np.linalg.eig(mat_hkl)
     eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
-    trans_mat = eigenvectors * eval_inv_sqrt * eigenvectors
+    trans_mat = eigenvectors @ np.diag(1 / np.sqrt(eigenvalues)) @ eigenvectors.T
     # ----------------------------------------------------
     # start sampling
     # ----------------------------------------------------
@@ -222,14 +223,11 @@ def convolution(qh, qk, ql, en):
         elem_vols = (2 * num_of_sigmas / pts_q) ** 3
 
         vqh, vqk, vql = trans_mat @ pts_norm
-        vqh += qh
-        vqk += qk
-        vql += ql
         elem_vols *= np.prod(eval_inv_sqrt)
         # ----------------------------------------------------
         # determine if sampled enough based on steps along energy
         # ----------------------------------------------------
-        disp = model_disp(vqh, vqk, vql)
+        disp = model_disp(vqh + qh, vqk + qk, vql + ql)
         num_bands, num_pts = disp.shape
         # ----------------------------------------------------
         # get rid of the ones that are not in the ellipsoid
@@ -251,25 +249,29 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    vq = np.asarray((vqh - qh, vqk - qk, vql - ql))  # shape: (3, num_pts)
+    vq = np.asarray((vqh, vqk, vql))  # shape: (3, num_pts)
     vqe = np.empty((4, num_bands, num_pts))
     vqe[0:3] = vq[:, None, :]
     vqe[3] = disp - en
     # prod = np.einsum("ijk,il,ljk->jk", vqe, mat, vqe)
-    # weights = np.exp(-prod / 2)  # shape: (num_bands, num_pts)
+    # weights = np.exp(-prod / 2)
     # ------------------------------------
-    weights = compute_weights(vqe, mat)
+    weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
     # ------------------------------------
 
     # don't bother if the weight is already too small
-    if np.max(weights) < 1e-6:
+    # if np.max(weights) < 1e-6:
+    #     return 0.0  # zero intensity
+    # TODO check boundary
+    if np.min(weights) > 5:
         return 0.0  # zero intensity
 
     # ----------------------------------------------------
     # trim the corners
     # ----------------------------------------------------
-    cut_off = 1e-6
-    idx_all = weights > cut_off
+    # TODO
+    cut_off = 1.3863 * 3  # 2ln2*3
+    idx_all = weights < cut_off
     idx = np.any(idx_all, axis=0)
     # percent = (np.size(idx) - np.count_nonzero(idx)) / np.size(idx) * 100
     # print(f"{percent:.2f}% of points discarded.")
@@ -279,7 +281,7 @@ def convolution(qh, qk, ql, en):
         return 0.0  # zero intensity
 
     vq_filtered = vq[:, idx]
-    weights_filtered = weights[:, idx]
+    weights_filtered = np.exp(-weights[:, idx] / 2)
     inten = model_inten(*vq_filtered)
 
     # normalization
