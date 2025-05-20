@@ -132,7 +132,7 @@ def convolution(qh, en):
     # ----------------------------------------------------
     eigenvalues, eigenvectors = np.linalg.eig(mat_hkl)
     eval_inv_sqrt = 1 / np.squeeze(np.sqrt(eigenvalues))
-    trans_mat = np.squeeze(eigenvectors * eval_inv_sqrt * eigenvectors)
+    trans_mat = np.squeeze(eigenvectors.T * eval_inv_sqrt * eigenvectors)
     # ----------------------------------------------------
     # start sampling
     # ----------------------------------------------------

@@ -138,7 +138,7 @@ def generate_pts(num_of_sigmas=3, pts_q=5):
 def convolution(pts_norm):
     vqh, vqk = trans_mat @ pts_norm
     # ----------------------------------------------------
-    # determine if sampled enough based on steps along energy
+    # calculate dispersion nergy
     # ----------------------------------------------------
     disp = model_disp(vqh + qh, vqk + qk)
     num_bands, num_pts = disp.shape
@@ -209,11 +209,10 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # generating points
     # ----------------------------------------------------
-    pts_q = 10
+    pts_q = 15
     pts_norm = generate_pts(num_of_sigmas, pts_q)
     step_q = 2 * num_of_sigmas / pts_q
-    elem_vols_init = step_q**2
-    elem_vols_init *= np.prod(eval_inv_sqrt)
+    elem_vols_init = step_q**2 * np.prod(eval_inv_sqrt)
     _, num_pts_q = np.shape(pts_norm)
 
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
@@ -302,12 +301,8 @@ if __name__ == "__main__":
     axes[0, 2].plot(vq_filtered[0] + qh, vq_filtered[1] + qk, ".")
     axes[1, 0].plot(vq_filtered[0] + qh, model_disp(vq_filtered[0] + qh, vq_filtered[1] + qk)[0], ".")
     axes[1, 1].plot(vq_filtered[1] + qk, model_disp(vq_filtered[0] + qh, vq_filtered[1] + qk)[0], ".")
-    idx_list = [
-        1,
-    ]
-    inten_list = [
-        inten,
-    ]
+    idx_list = [1]
+    inten_list = [inten]
 
     vec = None
     n_round = 1
