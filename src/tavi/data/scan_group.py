@@ -170,7 +170,8 @@ class ScanGroup(object):
                 norm_val, norm_channel = norm_to
                 norm_list = self._get_norm_list(norm_channel)
                 scan_data_2d.renorm(norm_col=norm_list, norm_val=norm_val)
-                scan_data_2d.norm = scan_data_2d.norm.reshape((size_x, size_y))
+                # scan_data_2d.norm = scan_data_2d.norm.reshape((size_x, size_y))
+
             else:  # no renorm, check if all presets are the same
                 norm_to = self._get_default_renorm_params()
 

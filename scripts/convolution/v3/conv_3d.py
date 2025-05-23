@@ -127,9 +127,6 @@ def generate_pts(num_of_sigmas=3, pts_q=5):
     # -------- keep all points ---------
     # vs = np.asarray([np.ravel(v) for v in (v1, v2, v3)])
     # pts_norm = np.asarray(vs)
-    # -------- cut the corners based on Gaussian -------
-    # g = np.exp(-(v1**2 + v2**2 + v3**2) / 2)
-    # idx = g > 1e-4
     # -------- cut the corners based on distance --------
     r_sq = v1**2 + v2**2 + v3**2
     idx = r_sq < num_of_sigmas**2
@@ -138,18 +135,24 @@ def generate_pts(num_of_sigmas=3, pts_q=5):
     return pts_norm
 
 
-def shift_vector(n_round: int):
-    "generate the shift vector based on the round number"
+def generate_shifted_pts(pts, n_round: int, step_q: float):
     if n_round == 0:
-        return np.array((0, 0, 0))
-    quotient, remainder = divmod(n_round - 1, 3)
+        return pts
+    quotient, remainder = divmod(n_round + 1, 2)
+    x = 1 / (2**quotient)
     match remainder:
-        case 0:
-            return np.array((1, 1, 1)) / 2 ** (quotient + 1)
-        case 1:
-            return np.array((0, -1, 0)) / 2 ** (quotient + 1)
-        case 2:
-            return np.array((0, 0, -1)) / 2 ** (quotient + 1)
+        case 0:  # generate body centers
+            pts_norm = pts + step_q * np.array((x, x, x))[:, None]
+        case 1:  # generate face and edge centers
+            pts_norm = np.concatenate(
+                (
+                    pts + step_q * np.array((-x, 0, 0))[:, None],
+                    pts + step_q * np.array((0, -x, 0))[:, None],
+                    pts + step_q * np.array((0, 0, -x))[:, None],
+                ),
+                axis=1,
+            )
+    return pts_norm
 
 
 def convolution(qh, qk, ql, en):
@@ -175,7 +178,7 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # initial parameters setup
     # ----------------------------------------------------
-    pts_q = 10
+    pts_q = 3
     pts_norm = generate_pts(num_of_sigmas, pts_q)
     step_q = 2 * num_of_sigmas / pts_q
     elem_vols_init = step_q**3 * np.prod(eval_inv_sqrt)
@@ -184,9 +187,9 @@ def convolution(qh, qk, ql, en):
     n_round = 0
     sampled_enough = False
     while not sampled_enough:
-        vec = shift_vector(n_round)
-        print(f"n={n_round} for (Q,E)=({qh:.2f},{en:.2f}), vec=({vec[0]:.2f},{vec[1]:.2f},{vec[2]:.2f})")
-        pts_norm_shifted = pts_norm + (vec * step_q)[:, None]
+        pts_norm_shifted = generate_shifted_pts(pts_norm, n_round, step_q)
+        print(f"n={n_round} for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
+        print(f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})")
         vqh, vqk, vql = trans_mat @ pts_norm_shifted
         # ----------------------------------------------------
         # calculate dispersion nergy
@@ -230,6 +233,7 @@ def convolution(qh, qk, ql, en):
         # calculate intensity
         # ----------------------------------------------------
         elem_vols = elem_vols_init * num_pts_q / np.shape(pts_norm)[1]
+
         # normalization
         inten = model_inten(vq_filtered[0] + qh, vq_filtered[1] + qk, vq_filtered[2] + ql)
         inten_sum = np.sum(inten * weights[:, idx]) * elem_vols
@@ -240,6 +244,8 @@ def convolution(qh, qk, ql, en):
             idx_list = [1]
             inten_list = [inten]
             continue
+        elif (n_round + 1) % 2 == 1:
+            inten /= 6
 
         idx_list.append(n_round + 1)
         last_inten = inten_list[-1]
@@ -261,9 +267,9 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    # q1_min, q1_max, q1_step = -1, 1, 0.02
-    q1_min, q1_max, q1_step = -0.26, -0.24, 0.01
-    en_min, en_max, en_step = -3, 25, 0.05
+    q1_min, q1_max, q1_step = 0, 1, 0.2
+    # q1_min, q1_max, q1_step = -0.26, -0.24, 0.01
+    en_min, en_max, en_step = -3, 25, 2
     q2 = 0
     q3 = 0
 

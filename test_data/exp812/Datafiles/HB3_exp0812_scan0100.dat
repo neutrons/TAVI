@@ -1,0 +1,35 @@
+# scan = 100
+# date = 9/6/2024
+# time = 12:07:56 PM
+# proposal = 32905
+# experiment = Effects of electric field on phonon dispersion and lifetimes of poled PMN-30PT
+# experiment_number = 812
+# command = scan h 2 k -0.35 l 0 e 15 0 0.25 preset mcu 30
+# builtin_command = scan h 2 k -0.35 l 0 e 15 0 0.25 preset mcu 30
+# users = George Yumnam, Michael Manley, Puspa Upreti, Raphael Hermann, SHAOFEI WANG
+# local_contact = Songxue Chi
+# scan_title = (2,-0.35,0)  mode thickness 250 V
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = PMN-30PT
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.023634,4.023634,4.023634,90.000000,90.000000,90.000000
+# ubmatrix = -0.008055,-0.248252,-0.008588,-0.248328,0.007840,0.006285,-0.006007,0.008785,-0.248304
+# mode = 0
+# plane_normal = 0.034555,-0.025290,0.999083
+# ubconf = UB04Sep2024_115522AM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 30.000000
+# def_x = e
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       ampl         dc       freq     output       temp     temp_2         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei         ef   ampl_out output_state        vti     sample
+      1     2.0000    -0.3500    -0.0001    15.0017      0.000      0.000      0.000     30.000    46.9938   -20.0773   -28.6390   120.0962    -0.1480    -3.0001   -49.8518     0.0000   250.0000     0.0000     1.0000   300.0000   300.0000   -51.9904    55.6657    -1.9790    -1.4485    20.0000    20.0000    10.0000    20.0000    26.0000    10.0000    16.0000    20.0000    -0.0005     0.0005   159.4164   -41.1662     3.1706    29.7017    14.7000     2.0000     1.0000   299.9900     0.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 12:10:29 PM  9/6/2024   scan stopped!!

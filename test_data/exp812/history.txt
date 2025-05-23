@@ -1,0 +1,723 @@
+9/4/2024 11:10 AM        lattice 4.030000 4.030000 4.030000 90.000000 90.000000 90.000000
+9/4/2024 11:11 AM        lattice 4.030000 4.030000 4.030000 90.000000 90.000000 90.000000
+9/4/2024 11:12 AM        driverel s1 -45
+9/4/2024 11:13 AM        drive s2 20
+9/4/2024 11:15 AM        driverel s1 -45
+9/4/2024 11:16 AM        driverel s1 -20
+9/4/2024 11:16 AM        driverel s1 180
+9/4/2024 11:23 AM        driverel s1 45
+9/4/2024 11:25 AM        drive ei 14.7
+9/4/2024 11:26 AM        drive s2 71.657
+9/4/2024 11:27 AM        drive s1 50
+9/4/2024 11:29 AM        driverel s1 -20
+9/4/2024 11:29 AM        driverel s1 1
+9/4/2024 11:29 AM        driverel s1 1
+9/4/2024 11:29 AM        driverel s1 1
+9/4/2024 11:29 AM        driverel s1 -0.5
+9/4/2024 11:29 AM        driverel s1 1
+9/4/2024 11:34 AM        scanrel s1 2 -2 0.2
+9/4/2024 11:35 AM        scanrel s1 2 -2 0.2
+9/4/2024 11:37 AM        drive s1 37.7154
+9/4/2024 11:39 AM        scanrel sgl -4 4 0.5
+9/4/2024 11:41 AM        drive sgl -1.9801
+9/4/2024 11:41 AM        scantitle "optimizing (200) at RT"
+9/4/2024 11:41 AM        scanrel s1 2 -2 0.2
+9/4/2024 11:45 AM        drive s1 37.6874
+9/4/2024 11:47 AM        scantitle "optimizing (200) at RT wtih attenuator in"
+9/4/2024 11:48 AM        th2th 2 -2 .2
+9/4/2024 11:50 AM        lattice a 4.023634 b 4.023634 c 4.023634
+9/4/2024 11:51 AM        ubcalc file "C:\SPICE\User\exp812\UBConf\tmp\UB04Sep2024_115128AM.ini"
+9/4/2024 11:52 AM        br 2 0 0
+9/4/2024 11:53 AM        scanrel sgu -3 3 0.5
+9/4/2024 11:54 AM        drive sgu -1.45
+9/4/2024 11:55 AM        ubcalc file "C:\SPICE\User\exp812\UBConf\tmp\UB04Sep2024_115514AM.ini"
+9/4/2024 11:58 AM        drive bat 38 bal 34 bar 34 bab 38 bbt 38 bbl 34 bbr 34 bbb 38
+9/4/2024 11:59 AM        preset time 1
+9/4/2024 11:59 AM        scantitle "slit scan with (200)"
+9/4/2024 11:59 AM        scan bab 0 38 2
+9/4/2024 12:01 PM        scan bal 0 34 2
+9/4/2024 12:03 PM        scan bar 0 34 2
+9/4/2024 12:04 PM        scan bat 0 38 2
+9/4/2024 12:06 PM        scan bbb 0 38 2
+9/4/2024 12:08 PM        scan bbl 0 34 2
+9/4/2024 12:10 PM        scan bbr 0 34 2
+9/4/2024 12:11 PM        scan bbt 0 38 2
+9/4/2024 12:13 PM        br 0 2 0
+9/4/2024 12:14 PM        scantitle "slit scan with (020)"
+9/4/2024 12:14 PM        scan bal 0 34 2
+9/4/2024 12:16 PM        scan bar 0 34 2
+9/4/2024 12:17 PM        scan bbl 0 34 2
+9/4/2024 12:19 PM        scan bbr 0 34 2
+9/4/2024 12:21 PM        drive bab 26 bal 10 bar 16 bat 20 bbb 20 bbl 20 bbr 10 bbt 10
+9/4/2024 12:21 PM        drive bbt 20
+9/4/2024 12:27 PM        count preset time 10
+9/4/2024 12:27 PM        mcu 6477
+9/4/2024 12:27 PM        count preset mcu 5
+9/4/2024 12:34 PM        lowerlimit m1 -78.000000 m2 -54.700000 mcrystal -140.000000 marc -4.000000 mtrans -4.000000 mfocus -75.001000 ampl -1000.000000 dc -250.000000 freq 0.000000 output 0.000000 temp 0.000000 temp_2 0.000000 s1 -80.000000 s2 -23.000000 sgl -18.000000 sgu -18.000000 bbb -10.000000 bbl -10.000000 bbr -10.000000 bbt -10.000000 bab -10.000000 bal -10.000000 bar -10.000000 bat -10.000000 stl -15.000000 stu -15.000000 a1 -16.557972 a2 -90.341618 
+9/4/2024 12:34 PM        upperlimit m1 11.400000 m2 -13.507089 mcrystal 140.000000 marc 4.000000 mtrans 15.000000 mfocus 5.000000 ampl 1000.000000 dc 250.000000 freq 10000.000000 output 1.000000 temp 300.000000 temp_2 300.000000 s1 150.000000 s2 126.000000 sgl 18.000000 sgu 18.000000 bbb 39.000000 bbl 39.000000 bbr 39.000000 bbt 39.000000 bab 39.000000 bal 39.000000 bar 39.000000 bat 39.000000 stl 15.000000 stu 15.000000 a1 180.000000 a2 45.000000 
+9/4/2024 12:34 PM        scan h 2 k -0.2 0.2 0.02 l 0 e 0.6 preset mcu 3
+9/4/2024 12:38 PM        scan h 2 k -0.2 0.2 0.02 l 0 e 0.4 preset mcu 3
+9/4/2024 12:51 PM        scantitle "2k0 scans"
+9/4/2024 12:51 PM        scan h 2 k -0.05 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 1:34 PM        scan h 2 k -0.1 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 2:18 PM        scan h 2 k -0.15 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 3:01 PM        scan h 2 k -0.2 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 3:45 PM        scan h 2 k -0.25 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 4:29 PM        scan h 2 k -0.3 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 5:12 PM        scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 5:56 PM        scan h 2 k -0.4 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 6:40 PM        scan h 2 k -0.45 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 7:24 PM        scan h 2 k -0.5 l 0 e 20 0 0.25 preset mcu 30
+9/4/2024 8:08 PM        scantitle "h2.5 k0 l0 scans"
+9/4/2024 8:08 PM        scan h 2.5 k 0 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 8:42 PM        scantitle "h2.5 k0.05 l0 scans"
+9/4/2024 8:42 PM        scan h 2.5 k 0.05 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 9:16 PM        scantitle "h2.5 k0.1 l0 scans"
+9/4/2024 9:16 PM        scan h 2.5 k 0.1 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 9:50 PM        scantitle "h2.5 k0.15 l0 scans"
+9/4/2024 9:50 PM        scan h 2.5 k 0.15 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 10:24 PM        scantitle "h2.5 k0.2 l0 scans"
+9/4/2024 10:24 PM        scan h 2.5 k 0.2 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 10:58 PM        scantitle "h2.5 k0.25 l0 scans"
+9/4/2024 10:58 PM        scan h 2.5 k 0.25 l 0 e 15 0 0.25 preset mcu 30
+9/4/2024 11:32 PM        scantitle "h2.5 k0.3 l0 scans"
+9/4/2024 11:32 PM        scan h 2.5 k 0.3 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 12:06 AM        scantitle "h2.5 k0.35 l0 scans"
+9/5/2024 12:06 AM        scan h 2.5 k 0.35 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 12:40 AM        scantitle "h2.5 k0.4 l0 scans"
+9/5/2024 12:40 AM        scan h 2.5 k 0.4 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 1:14 AM        scantitle "h2.5 k0.45 l0 scans"
+9/5/2024 1:14 AM        scan h 2.5 k 0.45 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 1:48 AM        scantitle "h2.5 k0.5 l0 scans"
+9/5/2024 1:48 AM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 2:22 AM        scantitle "h2.5 k0.55 l0 scans"
+9/5/2024 2:22 AM        scan h 2.5 k 0.55 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 2:56 AM        scantitle "h2.5 k0.6 l0 scans"
+9/5/2024 2:56 AM        scan h 2.5 k 0.6 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:31 AM        scantitle "h2.5 k0.65 l0 scans"
+9/5/2024 3:31 AM        scan h 2.5 k 0.65 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 4:05 AM        scantitle "h2.5 k0.7 l0 scans"
+9/5/2024 4:05 AM        scan h 2.5 k 0.7 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 4:39 AM        scantitle "h1.5 k0 l0 scans"
+9/5/2024 4:39 AM        scan h 1.5 k 0 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 5:13 AM        scantitle "h1.5 k0.05 l0 scans"
+9/5/2024 5:13 AM        scan h 1.5 k 0.05 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 5:48 AM        scantitle "h1.5 k0.1 l0 scans"
+9/5/2024 5:48 AM        scan h 1.5 k 0.1 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 6:22 AM        scantitle "h1.5 k0.15 l0 scans"
+9/5/2024 6:22 AM        scan h 1.5 k 0.15 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 6:56 AM        scantitle "h1.5 k0.2 l0 scans"
+9/5/2024 6:56 AM        scan h 1.5 k 0.2 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 7:31 AM        scantitle "h1.5 k0.25 l0 scans"
+9/5/2024 7:31 AM        scan h 1.5 k 0.25 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 8:05 AM        scantitle "h1.5 k0.3 l0 scans"
+9/5/2024 8:05 AM        scan h 1.5 k 0.3 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 8:40 AM        scantitle "h1.5 k0.35 l0 scans"
+9/5/2024 8:40 AM        scan h 1.5 k 0.35 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 9:14 AM        scantitle "h1.5 k0.4 l0 scans"
+9/5/2024 9:14 AM        scan h 1.5 k 0.4 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 9:49 AM        scantitle "h1.5 k0.45 l0 scans"
+9/5/2024 9:49 AM        scan h 1.5 k 0.45 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 10:23 AM        scantitle "h1.5 k0.5 l0 scans"
+9/5/2024 10:23 AM        scan h 1.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 10:58 AM        scantitle "h1.5 k0.55 l0 scans"
+9/5/2024 10:58 AM        scan h 1.5 k 0.55 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 11:32 AM        scantitle "h1.5 k0.6 l0 scans"
+9/5/2024 11:32 AM        scan h 1.5 k 0.6 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 12:11 PM        scantitle "h1.5 k0.65 l0 scans"
+9/5/2024 12:11 PM        scan h 1.5 k 0.65 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 12:46 PM        drive output 1
+9/5/2024 12:46 PM        drive dc 10
+9/5/2024 12:46 PM        scan h 2.5 k -0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 1:21 PM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 1:37 PM        scan h 2.5 k 0.1 l 0 e 15 7 0.25 preset mcu 30
+9/5/2024 1:59 PM        drive dc 20
+9/5/2024 1:59 PM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 2:16 PM        scan h 2.5 k 0.1 l 0 e 15 7 0.25 preset mcu 30
+9/5/2024 2:35 PM        scan title "(2.5,0.5,0) M point scan at E 20 V"
+9/5/2024 2:35 PM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 30 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 30 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 30 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 40
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 40 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 40 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 40 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 50
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 50 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 50 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 50 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 60
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 60 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 60 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 60 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 70
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 70 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 70 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 70 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 80
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 80 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 80 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 80 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 90
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 90 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 90 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 90 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 100
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 100 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 100 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 100 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 110
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 110 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 110 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 110 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 120
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 120 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 120 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 120 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 130
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 130 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 130 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 130 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 140
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 140 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 140 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 140 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 150
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 150 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 150 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 150 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 160
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 160 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 160 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 160 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 170
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 170 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 170 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 170 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 180
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 180 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 180 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 180 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 190
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 190 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 190 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 190 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 200
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 200 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 200 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 200 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 210
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 210 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 210 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 210 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        drive dc 240
+9/5/2024 3:10 PM        scantitle "(2.5,0.5,0) M point scan at E 240 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0,0) mode thickness at E 240 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:10 PM        scantitle "(2.5,0.1,0) mode thickness at E 240 V"
+9/5/2024 3:10 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        drive dc 30
+9/5/2024 3:14 PM        scantitle "(2.5,0.5,0) M point scan at E 30 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0,0) mode thickness at E 30 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0.1,0) mode thickness at E 30 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        drive dc 40
+9/5/2024 3:14 PM        scantitle "(2.5,0.5,0) M point scan at E 40 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0,0) mode thickness at E 40 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0.1,0) mode thickness at E 40 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        drive dc 50
+9/5/2024 3:14 PM        scantitle "(2.5,0.5,0) M point scan at E 50 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0,0) mode thickness at E 50 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        scantitle "(2.5,0.1,0) mode thickness at E 50 V"
+9/5/2024 3:14 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:14 PM        drive dc 60
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 60 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 60 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 60 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 70
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 70 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 70 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 70 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 80
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 80 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 80 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 80 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 90
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 90 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 90 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 90 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 100
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 100 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 100 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 100 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 110
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 110 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 110 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 110 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 120
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 120 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 120 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 120 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 130
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 130 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.5 l0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0,0) mode thickness at E 130 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        scantitle "(2.5,0.1,0) mode thickness at E 130 V"
+9/5/2024 3:15 PM        scan h 2.5 k 0.1 l0 e 15 8 0.25 preset mcu 30
+9/5/2024 3:15 PM        drive dc 140
+9/5/2024 3:15 PM        scantitle "(2.5,0.5,0) M point scan at E 140 V"
+9/5/2024 3:20 PM        drive dc 20
+9/5/2024 3:22 PM        drive dc 30
+9/5/2024 3:22 PM        scantitle "(2.5,0.5,0) M point scan at E 30 V"
+9/5/2024 3:22 PM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 3:57 PM        scantitle "(2.5,0,0) mode thickness at E 30 V"
+9/5/2024 3:57 PM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 4:14 PM        scantitle "(2.5,0.1,0) mode thickness at E 30 V"
+9/5/2024 4:14 PM        scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 4:31 PM        drive dc 40
+9/5/2024 4:31 PM        scantitle "(2.5,0.5,0) M point scan at E 40 V"
+9/5/2024 4:31 PM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/5/2024 5:05 PM        scantitle "(2.5,0,0) mode thickness at E 40 V"
+9/5/2024 5:05 PM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 5:22 PM        scantitle "(2.5,0.1,0) mode thickness at E 40 V"
+9/5/2024 5:22 PM        scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+9/5/2024 5:39 PM        drive dc 240
+9/5/2024 5:39 PM        scantitle "(2,0,0) G to X transverse mode scan at E 240 V"
+9/5/2024 5:39 PM        scan h 2 k 0 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 6:24 PM        scantitle "(2,-0.05,0) G to X transverse mode scan at E 240 V"
+9/5/2024 6:24 PM        scan h 2 k -0.05 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 7:10 PM        scantitle "(2,-0.1,0) G to X transverse mode scan at E 240 V"
+9/5/2024 7:10 PM        scan h 2 k -0.1 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 7:55 PM        scantitle "(2,-0.15,0) G to X transverse mode scan at E 240 V"
+9/5/2024 7:55 PM        scan h 2 k -0.15 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 8:41 PM        scantitle "(2,-0.2,0) G to X transverse mode scan at E 240 V"
+9/5/2024 8:41 PM        scan h 2 k -0.2 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 9:27 PM        scantitle "(2,-0.25,0) G to X transverse mode scan at E 240 V"
+9/5/2024 9:27 PM        scan h 2 k -0.25 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 10:12 PM        scantitle "(2,-0.3,0) G to X transverse mode scan at E 240 V"
+9/5/2024 10:12 PM        scan h 2 k -0.3 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 10:58 PM        scantitle "(2,-0.35,0) G to X transverse mode scan at E 240 V"
+9/5/2024 10:58 PM        scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+9/5/2024 11:44 PM        scantitle "(2,-0.4,0) G to X transverse mode scan at E 240 V"
+9/5/2024 11:44 PM        scan h 2 k -0.4 l 0 e 20 0 0.25 preset mcu 30
+9/6/2024 12:30 AM        scantitle "(2,-0.45,0) G to X transverse mode scan at E 240 V"
+9/6/2024 12:30 AM        scan h 2 k -0.45 l 0 e 20 0 0.25 preset mcu 30
+9/6/2024 1:16 AM        scantitle "(2,-0.5,0) G to X transverse mode scan at E 240 V"
+9/6/2024 1:16 AM        scan h 2 k -0.5 l 0 e 20 0 0.25 preset mcu 30
+9/6/2024 2:01 AM        scantitle "(2.5,0,0) X to M transverse mode scan at E 240 V"
+9/6/2024 2:01 AM        scan h 2.5 k 0 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 2:37 AM        scantitle "(2.5,0.05,0) X to M transverse mode scan at E 240 V"
+9/6/2024 2:37 AM        scan h 2.5 k 0.05 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 3:12 AM        scantitle "(2.5,0.1,0) X to M transverse mode scan at E 240 V"
+9/6/2024 3:12 AM        scan h 2.5 k 0.1 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 3:48 AM        scantitle "(2.5,0.15,0) X to M transverse mode scan at E 240 V"
+9/6/2024 3:48 AM        scan h 2.5 k 0.15 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 4:23 AM        scantitle "(2.5,0.2,0) X to M transverse mode scan at E 240 V"
+9/6/2024 4:23 AM        scan h 2.5 k 0.2 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 4:58 AM        scantitle "(2.5,0.25,0) X to M transverse mode scan at E 240 V"
+9/6/2024 4:58 AM        scan h 2.5 k 0.25 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 5:34 AM        scantitle "(2.5,0.3,0) X to M transverse mode scan at E 240 V"
+9/6/2024 5:34 AM        scan h 2.5 k 0.3 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 6:09 AM        scantitle "(2.5,0.35,0) X to M transverse mode scan at E 240 V"
+9/6/2024 6:09 AM        scan h 2.5 k 0.35 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 6:45 AM        scantitle "(2.5,0.4,0) X to M transverse mode scan at E 240 V"
+9/6/2024 6:45 AM        scan h 2.5 k 0.4 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 7:20 AM        scantitle "(2.5,0.45,0) X to M transverse mode scan at E 240 V"
+9/6/2024 7:20 AM        scan h 2.5 k 0.45 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 7:56 AM        scantitle "(2.5,0.5,0) X to M transverse mode scan at E 240 V"
+9/6/2024 7:56 AM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 8:32 AM        scantitle "(2.5,0.55,0) X to M transverse mode scan at E 240 V"
+9/6/2024 8:32 AM        scan h 2.5 k 0.55 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 9:08 AM        scantitle "(2.5,0.6,0) X to M transverse mode scan at E 240 V"
+9/6/2024 9:08 AM        scan h 2.5 k 0.6 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 9:47 AM        scantitle "(2.5,0.65,0) X to M transverse mode scan at E 240 V"
+9/6/2024 9:47 AM        scan h 2.5 k 0.65 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 10:28 AM        drive dc 260
+9/6/2024 10:29 AM        drive dc 250
+9/6/2024 10:35 AM        scantitle "(2.5,0.5,0) M point scan at 250 V"
+9/6/2024 10:35 AM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 11:11 AM        scantitle "(2.5,0,0) mode thickness at 250 V"
+9/6/2024 11:11 AM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/6/2024 11:28 AM        scantitle "(2.5,0.1,0) mode thickness at 250 V"
+9/6/2024 11:28 AM        scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+9/6/2024 11:57 AM        drive dc 300
+9/6/2024 11:59 AM        drive dc 250
+9/6/2024 12:07 PM        drive dc 250
+9/6/2024 12:07 PM        scantitle "(2,-0.35,0)  mode thickness 250 V"
+9/6/2024 12:07 PM        scan h 2 k -0.35 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 12:10 PM        scantitle "(2,-0.35,0)  mode thickness 250 V"
+9/6/2024 12:10 PM        scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+9/6/2024 1:12 PM        lowerlimit m1 -78.000000 m2 -54.700000 mcrystal -140.000000 marc -4.000000 mtrans -4.000000 mfocus -75.001000 ampl -1000.000000 dc -250.000000 freq 0.000000 output 0.000000 temp 0.000000 temp_2 0.000000 s1 -80.000000 s2 -23.000000 sgl -18.000000 sgu -18.000000 bbb -10.000000 bbl -10.000000 bbr -10.000000 bbt -10.000000 bab -10.000000 bal -10.000000 bar -10.000000 bat -10.000000 stl -15.000000 stu -15.000000 a1 -16.557972 a2 -90.341618 
+9/6/2024 1:12 PM        upperlimit m1 11.400000 m2 -13.507089 mcrystal 140.000000 marc 4.000000 mtrans 15.000000 mfocus 5.000000 ampl 1000.000000 dc 501.000000 freq 10000.000000 output 1.000000 temp 300.000000 temp_2 300.000000 s1 150.000000 s2 126.000000 sgl 18.000000 sgu 18.000000 bbb 39.000000 bbl 39.000000 bbr 39.000000 bbt 39.000000 bab 39.000000 bal 39.000000 bar 39.000000 bat 39.000000 stl 15.000000 stu 15.000000 a1 180.000000 a2 45.000000 
+9/6/2024 1:17 PM        drive dc 300
+9/6/2024 1:18 PM        scantitle "(2,-0.35,0)  mode thickness at 300 V"
+9/6/2024 1:18 PM        scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+9/6/2024 2:05 PM        scantitle "(2.5,0.5,0) M point scan at 300 V"
+9/6/2024 2:05 PM        scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+9/6/2024 2:59 PM        scantitle "(2.5,0,0) mode thickness at 300 V"
+9/6/2024 2:59 PM        scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+9/6/2024 3:17 PM        scantitle "(2.5,0.1,0) mode thickness at 300 V"
+9/6/2024 3:17 PM        scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+9/6/2024 3:35 PM        drive dc 325
+9/6/2024 3:36 PM        scantitle "(2,-0.35,0) mode thickness 325 V"
+9/6/2024 3:36 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/6/2024 4:23 PM        scantitle "(2.5,0.5,0) M point scan at 325 V"
+9/6/2024 4:23 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/6/2024 5:02 PM        scantitle "(2.5,0,0) mode thickness at 325 V"
+9/6/2024 5:02 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 5:24 PM        scantitle "(2.5,0.1,0) mode thickness at 325 V"
+9/6/2024 5:24 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 5:46 PM        drive dc 350
+9/6/2024 5:46 PM        scantitle "(2,-0.35,0) mode thickness 350 V"
+9/6/2024 5:46 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/6/2024 6:32 PM        scantitle "(2.5,0.5,0) M point scan at E 350 V"
+9/6/2024 6:32 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/6/2024 7:07 PM        scantitle "(2.5,0,0) mode thickness at E 350 V"
+9/6/2024 7:07 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 7:28 PM        scantitle "(2.5,0.1,0) mode thickness at E 350 V"
+9/6/2024 7:28 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 7:50 PM        drive dc 375
+9/6/2024 7:50 PM        scantitle "(2,-0.35,0) mode thickness 375 V"
+9/6/2024 7:50 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/6/2024 8:36 PM        scantitle "(2.5,0.5,0) M point scan at E 375 V"
+9/6/2024 8:36 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/6/2024 9:12 PM        scantitle "(2.5,0,0) mode thickness at E 375 V"
+9/6/2024 9:12 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 9:34 PM        scantitle "(2.5,0.1,0) mode thickness at E 375 V"
+9/6/2024 9:34 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/6/2024 9:56 PM        drive dc 400
+9/6/2024 9:56 PM        scantitle "(2,0,0) G to X transverse mode scan at E 400 V"
+9/6/2024 9:56 PM        scan h 2 k 0 l 0 e 20 0.5 0.25 preset mcu 30
+9/6/2024 10:42 PM        scantitle "(2,-0.05,0) G to X transverse mode scan at E 400 V"
+9/6/2024 10:42 PM        scan h 2 k -0.05 l 0 e 20 0.5 0.25 preset mcu 30
+9/6/2024 11:29 PM        scantitle "(2,-0.1,0) G to X transverse mode scan at E 400 V"
+9/6/2024 11:29 PM        scan h 2 k -0.1 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 12:16 AM        scantitle "(2,-0.15,0) G to X transverse mode scan at E 400 V"
+9/7/2024 12:16 AM        scan h 2 k -0.15 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 1:03 AM        scantitle "(2,-0.2,0) G to X transverse mode scan at E 400 V"
+9/7/2024 1:03 AM        scan h 2 k -0.2 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 1:49 AM        scantitle "(2,-0.25,0) G to X transverse mode scan at E 400 V"
+9/7/2024 1:49 AM        scan h 2 k -0.25 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 2:37 AM        scantitle "(2,-0.3,0) G to X transverse mode scan at E 400 V"
+9/7/2024 2:37 AM        scan h 2 k -0.3 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 3:24 AM        scantitle "(2,-0.35,0) G to X transverse mode scan at E 400 V"
+9/7/2024 3:24 AM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 4:11 AM        scantitle "(2,-0.4,0) G to X transverse mode scan at E 400 V"
+9/7/2024 4:11 AM        scan h 2 k -0.4 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 4:58 AM        scantitle "(2,-0.45,0) G to X transverse mode scan at E 400 V"
+9/7/2024 4:58 AM        scan h 2 k -0.45 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 5:45 AM        scantitle "(2,-0.5,0) G to X transverse mode scan at E 400 V"
+9/7/2024 5:45 AM        scan h 2 k -0.5 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 6:33 AM        scantitle "(2.5,0,0) X to M transverse mode scan at E 400 V"
+9/7/2024 6:33 AM        scan h 2.5 k 0 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 7:08 AM        scantitle "(2.5,0.05,0) X to M transverse mode scan at E 400 V"
+9/7/2024 7:08 AM        scan h 2.5 k 0.05 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 7:44 AM        scantitle "(2.5,0.1,0) X to M transverse mode scan at E 400 V"
+9/7/2024 7:44 AM        scan h 2.5 k 0.1 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 8:20 AM        scantitle "(2.5,0.15,0) X to M transverse mode scan at E 400 V"
+9/7/2024 8:21 AM        scan h 2.5 k 0.15 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 8:57 AM        scantitle "(2.5,0.2,0) X to M transverse mode scan at E 400 V"
+9/7/2024 8:57 AM        scan h 2.5 k 0.2 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 9:33 AM        scantitle "(2.5,0.25,0) X to M transverse mode scan at E 400 V"
+9/7/2024 9:33 AM        scan h 2.5 k 0.25 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 10:09 AM        scantitle "(2.5,0.3,0) X to M transverse mode scan at E 400 V"
+9/7/2024 10:09 AM        scan h 2.5 k 0.3 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 10:45 AM        scantitle "(2.5,0.35,0) X to M transverse mode scan at E 400 V"
+9/7/2024 10:45 AM        scan h 2.5 k 0.35 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 11:21 AM        scantitle "(2.5,0.4,0) X to M transverse mode scan at E 400 V"
+9/7/2024 11:21 AM        scan h 2.5 k 0.4 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 11:57 AM        scantitle "(2.5,0.45,0) X to M transverse mode scan at E 400 V"
+9/7/2024 11:57 AM        scan h 2.5 k 0.45 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 12:33 PM        scantitle "(2.5,0.5,0) X to M transverse mode scan at E 400 V"
+9/7/2024 12:33 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 1:09 PM        scantitle "(2.5,0.55,0) X to M transverse mode scan at E 400 V"
+9/7/2024 1:09 PM        scan h 2.5 k 0.55 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 1:46 PM        scantitle "(2.5,0.6,0) X to M transverse mode scan at E 400 V"
+9/7/2024 1:46 PM        scan h 2.5 k 0.6 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 2:22 PM        scantitle "(2.5,0.65,0) X to M transverse mode scan at E 400 V"
+9/7/2024 2:22 PM        scan h 2.5 k 0.65 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 2:58 PM        scantitle "(2.5,0.7,0) X to M transverse mode scan at E 400 V"
+9/7/2024 2:58 PM        scan h 2.5 k 0.7 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 3:36 PM        drive dc 420
+9/7/2024 3:36 PM        scantitle "(2,-0.35,0) mode thickness 420 V"
+9/7/2024 3:36 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 4:24 PM        scantitle "(2.5,0.5,0) M point scan at E 420 V"
+9/7/2024 4:24 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 5:00 PM        scantitle "(2.5,0,0) mode thickness at E 420 V"
+9/7/2024 5:00 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/7/2024 5:22 PM        scantitle "(2.5,0.1,0) mode thickness at E 420 V"
+9/7/2024 5:22 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/7/2024 5:44 PM        drive dc 440
+9/7/2024 5:44 PM        scantitle "(2,-0.35,0) mode thickness 440 V"
+9/7/2024 5:44 PM        scan h 2 k -0.35 l 0 e 20 0y.5 0.25 preset mcu 30
+9/7/2024 5:44 PM        scantitle "(2.5,0.5,0) M point scan at E 440 V"
+9/7/2024 5:44 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 6:21 PM        scantitle "(2.5,0,0) mode thickness at E 440 V"
+9/7/2024 6:21 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/7/2024 6:43 PM        scantitle "(2.5,0.1,0) mode thickness at E 440 V"
+9/7/2024 6:43 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/7/2024 7:05 PM        drive dc 460
+9/7/2024 7:06 PM        scantitle "(2,-0.35,0) mode thickness 460 V"
+9/7/2024 7:06 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 7:53 PM        scantitle "(2.5,0.5,0) M point scan at E 460 V"
+9/7/2024 7:53 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/7/2024 8:29 PM        scantitle "(2.5,0,0) mode thickness at E 460 V"
+9/7/2024 8:29 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/7/2024 8:50 PM        drive dc 400
+9/7/2024 8:51 PM        drive dc 400
+9/7/2024 9:07 PM        drive dc 335
+9/7/2024 9:15 PM        drive dc 0
+9/7/2024 9:16 PM        drive dc 200
+9/7/2024 9:17 PM        drive dc 300
+9/7/2024 9:17 PM        drive dc 350
+9/7/2024 9:17 PM        drive dc 400
+9/7/2024 9:20 PM        drive dc 350
+9/7/2024 9:27 PM        drive dc 360
+9/7/2024 9:27 PM        drive dc 370
+9/7/2024 9:27 PM        drive dc 390
+9/7/2024 9:28 PM        drive dc 400
+9/7/2024 9:29 PM        drive dc 390
+9/7/2024 9:29 PM        drive dc 300
+9/7/2024 9:30 PM        drive dc 340
+9/7/2024 9:30 PM        drive dc 350
+9/7/2024 9:30 PM        drive dc 360
+9/7/2024 9:30 PM        drive dc 370
+9/7/2024 9:30 PM        drive dc 380
+9/7/2024 9:31 PM        drive dc 390
+9/7/2024 9:31 PM        drive dc 392
+9/7/2024 9:31 PM        drive dc 394
+9/7/2024 9:31 PM        drive dc 396
+9/7/2024 9:31 PM        drive dc 398
+9/7/2024 9:32 PM        drive dc 399
+9/7/2024 9:32 PM        drive dc 400
+9/7/2024 9:32 PM        drive dc 405
+9/7/2024 9:33 PM        drive dc 0
+9/7/2024 10:02 PM        drive dc 100
+9/7/2024 10:03 PM        drive dc 200
+9/7/2024 10:03 PM        drive dc 300
+9/7/2024 10:03 PM        drive dc 350
+9/7/2024 10:03 PM        drive dc 380
+9/7/2024 10:04 PM        drive dc 390
+9/7/2024 10:04 PM        drive dc 395
+9/7/2024 10:04 PM        drive dc 400
+9/7/2024 10:05 PM        drive dc 410
+9/7/2024 10:05 PM        drive dc 400
+9/7/2024 10:05 PM        drive dc 395
+9/7/2024 10:06 PM        drive dc 350
+9/7/2024 10:06 PM        drive dc 380
+9/7/2024 10:07 PM        drive dc 390
+9/7/2024 10:07 PM        drive dc 395
+9/7/2024 10:08 PM        drive dc 400
+9/7/2024 10:11 PM        drive dc 395
+9/7/2024 10:12 PM        drive dc 350
+9/7/2024 10:12 PM        drive dc 380
+9/7/2024 10:12 PM        drive dc 3j90
+9/7/2024 10:12 PM        drive dc 390
+9/7/2024 10:13 PM        drive dc 390
+9/7/2024 10:13 PM        scantitle "(2,0,0) G to X transverse mode scan at 390V after volatge breaks"
+9/7/2024 10:13 PM        scan h 2 k 0 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 11:01 PM        scantitle "(2,-0.05,0) G to X transverse mode scan at 390V after volatge breaks"
+9/7/2024 11:01 PM        scan h 2 k -0.05 l 0 e 20 0.5 0.25 preset mcu 30
+9/7/2024 11:49 PM        scantitle "(2,-0.1,0) G to X transverse mode scan at 390V after volatge breaks"
+9/7/2024 11:49 PM        scan h 2 k -0.1 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 12:37 AM        scantitle "(2,-0.15,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 12:37 AM        scan h 2 k -0.15 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 1:25 AM        scantitle "(2,-0.2,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 1:25 AM        scan h 2 k -0.2 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 2:13 AM        scantitle "(2,-0.25,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 2:13 AM        scan h 2 k -0.25 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 3:01 AM        scantitle "(2,-0.3,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 3:01 AM        scan h 2 k -0.3 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 3:49 AM        scantitle "(2,-0.35,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 3:49 AM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 4:38 AM        scantitle "(2,-0.4,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 4:38 AM        scan h 2 k -0.4 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 5:26 AM        scantitle "(2,-0.45,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 5:26 AM        scan h 2 k -0.45 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 6:14 AM        scantitle "(2,-0.5,0) G to X transverse mode scan at 390V after volatge breaks"
+9/8/2024 6:14 AM        scan h 2 k -0.5 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 7:02 AM        scantitle "(2.5,0,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 7:02 AM        scan h 2.5 k 0 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 7:39 AM        scantitle "(2.5,0.05,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 7:39 AM        scan h 2.5 k 0.05 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 8:16 AM        scantitle "(2.5,0.1,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 8:16 AM        scan h 2.5 k 0.1 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 8:53 AM        scantitle "(2.5,0.15,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 8:53 AM        scan h 2.5 k 0.15 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 9:30 AM        scantitle "(2.5,0.2,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 9:30 AM        scan h 2.5 k 0.2 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 10:08 AM        scantitle "(2.5,0.25,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 10:08 AM        scan h 2.5 k 0.25 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 10:44 AM        scantitle "(2.5,0.3,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 10:44 AM        scan h 2.5 k 0.3 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 11:09 AM        scantitle "(2.5,0.35,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 11:09 AM        scan h 2.5 k 0.35 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 11:46 AM        scantitle "(2.5,0.4,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 11:46 AM        scan h 2.5 k 0.4 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 12:23 PM        scantitle "(2.5,0.45,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 12:23 PM        scan h 2.5 k 0.45 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 1:01 PM        scantitle "(2.5,0.5,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 1:01 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 1:38 PM        scantitle "(2.5,0.55,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 1:38 PM        scan h 2.5 k 0.55 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 2:15 PM        scantitle "(2.5,0.6,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 2:15 PM        scan h 2.5 k 0.6 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 2:52 PM        scantitle "(2.5,0.65,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 2:52 PM        scan h 2.5 k 0.65 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 3:29 PM        scantitle "(2.5,0.7,0) X to M transverse mode scan at 390 V after voltage breaks"
+9/8/2024 3:29 PM        scan h 2.5 k 0.7 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 4:07 PM        drive dc 350
+9/8/2024 4:07 PM        scantitle "(2,-0.35,0) mode thickness at 350 V ramping down"
+9/8/2024 4:07 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 4:56 PM        scantitle "(2.5,0.5,0) M point scan at 350 V ramping down"
+9/8/2024 4:56 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 5:33 PM        scantitle "(2.5,0,0) mode thickness at 350 V ramping down"
+9/8/2024 5:33 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 5:56 PM        scantitle "(2.5,0.1,0) mode thickness at 350 V ramping down"
+9/8/2024 5:56 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 6:19 PM        drive dc 300
+9/8/2024 6:19 PM        scantitle "(2,-0.35,0) mode thickness at 300 V ramping down"
+9/8/2024 6:19 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 7:09 PM        scantitle "(2.5,0.5,0) M point scan at 300 V ramping down"
+9/8/2024 7:09 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 7:46 PM        scantitle "(2.5,0,0) mode thickness at 300 V ramping down"
+9/8/2024 7:46 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 8:09 PM        scantitle "(2.5,0.1,0) mode thickness at 300 V ramping down"
+9/8/2024 8:09 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 8:33 PM        drive dc 200
+9/8/2024 8:33 PM        scantitle "(2,-0.35,0) mode thickness at 200 V ramping down"
+9/8/2024 8:33 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 9:22 PM        scantitle "(2.5,0.5,0) M point scan at 200 V ramping down"
+9/8/2024 9:22 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/8/2024 10:00 PM        scantitle "(2.5,0,0) mode thickness at 200 V ramping down"
+9/8/2024 10:00 PM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 10:24 PM        scantitle "(2.5,0.1,0) mode thickness at 200 V ramping down"
+9/8/2024 10:24 PM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/8/2024 10:47 PM        drive dc 100
+9/8/2024 10:47 PM        scantitle "(2,-0.35,0) mode thickness at 100 V ramping down"
+9/8/2024 10:47 PM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/8/2024 11:37 PM        scantitle "(2.5,0.5,0) M point scan at 100 V ramping down"
+9/8/2024 11:37 PM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/9/2024 12:16 AM        scantitle "(2.5,0,0) mode thickness at 100 V ramping down"
+9/9/2024 12:16 AM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/9/2024 12:39 AM        scantitle "(2.5,0.1,0) mode thickness at 100 V ramping down"
+9/9/2024 12:39 AM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/9/2024 1:03 AM        drive dc 0
+9/9/2024 1:03 AM        scantitle "(2,-0.35,0) mode thickness at 0 V ramping down"
+9/9/2024 1:03 AM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 1:53 AM        scantitle "(2.5,0.5,0) M point scan at 0 V ramping down"
+9/9/2024 1:53 AM        scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+9/9/2024 2:31 AM        scantitle "(2.5,0,0) mode thickness at 0 V ramping down"
+9/9/2024 2:31 AM        scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+9/9/2024 2:55 AM        scantitle "(2.5,0.1,0) mode thickness at 0 V ramping down"
+9/9/2024 2:55 AM        scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+9/9/2024 3:19 AM        scantitle "(2,0,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 3:19 AM        scan h 2 k 0 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 4:09 AM        scantitle "(2,-0.05,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 4:09 AM        scan h 2 k -0.05 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 5:00 AM        scantitle "(2,-0.1,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 5:00 AM        scan h 2 k -0.1 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 5:51 AM        scantitle "(2,-0.15,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 5:51 AM        scan h 2 k -0.15 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 6:41 AM        scantitle "(2,-0.2,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 6:41 AM        scan h 2 k -0.2 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 7:32 AM        scantitle "(2,-0.25,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 7:32 AM        scan h 2 k -0.25 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 8:23 AM        scantitle "(2,-0.3,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 8:23 AM        scan h 2 k -0.3 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 9:14 AM        scantitle "(2,-0.35,0) G to X transverse mode scan at 0V ramping down"
+9/9/2024 9:14 AM        scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+9/9/2024 10:18 AM        drive m2 -32
+9/9/2024 11:46 AM        begin
+9/9/2024 11:46 AM        begin
+9/9/2024 12:13 PM        begin
+9/9/2024 12:13 PM        begin

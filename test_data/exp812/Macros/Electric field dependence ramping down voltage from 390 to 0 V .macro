@@ -1,0 +1,81 @@
+
+drive dc 390
+
+loop i=0,-0.5,-0.05
+scantitle "(2,%i,0) G to X transverse mode scan at 390V after  volatge breaks"
+scan h 2 k %i l 0 e 20 0.5 0.25 preset mcu 30
+endloop
+
+loop i=0,0.71,0.05
+scantitle "(2.5,%i,0) X to M transverse mode scan at 390 V after voltage breaks"
+scan h 2.5 k %i l 0 e 15 0.5 0.25 preset mcu 30
+endloop
+
+
+drive dc 350
+
+scantitle "(2,-0.35,0) mode thickness at 350 V ramping down"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at 350 V ramping down"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 350 V ramping down"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 350 V ramping down"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+drive dc 300
+
+scantitle "(2,-0.35,0) mode thickness at 300 V ramping down"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at 300 V ramping down"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 300 V ramping down"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 300 V ramping down"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+drive dc 200
+
+scantitle "(2,-0.35,0) mode thickness at 200 V ramping down"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at 200 V ramping down"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 200 V ramping down"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 200 V ramping down"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+drive dc 100
+
+scantitle "(2,-0.35,0) mode thickness at 100 V ramping down"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at 100 V ramping down"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 100 V ramping down"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 100 V ramping down"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+drive dc 0
+
+loop i=0,-0.5,-0.05
+scantitle "(2,%i,0) G to X transverse mode scan at 0V  ramping down"
+scan h 2 k %i l 0 e 20 0.5 0.25 preset mcu 30
+endloop
+
+loop i=0,0.71,0.05
+scantitle "(2.5,%i,0) X to M transverse mode scan at 0 V ramping down"
+scan h 2.5 k %i l 0 e 15 0.5 0.25 preset mcu 30
+endloop

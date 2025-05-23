@@ -1,0 +1,5 @@
+scantitle "focusing test"
+scan h 2 k -0.2 0.2 0.02 l 0 e 0.6 preset mcu 3
+scantitle "focusing test"
+scan h 2 k -0.2 0.2 0.02 l 0 e 0.4 preset mcu 3
+scan h 2 k -0.2 0.2 0.02 l 0 e 0.2 preset mcu 3

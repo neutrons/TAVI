@@ -1,0 +1,41 @@
+drive output 1
+
+
+drive dc 300
+
+scantitle "(2,-0.35,0)  mode thickness 300 V"
+scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+
+
+scantitle "(2.5,0.5,0) M point scan at 300 V"
+scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 300 V"
+scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 300 V"
+scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+
+
+loop i=260, 421,20
+drive dc %i
+scantitle "(2.5,0.5,0) M point scan at E %i V"
+scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E %i V"
+scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E %i V"
+scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+
+endloop
+
+drive dc 440
+scantitle "(2.5,0.5,0) M point scan at E 440 V"
+scan h 2.5 k 0.5 l 0 e 15 0 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 440 V"
+scan h 2.5 k 0 l 0 e 15 8 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 440 V"
+scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
