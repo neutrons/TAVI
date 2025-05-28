@@ -39,7 +39,7 @@ def model_disp(vq1):
     1d FM J=-1 meV S=1, en=2*S*J*(1-cos(Q))
     two splitted bands
     """
-    sj = 1
+    sj = 5
     gamma_q = np.cos(2 * np.pi * vq1)
     disp = 2 * sj * (1 - gamma_q)
     disp = np.array((disp - 2, disp + 2))

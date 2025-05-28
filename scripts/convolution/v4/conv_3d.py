@@ -4,6 +4,7 @@ from time import time
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Ellipse
+from numba import njit, prange
 
 
 def quadric_proj(quadric, idx):
@@ -34,6 +35,14 @@ def incoh_sigma(mat, axis):
     return 1 / np.sqrt(np.abs(mat[0, 0]))
 
 
+def coh_sigma(mat, axis):
+    """Coherent sigma"""
+    idx = int(axis)
+
+    return 1 / np.sqrt(np.abs(mat[idx, idx]))
+
+
+# @njit(parallel=True)
 def model_disp(vq1, vq2, vq3):
     """return energy for given Q points
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
@@ -53,6 +62,7 @@ def model_disp(vq1, vq2, vq3):
     return disp
 
 
+# @njit(parallel=True)
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points
     3d FM J=-1 meV S=1, inten = S/2 for all Qs
@@ -89,7 +99,7 @@ def resolution_matrix(qx0, qy0, qz0, en0):
     # sz = np.shape(qx0)
 
     sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.1
+    sigma3 = sigma4 = 0.2
     angle = -80
     mat = np.zeros((4, 4))
     mat[0, 0] = 1 / sigma1**2
@@ -121,163 +131,163 @@ def plot_rez_ellipses(ax):
         )
 
 
-def generate_pts_simple_cubic(num_of_sigmas=3, pts_q=5):
-    x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
-    v1, v2, v3 = np.meshgrid(x, x, x, indexing="ij")
-    # -------- keep all points ---------
-    # vs = np.asarray([np.ravel(v) for v in (v1, v2, v3)])
-    # pts_norm = np.asarray(vs)
-    # -------- cut the corners based on distance --------
-    r_sq = v1**2 + v2**2 + v3**2
-    idx = r_sq < num_of_sigmas**2
-    # ----------------------------------------
-    pts_norm = np.asarray((v1[idx], v2[idx], v3[idx]))
-    return pts_norm
+@njit(parallel=True, nogil=True)
+def compute_weights(vqe, mat):
+    _, num_bands, num_pts = vqe.shape
+    weights = np.empty((num_bands, num_pts))
+
+    for i in prange(num_bands):
+        for j in range(num_pts):
+            v = vqe[:, i, j]  # shape: (4,)
+            tmp = 0.0
+            for k in range(4):
+                for l in range(4):
+                    tmp += v[k] * mat[k, l] * v[l]
+            weights[i, j] = tmp
+            # weights[i, j] = np.exp(-0.5 * tmp)
+
+    return weights
 
 
-def generate_pts(pts, n_round: int, step_q: float):
-    if n_round == 0:
-        return pts
-
-    x = step_q / (2**n_round)
-
-    pts_shifted = np.concatenate(
-        (
-            pts + np.array((x, x, 0))[:, None],
-            pts + np.array((0, x, x))[:, None],
-            pts + np.array((x, 0, x))[:, None],
-            pts + np.array((x, 0, 0))[:, None],
-            pts + np.array((0, x, 0))[:, None],
-            pts + np.array((0, 0, x))[:, None],
-            pts + np.array((x, x, x))[:, None],
-        ),
-        axis=1,
+def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
+    (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
+    sigma_qh_range, sigma_qk_range, sigma_ql_range = (
+        num_of_sigmas * sigma_qh_incoh,
+        num_of_sigmas * sigma_qk_incoh,
+        num_of_sigmas * sigma_ql_incoh,
     )
+    pts_qh, pts_qk, pts_ql = num_pts
+    qh_list = np.linspace(-sigma_qh_range, sigma_qh_range, pts_qh + 1)
+    qk_list = np.linspace(-sigma_qk_range, sigma_qk_range, pts_qk + 1)
+    ql_list = np.linspace(-sigma_ql_range, sigma_ql_range, pts_ql + 1)
+    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")
+    # -------- cut the corners based on distance --------
+    r_sq = np.einsum("ijkl,im,mjkl->jkl", vq, mat_hkl, vq)
+    idx = r_sq < num_of_sigmas**2
 
-    return pts_shifted
+    return vq, idx
+
+
+def get_max_step(arr, axis: int):
+    diff_arr = np.abs(np.diff(arr, axis=axis))
+    # diff_idx = np.all(np.isnan(diff_arr), axis=axis)
+    step = np.nanmean(diff_arr, axis=axis)
+    # print(f"max_step={step:.3f}")
+    return np.nanmax(step)
 
 
 def convolution(qh, qk, ql, en):
-
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
-    r0, mat_qe = resolution_matrix(qh, qk, ql, en)
-    det = np.linalg.det(mat_qe)
-    mat_q = quadric_proj(mat_qe, 3)
+    r0, mat = resolution_matrix(qh, qk, ql, en)
+    mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
-    # calculate the incoherent sigmas for E directions
+    # calculate the incoherent sigmas for all Q and E directions
     # ----------------------------------------------------
-    sigma_en = incoh_sigma(mat_qe, 3)
+    sigma_qs = tuple(incoh_sigma(mat, i) for i in range(3))
+    sigma_en_incoh = incoh_sigma(mat, 3)
     num_of_sigmas = 3
-    min_en, max_en = en - num_of_sigmas * sigma_en, en + num_of_sigmas * sigma_en
+    min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
+    sigma_en_coh = coh_sigma(mat, 3)
+    en_rez = sigma_en_coh / 5
+
     # ----------------------------------------------------
-    # similarity transformation
+    # Calculate elemental volume
     # ----------------------------------------------------
-    eigenvalues, eigenvectors = np.linalg.eig(mat_q)
+    eigenvalues = np.linalg.eigvalsh(mat_hkl)
     eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
-    trans_mat = eigenvectors.T @ np.diag(eval_inv_sqrt) @ eigenvectors
+    elem_vols = np.prod(eval_inv_sqrt) * (2 * num_of_sigmas) ** 3
     # ----------------------------------------------------
-    # initial parameters setup
+    # Adaptive sampling
     # ----------------------------------------------------
-    pts_q = 40
-    pts_norm = generate_pts_simple_cubic(num_of_sigmas, pts_q)
-    step_q = 2 * num_of_sigmas / pts_q
-    elem_vols = step_q**3 * np.prod(eval_inv_sqrt)
-    # _, num_pts_q = np.shape(pts_norm)
-
-    n_round = 0
+    pts = [10, 10, 10]
     sampled_enough = False
-    print("#" * 20)
+
     while not sampled_enough:
-
-        pts_norm_shifted = generate_pts(pts_norm, n_round, step_q)
-        vqh, vqk, vql = trans_mat @ pts_norm_shifted
+        (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
         # ----------------------------------------------------
-        # calculate dispersion nergy
+        # determine if sampled enough based on steps along energy
         # ----------------------------------------------------
-        disp = model_disp(vqh + qh, vqk + qk, vql + ql)
+        disp = model_disp(vqh[idx] + qh, vqk[idx] + qk, vql[idx] + ql)
         num_bands, num_pts = disp.shape
-        # ----------------------------------------------------
-        # get rid of the ones that are not in the ellipsoid
-        # ----------------------------------------------------
-        # if n_round == 0 or n_round == 1:
-        max_disp, min_disp = np.max(disp), np.min(disp)
-        if max_disp < min_en or min_disp > max_en:
-            print("out of bounds")
-            return 0.0  # zero intensity
-        # ----------------------------------------------------
-        # determine if sampled enough
-        # ----------------------------------------------------
-        vq = np.asarray((vqh, vqk, vql))  # shape: (3, num_pts)
-        vqe = np.empty((4, num_bands, num_pts))
-        vqe[0:3] = vq[:, None, :]
-        vqe[3] = disp - en
-        prod = np.einsum("ijk,il,ljk->jk", vqe, mat_qe, vqe)
-        weights = np.exp(-prod / 2)
-        # don't bother if the weight is already too small
-        if np.max(weights) < 1e-9:
-            print("max of weight < 1e-9")
-            return 0.0  # zero intensity
 
+        # Skip if all dispersion is outside the relevant energy window
+        if np.max(disp) < min_en or np.min(disp) > max_en:
+            return 0.0
         # ----------------------------------------------------
-        # trim the corners in (Q,E)
+        # determine if sampled enough based on steps along energy
         # ----------------------------------------------------
-        cut_off = 1e-9
-        idx_all = weights > cut_off
-        idx = np.any(idx_all, axis=0)
-        # all small weights because dispersion parallel to ellipsoid
-        if not np.any(idx_all):
-            print("all weights < 1e-9")
-            return 0.0  # zero intensity
-        vqh_filtered, vqk_filtered, vql_filtered = vq[:, idx]
-        # ----------------------------------------------------
-        # calculate intensity
-        # ----------------------------------------------------
+        disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
+        disp_arr[(slice(None),) + np.nonzero(idx)] = disp
 
-        # normalization
-        inten = model_inten(vqh_filtered + qh, vqk_filtered + qk, vql_filtered + ql)
-        inten_sum = np.sum(inten * weights[:, idx]) * elem_vols
-        inten = r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
+        # Compute max energy steps
+        steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
 
-        if n_round == 0:
-            n_round = 1
-            elem_vols /= 8
-            inten_list = [inten]
-            print("#" * 20)
-            print(f"n=0 for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
-            print(
-                f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})"
-            )
-            continue
+        # Adaptive sampling
+        sampled_enough_flags = []
+        for i, (step, pt) in enumerate(zip(steps, pts)):
+            if step > en_rez:
+                pts[i] = pt * (int(step / en_rez) + 1)
+                sampled_enough_flags.append(False)
+            else:
+                sampled_enough_flags.append(True)
 
-        last_inten = inten_list[-1]
-        print("#" * 20)
-        print(f"n={n_round} for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
-        print(f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})")
-        print(f"last intensity = {last_inten}")
-        print(f"new intensity = {inten}")
+        sampled_enough = all(sampled_enough_flags)
 
-        elem_vols /= 8
-        inten = inten + last_inten / 8
-        print(f"averaged intensity = {inten}")
+        if sampled_enough:
+            print(f"Enough sample for (Q1, E) = ({qh:.2f}, {en:.2f}), num of pts = {pts}")
+            print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
+            vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
+            break
 
-        if np.abs(inten - last_inten) / last_inten < 1e-2:
-            sampled_enough = True
-        elif np.shape(pts_norm)[1] > 1e6:
-            sampled_enough = True
-        else:
-            pts_norm = np.concatenate((pts_norm, pts_norm_shifted), axis=1)
-            n_round += 1
+    # ----------------------------------------------------
+    # Enough sampled. Calculate weight from resolution function
+    # ----------------------------------------------------
+    elem_vols /= np.prod(pts)
 
-        # fig, ax = plt.subplots()
-        # ax.plot(pts_norm[0], pts_norm[1], "o")
-        # plt.show()
+    vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
+    vqe = np.empty((4, num_bands, num_pts))
+    vqe[0:3] = vq[:, None, :]
+    vqe[3] = disp - en
 
-        inten_list.append(inten)
-    print(f"intensity list = {inten_list}")
-    # print(f"final intensity = {inten}")
-    return inten_list[-1]
+    weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
+    # ------------------------------------
+
+    # # don't bother if the weight is already too small
+    # # if np.max(weights) < 1e-6:
+    # #     return 0.0  # zero intensity
+
+    # if np.min(weights) > 9:  # out of 3 sigma squared
+    #     return 0.0  # zero intensity
+
+    # # ----------------------------------------------------
+    # # trim the corners
+    # # ----------------------------------------------------
+    # # TODO
+    # cut_off = 9  # 3 sigma squared
+    # idx_all = weights < cut_off
+    # idx = np.any(idx_all, axis=0)
+    # # percent = (np.size(idx) - np.count_nonzero(idx)) / np.size(idx) * 100
+    # # print(f"{percent:.2f}% of points discarded.")
+
+    # # all small weights because dispersion parallel to ellipsoid
+    # if not np.any(idx_all):
+    #     return 0.0  # zero intensity
+
+    # Fast exit if everything is outside the 3-sigma volume
+    if np.min(weights) > 9 or not np.any(weights < 9):
+        return 0.0
+
+    idx_keep = np.any(weights < 9, axis=0)
+    vq_filtered = vq[:, idx_keep]
+    weights_filtered = np.exp(-weights[:, idx_keep] / 2)
+    inten = model_inten(*vq_filtered)
+
+    # normalization
+    det = np.linalg.det(mat)
+    inten_sum = np.sum(inten * weights_filtered) * elem_vols
+    return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
 
 
 if __name__ == "__main__":
@@ -286,8 +296,7 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = 0, 1, 0.05
-    # q1_min, q1_max, q1_step = -0.26, -0.24, 0.01
+    q1_min, q1_max, q1_step = 0, 1, 0.02
     en_min, en_max, en_step = -3, 25, 0.2
     q2 = 0
     q3 = 0
@@ -305,6 +314,8 @@ if __name__ == "__main__":
         results = executor.map(convolution, *qe_mesh)
     measurement_inten = np.asarray(list(results)).reshape(sz)
 
+    # qe_mesh = np.ascontiguousarray(qe_mesh)
+    # measurement_inten = parallel_convolution(qe_mesh).reshape(sz)
     print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)

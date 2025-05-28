@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # generating points
     # ----------------------------------------------------
-    pts_q = 15
+    pts_q = 40
     pts_norm = generate_pts(num_of_sigmas, pts_q)
     step_q = 2 * num_of_sigmas / pts_q
     elem_vols_init = step_q**2 * np.prod(eval_inv_sqrt)
@@ -237,7 +237,7 @@ if __name__ == "__main__":
     ax.set_ylabel("Q2")
     ax.grid(alpha=0.6)
     # plt.colorbar(im)
-    # ax.set_aspect("equal")
+    ax.set_aspect("equal")
     ax.set_title("similarity transformed")
     #  ----------------- plot 2 -----------------
 

@@ -41,7 +41,7 @@ def model_disp(vq1, vq2, vq3):
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
     """
 
-    sj = 1
+    sj = 5
     gamma_q = np.cos(2 * np.pi * vq1)
     # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
 
@@ -212,7 +212,7 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     eigenvalues, eigenvectors = np.linalg.eig(mat_hkl)
     eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
-    trans_mat = eigenvectors.T @ np.diag(1 / np.sqrt(eigenvalues)) @ eigenvectors
+    trans_mat = eigenvectors.T @ np.diag(eval_inv_sqrt) @ eigenvectors
     # ----------------------------------------------------
     # start sampling
     # ----------------------------------------------------

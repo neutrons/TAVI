@@ -89,7 +89,7 @@ def resolution_matrix(qx0, qy0, qz0, en0):
     # sz = np.shape(qx0)
 
     sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.1
+    sigma3 = sigma4 = 1
     angle = -80
     mat = np.zeros((4, 4))
     mat[0, 0] = 1 / sigma1**2
@@ -137,24 +137,28 @@ def generate_pts_simple_cubic(num_of_sigmas=3, pts_q=5):
 
 def generate_pts(pts, n_round: int, step_q: float):
     if n_round == 0:
-        return pts
+        return pts, 1.0
 
-    x = step_q / (2**n_round)
+    quotient, remainder = divmod(n_round + 1, 2)
+    x = step_q / (2**quotient)
+    match remainder:
+        case 0:  # generate face centers
+            print(f"shifted by ({x:.4f},{x:.4f},0)")
+            pts_shifted = np.concatenate(
+                (
+                    pts + np.array((x, x, 0))[:, None],
+                    pts + np.array((0, x, x))[:, None],
+                    pts + np.array((x, 0, x))[:, None],
+                ),
+                axis=1,
+            )
+            elem_vols_fraction = 2 / (8**quotient)
+        case 1:  # generate body center and edge centers
+            print(f"shifted by ({-x:.4f},{-x:.4f},{-x:.4f})")
+            pts_shifted = pts + np.array((-x, -x, -x))[:, None]
+            elem_vols_fraction = 1 / (8**quotient)
 
-    pts_shifted = np.concatenate(
-        (
-            pts + np.array((x, x, 0))[:, None],
-            pts + np.array((0, x, x))[:, None],
-            pts + np.array((x, 0, x))[:, None],
-            pts + np.array((x, 0, 0))[:, None],
-            pts + np.array((0, x, 0))[:, None],
-            pts + np.array((0, 0, x))[:, None],
-            pts + np.array((x, x, x))[:, None],
-        ),
-        axis=1,
-    )
-
-    return pts_shifted
+    return pts_shifted, elem_vols_fraction
 
 
 def convolution(qh, qk, ql, en):
@@ -180,10 +184,10 @@ def convolution(qh, qk, ql, en):
     # ----------------------------------------------------
     # initial parameters setup
     # ----------------------------------------------------
-    pts_q = 40
+    pts_q = 20
     pts_norm = generate_pts_simple_cubic(num_of_sigmas, pts_q)
     step_q = 2 * num_of_sigmas / pts_q
-    elem_vols = step_q**3 * np.prod(eval_inv_sqrt)
+    elem_vols_init = step_q**3 * np.prod(eval_inv_sqrt)
     # _, num_pts_q = np.shape(pts_norm)
 
     n_round = 0
@@ -191,7 +195,7 @@ def convolution(qh, qk, ql, en):
     print("#" * 20)
     while not sampled_enough:
 
-        pts_norm_shifted = generate_pts(pts_norm, n_round, step_q)
+        pts_norm_shifted, elem_vols_fraction = generate_pts(pts_norm, n_round, step_q)
         vqh, vqk, vql = trans_mat @ pts_norm_shifted
         # ----------------------------------------------------
         # calculate dispersion nergy
@@ -234,6 +238,7 @@ def convolution(qh, qk, ql, en):
         # ----------------------------------------------------
         # calculate intensity
         # ----------------------------------------------------
+        elem_vols = elem_vols_init * elem_vols_fraction
 
         # normalization
         inten = model_inten(vqh_filtered + qh, vqk_filtered + qk, vql_filtered + ql)
@@ -242,27 +247,31 @@ def convolution(qh, qk, ql, en):
 
         if n_round == 0:
             n_round = 1
-            elem_vols /= 8
+            idx_list = [1]
             inten_list = [inten]
+            pts_norm = pts_norm_shifted
             print("#" * 20)
             print(f"n=0 for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
             print(
                 f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})"
             )
+            print(f"volume fraction = {elem_vols_fraction}")
             continue
 
         last_inten = inten_list[-1]
         print("#" * 20)
         print(f"n={n_round} for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
         print(f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})")
+        print(f"volume fraction = {elem_vols_fraction}")
         print(f"last intensity = {last_inten}")
         print(f"new intensity = {inten}")
-
-        elem_vols /= 8
-        inten = inten + last_inten / 8
+        if (n_round + 1) % 2 == 0:
+            inten = inten + last_inten / 4
+        else:
+            inten = inten + last_inten / 2
         print(f"averaged intensity = {inten}")
 
-        if np.abs(inten - last_inten) / last_inten < 1e-2:
+        if np.abs(inten - last_inten) / last_inten < 1e-1:
             sampled_enough = True
         elif np.shape(pts_norm)[1] > 1e6:
             sampled_enough = True
@@ -274,6 +283,7 @@ def convolution(qh, qk, ql, en):
         # ax.plot(pts_norm[0], pts_norm[1], "o")
         # plt.show()
 
+        idx_list.append(n_round + 1)
         inten_list.append(inten)
     print(f"intensity list = {inten_list}")
     # print(f"final intensity = {inten}")
@@ -286,9 +296,9 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = 0, 1, 0.05
+    q1_min, q1_max, q1_step = 0, 0.95, 0.01
     # q1_min, q1_max, q1_step = -0.26, -0.24, 0.01
-    en_min, en_max, en_step = -3, 25, 0.2
+    en_min, en_max, en_step = -3, 25, 0.5
     q2 = 0
     q3 = 0
 
