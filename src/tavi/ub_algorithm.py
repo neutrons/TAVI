@@ -7,6 +7,16 @@ from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_sta
 from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle
 
 
+def mantid_to_spice(v):
+    t = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
+    return t.dot(v)
+
+
+def spice_to_mantid(v):
+    t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
+    return t.dot(v)
+
+
 @dataclass
 class UBConf:
     """Logs for UB matrix determination
@@ -46,8 +56,7 @@ class UBConf:
             case "Mantid":
                 return v
             case "Spice":
-                t = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
-                return t.dot(v)
+                return mantid_to_spice(v)
             case _:
                 raise ValueError("Unrecogonized convention: " + self.convention)
 
@@ -57,8 +66,7 @@ class UBConf:
             case "Mantid":
                 return v
             case "Spice":
-                t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-                return t.dot(v)
+                return spice_to_mantid(v)
             case _:
                 raise ValueError("Unrecogonized convention: " + self.convention)
 
@@ -394,8 +402,22 @@ def uv_to_ub_matrix(
     return ub_matrix
 
 
+def b_mat_from_ub_matrix(ub_matrix: np.ndarray) -> np.ndarray:
+    """Calculate the B matrix from UB matrix"""
+    g_star_mat = ub_matrix.T @ ub_matrix
+    lattice_params = lattice_params_from_g_star_mat(g_star_mat)
+    return b_mat_from_lattice(lattice_params)
+
+
+def u_mat_from_ub_matrix(ub_matrix: np.ndarray) -> np.ndarray:
+    """Calculate the U matrix from UB matrix"""
+    b_mat = b_mat_from_ub_matrix(ub_matrix)
+    inv_b_mat = np.linalg.inv(b_mat)
+    return ub_matrix.dot(inv_b_mat)
+
+
 # -----------------------------------------------------
-# UB matrix math
+# Find UB matrix from peaks
 # -----------------------------------------------------
 
 
