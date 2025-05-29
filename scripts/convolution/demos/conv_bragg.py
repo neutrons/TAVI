@@ -79,10 +79,10 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=100000):
 
     r, rez_mat = resolution_matrix(vq1, vq2, vq3, ven)
     cov = np.linalg.inv(rez_mat)
-    print(f"Done inverseing matriices {(t1:=time())-t0:.4f} s")
+    print(f"Done inverseing matriices {(t1 := time()) - t0:.4f} s")
 
     pts_norm = np.random.default_rng().multivariate_normal(mean=(0, 0, 0, 0), cov=np.diag((1, 1, 1, 1)), size=n_sample)
-    print(f"Done sampleing in {(t2:=time())-t1:.4f} s")
+    print(f"Done sampleing in {(t2 := time()) - t1:.4f} s")
 
     eigenvalues, eigenvectors = np.linalg.eig(cov)
     pts = (
@@ -91,13 +91,13 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=100000):
         @ (np.sqrt(eigenvalues)[:, :, :, :, np.newaxis] * np.diag((1, 1, 1, 1)))
         @ np.transpose(eigenvectors, (0, 1, 2, 3, 5, 4))
     )
-    print(f"Done transformation in {(t3:=time())-t2:.4f} s")
+    print(f"Done transformation in {(t3 := time()) - t2:.4f} s")
 
     pts[:, :, :, :, :, 0] += vq1[:, :, :, :, np.newaxis]
     pts[:, :, :, :, :, 1] += vq2[:, :, :, :, np.newaxis]
     pts[:, :, :, :, :, 2] += vq3[:, :, :, :, np.newaxis]
     pts[:, :, :, :, :, 3] += ven[:, :, :, :, np.newaxis]
-    print(f"Done recentering in {(t4:=time())-t3:.4f} s")
+    print(f"Done recentering in {(t4 := time()) - t3:.4f} s")
 
     # ---------------------- direct sampling --------------------
     # sz = vq1.shape
@@ -114,10 +114,10 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=100000):
     # ----------------------------------------------------------
 
     model_cal = model(pts[:, :, :, :, :, 0], pts[:, :, :, :, :, 1], pts[:, :, :, :, :, 2], pts[:, :, :, :, :, 3])
-    print(f"Done calculating intensity of the model in {(t5:=time())-t4:.4f} s")
+    print(f"Done calculating intensity of the model in {(t5 := time()) - t4:.4f} s")
 
     rez_conv = np.mean(model_cal, axis=-1)
-    print(f"Done averaging in {(t6:=time())-t5:.4f} s")
+    print(f"Done averaging in {(t6 := time()) - t5:.4f} s")
     return rez_conv
 
 

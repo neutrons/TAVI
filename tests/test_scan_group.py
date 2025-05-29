@@ -61,7 +61,6 @@ def test_scan_group_combine_2d():
 
 
 def test_scan_group_plot_2d():
-
     scan_list = list(range(118, 129))
     scans = [Scan.from_spice("test_data/exp812", scan_num=num) for num in scan_list]
     sg = ScanGroup(scans)

@@ -101,7 +101,6 @@ def plot_rez_ellipses(ax):
     sigma1, sigma2 = 0.3, 0.02
     angle = 80
     for i in range(3):
-
         ax.add_artist(
             Ellipse(
                 xy=(0, 0),
@@ -110,7 +109,7 @@ def plot_rez_ellipses(ax):
                 angle=angle,
                 edgecolor="w",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 
@@ -139,7 +138,6 @@ def convolution(qh, en):
     pts_q = 5
     sampled_enough = False
     while not sampled_enough:
-
         x = np.linspace(-num_of_sigmas, num_of_sigmas, pts_q + 1)
         elem_vol = 2 * num_of_sigmas / pts_q
         g = np.exp(-(x**2) / 2)
@@ -231,7 +229,7 @@ if __name__ == "__main__":
         results = executor.map(convolution, *qe_mesh)
     measurement_inten = np.array(list(results)).reshape(sz)
     # measurement_inten = convolutioin(*qe_mesh).reshape(sz)
-    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
+    print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
 
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
     # ----------------------------------------------------
@@ -255,7 +253,7 @@ if __name__ == "__main__":
     fig.colorbar(img, ax=ax)
     ax.set_title(
         f"1D FM chian S=1 J=-5, total intensity = {total_intent:.3f}"
-        + f"\n1D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
+        + f"\n1D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
 
     plt.tight_layout()

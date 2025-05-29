@@ -6,7 +6,6 @@ from matplotlib.patches import Ellipse
 
 
 def resolution_matrix(x, y):
-
     def rotation_matrix_2d(theta_deg):
         theta = np.radians(theta_deg)
         c = np.cos(theta)
@@ -36,7 +35,6 @@ def signal_gaussian_2d(x, y):
 
 
 def rez_conv_2d(x, y):
-
     n_sample = 20000
     pts_norm = np.random.default_rng().multivariate_normal(mean=(0, 0), cov=np.diag((1, 1)), size=n_sample)
 
@@ -58,7 +56,6 @@ def rez_conv_2d(x, y):
 
 
 if __name__ == "__main__":
-
     xmin, xmax = -20, 20
     ymin, ymax = -20, 20
 
@@ -103,9 +100,9 @@ if __name__ == "__main__":
                 width=5 * 2 * (i + 1),
                 height=3 * 2 * (i + 1),
                 angle=30,
-                edgecolor=f"C{i+1}",
+                edgecolor=f"C{i + 1}",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
                 zorder=i + 2,
             )
         )

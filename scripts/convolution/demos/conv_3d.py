@@ -58,7 +58,7 @@ def plot_rez_ellipses(ax):
                 angle=80,
                 edgecolor="w",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 

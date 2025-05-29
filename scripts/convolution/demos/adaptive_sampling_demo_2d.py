@@ -102,7 +102,6 @@ def resolution_matrix(qx0, qy0, en0):
 
 
 def plot_rez_ellipses(ax, xy=(0.25, 0), sigmas=(0.3, 0.02), angle=80, c="k"):
-
     sigma1, sigma2 = sigmas
     for i in range(3):
         ax.add_artist(
@@ -113,7 +112,7 @@ def plot_rez_ellipses(ax, xy=(0.25, 0), sigmas=(0.3, 0.02), angle=80, c="k"):
                 angle=angle,
                 edgecolor=c,
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 

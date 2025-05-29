@@ -108,7 +108,6 @@ def plot_rez_ellipses(ax):
     sigma1, sigma2 = 0.3, 0.02
     angle = 80
     for i in range(3):
-
         ax.add_artist(
             Ellipse(
                 xy=(0, 0),
@@ -117,7 +116,7 @@ def plot_rez_ellipses(ax):
                 angle=angle,
                 edgecolor="w",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 
@@ -257,7 +256,7 @@ if __name__ == "__main__":
     num_worker = 8
     with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as executor:
         results = executor.map(convolution, *qe_mesh)
-    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
+    print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
 
     measurement_inten = np.array(list(results)).reshape(sz)
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
@@ -285,7 +284,7 @@ if __name__ == "__main__":
     fig.colorbar(img, ax=ax)
     ax.set_title(
         f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
-        + f"\n3D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
+        + f"\n3D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
 
     plt.tight_layout()

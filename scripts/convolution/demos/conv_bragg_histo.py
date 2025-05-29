@@ -85,7 +85,7 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=300000):
 
     r, rez_mat = resolution_matrix(vq1, vq2, vq3, ven)
     cov = np.linalg.inv(rez_mat)
-    print(f"Done inverseing matriices {(t1:=time())-t0:.4f} s")
+    print(f"Done inverseing matriices {(t1 := time()) - t0:.4f} s")
 
     n = int(n_sample ** (1 / 4))
     x = np.linspace(-3, 3, n)
@@ -93,7 +93,7 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=300000):
     g = np.exp(-(v1**2) / 2) * np.exp(-(v2**2) / 2) * np.exp(-(v3**2) / 2) * np.exp(-(v4**2) / 2) / (2 * np.pi) ** 2
     idx = g > np.max(g) / 15  # cut the corners
     pts_norm = np.stack((v1[idx], v2[idx], v3[idx], v4[idx]), axis=1)
-    print(f"Done generating gaussian in {(t2:=time())-t1:.4f} s")
+    print(f"Done generating gaussian in {(t2 := time()) - t1:.4f} s")
 
     eigenvalues, eigenvectors = np.linalg.eig(cov)
     mat = (
@@ -102,17 +102,17 @@ def rez_conv_4d(vq1, vq2, vq3, ven, n_sample=300000):
         @ np.swapaxes(eigenvectors, 1, 2)  # np.transpose(eigenvectors, (0, 2, 1))
     )
     pts = pts_norm @ mat
-    print(f"Done transformation in {(t3:=time())-t2:.4f} s")
+    print(f"Done transformation in {(t3 := time()) - t2:.4f} s")
 
     vqe = np.stack((vq1, vq2, vq3, ven), axis=1)
     pts += vqe[:, np.newaxis, :]
-    print(f"Done recentering in {(t4:=time())-t3:.4f} s")
+    print(f"Done recentering in {(t4 := time()) - t3:.4f} s")
 
     model_cal = model(*np.unstack(pts, axis=-1))
-    print(f"Done calculating intensity of the model in {(t5:=time())-t4:.4f} s")
+    print(f"Done calculating intensity of the model in {(t5 := time()) - t4:.4f} s")
 
     rez_conv = np.mean(model_cal * g[idx], axis=-1)
-    print(f"Done averaging in {(t6:=time())-t5:.4f} s")
+    print(f"Done averaging in {(t6 := time()) - t5:.4f} s")
     return rez_conv
 
 
@@ -127,7 +127,7 @@ def plot_rez_ellipses(ax):
                     angle=70,
                     edgecolor="w",
                     facecolor="none",
-                    label=f"{i+1}-sigma",
+                    label=f"{i + 1}-sigma",
                 )
             )
 

@@ -51,7 +51,7 @@ def plot_rez_ellipses(ax):
                     angle=70,
                     edgecolor="w",
                     facecolor="none",
-                    label=f"{i+1}-sigma",
+                    label=f"{i + 1}-sigma",
                 )
             )
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     r, rez_mat = resolution_matrix(vq1, vq2, vq3, ven)
     cov = np.linalg.inv(rez_mat)
-    print(f"Done inverseing matriices {(t1:=time())-t0:.4f} s")
+    print(f"Done inverseing matriices {(t1 := time()) - t0:.4f} s")
 
     n = int(n_sample ** (1 / 4))
     x = np.linspace(-3, 3, n)
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     weight = g[idx]
     weight /= np.sum(weight)
-    print(f"Done generating gaussian in {(t2:=time())-t1:.4f} s")
+    print(f"Done generating gaussian in {(t2 := time()) - t1:.4f} s")
 
     ax = axes[0]
     ax.plot(pts_norm[:, 0], pts_norm[:, 3], ".")
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     )
     pts = pts_norm @ mat
     # max_dist = np.max(np.linalg.norm(pts, axis=2), axis=1, keepdims=True)
-    print(f"Done transformation in {(t3:=time())-t2:.4f} s")
+    print(f"Done transformation in {(t3 := time()) - t2:.4f} s")
 
     ax = axes[1]
     ax.plot(pts[0, :, 0], pts[0, :, 3], ".")
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     vqe = np.stack((vq1, vq2, vq3, ven), axis=1)
     pts += vqe[:, np.newaxis, :]
-    print(f"Done recentering in {(t4:=time())-t3:.4f} s")
+    print(f"Done recentering in {(t4 := time()) - t3:.4f} s")
 
     ax = axes[2]
     ax.plot(pts[0, :, 0], pts[0, :, 3], ".")

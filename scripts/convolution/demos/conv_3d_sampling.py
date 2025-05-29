@@ -48,7 +48,6 @@ def resolution_matrix(qx0, qy0, qz0, en0):
 
 def plot_rez_ellipses(ax):
     for i in range(3):
-
         ax.add_artist(
             Ellipse(
                 xy=(0, 0),
@@ -57,7 +56,7 @@ def plot_rez_ellipses(ax):
                 angle=70,
                 edgecolor="w",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 

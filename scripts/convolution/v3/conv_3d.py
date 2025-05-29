@@ -107,7 +107,6 @@ def plot_rez_ellipses(ax):
     sigma1, sigma2 = 0.3, 0.02
     angle = 80
     for i in range(3):
-
         ax.add_artist(
             Ellipse(
                 xy=(0, 0),
@@ -116,7 +115,7 @@ def plot_rez_ellipses(ax):
                 angle=angle,
                 edgecolor="w",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
             )
         )
 
@@ -158,7 +157,6 @@ def generate_pts(pts, n_round: int, step_q: float):
 
 
 def convolution(qh, qk, ql, en):
-
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
@@ -190,7 +188,6 @@ def convolution(qh, qk, ql, en):
     sampled_enough = False
     print("#" * 20)
     while not sampled_enough:
-
         pts_norm_shifted = generate_pts(pts_norm, n_round, step_q)
         vqh, vqk, vql = trans_mat @ pts_norm_shifted
         # ----------------------------------------------------
@@ -247,14 +244,16 @@ def convolution(qh, qk, ql, en):
             print("#" * 20)
             print(f"n=0 for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
             print(
-                f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})"
+                f"first point = ({pts_norm_shifted[0, 0]:.3f}, {pts_norm_shifted[1, 0]:.3f}, {pts_norm_shifted[2, 0]:.3f})"
             )
             continue
 
         last_inten = inten_list[-1]
         print("#" * 20)
         print(f"n={n_round} for (Q,E)=({qh:.2f},{en:.2f}), n_pts={np.shape(pts_norm_shifted)[1]}")
-        print(f"first point = ({pts_norm_shifted[0,0]:.3f}, {pts_norm_shifted[1,0]:.3f}, {pts_norm_shifted[2,0]:.3f})")
+        print(
+            f"first point = ({pts_norm_shifted[0, 0]:.3f}, {pts_norm_shifted[1, 0]:.3f}, {pts_norm_shifted[2, 0]:.3f})"
+        )
         print(f"last intensity = {last_inten}")
         print(f"new intensity = {inten}")
 
@@ -305,7 +304,7 @@ if __name__ == "__main__":
         results = executor.map(convolution, *qe_mesh)
     measurement_inten = np.asarray(list(results)).reshape(sz)
 
-    print(f"Convolution completed in {(t1:=time())-t0:.4f} s")
+    print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
 
@@ -331,7 +330,7 @@ if __name__ == "__main__":
     fig.colorbar(img, ax=ax)
     ax.set_title(
         f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
-        + f"\n3D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1-t0:.3f} s with {num_worker:1d} cores"
+        + f"\n3D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
 
     plt.tight_layout()

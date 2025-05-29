@@ -11,7 +11,7 @@ def timeit(func):
         t1 = time()
         result = func(*args, **kwargs)
         t2 = time()
-        print(f"Function {func.__name__!r} executed in {(t2-t1):.4f} s")
+        print(f"Function {func.__name__!r} executed in {(t2 - t1):.4f} s")
         return result
 
     return wrap_func
@@ -47,7 +47,6 @@ def similarity_transformation(cen, cov, n_sample=10000):
 
 
 if __name__ == "__main__":
-
     cen = np.array([1, 2])
     sigma = np.array([5, 3])
     angle = -30
@@ -75,9 +74,9 @@ if __name__ == "__main__":
                 width=sigma[0] * 2 * (i + 1),
                 height=sigma[1] * 2 * (i + 1),
                 angle=-angle,
-                edgecolor=f"C{i+1}",
+                edgecolor=f"C{i + 1}",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
                 zorder=i + 2,
             )
         )
@@ -112,9 +111,9 @@ if __name__ == "__main__":
                 width=sigma[0] * 2 * (i + 1),
                 height=sigma[1] * 2 * (i + 1),
                 angle=-angle,
-                edgecolor=f"C{i+1}",
+                edgecolor=f"C{i + 1}",
                 facecolor="none",
-                label=f"{i+1}-sigma",
+                label=f"{i + 1}-sigma",
                 zorder=i + 2,
             )
         )
