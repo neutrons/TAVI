@@ -60,6 +60,24 @@ def test_scan_group_combine_2d():
     plt.show()
 
 
+def test_scan_group_plot_2d():
+    scan_list = list(range(118, 129))
+    scans = [Scan.from_spice("test_data/exp812", scan_num=num) for num in scan_list]
+    sg = ScanGroup(scans)
+    scan_data_2d = sg.combine_data(
+        axes=("qk", "en", "detector"),
+        norm_to=(1, "mcu"),
+    )
+
+    plot2d = Plot2D()
+    plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=10)
+    fig, ax = plt.subplots()
+    im = plot2d.plot(ax)
+    ax.set_title(plot2d.title)
+    fig.colorbar(im, ax=ax)
+    plt.show()
+
+
 def test_scan_group_rebin_2d():
     # tavi = TAVI("./test_data/tavi_test_exp424.h5")
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))

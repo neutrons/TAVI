@@ -1,0 +1,133 @@
+
+drive dc 325
+
+scantitle "(2,-0.35,0) mode thickness 325 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at 325 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at 325 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at 325 V"
+scan h 2.5 k 0.1 l 0 e 15 8 0.25 preset mcu 30
+
+
+
+drive dc 350
+
+scantitle "(2,-0.35,0) mode thickness 350 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 350 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 350 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 350 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+drive dc 375
+
+scantitle "(2,-0.35,0) mode thickness 375 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 375 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 375 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 375 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+
+drive dc 400
+
+loop i=0,-0.5,-0.05
+scantitle "(2,%i,0) G to X transverse mode scan at E 400 V"
+scan h 2 k %i l 0 e 20 0.5 0.25 preset mcu 30
+endloop
+
+loop i=0,0.71,0.05
+scantitle "(2.5,%i,0) X to M transverse mode scan at E 400 V"
+scan h 2.5 k %i l 0 e 15 0.5 0.25 preset mcu 30
+endloop
+
+
+drive dc 420
+
+scantitle "(2,-0.35,0) mode thickness 420 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 420 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 420 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 420 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+drive dc 440
+
+scantitle "(2,-0.35,0) mode thickness 440 V"
+scan h 2 k -0.35 l 0 e 20 0y.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 440 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 440 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 440 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+drive dc 460
+
+scantitle "(2,-0.35,0) mode thickness 460 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 460 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 460 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 460 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+drive dc 480
+
+scantitle "(2,-0.35,0) mode thickness 480 V"
+scan h 2 k -0.35 l 0 e 20 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0.5,0) M point scan at E 480 V"
+scan h 2.5 k 0.5 l 0 e 15 0.5 0.25 preset mcu 30
+
+scantitle "(2.5,0,0) mode thickness at E 480 V"
+scan h 2.5 k 0 l 0 e 15 6 0.25 preset mcu 30
+
+scantitle "(2.5,0.1,0) mode thickness at E 480 V"
+scan h 2.5 k 0.1 l 0 e 15 6 0.25 preset mcu 30
+
+
+drive dc 500
+
+loop i=0,-0.5,-0.05
+scantitle "(2,%i,0) G to X transverse mode scan at E 500 V"
+scan h 2 k %i l 0 e 20 0.5 0.25 preset mcu 30
+endloop
+
+loop i=0,0.71,0.05
+scantitle "(2.5,%i,0) X to M transverse  mode scan at E 500 V"
+scan h 2.5 k %i l 0 e 15 0.5 0.25 preset mcu 30
+endloop
+

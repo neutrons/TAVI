@@ -1,0 +1,12 @@
+scantitle "2k0 scans"
+
+scan h 2 k -0.05 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.1 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.15 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.2 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.25 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.3 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.35 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.4 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.45 l 0 e 20 0 0.25 preset mcu 30
+scan h 2 k -0.5 l 0 e 20 0 0.25 preset mcu 30
