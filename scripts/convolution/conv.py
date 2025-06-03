@@ -131,7 +131,8 @@ def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
     idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
 
-    return vq, idx
+    # return vq, idx
+    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
 
 
 def convolution(reso_params):
@@ -162,7 +163,7 @@ def convolution(reso_params):
     # ----------------------------------------------------
     pts = [10, 10, 10]
     (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     # ----------------------------------------------------
     # determine if sampled enough based on steps along energy
     # ----------------------------------------------------
@@ -192,7 +193,7 @@ def convolution(reso_params):
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
 
-    max_step = 300  # limit the maximum in case the dispersion is too steep
+    max_step = 100  # limit the maximum in case the dispersion is too steep
     for i, (step, pt) in enumerate(zip(steps, pts)):
         if step > en_rez:
             factor = step / en_rez
@@ -202,7 +203,7 @@ def convolution(reso_params):
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
     (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     disp = model_disp(vqh + qh, vqk + qk, vql + ql)
     _, num_pts = disp.shape
 
@@ -214,7 +215,7 @@ def convolution(reso_params):
 
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f},{ql:.2f},{en:.2f})")
+    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
     print(f"number of points = {pts}")
     print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
@@ -274,7 +275,7 @@ if __name__ == "__main__":
     # flatten for meshed measurement
     # ----------------------------------------------------
     q1_min, q1_max, q1_step = 2, 3, 0.02
-    en_min, en_max, en_step = -3, 25, 0.2
+    en_min, en_max, en_step = -3, 25, 0.5
     q2 = 0
     q3 = 0
 
@@ -282,11 +283,11 @@ if __name__ == "__main__":
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
     # ----------------------------------------------------
     vq1, vq2, vq3 = np.meshgrid(q1, q2, q3, indexing="ij")
-    q_mesh = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
+    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
 
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
-        for reso in hb3.cooper_nathans(hkl=q_mesh, en=en)
+        for reso in hb3.cooper_nathans(hkl=q_list, en=en)
     ]
 
     t0 = time()
@@ -298,7 +299,6 @@ if __name__ == "__main__":
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.nansum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
-    # total_intent = np.sum(measurement_inten) * q2_step * en_step / (q2_max - q2_min)
 
     # ----------------------------------------------------
     # plot 2D contour
@@ -307,8 +307,9 @@ if __name__ == "__main__":
     q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 10)) + 1)
     en_list = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
     vq1, vq2, vq3 = np.meshgrid(q1_list, q2, q3, indexing="ij")
-    q_mesh = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
-    rez_list = hb3.cooper_nathans(hkl=q_mesh, en=en_list)
+    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
+    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list)
+
     p = Plot2D()
     for rez in rez_list:
         if rez is None:
@@ -334,7 +335,7 @@ if __name__ == "__main__":
     ax.set_ylim((en_min, en_max))
 
     ax.set_title(
-        "1D FM chain S=1 J=-5"
+        "3D FM chain S=1 J=-5"
         + f"\n3D Convolution for {len(q1)*len(en)} points, "
         + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )

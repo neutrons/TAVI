@@ -96,7 +96,7 @@ def resolution_matrix(hkl, en):
     """
 
     sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.05
+    sigma3 = sigma4 = 0.2
     angle = -80
     mat = np.diag([1 / sigma1**2, 1 / sigma3**2, 1 / sigma4**2, 1 / sigma2**2])
 
@@ -104,9 +104,7 @@ def resolution_matrix(hkl, en):
     rez_mat = rot.T @ mat @ rot
     r0 = 1
 
-    sz = np.shape(hkl)[0] * np.size(en)
-
-    return tuple((r0, rez_mat) for _ in range(sz))
+    return tuple((hkl[i], en[j], r0, rez_mat) for i in range(np.shape(hkl)[0]) for j in range(np.size(en)))
 
 
 def plot_rez_ellipses(ax):
@@ -115,7 +113,7 @@ def plot_rez_ellipses(ax):
     for i in range(3):
         ax.add_artist(
             Ellipse(
-                xy=(0, 0),
+                xy=(2, 0),
                 width=sigma1 * 2 * (i + 1),
                 height=sigma2 * 2 * (i + 1),
                 angle=angle,
@@ -159,24 +157,27 @@ def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     # -------- cut the corners based on distance --------
     r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
     idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
-
-    return vq, idx
+    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
+    # return vq, idx
 
 
 def get_max_step(arr, axis: int):
     """Get max step along a given axis. Reutrn zero if all NaN"""
     # shape of arr (num_bands, N1, N2, N3)
+    # (min_en, max_en) = en_range
     diff_arr = np.abs(np.diff(arr, axis=axis))
     steps = np.nanmean(diff_arr, axis=axis)
     # print(f"max_step={step:.3f}")
     return np.nanmax(steps, out=np.array(0.0))
 
 
-def convolution(qh, qk, ql, en, reso_params):
+def convolution(reso_params):
+    if reso_params is None:
+        return np.nan
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
-    r0, mat = reso_params
+    (qh, qk, ql), en, r0, mat = reso_params
     mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
     # calculate the incoherent sigmas for all Q and E directions
@@ -198,7 +199,7 @@ def convolution(qh, qk, ql, en, reso_params):
     # ----------------------------------------------------
     pts = [10, 10, 10]
     (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     # ----------------------------------------------------
     # determine if sampled enough based on steps along energy
     # ----------------------------------------------------
@@ -228,7 +229,7 @@ def convolution(qh, qk, ql, en, reso_params):
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
 
-    max_step = 500  # limit the maximum in case the dispersion is too steep
+    max_step = 100  # limit the maximum in case the dispersion is too steep
     for i, (step, pt) in enumerate(zip(steps, pts)):
         if step > en_rez:
             factor = step / en_rez
@@ -238,7 +239,7 @@ def convolution(qh, qk, ql, en, reso_params):
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
     (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     disp = model_disp(vqh + qh, vqk + qk, vql + ql)
     _, num_pts = disp.shape
 
@@ -250,7 +251,7 @@ def convolution(qh, qk, ql, en, reso_params):
 
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f},{ql:.2f},{en:.2f})")
+    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
     print(f"number of points = {pts}")
     print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
@@ -282,8 +283,8 @@ if __name__ == "__main__":
     # qe_mesh has the dimension (4, n_pts_of_measurement)
     # flatten for meshed measurement
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = 0, 1, 0.02
-    en_min, en_max, en_step = -3, 25, 0.2
+    q1_min, q1_max, q1_step = 2, 3, 0.02
+    en_min, en_max, en_step = -3, 25, 0.5
     q2 = 0
     q3 = 0
 
@@ -295,37 +296,30 @@ if __name__ == "__main__":
     q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
     reso_params = resolution_matrix(hkl=q_list, en=en)
 
-    sz = np.shape(vq1)  # sz = (n_q1, n_q2, n_q3 )
-
     t0 = time()
     num_worker = 8
     with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(convolution, *qe_mesh, reso_params)
-    measurement_inten = np.asarray(list(results)).reshape(sz)
+        results = executor.map(convolution, reso_params)
+    measurement_inten = np.asarray(list(results))
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
-    # total_intent = np.sum(measurement_inten) * q2_step * en_step / (q2_max - q2_min)
 
     # ----------------------------------------------------
     # plot 2D contour
     # ----------------------------------------------------
     fig, ax = plt.subplots(figsize=(10, 6))
-    idx_1 = np.s_[:, 0, 0, :]
-    img = ax.pcolormesh(vq1[idx_1], ven[idx_1], measurement_inten[idx_1], cmap="turbo", vmin=0, vmax=0.5)
-    # idx_2 = np.s_[0, :, 0, :]
-    # img = ax.pcolormesh(vq2[idx_2], ven[idx_2], measurement_inten[idx_2], cmap="turbo", vmin=0, vmax=0.5)
+    vq1, ven = np.meshgrid(q1, en, indexing="ij")
+    img = ax.pcolormesh(vq1, ven, measurement_inten.reshape(np.shape(vq1)), cmap="turbo", vmin=0, vmax=0.5)
 
     ax.grid(alpha=0.6)
     ax.set_xlabel("Q1")
     ax.set_ylabel("En")
     ax.set_xlim((q1_min, q1_max))
-    # ax.set_xlim((q2_min, q2_max))
     ax.set_ylim((en_min, en_max))
 
     plot_rez_ellipses(ax)
-    # disp = model_disp(np.ones_like(q2) * q1, q2, np.zeros_like(q2))
     disp = model_disp(q1, np.zeros_like(q1), np.zeros_like(q1))
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
@@ -334,7 +328,8 @@ if __name__ == "__main__":
     fig.colorbar(img, ax=ax)
     ax.set_title(
         f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
-        + f"\n3D Convolution for {np.shape(qe_mesh)[1]} points completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
+        + f"\n3D Convolution for {len(q1)*len(en)} points, "
+        + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
 
     # plt.tight_layout()
