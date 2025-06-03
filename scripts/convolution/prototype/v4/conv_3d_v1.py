@@ -1,4 +1,4 @@
-import concurrent.futures
+from concurrent.futures import ProcessPoolExecutor
 from time import time
 
 import matplotlib.pyplot as plt
@@ -42,7 +42,6 @@ def coh_sigma(mat, axis):
     return 1 / np.sqrt(np.abs(mat[idx, idx]))
 
 
-# @njit(parallel=True)
 def model_disp(vq1, vq2, vq3):
     """return energy for given Q points
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
@@ -62,7 +61,6 @@ def model_disp(vq1, vq2, vq3):
     return disp
 
 
-# @njit(parallel=True)
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points
     3d FM J=-1 meV S=1, inten = S/2 for all Qs
@@ -159,20 +157,21 @@ def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     qh_list = np.linspace(-sigma_qh_range, sigma_qh_range, pts_qh + 1)
     qk_list = np.linspace(-sigma_qk_range, sigma_qk_range, pts_qk + 1)
     ql_list = np.linspace(-sigma_ql_range, sigma_ql_range, pts_ql + 1)
-    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")
+    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")  # shape (3, N1, N2, N3)
     # -------- cut the corners based on distance --------
-    r_sq = np.einsum("ijkl,im,mjkl->jkl", vq, mat_hkl, vq)
-    idx = r_sq < num_of_sigmas**2
+    r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
+    idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
 
     return vq, idx
 
 
 def get_max_step(arr, axis: int):
+    """Get max step along a given axis. Reutrn zero if all NaN"""
+    # shape of arr (num_bands, N1, N2, N3)
     diff_arr = np.abs(np.diff(arr, axis=axis))
-    # diff_idx = np.all(np.isnan(diff_arr), axis=axis)
     step = np.nanmean(diff_arr, axis=axis)
     # print(f"max_step={step:.3f}")
-    return np.nanmax(step)
+    return np.nanmax(step, out=np.array(0.0))
 
 
 def convolution(qh, qk, ql, en):
@@ -190,7 +189,6 @@ def convolution(qh, qk, ql, en):
     min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
     sigma_en_coh = coh_sigma(mat, 3)
     en_rez = sigma_en_coh / 5
-
     # ----------------------------------------------------
     # Calculate elemental volume
     # ----------------------------------------------------
@@ -205,10 +203,11 @@ def convolution(qh, qk, ql, en):
 
     while not sampled_enough:
         (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
+        vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
         # ----------------------------------------------------
         # determine if sampled enough based on steps along energy
         # ----------------------------------------------------
-        disp = model_disp(vqh[idx] + qh, vqk[idx] + qk, vql[idx] + ql)
+        disp = model_disp(vqh + qh, vqk + qk, vql + ql)
         num_bands, num_pts = disp.shape
 
         # Skip if all dispersion is outside the relevant energy window
@@ -227,7 +226,10 @@ def convolution(qh, qk, ql, en):
         sampled_enough_flags = []
         for i, (step, pt) in enumerate(zip(steps, pts)):
             if step > en_rez:
-                pts[i] = pt * (int(step / en_rez) + 1)
+                # factor_max = 10
+                factor = int(step / en_rez) + 1
+                # factor = factor_max if (factor > factor_max) else factor
+                pts[i] = pt * factor
                 sampled_enough_flags.append(False)
             else:
                 sampled_enough_flags.append(True)
@@ -237,13 +239,11 @@ def convolution(qh, qk, ql, en):
         if sampled_enough:
             print(f"Enough sample for (Q1, E) = ({qh:.2f}, {en:.2f}), num of pts = {pts}")
             print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
-            vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
             break
 
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    elem_vols /= np.prod(pts)
 
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
     vqe = np.empty((4, num_bands, num_pts))
@@ -251,39 +251,22 @@ def convolution(qh, qk, ql, en):
     vqe[3] = disp - en
 
     weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
-    # ------------------------------------
-
-    # # don't bother if the weight is already too small
-    # # if np.max(weights) < 1e-6:
-    # #     return 0.0  # zero intensity
-
-    # if np.min(weights) > 9:  # out of 3 sigma squared
-    #     return 0.0  # zero intensity
-
-    # # ----------------------------------------------------
-    # # trim the corners
-    # # ----------------------------------------------------
-    # # TODO
-    # cut_off = 9  # 3 sigma squared
-    # idx_all = weights < cut_off
-    # idx = np.any(idx_all, axis=0)
-    # # percent = (np.size(idx) - np.count_nonzero(idx)) / np.size(idx) * 100
-    # # print(f"{percent:.2f}% of points discarded.")
-
-    # # all small weights because dispersion parallel to ellipsoid
-    # if not np.any(idx_all):
-    #     return 0.0  # zero intensity
-
+    # -----------------------------------------------------
     # Fast exit if everything is outside the 3-sigma volume
-    if np.min(weights) > 9 or not np.any(weights < 9):
+    # -----------------------------------------------------
+    if np.min(weights) > 9:
         return 0.0
 
     idx_keep = np.any(weights < 9, axis=0)
     vq_filtered = vq[:, idx_keep]
+    num_pts_keep = np.count_nonzero(idx_keep)
+    percent_kep = num_pts_keep / np.prod(pts) * 100
+    print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.2f}%")
     weights_filtered = np.exp(-weights[:, idx_keep] / 2)
     inten = model_inten(*vq_filtered)
 
     # normalization
+    elem_vols /= np.prod(pts)
     det = np.linalg.det(mat)
     inten_sum = np.sum(inten * weights_filtered) * elem_vols
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
@@ -308,13 +291,11 @@ if __name__ == "__main__":
     qe_mesh = np.asarray([np.ravel(v) for v in (vq1, vq2, vq3, ven)])
 
     t0 = time()
-    num_worker = 8
-    with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as executor:
+    num_worker = 1
+    with ProcessPoolExecutor(max_workers=num_worker) as executor:
         results = executor.map(convolution, *qe_mesh)
     measurement_inten = np.asarray(list(results)).reshape(sz)
 
-    # qe_mesh = np.ascontiguousarray(qe_mesh)
-    # measurement_inten = parallel_convolution(qe_mesh).reshape(sz)
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
     total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)

@@ -95,7 +95,6 @@ def test_instrument_sample_setup():
 
 
 def test_plot_ellipses():
-
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
 
     tas = TAS(fixed_ei=5)

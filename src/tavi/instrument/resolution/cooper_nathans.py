@@ -187,15 +187,20 @@ class CooperNathans(ResolutionCalculator):
         hkle_list = self.generate_hkle_list(hkl, en)
 
         rez_list = []
-        for hkl, ei, ef in hkle_list:
+        for q_hkl, ei, ef in hkle_list:
             # check if the (Q,E) position can be reached
-            motor_angles = self.instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
+            motor_angles = self.instrument.calculate_motor_angles(hkl=tuple(q_hkl), en=ei - ef)
             if motor_angles is None:
+                rez_list.append(None)
                 continue
 
-            reso_mat, r0 = calculate_at_hkle(hkl, ei, ef)
+            reso_mat, r0 = calculate_at_hkle(q_hkl, ei, ef)
             rez = ResoEllipsoid(
-                instrument=self.instrument, hkle=hkl + (ei - ef,), projection=projection, reso_mat=reso_mat, r0=r0
+                instrument=self.instrument,
+                hkle=tuple(q_hkl) + (ei - ef,),
+                projection=projection,
+                reso_mat=reso_mat,
+                r0=r0,
             )
 
             # if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):

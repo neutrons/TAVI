@@ -1,5 +1,7 @@
 from typing import Union
 
+import numpy as np
+
 
 class ResolutionCalculator:
     """
@@ -31,14 +33,16 @@ class ResolutionCalculator:
         Return:
             hkle_list (tuple): list of (((h, k, l), ei, ef), ...)
         """
-        hkle_list = []
-        hkl_list = [hkl] if not isinstance(hkl, list) else hkl
-        en_list = [en] if not isinstance(en, list) else en
 
+        hkl_list = [hkl] if not isinstance(hkl, list | np.ndarray) else hkl
+        en_list = [en] if not isinstance(en, list | np.ndarray) else en
+
+        hkle_list = []
         for en in en_list:
             ei, ef = self.instrument._get_ei_ef(en=en)
             for hkl in hkl_list:
                 hkle_list.append((hkl, ei, ef))
+
         return tuple(hkle_list)
 
     def validate_instrument_parameters(self):  # noqa: C901

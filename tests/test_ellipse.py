@@ -1,7 +1,6 @@
-import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.use("Agg")  # temporarily disable interactive figure
+# matplotlib.use("Agg")  # temporarily disable interactive figure
 import numpy as np
 import pytest
 from mpl_toolkits.axisartist import Axes
