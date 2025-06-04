@@ -50,9 +50,47 @@ class ResoEllipsoid(object):
             self.frame = "q"
             self.angles = (90.0, 90.0, 90.0)
             self.q = (np.linalg.norm(instrument.sample.b_mat @ self.hkl) * 2 * np.pi, 0.0, 0.0)
-            self.axes_labels = ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+            self.axes_labels = ResoEllipsoid.labels_from_projection(projection)
         else:
             self._project_to_frame(instrument)
+
+    @staticmethod
+    def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
+        if projection is None:
+            return ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+        elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+            return (
+                "(H, 0, 0) (r.l.u.)",
+                "(0, K, 0) (r.l.u.)",
+                "(0, 0, L) (r.l.u.)",
+                "E (meV)",
+            )
+        hkl_str = ("H", "K", "L")
+        labels = []
+        for i, p in enumerate(projection):
+            miller_str = hkl_str[i]
+            label_str = "("
+            for j in range(3):
+                if p[j].is_integer():
+                    num = int(p[j])
+                    if num == 0:
+                        label_str += "0"
+                    elif num == 1:
+                        label_str += miller_str
+                    elif num == -1:
+                        label_str += "-" + miller_str
+                    else:
+                        label_str += f"{num}" + miller_str
+                else:
+                    label_str += f"{p[j]:.3f}" + miller_str
+                if j == 2:
+                    label_str += ") (r.l.u.)"
+                else:
+                    label_str += ", "
+            labels.append(label_str)
+
+        labels.append("E (meV)")
+        return tuple(labels)
 
     def _project_to_frame(self, instrument):
         """determinate the frame from the projection vectors"""
@@ -81,7 +119,7 @@ class ResoEllipsoid(object):
             conv_mat_4d = np.eye(4)
             conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat
             self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
-            self.axes_labels = ("H (r.l.u.)", "K (r.l.u.)", "L (r.l.u.)", "E (meV)")
+            self.axes_labels = ResoEllipsoid.labels_from_projection()
 
         else:  # customized projection
             p1, p2, p3 = self.projection
@@ -108,12 +146,7 @@ class ResoEllipsoid(object):
             conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
             self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
 
-            self.axes_labels = (
-                f"{self.projection[0]}",
-                f"{self.projection[1]}",
-                f"{self.projection[2]}",
-                "E (meV)",
-            )
+            self.axes_labels = ResoEllipsoid.labels_from_projection(self.projection)
 
     def volume(self):
         """volume of the ellipsoid"""

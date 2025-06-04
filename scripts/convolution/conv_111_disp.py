@@ -3,8 +3,54 @@ from time import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Ellipse
+from mpl_toolkits.axisartist import Axes
 from numba import njit, prange
+
+from tavi.instrument.tas import TAS
+from tavi.plotter import Plot2D
+from tavi.sample import Sample
+from tavi.ub_algorithm import (
+    UBConf,
+    b_mat_from_ub_matrix,
+    mantid_to_spice,
+    plane_normal_from_two_peaks,
+    u_mat_from_ub_matrix,
+    uv_to_ub_matrix,
+)
+
+
+def model_disp(vq1, vq2, vq3):
+    """return energy for given Q points
+    3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
+    """
+
+    sj = 5
+    gamma_q = np.cos(2 * np.pi * vq1)
+    # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
+
+    disp = 2 * sj * (1 - gamma_q)
+    disp = np.array((disp - 2, disp + 2))
+
+    # reshape if only one band
+    num_disp = len(disp.shape)
+    if num_disp == 1:
+        disp = np.reshape(disp, (1, np.size(disp)))
+    return disp
+
+
+def model_inten(vq1, vq2, vq3):
+    """return intensity for given Q points
+    3d FM J=-1 meV S=1, inten = S/2 for all Qs
+    """
+    inten = np.ones_like(vq1, dtype=float) / 2
+    inten = np.array((inten, inten))
+
+    # reshape if only one band
+    num_inten = len(inten.shape)
+    if num_inten == 1:
+        inten = np.reshape(inten, (1, np.size(inten)))
+
+    return inten
 
 
 def quadric_proj(quadric, idx):
@@ -42,86 +88,13 @@ def coh_sigma(mat, axis):
     return 1 / np.sqrt(np.abs(mat[idx, idx]))
 
 
-def model_disp(vq1, vq2, vq3):
-    """return energy for given Q points
-    3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
-    """
-
-    sj = 5
-    gamma_q = np.cos(2 * np.pi * vq1)
-    # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
-
-    disp = 2 * sj * (1 - gamma_q)
-    disp = np.array((disp - 2, disp + 2))
-
-    # reshape if only one band
-    num_disp = len(disp.shape)
-    if num_disp == 1:
-        disp = np.reshape(disp, (1, np.size(disp)))
-    return disp
-
-
-def model_inten(vq1, vq2, vq3):
-    """return intensity for given Q points
-    3d FM J=-1 meV S=1, inten = S/2 for all Qs
-    """
-    inten = np.ones_like(vq1, dtype=float) / 2
-    inten = np.array((inten, inten))
-
-    # reshape if only one band
-    num_inten = len(inten.shape)
-    if num_inten == 1:
-        inten = np.reshape(inten, (1, np.size(inten)))
-
-    return inten
-
-
-def rotation_matrix_4d(theta_deg):
-    theta = np.radians(theta_deg)
-    c = np.cos(theta)
-    s = np.sin(theta)
-    return np.array(
-        [
-            [c, 0, 0, -s],
-            [0, 1, 0, 0],
-            [0, 0, 1, 0],
-            [s, 0, 0, c],
-        ]
-    )
-
-
-def resolution_matrix(hkl, en):
-    """Fake resoltuion matrix mat and prefactor r0
-    r0 is a constant, rez_mat is a symmetric positive 4 by 4 matrix
-    """
-
-    sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.2
-    angle = -80
-    mat = np.diag([1 / sigma1**2, 1 / sigma3**2, 1 / sigma4**2, 1 / sigma2**2])
-
-    rot = rotation_matrix_4d(angle)
-    rez_mat = rot.T @ mat @ rot
-    r0 = 1
-
-    return tuple((hkl[i], en[j], r0, rez_mat) for i in range(np.shape(hkl)[0]) for j in range(np.size(en)))
-
-
-def plot_rez_ellipses(ax):
-    sigma1, sigma2 = 0.3, 0.02
-    angle = 80
-    for i in range(3):
-        ax.add_artist(
-            Ellipse(
-                xy=(2, 0),
-                width=sigma1 * 2 * (i + 1),
-                height=sigma2 * 2 * (i + 1),
-                angle=angle,
-                edgecolor="w",
-                facecolor="none",
-                label=f"{i + 1}-sigma",
-            )
-        )
+def get_max_step(arr, axis: int):
+    """Get max step along a given axis. Reutrn zero if all NaN"""
+    # shape of arr (num_bands, N1, N2, N3)
+    diff_arr = np.abs(np.diff(arr, axis=axis))
+    steps = np.nanmean(diff_arr, axis=axis)
+    # print(f"max_step={step:.3f}")
+    return np.nanmax(steps, out=np.array(0.0))
 
 
 @njit(parallel=True, nogil=True)
@@ -157,26 +130,17 @@ def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     # -------- cut the corners based on distance --------
     r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
     idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
-    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
+
     # return vq, idx
-
-
-def get_max_step(arr, axis: int):
-    """Get max step along a given axis. Reutrn zero if all NaN"""
-    # shape of arr (num_bands, N1, N2, N3)
-    # (min_en, max_en) = en_range
-    diff_arr = np.abs(np.diff(arr, axis=axis))
-    steps = np.nanmean(diff_arr, axis=axis)
-    # print(f"max_step={step:.3f}")
-    return np.nanmax(steps, out=np.array(0.0))
+    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
 
 
 def convolution(reso_params):
-    if reso_params is None:
-        return np.nan
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
+    if reso_params is None:
+        return np.nan
     (qh, qk, ql), en, r0, mat = reso_params
     mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
@@ -278,23 +242,47 @@ def convolution(reso_params):
 
 
 if __name__ == "__main__":
+    # setup instrument
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb3.json"
+    hb3 = TAS(fixed_ef=14.7)
+    hb3.load_instrument_params_from_json(instrument_config_json_path)
+    # set up a cubic sample
+    lattice_params = (10, 10, 10, 90, 90, 90)
+    sample = Sample(lattice_params)
+    sample.set_mosaic(30, 30)
+    # set up sample orientation, u along ki, v in plane, u cross v is up
+    # when all goniometer angles are zeros
+    u = (1, 1, 0)
+    v = (0, 0, 1)
+    # set up the scattering plane, (100) and (010) in two peaks in plane
+    peaks = ((1, 1, 0), (0, 0, 1))
+    ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
+    plane_normal_mantid, in_plane_ref_mantid = plane_normal_from_two_peaks(
+        u_mat_from_ub_matrix(ub_matrix_mantid),
+        b_mat_from_ub_matrix(ub_matrix_mantid),
+        *peaks,
+    )
+    sample.ub_conf = UBConf(
+        ub_mat=mantid_to_spice(ub_matrix_mantid),
+        plane_normal=mantid_to_spice(plane_normal_mantid),
+        in_plane_ref=mantid_to_spice(in_plane_ref_mantid),
+    )
+    hb3.mount_sample(sample)
+
     # ----------------------------------------------------
     # points being measured
-    # qe_mesh has the dimension (4, n_pts_of_measurement)
-    # flatten for meshed measurement
     # ----------------------------------------------------
     q1_min, q1_max, q1_step = 2, 3, 0.02
     en_min, en_max, en_step = -3, 25, 0.5
-    q2 = 0
-    q3 = 0
 
     q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
+    q_list = np.array([(h, h, h) for h in q1])
 
-    # calculate resolution
-    vq1, vq2, vq3 = np.meshgrid(q1, q2, q3, indexing="ij")
-    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
-    reso_params = resolution_matrix(hkl=q_list, en=en)
+    reso_params = [
+        (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
+        for reso in hb3.cooper_nathans(hkl=q_list, en=en)
+    ]
 
     t0 = time()
     num_worker = 8
@@ -303,34 +291,54 @@ if __name__ == "__main__":
     measurement_inten = np.asarray(list(results))
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
-    # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
-    total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
 
     # ----------------------------------------------------
     # plot 2D contour
     # ----------------------------------------------------
-    fig, ax = plt.subplots(figsize=(10, 6))
-    vq1, ven = np.meshgrid(q1, en, indexing="ij")
-    img = ax.pcolormesh(vq1, ven, measurement_inten.reshape(np.shape(vq1)), cmap="turbo", vmin=0, vmax=0.5)
+    # calculate and plot resolution
+    q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 10)) + 1)
+    en_list = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
+    q_list = np.array([(h, h, h) for h in q1_list])
+    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list, projection=((1, 1, 1), (-1, -1, 2), (1, -1, 0)))
 
-    ax.grid(alpha=0.6)
-    ax.set_xlabel("Q1")
-    ax.set_ylabel("En")
-    ax.set_xlim((q1_min, q1_max))
-    ax.set_ylim((en_min, en_max))
+    p = Plot2D()
+    for rez in rez_list:
+        if rez is None:
+            continue
+        e_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
+        p.add_reso(e_co, c="w", linestyle="solid")
+        p.add_reso(e_inco, c="w", linestyle="dashed")
+    # create plot
+    fig = plt.figure(figsize=(10, 6))
+    ax = fig.add_subplot(111, axes_class=Axes)
+    p.plot(ax)
 
-    plot_rez_ellipses(ax)
+    # overplot contour
+    vq1, ven = np.meshgrid(q1, en)
+    im = ax.pcolormesh(
+        vq1,
+        ven,
+        measurement_inten.reshape(np.shape(vq1)),
+        cmap="turbo",
+        vmin=0,
+        vmax=0.005,
+    )
+    fig.colorbar(im, ax=ax)
+
+    # plot dispersion
     disp = model_disp(q1, np.zeros_like(q1), np.zeros_like(q1))
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 
-    ax.legend()
-    fig.colorbar(img, ax=ax)
+    ax.set_xlim((q1_min, q1_max))
+    ax.set_ylim((en_min, en_max))
+
     ax.set_title(
-        f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
+        "3D FM chain S=1 J=-5"
         + f"\n3D Convolution for {len(q1) * len(en)} points, "
         + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
-
+    ax.grid(alpha=0.6)
     # plt.tight_layout()
     plt.show()
