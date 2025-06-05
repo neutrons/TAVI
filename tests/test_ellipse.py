@@ -30,8 +30,8 @@ def test_hkl(tas_params):
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
 
     assert np.allclose(e01_co.angle, 60)
-    assert e01_co.xlabel == "H (r.l.u.)"
-    assert e01_co.ylabel == "K (r.l.u.)"
+    assert e01_co.xlabel == "(H, 0, 0) (r.l.u.)"
+    assert e01_co.ylabel == "(0, K, 0) (r.l.u.)"
 
 
 def test_plotting(tas_params):
