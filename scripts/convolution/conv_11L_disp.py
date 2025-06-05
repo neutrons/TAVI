@@ -272,12 +272,12 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # points being measured
     # ----------------------------------------------------
-    q1_min, q1_max, q1_step = 0, 3, 0.02
+    q1_min, q1_max, q1_step = -3, 3, 0.02
     en_min, en_max, en_step = -3, 25, 0.5
 
     q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
-    q_list = np.array([(h, h, h) for h in q1])
+    q_list = np.array([(1, 1, l) for l in q1])
 
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
@@ -298,15 +298,15 @@ if __name__ == "__main__":
     # calculate and plot resolution
     q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 10)) + 1)
     en_list = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
-    q_list = np.array([(h, h, h) for h in q1_list])
-    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list, projection=((1, 1, 1), (-1, -1, 2), (1, -1, 0)))
+    q_list = np.array([(1, 1, l) for l in q1_list])
+    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list, projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)))
 
     p = Plot2D()
     for rez in rez_list:
         if rez is None:
             continue
-        e_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
+        e_co = rez.get_ellipse(axes=(2, 3), PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=(2, 3), PROJECTION=True)
         p.add_reso(e_co, c="w", linestyle="solid")
         p.add_reso(e_inco, c="w", linestyle="dashed")
     # create plot
@@ -327,7 +327,7 @@ if __name__ == "__main__":
     fig.colorbar(im, ax=ax)
 
     # plot dispersion
-    disp = model_disp(q1, q1, q1)
+    disp = model_disp(np.ones_like(q1), np.ones_like(q1), q1)
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 

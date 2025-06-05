@@ -277,7 +277,7 @@ if __name__ == "__main__":
 
     q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
     en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
-    q_list = np.array([(h, h, h) for h in q1])
+    q_list = np.array([(h, h, -h) for h in q1])
 
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
@@ -298,8 +298,8 @@ if __name__ == "__main__":
     # calculate and plot resolution
     q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 10)) + 1)
     en_list = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
-    q_list = np.array([(h, h, h) for h in q1_list])
-    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list, projection=((1, 1, 1), (-1, -1, 2), (1, -1, 0)))
+    q_list = np.array([(h, h, -h) for h in q1_list])
+    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list, projection=((1, 1, -1), (1, 1, 2), (1, -1, 0)))
 
     p = Plot2D()
     for rez in rez_list:
@@ -327,7 +327,7 @@ if __name__ == "__main__":
     fig.colorbar(im, ax=ax)
 
     # plot dispersion
-    disp = model_disp(q1, q1, q1)
+    disp = model_disp(q1, q1, -q1)
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 
@@ -335,7 +335,7 @@ if __name__ == "__main__":
     ax.set_ylim((en_min, en_max))
 
     ax.set_title(
-        "3D FM S=1 J=-5"
+        "3D FM chain S=1 J=-5"
         + f"\n3D Convolution for {len(q1) * len(en)} points, "
         + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
