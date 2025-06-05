@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
+from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 
@@ -48,6 +49,20 @@ def test_projection(tas_params):
     assert rez.projection == ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     assert np.allclose(rez.angles, (90, 90, 90))
     assert rez.axes_labels == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
+
+
+def test_making_labels_from_projection():
+    label = ResoEllipsoid.labels_from_projection()
+    assert label == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
+
+    label = ResoEllipsoid.labels_from_projection(projection=None)
+    assert label == ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+
+    label = ResoEllipsoid.labels_from_projection(projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
+    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
+
+    label = ResoEllipsoid.labels_from_projection(projection=((1.0, 1.0, 0.0), (0, 0, 1), (1, -1, 0)))
+    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
 
 
 def test_plotting(tas_params):

@@ -71,8 +71,10 @@ class ResoEllipsoid(object):
             miller_str = hkl_str[i]
             label_str = "("
             for j in range(3):
-                if p[j].is_integer():
-                    num = int(p[j])
+                # Check if the value is an integer or a float that is close to an integer
+                val = p[j]
+                if isinstance(val, int) or (isinstance(val, float) and val.is_integer()):
+                    num = int(val)
                     if num == 0:
                         label_str += "0"
                     elif num == 1:
