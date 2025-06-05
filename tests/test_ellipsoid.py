@@ -36,7 +36,7 @@ def test_hkl(tas_params):
     assert np.allclose(rez.q, (0, 0, 3))
     assert rez.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1))
     assert np.allclose(rez.angles, (60, 90, 90))
-    assert rez.axes_labels == ("H (r.l.u.)", "K (r.l.u.)", "L (r.l.u.)", "E (meV)")
+    assert rez.axes_labels == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
 
 
 def test_projection(tas_params):
@@ -47,7 +47,7 @@ def test_projection(tas_params):
     assert np.allclose(rez.q, (0, 3, 0))
     assert rez.projection == ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     assert np.allclose(rez.angles, (90, 90, 90))
-    assert rez.axes_labels == ("(1, 1, 0)", "(0, 0, 1)", "(1, -1, 0)", "E (meV)")
+    assert rez.axes_labels == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
 
 
 def test_plotting(tas_params):
