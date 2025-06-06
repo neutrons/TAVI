@@ -1,0 +1,11 @@
+scantitle "Ba4Ru3O10 OP, warming"
+
+defxy coldtip detector
+scanon
+loop i=4,120,4
+set_temp %i
+wait 30
+stepbegin
+count preset mcu 600
+stepend
+endloop 

@@ -1,0 +1,38 @@
+# scan = 609
+# date = 2/22/2025
+# time = 12:11:42 AM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1046
+# command = scanrel omega 1.5 -1.5 0.1
+# builtin_command = scan omega @(omega)+1.5 @(omega)+-1.5 0.100000
+# users = Feng Ye, Mike McDowell, Jiasen Guo, Adam Aczel, Kaleb Burrage, Wei Tian, Bing Li, Zachary Morgan
+# local_contact = Wei Tian
+# scan_title = MnWO4, ( -0.168819 0.295732 0.100234 ) rocking at T = 4.1676 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, MnWO4
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 4.824069,5.755582,4.999231,89.932854,88.939129,90.018476
+# ubmatrix = 0.016958,0.172722,0.013747,0.204090,-0.011993,-0.036006,-0.032332,0.014503,-0.196318
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = UBmatrix-MnWO4-final.dat
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 5.000000
+# def_x = omega
+# def_y = detector
+# col_headers = 
+#   Pt.      omega       time   detector    monitor        mcu         m2        chi        phi     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
+      1   -27.2795      4.829      3.000  96501.000      5.000    41.5367     8.7208  -140.0000   -57.5525    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7703    41.5152    -0.1754     0.2899     0.1009     0.0000    14.4503     4.1681    15.2711     4.000
+      2   -27.3793      4.818      6.000  96501.000      5.000    41.5367     8.7208  -140.0000   -57.5525    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7702    41.5151    -0.1750     0.2902     0.1008     0.0000    14.4503     4.1689    15.2710     4.000
+      3   -27.4794      4.820      6.000  96501.000      5.000    41.5367     8.7208  -140.0000   -57.5525    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7703    41.5151    -0.1745     0.2906     0.1008     0.0000    14.4503     4.1674    15.2734     4.000
+      4   -27.5793      0.000      0.000      0.000      5.000    41.5367     8.7208  -140.0000   -57.5525    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7703    41.5151    -0.1741     0.2910     0.1007     0.0000    14.4503     4.1632    15.2733     4.000
+# Sum of Counts = 15
+# Center of Mass = -27.399380+/-10.004858
+# Full Width Half-Maximum = 0.149624+/-10.910205
+# 12:12:01 AM  2/22/2025   scan stopped!!

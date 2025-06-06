@@ -1,0 +1,71 @@
+
+#======================================================================
+# CRYSTAL DATA
+#----------------------------------------------------------------------
+data_VESTA_phase_1
+
+_chemical_name_common                  ''
+_cell_length_a                         5.77996(9)
+_cell_length_b                         13.2780(2)
+_cell_length_c                         13.0767(2)
+_cell_angle_alpha                      90.000000
+_cell_angle_beta                       90.000000
+_cell_angle_gamma                      90.000000
+_cell_volume                           1003.591519
+_space_group_name_H-M_alt              'C m c e'
+_space_group_IT_number                 64
+
+loop_
+_space_group_symop_operation_xyz
+   'x, y, z'
+   '-x, -y, -z'
+   '-x, -y+1/2, z+1/2'
+   'x, y+1/2, -z+1/2'
+   '-x, y+1/2, -z+1/2'
+   'x, -y+1/2, z+1/2'
+   'x, -y, -z'
+   '-x, y, z'
+   'x+1/2, y+1/2, z'
+   '-x+1/2, -y+1/2, -z'
+   '-x+1/2, -y, z+1/2'
+   'x+1/2, y, -z+1/2'
+   '-x+1/2, y, -z+1/2'
+   'x+1/2, -y, z+1/2'
+   'x+1/2, -y+1/2, -z'
+   '-x+1/2, y+1/2, z'
+
+loop_
+   _atom_site_label
+   _atom_site_occupancy
+   _atom_site_fract_x
+   _atom_site_fract_y
+   _atom_site_fract_z
+   _atom_site_adp_type
+   _atom_site_U_iso_or_equiv
+   _atom_site_type_symbol
+   Ba1        1.0     0.500000     0.23980(2)   0.61131(2)  Uani  0.008843 Ba
+   Ba2        1.0     0.500000     0.53534(2)   0.63897(2)  Uani  0.006623 Ba
+   Ru1        1.0     0.500000     0.000000     0.500000    Uani  0.002233 Ru
+   Ru2        1.0     0.000000     0.37513(2)   0.64953(2)  Uani  0.003690 Ru
+   O1         1.0     0.2706(4)   -0.10960(16)  0.53444(16) Uani  0.007833 O
+   O2         1.0     0.000000     0.2304(4)    0.6475(4)   Uani  0.013233 O
+   O3         1.0     0.500000     0.0339(2)    0.6515(2)   Uani  0.008333 O
+   O4         1.0     0.750000     0.3778(2)    0.750000    Uani  0.011100 O
+
+loop_
+   _atom_site_aniso_label
+   _atom_site_aniso_U_11
+   _atom_site_aniso_U_22
+   _atom_site_aniso_U_33
+   _atom_site_aniso_U_12
+   _atom_site_aniso_U_13
+   _atom_site_aniso_U_23
+   Ba1	 0.00768  0.00591  0.01294  0.00000  0.00000 -0.00019
+   Ba2	 0.00679  0.00628  0.00680  0.00000  0.00000 -0.00044
+   Ru1	 0.00199  0.00257  0.00214  0.00000  0.00000  0.00006
+   Ru2	 0.00355  0.00412  0.00340  0.00000  0.00000 -0.00010
+   O1	 0.00650  0.00970  0.00730 -0.00140 -0.00090  0.00170
+   O2	 0.01410  0.00480  0.02080  0.00000  0.00000  0.00100
+   O3	 0.01070  0.00790  0.00640  0.00000  0.00000  0.00120
+   O4	 0.00950  0.01470  0.00910  0.00000  0.00410  0.00000
+

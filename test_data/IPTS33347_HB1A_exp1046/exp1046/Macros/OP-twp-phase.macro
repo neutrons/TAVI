@@ -1,0 +1,17 @@
+ 
+
+
+
+loop i=4.2, 15 0.2
+set_temp %i
+
+wait 30
+scantitle "MnWO4, (0.25 -1.5 0.5) & (0.216 -1.5 0.458) OP, at T = @(coldtip.position) K, warming up"
+
+preset mcu 2
+
+scan omega -18 -21.6 0.15
+endloop
+
+
+ 

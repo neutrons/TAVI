@@ -1,0 +1,156 @@
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 -1.000 1.000 )"
+mv theta -50.91 omega -25.45 chi 27.05 phi -123.59
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 -1.000 2.000 )"
+mv theta -56.87 omega -28.43 chi 22.88 phi -109.05
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-2.000 0.000 2.000 )"
+mv theta -64.36 omega -32.18 chi -2.23 phi -118.09
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-2.000 0.000 1.000 )"
+mv theta -58.89 omega -29.44 chi -1.21 phi -130.50
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-2.000 0.000 0.000 )"
+mv theta -56.99 omega -28.50 chi -0.01 phi -144.38
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-2.000 0.000 -1.000 )"
+mv theta -58.89 omega -29.44 chi 1.19 phi -158.25
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-2.000 0.000 -2.000 )"
+mv theta -64.36 omega -32.18 chi 2.21 phi -170.67
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 1.000 2.000 )"
+mv theta -39.26 omega -19.63 chi -42.38 phi -83.09
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 1.000 -1.000 )"
+mv theta -30.89 omega -15.44 chi -47.25 phi 166.90
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 1.000 -2.000 )"
+mv theta -39.26 omega -19.63 chi -33.45 phi 150.80
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 1.000 -2.000 )"
+mv theta -56.87 omega -28.43 chi -22.88 phi 70.95
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 1.000 -1.000 )"
+mv theta -50.91 omega -25.45 chi -27.05 phi 56.41
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 1.000 1.000 )"
+mv theta -50.91 omega -25.45 chi -30.18 phi 20.03
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 1.000 2.000 )"
+mv theta -56.87 omega -28.43 chi -28.39 phi 4.31
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (2.000 0.000 2.000 )"
+mv theta -64.36 omega -32.18 chi -2.21 phi 9.33
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (2.000 0.000 1.000 )"
+mv theta -58.89 omega -29.44 chi -1.19 phi 21.75
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (2.000 0.000 0.000 )"
+mv theta -56.99 omega -28.50 chi 0.01 phi 35.62
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (2.000 0.000 -1.000 )"
+mv theta -58.89 omega -29.44 chi 1.21 phi 49.50
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (2.000 0.000 -2.000 )"
+mv theta -64.36 omega -32.18 chi 2.23 phi 61.91
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 -1.000 1.000 )"
+mv theta -30.89 omega -15.44 chi 47.25 phi -13.10
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 -1.000 2.000 )"
+mv theta -39.26 omega -19.63 chi 33.45 phi -29.20
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 -1.000 -2.000 )"
+mv theta -39.26 omega -19.63 chi 42.38 phi 96.91
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (1.000 1.000 0.000 )"
+mv theta -48.81 omega -24.41 chi -29.86 phi 38.50
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 -1.000 0.000 )"
+mv theta -48.81 omega -24.41 chi 29.86 phi -141.50
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 -1.000 -1.000 )"
+mv theta -50.91 omega -25.45 chi 30.18 phi -159.97
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2
+scantitle "Optimization T = @(coldtip.position) K : (-1.000 -1.000 -2.000 )"
+mv theta -56.87 omega -28.43 chi 28.39 phi -175.69
+scan phi @(phi)+1.35 @(phi)-1.35 0.15; drive phi @(com)
+scan omega @(s1)+1.35 @(omega)-1.35 0.15; drive omega @(com)
+scan chi @(chi)+5 @(chi)-5 1; drive chi @(com)
+th2th 1.8 -1.8 0.2

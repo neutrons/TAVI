@@ -136,6 +136,7 @@ def read_spice_ubconf(ub_file_name: str) -> dict:
         root = tree.getroot()
         for matrix in root.findall("matrix"):
             ub_matrix = matrix.attrib["matrix"].split(" ")
+        ub_matrix = [s for s in ub_matrix if s]  # filter
         ubconf.update({"UBMatrix": np.array([float(ub_matrix[i]) for i in range(9)])})
     return ubconf
 

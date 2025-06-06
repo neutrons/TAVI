@@ -1,0 +1,363 @@
+set_temp 4
+wait 1200
+
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 0.00 -2.00 )"
+preset time  1
+mv 2theta -64.36 omega -31.10 chi 2.90 phi -170.78
+scan omega -31.10 -33.26 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 0.00 -1.00 )"
+preset time  4
+mv 2theta -58.89 omega -28.36 chi 1.75 phi -158.34
+scan omega -28.36 -30.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 0.00 0.00 )"
+preset time  6
+mv 2theta -56.99 omega -27.42 chi 0.37 phi -144.43
+scan omega -27.42 -29.58 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 0.00 1.00 )"
+preset time  4
+mv 2theta -58.89 omega -28.36 chi -1.04 phi -130.52
+scan omega -28.36 -30.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 0.00 2.00 )"
+preset time  1
+mv 2theta -64.36 omega -31.10 chi -2.25 phi -118.08
+scan omega -31.10 -33.26 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 1.00 )"
+preset time  9
+mv 2theta -30.89 omega -14.36 chi -2.25 phi -118.08
+scan omega -14.36 -16.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -3.82 phi -99.70
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -4.60 phi -88.38
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -5.01 phi -81.22
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -28.31 phi -69.40
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -34.07 phi -74.34
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -42.69 phi -83.70
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi -25.93 phi -101.54
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi -28.39 phi -113.46
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi -29.95 phi -129.24
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 0.00 )"
+preset time  4
+mv 2theta -48.81 omega -23.33 chi -29.37 phi -147.71
+scan omega -23.33 -25.49 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 -1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi -26.33 phi -165.54
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 -2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi -22.02 phi -179.99
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 -1.00 )"
+preset time  9
+mv 2theta -30.89 omega -14.36 chi 2.90 phi -170.78
+scan omega -14.36 -16.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 -2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi 29.03 phi -175.63
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 -1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi 30.69 phi -159.75
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 0.00 )"
+preset time  4
+mv 2theta -48.81 omega -23.33 chi 30.14 phi -141.12
+scan omega -23.33 -25.49 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi 27.05 phi -123.15
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi 22.65 phi -108.64
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi 18.32 phi -97.96
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 32.74 phi -79.05
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 23.36 phi -71.86
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 17.28 phi -67.86
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 4.00 )"
+preset time  4
+mv 2theta -56.48 omega -27.16 chi -5.79 phi -54.44
+scan omega -27.16 -29.32 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 3.00 )"
+preset time 12
+mv 2theta -41.57 omega -19.71 chi -5.79 phi -54.44
+scan omega -19.71 -21.87 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 2.00 )"
+preset time  6
+mv 2theta -27.37 omega -12.60 chi -5.79 phi -54.44
+scan omega -12.60 -14.76 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 1.00 )"
+preset time 12
+mv 2theta -13.59 omega -5.71 chi -5.79 phi -54.44
+scan omega -5.71 -7.87 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 17.10 phi -40.67
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 23.12 phi -36.57
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 32.41 phi -29.24
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi 17.79 phi -10.65
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi 22.02 phi 0.01
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi 26.33 phi 14.46
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 0.00 )"
+preset time  4
+mv 2theta -48.81 omega -23.33 chi 29.37 phi 32.29
+scan omega -23.33 -25.49 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 -1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi 29.95 phi 50.76
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 -2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi 28.39 phi 66.54
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 -1.00 -3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi 25.93 phi 78.46
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 3.82 phi 80.30
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 4.60 phi 91.62
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 5.01 phi 98.78
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 28.31 phi 110.60
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 34.07 phi 105.66
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -1.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 42.69 phi 96.30
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 -3.00 )"
+preset time 12
+mv 2theta -41.57 omega -19.71 chi 5.79 phi 125.56
+scan omega -19.71 -21.87 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 -2.00 )"
+preset time  6
+mv 2theta -27.37 omega -12.60 chi 5.79 phi 125.56
+scan omega -12.60 -14.76 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 -1.00 )"
+preset time 12
+mv 2theta -13.59 omega -5.71 chi 5.79 phi 125.56
+scan omega -5.71 -7.87 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 0.00 -4.00 )"
+preset time  4
+mv 2theta -56.48 omega -27.16 chi 5.79 phi 125.56
+scan omega -27.16 -29.32 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -17.28 phi 112.14
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -23.36 phi 108.14
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -32.74 phi 100.95
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 -3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi -18.32 phi 82.04
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 -2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi -22.65 phi 71.36
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 -1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi -27.05 phi 56.85
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 0.00 )"
+preset time  4
+mv 2theta -48.81 omega -23.33 chi -30.14 phi 38.88
+scan omega -23.33 -25.49 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 1.00 )"
+preset time 12
+mv 2theta -50.91 omega -24.37 chi -30.69 phi 20.25
+scan omega -24.37 -26.53 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 2.00 )"
+preset time  2
+mv 2theta -56.87 omega -27.35 chi -29.03 phi 4.37
+scan omega -27.35 -29.51 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 1.00 3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi -26.47 phi -7.58
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -4.34 phi -9.16
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -5.01 phi -20.49
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -5.34 phi -27.65
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -28.50 phi -39.84
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -34.32 phi -35.02
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 1.00 2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -43.06 phi -25.82
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 1.00 )"
+preset time  9
+mv 2theta -30.89 omega -14.36 chi -2.90 phi 9.22
+scan omega -14.36 -16.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 0.00 2.00 )"
+preset time  1
+mv 2theta -64.36 omega -31.10 chi -2.90 phi 9.22
+scan omega -31.10 -33.26 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 0.00 1.00 )"
+preset time  4
+mv 2theta -58.89 omega -28.36 chi -1.75 phi 21.66
+scan omega -28.36 -30.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 0.00 0.00 )"
+preset time  6
+mv 2theta -56.99 omega -27.42 chi -0.37 phi 35.57
+scan omega -27.42 -29.58 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 0.00 -1.00 )"
+preset time  4
+mv 2theta -58.89 omega -28.36 chi 1.04 phi 49.48
+scan omega -28.36 -30.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (2.00 0.00 -2.00 )"
+preset time  1
+mv 2theta -64.36 omega -31.10 chi 2.25 phi 61.92
+scan omega -31.10 -33.26 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 -1.00 )"
+preset time  9
+mv 2theta -30.89 omega -14.36 chi 2.25 phi 61.92
+scan omega -14.36 -16.52 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 0.00 0.00 )"
+preset time  8
+mv 2theta -27.60 omega -12.72 chi -0.37 phi 35.57
+scan omega -12.72 -14.88 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (1.00 -2.00 3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi 43.38 phi -53.98
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 0.00 )"
+preset time  8
+mv 2theta -27.60 omega -12.72 chi 0.37 phi -144.43
+scan omega -12.72 -14.88 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 2.00 -3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi -43.38 phi 126.02
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi -17.10 phi 139.33
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi -23.12 phi 143.43
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 1.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi -32.41 phi 150.76
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-2.00 1.00 -3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi -17.79 phi 169.35
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 5.01 phi 159.51
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 5.34 phi 152.35
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 -4.00 )"
+preset time 11
+mv 2theta -64.00 omega -30.92 chi 28.50 phi 140.16
+scan omega -30.92 -33.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 -3.00 )"
+preset time  4
+mv 2theta -50.63 omega -24.24 chi 34.32 phi 144.98
+scan omega -24.24 -26.40 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (0.00 -1.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 43.06 phi 154.18
+scan omega -18.55 -20.71 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 -1.00 -3.00 )"
+preset time 12
+mv 2theta -66.00 omega -31.92 chi 26.47 phi 172.42
+scan omega -31.92 -34.08 0.12
+scantitle "Nuclear and magnetic T = @(coldtip.position) K : (-1.00 0.00 -2.00 )"
+preset time  4
+mv 2theta -39.26 omega -18.55 chi 4.34 phi 170.84
+scan omega -18.55 -20.71 0.12

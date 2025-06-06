@@ -1,0 +1,35 @@
+# scan = 471
+# date = 2/21/2025
+# time = 2:29:06 PM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1046
+# command = scan phi 1 -1 0.2
+# builtin_command = scan phi 1 -1 0.2
+# users = Feng Ye, Mike McDowell, Jiasen Guo, Adam Aczel, Kaleb Burrage, Wei Tian, Bing Li, Zachary Morgan
+# local_contact = Wei Tian
+# scan_title = MnWO4, look for [1 2 1] at T = @(colldtip.position) K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, MnWO4
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.058000,5.058000,24.640000,90.000000,90.000000,120.000000
+# ubmatrix = -0.014884,-0.002409,0.040485,-0.192745,-0.202001,-0.001686,0.121429,-0.106334,0.002286
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = UBmatrix-La2Ni7.dat
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 1.000000
+# def_x = phi
+# def_y = detector
+# col_headers = 
+#   Pt.        phi       time   detector    monitor        mcu         m2        chi      omega     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
+      1   132.3339      0.000      0.000      0.000      0.000    41.5367    44.0007   -42.9141   -85.8360    24.0000    15.0000    15.0000    24.0000    25.0000    15.0000    15.0000    25.0000    20.7700    41.5151  -200.0000  -200.0000  -200.0000     0.0000    14.4503     4.5929    17.3246     4.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 2:29:36 PM  2/21/2025   scan stopped!!

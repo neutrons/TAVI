@@ -1,0 +1,74 @@
+# scan = 1969
+# date = 2/27/2025
+# time = 2:38:40 PM
+# proposal = 33477
+# experiment = Commissioning and enabling the 4-circle capability at VERITAS
+# experiment_number = 1046
+# command = th4th 1.8 -1.8 0.2
+# builtin_command = scan 2theta @(2theta)+1.8 @(2theta)+-1.8 0.200000 omega @(omega)+(1.8/2) @(omega)+(-1.8/2) 0.100000
+# users = Feng Ye, Mike McDowell, Jiasen Guo, Adam Aczel, Kaleb Burrage, Wei Tian, Bing Li, Zachary Morgan
+# local_contact = Wei Tian
+# scan_title = Optimization T = 59.8613 K : (1.000 0.000 -2.000 )
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = La2Ni7, MnWO4
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.780000,5.780000,10.060000,90.000000,90.000000,120.000000
+# ubmatrix = 0.162796,0.072644,0.057395,-0.115791,-0.070173,0.080696,-0.000021,-0.172362,-0.008664
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = Ba3Ru4O10_UBMatrix.dat
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = 2theta
+# def_y = detector
+# col_headers = 
+#   Pt.     2theta      omega       time   detector    monitor        mcu         m2        chi        phi   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
+# Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.89982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.79982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.69982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.59982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.49982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.39982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:45 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:45 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.29982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.19982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+# Thu, Feb 27, 2025 [2:38:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# The destination for "omega", 0.09982, exceeds the upper limit of 0.00000.
+# ...Move aborted.
+     10   -39.2521     0.0000      1.000      5.000  20906.000      1.083    41.5367     2.4548    80.2702    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7702    41.5163    -0.5767    -0.0626     2.5608     0.0000    14.4503    59.9985    76.5864    60.000
+     11   -39.4525    -0.1004      1.000      1.000  21226.000      1.100    41.5367     2.4548    80.2702    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7701    41.5163    -0.5795    -0.0629     2.5733     0.0000    14.4503    59.8648    76.2972    60.000
+     12   -39.6487    -0.2001      1.000      1.000  21103.000      1.093    41.5367     2.4548    80.2702    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7701    41.5163    -0.5823    -0.0632     2.5856     0.0000    14.4503    60.0403    76.3636    60.000
+     13   -39.8517    -0.3000      1.000      0.000      0.000      0.000    41.5367     2.4548    80.2702    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7701    41.5163    -0.5851    -0.0635     2.5983     0.0000    14.4503    60.0157    76.2995    60.000
+# Sum of Counts = 7
+# Center of Mass = -39.337386+/-21.026788
+# Full Width Half-Maximum = 0.289370+/-22.438056
+# 2:39:09 PM  2/27/2025   scan stopped!!
