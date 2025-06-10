@@ -14,8 +14,8 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 
 def test_local_q(tas_params):
-    tas, hkl, _ = tas_params
-    rez = tas.cooper_nathans(hkl=hkl, en=0, projection=None)
+    tas, hkle, _ = tas_params
+    rez = tas.cooper_nathans(hkle=hkle, projection=None)
     ellipse = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
 
     assert np.allclose(ellipse.angle, 90)
@@ -24,8 +24,8 @@ def test_local_q(tas_params):
 
 
 def test_hkl(tas_params):
-    tas, hkl, _ = tas_params
-    rez = tas.cooper_nathans(hkl=hkl, en=0)
+    tas, hkle, _ = tas_params
+    rez = tas.cooper_nathans(hkle=hkle)
 
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
 
@@ -35,8 +35,8 @@ def test_hkl(tas_params):
 
 
 def test_plotting(tas_params):
-    tas, hkl, _ = tas_params
-    rez = tas.cooper_nathans(hkl=hkl, en=0)
+    tas, hkle, _ = tas_params
+    rez = tas.cooper_nathans(hkle=hkle)
 
     e01_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
     e01_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
@@ -79,9 +79,9 @@ def tas_params():
     sample = Sample.from_json(sample_json_path)
     tas.mount_sample(sample)
 
-    hkl = (0, 0, 3)
+    hkle = (0, 0, 3, 0)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
 
-    tas_params = (tas, hkl, projection)
+    tas_params = (tas, hkle, projection)
 
     return tas_params

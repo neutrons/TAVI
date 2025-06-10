@@ -26,6 +26,9 @@ class Collimators(TASComponent):
 
         super().__init__(param_dict, component_name)
 
+    def __repr__(self):
+        return "Collimator"
+
     @property
     def horizontal_divergence(self) -> list:
         """list of horizontal divergence in minitus of arc"""

@@ -9,18 +9,9 @@ from tavi.sample import Sample
 np.set_printoptions(floatmode="fixed", precision=4)
 
 
-def test_out_of_reach(tas_params):
-    ctax, hkl, _ = tas_params
-    rez = ctax.cooper_nathans(hkl=(0, 0, 0), en=0, projection=None)
-    assert not rez
-
-    rez = ctax.cooper_nathans(hkl=(10, 10, 10), en=0, projection=None)
-    assert not rez
-
-
 def test_local_q(tas_params):
-    ctax, hkl, _ = tas_params
-    rez = ctax.cooper_nathans(hkl, en=0, projection=None)
+    ctax, hkle, _ = tas_params
+    rez = ctax.cooper_nathans(hkle, projection=None)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (3 * 2 * np.pi / ctax.sample.c, 0, 0))
@@ -30,8 +21,8 @@ def test_local_q(tas_params):
 
 
 def test_hkl(tas_params):
-    ctax, hkl, _ = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0)
+    ctax, hkle, _ = tas_params
+    rez = ctax.cooper_nathans(hkle=hkle)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 0, 3))
@@ -41,8 +32,8 @@ def test_hkl(tas_params):
 
 
 def test_projection(tas_params):
-    ctax, hkl, projection = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0, projection=projection)
+    ctax, hkle, projection = tas_params
+    rez = ctax.cooper_nathans(hkle=hkle, projection=projection)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, (0, 3, 0))
@@ -66,8 +57,8 @@ def test_making_labels_from_projection():
 
 
 def test_plotting(tas_params):
-    ctax, hkl, _ = tas_params
-    rez = ctax.cooper_nathans(hkl=hkl, en=0)
+    ctax, hkle, _ = tas_params
+    rez = ctax.cooper_nathans(hkle=hkle)
     rez.plot_ellipses()
     plt.show()
 
@@ -84,9 +75,9 @@ def tas_params():
     nitio3 = Sample.from_json(sample_json_path)
     ctax.mount_sample(nitio3)
 
-    hkl = (0, 0, 3)
+    hkle = (0, 0, 3, 0)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
 
-    tas_params = (ctax, hkl, projection)
+    tas_params = (ctax, hkle, projection)
 
     return tas_params

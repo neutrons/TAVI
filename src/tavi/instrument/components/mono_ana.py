@@ -39,8 +39,8 @@ class MonoAna(TASComponent):
         # default values
         self.type: str = "PG002"
         self.d_spacing: float = mono_ana_xtal["PG002"]
-        self.mosaic_h: float = 45.0  # horizontal mosaic, min of arc
-        self.mosaic_v: float = 45.0  # vertical mosaic, if anisotropic
+        self.mosaic_h: Optional[float] = None  # horizontal mosaic, min of arc
+        self.mosaic_v: Optional[float] = None  # vertical mosaic, if anisotropic
         self.sense: Literal["-", "+"] = "-"  # + for counter-clockwise, - for clockwise
 
         # divide by np.sqrt(12) if rectangular
@@ -60,6 +60,9 @@ class MonoAna(TASComponent):
 
         super().__init__(param_dict, component_name)
         self.d_spacing = mono_ana_xtal[self.type]
+
+    def __repr__(self):
+        return f"Monochromator/Analyzer of type {self.type}"
 
     @property
     def _sense(self):

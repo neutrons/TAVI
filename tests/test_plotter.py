@@ -74,10 +74,9 @@ def test_plot2d_with_resolution():
     tas.mount_sample(sample)
 
     # calculate resolution ellipses
-    hkl_list = [(qh, qh, 3) for qh in np.arange(-0.5, 0.15, 0.05)]
-    en_list = [en for en in np.arange(0, 4.1, 0.4)]
+    hkle_list = [(qh, qh, 3, en) for qh in np.arange(-0.5, 0.15, 0.05) for en in np.arange(0, 4.1, 0.4)]
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez_list = tas.cooper_nathans(hkl=hkl_list, en=en_list, projection=projection)
+    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
 
     # generate plot
     p = Plot2D()

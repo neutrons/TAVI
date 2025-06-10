@@ -51,6 +51,7 @@ class TAS(TASBase):
         self.convention = convention  # use coordination system defined in SPICE
         self.fixed_ei = fixed_ei
         self.fixed_ef = fixed_ef
+        self.err_msg: list[str] = []
 
     def __repr__(self):
         cls = self.__class__.__name__
@@ -58,25 +59,33 @@ class TAS(TASBase):
         return cls_str
 
     def _get_ei_ef(
-        self, ei: Optional[float] = None, ef: Optional[float] = None, en: float = 0.0
+        self,
+        ei: Optional[float] = None,
+        ef: Optional[float] = None,
+        en: float = 0.0,
     ) -> tuple[float, float]:
-        """Determine Ei and Effor a given energy transfer en, based on whether Ei or Ef is fixed"""
-        if self.fixed_ef is not None:
+        """Determine Ei and Ef for a given energy transfer en, based on whether Ei or Ef is fixed
+
+        Note:
+            Use self.fixed_ei and self.fixed_ef only if ei and ef are not given
+        """
+        if (ef is None) and (self.fixed_ef is not None):
             ef = self.fixed_ef
-            if self.fixed_ei is not None:
-                ei = self.fixed_ei  # fixed both Ef and Ei
-                if not np.allclose(en, 0.0, atol=1e-3):
-                    raise ValueError(f"{self} has both Ei and Ef fixed, No energy transfer allowed.")
-            else:  # fixed Ef only
-                ei = en + ef
-        elif self.fixed_ei is not None:  # fixed Ei only
+        if (ei is None) and (self.fixed_ei is not None):
             ei = self.fixed_ei
-            ef = ei - en
-        else:
+
+        if (ei is None) and (ef is None):
             raise ValueError(f"{self} should has either Ei or Ef fixed.")
+        elif (ei is None) and (ef is not None):
+            ei = en + ef
+        elif (ef is None) and (ei is not None):
+            ef = ei - en
+        # elif not np.allclose(ei - ef, en, atol=1e-2): # ei, ef and en are given
+        #     raise ValueError(f"En={en:.2f} is different from Ei - Ef for Ei={ei:.2f} and Ef={ef:.2f}.")
+
         return (ei, ef)
 
-    def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> Optional[float]:
+    def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> float:
         """find two theta angle for a given peak.
 
         Note:
@@ -88,21 +97,18 @@ class TAS(TASBase):
             en (float): energy trnasfer en = ei - ef, in emV
 
         Returns:
-            two_theta (float | None): two theta angle, in degrees. Reutrn None if can't reach.
+            two_theta (float): two theta angle, in degrees. Raise ValueError if can't reach.
         """
 
         ei, ef = self._get_ei_ef(en=en)
-        h, k, l = hkl
-        if (two_theta_radians := two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)) is None:
-            print(
-                f"Triangle cannot be closed at q=({h:.02f},{k:.02f},{l:.02f}), "
-                + f"with ei={ei:.02f} meV and ef={ef:.02f} meV."
-            )
-            return None
-        else:
-            return np.degrees(two_theta_radians) * self.goniometer._sense
+        try:
+            two_theta_radians = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
+        except ValueError as e:
+            raise e
 
-    def get_psi(self, hkl: tuple[float, float, float], en: float = 0.0) -> Optional[float]:
+        return np.degrees(two_theta_radians) * self.goniometer._sense
+
+    def get_psi(self, hkl: tuple[float, float, float], en: float = 0.0) -> float:
         """find psi angle for a given peak
 
         Note:
@@ -113,21 +119,16 @@ class TAS(TASBase):
             hkl (tuple): miller indice of a peak
             en (float): energy transfer en = ei -ef, in emV
         Returns:
-            psi (float | None): psi angle, in degrees. Reutrn None if can't reach.
+            psi (float): psi angle, in degrees. Raise ValueError if can't reach.
         """
 
         ei, ef = self._get_ei_ef(en=en)
-        psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
-        h, k, l = hkl
-        if psi_radians is None:
-            print(
-                f"Triangle cannot be closed at q=({h:.02f},{k:.02f},{l:.02f}), "
-                + f"with ei={ei:.02f} meV and ef={ef:.02f} meV."
-            )
-            return None
-        else:
-            psi = np.rad2deg(psi_radians) * self.goniometer._sense * (-1)
-            return psi
+        try:
+            psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
+        except ValueError as e:
+            raise e
+
+        return np.rad2deg(psi_radians) * self.goniometer._sense * (-1)
 
     def get_theta_m(self, ei):
         """Calculate the theta angle m1 of monochromator of the given Ei"""
@@ -259,8 +260,6 @@ class TAS(TASBase):
 
         two_theta = self.get_two_theta(hkl=hkl, en=en)
         psi = self.get_psi(hkl=hkl, en=en)
-        if (two_theta is None) or (psi is None):
-            return None
 
         ei, ef = self._get_ei_ef(en=en)
         # checking if UB configuration info exists
@@ -298,20 +297,34 @@ class TAS(TASBase):
 
     def cooper_nathans(
         self,
-        hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
-        en: Union[float, list[float]] = 0.0,
+        hkle: Union[tuple[float, float, float, float], list[tuple[float, float, float, float]]],
         projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-    ) -> Union[None, ResoEllipsoid, tuple[ResoEllipsoid, ...]]:
+    ) -> Union[Optional[ResoEllipsoid], tuple[Optional[ResoEllipsoid], ...]]:
         """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
         Args:
-            hkl: momentum transfer, miller indices in reciprocal lattice
-            ei: incident energy, in units of meV
-            ef: final energy, in units of meV
-            R0: calculate normalization factor if True
+            hkle: hkl are momentum transfer miller indices in reciprocal lattice, e is energy transfer in meV
             projection (tuple): three non-coplaner vectors. If projection is None, the calculation is done in local Q frame
         Return
             A ResoEllipdois instance or a list of ResoEllipdois instances
         """
         cn = CooperNathans(instrument=self)
-        return cn.calculate(hkl=hkl, en=en, projection=projection)
+        cn.validate_instrument_parameters()
+
+        hkleief_list = cn.generate_hkleief_list(hkle)
+
+        rez_list: list[Optional[ResoEllipsoid]] = []
+        self.err_msg = []
+        for q_hkl, ei, ef in hkleief_list:
+            try:
+                reso_mat, r0 = cn.calculate_at_hkle(q_hkl, ei, ef)
+                rez = ResoEllipsoid(
+                    instrument=self, hkle=(q_hkl) + (ei - ef,), projection=projection, reso_mat=reso_mat, r0=r0
+                )
+            except ValueError as e:
+                rez = None
+                self.err_msg.append(str(e))
+
+            rez_list.append(rez)
+
+        return (rez_list[0]) if len(rez_list) == 1 else (tuple(rez_list))

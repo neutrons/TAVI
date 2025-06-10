@@ -2,6 +2,7 @@ import json
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 from mpl_toolkits.axisartist import Axes
 
 from tavi.instrument.tas import TAS
@@ -16,6 +17,31 @@ from tavi.ub_algorithm import (
     u_mat_from_ub_matrix,
     uv_to_ub_matrix,
 )
+
+
+@pytest.fixture
+def sample():
+    lattice_params = (10, 10, 10, 90, 90, 90)
+    sample = Sample(lattice_params)
+    sample.set_mosaic(30, 30)
+    u = (1, 0, 0)
+    v = (0, 1, 0)
+    ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
+    ub_matrix_spice = mantid_to_spice(ub_matrix_mantid)
+
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    b_mat = b_mat_from_ub_matrix(ub_matrix_mantid)
+    u_mat_mantid = u_mat_from_ub_matrix(ub_matrix_mantid)
+    plane_normal_mantid, in_plane_ref_mantid = plane_normal_from_two_peaks(
+        u_mat_mantid, b_mat, projection[0], projection[1]
+    )
+
+    sample.ub_conf = UBConf(
+        ub_mat=ub_matrix_spice,
+        plane_normal=mantid_to_spice(plane_normal_mantid),
+        in_plane_ref=mantid_to_spice(in_plane_ref_mantid),
+    )
+    return sample
 
 
 def test_uv_to_ub_matrix():
@@ -59,7 +85,7 @@ def test_uv_to_plane_normal():
     assert np.allclose(in_plane_ref, (0, 0, 1))
 
 
-def test_instrument_sample_setup():
+def test_instrument_sample_setup(sample):
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
     with open(instrument_config_json_path, "r", encoding="utf-8") as file:
         config_params_dict = json.load(file)
@@ -68,63 +94,52 @@ def test_instrument_sample_setup():
     tas._load_instrument_parameters(config_params_dict)
     assert np.allclose(tas.fixed_ei, 5.0)
 
-    lattice_params = (10, 10, 10, 90, 90, 90)
-    sample = Sample(lattice_params)
-    sample.set_mosaic(30, 30)
-
-    u = (1, 0, 0)
-    v = (0, 1, 0)
-    ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
-    ub_matrix_spice = mantid_to_spice(ub_matrix_mantid)
-
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    b_mat = b_mat_from_ub_matrix(ub_matrix_mantid)
-    u_mat_mantid = u_mat_from_ub_matrix(ub_matrix_mantid)
-    plane_normal_mantid, in_plane_ref_mantid = plane_normal_from_two_peaks(
-        u_mat_mantid, b_mat, projection[0], projection[1]
-    )
-
-    sample.ub_conf = UBConf(
-        ub_mat=ub_matrix_spice,
-        plane_normal=mantid_to_spice(plane_normal_mantid),
-        in_plane_ref=mantid_to_spice(in_plane_ref_mantid),
-    )
     tas.mount_sample(sample)
 
+    lattice_params = (10, 10, 10, 90, 90, 90)
     assert np.allclose(tas.sample.lattice_params, lattice_params)
 
 
-def test_plot_ellipses():
+def test_instrument_error_handling():
+    tas = TAS(fixed_ei=5)
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+
+    hkle = (0.1, 0.1, 0, 0)
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    with pytest.raises(AttributeError) as e_info:
+        rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    assert "sample is missing in TAS(fixed_ei=5, fixed_ef=None, convention=Spice)." in str(e_info.value)
+
+
+def test_out_of_reach(sample):
+    tas = TAS(fixed_ei=5)
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+    tas.mount_sample(sample)
+
+    hkle = (10, 10, 10, 0)
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+
+    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    assert rez is None
+    assert (
+        "Cannot get two_theta for hkl=(10, 10, 10), ei=5.00 meV, ef=5.00 meV. Triangle cannot be closed."
+        in tas.err_msg
+    )
+
+
+def test_plot_ellipses(sample):
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
 
     tas = TAS(fixed_ei=5)
     tas.load_instrument_params_from_json(instrument_config_json_path)
-
-    lattice_params = (10, 10, 10, 90, 90, 90)
-    sample = Sample(lattice_params)
-    sample.set_mosaic(30, 30)
-    u = (1, 0, 0)
-    v = (0, 1, 0)
-    ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
-    ub_matrix_spice = mantid_to_spice(ub_matrix_mantid)
-
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    b_mat = b_mat_from_ub_matrix(ub_matrix_mantid)
-    u_mat_mantid = u_mat_from_ub_matrix(ub_matrix_mantid)
-    plane_normal_mantid, in_plane_ref_mantid = plane_normal_from_two_peaks(
-        u_mat_mantid, b_mat, projection[0], projection[1]
-    )
-
-    sample.ub_conf = UBConf(
-        ub_mat=ub_matrix_spice,
-        plane_normal=mantid_to_spice(plane_normal_mantid),
-        in_plane_ref=mantid_to_spice(in_plane_ref_mantid),
-    )
     tas.mount_sample(sample)
 
-    hkl = (0.1, 0.1, 0)
+    hkle = (0.1, 0.1, 0, 0)
     projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    rez = tas.cooper_nathans(hkl=hkl, en=0, projection=projection)
+    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+
     # plotting
     fig = plt.figure(figsize=(10, 6))
 

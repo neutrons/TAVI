@@ -70,6 +70,12 @@ class Peak(NamedTuple):
     angles: MotorAngles
 
 
+# class UnreachableError(ValueError):
+#     """Custom ValueError exception."""
+
+#     pass
+
+
 # --------------------------------------------------------------------------
 # helper functions
 # --------------------------------------------------------------------------
@@ -89,16 +95,17 @@ def q2en(q: float) -> float:
     return en
 
 
-def get_angle_from_triangle(a: float, b: float, c: float) -> Optional[float]:
+def get_angle_from_triangle(a: float, b: float, c: float) -> float:
     """In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
         return value in [0,pi]"""
-    ZERO = 1e-6
-    if (np.abs(a) < ZERO) or (np.abs(b) < ZERO):
-        return None
+
+    zero = 1e-6
+    if (np.abs(a) < zero) or (np.abs(b) < zero):
+        raise ValueError("Triangle cannot be closed.")
     acos = (a**2 + b**2 - c**2) / (2 * a * b)
     if acos > 1 or acos < -1:
-        return None
+        raise ValueError("Triangle cannot be closed.")
     return np.arccos(acos)
 
 

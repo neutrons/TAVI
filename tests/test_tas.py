@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
@@ -7,17 +8,69 @@ from tavi.ub_algorithm import UBConf, plane_normal_from_two_peaks, r_matrix_with
 from tavi.utilities import MotorAngles, Peak
 
 
-def test_find_two_theta():
+def test_get_ei_ef():
+    tas = TAS(fixed_ef=4.8)
+    ei, ef = tas._get_ei_ef(ei=3, ef=2, en=1)
+    assert np.allclose(ei, 3)
+    assert np.allclose(ef, 2)
+
+    ei, ef = tas._get_ei_ef(ef=2, en=1)
+    assert np.allclose(ei, 3)
+    assert np.allclose(ef, 2)
+
+    ei, ef = tas._get_ei_ef(en=1)
+    assert np.allclose(ei, 5.8)
+    assert np.allclose(ef, 4.8)
+
+    ei, ef = tas._get_ei_ef()
+    assert np.allclose(ei, 4.8)
+    assert np.allclose(ef, 4.8)
+
+    with pytest.raises(ValueError) as excinfo:
+        ei, ef = TAS()._get_ei_ef(en=1)
+    assert "TAS(fixed_ei=None, fixed_ef=None, convention=Spice) should has either Ei or Ef fixed." in str(excinfo)
+
+
+@pytest.fixture
+def ctax():
     ctax = TAS(fixed_ef=4.799999)
     ctax_json = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax.load_instrument_params_from_json(ctax_json)
     nitio3 = Sample.from_json("./test_data/test_samples/nitio3.json")
     ctax.mount_sample(nitio3)
 
+    return ctax
+
+
+def test_out_of_reach(ctax):
+
+    rez = ctax.cooper_nathans(hkle=(0, 0, 0, 0), projection=None)
+    assert "Cannot get psi for hkl=(0, 0, 0), ei=4.80 meV, ef=4.80 meV. Triangle cannot be closed." in ctax.err_msg
+
+    rez = ctax.cooper_nathans(hkle=(10, 10, 10, 0), projection=None)
+    assert not rez
+    assert (
+        "Cannot get two_theta for hkl=(10, 10, 10), ei=4.80 meV, ef=4.80 meV. Triangle cannot be closed."
+        in ctax.err_msg
+    )
+
+    rez = ctax.cooper_nathans(hkle=[(0, 0, 0, 0), (1, 1, 1, 0), (10, 10, 10, 0)], projection=None)
+    assert rez[1] is not None
+    assert len(ctax.err_msg) == 2
+
+
+def test_find_two_theta(ctax):
     two_theta = ctax.get_two_theta(hkl=(0, 0, 3))
     assert np.allclose(two_theta, 53.240000, atol=1e-1)
     two_theta = ctax.get_two_theta(hkl=(0.5, 0.5, 0))
     assert np.allclose(two_theta, 48.489200, atol=1e-1)
+
+
+def test_find_two_theta_but_cannot_reach(ctax):
+    with pytest.raises(ValueError) as excinfo:
+        ctax.get_two_theta(hkl=(5, 5, 5))
+    assert "two_theta" in str(excinfo.value)
+    assert "Triangle cannot be closed." in str(excinfo.value)
 
 
 def test_calculate_ub_matrix_from_one_peak_and_scattering_palne():
@@ -167,7 +220,9 @@ def test_calculate_motor_agnles():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.94290377, 0.01452569, -0.33274837]
     sample = Sample(lattice_params)
-    sample.ub_conf = UBConf(convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref)
+    sample.ub_conf = UBConf(
+        convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref
+    )
     tas.mount_sample(sample)
 
     angels1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2), en=-0.005)

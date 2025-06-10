@@ -7,11 +7,12 @@ from tavi.ub_algorithm import (
     angle_between_two_hkls,
     angle_between_two_motor_positions,
     plane_normal_from_two_peaks,
+    two_theta_from_hkle,
     ub_matrix_to_lattice_params,
     ub_matrix_to_uv,
     uv_to_ub_matrix,
 )
-from tavi.utilities import MotorAngles, spice_to_mantid
+from tavi.utilities import MotorAngles, get_angle_from_triangle, spice_to_mantid
 
 np.set_printoptions(floatmode="fixed", precision=4)
 
@@ -130,3 +131,27 @@ def test_angle_between_two_motor_positions():
     m2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
     m = angle_between_two_motor_positions(m1, m2, goniometer.r_mat_inv, ei=13.5, ef=13.5)
     assert np.allclose(m, 90, atol=1e-1)
+
+
+def test_get_angle_from_triangle():
+    with pytest.raises(ValueError, match="Triangle cannot be closed."):
+        get_angle_from_triangle(0, 0, 1)
+    with pytest.raises(ValueError, match="Triangle cannot be closed."):
+        get_angle_from_triangle(1, 1, 10)
+
+    angle = get_angle_from_triangle(1, 1, 1)
+    assert np.allclose(np.degrees(angle), 60)
+
+
+def test_two_theta_from_hkle():
+    a, b, c = 10, 20, 30
+    b_mat = ((1 / a, 0, 0), (0, 1 / b, 0), (0, 0, 1 / c))
+    ei = 14.45
+    two_theta_100 = two_theta_from_hkle(hkl=(1, 0, 0), ei=ei, ef=ei, b_mat=b_mat)
+    two_theta_100_correct = 2 * np.arcsin(9.045 / 2 / np.sqrt(ei) / a)
+    assert np.allclose(two_theta_100, two_theta_100_correct, atol=1e-3)
+
+    with pytest.raises(ValueError) as excinfo:
+        two_theta_from_hkle(hkl=(100, 0, 0), ei=ei, ef=ei, b_mat=b_mat)
+    assert "Cannot get two_theta for hkl=(100, 0, 0), ei=14.45 meV, ef=14.45 meV." in str(excinfo.value)
+    assert "Triangle cannot be closed." in str(excinfo.value)

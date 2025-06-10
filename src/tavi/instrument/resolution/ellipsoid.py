@@ -54,6 +54,10 @@ class ResoEllipsoid(object):
         else:
             self._project_to_frame(instrument)
 
+    def __repr__(self):
+        h, k, l = self.hkl
+        return f"ResoEllipsoid at hkl=({h:.3f}, {k:.3f}, {l:.3f}), en={self.en:.3f} meV"
+
     @staticmethod
     def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
         if projection is None:
@@ -296,7 +300,7 @@ class ResoEllipsoid(object):
         """Plot all 2D ellipses"""
 
         # fig = plt.figure()
-        fig = plt.figure(figsize=(10, 6))
+        fig = plt.figure(figsize=(12, 8), constrained_layout=True)
 
         for i, indices in enumerate([(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]):
             ellipse_co = self.get_ellipse(axes=indices, PROJECTION=False)
@@ -318,5 +322,5 @@ class ResoEllipsoid(object):
             )
             p.plot(ax)
 
-        fig.suptitle(f"Q={self.hkl}")
-        fig.tight_layout(pad=2)
+        fig.suptitle(f"Q={self.hkl}, En={self.en} meV")
+        # fig.tight_layout(pad=2)

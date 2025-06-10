@@ -19,63 +19,78 @@ class ResolutionCalculator:
     def __init__(self, instrument):
         self.instrument = instrument
 
-    def generate_hkle_list(
+    def generate_hkleief_list(
         self,
-        hkl: Union[tuple, list[tuple]],
-        en: Union[float, list[float]],
+        hkle: Union[tuple, list[tuple]],
     ) -> tuple[tuple[tuple[float, float, float], float, float], ...]:
         """Generate a list containing tuple ((h, k, l), ei, ef)
 
         Arguments:
-            hkl (tuple | list(tuple)): (h,k,l)
-            en (float | list(float)): energy transfer
+            hkle (tuple | list(tuple)): (h,k,l, en)
 
         Return:
-            hkle_list (tuple): list of (((h, k, l), ei, ef), ...)
+            hkleief_list (tuple): list of (((h, k, l), ei, ef), ...)
         """
 
-        hkl_list = [hkl] if not isinstance(hkl, list | np.ndarray) else hkl
-        en_list = [en] if not isinstance(en, list | np.ndarray) else en
+        hkle_list = [hkle] if not isinstance(hkle, list | np.ndarray) else hkle
 
-        hkle_list = []
-        for en in en_list:
+        hkleief_list = []
+        for h, k, l, en in hkle_list:
             ei, ef = self.instrument._get_ei_ef(en=en)
-            for hkl in hkl_list:
-                hkle_list.append((hkl, ei, ef))
+            hkleief_list.append(((h, k, l), ei, ef))
 
-        return tuple(hkle_list)
+        return tuple(hkleief_list)
 
-    def validate_instrument_parameters(self):  # noqa: C901
+    @staticmethod
+    def require_existance(obj, attr_name):
+        val = getattr(obj, attr_name, None)
+        if val is None:
+            raise AttributeError(attr_name + f" is missing in {obj}.")
+        return val
+
+    @staticmethod
+    def require_positive(obj, attr_name):
+        val = getattr(obj, attr_name, None)
+        if val is None:
+            raise AttributeError(attr_name + f" is missing in {obj}.")
+        if isinstance(val, (float, int)):
+            if val < 0:
+                raise ValueError(attr_name + f" = {val} in {obj} cannot be negative.")
+        elif isinstance(val, (list, tuple, np.ndarray)):
+            if any(v < 0 for v in val):
+                raise ValueError(attr_name + f" = {val} in {obj} cannot be negative.")
+
+    @staticmethod
+    def check_sense(obj):
+        val = getattr(obj, "sense", None)
+        if val is None:
+            raise AttributeError(f"sense is missing in {obj}.")
+        if val not in ("+", "-"):
+            raise ValueError(f"sense of {obj} needs to be either '+' or '-'")
+
+    def validate_instrument_parameters(self):
         """Check if enough instrument parameters are provided for Cooper-Nathans method"""
 
-        try:  # monochromator
-            mono = self.instrument.monochromator
-        except AttributeError:
-            print("Monochromator info are missing.")
+        require_existance = ResolutionCalculator.require_existance
+        require_positive = ResolutionCalculator.require_positive
+        check_sense = ResolutionCalculator.check_sense
 
-        if None in (mono_mosaic := (mono.mosaic_h, mono.mosaic_v)):
-            raise ValueError("Mosaic of monochromator is missing.")
-        elif not all(val > 0 for val in mono_mosaic):
-            raise ValueError("Mosaic of monochromator cannot be negative.")
+        instrument = self.instrument
+        mono = require_existance(instrument, "monochromator")
+        require_positive(mono, "mosaic_h")
+        require_positive(mono, "mosaic_v")
+        check_sense(mono)
 
-        try:  # analyzer
-            ana = self.instrument.analyzer
-        except AttributeError:
-            print("Analyzer info are missing.")
+        ana = require_existance(instrument, "analyzer")
+        require_positive(ana, "mosaic_h")
+        require_positive(ana, "mosaic_v")
+        check_sense(ana)
 
-        if None in (ana_mosaic := (ana.mosaic_h, ana.mosaic_v)):
-            raise ValueError("Mosaic of analyzer is missing.")
-        elif not all(val > 0 for val in ana_mosaic):
-            raise ValueError("Mosaic of analyzer cannot be negative.")
+        coll = require_existance(instrument, "collimators")
+        require_positive(coll, "horizontal_divergence")
+        require_positive(coll, "vertical_divergence")
 
-        # collimators
-        if (coll := self.instrument.collimators) is None:
-            raise ValueError("Collimators info are missing.")
-        elif not all(val > 0 for val in coll.horizontal_divergence):
-            raise ValueError("Horizontal divergence of collimators cannot be negative.")
-        elif not all(val > 0 for val in coll.vertical_divergence):
-            raise ValueError("Vertical divergence of collimators cannot be negative.")
+        goni = require_existance(instrument, "goniometer")
+        check_sense(goni)
 
-        # sample
-        if self.instrument.sample is None:
-            raise ValueError("Sample info are missing.")
+        sample = require_existance(instrument, "sample")

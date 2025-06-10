@@ -185,11 +185,8 @@ def two_theta_from_hkle(
     ei: float,
     ef: float,
     b_mat: np.ndarray,
-) -> Optional[float]:
-    """Calculate the angle between ki and kf
-
-    Return:
-        Reutrn None is (h,k,l) can't be reached.
+) -> float:
+    """Calculate the angle between ki and kf. Raise ValueError if (h,k,l) can't be reached.
 
     Note:
         Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
@@ -197,7 +194,10 @@ def two_theta_from_hkle(
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
-    two_theta_radians = get_angle_from_triangle(ki, kf, q_norm)
+    try:
+        two_theta_radians = get_angle_from_triangle(ki, kf, q_norm)
+    except ValueError as e:
+        raise ValueError(f"Cannot get two_theta for hkl={hkl}, ei={ei:.2f} meV, ef={ef:.2f} meV. " + str(e))
     return two_theta_radians
 
 
@@ -206,11 +206,8 @@ def psi_from_hkle(
     ei: float,
     ef: float,
     b_mat: np.ndarray,
-) -> Optional[float]:
-    """Calculate the angle between ki and Q=ki-kf
-
-    Return:
-        Reutrn None is (h,k,l) can't be reached.
+) -> float:
+    """Calculate the angle between ki and Q=ki-kf. Raise ValueError if (h,k,l) can't be reached.
 
     Note:
         Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
@@ -218,7 +215,11 @@ def psi_from_hkle(
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
-    psi_radians = get_angle_from_triangle(ki, q_norm, kf)
+    try:
+        psi_radians = get_angle_from_triangle(ki, q_norm, kf)
+    except ValueError as e:
+        raise ValueError(f"Cannot get psi for hkl={hkl}, ei={ei:.2f} meV, ef={ef:.2f} meV. " + str(e))
+
     return psi_radians
 
 

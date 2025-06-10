@@ -1,9 +1,5 @@
-from functools import partial
-from typing import Union
-
 import numpy as np
 
-from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
 from tavi.utilities import en2q, ksq2eng, rotation_matrix_2d, sig2fwhm
 
@@ -107,10 +103,10 @@ class CooperNathans(ResolutionCalculator):
         # TODO
         # add more method-specif validation here
 
-    @staticmethod
-    def _calculate_at_hkle(hkl, ei, ef, instrument):
+    def calculate_at_hkle(self, hkl, ei, ef):
         """Calculate the resolution matrix and R0 factor in the local Q frame"""
 
+        instrument = self.instrument
         # q_mod = np.linalg.norm(tas.sample.b_mat @ hkl) * 2 * np.pi
         q_norm = instrument.sample.get_q_norm(hkl)
         ki, kf = en2q(ei), en2q(ef)
@@ -152,7 +148,6 @@ class CooperNathans(ResolutionCalculator):
         # - if the instrument works in ki=const mode the kf^3 factor is needed.
 
         # monochromator and analyzer reflectivity taken to be 1
-        # Note that the ki**3 or kf**3 factors are not considered
         rm_theta = 1
         ra_theta = 1
         rm_k = rm_theta * ki**3 / np.tan(theta_m)
@@ -163,57 +158,3 @@ class CooperNathans(ResolutionCalculator):
         r0 *= np.sqrt(np.linalg.det(mat_f) / np.linalg.det(mat_h))
 
         return (mat_reso, r0)
-
-    def calculate(
-        self,
-        hkl: Union[tuple[float, float, float], list[tuple[float, float, float]]],
-        en: Union[float, list[float]],
-        projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-    ) -> Union[None, ResoEllipsoid, tuple[ResoEllipsoid, ...]]:
-        """Calculate resolution using Cooper-Nathans method
-
-        Args:
-            hkl (tuple | list(tuple)): momentum transfer, miller indices in reciprocal lattice
-            en (float | list(float)): en = ei - ef is energy transfer, in units of meV
-            projection (tuple): three non-coplaner vectors. If projection is None,
-                                the calculation is done in local Q frame (Q_para, Q_perp, Q_up)
-
-        Return:
-            tuple (ResoEllipsoid)
-        """
-
-        self.validate_instrument_parameters()
-        calculate_at_hkle = partial(CooperNathans._calculate_at_hkle, instrument=self.instrument)
-        hkle_list = self.generate_hkle_list(hkl, en)
-
-        rez_list = []
-        for q_hkl, ei, ef in hkle_list:
-            # check if the (Q,E) position can be reached
-            motor_angles = self.instrument.calculate_motor_angles(hkl=tuple(q_hkl), en=ei - ef)
-            if motor_angles is None:
-                rez_list.append(None)
-                continue
-
-            reso_mat, r0 = calculate_at_hkle(q_hkl, ei, ef)
-            rez = ResoEllipsoid(
-                instrument=self.instrument,
-                hkle=tuple(q_hkl) + (ei - ef,),
-                projection=projection,
-                reso_mat=reso_mat,
-                r0=r0,
-            )
-
-            # if np.isnan(rez.r0) or np.isinf(rez.r0) or np.isnan(rez.mat.any()) or np.isinf(rez.mat.any()):
-            #     rez.STATUS = False
-            # else:
-            #     rez.STATUS = True
-
-            rez_list.append(rez)
-
-        match len(rez_list):
-            case 0:
-                return None
-            case 1:
-                return rez_list[0]
-            case _:
-                return tuple(rez_list)

@@ -35,7 +35,7 @@ class Goniometer(TASComponent):
         component_name: str = "goniometer",
     ):
         self.type: str = "Y,-Z,X"  # Y-mZ-X for (s1, sgl, sgu), Huber table at HB1A and HB3,
-        self.sense: Literal["-", "+"] = "-"  # determines the sign of s2
+        self.sense: Optional[Literal["-", "+"]] = None  # determines the sign of s2
         self.limits = {
             "two_theta": (None, None),
             "omega": (None, None),
