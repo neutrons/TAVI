@@ -137,7 +137,8 @@ def test_plot_ellipses(sample):
     tas.mount_sample(sample)
 
     hkle = (0.1, 0.1, 0, 0)
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    # projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    projection = None
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
 
     # plotting

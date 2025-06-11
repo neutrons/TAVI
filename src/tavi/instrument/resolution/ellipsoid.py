@@ -296,6 +296,9 @@ class ResoEllipsoid(object):
 
         return ResoEllipse(mat, centers, angle, axes_labels)
 
+    def summary(self):
+        return str(self.mat)
+
     def plot_ellipses(self):
         """Plot all 2D ellipses"""
 

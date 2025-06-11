@@ -165,6 +165,7 @@ def test_rescal_comparison(reslib_params):
     tas._load_instrument_parameters(instrument_params)
     tas.mount_sample(sample)
 
+    # projection = ((1, 2, 0), (-2, 1, 0), (0, 0, 1))
     rez = tas.cooper_nathans(hkle=(1, 2, 0, 0))
     rez.plot_ellipses()
     plt.show()
