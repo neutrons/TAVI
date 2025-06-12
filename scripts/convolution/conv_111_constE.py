@@ -277,11 +277,11 @@ if __name__ == "__main__":
 
     q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
     q2 = np.linspace(q2_min, q2_max, int((q2_max - q2_min) / q2_step) + 1)
-    q_list = np.array([(h, h, l) for l in q2 for h in q1])
+    qe_list = np.array([(h, h, l, en) for l in q2 for h in q1])
 
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
-        for reso in hb3.cooper_nathans(hkl=q_list, en=en)
+        for reso in hb3.cooper_nathans(hkle=qe_list)
     ]
 
     t0 = time()

@@ -9,6 +9,7 @@ dependencies:
   # compute: list all compute dependencies here
   - numpy
   - pandas
+  - numba
   # plot: list all plot dependencies here, if applicable
   - matplotlib
   - h5py

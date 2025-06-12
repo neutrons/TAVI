@@ -1,22 +1,54 @@
-from concurrent.futures import ProcessPoolExecutor
+# from concurrent.futures import ProcessPoolExecutor
 from time import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.axisartist import Axes
+from matplotlib.patches import Ellipse
 from numba import njit, prange
 
-from tavi.instrument.tas import TAS
-from tavi.plotter import Plot2D
-from tavi.sample import Sample
-from tavi.ub_algorithm import (
-    UBConf,
-    b_mat_from_ub_matrix,
-    mantid_to_spice,
-    plane_normal_from_two_peaks,
-    u_mat_from_ub_matrix,
-    uv_to_ub_matrix,
-)
+
+def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
+    """projects along one axis of the quadric"""
+
+    # delete if orthogonal
+    if np.abs(qii := quadric[idx, idx]) < 1e-8:
+        mask = np.arange(quadric.shape[0]) != idx
+        return quadric[np.ix_(mask, mask)]
+
+    # row/column along which to perform the orthogonal projection
+    # symmetrise if not symmetric, normalise to indexed component
+    vec = 0.5 * (quadric[idx, :] + quadric[:, idx]) / np.sqrt(qii)
+    ortho_proj = quadric - np.outer(vec, vec)  # projected quadric
+
+    # return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
+    mask = np.arange(ortho_proj.shape[0]) != idx
+    return ortho_proj[np.ix_(mask, mask)]
+
+
+def incoh_sigma_en(mat: np.ndarray) -> float:
+    """Incoherent sigma for energy"""
+
+    elem = quadric_proj(quadric_proj(quadric_proj(mat, 2), 1), 0)[0, 0]
+
+    return 1 / np.sqrt(np.abs(elem))
+
+
+def incoh_sigma_qs(mat: np.ndarray) -> tuple[float, float, float]:
+    """Incoherent sigmas for q1, q2 and q3"""
+
+    mat_2 = quadric_proj(mat, 2)
+    elem1 = abs(quadric_proj(mat_2, 1)[0, 0])
+    elem2 = abs(quadric_proj(mat_2, 0)[0, 0])
+    elem3 = abs(quadric_proj(quadric_proj(mat, 1), 0)[0, 0])
+
+    return (1 / np.sqrt(elem1), 1 / np.sqrt(elem2), 1 / np.sqrt(elem3))
+
+
+def coh_sigma(mat, axis):
+    """Coherent sigma"""
+    idx = int(axis)
+
+    return 1 / np.sqrt(np.abs(mat[idx, idx]))
 
 
 def model_disp(vq1, vq2, vq3):
@@ -25,8 +57,8 @@ def model_disp(vq1, vq2, vq3):
     """
 
     sj = 5
-    # gamma_q = np.cos(2 * np.pi * vq1)
-    gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
+    gamma_q = np.cos(2 * np.pi * vq1)
+    # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
 
     disp = 2 * sj * (1 - gamma_q)
     disp = np.array((disp - 2, disp + 2))
@@ -53,47 +85,52 @@ def model_inten(vq1, vq2, vq3):
     return inten
 
 
-def quadric_proj(quadric, idx):
-    """projects along one axis of the quadric"""
-
-    # delete if orthogonal
-    zero = 1e-8
-    if np.abs(quadric[idx, idx]) < zero:
-        return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
-
-    # row/column along which to perform the orthogonal projection
-    vec = 0.5 * (quadric[idx, :] + quadric[:, idx])  # symmetrise if not symmetric
-    vec /= np.sqrt(quadric[idx, idx])  # normalise to indexed component
-    proj_op = np.outer(vec, vec)  # projection operator
-    ortho_proj = quadric - proj_op  # projected quadric
-
-    return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
+def rotation_matrix_4d(theta_deg):
+    theta = np.radians(theta_deg)
+    c = np.cos(theta)
+    s = np.sin(theta)
+    return np.array(
+        [
+            [c, 0, 0, -s],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [s, 0, 0, c],
+        ]
+    )
 
 
-def incoh_sigma(mat, axis):
-    """Incoherent sigma"""
-    idx = int(axis)
+def resolution_matrix(hkl, en):
+    """Fake resoltuion matrix mat and prefactor r0
+    r0 is a constant, rez_mat is a symmetric positive 4 by 4 matrix
+    """
 
-    for i in (3, 2, 1, 0):
-        if not i == idx:
-            mat = quadric_proj(mat, i)
+    sigma1, sigma2 = 0.3, 0.02
+    sigma3 = sigma4 = 0.2
+    angle = -80
+    mat = np.diag([1 / sigma1**2, 1 / sigma3**2, 1 / sigma4**2, 1 / sigma2**2])
 
-    return 1 / np.sqrt(np.abs(mat[0, 0]))
+    rot = rotation_matrix_4d(angle)
+    rez_mat = rot.T @ mat @ rot
+    r0 = 1
 
-
-def coh_sigma(mat, axis):
-    """Coherent sigma"""
-    idx = int(axis)
-
-    return 1 / np.sqrt(np.abs(mat[idx, idx]))
+    return tuple((hkl[i], en[j], r0, rez_mat) for i in range(np.shape(hkl)[0]) for j in range(np.size(en)))
 
 
-def get_max_step(arr, axis: int):
-    """Get max step along a given axis. Reutrn zero if all NaN"""
-    # shape of arr (num_bands, N1, N2, N3)
-    diff_arr = np.abs(np.diff(arr, axis=axis))
-    steps = np.nanmax(diff_arr, axis=axis)
-    return np.nanmax(steps, out=np.array(0.0))
+def plot_rez_ellipses(ax):
+    sigma1, sigma2 = 0.3, 0.02
+    angle = 80
+    for i in range(3):
+        ax.add_artist(
+            Ellipse(
+                xy=(2, 0),
+                width=sigma1 * 2 * (i + 1),
+                height=sigma2 * 2 * (i + 1),
+                angle=angle,
+                edgecolor="w",
+                facecolor="none",
+                label=f"{i + 1}-sigma",
+            )
+        )
 
 
 @njit(parallel=True, nogil=True)
@@ -125,28 +162,40 @@ def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     qh_list = np.linspace(-sigma_qh_range, sigma_qh_range, pts_qh + 1)
     qk_list = np.linspace(-sigma_qk_range, sigma_qk_range, pts_qk + 1)
     ql_list = np.linspace(-sigma_ql_range, sigma_ql_range, pts_ql + 1)
-    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")  # shape (3, N1, N2, N3)
+    vq_h, vq_k, vq_l = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")  # shape (3, N1, N2, N3)
     # -------- cut the corners based on distance --------
-    r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
+    r_sq = np.einsum("i...,ij,j...->...", (vq_h, vq_k, vq_l), mat_hkl, (vq_h, vq_k, vq_l))
     idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
-
+    return (vq_h[idx], vq_k[idx], vq_l[idx]), idx
     # return vq, idx
-    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
 
 
+def get_max_step(arr, axis: int):
+    """Get max step along a given axis. Return zero if all NaN"""
+    # shape of arr (num_bands, N1, N2, N3)
+    diff_arr = np.abs(np.diff(arr, axis=axis))
+    steps = np.nanmean(diff_arr, axis=axis)
+    if np.isnan(steps).all():
+        return 0.0
+
+    return float(np.nanmax(steps))
+
+
+@profile
 def convolution(reso_params):
+    if reso_params is None:
+        return np.nan
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
-    if reso_params is None:
-        return np.nan
     (qh, qk, ql), en, r0, mat = reso_params
     mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
     # calculate the incoherent sigmas for all Q and E directions
     # ----------------------------------------------------
-    sigma_qs = tuple(incoh_sigma(mat, i) for i in range(3))
-    sigma_en_incoh = incoh_sigma(mat, 3)
+    # sigma_qs = [incoh_sigma_q(mat_hkl, i) for i in range(3)]
+    sigma_qs = incoh_sigma_qs(mat_hkl)
+    sigma_en_incoh = incoh_sigma_en(mat)
     num_of_sigmas = 3
     min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
     sigma_en_coh = coh_sigma(mat, 3)
@@ -213,10 +262,10 @@ def convolution(reso_params):
     disp_arr[(slice(None),) + np.nonzero(idx)] = disp
 
     # Compute max energy steps
-    steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
+    # steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
     print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
-    print(f"number of points = {pts}")
-    print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
+    # print(f"number of points = {pts}")
+    # print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
     vqe = np.empty((4, num_bands, num_pts))
@@ -241,33 +290,6 @@ def convolution(reso_params):
 
 
 if __name__ == "__main__":
-    # setup instrument
-    instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb3.json"
-    hb3 = TAS(fixed_ef=14.7)
-    hb3.load_instrument_params_from_json(instrument_config_json_path)
-    # set up a cubic sample
-    lattice_params = (10, 10, 10, 90, 90, 90)
-    sample = Sample(lattice_params)
-    sample.set_mosaic(30, 30)
-    # set up sample orientation, u along ki, v in plane, u cross v is up
-    # when all goniometer angles are zeros
-    u = (1, 0, 0)
-    v = (0, 1, 0)
-    # set up the scattering plane, (100) and (010) in two peaks in plane
-    peaks = ((1, 0, 0), (0, 1, 0))
-    ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
-    plane_normal_mantid, in_plane_ref_mantid = plane_normal_from_two_peaks(
-        u_mat_from_ub_matrix(ub_matrix_mantid),
-        b_mat_from_ub_matrix(ub_matrix_mantid),
-        *peaks,
-    )
-    sample.ub_conf = UBConf(
-        ub_mat=mantid_to_spice(ub_matrix_mantid),
-        plane_normal=mantid_to_spice(plane_normal_mantid),
-        in_plane_ref=mantid_to_spice(in_plane_ref_mantid),
-    )
-    hb3.mount_sample(sample)
-
     # ----------------------------------------------------
     # points being measured
     # qe_mesh has the dimension (4, n_pts_of_measurement)
@@ -278,64 +300,56 @@ if __name__ == "__main__":
     q2 = 0
     q3 = 0
 
-    q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
-    en_list = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
-    # ----------------------------------------------------
-    qe_list = [(q1, q2, q3, en) for q1 in q1_list for en in en_list]
-    reso_params = [
-        (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
-        for reso in hb3.cooper_nathans(hkle=qe_list)
-    ]
+    q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
+    en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
+
+    # calculate resolution
+    vq1, vq2, vq3 = np.meshgrid(q1, q2, q3, indexing="ij")
+    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
+    reso_params = resolution_matrix(hkl=q_list, en=en)
 
     t0 = time()
-    num_worker = 8
-    with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(convolution, reso_params)
-    measurement_inten = np.asarray(list(results))
+    # num_worker = 8
+    # with ProcessPoolExecutor(max_workers=num_worker) as executor:
+    #     results = executor.map(convolution, reso_params)
+    # measurement_inten = np.asarray(list(results))
+    # ------------------- single core ------------------
+    sz = len(reso_params)
+    measurement_inten = np.empty(shape=sz)
+    for i in range(sz):
+        measurement_inten[i] = convolution(reso_params[i])
+    # --------------------------------------------------
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
-    total_intent = np.nansum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
+    total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
 
     # ----------------------------------------------------
     # plot 2D contour
     # ----------------------------------------------------
-    # calculate and plot resolution
-    q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 10)) + 1)
-    en_list = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
-    vq1, vq2, vq3 = np.meshgrid(q1_list, q2, q3, indexing="ij")
-    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
-    rez_list = hb3.cooper_nathans(hkl=q_list, en=en_list)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    vq1, ven = np.meshgrid(q1, en, indexing="ij")
+    img = ax.pcolormesh(vq1, ven, measurement_inten.reshape(np.shape(vq1)), cmap="turbo", vmin=0, vmax=0.5)
 
-    p = Plot2D()
-    for rez in rez_list:
-        if rez is None:
-            continue
-        e_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
-        p.add_reso(e_co, c="w", linestyle="solid")
-        p.add_reso(e_inco, c="w", linestyle="dashed")
-    # create plot
-    fig = plt.figure(figsize=(10, 6))
-    ax = fig.add_subplot(111, axes_class=Axes)
-    p.plot(ax)
-    # overplot contour
-    vq1, ven = np.meshgrid(q1, en)
-    im = ax.pcolormesh(vq1, ven, measurement_inten.reshape(np.shape(vq1)), cmap="turbo", vmin=0, vmax=0.005)
-    fig.colorbar(im, ax=ax)
-    # plot dispersion
+    ax.grid(alpha=0.6)
+    ax.set_xlabel("Q1")
+    ax.set_ylabel("En")
+    ax.set_xlim((q1_min, q1_max))
+    ax.set_ylim((en_min, en_max))
+
+    plot_rez_ellipses(ax)
     disp = model_disp(q1, np.zeros_like(q1), np.zeros_like(q1))
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 
-    ax.set_xlim((q1_min, q1_max))
-    ax.set_ylim((en_min, en_max))
-
+    ax.legend()
+    fig.colorbar(img, ax=ax)
     ax.set_title(
-        "3D FM S=1 J=-5"
+        f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
         + f"\n3D Convolution for {len(q1) * len(en)} points, "
-        + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
+        + f"completed in {t1 - t0:.3f} s"
+        # + " with {num_worker:1d} cores"
     )
-    ax.grid(alpha=0.6)
+
     # plt.tight_layout()
     plt.show()
