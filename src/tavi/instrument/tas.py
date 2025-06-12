@@ -58,6 +58,9 @@ class TAS(TASBase):
         cls_str = f"{cls}(fixed_ei={self.fixed_ei!r}, fixed_ef={self.fixed_ef!r}, convention={self.convention})"
         return cls_str
 
+    def __str__(self):
+        return "TAS"
+
     def _get_ei_ef(
         self,
         ei: Optional[float] = None,
@@ -310,6 +313,7 @@ class TAS(TASBase):
         """
         cn = CooperNathans(instrument=self)
         cn.validate_instrument_parameters()
+        config_str = str(cn)
 
         hkleief_list = cn.generate_hkleief_list(hkle)
 
@@ -321,6 +325,8 @@ class TAS(TASBase):
                 rez = ResoEllipsoid(
                     instrument=self, hkle=(q_hkl) + (ei - ef,), projection=projection, reso_mat=reso_mat, r0=r0
                 )
+                rez.method = "Cooper-Nathans"
+                rez.instrument_params = config_str
             except ValueError as e:
                 rez = None
                 self.err_msg.append(str(e))

@@ -94,7 +94,6 @@ def ctax():
 
 
 def test_validate_instrument_parameter(ctax, params):
-
     rc = ResolutionCalculator(instrument=ctax)
     rc.validate_instrument_parameters()
 

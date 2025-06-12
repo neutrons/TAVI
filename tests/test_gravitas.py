@@ -124,9 +124,23 @@ def test_out_of_reach(sample):
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
     assert rez is None
     assert (
-        "Cannot get two_theta for hkl=(10, 10, 10), ei=5.00 meV, ef=5.00 meV. Triangle cannot be closed."
-        in tas.err_msg
+        "Cannot get two_theta for hkl=(10, 10, 10), ei=5.00 meV, ef=5.00 meV. Triangle cannot be closed." in tas.err_msg
     )
+
+
+def test_reso_str(sample):
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb1a.json"
+
+    tas = TAS(fixed_ei=5)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+    tas.mount_sample(sample)
+
+    hkle = (0.1, 0.1, 0, 0)
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    # projection = None
+    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+
+    assert len(str(rez).split("\n")) == 31
 
 
 def test_plot_ellipses(sample):
@@ -137,8 +151,8 @@ def test_plot_ellipses(sample):
     tas.mount_sample(sample)
 
     hkle = (0.1, 0.1, 0, 0)
-    # projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    projection = None
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    # projection = None
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
 
     # plotting

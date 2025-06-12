@@ -1,13 +1,13 @@
+import re
 from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from mpl_toolkits.axisartist import Axes
 
 from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
-
-# from tavi.sample.xtal import Xtal
 from tavi.utilities import get_angle_vec, sig2fwhm
 
 
@@ -17,7 +17,7 @@ class ResoEllipsoid(object):
     Attributs:
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
-        q (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
+        q_vec (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
         hkle (tuple): momentum transfer (h, k, l) and energy transfer
         agnles (tuple): angles between plotting axes
 
@@ -41,27 +41,57 @@ class ResoEllipsoid(object):
         *hkl, en = hkle
         self.hkl: tuple = tuple(hkl)
         self.en: float = en
+        self.q = np.linalg.norm(instrument.sample.b_mat @ self.hkl) * 2 * np.pi
 
         self.projection: Optional[tuple] = projection
         self.mat = reso_mat
         self.r0 = r0
+        self.method: Optional[str] = None
+        self.instrument_params: Optional[str] = None
 
         if projection is None:
             self.frame = "q"
             self.angles = (90.0, 90.0, 90.0)
-            self.q = (np.linalg.norm(instrument.sample.b_mat @ self.hkl) * 2 * np.pi, 0.0, 0.0)
+            self.q_vec = (self.q, 0.0, 0.0)
             self.axes_labels = ResoEllipsoid.labels_from_projection(projection)
         else:
             self._project_to_frame(instrument)
 
     def __repr__(self):
         h, k, l = self.hkl
-        return f"ResoEllipsoid at hkl=({h:.3f}, {k:.3f}, {l:.3f}), en={self.en:.3f} meV"
+        return f"ResoEllipsoid at hkl=({h:.4g}, {k:.4g}, {l:.4g}), en={self.en:.4g} meV"
+
+    def __str__(self):
+        r_mat_str = pd.DataFrame(
+            self.mat,
+            index=[re.sub(r"\([^()]*\)$", "", label) for label in self.axes_labels],
+            columns=[re.sub(r"\([^()]*\)$", "", label) for label in self.axes_labels],
+        ).to_string(float_format="{:.4g}".format)
+        summary_str = [
+            f"Resolution ellipsoid centered at (h,k,l)={self.hkl} (r.l.u.), en={self.en} meV. (Q = {self.q:.3f} A^-1)",
+            f"Calculated using {self.method} method.",
+            "Projection axes are " + ", ".join(self.axes_labels),
+            "resolution matrix R=",
+            r_mat_str,
+            f"prefactor R0={self.r0:.4g}",
+            "Coherent FWHMs are: ",
+            f"{self.coh_fwhms(0):.4g} in {self.axes_labels[0]}, ",
+            f"{self.coh_fwhms(1):.4g} in {self.axes_labels[1]}, ",
+            f"{self.coh_fwhms(2):.4g} in {self.axes_labels[2]}, ",
+            f"{self.coh_fwhms(3):.4g} in {self.axes_labels[3]}, ",
+            "Incoherent FWHMs are: ",
+            f"{self.incoh_fwhms(0):.4g} in {self.axes_labels[0]}, ",
+            f"{self.incoh_fwhms(1):.4g} in {self.axes_labels[1]}, ",
+            f"{self.incoh_fwhms(2):.4g} in {self.axes_labels[2]}, ",
+            f"{self.incoh_fwhms(3):.4g} in {self.axes_labels[3]}, ",
+            "",
+        ]
+        return "\n".join(summary_str) + self.instrument_params
 
     @staticmethod
     def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
         if projection is None:
-            return ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+            return ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
         elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
             return (
                 "(H, 0, 0) (r.l.u.)",
@@ -118,7 +148,7 @@ class ResoEllipsoid(object):
         )
         if self.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
             self.frame = "hkl"
-            self.q = self.hkl
+            self.q_vec = self.hkl
             *_, alpha_star, beta_star, gamma_star = instrument.sample.reciprocal_latt_params
             self.angles = (gamma_star, alpha_star, beta_star)
 
@@ -143,7 +173,7 @@ class ResoEllipsoid(object):
             mat_w_inv = np.array([np.cross(p2, p3), np.cross(p3, p1), np.cross(p1, p2)]) / np.dot(p1, np.cross(p2, p3))
             hkl_prime = mat_w_inv @ self.hkl
             self.frame = "proj"
-            self.q = hkl_prime
+            self.q_vec = hkl_prime
             self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
 
             mat_w = np.array([p1, p2, p3]).T
@@ -154,6 +184,7 @@ class ResoEllipsoid(object):
 
             self.axes_labels = ResoEllipsoid.labels_from_projection(self.projection)
 
+    # TODO
     def volume(self):
         """volume of the ellipsoid"""
         pass
@@ -173,46 +204,6 @@ class ResoEllipsoid(object):
                 reso = ResoEllipsoid.quadric_proj(reso, i)
 
         return sig2fwhm / np.sqrt(np.abs(reso[0, 0]))
-
-    # def coh_fwhms(self, axis=None):
-    #     """Coherent FWHM"""
-
-    #     curve = ResoCurve()
-    #     idx = int(axis)
-    #     curve.fwhm = np.array(sig2fwhm / np.sqrt(self.mat[idx, idx]))
-    #     if idx == 3:
-    #         curve.cen = self.en
-    #     else:
-    #         curve.cen = self.q[idx]
-
-    #     curve.r0 = self.r0
-    #     curve.xlabel = self.axes_labels[idx]
-    #     curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
-    #     curve.legend = f"coherent FWHM={np.round(curve.fwhm, 3)}"
-    #     return curve
-
-    # def incoh_fwhms(self, axis=None):
-    #     """Incoherent FWHMs"""
-
-    #     curve = ResoCurve()
-    #     idx = int(axis)
-
-    #     reso = self.mat
-    #     for i in (3, 2, 1, 0):
-    #         if not i == idx:
-    #             reso = ResoEllipsoid.quadric_proj(reso, i)
-
-    #     curve.fwhm = (1.0 / np.sqrt(np.abs(reso[0, 0])) * sig2fwhm,)
-    #     if idx == 3:
-    #         curve.cen = self.en
-    #     else:
-    #         curve.cen = self.q[idx]
-
-    #     curve.r0 = self.r0
-    #     curve.xlabel = self.axes_labels[idx]
-    #     curve.title = f"q={np.round(self.hkl,3)}, en={np.round(self.en,3)}"
-    #     curve.legend = f"incoherent FWHM={np.round(curve.fwhm , 3)}"
-    #     return curve
 
     # def principal_fwhms_calc(self):
     #     """FWHMs of principal axes in 4D"""
@@ -261,7 +252,7 @@ class ResoEllipsoid(object):
         """
 
         x_axis, y_axis = axes
-        qe_list = np.concatenate((self.q, self.en), axis=None)
+        qe_list = np.concatenate((self.q_vec, self.en), axis=None)
         # axes = np.sort(axes)
         # match tuple(np.sort(axes)):
         match tuple(axes):
@@ -295,9 +286,6 @@ class ResoEllipsoid(object):
             mat = q_res
 
         return ResoEllipse(mat, centers, angle, axes_labels)
-
-    def summary(self):
-        return str(self.mat)
 
     def plot_ellipses(self):
         """Plot all 2D ellipses"""

@@ -3,6 +3,8 @@ import numpy as np
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
 from tavi.utilities import en2q, ksq2eng, rotation_matrix_2d, sig2fwhm
 
+np.set_printoptions(suppress=True)
+
 
 class CooperNathans(ResolutionCalculator):
     """Cooper-Nathans method
@@ -22,6 +24,36 @@ class CooperNathans(ResolutionCalculator):
     IDX_COLL1_H, IDX_COLL1_V = 1, 3
     IDX_COLL2_H, IDX_COLL2_V = 4, 6
     IDX_COLL3_H, IDX_COLL3_V = 5, 7
+
+    def __str__(self):
+        instru = self.instrument
+        config_str = "Triple-axis spectrometer"
+        if (ei := instru.fixed_ei) is not None:
+            config_str += f", fixed Ei={ei:.3f} meV"
+        if (ef := instru.fixed_ef) is not None:
+            config_str += f", fixed Ef={ef:.3f} meV"
+        config_str += f", using {instru.convention} UB convention."
+        mono = instru.monochromator
+        ana = instru.analyzer
+        coll = instru.collimators
+        sample = instru.sample
+        u, v = instru.uv
+        u_str = f"[{np.round(u[0], 4):.4g}, {np.round(u[1], 4):.4g}, {np.round(u[2], 4):.4g}]"
+        v_str = f"[{np.round(v[0], 4):.4g}, {np.round(v[1], 4):.4g}, {np.round(v[2], 4):.4g}]"
+        summary_str = [
+            config_str,
+            f"Monochromator type={mono.type}, d_spacing={mono.d_spacing} A",
+            f"Monochromator horizontal and vertical mosiac FWHM=({mono.mosaic_h},{mono.mosaic_v}) mins",
+            f"Analyzer type={ana.type}, d_spacing={ana.d_spacing} A",
+            f"Analyzer horizontal and vertical mosiac FWHM=({ana.mosaic_h},{ana.mosaic_v}) mins",
+            f"Collimator horizontal divergence = {tuple(coll.horizontal_divergence)} mins",
+            f"Collimator vertical divergence = {tuple(coll.vertical_divergence)} mins",
+            f"Sample lattice parameters a={sample.a} A, b={sample.b} A, c={sample.c} A, alpha={sample.alpha}, beta={sample.beta}, gamma={sample.gamma}.",
+            "When all goniometer angles are set to zeros, the orientation vectors",
+            "u=" + u_str + " (r.l.u.) along the incident beam",
+            "v=" + v_str + " (r.l.u.) in the horizontal scattering plane.",
+        ]
+        return "\n".join(summary_str)
 
     @classmethod
     def mat_f(cls, monochromator, analyzer) -> np.ndarray:
