@@ -19,7 +19,7 @@ def test_local_q(tas_params):
     ellipse = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
 
     assert np.allclose(ellipse.angle, 90)
-    assert ellipse.xlabel == "Q_para (1/A)"
+    assert ellipse.xlabel == "Q_para (A^-1)"
     assert ellipse.ylabel == "E (meV)"
 
 

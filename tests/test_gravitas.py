@@ -18,6 +18,8 @@ from tavi.ub_algorithm import (
     uv_to_ub_matrix,
 )
 
+# plt.rcParams.update({"font.size": 8})
+
 
 @pytest.fixture
 def sample():
@@ -179,4 +181,7 @@ def test_plot_ellipses(sample):
         p.plot(ax)
 
     fig.tight_layout(pad=2)
+    for label in ax.get_xticklabels():
+        label.set_rotation(45)
+        label.set_horizontalalignment("right")
     plt.show()

@@ -45,28 +45,28 @@ class ResolutionCalculator:
     def require_existance(obj, attr_name):
         val = getattr(obj, attr_name, None)
         if val is None:
-            raise AttributeError(attr_name + f" is missing in {obj}.")
+            raise AttributeError(attr_name + f" is missing in {repr(obj)}.")
         return val
 
     @staticmethod
     def require_positive(obj, attr_name):
         val = getattr(obj, attr_name, None)
         if val is None:
-            raise AttributeError(attr_name + f" is missing in {obj}.")
+            raise AttributeError(attr_name + f" is missing in {repr(obj)}.")
         if isinstance(val, (float, int)):
             if val < 0:
-                raise ValueError(attr_name + f" = {val} in {obj} cannot be negative.")
+                raise ValueError(attr_name + f" = {val} in {repr(obj)} cannot be negative.")
         elif isinstance(val, (list, tuple, np.ndarray)):
             if any(v < 0 for v in val):
-                raise ValueError(attr_name + f" = {val} in {obj} cannot be negative.")
+                raise ValueError(attr_name + f" = {val} in {repr(obj)} cannot be negative.")
 
     @staticmethod
     def check_sense(obj):
         val = getattr(obj, "sense", None)
         if val is None:
-            raise AttributeError(f"sense is missing in {obj}.")
+            raise AttributeError(f"sense is missing in {repr(obj)}.")
         if val not in ("+", "-"):
-            raise ValueError(f"sense of {obj} needs to be either '+' or '-'")
+            raise ValueError(f"sense of {repr(obj)} needs to be either '+' or '-'")
 
     def validate_instrument_parameters(self):
         """Check if enough instrument parameters are provided for Cooper-Nathans method"""

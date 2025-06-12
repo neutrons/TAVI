@@ -78,7 +78,7 @@ class TAS(TASBase):
             ei = self.fixed_ei
 
         if (ei is None) and (ef is None):
-            raise ValueError(f"{self} should has either Ei or Ef fixed.")
+            raise ValueError(f"{repr(self)} should has either Ei or Ef fixed.")
         elif (ei is None) and (ef is not None):
             ei = en + ef
         elif (ef is None) and (ei is not None):

@@ -14,10 +14,9 @@ def test_local_q(tas_params):
     rez = ctax.cooper_nathans(hkle, projection=None)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
-    assert np.allclose(rez.q, (3 * 2 * np.pi / ctax.sample.c, 0, 0))
+    assert np.allclose(rez.q, 3 * 2 * np.pi / ctax.sample.c)
     assert rez.projection is None
     assert np.allclose(rez.angles, (90, 90, 90))
-    assert rez.axes_labels == ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
 
 
 def test_hkl(tas_params):
@@ -25,10 +24,9 @@ def test_hkl(tas_params):
     rez = ctax.cooper_nathans(hkle=hkle)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
-    assert np.allclose(rez.q, (0, 0, 3))
+    assert np.allclose(rez.q_vec, (0, 0, 3))
     assert rez.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1))
     assert np.allclose(rez.angles, (60, 90, 90))
-    assert rez.axes_labels == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
 
 
 def test_projection(tas_params):
@@ -36,10 +34,9 @@ def test_projection(tas_params):
     rez = ctax.cooper_nathans(hkle=hkle, projection=projection)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
-    assert np.allclose(rez.q, (0, 3, 0))
+    assert np.allclose(rez.q_vec, (0, 3, 0))
     assert rez.projection == ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     assert np.allclose(rez.angles, (90, 90, 90))
-    assert rez.axes_labels == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
 
 
 def test_making_labels_from_projection():
@@ -47,7 +44,7 @@ def test_making_labels_from_projection():
     assert label == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
 
     label = ResoEllipsoid.labels_from_projection(projection=None)
-    assert label == ("Q_para (1/A)", "Q_perp (1/A)", "Q_up (1/A)", "E (meV)")
+    assert label == ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
 
     label = ResoEllipsoid.labels_from_projection(projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
     assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, K) (r.l.u.)", "(L, -L, 0) (r.l.u.)", "E (meV)")
