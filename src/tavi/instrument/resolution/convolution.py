@@ -1,14 +1,10 @@
 # from concurrent.futures import ProcessPoolExecutor
 import functools
-from time import time
 
-import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Ellipse
 from numba import njit, prange
 
 
-@profile
 def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
     """projects along one axis of the quadric"""
 
@@ -53,88 +49,6 @@ def coh_sigma(mat, axis):
     return 1 / np.sqrt(np.abs(mat[idx, idx]))
 
 
-def model_disp(vq1, vq2, vq3):
-    """return energy for given Q points
-    3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
-    """
-
-    sj = 5
-    gamma_q = np.cos(2 * np.pi * vq1)
-    # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
-
-    disp = 2 * sj * (1 - gamma_q)
-    disp = np.array((disp - 2, disp + 2))
-
-    # reshape if only one band
-    num_disp = len(disp.shape)
-    if num_disp == 1:
-        disp = np.reshape(disp, (1, np.size(disp)))
-    return disp
-
-
-def model_inten(vq1, vq2, vq3):
-    """return intensity for given Q points
-    3d FM J=-1 meV S=1, inten = S/2 for all Qs
-    """
-    inten = np.ones_like(vq1, dtype=float) / 2
-    inten = np.array((inten, inten))
-
-    # reshape if only one band
-    num_inten = len(inten.shape)
-    if num_inten == 1:
-        inten = np.reshape(inten, (1, np.size(inten)))
-
-    return inten
-
-
-def rotation_matrix_4d(theta_deg):
-    theta = np.radians(theta_deg)
-    c = np.cos(theta)
-    s = np.sin(theta)
-    return np.array(
-        [
-            [c, 0, 0, -s],
-            [0, 1, 0, 0],
-            [0, 0, 1, 0],
-            [s, 0, 0, c],
-        ]
-    )
-
-
-def resolution_matrix(hkl, en):
-    """Fake resoltuion matrix mat and prefactor r0
-    r0 is a constant, rez_mat is a symmetric positive 4 by 4 matrix
-    """
-
-    sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.2
-    angle = -80
-    mat = np.diag([1 / sigma1**2, 1 / sigma3**2, 1 / sigma4**2, 1 / sigma2**2])
-
-    rot = rotation_matrix_4d(angle)
-    rez_mat = rot.T @ mat @ rot
-    r0 = 1
-
-    return tuple((hkl[i], en[j], r0, rez_mat) for i in range(np.shape(hkl)[0]) for j in range(np.size(en)))
-
-
-def plot_rez_ellipses(ax):
-    sigma1, sigma2 = 0.3, 0.02
-    angle = 80
-    for i in range(3):
-        ax.add_artist(
-            Ellipse(
-                xy=(2, 0),
-                width=sigma1 * 2 * (i + 1),
-                height=sigma2 * 2 * (i + 1),
-                angle=angle,
-                edgecolor="w",
-                facecolor="none",
-                label=f"{i + 1}-sigma",
-            )
-        )
-
-
 @njit(parallel=True, nogil=True)
 def compute_weights(vqe: np.ndarray, mat: np.ndarray) -> np.ndarray:
     _, num_bands, num_pts = vqe.shape
@@ -162,7 +76,6 @@ def generate_meshgrid(num_of_sigmas=3, num_pts=(10, 10, 10)):
     return np.meshgrid(qh, qk, ql, indexing="ij")  # shape (3, N1, N2, N3)
 
 
-@profile
 def generate_pts(sigma_qs, mat_hkl, num_of_sigmas=3, num_pts=(10, 10, 10)):
     (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
 
@@ -187,8 +100,7 @@ def get_max_step(arr, axis: int):
     return float(np.nanmax(steps))
 
 
-@profile
-def convolution(reso_params):
+def convolution(reso_params, model_disp, model_inten):
     if reso_params is None:
         return np.nan
     # ----------------------------------------------------
@@ -293,69 +205,3 @@ def convolution(reso_params):
     det = np.linalg.det(mat)
     inten_sum = np.sum(inten * weights_filtered) * elem_vols
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
-
-
-if __name__ == "__main__":
-    # ----------------------------------------------------
-    # points being measured
-    # qe_mesh has the dimension (4, n_pts_of_measurement)
-    # flatten for meshed measurement
-    # ----------------------------------------------------
-    q1_min, q1_max, q1_step = 2, 3, 0.02
-    en_min, en_max, en_step = -3, 25, 0.5
-    q2 = 0
-    q3 = 0
-
-    q1 = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / q1_step) + 1)
-    en = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
-
-    # calculate resolution
-    vq1, vq2, vq3 = np.meshgrid(q1, q2, q3, indexing="ij")
-    q_list = np.stack((vq1.ravel(), vq2.ravel(), vq3.ravel()), axis=-1)
-    reso_params = resolution_matrix(hkl=q_list, en=en)
-
-    t0 = time()
-    # num_worker = 8
-    # with ProcessPoolExecutor(max_workers=num_worker) as executor:
-    #     results = executor.map(convolution, reso_params)
-    # measurement_inten = np.asarray(list(results))
-    # ------------------- single core ------------------
-    sz = len(reso_params)
-    measurement_inten = np.empty(shape=sz)
-    for i in range(sz):
-        measurement_inten[i] = convolution(reso_params[i])
-    # --------------------------------------------------
-
-    print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
-    # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
-    total_intent = np.sum(measurement_inten) * q1_step * en_step / (q1_max - q1_min)
-
-    # ----------------------------------------------------
-    # plot 2D contour
-    # ----------------------------------------------------
-    fig, ax = plt.subplots(figsize=(10, 6))
-    vq1, ven = np.meshgrid(q1, en, indexing="ij")
-    img = ax.pcolormesh(vq1, ven, measurement_inten.reshape(np.shape(vq1)), cmap="turbo", vmin=0, vmax=0.5)
-
-    ax.grid(alpha=0.6)
-    ax.set_xlabel("Q1")
-    ax.set_ylabel("En")
-    ax.set_xlim((q1_min, q1_max))
-    ax.set_ylim((en_min, en_max))
-
-    plot_rez_ellipses(ax)
-    disp = model_disp(q1, np.zeros_like(q1), np.zeros_like(q1))
-    for i in range(np.shape(disp)[0]):
-        ax.plot(q1, disp[i], "-w")
-
-    ax.legend()
-    fig.colorbar(img, ax=ax)
-    ax.set_title(
-        f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
-        + f"\n3D Convolution for {len(q1) * len(en)} points, "
-        + f"completed in {t1 - t0:.3f} s"
-        # + " with {num_worker:1d} cores"
-    )
-
-    # plt.tight_layout()
-    plt.show()

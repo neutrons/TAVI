@@ -1,11 +1,12 @@
 from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from time import time
 
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axisartist import Axes
-from numba import njit, prange
 
+from tavi.instrument.resolution.convolution import convolution
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
@@ -53,193 +54,6 @@ def model_inten(qh, qk, ql):
     return inten
 
 
-def quadric_proj(quadric, idx):
-    """projects along one axis of the quadric"""
-
-    # delete if orthogonal
-    zero = 1e-8
-    if np.abs(quadric[idx, idx]) < zero:
-        return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
-
-    # row/column along which to perform the orthogonal projection
-    vec = 0.5 * (quadric[idx, :] + quadric[:, idx])  # symmetrise if not symmetric
-    vec /= np.sqrt(quadric[idx, idx])  # normalise to indexed component
-    proj_op = np.outer(vec, vec)  # projection operator
-    ortho_proj = quadric - proj_op  # projected quadric
-
-    return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
-
-
-def incoh_sigma(mat, axis):
-    """Incoherent sigma"""
-    idx = int(axis)
-
-    for i in (3, 2, 1, 0):
-        if not i == idx:
-            mat = quadric_proj(mat, i)
-
-    return 1 / np.sqrt(np.abs(mat[0, 0]))
-
-
-def coh_sigma(mat, axis):
-    """Coherent sigma"""
-    idx = int(axis)
-
-    return 1 / np.sqrt(np.abs(mat[idx, idx]))
-
-
-def get_max_step(arr, axis: int):
-    """Get max step along a given axis. Reutrn zero if all NaN"""
-    # shape of arr (num_bands, N1, N2, N3)
-    diff_arr = np.abs(np.diff(arr, axis=axis))
-    steps = np.nanmax(diff_arr, axis=axis)
-    return np.nanmax(steps, out=np.array(0.0))
-
-
-@njit(parallel=True, nogil=True)
-def compute_weights(vqe, mat):
-    _, num_bands, num_pts = vqe.shape
-    weights = np.empty((num_bands, num_pts))
-
-    for i in prange(num_bands):
-        for j in range(num_pts):
-            v = vqe[:, i, j]  # shape: (4,)
-            tmp = 0.0
-            for k in range(4):
-                for l in range(4):
-                    tmp += v[k] * mat[k, l] * v[l]
-            weights[i, j] = tmp
-            # weights[i, j] = np.exp(-0.5 * tmp)
-
-    return weights
-
-
-def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
-    (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
-    sigma_qh_range, sigma_qk_range, sigma_ql_range = (
-        num_of_sigmas * sigma_qh_incoh,
-        num_of_sigmas * sigma_qk_incoh,
-        num_of_sigmas * sigma_ql_incoh,
-    )
-    pts_qh, pts_qk, pts_ql = num_pts
-    qh_list = np.linspace(-sigma_qh_range, sigma_qh_range, pts_qh + 1)
-    qk_list = np.linspace(-sigma_qk_range, sigma_qk_range, pts_qk + 1)
-    ql_list = np.linspace(-sigma_ql_range, sigma_ql_range, pts_ql + 1)
-    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")  # shape (3, N1, N2, N3)
-    # -------- cut the corners based on distance --------
-    r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
-    idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
-
-    # return vq, idx
-    return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
-
-
-def convolution(reso_params):
-    # ----------------------------------------------------
-    # calculate resolution matrix for all points
-    # ----------------------------------------------------
-    if reso_params is None:
-        return np.nan
-    (qh, qk, ql), en, r0, mat = reso_params
-    mat_hkl = quadric_proj(mat, 3)
-    # ----------------------------------------------------
-    # calculate the incoherent sigmas for all Q and E directions
-    # ----------------------------------------------------
-    sigma_qs = tuple(incoh_sigma(mat, i) for i in range(3))
-    sigma_en_incoh = incoh_sigma(mat, 3)
-    num_of_sigmas = 3
-    min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
-    sigma_en_coh = coh_sigma(mat, 3)
-    en_rez = sigma_en_coh / 5
-    # ----------------------------------------------------
-    # Calculate elemental volume
-    # ----------------------------------------------------
-    eigenvalues = np.linalg.eigvalsh(mat_hkl)
-    eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
-    elem_vols = np.prod(eval_inv_sqrt) * (2 * num_of_sigmas) ** 3
-    # ----------------------------------------------------
-    # First round, coarse grid
-    # ----------------------------------------------------
-    pts = [10, 10, 10]
-    (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
-    # ----------------------------------------------------
-    # determine if sampled enough based on steps along energy
-    # ----------------------------------------------------
-    disp = model_disp(vqh + qh, vqk + qk, vql + ql)
-    num_bands, num_pts = disp.shape
-
-    # Skip if all dispersion is outside the relevant energy window
-    if np.max(disp) < min_en or np.min(disp) > max_en:
-        return 0.0
-
-    vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
-    vqe = np.empty((4, num_bands, num_pts))
-    vqe[0:3] = vq[:, None, :]
-    vqe[3] = disp - en
-
-    weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
-    # Skip if everything is outside the 5-sigma volume
-    if np.min(weights) > 5**3:
-        return 0.0
-
-    # ----------------------------------------------------
-    # determine Q steps based on energy steps
-    # ----------------------------------------------------
-    disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
-    disp_arr[(slice(None),) + np.nonzero(idx)] = disp
-
-    # Compute max energy steps
-    steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-
-    max_step = 100  # limit the maximum in case the dispersion is too steep
-    for i, (step, pt) in enumerate(zip(steps, pts)):
-        if step > en_rez:
-            factor = step / en_rez
-            pts[i] = int(np.min((pt * factor, max_step)))
-
-    # ----------------------------------------------------
-    # Enough sampled. Calculate weight from resolution function
-    # ----------------------------------------------------
-    (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
-    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
-    disp = model_disp(vqh + qh, vqk + qk, vql + ql)
-    _, num_pts = disp.shape
-
-    # ----------------------------------------------------
-    # determine Q steps based on energy steps
-    # ----------------------------------------------------
-    disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
-    disp_arr[(slice(None),) + np.nonzero(idx)] = disp
-
-    # Compute max energy steps
-    steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
-    print(f"number of points = {pts}")
-    print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
-
-    vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
-    vqe = np.empty((4, num_bands, num_pts))
-    vqe[0:3] = vq[:, None, :]
-    vqe[3] = disp - en
-
-    weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
-
-    idx_keep = np.any(weights < 5**3, axis=0)
-    vq_filtered = vq[:, idx_keep]
-    num_pts_keep = np.count_nonzero(idx_keep)
-    percent_kep = num_pts_keep / np.prod(pts) * 100
-    print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
-    weights_filtered = np.exp(-weights[:, idx_keep] / 2)
-    inten = model_inten(*vq_filtered)
-
-    # normalization
-    elem_vols /= np.prod(pts)
-    det = np.linalg.det(mat)
-    inten_sum = np.sum(inten * weights_filtered) * elem_vols
-    return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
-
-
 if __name__ == "__main__":
     # setup instrument
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/hb3.json"
@@ -283,11 +97,11 @@ if __name__ == "__main__":
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
         for reso in hb3.cooper_nathans(hkle=qe_list)
     ]
-
+    conv_model = partial(convolution, model_disp=model_disp, model_inten=model_inten)
     t0 = time()
     num_worker = 8
     with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(convolution, reso_params)
+        results = executor.map(conv_model, reso_params)
     measurement_inten = np.asarray(list(results))
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
@@ -296,10 +110,10 @@ if __name__ == "__main__":
     # plot 2D contour
     # ----------------------------------------------------
     # calculate and plot resolution
-    q1_list = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 5)) + 1)
-    q2_list = np.linspace(q2_min, q2_max, int((q2_max - q2_min) / (q2_step * 5)) + 1)
-    q_list = np.array([(h, h, l) for l in q2_list for h in q1_list])
-    rez_list = hb3.cooper_nathans(hkl=q_list, en=en, projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)))
+    q1_rez = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 5)) + 1)
+    q2_rez = np.linspace(q2_min, q2_max, int((q2_max - q2_min) / (q2_step * 5)) + 1)
+    qe_rez = np.array([(h, h, l, en) for l in q2_rez for h in q1_rez])
+    rez_list = hb3.cooper_nathans(hkle=qe_rez, projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)))
 
     p = Plot2D()
     for rez in rez_list:
@@ -315,7 +129,7 @@ if __name__ == "__main__":
     p.plot(ax)
 
     # overplot contour
-    vq1, vq2 = np.meshgrid(q1, q2)
+    vq1, vq2 = np.meshgrid(q1, q2, indexing="ij")
     im = ax.pcolormesh(
         vq1,
         vq2,
