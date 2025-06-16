@@ -5,6 +5,7 @@ import numpy as np
 
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
+from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
 from tavi.instrument.tas_base import TASBase
 from tavi.ub_algorithm import (
     UBConf,
@@ -59,7 +60,11 @@ class TAS(TASBase):
         return cls_str
 
     def __str__(self):
-        return "TAS"
+        return f"{self.__class__.__name__}"
+
+    @staticmethod
+    def generate_hkle_from_projection(u, v, w, en, projection):
+        return ResolutionCalculator.generate_hkle_from_projection(u, v, w, en, projection)
 
     def _get_ei_ef(
         self,
@@ -84,7 +89,7 @@ class TAS(TASBase):
         elif (ef is None) and (ei is not None):
             ef = ei - en
         # elif not np.allclose(ei - ef, en, atol=1e-2): # ei, ef and en are given
-        #     raise ValueError(f"En={en:.2f} is different from Ei - Ef for Ei={ei:.2f} and Ef={ef:.2f}.")
+        #     raise ValueError(f"En={en:.4g} is different from Ei - Ef for Ei={ei:.4g} and Ef={ef:.4g}.")
 
         return (ei, ef)
 
@@ -107,7 +112,7 @@ class TAS(TASBase):
         try:
             two_theta_radians = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
         except ValueError as e:
-            raise e
+            raise ValueError(f"Cannot get two_theta for hkl={hkl}, ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
 
         return np.degrees(two_theta_radians) * self.goniometer._sense
 
@@ -129,20 +134,28 @@ class TAS(TASBase):
         try:
             psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
         except ValueError as e:
-            raise e
+            raise ValueError(f"Cannot get psi for hkl={hkl}, ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
 
         return np.rad2deg(psi_radians) * self.goniometer._sense * (-1)
 
     def get_theta_m(self, ei):
         """Calculate the theta angle m1 of monochromator of the given Ei"""
         mono = self.monochromator
-        theta_m = get_angle_bragg(en2q(ei), mono.d_spacing) * mono._sense
+        try:
+            theta_m = get_angle_bragg(en2q(ei), mono.d_spacing) * mono._sense
+        except ValueError as e:
+            raise ValueError(f"Cannot get theta_m for ei={ei:.4g} meV. " + str(e))
+
         return np.degrees(theta_m)
 
     def get_theta_a(self, ef):
         """Calculate the theta angle a1 of analyzer of the given Ef"""
         ana = self.analyzer
-        theta_a = get_angle_bragg(en2q(ef), ana.d_spacing) * ana._sense
+        try:
+            theta_a = get_angle_bragg(en2q(ef), ana.d_spacing) * ana._sense
+        except ValueError as e:
+            raise ValueError(f"Cannot get theta_a for ef={ef:.4g} meV. " + str(e))
+
         return np.degrees(theta_a)
 
     def calculate_ub_matrix(self, peaks: tuple[Peak, ...], scattering_plane=None) -> Optional[UBConf]:

@@ -100,8 +100,8 @@ if __name__ == "__main__":
     t0 = time()
     num_worker = 8
     with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(conv_model, reso_params)
-    measurement_inten = np.asarray(list(results))
+        results = list(executor.map(conv_model, reso_params))
+    measurement_inten = np.asarray(results)
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
 

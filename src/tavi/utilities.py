@@ -121,8 +121,10 @@ def get_angle_bragg(
     """return angle based on Bragg's law, in radian
     2d sin(theta) = lambda = 2 pi /q
     """
-    theta = np.arcsin(np.pi / (sample_d_spaceing * neutron_momentum))
-    return theta
+    asin = np.pi / (sample_d_spaceing * neutron_momentum)
+    if asin > 1 or asin < -1:
+        raise ValueError("Bragg condition cannot be fulfilled.")
+    return np.arcsin(asin)
 
 
 def rotation_matrix_2d(phi):

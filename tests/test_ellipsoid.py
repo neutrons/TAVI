@@ -56,7 +56,7 @@ def test_making_labels_from_projection():
 def test_plotting(tas_params):
     ctax, hkle, _ = tas_params
     rez = ctax.cooper_nathans(hkle=hkle)
-    rez.plot_ellipses()
+    rez.plot()
     plt.show()
 
 

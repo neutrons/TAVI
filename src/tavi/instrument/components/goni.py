@@ -169,8 +169,9 @@ class Goniometer(TASComponent):
                 )
 
                 angles = MotorAngles(two_theta, omega, None, None, chi, phi)
-                if not self.validate_motor_positions(angles):
-                    print(f"Angles {angles} cannot be reached.")
+                # if not self.validate_motor_positions(angles):
+                #     print(f"Angles {angles} cannot be reached.")
+                self.validate_motor_positions(angles)
 
         return angles
 
@@ -208,8 +209,9 @@ class Goniometer(TASComponent):
                     ]
                 )
                 angles = MotorAngles(two_theta, omega, sgl, sgu, None, None)
-                if not self.validate_motor_positions(angles):
-                    print(f"Angles {angles} cannot be reached.")
+                # if not self.validate_motor_positions(angles):
+                #     print(f"Angles {angles} cannot be reached.")
+                self.validate_motor_positions(angles)
 
             case "YXYbisect":
                 print("Not implemented yet.")
@@ -233,17 +235,14 @@ class Goniometer(TASComponent):
         else:
             raise ValueError(f"Unrecogonized motor name: {motor_name}.")
 
-    def validate_motor_positions(self, angles: MotorAngles) -> bool:
+    def validate_motor_positions(self, angles: MotorAngles):
         "check if all goiometer motors are within the limits"
 
         for name, value in angles._asdict().items():
             if value is None:
                 continue
-            low, high = self.limits.get(name)
-            if low is not None:
-                if value < low:
-                    return False
-            if high is not None:
-                if value > high:
-                    return False
-        return True
+            low, high = self.limits.get(name, (None, None))
+            if low is not None and value < low:
+                raise ValueError(f"{name}={value:.4g} is below lower limit={low:.4g}")
+            if high is not None and value > high:
+                raise ValueError(f"{name}={value:.4g} is above higher limit={high:.4g}")

@@ -3,8 +3,11 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+from matplotlib.colors import LogNorm
 from mpl_toolkits.axisartist import Axes
 
+from tavi.data.scan import Scan
+from tavi.data.scan_group import ScanGroup
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
@@ -125,9 +128,7 @@ def test_out_of_reach(sample):
 
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
     assert rez is None
-    assert (
-        "Cannot get two_theta for hkl=(10, 10, 10), ei=5.00 meV, ef=5.00 meV. Triangle cannot be closed." in tas.err_msg
-    )
+    assert "Cannot get two_theta for hkl=(10, 10, 10), ei=5 meV, ef=5 meV. Triangle cannot be closed." in tas.err_msg
 
 
 def test_reso_str(sample):
@@ -139,7 +140,6 @@ def test_reso_str(sample):
 
     hkle = (0.1, 0.1, 0, 0)
     projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    # projection = None
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
 
     assert len(str(rez).split("\n")) == 31
@@ -153,35 +153,152 @@ def test_plot_ellipses(sample):
     tas.mount_sample(sample)
 
     hkle = (0.1, 0.1, 0, 0)
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    # projection = None
+    projection = ((1, 1, 0), (0, 1, 0), (0, 0, 1))
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
 
     # plotting
-    fig = plt.figure(figsize=(10, 6))
+    fig = plt.figure(figsize=(10, 6), constrained_layout=True)
+    rez.plot_ellipses(fig)
+    plt.show()
 
-    for i, indices in enumerate([(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]):
-        ellipse_co = rez.get_ellipse(axes=indices, PROJECTION=False)
-        ellipse_inco = rez.get_ellipse(axes=indices, PROJECTION=True)
 
-        p = Plot2D()
-        if indices == (2, 3):
-            p.add_reso(ellipse_co, c="k", linestyle="solid", label="Coherent")
-            p.add_reso(ellipse_inco, c="k", linestyle="dashed", label="Incoherent")
+def test_generate_hkle_list():
+    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    hkle = TAS.generate_hkle_from_projection(
+        u=(-0.5, 0.15, 0.05),
+        v=3,
+        w=0,
+        en=(0, 4.1, 0.4),
+        projection=projection,
+    )
+    assert len(hkle) == 143
 
-        else:
-            p.add_reso(ellipse_co, c="k", linestyle="solid")
-            p.add_reso(ellipse_inco, c="k", linestyle="dashed")
 
-        ax = fig.add_subplot(
-            int(f"23{i + 1}"),
-            axes_class=Axes,
-            grid_helper=p.grid_helper(ellipse_co.angle),
-        )
-        p.plot(ax)
+def test_plot_ellipsoids_contour():
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
 
-    fig.tight_layout(pad=2)
-    for label in ax.get_xticklabels():
-        label.set_rotation(45)
-        label.set_horizontalalignment("right")
+    param_dict = {"fixed_ef": 4.8}
+    tas = TAS(**param_dict)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+    tas.mount_sample(Sample.from_json("./test_data/test_samples/nitio3.json"))
+
+    # calculate resolution ellipses
+    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    axes_params = {
+        "u": (-0.5, 0.15, 0.05),
+        "v": 3,
+        "w": 0,
+        "en": (0, 4.1, 0.4),
+    }
+
+    hkle_list = tas.generate_hkle_from_projection(**axes_params, projection=projection)
+    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
+
+    assert len(rez_list) == 143
+
+    # generate plot
+    p = Plot2D()
+    axes = [i for i, val in enumerate(axes_params.values()) if isinstance(val, tuple) and len(val) == 3]
+    for rez in filter(None, rez_list):
+        e_co = rez.get_ellipse(axes=axes, PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=axes, PROJECTION=True)
+        p.add_reso(e_co, c="k", linestyle="solid")
+        p.add_reso(e_inco, c="k", linestyle="dashed")
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, axes_class=Axes)
+    p.plot(ax)
+    plt.show()
+
+
+def test_plot_data_contour():
+    path_to_spice_folder = "test_data/exp424/"
+    scan_nums = "42-48, 70-75"
+
+    scan_data_2d_params = {
+        "axes": ("qh", "en", "detector"),
+        "norm_to": (1, "mcu"),
+        "grid": (0.025, (0, 4.1, 0.1)),
+    }
+
+    contour_params = {
+        "cmap": "turbo",
+        # "vmax": 1,
+        # "vmin": 0,
+        "norm": LogNorm(vmin=1e-1, vmax=1e4),
+    }
+
+    scan_list = []
+    for part in scan_nums.split(","):
+        start, end = map(int, part.strip().split("-"))
+        scan_list.extend(range(start, end + 1))
+    scans = [Scan.from_spice(path_to_spice_folder, scan_num=num) for num in scan_list]
+    sg = ScanGroup(scans)
+
+    scan_data_2d = sg.combine_data(**scan_data_2d_params)
+    p = Plot2D()
+
+    p.add_contour(scan_data_2d, **contour_params)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, axes_class=Axes)
+    im = p.plot(ax)
+    fig.colorbar(im, ax=ax)
+    plt.show()
+
+
+def test_plot_ellipsoids_contour_oplot():
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
+
+    param_dict = {"fixed_ef": 4.8}
+    tas = TAS(**param_dict)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+    tas.mount_sample(Sample.from_json("./test_data/test_samples/nitio3.json"))
+
+    # calculate resolution ellipses
+    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    u = (-0.5, 0.15, 0.05)
+    v = 3
+    w = 0
+    en = (0, 4.1, 0.4)
+
+    hkle_list = tas.generate_hkle_from_projection(u, v, w, en, projection)
+    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
+
+    # generate data
+    path_to_spice_folder = "test_data/exp424/"
+    scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
+
+    scans = [Scan.from_spice(path_to_spice_folder, scan_num=num) for num in scan_list]
+    sg = ScanGroup(scans)
+
+    scan_data_2d_params = {
+        "axes": ("qh", "en", "detector"),
+        "norm_to": (1, "mcu"),
+        "grid": (0.025, (0, 4.5, 0.1)),
+    }
+
+    scan_data_2d = sg.combine_data(**scan_data_2d_params)
+
+    # generate plot
+    p = Plot2D()
+
+    contour_params = {
+        "cmap": "turbo",
+        "vmax": 1,
+        "vmin": 0,
+    }
+
+    p.add_contour(scan_data_2d, **contour_params)
+
+    axes = [i for i, val in enumerate((u, v, w, en)) if isinstance(val, tuple) and len(val) == 3]
+    for rez in filter(None, rez_list):
+        e_co = rez.get_ellipse(axes=axes, PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=axes, PROJECTION=True)
+        p.add_reso(e_co, c="k", linestyle="solid")
+        p.add_reso(e_inco, c="k", linestyle="dashed")
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, axes_class=Axes)
+    im = p.plot(ax)
+    fig.colorbar(im, ax=ax)
     plt.show()

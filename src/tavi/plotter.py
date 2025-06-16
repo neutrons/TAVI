@@ -242,7 +242,7 @@ class Plot2D(object):
             ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
         for reso in self.reso_data:
             pts = reso.get_points(num_points=128)  # num_points=128 by default
-            if np.abs(reso.angle - 90) > 1e-5:  # askew axes
+            if not np.isclose(reso.angle, 90, atol=1e-2):  # askew axes
                 ax.plot(*tr(pts[0], pts[1], reso.angle), **reso.fmt)
             else:
                 ax.plot(pts[0], pts[1], **reso.fmt)
@@ -255,25 +255,20 @@ class Plot2D(object):
         if self.title is not None:
             ax.set_title(self.title)
 
+        # Choose source of labels: reso_data takes precedence over contour_data
+        label_source = self.reso_data if self.reso_data else self.contour_data
+
         if self.xlabel is None:
-            xlabels = []
-            for data in self.contour_data + self.reso_data:
-                xlabels.append(data.xlabel)
-            ax.set_xlabel(",".join(set(xlabels)))
+            xlabels = {data.xlabel for data in label_source if data.xlabel is not None}
+            ax.set_xlabel(", ".join(sorted(xlabels)))
 
         if self.ylabel is None:
-            ylabels = []
-            for data in self.contour_data + self.reso_data:
-                ylabels.append(data.ylabel)
-            ax.set_ylabel(",".join(set(ylabels)))
+            ylabels = {data.ylabel for data in label_source if data.ylabel is not None}
+            ax.set_ylabel(", ".join(sorted(ylabels)))
 
         ax.grid(alpha=0.6)
-        for data in self.contour_data + self.reso_data + self.curve_data:
-            if "label" in data.fmt.keys():
-                ax.legend(loc=1)
-                break
+        if any("label" in data.fmt for data in self.contour_data + self.reso_data + self.curve_data):
+            ax.legend(loc=1)
 
-        if not self.contour_data:
-            pass
-        else:
-            return im
+        # return contour to make colorbar
+        return im if self.contour_data else None

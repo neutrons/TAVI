@@ -1,12 +1,20 @@
 # from concurrent.futures import ProcessPoolExecutor
 import functools
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 import numpy as np
 from numba import njit, prange
 
 
 def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
-    """projects along one axis of the quadric"""
+    """projects along one axis of the quadric
+
+    # comparing with simple projection
+    # rank = len(quadric)
+    # vec /= np.sqrt(np.dot(vec, vec))
+    # proj_op = np.outer(vec, vec)
+    # ortho_proj = np.dot((np.identity(rank) - proj_op), quadric)"""
 
     # delete if orthogonal
     if np.abs(qii := quadric[idx, idx]) < 1e-8:
@@ -181,7 +189,7 @@ def convolution(reso_params, model_disp, model_inten):
 
     # Compute max energy steps
     # steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
+    print(f"Calculating (Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
     # print(f"number of points = {pts}")
     # print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
@@ -194,9 +202,9 @@ def convolution(reso_params, model_disp, model_inten):
 
     idx_keep = np.any(weights < 5**3, axis=0)
     vq_filtered = vq[:, idx_keep]
-    num_pts_keep = np.count_nonzero(idx_keep)
-    percent_kep = num_pts_keep / np.prod(pts) * 100
-    print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
+    # num_pts_keep = np.count_nonzero(idx_keep)
+    # percent_kep = num_pts_keep / np.prod(pts) * 100
+    # print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
     weights_filtered = np.exp(-weights[:, idx_keep] / 2)
     inten = model_inten(*vq_filtered)
 
@@ -205,3 +213,11 @@ def convolution(reso_params, model_disp, model_inten):
     det = np.linalg.det(mat)
     inten_sum = np.sum(inten * weights_filtered) * elem_vols
     return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
+
+
+def calculate(model_disp, model_inten, reso_params, num_worker=8):
+    conv_model = partial(convolution, model_disp=model_disp, model_inten=model_inten)
+
+    with ProcessPoolExecutor(max_workers=num_worker) as executor:
+        results = list(executor.map(conv_model, reso_params))
+    return np.asarray(results)

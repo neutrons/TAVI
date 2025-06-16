@@ -74,6 +74,18 @@ def test_projection(ctax):
     assert np.allclose(rez.mat, mat, atol=1e-1)
 
 
+def test_projection_2():
+    instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
+    tas = TAS(fixed_ei=4.8)
+    tas.load_instrument_params_from_json(instrument_config_json_path)
+    tas.mount_sample(Sample.from_json("./test_data/test_samples/nitio3.json"))
+
+    hkle = (-1 / 2, -1 / 2, 3, 3.2)
+    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    pass
+
+
 def test_list(ctax):
     rez_list = ctax.cooper_nathans(
         hkle=[
@@ -115,8 +127,8 @@ def rescal_params():
     instrument_params = {
         "monochromator": {
             "type": "PG002",
-            "mosaic_h": 10,
-            "mosaic_v": 10,
+            "mosaic_h": 30,
+            "mosaic_v": 30,
             "sense": "+",
         },
         "goniometer": {"sense": "-", "type": "Y,-Z,X"},
@@ -140,7 +152,7 @@ def rescal_params():
 
     lattice_params = (6.28319, 6.28319, 6.28319, 90, 90, 90)
     sample = Sample(lattice_params)
-    sample.set_mosaic(0, 0)
+    sample.set_mosaic(10, 10)
     u = (1, 0, 0)
     v = (0, 1, 0)
     ub_matrix_mantid = uv_to_ub_matrix(u, v, lattice_params)
@@ -165,9 +177,21 @@ def test_rescal_comparison(rescal_params):
     tas._load_instrument_parameters(instrument_params)
     tas.mount_sample(sample)
 
-    # projection = ((1, 2, 0), (-2, 1, 0), (0, 0, 1))
-    rez = tas.cooper_nathans(hkle=(1, 2, 0, 0))
-    rez.plot_ellipses()
+    rez_hkl = tas.cooper_nathans(hkle=(1, 2, 0, 0))
+    rez_hkl.plot()
+
+    rez_invA = tas.cooper_nathans(hkle=(1, 2, 0, 0), projection=None)
+    assert np.allclose(
+        rez_invA.mat,
+        [
+            [6654, -1555, 0, -179.7],
+            [-1555, 3.104e04, 0, 2963],
+            [0, 0, 628.9, 0],
+            [-179.7, 2963, 0, 285.1],
+        ],
+        rtol=0.01,
+    )
+
     plt.show()
 
 
@@ -260,5 +284,5 @@ def test_takin_comparison(takin_params):
         ],
         rtol=0.01,
     )
-    rez.plot_ellipses()
+    rez.plot()
     plt.show()

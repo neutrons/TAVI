@@ -91,6 +91,6 @@ def test_plot2d_with_resolution():
     fig = plt.figure()
     ax = fig.add_subplot(111, axes_class=Axes)
 
-    im = p.plot(ax)
+    p.plot(ax)
     fig.colorbar(im, ax=ax)
     plt.show()

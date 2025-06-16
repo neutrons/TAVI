@@ -62,13 +62,14 @@ class ResoEllipsoid(object):
         return f"ResoEllipsoid at hkl=({h:.4g}, {k:.4g}, {l:.4g}), en={self.en:.4g} meV"
 
     def __str__(self):
+        h, k, l = self.hkl
         r_mat_str = pd.DataFrame(
             self.mat,
             index=[re.sub(r"\([^()]*\)$", "", label) for label in self.axes_labels],
             columns=[re.sub(r"\([^()]*\)$", "", label) for label in self.axes_labels],
         ).to_string(float_format="{:.4g}".format)
         summary_str = [
-            f"Resolution ellipsoid centered at (h,k,l)={self.hkl} (r.l.u.), en={self.en} meV. (Q = {self.q:.3f} A^-1)",
+            f"Resolution ellipsoid centered at (h,k,l)=({h:.4g}, {k:.4g}, {l:.4g}) (r.l.u.), en={self.en:.4g} meV. (Q = {self.q:.4g} A^-1)",
             f"Calculated using {self.method} method.",
             "Projection axes are " + ", ".join(self.axes_labels),
             "resolution matrix R=",
@@ -287,12 +288,7 @@ class ResoEllipsoid(object):
 
         return ResoEllipse(mat, centers, angle, axes_labels)
 
-    def plot_ellipses(self):
-        """Plot all 2D ellipses"""
-
-        # fig = plt.figure()
-        fig = plt.figure(figsize=(12, 8), constrained_layout=True)
-
+    def plot_ellipses(self, fig):
         for i, indices in enumerate([(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]):
             ellipse_co = self.get_ellipse(axes=indices, PROJECTION=False)
             ellipse_inco = self.get_ellipse(axes=indices, PROJECTION=True)
@@ -312,6 +308,11 @@ class ResoEllipsoid(object):
                 grid_helper=p.grid_helper(ellipse_co.angle),
             )
             p.plot(ax)
-
         fig.suptitle(f"Q={self.hkl}, En={self.en} meV")
         # fig.tight_layout(pad=2)
+
+    def plot(self):
+        """Plot all 2D ellipses"""
+
+        fig = plt.figure(figsize=(12, 8), constrained_layout=True)
+        self.plot_ellipses(fig)

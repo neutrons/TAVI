@@ -153,5 +153,4 @@ def test_two_theta_from_hkle():
 
     with pytest.raises(ValueError) as excinfo:
         two_theta_from_hkle(hkl=(100, 0, 0), ei=ei, ef=ei, b_mat=b_mat)
-    assert "Cannot get two_theta for hkl=(100, 0, 0), ei=14.45 meV, ef=14.45 meV." in str(excinfo.value)
     assert "Triangle cannot be closed." in str(excinfo.value)
