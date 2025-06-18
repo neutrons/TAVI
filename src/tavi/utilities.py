@@ -45,7 +45,7 @@ class MotorAngles(NamedTuple):
     def __repr__(self):
         angle_str = ""
         for name, value in self._asdict().items():
-            angle_str += f"{name}={value:.3f}, " if value is not None else ""
+            angle_str += f"{name}={value:.4g}, " if value is not None else ""
         return angle_str
 
     def __eq__(self, other):
@@ -82,7 +82,7 @@ class Peak(NamedTuple):
 def en2q(en: float) -> float:
     """convert energy en in meV to momontum transfer q in inverse Angstrom"""
     if en < 0:
-        raise ValueError(f"Cannot convert negative energy en={en} to momentum transfer q.")
+        raise ValueError(f"Cannot convert negative energy en={en:.4g} to momentum transfer q.")
     q = np.sqrt(en / ksq2eng)
     return q
 
@@ -90,7 +90,7 @@ def en2q(en: float) -> float:
 def q2en(q: float) -> float:
     """convert momontum transfer q in inverse Angstrom to energy en in mev"""
     if q < 0:
-        raise ValueError(f"Converting negative momentum transfer q={q} to energy.")
+        raise ValueError(f"Converting negative momentum transfer q={q:.4g} to energy.")
     en = ksq2eng * q**2
     return en
 

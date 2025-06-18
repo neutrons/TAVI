@@ -112,7 +112,10 @@ class TAS(TASBase):
         try:
             two_theta_radians = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
         except ValueError as e:
-            raise ValueError(f"Cannot get two_theta for hkl={hkl}, ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
+            hkl_str = "({:.4g}, {:.4g}, {:.4g}), ".format(*hkl)
+            raise ValueError(
+                "Cannot get two_theta for hkl=" + hkl_str + f"ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e)
+            )
 
         return np.degrees(two_theta_radians) * self.goniometer._sense
 
@@ -134,7 +137,8 @@ class TAS(TASBase):
         try:
             psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
         except ValueError as e:
-            raise ValueError(f"Cannot get psi for hkl={hkl}, ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
+            hkl_str = "({:.4g}, {:.4g}, {:.4g}), ".format(*hkl)
+            raise ValueError("Cannot get psi for hkl=" + hkl_str + f"ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
 
         return np.rad2deg(psi_radians) * self.goniometer._sense * (-1)
 
@@ -272,7 +276,8 @@ class TAS(TASBase):
         """
 
         if len(hkl) != 3:
-            raise ValueError(f"hkl ={hkl} should have the format (h,k,l).")
+            hkl_str = "({:.4g}, {:.4g}, {:.4g})".format(*hkl)
+            raise ValueError("hkl =" + hkl + str + " should have the format (h,k,l).")
 
         two_theta = self.get_two_theta(hkl=hkl, en=en)
         psi = self.get_psi(hkl=hkl, en=en)

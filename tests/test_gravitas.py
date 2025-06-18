@@ -194,7 +194,7 @@ def test_plot_ellipsoids_contour():
     hkle_list = tas.generate_hkle_from_projection(**axes_params, projection=projection)
     rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
 
-    # assert len(rez_list) == 143
+    assert len(rez_list) == 1320
 
     # generate plot
     p = Plot2D()
