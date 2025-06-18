@@ -175,7 +175,7 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     spicelogs.update(dataset_dict)
 
     scan_path = os.path.abspath(path_to_scan_file)
-    (*folder_path, _, _) = scan_path.split("/")
+    folder_path = os.path.dirname(os.path.split(scan_path)[0])
 
     ub_file_name = metadata["ubconf"]
     # clean up the mess DAC made
@@ -186,8 +186,8 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     else:
         ub_file = ub_file_name
 
-    ub_file_path = os.path.join("/", *folder_path, "UBConf", ub_file)
-    ub_temp_file_path = os.path.join("/", *folder_path, "UBConf", "temp", ub_file)
+    ub_file_path = os.path.join("/", folder_path, "UBConf", ub_file)
+    ub_temp_file_path = os.path.join("/", folder_path, "UBConf", "temp", ub_file)
 
     if os.path.isfile(ub_file_path):
         ub_conf_dict = {"file_path": ub_file_path}

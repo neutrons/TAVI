@@ -289,27 +289,36 @@ class ResoEllipsoid(object):
         return ResoEllipse(mat, centers, angle, axes_labels)
 
     def plot_ellipses(self, fig):
-        for i, indices in enumerate([(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]):
-            ellipse_co = self.get_ellipse(axes=indices, PROJECTION=False)
+        index_pairs = [(0, 3), (1, 3), (2, 3), (0, 1), (1, 2), (0, 2)]
+
+        for i, indices in enumerate(index_pairs):
             ellipse_inco = self.get_ellipse(axes=indices, PROJECTION=True)
+            ellipse_co = self.get_ellipse(axes=indices, PROJECTION=False)
 
             p = Plot2D()
             if indices == (2, 3):
-                p.add_reso(ellipse_co, c="k", linestyle="solid", label="Coherent")
                 p.add_reso(ellipse_inco, c="k", linestyle="dashed", label="Incoherent")
+                p.add_reso(ellipse_co, c="k", linestyle="solid", label="Coherent")
 
             else:
-                p.add_reso(ellipse_co, c="k", linestyle="solid")
                 p.add_reso(ellipse_inco, c="k", linestyle="dashed")
+                p.add_reso(ellipse_co, c="k", linestyle="solid")
 
             ax = fig.add_subplot(
-                int(f"23{i + 1}"),
+                2,
+                3,
+                i + 1,
                 axes_class=Axes,
-                grid_helper=p.grid_helper(ellipse_co.angle),
+                grid_helper=p.grid_helper(ellipse_co.angle, nbins=(5, 5)),
             )
+            x_fwhm, y_fwhm = [self.incoh_fwhms(idx) * 0.6 for idx in indices]
+            x_cen, y_cen = ellipse_co.centers
+            p.xlim = (x_cen - x_fwhm, x_cen + x_fwhm)
+            p.ylim = (y_cen - y_fwhm, y_cen + y_fwhm)
             p.plot(ax)
+            ax.axis["bottom"].major_ticklabels.set_text("$\\mathdefault{2}$")  # optional rotation
         fig.suptitle(f"Q={self.hkl}, En={self.en} meV")
-        # fig.tight_layout(pad=2)
+        fig.tight_layout(pad=2)
 
     def plot(self):
         """Plot all 2D ellipses"""

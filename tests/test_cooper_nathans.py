@@ -74,7 +74,7 @@ def test_projection(ctax):
     assert np.allclose(rez.mat, mat, atol=1e-1)
 
 
-def test_projection_2():
+def test_projection_out_of_reach():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     tas = TAS(fixed_ei=4.8)
     tas.load_instrument_params_from_json(instrument_config_json_path)
@@ -83,7 +83,8 @@ def test_projection_2():
     hkle = (-1 / 2, -1 / 2, 3, 3.2)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
     rez = tas.cooper_nathans(hkle=hkle, projection=projection)
-    pass
+    assert not rez
+    assert "Cannot get theta_a for ef=1.6 meV. Bragg condition cannot be fulfilled." in tas.err_msg
 
 
 def test_list(ctax):

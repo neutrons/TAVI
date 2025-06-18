@@ -1,11 +1,12 @@
 [project]
+authors = [{name = "Bing Li", email = "lib1@ornl.gov"}]
 dependencies = [
   # list all runtime dependencies here
 ]
-description = "Triple-Axis data Visualization"
+description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
 license = {text = "LGPL-3.0"}
-name = "tavi"
+name = "pytavi"
 requires-python = ">=3.10"
 
 [project.urls]
@@ -33,7 +34,8 @@ method = "minor"
 [tool.versioningit.format]
 dirty = "{version}+d{build_date:%Y%m%d}"
 distance = "{next_version}.dev{distance}"
-distance-dirty = "{next_version}.dev{distance}+d{build_date:%Y%m%d%H%M}"
+distance-dirty = "{next_version}.dev{distance}"
+# +d{build_date:%Y%m%d%H%M}"
 
 [tool.versioningit.write]
 file = "src/tavi/_version.py"

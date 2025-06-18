@@ -224,14 +224,14 @@ class Plot2D(object):
             self.reso_data.append(reso_data)
 
     @staticmethod
-    def grid_helper(angle: float):
+    def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)):
         grid_helper = GridHelperCurveLinear(
             (
                 partial(tr, angle=angle),
                 partial(inv_tr, angle=angle),
             ),
-            grid_locator1=MaxNLocator(integer=True, steps=[1]),
-            grid_locator2=MaxNLocator(integer=True, steps=[1]),
+            grid_locator1=MaxNLocator(nbins=nbins[0], steps=[1, 2, 5]),
+            grid_locator2=MaxNLocator(nbins=nbins[1], steps=[1, 2, 5]),
         )
         return grid_helper
 
@@ -246,6 +246,7 @@ class Plot2D(object):
                 ax.plot(*tr(pts[0], pts[1], reso.angle), **reso.fmt)
             else:
                 ax.plot(pts[0], pts[1], **reso.fmt)
+                # ax.set_xticks([])
 
         if self.xlim is not None:
             ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
@@ -254,6 +255,10 @@ class Plot2D(object):
 
         if self.title is not None:
             ax.set_title(self.title)
+
+        # ax.axis["bottom"].major_ticklabels.set_visible(True)
+        # ax.axis["bottom"].major_ticks.set_tick_out(True)
+        # ax.set_xticks(np.linspace(*self.xlim, 5))
 
         # Choose source of labels: reso_data takes precedence over contour_data
         label_source = self.reso_data if self.reso_data else self.contour_data
