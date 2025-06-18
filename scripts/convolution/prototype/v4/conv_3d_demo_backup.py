@@ -1,4 +1,3 @@
-import functools
 from concurrent.futures import ProcessPoolExecutor
 from time import time
 
@@ -8,17 +7,49 @@ from matplotlib.patches import Ellipse
 from numba import njit, prange
 
 
-# -------------------------------------------------------
-# user input model_disp and model_inten
-# -------------------------------------------------------
+def quadric_proj(quadric, idx):
+    """projects along one axis of the quadric"""
+
+    # delete if orthogonal
+    zero = 1e-8
+    if np.abs(quadric[idx, idx]) < zero:
+        return np.delete(np.delete(quadric, idx, axis=0), idx, axis=1)
+
+    # row/column along which to perform the orthogonal projection
+    vec = 0.5 * (quadric[idx, :] + quadric[:, idx])  # symmetrise if not symmetric
+    vec /= np.sqrt(quadric[idx, idx])  # normalise to indexed component
+    proj_op = np.outer(vec, vec)  # projection operator
+    ortho_proj = quadric - proj_op  # projected quadric
+
+    return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
+
+
+def incoh_sigma(mat, axis):
+    """Incoherent sigma"""
+    idx = int(axis)
+
+    for i in (3, 2, 1, 0):
+        if not i == idx:
+            mat = quadric_proj(mat, i)
+
+    return 1 / np.sqrt(np.abs(mat[0, 0]))
+
+
+def coh_sigma(mat, axis):
+    """Coherent sigma"""
+    idx = int(axis)
+
+    return 1 / np.sqrt(np.abs(mat[idx, idx]))
+
+
 def model_disp(vq1, vq2, vq3):
     """return energy for given Q points
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
     """
 
     sj = 5
-    # gamma_q = np.cos(2 * np.pi * vq1)
-    gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
+    gamma_q = np.cos(2 * np.pi * vq1)
+    # gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
 
     disp = 2 * sj * (1 - gamma_q)
     disp = np.array((disp - 2, disp + 2))
@@ -45,9 +76,6 @@ def model_inten(vq1, vq2, vq3):
     return inten
 
 
-# -------------------------------------------------------
-# fake resolution matrix and resolution ellipses
-# -------------------------------------------------------
 def rotation_matrix_4d(theta_deg):
     theta = np.radians(theta_deg)
     c = np.cos(theta)
@@ -96,66 +124,8 @@ def plot_rez_ellipses(ax):
         )
 
 
-# -------------------------------------------------------
-# functions required for resolution convolution
-# -------------------------------------------------------
-
-
-def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
-    """projects along one axis of the quadric
-
-    dimensino of input arry is n by n
-    dimensiont of output array is (n-1) by (n-1)
-    """
-
-    # delete if orthogonal
-    if np.abs(qii := quadric[idx, idx]) < 1e-8:
-        mask = np.arange(quadric.shape[0]) != idx
-        return quadric[np.ix_(mask, mask)]
-
-    # row/column along which to perform the orthogonal projection
-    # symmetrise if not symmetric, normalise to indexed component
-    vec = 0.5 * (quadric[idx, :] + quadric[:, idx]) / np.sqrt(qii)
-    ortho_proj = quadric - np.outer(vec, vec)  # projected quadric
-
-    # return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
-    mask = np.arange(ortho_proj.shape[0]) != idx
-    return ortho_proj[np.ix_(mask, mask)]
-
-
-def incoh_sigma_en(mat: np.ndarray) -> float:
-    """Incoherent sigma for energy"""
-
-    elem = quadric_proj(quadric_proj(quadric_proj(mat, 2), 1), 0)[0, 0]
-
-    return 1 / np.sqrt(np.abs(elem))
-
-
-def incoh_sigma_qs(mat: np.ndarray) -> tuple[float, float, float]:
-    """Incoherent sigmas for q1, q2 and q3"""
-
-    mat_2 = quadric_proj(mat, 2)
-    elem1 = abs(quadric_proj(mat_2, 1)[0, 0])
-    elem2 = abs(quadric_proj(mat_2, 0)[0, 0])
-    elem3 = abs(quadric_proj(quadric_proj(mat, 1), 0)[0, 0])
-
-    return (1 / np.sqrt(elem1), 1 / np.sqrt(elem2), 1 / np.sqrt(elem3))
-
-
-def coh_sigma(mat: np.ndarray, axis: int):
-    """Coherent sigma along a given axis"""
-    idx = int(axis)
-
-    return 1 / np.sqrt(np.abs(mat[idx, idx]))
-
-
 @njit(parallel=True, nogil=True)
-def compute_weights(vqe: np.ndarray, mat: np.ndarray) -> np.ndarray:
-    """calculate weiget
-    vqe has shape (4, num_bands, num_pts)
-    mat has shape (4, 4)
-    weights = np.einsum("ijk,il,ljk->jk", vqe, mat_qe, vqe)
-    """
+def compute_weights(vqe, mat):
     _, num_bands, num_pts = vqe.shape
     weights = np.empty((num_bands, num_pts))
 
@@ -167,71 +137,57 @@ def compute_weights(vqe: np.ndarray, mat: np.ndarray) -> np.ndarray:
                 for l in range(4):
                     tmp += v[k] * mat[k, l] * v[l]
             weights[i, j] = tmp
+            # weights[i, j] = np.exp(-0.5 * tmp)
 
     return weights
 
 
-@functools.cache
-def generate_meshgrid(num_of_sigmas=3, num_pts=(10, 10, 10)):
-    pts_qh, pts_qk, pts_ql = num_pts
-    qh = np.linspace(-num_of_sigmas, num_of_sigmas, pts_qh + 1)
-    qk = np.linspace(-num_of_sigmas, num_of_sigmas, pts_qk + 1)
-    ql = np.linspace(-num_of_sigmas, num_of_sigmas, pts_ql + 1)
-    return np.meshgrid(qh, qk, ql, indexing="ij")  # shape (3, N1, N2, N3)
-
-
-def generate_pts(sigma_qs, mat_hkl, num_of_sigmas=3, num_pts=(10, 10, 10)):
-    """Generate points in a 3D mesh, cut the points at the corners"""
+def generate_pts(sigma_qs, num_of_sigmas, num_pts, mat_hkl):
     (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
-
-    vq_h, vq_k, vq_l = generate_meshgrid(num_of_sigmas, num_pts)
-    vq = (vq_h * sigma_qh_incoh, vq_k * sigma_qk_incoh, vq_l * sigma_ql_incoh)
-
+    sigma_qh_range, sigma_qk_range, sigma_ql_range = (
+        num_of_sigmas * sigma_qh_incoh,
+        num_of_sigmas * sigma_qk_incoh,
+        num_of_sigmas * sigma_ql_incoh,
+    )
+    pts_qh, pts_qk, pts_ql = num_pts
+    qh_list = np.linspace(-sigma_qh_range, sigma_qh_range, pts_qh + 1)
+    qk_list = np.linspace(-sigma_qk_range, sigma_qk_range, pts_qk + 1)
+    ql_list = np.linspace(-sigma_ql_range, sigma_ql_range, pts_ql + 1)
+    vq = np.meshgrid(qh_list, qk_list, ql_list, indexing="ij")  # shape (3, N1, N2, N3)
     # -------- cut the corners based on distance --------
     r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
     idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
     return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
+    # return vq, idx
 
 
 def get_max_step(arr, axis: int):
-    """Get max step along a given axis. Return zero if all NaN"""
+    """Get max step along a given axis. Reutrn zero if all NaN"""
     # shape of arr (num_bands, N1, N2, N3)
+    # (min_en, max_en) = en_range
     diff_arr = np.abs(np.diff(arr, axis=axis))
     steps = np.nanmean(diff_arr, axis=axis)
-    if np.isnan(steps).all():
-        return 0.0
-
-    return float(np.nanmax(steps))
+    # print(f"max_step={step:.3f}")
+    return np.nanmax(steps, out=np.array(0.0))
 
 
-def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
-    """Perform the convolution
-    The maxium sampling box size in Q is (max_step, max_step ,max_step)
-
-    Note:
-        Increase the accuracy by decresing energy_rez_factor and incresing max_step
-    """
-    # ----------------------------------------------------
-    # return np.nan if repo_params is None
-    # ----------------------------------------------------
+def convolution(reso_params):
     if reso_params is None:
         return np.nan
     # ----------------------------------------------------
     # calculate resolution matrix for all points
     # ----------------------------------------------------
     (qh, qk, ql), en, r0, mat = reso_params
-    print(f"Calculating (Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
     mat_hkl = quadric_proj(mat, 3)
     # ----------------------------------------------------
     # calculate the incoherent sigmas for all Q and E directions
     # ----------------------------------------------------
-    sigma_qs = incoh_sigma_qs(mat_hkl)
-    sigma_en_incoh = incoh_sigma_en(mat)
+    sigma_qs = tuple(incoh_sigma(mat, i) for i in range(3))
+    sigma_en_incoh = incoh_sigma(mat, 3)
     num_of_sigmas = 3
     min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
     sigma_en_coh = coh_sigma(mat, 3)
-    # define the energy resolution to be 1/5 of the coherent sigma in energy
-    en_rez = sigma_en_coh * energy_rez_factor
+    en_rez = sigma_en_coh / 5
     # ----------------------------------------------------
     # Calculate elemental volume
     # ----------------------------------------------------
@@ -242,22 +198,25 @@ def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     # First round, coarse grid
     # ----------------------------------------------------
     pts = [10, 10, 10]
-    (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
-    disp = model_disp(vqh + qh, vqk + qk, vql + ql)
-    num_bands, num_pts = disp.shape
-
-    # Retrun zero if all dispersion is outside the relevant energy window
-    if np.max(disp) < min_en or np.min(disp) > max_en:
-        return 0.0
+    (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     # ----------------------------------------------------
     # determine if sampled enough based on steps along energy
     # ----------------------------------------------------
+    disp = model_disp(vqh + qh, vqk + qk, vql + ql)
+    num_bands, num_pts = disp.shape
+
+    # Skip if all dispersion is outside the relevant energy window
+    if np.max(disp) < min_en or np.min(disp) > max_en:
+        return 0.0
+
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
     vqe = np.empty((4, num_bands, num_pts))
     vqe[0:3] = vq[:, None, :]
     vqe[3] = disp - en
+
     weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
-    # Return zero if everything is outside the 5-sigma volume
+    # Skip if everything is outside the 5-sigma volume
     if np.min(weights) > 5**3:
         return 0.0
 
@@ -266,9 +225,11 @@ def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     # ----------------------------------------------------
     disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
     disp_arr[(slice(None),) + np.nonzero(idx)] = disp
+
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
-    # limit the maximum in case the dispersion is too steep
+
+    max_step = 100  # limit the maximum in case the dispersion is too steep
     for i, (step, pt) in enumerate(zip(steps, pts)):
         if step > en_rez:
             factor = step / en_rez
@@ -277,9 +238,22 @@ def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     # ----------------------------------------------------
     # Enough sampled. Calculate weight from resolution function
     # ----------------------------------------------------
-    (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
+    (vqh, vqk, vql), idx = generate_pts(sigma_qs, num_of_sigmas, pts, mat_hkl)
+    # vqh, vqk, vql = vqh[idx], vqk[idx], vql[idx]
     disp = model_disp(vqh + qh, vqk + qk, vql + ql)
     _, num_pts = disp.shape
+
+    # ----------------------------------------------------
+    # determine Q steps based on energy steps
+    # ----------------------------------------------------
+    disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
+    disp_arr[(slice(None),) + np.nonzero(idx)] = disp
+
+    # Compute max energy steps
+    steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
+    print(f"(Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
+    print(f"number of points = {pts}")
+    print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
     vqe = np.empty((4, num_bands, num_pts))
@@ -287,18 +261,16 @@ def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     vqe[3] = disp - en
 
     weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
-    # ----------------------------------------------------
-    # Keep only the points within the 4D ellipsoid
-    # ----------------------------------------------------
+
     idx_keep = np.any(weights < 5**3, axis=0)
     vq_filtered = vq[:, idx_keep]
     num_pts_keep = np.count_nonzero(idx_keep)
     percent_kep = num_pts_keep / np.prod(pts) * 100
     print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
-
     weights_filtered = np.exp(-weights[:, idx_keep] / 2)
     inten = model_inten(*vq_filtered)
-    # normalization by elementary volume size
+
+    # normalization
     elem_vols /= np.prod(pts)
     det = np.linalg.det(mat)
     inten_sum = np.sum(inten * weights_filtered) * elem_vols
@@ -325,17 +297,10 @@ if __name__ == "__main__":
     reso_params = resolution_matrix(hkl=q_list, en=en)
 
     t0 = time()
-    # ------------------- multiprocessing ------------------
     num_worker = 8
     with ProcessPoolExecutor(max_workers=num_worker) as executor:
         results = executor.map(convolution, reso_params)
     measurement_inten = np.asarray(list(results))
-    # ------------------- single core ------------------
-    # sz = len(reso_params)
-    # measurement_inten = np.empty(shape=sz)
-    # for i in range(sz):
-    #     measurement_inten[i] = convolution(reso_params[i])
-    # --------------------------------------------------
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
     # total intensity should be close to S/2 *(q1_max - q1_min) * 2p*i
@@ -364,8 +329,8 @@ if __name__ == "__main__":
     ax.set_title(
         f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
         + f"\n3D Convolution for {len(q1) * len(en)} points, "
-        + f"completed in {t1 - t0:.3f} s"
-        # + " with {num_worker:1d} cores"
+        + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
 
+    # plt.tight_layout()
     plt.show()

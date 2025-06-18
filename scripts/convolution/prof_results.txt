@@ -1,0 +1,150 @@
+Timer unit: 1e-06 s
+
+Total time: 0.373662 s
+File: ./scripts/convolution/conv_3d_demo_prof.py
+Function: quadric_proj at line 105
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   105                                           @profile
+   106                                           def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
+   107                                               """projects along one axis of the quadric
+   108                                           
+   109                                               dimensino of input arry is n by n
+   110                                               dimensiont of output array is (n-1) by (n-1)
+   111                                               """
+   112                                           
+   113                                               # delete if orthogonal
+   114     26163      27384.0      1.0      7.3      if np.abs(qii := quadric[idx, idx]) < 1e-8:
+   115                                                   mask = np.arange(quadric.shape[0]) != idx
+   116                                                   return quadric[np.ix_(mask, mask)]
+   117                                           
+   118                                               # row/column along which to perform the orthogonal projection
+   119                                               # symmetrise if not symmetric, normalise to indexed component
+   120     26163      58039.0      2.2     15.5      vec = 0.5 * (quadric[idx, :] + quadric[:, idx]) / np.sqrt(qii)
+   121     26163      73184.0      2.8     19.6      ortho_proj = quadric - np.outer(vec, vec)  # projected quadric
+   122                                           
+   123                                               # return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
+   124     26163      37298.0      1.4     10.0      mask = np.arange(ortho_proj.shape[0]) != idx
+   125     26163     177757.0      6.8     47.6      return ortho_proj[np.ix_(mask, mask)]
+
+Total time: 22.7652 s
+File: ./scripts/convolution/conv_3d_demo_prof.py
+Function: generate_pts at line 185
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   185                                           @profile
+   186                                           def generate_pts(sigma_qs, mat_hkl, num_of_sigmas=3, num_pts=(10, 10, 10)):
+   187                                               """Generate points in a 3D mesh, cut the points at the corners"""
+   188      4889        906.0      0.2      0.0      (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
+   189                                           
+   190      4889       5033.0      1.0      0.0      vq_h, vq_k, vq_l = generate_meshgrid(num_of_sigmas, num_pts)
+   191      4889    3133611.0    641.0     13.8      vq = (vq_h * sigma_qh_incoh, vq_k * sigma_qk_incoh, vq_l * sigma_ql_incoh)
+   192                                           
+   193                                               # -------- cut the corners based on distance --------
+   194      4889   15883947.0   3248.9     69.8      r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
+   195      4889     507418.0    103.8      2.2      idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
+   196      4889    3234327.0    661.6     14.2      return (vq[0][idx], vq[1][idx], vq[2][idx]), idx
+
+Total time: 58.0948 s
+File: ./scripts/convolution/conv_3d_demo_prof.py
+Function: convolution at line 210
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   210                                           @profile
+   211                                           def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
+   212                                               # ----------------------------------------------------
+   213                                               # return np.nan if repo_params is None
+   214                                               # ----------------------------------------------------
+   215      2907        757.0      0.3      0.0      if reso_params is None:
+   216                                                   return np.nan
+   217                                               # ----------------------------------------------------
+   218                                               # calculate resolution matrix for all points
+   219                                               # ----------------------------------------------------
+   220      2907       3727.0      1.3      0.0      (qh, qk, ql), en, r0, mat = reso_params
+   221      2907      24795.0      8.5      0.0      print(f"Calculating (Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
+   222      2907      95919.0     33.0      0.2      mat_hkl = quadric_proj(mat, 3)
+   223                                               # ----------------------------------------------------
+   224                                               # calculate the incoherent sigmas for all Q and E directions
+   225                                               # ----------------------------------------------------
+   226      2907     229358.0     78.9      0.4      sigma_qs = incoh_sigma_qs(mat_hkl)
+   227      2907     118083.0     40.6      0.2      sigma_en_incoh = incoh_sigma_en(mat)
+   228      2907        330.0      0.1      0.0      num_of_sigmas = 3
+   229      2907       1737.0      0.6      0.0      min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
+   230      2907       4712.0      1.6      0.0      sigma_en_coh = coh_sigma(mat, 3)
+   231                                               # define the energy resolution to be 1/5 of the coherent sigma in energy
+   232      2907        458.0      0.2      0.0      en_rez = sigma_en_coh * energy_rez_factor
+   233                                               # ----------------------------------------------------
+   234                                               # Calculate elemental volume
+   235                                               # ----------------------------------------------------
+   236      2907      47944.0     16.5      0.1      eigenvalues = np.linalg.eigvalsh(mat_hkl)
+   237      2907       3799.0      1.3      0.0      eval_inv_sqrt = 1 / np.sqrt(eigenvalues)
+   238      2907      11281.0      3.9      0.0      elem_vols = np.prod(eval_inv_sqrt) * (2 * num_of_sigmas) ** 3
+   239                                               # ----------------------------------------------------
+   240                                               # First round, coarse grid
+   241                                               # ----------------------------------------------------
+   242      2907        987.0      0.3      0.0      pts = [10, 10, 10]
+   243      2907     495254.0    170.4      0.9      (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
+   244      2907      45411.0     15.6      0.1      disp = model_disp(vqh + qh, vqk + qk, vql + ql)
+   245      2907        671.0      0.2      0.0      num_bands, num_pts = disp.shape
+   246                                           
+   247                                               # Retrun zero if all dispersion is outside the relevant energy window
+   248      2907      20194.0      6.9      0.0      if np.max(disp) < min_en or np.min(disp) > max_en:
+   249       913        123.0      0.1      0.0          return 0.0
+   250                                               # ----------------------------------------------------
+   251                                               # determine if sampled enough based on steps along energy
+   252                                               # ----------------------------------------------------
+   253      1994       2363.0      1.2      0.0      vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
+   254      1994       1270.0      0.6      0.0      vqe = np.empty((4, num_bands, num_pts))
+   255      1994       3213.0      1.6      0.0      vqe[0:3] = vq[:, None, :]
+   256      1994       2750.0      1.4      0.0      vqe[3] = disp - en
+   257      1994     773877.0    388.1      1.3      weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
+   258                                               # Return zero if everything is outside the 5-sigma volume
+   259      1994      13933.0      7.0      0.0      if np.min(weights) > 5**3:
+   260        12          6.0      0.5      0.0          return 0.0
+   261                                           
+   262                                               # ----------------------------------------------------
+   263                                               # determine Q steps based on energy steps
+   264                                               # ----------------------------------------------------
+   265      1982       8844.0      4.5      0.0      disp_arr = np.full(shape=(num_bands,) + idx.shape, fill_value=np.nan)
+   266      1982      35463.0     17.9      0.1      disp_arr[(slice(None),) + np.nonzero(idx)] = disp
+   267                                               # Compute max energy steps
+   268      1982     246521.0    124.4      0.4      steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
+   269                                               # limit the maximum in case the dispersion is too steep
+   270      7928       4066.0      0.5      0.0      for i, (step, pt) in enumerate(zip(steps, pts)):
+   271      5946        911.0      0.2      0.0          if step > en_rez:
+   272      5946        973.0      0.2      0.0              factor = step / en_rez
+   273      5946      24737.0      4.2      0.0              pts[i] = int(np.min((pt * factor, max_step)))
+   274                                           
+   275                                               # ----------------------------------------------------
+   276                                               # Enough sampled. Calculate weight from resolution function
+   277                                               # ----------------------------------------------------
+   278      1982   23235560.0  11723.3     40.0      (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
+   279      1982   14403776.0   7267.3     24.8      disp = model_disp(vqh + qh, vqk + qk, vql + ql)
+   280      1982       1618.0      0.8      0.0      _, num_pts = disp.shape
+   281                                           
+   282      1982    1223715.0    617.4      2.1      vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
+   283      1982       3666.0      1.8      0.0      vqe = np.empty((4, num_bands, num_pts))
+   284      1982    2405906.0   1213.9      4.1      vqe[0:3] = vq[:, None, :]
+   285      1982    2039491.0   1029.0      3.5      vqe[3] = disp - en
+   286                                           
+   287      1982    3909342.0   1972.4      6.7      weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
+   288                                               # ----------------------------------------------------
+   289                                               # Keep only the points within the 4D ellipsoid
+   290                                               # ----------------------------------------------------
+   291      1982     933838.0    471.2      1.6      idx_keep = np.any(weights < 5**3, axis=0)
+   292      1982    2812961.0   1419.3      4.8      vq_filtered = vq[:, idx_keep]
+   293      1982      37136.0     18.7      0.1      num_pts_keep = np.count_nonzero(idx_keep)
+   294      1982      30126.0     15.2      0.1      percent_kep = num_pts_keep / np.prod(pts) * 100
+   295      1982      40014.0     20.2      0.1      print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
+   296                                           
+   297      1982    4099256.0   2068.2      7.1      weights_filtered = np.exp(-weights[:, idx_keep] / 2)
+   298      1982     227091.0    114.6      0.4      inten = model_inten(*vq_filtered)
+   299                                               # normalization by elementary volume size
+   300      1982      15277.0      7.7      0.0      elem_vols /= np.prod(pts)
+   301      1982      32212.0     16.3      0.1      det = np.linalg.det(mat)
+   302      1982     413098.0    208.4      0.7      inten_sum = np.sum(inten * weights_filtered) * elem_vols
+   303      1982       6207.0      3.1      0.0      return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
+

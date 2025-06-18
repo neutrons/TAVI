@@ -108,7 +108,7 @@ def get_max_step(arr, axis: int):
     return float(np.nanmax(steps))
 
 
-def convolution(reso_params, model_disp, model_inten):
+def convolution(reso_params, model_disp, model_inten, energy_rez_factor=1 / 5, max_step=100):
     if reso_params is None:
         return np.nan
     # ----------------------------------------------------
@@ -125,7 +125,7 @@ def convolution(reso_params, model_disp, model_inten):
     num_of_sigmas = 3
     min_en, max_en = en - num_of_sigmas * sigma_en_incoh, en + num_of_sigmas * sigma_en_incoh
     sigma_en_coh = coh_sigma(mat, 3)
-    en_rez = sigma_en_coh / 5
+    en_rez = sigma_en_coh * energy_rez_factor
     # ----------------------------------------------------
     # Calculate elemental volume
     # ----------------------------------------------------
@@ -167,7 +167,7 @@ def convolution(reso_params, model_disp, model_inten):
     # Compute max energy steps
     steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
 
-    max_step = 100  # limit the maximum in case the dispersion is too steep
+    # max_step = 100  # limit the maximum in case the dispersion is too steep
     for i, (step, pt) in enumerate(zip(steps, pts)):
         if step > en_rez:
             factor = step / en_rez

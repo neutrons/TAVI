@@ -1,5 +1,6 @@
 import functools
-from concurrent.futures import ProcessPoolExecutor
+
+# from concurrent.futures import ProcessPoolExecutor
 from time import time
 
 import matplotlib.pyplot as plt
@@ -101,6 +102,7 @@ def plot_rez_ellipses(ax):
 # -------------------------------------------------------
 
 
+@profile
 def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
     """projects along one axis of the quadric
 
@@ -180,6 +182,7 @@ def generate_meshgrid(num_of_sigmas=3, num_pts=(10, 10, 10)):
     return np.meshgrid(qh, qk, ql, indexing="ij")  # shape (3, N1, N2, N3)
 
 
+@profile
 def generate_pts(sigma_qs, mat_hkl, num_of_sigmas=3, num_pts=(10, 10, 10)):
     """Generate points in a 3D mesh, cut the points at the corners"""
     (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
@@ -204,13 +207,8 @@ def get_max_step(arr, axis: int):
     return float(np.nanmax(steps))
 
 
+@profile
 def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
-    """Perform the convolution
-    The maxium sampling box size in Q is (max_step, max_step ,max_step)
-
-    Note:
-        Increase the accuracy by decresing energy_rez_factor and incresing max_step
-    """
     # ----------------------------------------------------
     # return np.nan if repo_params is None
     # ----------------------------------------------------
@@ -326,15 +324,15 @@ if __name__ == "__main__":
 
     t0 = time()
     # ------------------- multiprocessing ------------------
-    num_worker = 8
-    with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(convolution, reso_params)
-    measurement_inten = np.asarray(list(results))
+    # num_worker = 8
+    # with ProcessPoolExecutor(max_workers=num_worker) as executor:
+    #     results = executor.map(convolution, reso_params)
+    # measurement_inten = np.asarray(list(results))
     # ------------------- single core ------------------
-    # sz = len(reso_params)
-    # measurement_inten = np.empty(shape=sz)
-    # for i in range(sz):
-    #     measurement_inten[i] = convolution(reso_params[i])
+    sz = len(reso_params)
+    measurement_inten = np.empty(shape=sz)
+    for i in range(sz):
+        measurement_inten[i] = convolution(reso_params[i])
     # --------------------------------------------------
 
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
