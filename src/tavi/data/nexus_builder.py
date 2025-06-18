@@ -562,31 +562,47 @@ def spice_data_to_nxdict(
            path_to_instrument_json: Optional[str] = None,
            path_to_sample_json: Optional[str] = None,
     """
-    if path_to_spice_folder[-1] != "/":
-        path_to_spice_folder += "/"
 
-    scan_list = os.listdir(path_to_spice_folder + "Datafiles/")
-    if scan_num is None:  # read all scans in folder
+    # Ensure trailing separator is not required
+    datafiles_dir = os.path.join(path_to_spice_folder, "Datafiles")
+
+    # Get all files in the Datafiles directory
+    scan_list = os.listdir(datafiles_dir)
+
+    # Set filter based on whether a scan number is given
+    if scan_num is None:
         filter_keyword = ".dat"
-    else:  # read one scan only
+    else:
         filter_keyword = f"scan{scan_num:04}.dat"
 
-    scan_list = [path_to_spice_folder + "Datafiles/" + scan for scan in scan_list if scan.endswith(filter_keyword)]
+    # Filter and join the full paths
+    scan_list = [os.path.join(datafiles_dir, scan) for scan in scan_list if scan.endswith(filter_keyword)]
     scan_list.sort()
 
     # get IPTS number and instrument string
     first_scan = scan_list[0]
-    (_, _, headers, _, _) = read_spice_datafile(first_scan)
-    ipts = headers["proposal"]
-    spice_file_name = first_scan.split("/")[-1]  # e.g. CG4C_exp0424_scan0001.dat
-    instrument_str, exp_num, _ = spice_file_name.split("_")
+    _, _, headers, _, _ = read_spice_datafile(first_scan)
+    ipts = headers.get("proposal", "UNKNOWN")
+
+    spice_file_name = os.path.basename(first_scan)  # safe way to get filename
+
+    try:
+        instrument_str, exp_num, _ = spice_file_name.split("_")
+    except ValueError:
+        raise ValueError(f"Unexpected filename format: {spice_file_name}")
+
     dataset_name = f"IPTS{ipts}_{instrument_str}_{exp_num}"
 
     nexus_dict = {}
     for path_to_scan_file in scan_list:
-        *_, file_name = path_to_scan_file.split("/")
-        *_, scan_dat = file_name.split("_")
-        scan_name, _ = scan_dat.split(".")
+        file_name = Path(path_to_scan_file).name  # 'INSTR_expXXXX_scanXXXX.dat'
+
+        try:
+            # Extract 'scanXXXX' part (3rd item)
+            scan_part = file_name.split("_")[2]  # 'scanXXXX.dat'
+            scan_name = scan_part.split(".")[0]  # 'scanXXXX'
+        except IndexError:
+            raise ValueError(f"Unexpected filename format: {file_name}")
 
         nxentry = spice_scan_to_nxdict(
             path_to_scan_file,
