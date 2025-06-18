@@ -186,7 +186,21 @@ class NexusEntry(dict):
             path_to_instrument_json: Optional[str] = None,
             path_to_sample_json: Optional[str] = None,
         """
-        # TODO validate path
+
+        path_to_spice_folder = os.path.abspath(path_to_spice_folder)
+
+        # Check that it exists
+        if not os.path.exists(path_to_spice_folder):
+            raise FileNotFoundError(f"Path does not exist: {path_to_spice_folder}")
+
+        # Check that it's a directory
+        if not os.path.isdir(path_to_spice_folder):
+            raise NotADirectoryError(f"Path is not a directory: {path_to_spice_folder}")
+
+        # Optional: check that "Datafiles" subdirectory exists
+        datafiles_dir = os.path.join(path_to_spice_folder, "Datafiles")
+        if not os.path.isdir(datafiles_dir):
+            raise FileNotFoundError(f"Missing expected subdirectory: {datafiles_dir}")
 
         nexus_dict = spice_data_to_nxdict(
             path_to_spice_folder,
