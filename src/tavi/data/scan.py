@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.nexus_entry import NexusEntry
-from tavi.data.scan_data import ScanData1D
+from tavi.data.scan_data import ScanData1D, ScanData2D
 
 # from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
@@ -225,13 +225,15 @@ class Scan(object):
                 angles = self.data[angle_str.strip()]
             return np.deg2rad(angles - angles[mid_idx]) * q_abs
 
+    # TODO
+
     def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
         norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         **rebin_params_dict: Union[float, tuple],
-    ) -> ScanData1D:
-        """Generate a curve from a single scan to plot, with the options
+    ) -> Union[ScanData1D, ScanData2D]:
+        """Generate a ScanData1D or ScanData2D from a single scan to plot, with the options
         to normalize the y-axis and rebin x-axis.
 
         Args:
@@ -307,22 +309,7 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
-    # def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
-    #     qh = self.data.get("qh")
-    #     qk = self.data.get("qk")
-    #     ql = self.data.get("ql")
-    #     ei = self.data.get("ei")
-    #     ef = self.data.get("ef")
-    #     rez_params_list = []
-
-    #     for i in range(len(qh)):
-    #         rez = tas.cooper_nathans(hkl=(qh[i], qk[i], ql[i]), en=ei[i] - ef[i], projection=projection)
-    #         if rez is not None:
-    #             coh_fwhm = rez.coh_fwhms(axis=axis)
-    #             prefactor = 1
-    #             rez_params_list.append((prefactor, coh_fwhm))
-    #     return tuple(rez_params_list)
-
+    # TODO
     def plot(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
