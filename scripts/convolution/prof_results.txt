@@ -9,21 +9,21 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    105                                           @profile
    106                                           def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
    107                                               """projects along one axis of the quadric
-   108                                           
+   108
    109                                               dimensino of input arry is n by n
    110                                               dimensiont of output array is (n-1) by (n-1)
    111                                               """
-   112                                           
+   112
    113                                               # delete if orthogonal
    114     26163      27384.0      1.0      7.3      if np.abs(qii := quadric[idx, idx]) < 1e-8:
    115                                                   mask = np.arange(quadric.shape[0]) != idx
    116                                                   return quadric[np.ix_(mask, mask)]
-   117                                           
+   117
    118                                               # row/column along which to perform the orthogonal projection
    119                                               # symmetrise if not symmetric, normalise to indexed component
    120     26163      58039.0      2.2     15.5      vec = 0.5 * (quadric[idx, :] + quadric[:, idx]) / np.sqrt(qii)
    121     26163      73184.0      2.8     19.6      ortho_proj = quadric - np.outer(vec, vec)  # projected quadric
-   122                                           
+   122
    123                                               # return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
    124     26163      37298.0      1.4     10.0      mask = np.arange(ortho_proj.shape[0]) != idx
    125     26163     177757.0      6.8     47.6      return ortho_proj[np.ix_(mask, mask)]
@@ -38,10 +38,10 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    186                                           def generate_pts(sigma_qs, mat_hkl, num_of_sigmas=3, num_pts=(10, 10, 10)):
    187                                               """Generate points in a 3D mesh, cut the points at the corners"""
    188      4889        906.0      0.2      0.0      (sigma_qh_incoh, sigma_qk_incoh, sigma_ql_incoh) = sigma_qs
-   189                                           
+   189
    190      4889       5033.0      1.0      0.0      vq_h, vq_k, vq_l = generate_meshgrid(num_of_sigmas, num_pts)
    191      4889    3133611.0    641.0     13.8      vq = (vq_h * sigma_qh_incoh, vq_k * sigma_qk_incoh, vq_l * sigma_ql_incoh)
-   192                                           
+   192
    193                                               # -------- cut the corners based on distance --------
    194      4889   15883947.0   3248.9     69.8      r_sq = np.einsum("i...,ij,j...->...", vq, mat_hkl, vq)
    195      4889     507418.0    103.8      2.2      idx = r_sq < num_of_sigmas**2  # Ellipsoid mask
@@ -89,7 +89,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    243      2907     495254.0    170.4      0.9      (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
    244      2907      45411.0     15.6      0.1      disp = model_disp(vqh + qh, vqk + qk, vql + ql)
    245      2907        671.0      0.2      0.0      num_bands, num_pts = disp.shape
-   246                                           
+   246
    247                                               # Retrun zero if all dispersion is outside the relevant energy window
    248      2907      20194.0      6.9      0.0      if np.max(disp) < min_en or np.min(disp) > max_en:
    249       913        123.0      0.1      0.0          return 0.0
@@ -104,7 +104,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    258                                               # Return zero if everything is outside the 5-sigma volume
    259      1994      13933.0      7.0      0.0      if np.min(weights) > 5**3:
    260        12          6.0      0.5      0.0          return 0.0
-   261                                           
+   261
    262                                               # ----------------------------------------------------
    263                                               # determine Q steps based on energy steps
    264                                               # ----------------------------------------------------
@@ -117,19 +117,19 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    271      5946        911.0      0.2      0.0          if step > en_rez:
    272      5946        973.0      0.2      0.0              factor = step / en_rez
    273      5946      24737.0      4.2      0.0              pts[i] = int(np.min((pt * factor, max_step)))
-   274                                           
+   274
    275                                               # ----------------------------------------------------
    276                                               # Enough sampled. Calculate weight from resolution function
    277                                               # ----------------------------------------------------
    278      1982   23235560.0  11723.3     40.0      (vqh, vqk, vql), idx = generate_pts(sigma_qs, mat_hkl, num_of_sigmas, tuple(pts))
    279      1982   14403776.0   7267.3     24.8      disp = model_disp(vqh + qh, vqk + qk, vql + ql)
    280      1982       1618.0      0.8      0.0      _, num_pts = disp.shape
-   281                                           
+   281
    282      1982    1223715.0    617.4      2.1      vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
    283      1982       3666.0      1.8      0.0      vqe = np.empty((4, num_bands, num_pts))
    284      1982    2405906.0   1213.9      4.1      vqe[0:3] = vq[:, None, :]
    285      1982    2039491.0   1029.0      3.5      vqe[3] = disp - en
-   286                                           
+   286
    287      1982    3909342.0   1972.4      6.7      weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
    288                                               # ----------------------------------------------------
    289                                               # Keep only the points within the 4D ellipsoid
@@ -139,7 +139,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    293      1982      37136.0     18.7      0.1      num_pts_keep = np.count_nonzero(idx_keep)
    294      1982      30126.0     15.2      0.1      percent_kep = num_pts_keep / np.prod(pts) * 100
    295      1982      40014.0     20.2      0.1      print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
-   296                                           
+   296
    297      1982    4099256.0   2068.2      7.1      weights_filtered = np.exp(-weights[:, idx_keep] / 2)
    298      1982     227091.0    114.6      0.4      inten = model_inten(*vq_filtered)
    299                                               # normalization by elementary volume size
@@ -147,4 +147,3 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    301      1982      32212.0     16.3      0.1      det = np.linalg.det(mat)
    302      1982     413098.0    208.4      0.7      inten_sum = np.sum(inten * weights_filtered) * elem_vols
    303      1982       6207.0      3.1      0.0      return r0 * inten_sum * np.sqrt(det) / (2 * np.pi) ** 2
-

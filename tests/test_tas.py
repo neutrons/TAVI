@@ -228,7 +228,7 @@ def test_calculate_motor_agnles():
 
 def test_calculate_motor_angles_hb3():
     tas = TAS(fixed_ef=14.7)
-    hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
+    hb3_json = "./src/tavi/instrument/instrument_params/hb3.json"
     tas.load_instrument_params_from_json(hb3_json)
 
     lattice_params = (4.128474, 4.128474, 6.651507, 90, 90, 120)

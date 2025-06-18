@@ -307,21 +307,21 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
-    def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
-        qh = self.data.get("qh")
-        qk = self.data.get("qk")
-        ql = self.data.get("ql")
-        ei = self.data.get("ei")
-        ef = self.data.get("ef")
-        rez_params_list = []
+    # def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
+    #     qh = self.data.get("qh")
+    #     qk = self.data.get("qk")
+    #     ql = self.data.get("ql")
+    #     ei = self.data.get("ei")
+    #     ef = self.data.get("ef")
+    #     rez_params_list = []
 
-        for i in range(len(qh)):
-            rez = tas.cooper_nathans(hkl=(qh[i], qk[i], ql[i]), en=ei[i] - ef[i], projection=projection)
-            if rez is not None:
-                coh_fwhm = rez.coh_fwhms(axis=axis)
-                prefactor = 1
-                rez_params_list.append((prefactor, coh_fwhm))
-        return tuple(rez_params_list)
+    #     for i in range(len(qh)):
+    #         rez = tas.cooper_nathans(hkl=(qh[i], qk[i], ql[i]), en=ei[i] - ef[i], projection=projection)
+    #         if rez is not None:
+    #             coh_fwhm = rez.coh_fwhms(axis=axis)
+    #             prefactor = 1
+    #             rez_params_list.append((prefactor, coh_fwhm))
+    #     return tuple(rez_params_list)
 
     def plot(
         self,
@@ -335,12 +335,13 @@ class Scan(object):
         plot1d = Plot1D()
 
         if (axes[1] is None) and (self.scan_info.preset_type == "countfile"):
+            # HB1 polarization data with multiple channels
             for i in range(len(self.scan_info.label)):
-                norm_to = (self.scan_info.preset_value[i], self.scan_info.preset_channel[i])
-                scan_data_1d = self.get_data((None, f"detector_{i + 1}"), norm_to, **rebin_params_dict)
+                norm = (self.scan_info.preset_value[i], self.scan_info.preset_channel[i])
+                scan_data_1d = self.get_data((None, f"detector_{i + 1}"), norm, **rebin_params_dict)
                 plot1d.add_scan(scan_data_1d, c=f"C{i}", fmt="o", label=scan_data_1d.label)
                 plot1d.title = scan_data_1d.title
-        else:
+        else:  # regular data
             scan_data_1d = self.get_data(axes, norm_to, **rebin_params_dict)
             plot1d.add_scan(scan_data_1d, c="C0", fmt="o", label=scan_data_1d.label)
             plot1d.title = scan_data_1d.title

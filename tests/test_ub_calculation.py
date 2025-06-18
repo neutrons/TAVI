@@ -72,7 +72,7 @@ def test_calc_ub_from_2_peaks_hb3():
     in_plane_ref = [-0.999847, -0.002086, -0.017385]
 
     hb3 = TAS(fixed_ef=14.7)
-    hb3_json = "./src/tavi/instrument/instrument_params/hb3_mnte.json"
+    hb3_json = "./src/tavi/instrument/instrument_params/hb3.json"
     hb3.load_instrument_params_from_json(hb3_json)
     hb3.mount_sample(Sample(lattice_params))
 
