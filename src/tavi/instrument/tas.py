@@ -113,9 +113,7 @@ class TAS(TASBase):
             two_theta_radians = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
         except ValueError as e:
             hkl_str = "({:.4g}, {:.4g}, {:.4g}), ".format(*hkl)
-            raise ValueError(
-                "Cannot get two_theta for hkl=" + hkl_str + f"ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e)
-            )
+            raise ValueError("Cannot get two_theta for hkl=" + hkl_str + f"ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e))
 
         return np.degrees(two_theta_radians) * self.goniometer._sense
 

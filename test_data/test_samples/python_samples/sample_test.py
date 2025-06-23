@@ -1,7 +1,8 @@
 import numpy as np
 
 from tavi.sample.xtal import Xtal
-from tavi.utilities import *
+
+# from tavi.utilities import *
 
 # test_xtal = Xtal(lattice_params=(5.3995, 5.64, 11.75, 90, 90, 90))
 test_xtal = Xtal(lattice_params=(3.574924, 3.574924, 5.663212, 90, 90, 120))
