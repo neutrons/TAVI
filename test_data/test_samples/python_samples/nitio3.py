@@ -1,7 +1,7 @@
 import numpy as np
 
 from tavi.sample.xtal import Xtal
-from tavi.utilities import *
+from tavi.utilities import cm2angstrom, min2rad
 
 # test_xtal = Xtal(lattice_params=(5.3995, 5.64, 11.75, 90, 90, 90))
 nitio3 = Xtal(lattice_params=(5.034785, 5.034785, 13.812004, 90, 90, 120))
