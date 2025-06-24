@@ -1,9 +1,11 @@
+import re
 from typing import Literal, Optional, Union
 
 import numpy as np
 
 from tavi.data.scan import Scan
 from tavi.data.scan_data import ScanData1D, ScanData2D
+from tavi.utilities import labels_from_projection
 
 
 class ScanGroup(object):
@@ -92,7 +94,7 @@ class ScanGroup(object):
             return scan_data_1d
 
         # rebin
-        rebin_params_tuple = Scan.validate_rebin_params(rebin_params)
+        rebin_params_tuple = Scan.format_rebin_params(rebin_params)
 
         match rebin_type:
             case "tol":
@@ -128,43 +130,45 @@ class ScanGroup(object):
     ) -> ScanData2D:
         """
         Note:
-            rebin_params_dict should be grid=(float |tuple[float,float,float],float|tuple[float,float,float]) only
+            rebin_params_dict should be grid=(float |tuple[float,float,float],
+                                                float|tuple[float,float,float]) only
 
         """
 
         x_axis, y_axis, z_axis = axes
-        x_array = []
-        y_array = []
-        z_array = []
-
         title = "Combined scans: "
 
+        num_scans = len(self.scans)
+        total_points = sum(scan.data[x_axis].size for scan in self.scans)
+
+        # Pre-allocate arrays
+        x_array = np.empty(total_points)
+        y_array = np.empty_like(x_array)
+        z_array = np.empty_like(x_array)
+
+        # Fill arrays with flattened data
+        current_index = 0
         for scan in self.scans:
-            x_array.append(xdata := scan.data[x_axis])
-            y_array.append(ydata := scan.data[y_axis])
-            z_array.append(scan.data[z_axis])
+            points = scan.data[x_axis].size
+            x_array[current_index : current_index + points] = scan.data[x_axis].ravel()
+            y_array[current_index : current_index + points] = scan.data[y_axis].ravel()
+            z_array[current_index : current_index + points] = scan.data[z_axis].ravel()
+            current_index += points
             title += f"{scan.scan_info.scan_num} "
 
-        scan_data_2d = ScanData2D(
-            x=np.concatenate(x_array),
-            y=np.concatenate(y_array),
-            z=np.concatenate(z_array),
-        )
+        scan_data_2d = ScanData2D(x=x_array, y=y_array, z=z_array)
         rebin_params = rebin_params_dict.get("grid")
 
         if not rebin_params:  # no rebin
             if scan.scan_info.def_x == x_axis:
-                try:
-                    size_y, size_x = np.shape(x_array)
-                except TypeError:
-                    print("Cannot group scans. Rebin needed.")
+                size_y, size_x = total_points // num_scans, num_scans
             elif scan.scan_info.def_x == y_axis:
-                try:
-                    size_x, size_y = np.shape(x_array)
-                except TypeError:
-                    print("Cannot group scans. Rebin needed.")
+                size_x, size_y = num_scans, total_points // num_scans
             else:
                 raise ValueError("Rebin grid parameters needed. ")
+
+            # TODO
+            # Scans having different shape?
 
             if norm_to is not None:  # renorm
                 norm_val, norm_channel = norm_to
@@ -186,10 +190,7 @@ class ScanGroup(object):
         # rebin
         if len(rebin_params) != 2:
             raise ValueError(f"length of rebin parameters={rebin_params} should be a tuple of size 2.")
-        rebin_params_list = []
-        for parmas in rebin_params:
-            rebin_params_list.append(Scan.validate_rebin_params(parmas))
-        rebin_params_tuple = tuple(rebin_params_list)
+        rebin_params_tuple = tuple(Scan.format_rebin_params(params) for params in rebin_params)
 
         if norm_to is None:
             norm_to = self._get_default_renorm_params()
@@ -208,34 +209,145 @@ class ScanGroup(object):
         norm_to: Optional[tuple[float, str]] = None,
         **rebin_params_dict: Optional[tuple],
     ) -> Union[ScanData1D, ScanData2D]:
-        """Get data from a group of scans
+        """
+        Get combined data from a group of scans.
 
-        If axes is None, get default axes and return 1D data
+        Args:
+            axes: Tuple of axis names.
+                - If None, default axes are inferred and 1D data is returned.
+                - If length is 2, returns 1D data.
+                - If length is 3, returns 2D data.
+            norm_to: Optional normalization tuple of (value, mode).
+            rebin_params_dict: Additional parameters for rebinning.
+                            - "tol" or "grid" allowed for 1D.
+                            - Only "grid" allowed for 2D.
 
-        Note:
-            rebin_params_dict could be either "tol" or "grid" for 1D data, but only
-            "grid" for 2D data.
+        Returns:
+            ScanData1D or ScanData2D depending on axes length.
+
+        Raises:
+            ValueError: If axes length is invalid or default axes are inconsistent.
         """
         if axes is not None:
             if len(axes) == 2:
                 return self._combine_data_1d(axes, norm_to, **rebin_params_dict)
-            elif len(axes) == 3:
+            if len(axes) == 3:
                 return self._combine_data_2d(axes, norm_to, **rebin_params_dict)
-            else:
-                raise ValueError(f"length of axes={axes} should be either 2 or 3.")
+            raise ValueError(f"Length of axes={axes} must be 2 or 3.")
 
-        x_axes = []
-        y_axes = []
+        # Infer default axes from scans
+        x_axes = {scan.scan_info.def_x for scan in self.scans}
+        y_axes = {scan.scan_info.def_y for scan in self.scans}
+
+        if len(x_axes) != 1 or len(y_axes) != 1:
+            raise ValueError(f"Inconsistent axes detected: x_axes={x_axes}, y_axes={y_axes}")
+
+        axes_default = (*x_axes, *y_axes)
+        return self._combine_data_1d(axes_default, norm_to, **rebin_params_dict)
+
+    def combine_data_hkle(
+        self,
+        axes,
+        norm_to,
+        projection=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+    ) -> ScanData2D:
+        if len(axes) != 4:
+            raise ValueError("Length of axes needs to be 4.")
+        try:
+            w_mat_inv = np.linalg.inv(np.array(projection).T)
+        except np.linalg.LinAlgError:
+            raise ValueError(f"Cannot find inverse matrix for projection = {projection}.")
+
+        axes_to_plot = [i for i in range(4) if not isinstance(axes[i], tuple) or len(axes[i]) != 2]
+
+        if len(axes_to_plot) < 2:
+            raise ValueError("Two axes are needed to plot.")
+
+        z_axis = "detector"
+
+        total_points = sum(scan.data[z_axis].size for scan in self.scans)
+
+        # Pre-allocate arrays
+        qh_array = np.empty(total_points)
+        qk_array = np.empty_like(qh_array)
+        ql_array = np.empty_like(qh_array)
+        en_array = np.empty_like(qh_array)
+        detector_array = np.empty_like(qh_array)
+        monitor_array = np.empty_like(qh_array)
+
+        # determine monitor channel
+        if norm_to is None:
+            norm_to = self._get_default_renorm_params()
+        norm_val, norm_channel = norm_to
+
+        # go through all scans to get (qh,qk,ql,en, detector, monitor)
+        current_index = 0
         for scan in self.scans:
-            x_axes.append(scan.scan_info.def_x)
-            y_axes.append(scan.scan_info.def_y)
-        x_axis = set(x_axes)
-        y_axis = set(y_axes)
+            points = scan.data[z_axis].size
+            qh_array[current_index : current_index + points] = scan.data["qh"].ravel()
+            qk_array[current_index : current_index + points] = scan.data["qk"].ravel()
+            ql_array[current_index : current_index + points] = scan.data["ql"].ravel()
+            en_array[current_index : current_index + points] = scan.data["en"].ravel()
+            detector_array[current_index : current_index + points] = scan.data[z_axis].ravel()
+            monitor_array[current_index : current_index + points] = scan.data[norm_channel].ravel()
+            current_index += points
+            # title += f"{scan.scan_info.scan_num} "
 
-        if not (len(x_axis) == 1 and len(y_axis) == 1):
-            raise ValueError(f"x axes={x_axis} or y axes={y_axis} are not identical.")
-        axes = (*x_axis, *y_axis)
-        return self._combine_data_1d(axes, norm_to, **rebin_params_dict)
+        # transform the coordinate based on preojection
+        # (u,v,w) = w_inv * (h,k,l)
+        u_array, v_array, w_array = w_mat_inv @ np.vstack((qh_array, qk_array, ql_array))
+        qe_array = [u_array, v_array, w_array, en_array]
+
+        # Format rebin parameters and determine initial ranges
+        axes_params = [Scan.format_rebin_params(params) for params in axes]
+
+        # Update rebin min/max for axes_to_plot based on data
+        for i in axes_to_plot:
+            rebin_min, rebin_max, rebin_step = axes_params[i]
+
+            arr = qe_array[i]
+            if rebin_min is None:
+                rebin_min = float(np.min(arr))
+            if rebin_max is None:
+                rebin_max = float(np.max(arr))
+
+            axes_params[i] = (rebin_min, rebin_max, rebin_step)
+
+        # Apply filtering mask
+        mask = np.full_like(en_array, True, dtype=bool)
+        for i, arr in enumerate(qe_array):
+            if i not in axes_to_plot:
+                rebin_min, rebin_max, _ = axes_params[i]
+                mask &= (arr > rebin_min) & (arr < rebin_max)
+
+        # Mask all arrays consistently
+        qe_array = [arr[mask] for arr in qe_array]
+        detector_array = detector_array[mask]
+        monitor_array = monitor_array[mask]
+
+        # Recalculate ranges for plotting axes after filtering
+        for i in axes_to_plot:
+            arr = qe_array[i]
+            rebin_min = float(np.min(arr))
+            rebin_max = float(np.max(arr))
+            _, _, rebin_step = axes_params[i]
+
+            axes_params[i] = (rebin_min, rebin_max, rebin_step)
+
+        scan_data_2d = ScanData2D(
+            x=qe_array[axes_to_plot[0]], y=qe_array[axes_to_plot[1]], z=detector_array, norm=monitor_array
+        )
+        labs = labels_from_projection(projection)
+        labels_to_plot = tuple(lab for i, lab in enumerate(labs) if i in axes_to_plot) + ("detector",)
+        axes_to_bin = tuple(lab for i, lab in enumerate(labs) if i not in axes_to_plot)
+        labels_to_bin = [re.sub(r"\([^()]*\)$", "", label) for label in axes_to_bin]
+        bin_params = tuple(p for i, p in enumerate(axes_params) if i not in axes_to_plot)
+        title = f"{labels_to_bin[0]}= ({bin_params[0][0]:.4g}, {bin_params[0][1]:.4g}), {labels_to_bin[1]}= ({bin_params[1][0]:.4g}, {bin_params[1][1]:.4g})"
+        # rebin
+        plot_params = tuple(p for i, p in enumerate(axes_params) if i in axes_to_plot)
+        scan_data_2d.rebin_grid_renorm(plot_params, norm_val=norm_val)
+        scan_data_2d.make_labels(labels_to_plot, norm_to, title=title)
+        return scan_data_2d
 
     def get_data(
         self,

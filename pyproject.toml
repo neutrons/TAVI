@@ -7,7 +7,7 @@ description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
 license = {text = "LGPL-3.0"}
 name = "tavi"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 
 [project.urls]
 homepage = "https://github.com/neutrons/TAVI"

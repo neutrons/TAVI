@@ -192,21 +192,28 @@ class Scan(object):
         return data_dict
 
     @staticmethod
-    def validate_rebin_params(rebin_params: float | int | tuple) -> tuple:
+    def format_rebin_params(rebin_params: float | int | tuple) -> tuple:
         if isinstance(rebin_params, tuple):
-            if len(rebin_params) != 3:
-                raise ValueError("Rebin parameters should have the form (min, max, step)")
-            rebin_min, rebin_max, rebin_step = rebin_params
-            if (rebin_min >= rebin_max) or (rebin_step < 0):
-                raise ValueError(f"Nonsensical rebin parameters {rebin_params}")
+            if len(rebin_params) == 3:
+                rebin_min, rebin_max, rebin_step = rebin_params
+            elif len(rebin_params) == 2:
+                rebin_min, rebin_max = rebin_params
+                rebin_step = None
+            else:
+                raise ValueError(f"Tuple rebin parameters must have length 2 or 3: {rebin_params}")
 
-        elif isinstance(rebin_params, float | int):
-            if rebin_params < 0:
-                raise ValueError("Rebin step needs to be greater than zero.")
-            rebin_params = (None, None, float(rebin_params))
+        elif isinstance(rebin_params, (float, int)):
+            rebin_min, rebin_max, rebin_step = None, None, float(rebin_params)
 
         else:
             raise ValueError(f"Unrecogonized rebin parameters {rebin_params}")
+        rebin_params = (rebin_min, rebin_max, rebin_step)
+
+        if rebin_min is not None and rebin_max is not None and rebin_min >= rebin_max:
+            raise ValueError(f"Nonsensical rebin parameters {rebin_params}")
+        if rebin_step is not None and rebin_step < 0:
+            raise ValueError("Rebin step needs to be greater than zero.")
+
         return rebin_params
 
     def _get_del_q(self, ax_str):
@@ -277,7 +284,7 @@ class Scan(object):
             return scan_data_1d
 
         # Rebin, first validate rebin params
-        rebin_params_tuple = Scan.validate_rebin_params(rebin_params)
+        rebin_params_tuple = Scan.format_rebin_params(rebin_params)
 
         match rebin_type:
             case "tol":

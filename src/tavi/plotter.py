@@ -238,6 +238,7 @@ class Plot2D(object):
     def plot(self, ax):
         for contour in self.contour_data:
             im = ax.pcolormesh(contour.x, contour.y, contour.z, **contour.fmt)
+            self.title = contour.title
         for curve in self.curve_data:
             ax.errorbar(x=curve.x, y=curve.y, yerr=curve.err)
         for reso in self.reso_data:

@@ -227,3 +227,52 @@ def rot_z(mu):
         ]
     )
     return mat
+
+
+def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
+    if projection is None:
+        return ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
+    elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+        return (
+            "(H, 0, 0) (r.l.u.)",
+            "(0, K, 0) (r.l.u.)",
+            "(0, 0, L) (r.l.u.)",
+            "E (meV)",
+        )
+    hkl_dict = {0: "H", 1: "K", 2: "L"}
+    labels = []
+    for p in projection:
+        # find the index of the first nonzero element in p
+        idx = next((i for i, v in enumerate(p) if v != 0), -1)
+        if idx in hkl_dict:
+            miller_str = hkl_dict.pop(idx)
+        elif (new_idx := (idx + 1) % 3) in hkl_dict:
+            miller_str = hkl_dict.pop(new_idx)
+        elif (new_idx := (idx + 2) % 3) in hkl_dict:
+            miller_str = hkl_dict.pop(new_idx)
+        else:
+            raise IndexError("Should not reach here!")
+
+        label_str = "("
+        for j, val in enumerate(p):
+            # Check if the value is an integer or a float that is close to an integer
+            if isinstance(val, int) or (isinstance(val, float) and val.is_integer()):
+                num = int(val)
+                if num == 0:
+                    label_str += "0"
+                elif num == 1:
+                    label_str += miller_str
+                elif num == -1:
+                    label_str += "-" + miller_str
+                else:
+                    label_str += f"{num}" + miller_str
+            else:
+                label_str += f"{p[j]:.3f}" + miller_str
+            if j == 2:
+                label_str += ") (r.l.u.)"
+            else:
+                label_str += ", "
+        labels.append(label_str)
+
+    labels.append("E (meV)")
+    return tuple(labels)

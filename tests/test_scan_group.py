@@ -49,7 +49,7 @@ def test_scan_group_combine_2d():
     scans = [Scan.from_spice("test_data/exp424", scan_num=num) for num in scan_list]
     sg = ScanGroup(scans, name="nuclear dispH")
     scan_data_2d = sg.combine_data(
-        axes=("s1", "en", "detector"),
+        axes=("qh", "en", "detector"),
     )
 
     plot2d = Plot2D()
@@ -83,18 +83,56 @@ def test_scan_group_rebin_2d():
     scan_list = list(range(42, 49, 1)) + list(range(70, 76, 1))
     # sg = tavi.group_scans(scan_list, name="dispH")
     scans = [Scan.from_spice("test_data/exp424", scan_num=num) for num in scan_list]
-    sg = ScanGroup(scans, name="nuclear dispH")
-    scan_data_2d = sg.combine_data(
-        axes=("qh", "en", "detector"),
+    sg = ScanGroup(scans, name="dispH")
+
+    scan_data_2d_list = [
+        sg.combine_data(
+            axes=("qh", "en", "detector"),
+            norm_to=(1, "mcu"),
+            # grid=(0.025, (-1, 5, 0.1)),
+        ),
+        sg.combine_data(
+            axes=("en", "qh", "detector"),
+            norm_to=(1, "mcu"),
+            # grid=(0.025, (-1, 5, 0.1)),
+        ),
+        sg.combine_data(
+            axes=("s1", "en", "detector"),
+            norm_to=(1, "mcu"),
+        ),
+    ]
+
+    for scan_data_2d in scan_data_2d_list:
+        plot2d = Plot2D()
+        plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
+        fig, ax = plt.subplots()
+        im = plot2d.plot(ax)
+        fig.colorbar(im, ax=ax)
+    plt.show()
+
+
+def test_scan_group_rebin_2d_hkle():
+    scan_list = list(range(20, 92, 1))  # all scans
+    scans = [Scan.from_spice("test_data/exp424", scan_num=num) for num in scan_list]
+    sg = ScanGroup(scans, name="dispH")
+
+    scan_data_2d_HH3 = sg.combine_data_hkle(
+        projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)),
         norm_to=(1, "mcu"),
-        grid=(0.025, (-1, 5, 0.1)),
+        axes=((0.05), (-0.01, 0.01), (2.95, 3.05), (0, 4, 0.1)),
     )
 
-    plot2d = Plot2D()
-    plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
-    fig, ax = plt.subplots()
-    im = plot2d.plot(ax)
-    fig.colorbar(im, ax=ax)
+    scan_data_2d_00L = sg.combine_data_hkle(
+        norm_to=(1, "mcu"),
+        axes=((-0.01, 0.01), (-0.01, 0.01), 0.1, (0, 4, 0.1)),
+    )
+
+    for scan_data_2d in [scan_data_2d_HH3, scan_data_2d_00L]:
+        plot2d = Plot2D()
+        plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
+        fig, ax = plt.subplots()
+        im = plot2d.plot(ax)
+        fig.colorbar(im, ax=ax)
     plt.show()
 
 
