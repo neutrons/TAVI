@@ -61,6 +61,12 @@ def test_scan_from_nexus():
     assert np.allclose(scan.data["detector"][0:3], [569, 194, 40])
 
 
+def test_get_data_columns():
+    path_to_spice_folder = "./test_data/exp424"
+    scan = Scan.from_spice(path_to_spice_folder, scan_num=42)
+    assert len(scan.get_data_columns().keys()) == 55
+
+
 def test_get_scan_data():
     path_to_spice_folder = "./test_data/exp424"
     scan = Scan.from_spice(path_to_spice_folder, scan_num=42)
@@ -104,61 +110,6 @@ def test_get_scan_data_norm():
     assert np.allclose(scan_data_1d.x, x_data)
     assert np.allclose(scan_data_1d.y, y_data / 12)
     assert np.allclose(scan_data_1d.err, yerr_data / 12)
-
-
-# def test_get_scan_data_rebin_grid():
-#     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-#     scan = Scan.from_nexus(nexus_file_name)
-#     scan_data_1d = scan.get_data(grid=0.25)
-
-#     x_data = np.arange(0.225, 4.1, 0.25)
-#     y_data = np.array(
-#         [
-#             (481 + 170 + 22) / 3,
-#             (6 + 2 + 2) / 3,
-#             (1 + 1) / 2,
-#         ]
-#     )
-#     yerr_data = np.array(
-#         [
-#             np.sqrt(481 + 170 + 22) / 3,
-#             np.sqrt(6 + 2 + 2) / 3,
-#             np.sqrt(1 + 1) / 2,
-#         ]
-#     )
-
-#     assert np.allclose(scan_data_1d.x[0:3], x_data[0:3])
-#     assert np.allclose(scan_data_1d.y[0:3], y_data)
-#     assert np.allclose(scan_data_1d.err[0:3], yerr_data)
-
-
-# def test_generate_curve_rebin_grid_renorm():
-#     nexus_file_name = "./test_data/IPTS32124_CG4C_exp0424/scan0042.h5"
-#     scan = Scan.from_nexus(nexus_file_name)
-#     scan_data_1d = scan.get_data(
-#         norm_to=(5, "time"),
-#         grid=(0.1, 5, 0.25),
-#     )
-
-#     x_data = np.arange(0.225, 4.1, 0.25)
-#     y_data = np.array(
-#         [
-#             (481 + 170 + 22) / (62.624 + 66.241 + 67.689) * 5,
-#             (6 + 2 + 2) / (65.918 + 64.531 + 65.345) * 5,
-#             (1 + 1) / (65.312 + 65.053) * 5,
-#         ]
-#     )
-#     yerr_data = np.array(
-#         [
-#             np.sqrt(481 + 170 + 22) / (62.624 + 66.241 + 67.689) * 5,
-#             np.sqrt(6 + 2 + 2) / (65.918 + 64.531 + 65.345) * 5,
-#             np.sqrt(1 + 1) / (65.312 + 65.053) * 5,
-#         ]
-#     )
-
-#     assert np.allclose(scan_data_1d.x[0:3], x_data[0:3])
-#     assert np.allclose(scan_data_1d.y[0:3], y_data)
-#     assert np.allclose(scan_data_1d.err[0:3], yerr_data)
 
 
 def test_plot_scan_from_nexus():

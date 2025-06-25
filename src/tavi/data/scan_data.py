@@ -285,7 +285,7 @@ class ScanData2D(object):
         self.xlabel = x_str
         self.ylabel = y_str
         self.label = label
-        self.title = title + self.zlabel
+        self.title = ", ".join([self.zlabel, title])
 
     # TODO
     def __sub__(self, other):

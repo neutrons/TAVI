@@ -8,6 +8,7 @@ from tavi.data.tavi import TAVI
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
+from tavi.utilities import labels_from_projection
 
 
 def test_plot2d():
@@ -94,3 +95,20 @@ def test_plot2d_with_resolution():
     p.plot(ax)
     fig.colorbar(im, ax=ax)
     plt.show()
+
+
+def test_making_labels_from_projection():
+    label = labels_from_projection()
+    assert label == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
+
+    label = labels_from_projection(projection=None)
+    assert label == ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
+
+    label = labels_from_projection(projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
+    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "(K, -K, 0) (r.l.u.)", "E (meV)")
+
+    label = labels_from_projection(projection=((1.0, 1.0, 0.0), (0, 0, 1), (1, -1, 0)))
+    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "(K, -K, 0) (r.l.u.)", "E (meV)")
+
+    label = labels_from_projection(projection=((0, 0, 1), (1, -1, 0), (2, 2, 0)))
+    assert label == ("(0, 0, L) (r.l.u.)", "(H, -H, 0) (r.l.u.)", "(2K, 2K, 0) (r.l.u.)", "E (meV)")

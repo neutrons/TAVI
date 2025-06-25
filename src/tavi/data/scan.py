@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tavi.data.nexus_entry import NexusEntry
-from tavi.data.scan_data import ScanData1D
+from tavi.data.scan_data import ScanData1D, ScanData2D
 
 # from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
@@ -192,21 +192,28 @@ class Scan(object):
         return data_dict
 
     @staticmethod
-    def validate_rebin_params(rebin_params: float | int | tuple) -> tuple:
+    def format_rebin_params(rebin_params: float | int | tuple) -> tuple:
         if isinstance(rebin_params, tuple):
-            if len(rebin_params) != 3:
-                raise ValueError("Rebin parameters should have the form (min, max, step)")
-            rebin_min, rebin_max, rebin_step = rebin_params
-            if (rebin_min >= rebin_max) or (rebin_step < 0):
-                raise ValueError(f"Nonsensical rebin parameters {rebin_params}")
+            if len(rebin_params) == 3:
+                rebin_min, rebin_max, rebin_step = rebin_params
+            elif len(rebin_params) == 2:
+                rebin_min, rebin_max = rebin_params
+                rebin_step = None
+            else:
+                raise ValueError(f"Tuple rebin parameters must have length 2 or 3: {rebin_params}")
 
-        elif isinstance(rebin_params, float | int):
-            if rebin_params < 0:
-                raise ValueError("Rebin step needs to be greater than zero.")
-            rebin_params = (None, None, float(rebin_params))
+        elif isinstance(rebin_params, (float, int)):
+            rebin_min, rebin_max, rebin_step = None, None, float(rebin_params)
 
         else:
             raise ValueError(f"Unrecogonized rebin parameters {rebin_params}")
+        rebin_params = (rebin_min, rebin_max, rebin_step)
+
+        if rebin_min is not None and rebin_max is not None and rebin_min >= rebin_max:
+            raise ValueError(f"Nonsensical rebin parameters {rebin_params}")
+        if rebin_step is not None and rebin_step < 0:
+            raise ValueError("Rebin step needs to be greater than zero.")
+
         return rebin_params
 
     def _get_del_q(self, ax_str):
@@ -225,13 +232,15 @@ class Scan(object):
                 angles = self.data[angle_str.strip()]
             return np.deg2rad(angles - angles[mid_idx]) * q_abs
 
+    # TODO
+
     def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
         norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         **rebin_params_dict: Union[float, tuple],
-    ) -> ScanData1D:
-        """Generate a curve from a single scan to plot, with the options
+    ) -> Union[ScanData1D, ScanData2D]:
+        """Generate a ScanData1D or ScanData2D from a single scan to plot, with the options
         to normalize the y-axis and rebin x-axis.
 
         Args:
@@ -275,7 +284,7 @@ class Scan(object):
             return scan_data_1d
 
         # Rebin, first validate rebin params
-        rebin_params_tuple = Scan.validate_rebin_params(rebin_params)
+        rebin_params_tuple = Scan.format_rebin_params(rebin_params)
 
         match rebin_type:
             case "tol":
@@ -307,22 +316,7 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
-    # def get_coherent_fwhm(self, tas, projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)), axis: int = 0):
-    #     qh = self.data.get("qh")
-    #     qk = self.data.get("qk")
-    #     ql = self.data.get("ql")
-    #     ei = self.data.get("ei")
-    #     ef = self.data.get("ef")
-    #     rez_params_list = []
-
-    #     for i in range(len(qh)):
-    #         rez = tas.cooper_nathans(hkl=(qh[i], qk[i], ql[i]), en=ei[i] - ef[i], projection=projection)
-    #         if rez is not None:
-    #             coh_fwhm = rez.coh_fwhms(axis=axis)
-    #             prefactor = 1
-    #             rez_params_list.append((prefactor, coh_fwhm))
-    #     return tuple(rez_params_list)
-
+    # TODO
     def plot(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),

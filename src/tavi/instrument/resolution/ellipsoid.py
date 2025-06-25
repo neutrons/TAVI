@@ -8,7 +8,7 @@ from mpl_toolkits.axisartist import Axes
 
 from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
-from tavi.utilities import get_angle_vec, sig2fwhm
+from tavi.utilities import get_angle_vec, labels_from_projection, sig2fwhm
 
 
 class ResoEllipsoid(object):
@@ -53,7 +53,7 @@ class ResoEllipsoid(object):
             self.frame = "q"
             self.angles = (90.0, 90.0, 90.0)
             self.q_vec = (self.q, 0.0, 0.0)
-            self.axes_labels = ResoEllipsoid.labels_from_projection(projection)
+            self.axes_labels = labels_from_projection(projection)
         else:
             self._project_to_frame(instrument)
 
@@ -89,46 +89,6 @@ class ResoEllipsoid(object):
         ]
         return "\n".join(summary_str) + self.instrument_params
 
-    @staticmethod
-    def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
-        if projection is None:
-            return ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
-        elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
-            return (
-                "(H, 0, 0) (r.l.u.)",
-                "(0, K, 0) (r.l.u.)",
-                "(0, 0, L) (r.l.u.)",
-                "E (meV)",
-            )
-        hkl_str = ("H", "K", "L")
-        labels = []
-        for i, p in enumerate(projection):
-            miller_str = hkl_str[i]
-            label_str = "("
-            for j in range(3):
-                # Check if the value is an integer or a float that is close to an integer
-                val = p[j]
-                if isinstance(val, int) or (isinstance(val, float) and val.is_integer()):
-                    num = int(val)
-                    if num == 0:
-                        label_str += "0"
-                    elif num == 1:
-                        label_str += miller_str
-                    elif num == -1:
-                        label_str += "-" + miller_str
-                    else:
-                        label_str += f"{num}" + miller_str
-                else:
-                    label_str += f"{p[j]:.3f}" + miller_str
-                if j == 2:
-                    label_str += ") (r.l.u.)"
-                else:
-                    label_str += ", "
-            labels.append(label_str)
-
-        labels.append("E (meV)")
-        return tuple(labels)
-
     def _project_to_frame(self, instrument):
         """determinate the frame from the projection vectors"""
 
@@ -156,7 +116,7 @@ class ResoEllipsoid(object):
             conv_mat_4d = np.eye(4)
             conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat
             self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
-            self.axes_labels = ResoEllipsoid.labels_from_projection()
+            self.axes_labels = labels_from_projection()
 
         else:  # customized projection
             p1, p2, p3 = self.projection
@@ -183,7 +143,7 @@ class ResoEllipsoid(object):
             conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
             self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
 
-            self.axes_labels = ResoEllipsoid.labels_from_projection(self.projection)
+            self.axes_labels = labels_from_projection(self.projection)
 
     # TODO
     def volume(self):
