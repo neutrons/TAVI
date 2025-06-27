@@ -388,6 +388,6 @@ class ScanData2D(object):
 
         self.x = xv
         self.y = yv
-        with np.errstate(divide='ignore', invalid='ignore'):
+        with np.errstate(divide="ignore", invalid="ignore"):
             self.z = z / counts * norm_val
             self.err = np.sqrt(z) / counts * norm_val
