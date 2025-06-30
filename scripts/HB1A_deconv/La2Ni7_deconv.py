@@ -57,7 +57,7 @@ if __name__ == "__main__":
     tas.monochromator.mosaic_h = 30
     tas.analyzer.mosaic_h = 30
     tas.collimators.h_pre_mono = 50
-    rez = tas.cooper_nathans(hkl=hkl, en=ei - ef, projection=None)
+    rez = tas.cooper_nathans(hkl=hkl, en=ei - ef, axes=None)
 
     # resolution fwhm
     x_th2th = scan_th2th_fit.result.params["s1_center"].value

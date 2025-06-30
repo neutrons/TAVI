@@ -43,16 +43,16 @@ def ctax():
 
 
 def test_out_of_reach(ctax):
-    rez = ctax.cooper_nathans(hkle=(0, 0, 0, 0), projection=None)
+    rez = ctax.cooper_nathans(hkle=(0, 0, 0, 0), axes=None)
     assert "Cannot get psi for hkl=(0, 0, 0), ei=4.8 meV, ef=4.8 meV. Triangle cannot be closed." in ctax.err_msg
 
-    rez = ctax.cooper_nathans(hkle=(10, 10, 10, 0), projection=None)
+    rez = ctax.cooper_nathans(hkle=(10, 10, 10, 0), axes=None)
     assert not rez
     assert (
         "Cannot get two_theta for hkl=(10, 10, 10), ei=4.8 meV, ef=4.8 meV. Triangle cannot be closed." in ctax.err_msg
     )
 
-    rez = ctax.cooper_nathans(hkle=[(0, 0, 0, 0), (1, 1, 1, 0), (10, 10, 10, 0)], projection=None)
+    rez = ctax.cooper_nathans(hkle=[(0, 0, 0, 0), (1, 1, 1, 0), (10, 10, 10, 0)], axes=None)
     assert rez[1] is not None
     assert len(ctax.err_msg) == 2
 

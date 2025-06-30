@@ -113,7 +113,7 @@ if __name__ == "__main__":
     q1_rez = np.linspace(q1_min, q1_max, int((q1_max - q1_min) / (q1_step * 5)) + 1)
     q2_rez = np.linspace(q2_min, q2_max, int((q2_max - q2_min) / (q2_step * 5)) + 1)
     qe_rez = np.array([(h, h, l, en) for l in q2_rez for h in q1_rez])
-    rez_list = hb3.cooper_nathans(hkle=qe_rez, projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)))
+    rez_list = hb3.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-1, 1, 0), (0, 0, 1)))
 
     p = Plot2D()
     for rez in rez_list:

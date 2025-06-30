@@ -15,7 +15,7 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 def test_local_q(tas_params):
     tas, hkle, _ = tas_params
-    rez = tas.cooper_nathans(hkle=hkle, projection=None)
+    rez = tas.cooper_nathans(hkle=hkle, axes=None)
     ellipse = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
 
     assert np.allclose(ellipse.angle, 90)
@@ -80,8 +80,8 @@ def tas_params():
     tas.mount_sample(sample)
 
     hkle = (0, 0, 3, 0)
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
 
-    tas_params = (tas, hkle, projection)
+    tas_params = (tas, hkle, axes)
 
     return tas_params

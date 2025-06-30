@@ -28,7 +28,7 @@ def analyze_in_q(hkl, scans, fit_ranges=(None, None)):
     # print(scan_th2th_fit.result.fit_report())
     # print(f"Fit {scan1}")
 
-    rez = tas.cooper_nathans(hkl=hkl, R0=False, projection=None)
+    rez = tas.cooper_nathans(hkl=hkl, R0=False, axes=None)
 
     p1 = Plot1D()
     # data

@@ -60,7 +60,7 @@ projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
 rez_list = tas.cooper_nathans(
     hkl=hkl_list,
     en=en_list,
-    projection=projection,
+    axes=projection,
 )
 
 # genreate plot

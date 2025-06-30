@@ -34,7 +34,7 @@ class ResoEllipsoid(object):
         self,
         instrument,
         hkle: tuple[float, float, float, float],
-        projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        axes: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en"),
         reso_mat: Optional[np.ndarray] = None,
         r0: Optional[float] = None,
     ) -> None:
@@ -43,17 +43,17 @@ class ResoEllipsoid(object):
         self.en: float = en
         self.q = np.linalg.norm(instrument.sample.b_mat @ self.hkl) * 2 * np.pi
 
-        self.projection: Optional[tuple] = projection
+        self.axes: Optional[tuple] = axes
         self.mat = reso_mat
         self.r0 = r0
         self.method: Optional[str] = None
         self.instrument_params: Optional[str] = None
 
-        if projection is None:
+        if axes is None:
             self.frame = "q"
             self.angles = (90.0, 90.0, 90.0)
             self.q_vec = (self.q, 0.0, 0.0)
-            self.axes_labels = labels_from_projection(projection)
+            self.axes_labels = labels_from_projection(axes)
         else:
             self._project_to_frame(instrument)
 
@@ -107,7 +107,7 @@ class ResoEllipsoid(object):
                 [0, 1, 0],
             ]
         )
-        if self.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+        if self.axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en"):  # HKL
             self.frame = "hkl"
             self.q_vec = self.hkl
             *_, alpha_star, beta_star, gamma_star = instrument.sample.reciprocal_latt_params
@@ -119,7 +119,7 @@ class ResoEllipsoid(object):
             self.axes_labels = labels_from_projection()
 
         else:  # customized projection
-            p1, p2, p3 = self.projection
+            p1, p2, p3 = np.array([item for item in self.axes if isinstance(item, tuple) and len(item) == 3])
             a_star_vec, b_star_vec, c_star_vec = instrument.sample.reciprocal_space_vectors
             reciprocal_vecs = [a_star_vec, b_star_vec, c_star_vec]
             v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
@@ -143,7 +143,13 @@ class ResoEllipsoid(object):
             conv_mat_4d[0:3, 0:3] = mat_lab_to_local @ conv_mat @ mat_w
             self.mat = conv_mat_4d.T @ self.mat @ conv_mat_4d
 
-            self.axes_labels = labels_from_projection(self.projection)
+            # roll axes
+            en_axis = self.axes.index("en")
+            new_idx = [0, 1, 2]
+            new_idx.insert(en_axis, 3)
+            self.mat = self.mat[new_idx, :][:, new_idx]
+
+            self.axes_labels = labels_from_projection(self.axes)
 
     # TODO
     def volume(self):
@@ -213,7 +219,11 @@ class ResoEllipsoid(object):
         """
 
         x_axis, y_axis = axes
-        qe_list = np.concatenate((self.q_vec, self.en), axis=None)
+        try:
+            en_idx = self.axes.index("en")
+        except AttributeError:
+            en_idx = 3
+        qe_list = np.insert(self.q_vec, en_idx, self.en)
         # axes = np.sort(axes)
         # match tuple(np.sort(axes)):
         match tuple(axes):

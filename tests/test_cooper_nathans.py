@@ -33,7 +33,7 @@ def test_generate_hkle_list(ctax):
 
 def test_local_q(ctax):
     hkle = (0, 0, 3, 0)
-    rez = ctax.cooper_nathans(hkle=hkle, projection=None)
+    rez = ctax.cooper_nathans(hkle=hkle, axes=None)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -61,8 +61,8 @@ def test_hkl(ctax):
 
 def test_projection(ctax):
     hkle = (0, 0, 3, 0)
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez = ctax.cooper_nathans(hkle=hkle, projection=projection)
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    rez = ctax.cooper_nathans(hkle=hkle, axes=axes)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
@@ -82,7 +82,7 @@ def test_projection_out_of_reach():
 
     hkle = (-1 / 2, -1 / 2, 3, 3.2)
     projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    rez = tas.cooper_nathans(hkle=hkle, axes=projection)
     assert not rez
     assert "Cannot get theta_a for ef=1.6 meV. Bragg condition cannot be fulfilled." in tas.err_msg
 
@@ -95,7 +95,7 @@ def test_list(ctax):
             (0, 0, 3, 1),
             (0, 0, -3, 1),
         ],
-        projection=None,
+        axes=None,
     )
     mat = np.array(
         [
@@ -181,7 +181,7 @@ def test_rescal_comparison(rescal_params):
     rez_hkl = tas.cooper_nathans(hkle=(1, 2, 0, 0))
     rez_hkl.plot()
 
-    rez_invA = tas.cooper_nathans(hkle=(1, 2, 0, 0), projection=None)
+    rez_invA = tas.cooper_nathans(hkle=(1, 2, 0, 0), axes=None)
     assert np.allclose(
         rez_invA.mat,
         [
@@ -251,7 +251,7 @@ def test_takin_comparison(takin_params):
     tas._load_instrument_parameters(instrument_params)
     tas.mount_sample(sample)
 
-    rez = tas.cooper_nathans(hkle=(0.8488, 0, 0, 0), projection=None)
+    rez = tas.cooper_nathans(hkle=(0.8488, 0, 0, 0), axes=None)
 
     assert np.allclose(rez.coh_fwhms(0), 0.0112653, rtol=0.01)
     assert np.allclose(rez.coh_fwhms(1), 0.00486532, rtol=0.01)

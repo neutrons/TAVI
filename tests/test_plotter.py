@@ -54,6 +54,7 @@ def test_plot2d():
     plt.show()
 
 
+# TODO
 def test_plot2d_with_resolution():
     # load data
     tavi = TAVI("./test_data/tavi_exp424.h5")
@@ -76,23 +77,23 @@ def test_plot2d_with_resolution():
 
     # calculate resolution ellipses
     hkle_list = [(qh, qh, 3, en) for qh in np.arange(-0.5, 0.15, 0.05) for en in np.arange(0, 4.1, 0.4)]
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
 
     # generate plot
     p = Plot2D()
-    im = p.add_contour(scan_data_2d, cmap="turbo", vmax=1)
+    p.add_contour(scan_data_2d, cmap="turbo", vmax=2)
 
     for rez in rez_list:
-        e_co = rez.get_ellipse(axes=(0, 3), PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=(0, 3), PROJECTION=True)
+        e_co = rez.get_ellipse(axes=(3, 0), PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=(3, 0), PROJECTION=True)
         p.add_reso(e_co, c="k", linestyle="solid")
         p.add_reso(e_inco, c="k", linestyle="dashed")
 
     fig = plt.figure()
     ax = fig.add_subplot(111, axes_class=Axes)
 
-    p.plot(ax)
+    im = p.plot(ax)
     fig.colorbar(im, ax=ax)
     plt.show()
 
@@ -101,14 +102,14 @@ def test_making_labels_from_projection():
     label = labels_from_projection()
     assert label == ("(H, 0, 0) (r.l.u.)", "(0, K, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)")
 
-    label = labels_from_projection(projection=None)
+    label = labels_from_projection(axes=None)
     assert label == ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
 
-    label = labels_from_projection(projection=((1, 1, 0), (0, 0, 1), (1, -1, 0)))
+    label = labels_from_projection(axes=((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"))
     assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "(K, -K, 0) (r.l.u.)", "E (meV)")
 
-    label = labels_from_projection(projection=((1.0, 1.0, 0.0), (0, 0, 1), (1, -1, 0)))
-    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "(K, -K, 0) (r.l.u.)", "E (meV)")
+    label = labels_from_projection(axes=((1.0, 1.0, 0.0), (0, 0, 1), "en", (1, -1, 0)))
+    assert label == ("(H, H, 0) (r.l.u.)", "(0, 0, L) (r.l.u.)", "E (meV)", "(K, -K, 0) (r.l.u.)")
 
-    label = labels_from_projection(projection=((0, 0, 1), (1, -1, 0), (2, 2, 0)))
+    label = labels_from_projection(axes=((0, 0, 1), (1, -1, 0), (2, 2, 0), "en"))
     assert label == ("(0, 0, L) (r.l.u.)", "(H, -H, 0) (r.l.u.)", "(2K, 2K, 0) (r.l.u.)", "E (meV)")

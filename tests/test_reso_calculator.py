@@ -136,3 +136,11 @@ def test_validate_instrument_parameter(ctax, params):
         rc = ResolutionCalculator(instrument=tas)
         rc.validate_instrument_parameters()
     assert "sense is missing in Goniometer, type=Y,-Z,X." in str(e_info.value)
+
+
+def test_generate_hkle_list():
+    hkle = ResolutionCalculator.generate_hkle(
+        axes=((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"),
+        grid=((-0.5, 0.15, 0.05), 3, 0, (0, 4.1, 0.4)),
+    )
+    assert len(hkle) == 143

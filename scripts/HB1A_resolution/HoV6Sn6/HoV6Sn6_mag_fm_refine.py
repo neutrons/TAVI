@@ -111,7 +111,7 @@ def analyze_peak_in_q(hkl, s1, th2th, rez_calc=False, **kwargs):
     p2.add_fit(th2th_fit, x=th2th_fit.x_to_plot(), label=label, **kwargs)
 
     if rez_calc:
-        rez = hb1a.cooper_nathans(hkl=hkl, projection=None)
+        rez = hb1a.cooper_nathans(hkl=hkl, axes=None)
         p1.add_reso_bar(
             pos=s1_fit.result,
             fwhm=rez.coh_fwhms(axis=1),

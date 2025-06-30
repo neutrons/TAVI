@@ -63,8 +63,8 @@ class TAS(TASBase):
         return f"{self.__class__.__name__}"
 
     @staticmethod
-    def generate_hkle_from_projection(u, v, w, en, projection):
-        return ResolutionCalculator.generate_hkle_from_projection(u, v, w, en, projection)
+    def generate_hkle(grid: tuple, axes: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")):
+        return ResolutionCalculator.generate_hkle(axes=axes, grid=grid)
 
     def _get_ei_ef(
         self,
@@ -317,7 +317,7 @@ class TAS(TASBase):
     def cooper_nathans(
         self,
         hkle: Union[tuple[float, float, float, float], list[tuple[float, float, float, float]]],
-        projection: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        axes: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en"),
     ) -> Union[Optional[ResoEllipsoid], tuple[Optional[ResoEllipsoid], ...]]:
         """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
@@ -338,9 +338,7 @@ class TAS(TASBase):
         for q_hkl, ei, ef in hkleief_list:
             try:
                 reso_mat, r0 = cn.calculate_at_hkle(q_hkl, ei, ef)
-                rez = ResoEllipsoid(
-                    instrument=self, hkle=(q_hkl) + (ei - ef,), projection=projection, reso_mat=reso_mat, r0=r0
-                )
+                rez = ResoEllipsoid(instrument=self, hkle=(q_hkl) + (ei - ef,), axes=axes, reso_mat=reso_mat, r0=r0)
                 rez.method = "Cooper-Nathans"
                 rez.instrument_params = config_str
             except ValueError as e:

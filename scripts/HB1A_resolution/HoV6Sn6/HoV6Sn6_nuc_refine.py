@@ -151,7 +151,7 @@ def make_rez_plots(hkl, s1, th2th):
     (result_s1, p1) = s1
     (result_th2th, p2) = th2th
 
-    rez = hb1a.cooper_nathans(hkl=hkl, projection=None)
+    rez = hb1a.cooper_nathans(hkl=hkl, axes=None)
 
     p1.add_reso_bar(
         pos=result_s1,

@@ -84,7 +84,7 @@ def test_uv_to_plane_normal():
     b_mat = b_mat_from_ub_matrix(spice_to_mantid(ub_spice))
     u_mat = u_mat_from_ub_matrix(spice_to_mantid(ub_spice))
 
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
     plane_normal, in_plane_ref = plane_normal_from_two_peaks(u_mat, b_mat, projection[0], projection[1])
     assert np.allclose(plane_normal, (0, 1, 0))
     assert np.allclose(in_plane_ref, (0, 0, 1))
@@ -111,9 +111,9 @@ def test_instrument_error_handling():
     tas.load_instrument_params_from_json(instrument_config_json_path)
 
     hkle = (0.1, 0.1, 0, 0)
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
     with pytest.raises(AttributeError) as e_info:
-        rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+        rez = tas.cooper_nathans(hkle=hkle, axes=projection)
     assert "sample is missing in TAS(fixed_ei=5, fixed_ef=None, convention=Spice)." in str(e_info.value)
 
 
@@ -124,9 +124,9 @@ def test_out_of_reach(sample):
     tas.mount_sample(sample)
 
     hkle = (10, 10, 10, 0)
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
 
-    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    rez = tas.cooper_nathans(hkle=hkle, axes=projection)
     assert rez is None
     assert "Cannot get two_theta for hkl=(10, 10, 10), ei=5 meV, ef=5 meV. Triangle cannot be closed." in tas.err_msg
 
@@ -139,8 +139,8 @@ def test_reso_str(sample):
     tas.mount_sample(sample)
 
     hkle = (0.1, 0.1, 0, 0)
-    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
-    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    projection = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
+    rez = tas.cooper_nathans(hkle=hkle, axes=projection)
 
     assert len(str(rez).split("\n")) == 31
 
@@ -153,8 +153,8 @@ def test_plot_ellipses(sample):
     tas.mount_sample(sample)
 
     hkle = (0.1, 0.1, 0, 0)
-    projection = ((1, 1, 0), (0, 1, 0), (0, 0, 1))
-    rez = tas.cooper_nathans(hkle=hkle, projection=projection)
+    projection = ((1, 1, 0), (0, 1, 0), (0, 0, 1), "en")
+    rez = tas.cooper_nathans(hkle=hkle, axes=projection)
 
     # plotting
     fig = plt.figure(figsize=(10, 6), constrained_layout=True)
@@ -163,13 +163,10 @@ def test_plot_ellipses(sample):
 
 
 def test_generate_hkle_list():
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    hkle = TAS.generate_hkle_from_projection(
-        u=(-0.5, 0.15, 0.05),
-        v=3,
-        w=0,
-        en=(0, 4.1, 0.4),
-        projection=projection,
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    hkle = TAS.generate_hkle(
+        axes=axes,
+        grid=((-0.5, 0.15, 0.05), 3, 0, (0, 4.1, 0.4)),
     )
     assert len(hkle) == 143
 
@@ -183,22 +180,20 @@ def test_plot_ellipsoids_contour():
     tas.mount_sample(Sample.from_json("./test_data/test_samples/nitio3.json"))
 
     # calculate resolution ellipses
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    axes_params = {
-        "u": (-0.5, 5.5, 0.05),
-        "v": 3,
-        "w": 0,
-        "en": (0, 4.1, 0.4),
-    }
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    grid = ((-0.5, 5.5, 0.05), 3, 0, (0, 4.1, 0.4))
 
-    hkle_list = tas.generate_hkle_from_projection(**axes_params, projection=projection)
-    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
+    axes = ("en", (1, 1, 0), (0, 0, 1), (1, -1, 0))
+    grid = ((0, 4.1, 0.4), (-0.5, 5.5, 0.05), 3, 0)
+
+    hkle_list = tas.generate_hkle(grid, axes=axes)
+    rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
 
     assert len(rez_list) == 1320
 
     # generate plot
     p = Plot2D()
-    axes = [i for i, val in enumerate(axes_params.values()) if isinstance(val, tuple) and len(val) == 3]
+    axes = [i for i, val in enumerate(grid) if isinstance(val, tuple) and len(val) == 3]
     for rez in filter(None, rez_list):
         e_inco = rez.get_ellipse(axes=axes, PROJECTION=True)
         e_co = rez.get_ellipse(axes=axes, PROJECTION=False)
@@ -216,9 +211,9 @@ def test_plot_data_contour():
     scan_nums = "42-48, 70-75"
 
     scan_data_2d_params = {
-        "axes": ("qh", "en", "detector"),
+        "axes": ("en", "qh", "detector"),
         "norm_to": (1, "mcu"),
-        "grid": (0.025, (0, 4.1, 0.1)),
+        "grid": ((0, 4.1, 0.1), 0.025),
     }
 
     contour_params = {
@@ -255,14 +250,11 @@ def test_plot_ellipsoids_contour_oplot():
     tas.mount_sample(Sample.from_json("./test_data/test_samples/nitio3.json"))
 
     # calculate resolution ellipses
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
-    u = (-0.5, 0.15, 0.05)
-    v = 3
-    w = 0
-    en = (0, 4.1, 0.4)
+    axes = ("en", (1, 1, 0), (0, 0, 1), (1, -1, 0))
+    grid = ((0, 4.1, 0.4), (-0.5, 0.15, 0.05), 3, 0)
 
-    hkle_list = tas.generate_hkle_from_projection(u, v, w, en, projection)
-    rez_list = tas.cooper_nathans(hkle=hkle_list, projection=projection)
+    hkle_list = tas.generate_hkle(grid, axes)
+    rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
 
     # generate data
     path_to_spice_folder = "test_data/exp424/"
@@ -272,9 +264,9 @@ def test_plot_ellipsoids_contour_oplot():
     sg = ScanGroup(scans)
 
     scan_data_2d_params = {
-        "axes": ("qh", "en", "detector"),
+        "axes": ("en", "qh", "detector"),
         "norm_to": (1, "mcu"),
-        "grid": (0.025, (0, 4.5, 0.1)),
+        "grid": ((0, 4.5, 0.1), 0.025),
     }
 
     scan_data_2d = sg.combine_data(**scan_data_2d_params)
@@ -290,10 +282,10 @@ def test_plot_ellipsoids_contour_oplot():
 
     p.add_contour(scan_data_2d, **contour_params)
 
-    axes = [i for i, val in enumerate((u, v, w, en)) if isinstance(val, tuple) and len(val) == 3]
+    axes_ellip = [i for i, val in enumerate(grid) if isinstance(val, tuple) and len(val) == 3]
     for rez in filter(None, rez_list):
-        e_co = rez.get_ellipse(axes=axes, PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=axes, PROJECTION=True)
+        e_co = rez.get_ellipse(axes=axes_ellip, PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=axes_ellip, PROJECTION=True)
         p.add_reso(e_co, c="k", linestyle="solid")
         p.add_reso(e_inco, c="k", linestyle="dashed")
 

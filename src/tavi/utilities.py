@@ -229,10 +229,10 @@ def rot_z(mu):
     return mat
 
 
-def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1))):
-    if projection is None:
+def labels_from_projection(axes: Optional[tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")):
+    if axes is None:
         return ("Q_para (A^-1)", "Q_perp (A^-1)", "Q_up (A^-1)", "E (meV)")
-    elif projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1)):  # HKL
+    elif axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en"):  # HKL
         return (
             "(H, 0, 0) (r.l.u.)",
             "(0, K, 0) (r.l.u.)",
@@ -241,7 +241,10 @@ def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), 
         )
     hkl_dict = {0: "H", 1: "K", 2: "L"}
     labels = []
-    for p in projection:
+    for p in axes:
+        if p == "en":
+            labels.append("E (meV)")
+            continue
         # find the index of the first nonzero element in p
         idx = next((i for i, v in enumerate(p) if v != 0), -1)
         if idx in hkl_dict:
@@ -274,5 +277,4 @@ def labels_from_projection(projection: Optional[tuple] = ((1, 0, 0), (0, 1, 0), 
                 label_str += ", "
         labels.append(label_str)
 
-    labels.append("E (meV)")
     return tuple(labels)

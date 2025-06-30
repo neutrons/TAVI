@@ -116,18 +116,25 @@ def test_scan_group_rebin_2d_hkle():
     scans = [Scan.from_spice("test_data/exp424", scan_num=num) for num in scan_list]
     sg = ScanGroup(scans, name="dispH")
 
-    scan_data_2d_HH3 = sg.combine_data_hkle(
-        projection=((1, 1, 0), (-1, 1, 0), (0, 0, 1)),
+    scan_data_2d_00L_rot = sg.combine_data_hkle(
         norm_to=(1, "mcu"),
-        axes=((0.05), (-0.01, 0.01), (2.95, 3.05), (0, 4, 0.1)),
+        axes=((1, 1, 0), (-1, 1, 0), "en", (0, 0, 1), "detector"),
+        grid=((-0.01, 0.01), (-0.01, 0.01), (0, 4, 0.1), (2, 4, 0.1)),
     )
 
+    scan_data_2d_HH3 = sg.combine_data_hkle(
+        axes=((1, 1, 0), (-1, 1, 0), (0, 0, 1), "en", "detector"),
+        norm_to=(1, "mcu"),
+        grid=((0.05), (-0.01, 0.01), (2.95, 3.05), (0, 4, 0.1)),
+    )
+
+    # default axes are (H,K,L,E) and detector
     scan_data_2d_00L = sg.combine_data_hkle(
         norm_to=(1, "mcu"),
-        axes=((-0.01, 0.01), (-0.01, 0.01), 0.1, (0, 4, 0.1)),
+        grid=((-0.01, 0.01), (-0.01, 0.01), 0.1, (0, 4, 0.1)),
     )
 
-    for scan_data_2d in [scan_data_2d_HH3, scan_data_2d_00L]:
+    for scan_data_2d in [scan_data_2d_HH3, scan_data_2d_00L, scan_data_2d_00L_rot]:
         plot2d = Plot2D()
         plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
         fig, ax = plt.subplots()

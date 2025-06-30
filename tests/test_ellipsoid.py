@@ -10,11 +10,11 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 def test_local_q(tas_params):
     ctax, hkle, _ = tas_params
-    rez = ctax.cooper_nathans(hkle, projection=None)
+    rez = ctax.cooper_nathans(hkle, axes=None)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q, 3 * 2 * np.pi / ctax.sample.c)
-    assert rez.projection is None
+    assert rez.axes is None
     assert np.allclose(rez.angles, (90, 90, 90))
 
 
@@ -24,17 +24,17 @@ def test_hkl(tas_params):
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q_vec, (0, 0, 3))
-    assert rez.projection == ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+    assert rez.axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
     assert np.allclose(rez.angles, (60, 90, 90))
 
 
 def test_projection(tas_params):
     ctax, hkle, projection = tas_params
-    rez = ctax.cooper_nathans(hkle=hkle, projection=projection)
+    rez = ctax.cooper_nathans(hkle=hkle, axes=projection)
 
     assert np.allclose(rez.hkl, (0, 0, 3))
     assert np.allclose(rez.q_vec, (0, 3, 0))
-    assert rez.projection == ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    assert rez.axes == ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
     assert np.allclose(rez.angles, (90, 90, 90))
 
 
@@ -58,8 +58,8 @@ def tas_params():
     ctax.mount_sample(nitio3)
 
     hkle = (0, 0, 3, 0)
-    projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
 
-    tas_params = (ctax, hkle, projection)
+    tas_params = (ctax, hkle, axes)
 
     return tas_params

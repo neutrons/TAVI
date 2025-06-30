@@ -247,23 +247,33 @@ class ScanGroup(object):
 
     def combine_data_hkle(
         self,
-        axes,
-        norm_to,
-        projection=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+        grid: tuple,
+        axes=((1, 0, 0), (0, 1, 0), (0, 0, 1), "en", "detector"),
+        norm_to: tuple[float, str] = (1, "mcu"),
     ) -> ScanData2D:
-        if len(axes) != 4:
-            raise ValueError("Length of axes needs to be 4.")
-        try:
-            w_mat_inv = np.linalg.inv(np.array(projection).T)
-        except np.linalg.LinAlgError:
-            raise ValueError(f"Cannot find inverse matrix for projection = {projection}.")
+        # if not isinstance(det := axes[-1], str) and not det.startswith("detector"):
+        #     raise ValueError(f"Last paramter of axes={axes} should be detector.")
 
-        axes_to_plot = [i for i in range(4) if not isinstance(axes[i], tuple) or len(axes[i]) != 2]
+        # parse axes
+        counter = 0
+        qe_dim = {}
+        for i in range(4):
+            if isinstance(axes[i], tuple):
+                qe_dim.update({i: counter})
+                counter += 1
+            elif axes[i] == "en":
+                qe_dim.update({i: 3})
 
-        if len(axes_to_plot) < 2:
+        axes_to_plot = {}
+        for i in range(4):
+            if not (isinstance(grid[i], tuple) and len(grid[i]) == 2):
+                axes_to_plot.update({i: qe_dim[i]})
+
+        if len(axes_to_plot) != 2:
             raise ValueError("Two axes are needed to plot.")
 
-        z_axis = "detector"
+        # z_axis is always the last one
+        z_axis = axes[-1]
 
         total_points = sum(scan.data[z_axis].size for scan in self.scans)
 
@@ -293,25 +303,32 @@ class ScanGroup(object):
             current_index += points
             # title += f"{scan.scan_info.scan_num} "
 
+        # Extract only the tuple elements (i.e., the ones with length == 3 and all numeric)
+        w_mat = np.array([item for item in axes if isinstance(item, tuple) and len(item) == 3])
+        try:
+            w_mat_inv = np.linalg.inv(w_mat.T)
+        except np.linalg.LinAlgError:
+            raise ValueError(f"Cannot find inverse matrix for projection = {w_mat}.")
+
         # transform the coordinate based on preojection
         # (u,v,w) = w_inv * (h,k,l)
         u_array, v_array, w_array = w_mat_inv @ np.vstack((qh_array, qk_array, ql_array))
         qe_array = [u_array, v_array, w_array, en_array]
 
         # Format rebin parameters and determine initial ranges
-        axes_params = [Scan.format_rebin_params(params) for params in axes]
+        axes_params = [Scan.format_rebin_params(params) for params in grid]
 
         # Update rebin min/max for axes_to_plot based on data
-        for i in axes_to_plot:
-            rebin_min, rebin_max, rebin_step = axes_params[i]
+        # for i in axes_to_plot:
+        #     rebin_min, rebin_max, rebin_step = axes_params[i]
 
-            arr = qe_array[i]
-            if rebin_min is None:
-                rebin_min = float(np.min(arr))
-            if rebin_max is None:
-                rebin_max = float(np.max(arr))
+        #     arr = qe_array[i]
+        #     if rebin_min is None:
+        #         rebin_min = float(np.min(arr))
+        #     if rebin_max is None:
+        #         rebin_max = float(np.max(arr))
 
-            axes_params[i] = (rebin_min, rebin_max, rebin_step)
+        #     axes_params[i] = (rebin_min, rebin_max, rebin_step)
 
         # Apply filtering mask
         mask = np.full_like(en_array, True, dtype=bool)
@@ -327,17 +344,25 @@ class ScanGroup(object):
 
         # Recalculate ranges for plotting axes after filtering
         for i in axes_to_plot:
+            rebin_min, rebin_max, rebin_step = axes_params[i]
+
             arr = qe_array[i]
-            rebin_min = float(np.min(arr))
-            rebin_max = float(np.max(arr))
+            if rebin_min is None:
+                rebin_min = float(np.min(arr))
+            if rebin_max is None:
+                rebin_max = float(np.max(arr))
             _, _, rebin_step = axes_params[i]
 
             axes_params[i] = (rebin_min, rebin_max, rebin_step)
 
+        x_axis, y_axis = list(axes_to_plot.keys())
         scan_data_2d = ScanData2D(
-            x=qe_array[axes_to_plot[0]], y=qe_array[axes_to_plot[1]], z=detector_array, norm=monitor_array
+            x=qe_array[axes_to_plot[x_axis]],
+            y=qe_array[axes_to_plot[y_axis]],
+            z=detector_array,
+            norm=monitor_array,
         )
-        labs = labels_from_projection(projection)
+        labs = labels_from_projection(axes[:-1])
         labels_to_plot = tuple(lab for i, lab in enumerate(labs) if i in axes_to_plot) + ("detector",)
         axes_to_bin = tuple(lab for i, lab in enumerate(labs) if i not in axes_to_plot)
         labels_to_bin = [re.sub(r"\([^()]*\)$", "", label) for label in axes_to_bin]
