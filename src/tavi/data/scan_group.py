@@ -331,7 +331,6 @@ class ScanGroup(object):
         # Apply filtering mask
         mask = np.full_like(en_array, True, dtype=bool)
 
-
         for i, arr in enumerate(qe_array):
             if i not in axes_to_plot:
                 rebin_min, rebin_max, _ = grid_params[i]
@@ -360,8 +359,6 @@ class ScanGroup(object):
             grid_params[i] = (rebin_min, rebin_max, rebin_step)
 
         scan_data_2d = ScanData2D(
-            x=qe_array[axes_to_plot[0]],
-            y=qe_array[axes_to_plot[1]],
             x=qe_array[axes_to_plot[0]],
             y=qe_array[axes_to_plot[1]],
             z=detector_array,
