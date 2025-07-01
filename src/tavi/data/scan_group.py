@@ -254,8 +254,16 @@ class ScanGroup(object):
         # if not isinstance(det := axes[-1], str) and not det.startswith("detector"):
         #     raise ValueError(f"Last paramter of axes={axes} should be detector.")
 
+        axes_to_plot = []
+        for i in range(4):
+            if not (isinstance(grid[i], tuple) and len(grid[i]) == 2):
+                axes_to_plot.append(i)
+
         # move energy to the last place
         en_idx = axes.index("en")
+        need_swap = False
+        if en_idx == axes_to_plot[0]:
+            need_swap = True
         axes, grid = list(axes), list(grid)
         en_axis = axes.pop(en_idx)
         en_grid = grid.pop(en_idx)
@@ -263,9 +271,12 @@ class ScanGroup(object):
         grid.append(en_grid)
 
         axes_to_plot = []
+        axes_to_plot = []
         for i in range(4):
             if not (isinstance(grid[i], tuple) and len(grid[i]) == 2):
                 axes_to_plot.append(i)
+        if need_swap:
+            axes_to_plot = axes_to_plot[::-1]
 
         if len(axes_to_plot) != 2:
             raise ValueError("Two axes are needed to plot.")
@@ -315,12 +326,15 @@ class ScanGroup(object):
 
         # Format rebin parameters and determine initial ranges
         grid_params = [Scan.format_rebin_params(params) for params in grid]
+        grid_params = [Scan.format_rebin_params(params) for params in grid]
 
         # Apply filtering mask
         mask = np.full_like(en_array, True, dtype=bool)
 
+
         for i, arr in enumerate(qe_array):
             if i not in axes_to_plot:
+                rebin_min, rebin_max, _ = grid_params[i]
                 rebin_min, rebin_max, _ = grid_params[i]
                 mask &= (arr > rebin_min) & (arr < rebin_max)
 
@@ -332,6 +346,7 @@ class ScanGroup(object):
         # Recalculate ranges for plotting axes after filtering
         for i in axes_to_plot:
             rebin_min, rebin_max, rebin_step = grid_params[i]
+            rebin_min, rebin_max, rebin_step = grid_params[i]
 
             arr = qe_array[i]
             if rebin_min is None:
@@ -339,23 +354,28 @@ class ScanGroup(object):
             if rebin_max is None:
                 rebin_max = float(np.max(arr))
             _, _, rebin_step = grid_params[i]
+            _, _, rebin_step = grid_params[i]
 
+            grid_params[i] = (rebin_min, rebin_max, rebin_step)
             grid_params[i] = (rebin_min, rebin_max, rebin_step)
 
         scan_data_2d = ScanData2D(
+            x=qe_array[axes_to_plot[0]],
+            y=qe_array[axes_to_plot[1]],
             x=qe_array[axes_to_plot[0]],
             y=qe_array[axes_to_plot[1]],
             z=detector_array,
             norm=monitor_array,
         )
         labs = labels_from_projection(axes[:-1])
-        labels_to_plot = tuple(lab for i, lab in enumerate(labs) if i in axes_to_plot) + ("detector",)
+        labels_to_plot = tuple(labs[i] for i in axes_to_plot) + ("detector",)
         axes_to_bin = tuple(lab for i, lab in enumerate(labs) if i not in axes_to_plot)
         labels_to_bin = [re.sub(r"\([^()]*\)$", "", label) for label in axes_to_bin]
         bin_params = tuple(p for i, p in enumerate(grid_params) if i not in axes_to_plot)
+        bin_params = tuple(p for i, p in enumerate(grid_params) if i not in axes_to_plot)
         title = f"{labels_to_bin[0]}= ({bin_params[0][0]:.4g}, {bin_params[0][1]:.4g}), {labels_to_bin[1]}= ({bin_params[1][0]:.4g}, {bin_params[1][1]:.4g})"
         # rebin
-        plot_params = tuple(p for i, p in enumerate(grid_params) if i in axes_to_plot)
+        plot_params = tuple(grid_params[i] for i in axes_to_plot)
         scan_data_2d.rebin_grid_renorm(plot_params, norm_val=norm_val)
         scan_data_2d.make_labels(labels_to_plot, norm_to, title=title)
         return scan_data_2d
