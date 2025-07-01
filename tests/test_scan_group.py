@@ -118,8 +118,8 @@ def test_scan_group_rebin_2d_hkle():
 
     scan_data_2d_00L_rot = sg.combine_data_hkle(
         norm_to=(1, "mcu"),
-        axes=((1, 1, 0), (-1, 1, 0), "en", (0, 0, 1), "detector"),
-        grid=((-0.01, 0.01), (-0.01, 0.01), (0, 4, 0.1), (2, 4, 0.1)),
+        axes=("en", (1, 1, 0), (-1, 1, 0), (0, 0, 1), "detector"),
+        grid=((0, 4, 0.1), (-0.01, 0.01), (-0.01, 0.01), (2, 4, 0.1)),
     )
 
     scan_data_2d_HH3 = sg.combine_data_hkle(
@@ -134,7 +134,13 @@ def test_scan_group_rebin_2d_hkle():
         grid=((-0.01, 0.01), (-0.01, 0.01), 0.1, (0, 4, 0.1)),
     )
 
-    for scan_data_2d in [scan_data_2d_HH3, scan_data_2d_00L, scan_data_2d_00L_rot]:
+    scan_data_2d_00L_2 = sg.combine_data_hkle(
+        axes=[(0.0, 0.0, 1.0), "en", (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "detector"],
+        norm_to=(1, "mcu"),
+        grid=((2.4, 4.0, 0.1), (0.0, 4.0, 0.1), (-0.05, 0.05), (-0.05, 0.05)),
+    )
+
+    for scan_data_2d in [scan_data_2d_HH3, scan_data_2d_00L, scan_data_2d_00L_rot, scan_data_2d_00L_2]:
         plot2d = Plot2D()
         plot2d.add_contour(scan_data_2d, cmap="turbo", vmax=1)
         fig, ax = plt.subplots()
