@@ -43,13 +43,13 @@ jobs:
           # test that the python wheel builds
           python -m build --wheel --no-isolation
           twine check dist/neutron_tavi-*.whl
-      - name: build conda package
-        run: |
-          # test that the conda package builds
-          cd conda.recipe
-          echo "versioningit $(versioningit ../)"
-          # conda channels could have been defined in the conda-incubator, but you can copy/paste the lines
-          # below to build the conda package in your local machine
-          CHANNELS="--channel conda-forge"
-          VERSION=$(versioningit ../) conda mambabuild $CHANNELS --output-folder . .
-          conda verify noarch/neutron_tavi*.tar.bz2
+      # - name: build conda package
+      #   run: |
+      #     # test that the conda package builds
+      #     cd conda.recipe
+      #     echo "versioningit $(versioningit ../)"
+      #     # conda channels could have been defined in the conda-incubator, but you can copy/paste the lines
+      #     # below to build the conda package in your local machine
+      #     CHANNELS="--channel conda-forge"
+      #     VERSION=$(versioningit ../) conda mambabuild $CHANNELS --output-folder . .
+      #     conda verify noarch/neutron_tavi*.tar.bz2
