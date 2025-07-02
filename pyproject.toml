@@ -30,8 +30,8 @@ method = "minor"
 
 [tool.versioningit.format]
 dirty = "{version}" #+d{build_date:%Y%m%d}"
-distance = "{next_version}.dev{distance}" 
-distance-dirty = "{next_version}.dev{distance}+d{build_date:%Y%m%d%H%M}" 
+distance = "{next_version}.dev{distance}"
+distance-dirty = "{next_version}.dev{distance}" #+d{build_date:%Y%m%d%H%M}"
 
 [tool.versioningit.write]
 file = "src/tavi/_version.py"
