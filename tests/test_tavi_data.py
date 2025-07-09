@@ -4,7 +4,7 @@ import os
 import h5py
 import pytest
 
-from tavi.data.nexus_entry import NexusEntry
+from tavi.data.old.nexus_entry import NexusEntry
 from tavi.data.tavi import TAVI
 
 

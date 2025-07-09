@@ -1,7 +1,7 @@
 import numpy as np
 
-from tavi.data.nexus_builder import NXdataset, NXentry, spice_data_to_nxdict, spice_scan_to_nxdict
-from tavi.data.nexus_entry import NexusEntry
+from tavi.data.old.nexus_builder import NXdataset, NXentry, spice_data_to_nxdict, spice_scan_to_nxdict
+from tavi.data.old.nexus_entry import NexusEntry
 from tavi.data.spice_reader import _create_spicelogs
 
 

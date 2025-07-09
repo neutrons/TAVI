@@ -1,7 +1,7 @@
 import pathlib
 from typing import Optional
 
-from tavi.data.nexus_entry import NexusEntry
+from tavi.data.old.nexus_entry import NexusEntry
 
 
 def convert_spice_to_nexus(

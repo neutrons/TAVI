@@ -63,12 +63,17 @@ class InstrumentInfo:
 
 class Scan(object):
     """
-    Manage a single measued scan, using the data structure of xarray.DataArray
+    Manage a single measued scan
 
     Attributes:
+        name (str): scan name
+        _nexus_dict (NexusEntry)
+        data (dict): dictionary contains lists of scan data
 
     Methods:
-
+        load_scan
+        generate_curve
+        plot_curve
 
     """
 
@@ -227,6 +232,8 @@ class Scan(object):
                 angles = self.data[angle_str.strip()]
             return np.deg2rad(angles - angles[mid_idx]) * q_abs
 
+    # TODO
+
     def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
@@ -309,6 +316,7 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
+    # TODO
     def plot(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
