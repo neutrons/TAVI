@@ -148,7 +148,10 @@ def read_spice_datafile(
         warnings.simplefilter("ignore", category=UserWarning)
         data_array = np.genfromtxt(file_name, comments="#")
 
-    data = None if data_array.size == 0 else dict(zip(col_names, data_array.T))
+    if data_array.size == 0:
+        data = None
+    else:
+        data = {k: np.atleast_1d(v) for k, v in zip(col_names, data_array.T)}
 
     return metadata, data, unrecognized, error_msg
 
