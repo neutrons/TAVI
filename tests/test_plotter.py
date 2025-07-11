@@ -62,9 +62,9 @@ def test_plot2d_with_resolution():
 
     sg = tavi.group_scans(scan_list, name="dispH")
     scan_data_2d = sg.combine_data(
-        axes=("qh", "en", "detector"),
+        axes=("en", "qh", "detector"),
         norm_to=(1, "mcu"),
-        grid=(0.025, (-0.5, 4.5, 0.1)),
+        grid=((-0.5, 4.5, 0.1), 0.025),
     )
     # load experimental parameters
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
@@ -84,7 +84,7 @@ def test_plot2d_with_resolution():
     p = Plot2D()
     p.add_contour(scan_data_2d, cmap="turbo", vmax=2)
 
-    for rez in rez_list:
+    for rez in filter(None, rez_list):
         e_co = rez.get_ellipse(axes=(3, 0), PROJECTION=False)
         e_inco = rez.get_ellipse(axes=(3, 0), PROJECTION=True)
         p.add_reso(e_co, c="k", linestyle="solid")

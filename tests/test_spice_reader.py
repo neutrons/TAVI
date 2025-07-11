@@ -1,26 +1,27 @@
 import numpy as np
 
-from tavi.data.spice_reader import _create_spicelogs, read_spice_datafile, read_spice_ubconf
+from tavi.data.spice_reader import read_spice_datafile, read_spice_ubconf
 
 
 def test_read_spice_datafile_regular():
     path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
-    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_spice_data)
-    assert data.ndim == 2
+    (metadata, data, unrecognized, error_msg) = read_spice_datafile(path_to_spice_data)
     assert len(metadata) == 32
-    assert np.shape(data) == (40, 55)
     assert metadata["scan"] == "34"
+    assert data["Pt."].size == 40
+    assert len(data) == 55
 
 
 def test_read_spice_datafile_single_point():
     path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0062.dat"
-    (data, *_) = read_spice_datafile(path_to_spice_data)
-    assert data.ndim == 1
+    (_, data, *_) = read_spice_datafile(path_to_spice_data)
+    assert len(data) == 55
+    assert data["Pt."].size == 1
 
 
 def test_read_spice_datafile_no_ending():
     path_to_spice_data = "./test_data/exp416/Datafiles/CG4C_exp0416_scan0050.dat"
-    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_spice_data)
+    (metadata, data, unrecognized, error_msg) = read_spice_datafile(path_to_spice_data)
     assert len(metadata) == 28
 
 
@@ -28,6 +29,13 @@ def test_read_spice_datafile_with_motor_errors():
     path_to_spice_data = "./test_data/exp815/Datafiles/HB1_exp0815_scan0001.dat"
     (*_, error_messages) = read_spice_datafile(path_to_spice_data)
     assert len(error_messages) == 44
+
+
+def test_hb1_countfile_parsing():
+    path_to_spice_data = "./test_data/IPTS31591_HB1_exp0917/exp1111/Datafiles/HB1_exp1111_scan0002.dat"
+    (metadata, data, unrecognized, error_msg) = read_spice_datafile(path_to_spice_data)
+    assert metadata["norm_channels"] == ["mcu_1", "mcu_2", "mcu_3"]
+    assert metadata["labels"] == ["Px SF", "Px NSF", "Py SF"]
 
 
 def test_read_spice_ubconf():
@@ -43,19 +51,20 @@ def test_read_spice_ubconf():
     )
 
 
-def test_create_spicelogs():
-    path_to_spice_data = "./test_data/exp424/Datafiles/CG4C_exp0424_scan0034.dat"
-    spicelogs = _create_spicelogs(path_to_spice_data)
-    assert spicelogs["metadata"]["scan"] == "34"
-    assert spicelogs["metadata"]["scan_title"] == "003 scan at Q=[0 0 2.5+0.8]"
-    assert spicelogs["metadata"]["samplename"] == "NiTiO3"
-    assert np.allclose(spicelogs["h"][0:3], [0.0001, 0.0000, -0.0000])
-
-
-def test_create_spicelogs_single_point():
-    path_to_spice_data = "./test_data/exp815/Datafiles/HB1_exp0815_scan0001.dat"
-    spicelogs = _create_spicelogs(path_to_spice_data)
-    # metadata and ubconf only, no data columns
-    assert "metadata" in spicelogs
-    assert "ub_conf" in spicelogs
-    assert len(spicelogs) == 2
+def test_read_spice_ubconf_4_circle_html():
+    path_to_spice_data = "./test_data/IPTS33347_HB1A_exp1046/exp1046/UBConf/UB20Feb2025_1645PM.ini"
+    ubconf = read_spice_ubconf(path_to_spice_data)
+    assert np.allclose(
+        ubconf["UBMatrix"],
+        [
+            -0.00240830734807598,
+            -0.0148785420823486,
+            0.0404848827465389,
+            0.201921571073141,
+            0.192668717780335,
+            0.00168620753782269,
+            -0.106291529932909,
+            0.121381235447627,
+            0.00228599244682446,
+        ],
+    )

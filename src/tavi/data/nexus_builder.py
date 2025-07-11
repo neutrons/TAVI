@@ -581,7 +581,7 @@ def spice_data_to_nxdict(
 
     # get IPTS number and instrument string
     first_scan = scan_list[0]
-    _, _, headers, _, _ = read_spice_datafile(first_scan)
+    headers, _, _, _ = read_spice_datafile(first_scan)
     ipts = headers.get("proposal", "UNKNOWN")
 
     spice_file_name = os.path.basename(first_scan)  # safe way to get filename

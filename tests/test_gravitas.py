@@ -241,6 +241,7 @@ def test_plot_data_contour():
     plt.show()
 
 
+# TODO
 def test_plot_ellipsoids_contour_oplot():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
 
@@ -252,6 +253,9 @@ def test_plot_ellipsoids_contour_oplot():
     # calculate resolution ellipses
     axes = ("en", (1, 1, 0), (0, 0, 1), (1, -1, 0))
     grid = ((0, 4.1, 0.4), (-0.5, 0.15, 0.05), 3, 0)
+
+    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    grid = ((-0.5, 0.15, 0.05), 3, 0, (0, 4.1, 0.4))
 
     hkle_list = tas.generate_hkle(grid, axes)
     rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
