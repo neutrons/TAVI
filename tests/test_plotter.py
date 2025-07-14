@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
 
 import matplotlib.pyplot as plt
-import numpy as np
 from mpl_toolkits.axisartist import Axes
 
 from tavi.data.tavi import TAVI
@@ -54,7 +53,6 @@ def test_plot2d():
     plt.show()
 
 
-# TODO
 def test_plot2d_with_resolution():
     # load data
     tavi = TAVI("./test_data/tavi_exp424.h5")
@@ -76,8 +74,10 @@ def test_plot2d_with_resolution():
     tas.mount_sample(sample)
 
     # calculate resolution ellipses
-    hkle_list = [(qh, qh, 3, en) for qh in np.arange(-0.5, 0.15, 0.05) for en in np.arange(0, 4.1, 0.4)]
-    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    axes = ("en", (1, 1, 0), (0, 0, 1), (1, -1, 0))
+    grid = ((0, 4.1, 0.4), (-0.5, 0.15, 0.05), 3, 0)
+
+    hkle_list = tas.generate_hkle(grid, axes)
     rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
 
     # generate plot
@@ -85,8 +85,8 @@ def test_plot2d_with_resolution():
     p.add_contour(scan_data_2d, cmap="turbo", vmax=2)
 
     for rez in filter(None, rez_list):
-        e_co = rez.get_ellipse(axes=(3, 0), PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=(3, 0), PROJECTION=True)
+        e_co = rez.get_ellipse(axes=(0, 1), PROJECTION=False)
+        e_inco = rez.get_ellipse(axes=(0, 1), PROJECTION=True)
         p.add_reso(e_co, c="k", linestyle="solid")
         p.add_reso(e_inco, c="k", linestyle="dashed")
 

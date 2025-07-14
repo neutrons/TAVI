@@ -232,8 +232,6 @@ class Scan(object):
                 angles = self.data[angle_str.strip()]
             return np.deg2rad(angles - angles[mid_idx]) * q_abs
 
-    # TODO
-
     def get_data(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),
@@ -316,7 +314,6 @@ class Scan(object):
         scan_data_1d.make_labels((x_str, y_str), norm_to, label, title)
         return scan_data_1d
 
-    # TODO
     def plot(
         self,
         axes: tuple[Optional[str], Optional[str]] = (None, None),

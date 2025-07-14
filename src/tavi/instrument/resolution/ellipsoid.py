@@ -286,7 +286,6 @@ class ResoEllipsoid(object):
             p.xlim = (x_cen - x_fwhm, x_cen + x_fwhm)
             p.ylim = (y_cen - y_fwhm, y_cen + y_fwhm)
             p.plot(ax)
-            # ax.axis["bottom"].major_ticklabels.set_text("$\\mathdefault{2}$")  # optional rotation
 
         h, k, l = self.hkl
         fig.suptitle(f"Q=({h:.4g}, {k:.4g}, {l:.4g}), En={self.en} meV")

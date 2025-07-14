@@ -241,7 +241,6 @@ def test_plot_data_contour():
     plt.show()
 
 
-# TODO
 def test_plot_ellipsoids_contour_oplot():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
 
@@ -254,8 +253,8 @@ def test_plot_ellipsoids_contour_oplot():
     axes = ("en", (1, 1, 0), (0, 0, 1), (1, -1, 0))
     grid = ((0, 4.1, 0.4), (-0.5, 0.15, 0.05), 3, 0)
 
-    axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
-    grid = ((-0.5, 0.15, 0.05), 3, 0, (0, 4.1, 0.4))
+    # axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
+    # grid = ((-0.5, 0.15, 0.05), 3, 0, (0, 4.1, 0.4))
 
     hkle_list = tas.generate_hkle(grid, axes)
     rez_list = tas.cooper_nathans(hkle=hkle_list, axes=axes)
@@ -267,13 +266,11 @@ def test_plot_ellipsoids_contour_oplot():
     scans = [Scan.from_spice(path_to_spice_folder, scan_num=num) for num in scan_list]
     sg = ScanGroup(scans)
 
-    scan_data_2d_params = {
-        "axes": ("en", "qh", "detector"),
-        "norm_to": (1, "mcu"),
-        "grid": ((0, 4.5, 0.1), 0.025),
-    }
-
-    scan_data_2d = sg.combine_data(**scan_data_2d_params)
+    scan_data_2d = sg.combine_data_hkle(
+        grid=((0, 4.1, 0.1), (-0.5, 0.15, 0.05), (2.95, 3.05), (-0.05, 0.05)),
+        norm_to=(1, "mcu"),
+        axes=axes + ("detector",),
+    )
 
     # generate plot
     p = Plot2D()
