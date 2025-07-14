@@ -151,6 +151,9 @@ class Sample(object):
         info = scan.sample_ub_info
         sample = cls(lattice_params=info.lattice_constants)
 
+        mosaic_h, mosaic_v = info.mosaic_h, info.mosaic_v
+        sample.set_mosaic(mosaic_h, mosaic_v)
+
         # setting UB matrix
         ub_matrix = np.array(info.ub_matrix).reshape(3, 3)
         plane_normal = np.array(info.plane_normal)

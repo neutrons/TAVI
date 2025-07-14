@@ -37,6 +37,8 @@ class SampleUBInfo:
 
     sample_name: str = ""
     lattice_constants: tuple = (1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
+    mosaic_h: float = 30.0  # in minutes of arc
+    mosaic_v: float = 30.0  # in minutes of arc
     ub_matrix: Optional[np.ndarray] = None
     type: str = "crystal"
     u: Optional[np.ndarray] = None
@@ -144,6 +146,7 @@ class Scan(object):
     @property
     def sample_ub_info(self):
         sample_type = self._nexus_dict.get("sample/type")
+        mosaic = self._nexus_dict.get("sample/mosaic")
         ub_matrix = self._nexus_dict.get("sample/orientation_matrix").reshape(3, 3)
         lattice_constants = self._nexus_dict.get("sample/unit_cell")
         if sample_type == "crystal" and (ub_matrix is not None):
@@ -154,6 +157,8 @@ class Scan(object):
         sample_ub_info = SampleUBInfo(
             sample_name=self._nexus_dict.get("sample/name"),
             lattice_constants=lattice_constants,
+            mosaic_h=mosaic,
+            mosaic_v=mosaic,
             ub_matrix=ub_matrix,
             type=sample_type,
             u=u,

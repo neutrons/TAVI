@@ -111,6 +111,8 @@ def test_sample_from_scan():
     assert np.allclose(sample.lattice_params, (5.034785, 5.034785, 13.812004, 90, 90, 120))
     assert sample.ub_conf.ub_mat.shape == (3, 3)
     assert sample.ub_conf.plane_normal.shape == (3,)
+    assert scan.sample_ub_info.mosaic_v == 30.0
+    assert scan.sample_ub_info.mosaic_h == 30.0
 
 
 def test_instrument_error_handling():

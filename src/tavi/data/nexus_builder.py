@@ -470,6 +470,7 @@ def spice_scan_to_nxdict(
         ql=NXdataset(ds=spicelogs.get("l"), type="NX_FLOAT", EX_required="true", units="r.l.u."),
         en=NXdataset(ds=spicelogs.get("e"), type="NX_FLOAT", EX_required="true", units="meV"),
         q=NXdataset(ds=spicelogs.get("q"), type="NX_FLOAT", units="Angstrom^-1"),
+        mosaic=NXdataset(ds=metadata.get("samplemosaic"), type="NX_FLOAT", units="degrees"),
         NX_class="NXsample",
         EX_required="true",
     )

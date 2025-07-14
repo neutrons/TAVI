@@ -13,6 +13,8 @@ def test_scan_from_spice():
     assert scan.scan_info.scan_title == "003 scan at Q=[0 0 2.5+0.8]"
     assert scan.sample_ub_info.sample_name == "NiTiO3"
     assert scan.sample_ub_info.type == "crystal"
+    assert scan.sample_ub_info.mosaic_h == 30.0  # in minutes of arc
+    assert scan.sample_ub_info.mosaic_v == 30.0  # in minutes
     assert np.allclose(
         scan.sample_ub_info.ub_matrix,
         np.array(
