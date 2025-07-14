@@ -21,8 +21,6 @@ from tavi.ub_algorithm import (
     uv_to_ub_matrix,
 )
 
-# plt.rcParams.update({"font.size": 8})
-
 
 @pytest.fixture
 def sample():
@@ -103,6 +101,16 @@ def test_instrument_sample_setup(sample):
 
     lattice_params = (10, 10, 10, 90, 90, 90)
     assert np.allclose(tas.sample.lattice_params, lattice_params)
+
+
+def test_sample_from_scan():
+    path_to_spice_folder = "test_data/exp424/"
+    scan = Scan.from_spice(path_to_spice_folder, scan_num=42)
+    sample = Sample.from_scan(scan)
+
+    assert np.allclose(sample.lattice_params, (5.034785, 5.034785, 13.812004, 90, 90, 120))
+    assert sample.ub_conf.ub_mat.shape == (3, 3)
+    assert sample.ub_conf.plane_normal.shape == (3,)
 
 
 def test_instrument_error_handling():

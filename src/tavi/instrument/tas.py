@@ -293,10 +293,15 @@ class TAS(TASBase):
             angles = self.goniometer.angles_in_bisect_mode(hkl, two_theta, psi, ub_conf)
 
         elif goni_mode is None:  # default is minumal tilt
-            if ((n := ub_conf.plane_normal) is None) or ((i := ub_conf.in_plane_ref) is None):
-                raise ValueError(f"Missing UB info. plane_normal={n}, in_plne_ref={i}.")
-
-            r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf)
+            # if ((n := ub_conf.plane_normal) is None) or ((i := ub_conf.in_plane_ref) is None):
+            #     raise ValueError(f"Missing UB info. plane_normal={n}, in_plne_ref={i}.")
+            try:
+                r_mat = r_matrix_with_minimal_tilt(hkl, ei, ef, two_theta, ub_conf)
+            except ValueError as e:
+                hkl_str = "({:.4g}, {:.4g}, {:.4g})".format(*hkl)
+                raise ValueError(
+                    "Cannot get R matrix for hkl=" + hkl_str + f", ei={ei:.4g} meV, ef={ef:.4g} meV. " + str(e)
+                )
             angles = self.goniometer.angles_from_r_mat(r_mat, two_theta)
 
         return angles

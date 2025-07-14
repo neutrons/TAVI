@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import json
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 import numpy as np
 
@@ -13,6 +15,10 @@ from tavi.lattice_algorithm import (
     reciprocal_space_vectors,
 )
 from tavi.ub_algorithm import UBConf
+
+# avoid circular import
+if TYPE_CHECKING:
+    from tavi.data.scan import Scan
 
 
 class Sample(object):
@@ -138,6 +144,26 @@ class Sample(object):
             in_plane_ref=in_plane_ref,
         )
 
+        return sample
+
+    @classmethod
+    def from_scan(cls, scan: Scan):
+        info = scan.sample_ub_info
+        sample = cls(lattice_params=info.lattice_constants)
+
+        # setting UB matrix
+        ub_matrix = np.array(info.ub_matrix).reshape(3, 3)
+        plane_normal = np.array(info.plane_normal)
+        try:
+            in_plane_ref = np.array(info.in_plane_ref)
+        except AttributeError:
+            in_plane_ref = None
+
+        sample.ub_conf = UBConf(
+            ub_mat=ub_matrix,
+            plane_normal=plane_normal,
+            in_plane_ref=in_plane_ref,
+        )
         return sample
 
     def set_shape(

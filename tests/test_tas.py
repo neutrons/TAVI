@@ -182,7 +182,8 @@ def test_calculate_ub():
 
 
 def test_r_mat_with_minimal_tilt():
-    tas = TAS(fixed_ef=13.505137)
+    ef = 13.505137
+    tas = TAS(fixed_ef=ef)
     tas.goniometer = Goniometer({"sense": "-", "type": "Y,-Z,X"})
 
     lattice_params = (3.574924, 3.574924, 5.663212, 90, 90, 120)
@@ -197,10 +198,28 @@ def test_r_mat_with_minimal_tilt():
     ub_conf = tas.calculate_ub_matrix((peak1, peak2))
 
     r_mat = tas.goniometer.r_mat(angles1)
-    r_mat_cal = r_matrix_with_minimal_tilt(
-        hkl=(0, 0, 2), ei=13.505137, ef=13.505137, two_theta=angles1.two_theta, ub_conf=ub_conf
-    )
+    r_mat_cal = r_matrix_with_minimal_tilt(hkl=(0, 0, 2), ei=ef, ef=ef, two_theta=angles1.two_theta, ub_conf=ub_conf)
     assert np.allclose(r_mat, r_mat_cal, atol=1e-3)
+
+    # check hkl norm to horizontal plane
+    r_mat_cal = r_matrix_with_minimal_tilt(
+        hkl=(2, -1, 0),
+        ei=ef,
+        ef=ef,
+        two_theta=tas.get_two_theta(hkl=(2, -1, 0)),
+        ub_conf=ub_conf,
+    )
+    assert np.allclose(
+        r_mat_cal,
+        np.array(
+            [
+                [0.64914711, 0.73459447, -0.19743101],
+                [-0.33306527, 0.04114823, -0.94200549],
+                [-0.68386809, 0.67725755, 0.27137916],
+            ]
+        ),
+        atol=1e-3,
+    )
 
 
 def test_calculate_motor_agnles():
@@ -218,12 +237,18 @@ def test_calculate_motor_agnles():
     plane_normal = [0.000009, 0.999047, 0.043637]
     in_plane_ref = [0.94290377, 0.01452569, -0.33274837]
     sample = Sample(lattice_params)
-    sample.ub_conf = UBConf(convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal, in_plane_ref=in_plane_ref)
+    sample.ub_conf = UBConf(
+        convention="Mantid", ub_mat=ub_matrix, plane_normal=plane_normal
+    )  # , in_plane_ref=in_plane_ref)
     tas.mount_sample(sample)
 
     angels1_cal = tas.calculate_motor_angles(hkl=(0, 0, 2), en=-0.005)
     angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
     assert angels1_cal == angles1
+
+    with pytest.raises(ValueError) as e_info:
+        tas.calculate_motor_angles(hkl=(2, -1, 0), en=-0.005)
+    assert "Cannot get R matrix for hkl=(2, -1, 0)" in str(e_info.value)
 
 
 def test_calculate_motor_angles_hb3():

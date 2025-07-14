@@ -4,9 +4,11 @@ import pytest
 from tavi.instrument.components.goni import Goniometer
 from tavi.sample import Sample
 from tavi.ub_algorithm import (
+    UBConf,
     angle_between_two_hkls,
     angle_between_two_motor_positions,
     plane_normal_from_two_peaks,
+    r_matrix_with_minimal_tilt,
     two_theta_from_hkle,
     ub_matrix_to_lattice_params,
     ub_matrix_to_uv,
@@ -37,16 +39,16 @@ def sample_info():
     )
     ub_matrix = np.array(
         [
-            [0.0538, 0.1076, 0.1665],
-            [0.2728, -0.0133, 0.0026],
-            [0.1643, 0.3042, -0.0588],
+            [0.053821, 0.107638, 0.166485],
+            [0.272815, -0.013290, 0.002566],
+            [0.164330, 0.304247, -0.058788],
         ]
     )
     spice_ub_matrix = np.array(
         [
-            [0.0538, 0.1076, 0.1665],
-            [-0.1643, -0.3042, 0.0588],
-            [0.2728, -0.0133, 0.0026],
+            [0.053821, 0.107638, 0.166485],
+            [-0.164330, -0.304247, 0.058788],
+            [0.272815, -0.013290, 0.002566],
         ]
     )
 
@@ -154,3 +156,47 @@ def test_two_theta_from_hkle():
     with pytest.raises(ValueError) as excinfo:
         two_theta_from_hkle(hkl=(100, 0, 0), ei=ei, ef=ei, b_mat=b_mat)
     assert "Triangle cannot be closed." in str(excinfo.value)
+
+
+def test_r_matrix_with_minimal_tilt(sample_info):
+    xtal, _, ub_matrix, spice_ub_matrix, u, v, plane_normal, in_plane_ref = sample_info
+
+    ub_conf = UBConf(
+        ub_mat=ub_matrix,
+        plane_normal=plane_normal,
+        convention="Mantid",
+    )  # in_plane_ref=in_plane_ref)
+
+    ef = 13.505137
+
+    r_mat_cal = r_matrix_with_minimal_tilt(hkl=(0, 0, 2), ei=ef, ef=ef, two_theta=-51.530388, ub_conf=ub_conf)
+    assert np.allclose(
+        np.array(
+            [
+                [0.70438493, 0.03096807, -0.70914233],
+                [0.00000873, 0.99904746, 0.04363682],
+                [0.70981819, -0.03074331, 0.70371371],
+            ]
+        ),
+        r_mat_cal,
+        atol=1e-1,
+    )
+
+
+def test_r_matrix_with_minimal_tilt_perp_to_scattering_plane(sample_info):
+    xtal, _, ub_matrix, spice_ub_matrix, u, v, plane_normal, in_plane_ref = sample_info
+
+    ub_conf = UBConf(
+        ub_mat=ub_matrix,
+        plane_normal=plane_normal,
+        convention="Mantid",
+    )  # in_plane_ref=in_plane_ref)
+
+    ef = 13.505137
+
+    with pytest.raises(ValueError) as e_info:
+        r_matrix_with_minimal_tilt(hkl=(2, -1, 0), ei=ef, ef=ef, two_theta=-87.0148536557829, ub_conf=ub_conf)
+    assert (
+        "Peak (2, -1, 0) is perpendicular to the horizaontal scattering plane. in_plane_ref is required to determine R matrix."
+        in str(e_info.value)
+    )

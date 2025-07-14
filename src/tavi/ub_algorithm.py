@@ -282,14 +282,16 @@ def r_matrix_with_minimal_tilt(
         ef: finial energy, in meV
         two_theta: two_theta angle, in degrees
         ub_conf: need to have ub_mat, plane_normal and in_plane_ref
+    Raises:
+        ValueError: if plane_normal is None, or if peak is perpendicular to the horizontal scattering plane
     """
 
     ub_mat = ub_conf._ub_mat
     plane_normal = ub_conf._plane_normal
     in_plane_ref = ub_conf._in_plane_ref
 
-    if (plane_normal is None) or (in_plane_ref is None):
-        raise ValueError("plane_normal or in_plane_ref cannot be None.")
+    if plane_normal is None:
+        raise ValueError("plane_normal id required to to determine R matrix.")
 
     ki = en2q(ei)
     kf = en2q(ef)
@@ -301,7 +303,7 @@ def r_matrix_with_minimal_tilt(
     q_lab3 = np.array([0, 1, 0])
     q_lab_mat = np.array([q_lab1, q_lab2, q_lab3]).T
 
-    ZERO = 1e-6
+    ZERO = 1e-5
     t1 = ub_mat @ np.array(hkl)
     if np.abs(np.dot(t1, plane_normal)) < ZERO:
         # t1 in plane
@@ -309,6 +311,12 @@ def r_matrix_with_minimal_tilt(
         t2 = np.cross(t3, t1)
     elif np.linalg.norm(np.cross(plane_normal, t1)) < ZERO:
         # oops, t1 along plane_normal
+        if in_plane_ref is None:
+            raise ValueError(
+                "Peak ({:.3g}, {:.3g}, {:.3g}) is perpendicular to the horizaontal scattering plane. in_plane_ref is required to determine R matrix.".format(
+                    *hkl
+                )
+            )
         t2 = in_plane_ref
         t3 = np.cross(t1, t2)
     else:
