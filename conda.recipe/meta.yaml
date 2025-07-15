@@ -12,7 +12,7 @@
 {% set build_number = 0 %}
 
 package:
-  name: neutron-tavi
+  name: tavi
   version: {{ version_number }}
 
 source:

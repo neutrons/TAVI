@@ -6,7 +6,7 @@ dependencies = [
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
 license = "LGPL-3.0-or-later"
-name = "neutron-tavi"
+name = "tavi"
 requires-python = ">=3.10"
 
 [project.urls]
@@ -30,7 +30,7 @@ method = "minor"
 
 [tool.versioningit.format]
 dirty = "{version}" #+d{build_date:%Y%m%d}"
-distance = "{next_version}.dev{distance}"
+distance = "{next_version}.dev{distance}" 
 distance-dirty = "{next_version}.dev{distance}" #+d{build_date:%Y%m%d%H%M}"
 
 [tool.versioningit.write]
