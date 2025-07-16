@@ -6,7 +6,7 @@ dependencies = [
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
 license = "LGPL-3.0-or-later"
-name = "tavi"
+name = "neutron-tavi"
 requires-python = ">=3.10"
 
 [project.urls]
