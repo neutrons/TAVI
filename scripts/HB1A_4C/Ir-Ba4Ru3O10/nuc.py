@@ -63,7 +63,7 @@ def analyze_s1_scan_in_omega(s1_scan, fit_range=None):
 
     p = Plot1D()
     # data
-    p.add_scan(scan_s1, fmt="o", label="#{} ({},{},{}) s1 scan".format(s1_scan, *hkl))
+    p.add_scan(scan_s1, fmt="o", label=f"#{s1_scan} ({h},{k},{l}) s1 scan")
     # fits
     fwhm = result_s1.params["s1_fwhm"]
     p.add_fit(
