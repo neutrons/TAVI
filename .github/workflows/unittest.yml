@@ -42,7 +42,7 @@ jobs:
         run: |
           # test that the python wheel builds
           python -m build --wheel --no-isolation
-          twine check dist/neutron-tavi-*.whl
+          twine check dist/neutron_tavi-*.whl
       # - name: build conda package
       #   run: |
       #     # test that the conda package builds
