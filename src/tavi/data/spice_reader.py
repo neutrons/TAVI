@@ -231,7 +231,7 @@ def read_spice_ubconf(ub_file_name: Union[str, Path]) -> dict[str, Any]:
     if not file_path.is_file():
         raise ValueError(f"Provided path is not a file: {ub_file_name}")
 
-    if file_path.suffix != ".ini":
+    if file_path.suffix not in (".ini", ".dat"):
         raise ValueError(f"Unrecognized file extension: {file_path.suffix}")
 
     with open(ub_file_name, "r", encoding="utf-8") as f:

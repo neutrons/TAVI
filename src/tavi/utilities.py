@@ -109,6 +109,13 @@ def get_angle_from_triangle(a: float, b: float, c: float) -> float:
     return np.arccos(acos)
 
 
+def get_side_from_triangle(a: float, b: float, angle: float) -> float:
+    """In a triangle with sides a,b and angle between a and b, get the third side c"""
+    if (np.abs(a) < 1e-6) or (np.abs(b) < 1e-6):
+        raise ValueError("Triangle cannot be closed.")
+    return np.sqrt(a**2 + b**2 - 2 * a * b * np.cos(angle))
+
+
 def get_angle_vec(v1, v2):
     """Get the angle in degress between two vectors v1 and v2"""
     return np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)) / np.pi * 180

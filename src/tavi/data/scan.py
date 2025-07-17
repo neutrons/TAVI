@@ -11,7 +11,7 @@ from tavi.data.scan_data import ScanData1D, ScanData2D
 # from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.ub_algorithm import ub_matrix_to_uv
-from tavi.utilities import spice_to_mantid
+from tavi.utilities import en2q, get_side_from_triangle, spice_to_mantid
 
 
 @dataclass
@@ -220,12 +220,32 @@ class Scan(object):
         return rebin_params
 
     def _get_del_q(self, ax_str):
-        """Calculate del_q for aeither a s1 scan or a th2th scan"""
-        qs = self.data["q"]
+        """Calculate del_q for either a s1 scan or a th2th scan"""
+        try:
+            qs = self.data["q"]
+        except KeyError:
+            eis = self.data.get("ei")
+            efs = (
+                self.data.get("ef") if "ef" in self.data else (eis - self.data.get("en")) if "en" in self.data else None
+            )
+            two_thetas = (
+                self.data["s2"] if "s2" in self.data else self.data["2theta"] if "2theta" in self.data else None
+            )
+            kis = np.array([en2q(ei) for ei in eis])
+            kfs = np.array([en2q(ef) for ef in efs])
+            qs = np.array(
+                [
+                    get_side_from_triangle(ki, kf, np.radians(two_theta))
+                    for ki, kf, two_theta in zip(kis, kfs, two_thetas)
+                ]
+            )
+
         q_diff = np.max(qs) - np.min(qs)
         mid_idx = int((len(qs) - 1) / 2)
+
         if q_diff > 1.1e-4:  # q changing, must be a th2th scan
             return qs - qs[mid_idx]
+
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)
             *_, angle_str = ax_str.split(",")
