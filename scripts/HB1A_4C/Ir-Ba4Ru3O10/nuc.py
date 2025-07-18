@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Tuple
 
 import matplotlib.backends.backend_pdf
 import matplotlib.pyplot as plt
@@ -141,7 +141,8 @@ def check_ub(hb1a_4c, scans_100k, create_pdf=False):
 
 
 def plot_resolution(hb1a_4c, scans_100k, create_pdf=False):
-    results = []
+    """results contain (hkl, fit, rez)"""
+    results: List[Tuple] = []
     with matplotlib.backends.backend_pdf.PdfPages(
         "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_nuclear_peaks_in_q.pdf"
     ) as pdf:
@@ -170,15 +171,61 @@ def plot_resolution(hb1a_4c, scans_100k, create_pdf=False):
     return results
 
 
+def export_intensity(results, exclude_hkl=None):
+    intensity_list = []
+    err_list = []
+
+    for result in results:
+        (hkl, fit, rez) = result
+        lorentz_factor_transverse = rez.r0 * np.sqrt(
+            (rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi)
+        )
+        intensity_list.append(fit.params["s1_amplitude"].value / lorentz_factor_transverse)
+        err_list.append(fit.params["s1_amplitude"].stderr / lorentz_factor_transverse)
+
+    file_name = "test_data/IPTS33347_HB1A_exp1046/Ba4Ru3O10_nuc_intensity_rez.int"
+    with open(file_name, "w") as f:
+        f.write("Single crystal data of Ir-Ba4Ru3O10 (hb1a)\n")
+        f.write("(3i5,2f8.2,i4,3f8.2)\n")
+        f.write("2.37815  0   0\n")
+
+        for i, result in enumerate(results):
+            hkl = result[0]
+            if (exclude_hkl is not None) and (hkl in exclude_hkl):
+                continue
+            h, k, l = hkl
+            f.write(f"{h:5d}{k:5d}{l:5d}{intensity_list[i]:8.2f}{err_list[i]:8.2f}   1\n")
+
+    f.close()
+
+
+# def load_nuc_fsq(file_name, first=0, last=None):
+#     with open(file_name, encoding="utf-8") as f:
+#         all_content = f.readlines()
+
+#     peak_info = {}
+#     if last is None:
+#         last = len(all_content)
+#     for i in range(first, last):
+#         # h, k, l, mult, *_, f2, _ = all_content[i].split()
+#         h, k, l, f2, *_ = all_content[i].split()
+#         # peak_info.update({(int(h), int(k), int(l)): (mult, f2)})
+#         peak_info.update({(int(h), int(k), int(l)): f2})
+#     return peak_info
+
+
 if __name__ == "__main__":
     hb1a_4c = setup()
 
     # load scans
     spice_path = "test_data/IPTS33347_HB1A_exp1046/exp1046/"
 
-    scans_100k = [Scan.from_spice(spice_path, scan_num=num) for num in range(1749, 1841)]
+    scan_nums_100k = list(range(1749, 1842))  # + list(range(1944, 1947))
 
-    peaks = check_ub(hb1a_4c, scans_100k)
+    scans_100k = [Scan.from_spice(spice_path, scan_num=num) for num in scan_nums_100k]
 
-    results = plot_resolution(hb1a_4c, scans_100k)
-    pass
+    peaks = check_ub(hb1a_4c, scans_100k, create_pdf=True)
+
+    results = plot_resolution(hb1a_4c, scans_100k, create_pdf=True)
+
+    export_intensity(results)

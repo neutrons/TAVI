@@ -277,6 +277,7 @@ def _create_spicelogs(path_to_scan_file: str) -> dict:
     #     # print(spice_data.shape)
     #     for idx, col_header in enumerate(col_names):
     #         dataset_dict.update({col_header: data[:, idx]})
+
     spicelogs = {"metadata": attrs_dict}
     if data is not None:
         spicelogs.update(data)
