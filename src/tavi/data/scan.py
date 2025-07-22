@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from dataclasses import dataclass
 from typing import Literal, Optional, Union
 
@@ -248,7 +249,8 @@ class Scan(object):
 
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)
-            *_, angle_str = ax_str.split(",")
+            *_, angle_str = re.match(r"(.+)\((.+)\)", ax_str).groups()
+
             if not _:  # using "s1" by default
                 angles = self.data["s1"]
             else:
