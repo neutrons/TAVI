@@ -1,93 +1,21 @@
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
-import matplotlib.backends.backend_pdf
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
+from tavi.data.scan_data import ScanData1D
+from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
 
-# TODO fit constant if FWHM>2*rez
-def analyze_s1_scan_in_q(hkl, s1_scan, fit_range=None, plot: Optional[Plot1D] = None, colors=None):
-    (h, k, l) = hkl
-    scan_data = s1_scan.get_data(axes=("del_q(omega)", "detector"), norm_to=(1, "time"))
-    # perform fit
-    try:
-        scan_s1_fit = Fit1D(scan_data, fit_range)
-        scan_s1_fit.add_signal(model="Gaussian")
-        scan_s1_fit.add_background(model="Constant")
-        pars_s1 = scan_s1_fit.guess()
-        # pars_s1["b1_c"].set(min=0)
-        result_s1 = scan_s1_fit.fit(pars_s1, USE_ERRORBAR=False)
-    except ValueError as e:
-        print(f"Error fitting scan {s1_scan.scan_info.scan_num} with hkl {hkl}: {e}")
-        result_s1 = None
-
-    if plot is not None:
-        try:
-            c_data, c_fit = colors
-        except (TypeError, ValueError):
-            c_data, c_fit = "C0", "C1"
-
-        plot.add_scan(scan_data, fmt="o", label=f"#{s1_scan.scan_info.scan_num} ({h},{k},{l}) s1 scan", color=c_data)
-        if result_s1 is not None:  # fits
-            fwhm = result_s1.params["s1_fwhm"]
-            plot.add_fit(
-                scan_s1_fit,
-                x=scan_s1_fit.x_to_plot(),
-                label=f"FWHM={fwhm.value:.4f}±{fwhm.stderr:.4f}",
-                color=c_fit,
-            )
-
-        plot.ylim = (-np.max(scan_data.y) * 0.1, np.max(scan_data.y) * 1.3)
-    return result_s1, plot
-
-    # return (result_s1, p, np.mean(s1.data.get("q")))
-
-
-def analyze_s1_scan_in_omega(hkl, s1_scan, fit_range=None, plot: Optional[Plot1D] = None, colors=None):
-    (h, k, l) = hkl
-    scan_data = s1_scan.get_data(axes=("omega", "detector"), norm_to=(1, "time"))
-    # perform fit
-    scan_fit = Fit1D(scan_data, fit_range)
-    scan_fit.add_signal(model="Gaussian")
-    scan_fit.add_background(model="Constant")
-    pars_s1 = scan_fit.guess()
-    # pars_s1["b1_c"].set(min=0)
-    try:
-        result_s1 = scan_fit.fit(pars_s1, USE_ERRORBAR=False)
-    except ValueError as e:
-        print(f"Error fitting scan {s1_scan.scan_info.scan_num} with hkl {hkl}: {e}")
-        result_s1 = None
-
-    if plot is not None:
-        try:
-            c_data, c_fit = colors
-        except TypeError:
-            c_data, c_fit = "C0", "C1"
-
-        plot.add_scan(scan_data, fmt="o", label=f"#{s1_scan.scan_info.scan_num} ({h},{k},{l}) s1 scan", color=c_data)
-        if result_s1 is not None:  # fits
-            fwhm = result_s1.params["s1_fwhm"]
-            plot.add_fit(
-                scan_fit,
-                x=scan_fit.x_to_plot(),
-                label=f"FWHM={fwhm.value:.4f}±{fwhm.stderr:.4f}",
-                color=c_fit,
-            )
-
-        plot.ylim = (-np.max(scan_data.y) * 0.1, np.max(scan_data.y) * 1.3)
-
-    return (result_s1, plot)
-
-
-def setup():
+def setup_instrument_and_sample():
     """Setup the TAS instrument and load the sample."""
     instrument_config_json_path = "test_data/IPTS33347_HB1A_exp1046/hb1a_4c.json"
     # using Spice convention by default
@@ -102,51 +30,6 @@ def setup():
     hb1a_4c.mount_sample(ba4ru3o10)
 
     return hb1a_4c
-
-
-def get_hkl_from_scan_title(scan: Scan):
-    """Extract hkl from the scan title."""
-    hkl_str = re.findall(r"\(([^)]+)\)", scan.scan_info.scan_title)[0]
-    if "," in hkl_str:
-        hkl_str = hkl_str.split(",")
-    else:
-        hkl_str = hkl_str.split()
-    return tuple(int(float(s)) for s in hkl_str)  # integer hkl
-
-
-def plot_peaks(scans: List[Scan], pdf_path=None, colors=None):
-    """Plot the peaks from the scans."""
-    peaks: List[Peak] = []
-    plots: List[Plot1D] = []
-
-    for scan in scans:
-        hkl = get_hkl_from_scan_title(scan)
-
-        result_s1, p = analyze_s1_scan_in_omega(hkl, scan, fit_range=None, plot=Plot1D(), colors=colors)
-        if result_s1 is None:
-            print(f"Skipping scan {scan.scan_info.scan_num} for hkl {hkl} due to fitting error.")
-            continue
-        angles = MotorAngles(
-            two_theta=np.mean(scan.data.get("2theta")),
-            omega=result_s1.values["s1_center"],
-            chi=np.mean(scan.data.get("chi")),
-            phi=np.mean(scan.data.get("phi")),
-            sgl=None,
-            sgu=None,
-        )
-        peaks.append(Peak(hkl, angles))
-        plots.append(p)
-
-    if pdf_path is not None:  # make plot
-        with matplotlib.backends.backend_pdf.PdfPages(pdf_path) as pdf:
-            for p in plots:
-                fig, ax = plt.subplots()
-                p.plot(ax=ax)
-                plt.tight_layout()
-                pdf.savefig(fig)
-                plt.close()
-
-    return peaks
 
 
 def check_ub(hb1a_4c, peaks):
@@ -173,40 +56,181 @@ def check_ub(hb1a_4c, peaks):
             print(f"Calculated agnles for {peak.hkl} are {angle_cal}")
 
 
-def plot_peaks_with_resolution(hb1a_4c, scans_100k, pdf_path=None, colors=None) -> Dict[Tuple, Tuple[Fit1D, Plot1D]]:
-    """results contain (hkl, fit, rez)"""
-    results: Dict[Tuple, Tuple[Fit1D, Plot1D]] = {}
+def get_hkl_from_scan_title(scan: Scan) -> Tuple[int, int, int]:
+    """Extract hkl from the scan title."""
+    hkl_str = re.findall(r"\(([^)]+)\)", scan.scan_info.scan_title)[0]
+    if "," in hkl_str:
+        hkl_str = hkl_str.split(",")
+    else:
+        hkl_str = hkl_str.split()
+    return tuple(int(float(s)) for s in hkl_str)  # integer hkl
+
+
+def analyze_scan(
+    hkl: Tuple[int, int, int],
+    scan: Scan,
+    axes=("omega", "detector"),
+    norm_to=(1, "mcu"),
+    fit_range: Optional[Tuple[float, float]] = None,
+    fit_model: Dict[Literal["signals", "backgrounds"], Optional[Union[Tuple[str], str]]] = {
+        "signals": "Gaussian",
+        "backgrounds": "Constant",
+    },
+    plot: Optional[Plot1D] = None,
+    colors: Tuple[str, str] = ("C0", "C1"),
+) -> Tuple[ScanData1D, Optional[Fit1D], Optional[Plot1D]]:
+    scan_data = scan.get_data(axes=axes, norm_to=norm_to)
+    scan_num = scan.scan_info.scan_num
+    scan_data.label = f"#{scan_num} {hkl} s1 scan"
+
+    try:  # fit to a Gaussian with a constant background
+        model = Fit1D(data=scan_data, fit_range=fit_range, **fit_model)
+        pars = model.guess()
+        # pars_s1["b1_c"].set(min=0)
+        model.fit(pars, USE_ERRORBAR=False)
+
+    except (ValueError, KeyError) as e:
+        print(
+            f"Error fitting scan #{scan_num} with hkl={hkl} ",
+            f"to the model {fit_model}: {e}",
+        )
+        model = None
+
+    if plot is None:
+        return scan_data, model, None
+
+    c_data, c_fit = colors if isinstance(colors, tuple) and len(colors) == 2 else ("C0", "C1")
+    plot.add_scan(scan_data, fmt="o", color=c_data)
+    plot.ylim = (-np.max(scan_data.y) * 0.1, np.max(scan_data.y) * 1.3)
+
+    if model is None:
+        return scan_data, None, plot  # fitting failed, return plot with data only
+
+    try:
+        fwhm = model.result.params["s1_fwhm"]
+        plot.add_fit(model, x=model.x_to_plot(), label=f"FWHM={fwhm.value:.4f}±{fwhm.stderr:.4f}", color=c_fit)
+    except KeyError:
+        plot.add_fit(model, x=model.x_to_plot(), color=c_fit)
+    return scan_data, model, plot
+
+
+def plot_peaks(
+    scans: List[Scan],
+    pdf_path=None,
+    colors: Tuple[str, str] = ("C0", "C1"),
+) -> List[Peak]:
+    """Plot the peaks from the scans."""
+    peaks: List[Peak] = []
+    plots: List[Plot1D] = []
+
+    for scan in scans:
+        scan_data, fit, plot = analyze_scan(
+            hkl := get_hkl_from_scan_title(scan),
+            scan=scan,
+            axes=("omega", "detector"),
+            norm_to=(1, "time"),
+            fit_range=None,
+            fit_model={"signals": "Gaussian", "backgrounds": "Constant"},
+            plot=Plot1D(),
+            colors=colors,
+        )
+        plots.append(plot)
+        if fit is None:
+            continue
+
+        angles = MotorAngles(
+            two_theta=np.mean(scan.data.get("2theta")),
+            omega=fit.result.values["s1_center"],
+            chi=np.mean(scan.data.get("chi")),
+            phi=np.mean(scan.data.get("phi")),
+            sgl=None,
+            sgu=None,
+        )
+        peaks.append(Peak(hkl, angles))
+
+    if pdf_path is None:
+        return peaks
+
+    # save plots to a PDF
+    with PdfPages(pdf_path) as pdf:
+        for plot in plots:
+            fig, ax = plt.subplots()
+            plot.plot(ax=ax)
+            plt.tight_layout()
+            pdf.savefig(fig)
+            plt.close()
+
+    return peaks
+
+
+def plot_peaks_with_resolution(
+    hb1a_4c: TAS,
+    scans_100k: List[Scan],
+    pdf_path=None,
+    colors=("C0", "C1", "C3"),
+) -> Dict[Tuple, Tuple[ScanData1D, Fit1D, ResoEllipsoid]]:
+    """Plot peaks as a function of Q and calculate the resolution.
+    If FWHM is larger than 2*resolution, treat it as a constant background.
+    Return: Dictionary of {hkl: (fit, rez)}
+    """
+    results: Dict[Tuple, Tuple[ScanData1D, Fit1D, ResoEllipsoid]] = {}
     plots: List[Plot1D] = []
 
     for scan in scans_100k:
-        hkl = get_hkl_from_scan_title(scan)
-        try:
-            c_data, c_fit, c_rez = colors
-        except (TypeError, ValueError):
-            c_data, c_fit, c_rez = "C0", "C1", "C3"  # red for resolution
-
-        try:
-            fit, p = analyze_s1_scan_in_q(hkl, scan, fit_range=None, plot=Plot1D(), colors=(c_data, c_fit))
-        except ValueError as e:
-            print(f"Skipping scan {scan.scan_info.scan_num} hkl={hkl} due to fitting error: {e}")
-            continue
-
+        scan_num = scan.scan_info.scan_num
+        scan_data, fit, plot = analyze_scan(
+            hkl := get_hkl_from_scan_title(scan),
+            scan=scan,
+            axes=("del_q(omega)", "detector"),
+            norm_to=(1, "time"),
+            fit_range=None,
+            fit_model={"signals": "Gaussian", "backgrounds": "Constant"},
+            plot=Plot1D(),
+            colors=colors[0:2],
+        )
+        # Retry with constant background if fit failed or resolution is too broad or too narrow
+        needs_refit = False
         if fit is not None:
             rez = hb1a_4c.cooper_nathans(hkle=hkl + (0,), axes=None)
-            p.add_reso_bar(
-                pos=fit,
+            fwhm_fit = fit.result.params["s1_fwhm"].value
+            fwhm_rez = rez.coh_fwhms(axis=1)  # Q_perp for transverse scans
+            if (fwhm_fit > 2 * fwhm_rez) or (fwhm_fit < 0.5 * fwhm_rez):
+                print(f"Refitting scan #{scan_num} with hkl={hkl} to a constant background only.")
+                needs_refit = True
+        else:
+            needs_refit = True
+
+        if needs_refit:
+            scan_data, fit, plot = analyze_scan(
+                hkl,
+                scan,
+                axes=("del_q(omega)", "detector"),
+                norm_to=(1, "time"),
+                fit_model={"backgrounds": "Constant"},
+                plot=Plot1D(),
+                colors=colors[0:2],
+            )
+
+        # Give up if fitting failed still
+        if fit is None:
+            continue
+
+        if not needs_refit:
+            plot.add_reso_bar(
+                pos=fit.result,
                 fwhm=rez.coh_fwhms(axis=1),
                 label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
-                color=c_rez,
+                color="C3",
             )
-            results.update({hkl: (fit, rez)})
-            plots.append(p)
+
+        results.update({hkl: (scan_data, fit, rez)})
+        plots.append(plot)
 
     if pdf_path is not None:  # make plot
-        with matplotlib.backends.backend_pdf.PdfPages(pdf_path) as pdf:
-            for p in plots:
+        with PdfPages(pdf_path) as pdf:
+            for plot in plots:
                 fig, ax = plt.subplots()
-                p.plot(ax=ax)
+                plot.plot(ax=ax)
                 plt.tight_layout()
                 pdf.savefig(fig)
                 plt.close()
@@ -227,39 +251,51 @@ def write_int_file(file_name, results: Dict[Tuple, Tuple[float, float]]):
 
 
 def export_intensity(
-    results: Dict[Tuple, Tuple[Fit1D, Plot1D]],
-    exclude_hkl=None,
-) -> Dict[Tuple, Tuple[float, float]]:
+    results: Dict[Tuple, Tuple[ScanData1D, Fit1D, ResoEllipsoid]],
+    exclude_hkl: Tuple[Tuple[int, int, int], ...] = (),
+) -> Dict[Tuple[int, int, int], Tuple[float, float]]:
     """Export the intensity data to a .int file for refinement."""
 
     export: Dict[Tuple, Tuple[float, float]] = {}
-    for hkl, (fit, rez) in results.items():
-        if (exclude_hkl is not None) and (hkl in exclude_hkl):
+    for hkl, (_, fit, rez) in results.items():
+        if hkl in exclude_hkl:
             continue
-        lorentz_factor_transverse = rez.r0 * np.sqrt(
-            (rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi)
-        )
-        # lorentz_factor_transverse = np.sqrt(np.linalg.det(rez.mat) / rez.mat[1, 1] * rez.r0) / (2 * np.pi)
-        intensity = fit.params["s1_amplitude"].value / lorentz_factor_transverse
-        err = fit.params["s1_amplitude"].stderr / lorentz_factor_transverse
+        det = np.abs(rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0])
+        # use mat[1, 1] for transverse scans
+        lorentz_factor = rez.r0 * np.sqrt(det) / np.sqrt(rez.mat[1, 1]) / np.sqrt(2 * np.pi)
+        # lorentz_factor = np.sqrt(np.linalg.det(rez.mat) / rez.mat[1, 1] * rez.r0) / (2 * np.pi)
+
+        if "s1_amplitude" in fit.params:
+            intensity = fit.params["s1_amplitude"].value / lorentz_factor
+            err = fit.params["s1_amplitude"].stderr / lorentz_factor
+        else:  # if fitting backgorund only, set intensity and error to zero
+            intensity, err = 0.0, 0.0
         export.update({hkl: (intensity, err)})
     return export
 
 
-def export_intensity_difference(results_low_t, results_high_t, exclude_hkl=None, scale_factor=1.0):
+def export_intensity_difference(results_low_t, results_high_t, exclude_hkl=None, use_hkl=None, scale_factor=1.0):
     """Export the intensity difference (low T minus high T) to a .int file for refinement."""
     export: Dict[Tuple, Tuple[float, float]] = {}
 
-    for hkl, (fit_low, rez) in results_low_t.items():
-        if (exclude_hkl is not None) and (hkl in exclude_hkl):
-            continue
+    if exclude_hkl is not None:
+        results_low_t = {key: value for key, value in results_low_t.items() if key not in exclude_hkl}
+    if use_hkl is not None:
+        results_low_t = {key: value for key, value in results_low_t.items() if key in use_hkl}
+
+    for hkl, (_, fit_low_t, rez) in results_low_t.items():
         if hkl not in results_high_t:
             continue
-        fit_high, _ = results_high_t[hkl]
-        intensity = fit_low.params["s1_amplitude"].value - fit_high.params["s1_amplitude"].value
-        err = np.sqrt(fit_low.params["s1_amplitude"].stderr ** 2 + fit_high.params["s1_amplitude"].stderr ** 2)
-        if (intensity < 0) or (err > np.abs(intensity) / 1.2):
-            continue  # skip negative intensities, or if error is larger than intensity/2%
+        _, fit_high_t, _ = results_high_t[hkl]
+        high_t_amplitude_value, high_t_amplitude_err = (
+            (fit_high_t.result.params["s1_amplitude"].value, fit_high_t.result.params["s1_amplitude"].stderr)
+            if "s1_amplitude" in fit_high_t.result.params
+            else (0.0, 0.0)
+        )
+
+        intensity = fit_low_t.params["s1_amplitude"].value - high_t_amplitude_value
+        err = np.sqrt(fit_low_t.params["s1_amplitude"].stderr ** 2 + high_t_amplitude_err**2)
+
         lorentz_factor_transverse = rez.r0 * np.sqrt(
             (rez.mat[0, 0] * rez.mat[1, 1] - rez.mat[0, 1] * rez.mat[1, 0]) / rez.mat[1, 1] / (2 * np.pi)
         )
@@ -270,55 +306,49 @@ def export_intensity_difference(results_low_t, results_high_t, exclude_hkl=None,
     return export
 
 
-def oplot_peaks(scans_high_t: List[Scan], scans_low_t: List[Scan], pdf_path=None, colors=None):
+def oplot_peaks(
+    results_high_t: Dict[Tuple, Tuple[ScanData1D, Fit1D, ResoEllipsoid]],
+    results_low_t: Dict[Tuple, Tuple[ScanData1D, Fit1D, ResoEllipsoid]],
+    pdf_path=None,
+):
     plots: List[Plot1D] = []
 
-    hkl_high_t: Dict[Tuple, int] = {get_hkl_from_scan_title(scan): i for i, scan in enumerate(scans_high_t)}
-
-    for scan in scans_low_t:
-        hkl = get_hkl_from_scan_title(scan)
-        if hkl not in hkl_high_t:
+    for hkl, (scan_data, fit, rez) in results_low_t.items():
+        if hkl not in results_high_t:
             continue
-
-        try:
-            c_low_t_data, c_low_t_fit, c_low_t_rez, c_high_t_data, c_high_t_fit, c_high_t_rez = colors
-        except (TypeError, ValueError):
-            c_low_t_data, c_low_t_fit, c_low_t_rez = "C0", "C0", "C0"
-            c_high_t_data, c_high_t_fit, c_high_t_rez = "C1", "C1", "C1"
+        scan_data_high_t, fit_high_t, rez_hight_t = results_high_t[hkl]
 
         p = Plot1D()
-        result_s1_high_t, p = analyze_s1_scan_in_q(
-            hkl, scans_high_t[hkl_high_t[hkl]], fit_range=None, plot=p, colors=(c_high_t_data, c_high_t_fit)
+        p.add_scan(scan_data_high_t, fmt="o", color="C0")
+        label = (
+            f"High T FWHM={fit_high_t.result.params['s1_fwhm'].value:.04f}"
+            if "s1_fwhm" in fit_high_t.result.params
+            else "High T"
         )
-        if result_s1_high_t is None:
-            print(f"Skipping scan {scan.scan_info.scan_num} for hkl {hkl} due to fitting error.")
-            continue
-        else:
-            rez = hb1a_4c.cooper_nathans(hkle=hkl + (0,), axes=None)
+        p.add_fit(fit_high_t, x=fit_high_t.x_to_plot(), color="C0", label=label)
+        if "s1_center" in fit_high_t.result.params:
             p.add_reso_bar(
-                pos=result_s1_high_t,
-                fwhm=rez.coh_fwhms(axis=1),
-                label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
-                color=c_high_t_rez,
+                pos=fit_high_t.result,
+                fwhm=rez_hight_t.coh_fwhms(axis=1),
+                label=f"Resolution FWHM={rez_hight_t.coh_fwhms(axis=1):.04f}",
+                color="C0",
             )
 
-        result_s1_low_t, p = analyze_s1_scan_in_q(hkl, scan, fit_range=None, plot=p, colors=(c_low_t_data, c_low_t_fit))
-        if result_s1_low_t is None:
-            print(f"Skipping scan {scan.scan_info.scan_num} for hkl {hkl} due to fitting error.")
-            continue
-        else:
-            rez = hb1a_4c.cooper_nathans(hkle=hkl + (0,), axes=None)
+        p.add_scan(scan_data, fmt="o", color="C1")
+        label = f"Low T FWHM={fit.result.params['s1_fwhm'].value:.04f}" if "s1_fwhm" in fit.result.params else "Low T"
+        p.add_fit(fit, x=fit.x_to_plot(), color="C1", label=label)
+        if "s1_center" in fit.result.params:
             p.add_reso_bar(
-                pos=result_s1_low_t,
+                pos=fit.result,
                 fwhm=rez.coh_fwhms(axis=1),
                 label=f"Resolution FWHM={rez.coh_fwhms(axis=1):.04f}",
-                color=c_low_t_rez,
+                color="C1",
             )
 
         plots.append(p)
 
     if pdf_path is not None:  # make plot
-        with matplotlib.backends.backend_pdf.PdfPages(pdf_path) as pdf:
+        with PdfPages(pdf_path) as pdf:
             for p in plots:
                 fig, ax = plt.subplots()
                 p.plot(ax=ax)
@@ -328,47 +358,68 @@ def oplot_peaks(scans_high_t: List[Scan], scans_low_t: List[Scan], pdf_path=None
 
 
 if __name__ == "__main__":
-    hb1a_4c = setup()
+    hb1a_4c = setup_instrument_and_sample()
     spice_path = "test_data/IPTS33347_HB1A_exp1046/exp1046/"
-
+    # ================= 100k nuclear peaks ========================
     scan_nums_100k = list(range(1749, 1842)) + list(range(1944, 1947))
     scans_100k = [Scan.from_spice(spice_path, scan_num=num) for num in scan_nums_100k]
 
-    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_nuclear_peaks_in_omega.pdf"
+    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/01_Ir_Ba4Ru3O10_nuclear_peaks_in_omega.pdf"
     peaks_100k = plot_peaks(scans_100k, pdf_path)
     check_ub(hb1a_4c, peaks_100k)
 
-    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_nuclear_peaks_in_q.pdf"
+    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/02_Ir_Ba4Ru3O10_nuclear_peaks_in_q.pdf"
     results_100k = plot_peaks_with_resolution(hb1a_4c, scans_100k, pdf_path)
+    # Export the intensity data to a .int file for refinement
     int_100k = export_intensity(results_100k)
-
     file_name = "test_data/IPTS33347_HB1A_exp1046/Ba4Ru3O10_nuc_intensity_rez.int"
     write_int_file(file_name, int_100k)
 
-    # 1842-1943 magnetic peaks
-    scan_nums_5k = list(range(1842, 1944))
-    scans_5k = [Scan.from_spice(spice_path, scan_num=num) for num in scan_nums_5k]
-    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_magnetic_peaks_in_omega.pdf"
-    peaks_5k = plot_peaks(scans_5k, pdf_path)
+    # ================= 5K magnetc peaks ========================
+    # remove scan 1936, 1937,1940, 1942
+    scan_nums_4k = [n for n in range(1842, 1944) if n not in (1936, 1937, 1940, 1942)]
+    scans_4k = [Scan.from_spice(spice_path, scan_num=num) for num in scan_nums_4k]
+    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/03_Ir_Ba4Ru3O10_magnetic_peaks_in_omega.pdf"
+    peaks_4k = plot_peaks(scans_4k, pdf_path)
 
-    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_magnetic_peaks_in_q.pdf"
-    results_5k = plot_peaks_with_resolution(hb1a_4c, scans_5k, pdf_path)
-    int_5k = export_intensity(
-        results_5k,
-        exclude_hkl=[(-2, 0, -1), (2, 0, 1), (2, 0, -1), (1, 5, 0)],
-    )
-
-    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/Ir_Ba4Ru3O10_oplot_in_q.pdf"
-    oplot_peaks(scans_100k, scans_5k, pdf_path)
+    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/04_Ir_Ba4Ru3O10_magnetic_peaks_in_q.pdf"
+    results_4k = plot_peaks_with_resolution(hb1a_4c, scans_4k, pdf_path)
+    int_4k = export_intensity(results_4k)
 
     file_name = "test_data/IPTS33347_HB1A_exp1046/Ba4Ru3O10_mag_intensity_rez.int"
-    write_int_file(file_name, int_5k)
+    write_int_file(file_name, int_4k)
+
+    pdf_path = "./test_data/IPTS33347_HB1A_exp1046/05_Ir_Ba4Ru3O10_oplot_in_q.pdf"
+    oplot_peaks(results_100k, results_4k, pdf_path)
 
     int_diff = export_intensity_difference(
-        results_5k,
+        results_4k,
         results_100k,
-        exclude_hkl=[(-2, 0, -1), (2, 0, 1), (2, 0, -1), (1, 5, 0), (-2, 0, -2)],
-        scale_factor=1,
+        use_hkl=(
+            (-1, 1, 0),
+            (-1, 3, -1),
+            (-1, 3, 0),
+            (-1, 3, 1),
+            (0, 4, 2),
+            (0, 4, -2),
+            (0, 4, -3),
+            (1, 3, 1),
+            (1, 3, 0),
+            (1, 3, -1),
+            (1, -1, 0),
+            (1, -3, 0),
+            (1, 1, 0),
+            (-1, -1, 0),
+            (-1, -3, -1),
+            (-1, -3, 0),
+            (-1, -3, 1),
+            (0, -4, 2),
+            (0, -4, -2),
+            (1, 7, 0),
+            (1, 5, 0),
+            (0, 0, 2),
+        ),
+        scale_factor=100,
     )
     file_name = "test_data/IPTS33347_HB1A_exp1046/Ba4Ru3O10_intensity_diff_rez.int"
     write_int_file(file_name, int_diff)

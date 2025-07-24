@@ -152,6 +152,7 @@ class Plot1D(object):
                 ax.plot(data.x, data.y, **data.fmt)
             else:
                 ax.errorbar(x=data.x, y=data.y, yerr=data.err, **data.fmt)
+            self.title = data.title
 
         for fit in self.fit_data:
             ax.plot(fit.x, fit.y, **fit.fmt)
