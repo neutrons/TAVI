@@ -45,6 +45,10 @@ def check_ub(hb1a_4c, peaks):
     # )
     # ===============================================================
     """
+    ubconf_two = hb1a_4c.calculate_ub_matrix(peaks=peaks[0:2])
+    print(peaks[0:2])
+    print(f"Calculated UB matrix from two peaks:\n{ubconf_two.ub_mat}")
+
     ubconf_all = hb1a_4c.calculate_ub_matrix(peaks=peaks)
     print(f"Calculated UB matrix from all peaks:\n{ubconf_all.ub_mat}")
     print(f"Updated lattice parameters are: {hb1a_4c.sample}")
