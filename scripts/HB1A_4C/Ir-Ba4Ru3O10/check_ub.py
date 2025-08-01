@@ -8,7 +8,6 @@ from matplotlib.backends.backend_pdf import PdfPages
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.scan_data import ScanData1D
-from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
@@ -167,7 +166,6 @@ def plot_peaks(
     return peaks
 
 
-
 if __name__ == "__main__":
     hb1a_4c = setup_instrument_and_sample()
     spice_path = "test_data/IPTS33347_HB1A_exp1046/exp1046/"
@@ -178,5 +176,3 @@ if __name__ == "__main__":
     pdf_path = "./test_data/IPTS33347_HB1A_exp1046/01_Ir_Ba4Ru3O10_nuclear_peaks_in_omega.pdf"
     peaks_100k = plot_peaks(scans_100k, pdf_path)
     check_ub(hb1a_4c, peaks_100k)
-
-    

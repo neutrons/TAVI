@@ -249,6 +249,75 @@ def read_spice_ubconf(ub_file_name: Union[str, Path]) -> dict[str, Any]:
 def _create_spicelogs(path_to_scan_file: str) -> dict:
     """read in SPICE data, return a dictionary containing metadata and data columns"""
 
+    (data, col_names, metadata, others, error_messages) = read_spice_datafile(path_to_scan_file)
+    *_, file_name = path_to_scan_file.split("/")
+    instrument_str, *_ = file_name.split("_")
+    # write SPICElogs attributes
+    attrs_dict = {"instrument": instrument_str}
+    for k, v in metadata.items():
+        attrs_dict.update({k: v})
+    if len(error_messages) != 0:
+        attrs_dict.update({"Error Messages": error_messages})
+    if len(others) != 0:
+        attrs_dict.update({"Others": others})
+
+    # write SPICElogs datasets
+    dataset_dict = {}
+    spice_data_shape = data.shape
+    if len(spice_data_shape) == 1:  # 1 row only
+        if spice_data_shape[0] != 0:
+            for idx, col_header in enumerate(col_names):
+                # convert to ndarray if one point only
+                dataset_dict.update({col_header: np.array([data[idx]])})
+        else:  # ignore if empty
+            pass
+    elif len(spice_data_shape) == 2:  # nomarl data with multiple rows
+        # print(scan_num)
+        # print(spice_data.shape)
+        for idx, col_header in enumerate(col_names):
+            dataset_dict.update({col_header: data[:, idx]})
+    spicelogs = {"metadata": attrs_dict}
+    spicelogs.update(dataset_dict)
+
+    scan_path = os.path.abspath(path_to_scan_file)
+    folder_path = os.path.dirname(os.path.split(scan_path)[0])
+
+    ub_file_name = metadata["ubconf"]
+    # clean up the mess DAC made
+    if "\\" in ub_file_name:  # ubconf can be a Windows path in some scans
+        ub_file = ub_file_name.split("\\")[-1]
+    elif "/" in ub_file_name:  # ubconf can be a Windows path in some scans
+        ub_file = ub_file_name.split("/")[-1]
+    else:
+        ub_file = ub_file_name
+
+    ub_file_path = os.path.join("/", folder_path, "UBConf", ub_file)
+    ub_temp_file_path = os.path.join("/", folder_path, "UBConf", "temp", ub_file)
+
+    if os.path.isfile(ub_file_path):
+        ub_conf_dict = {"file_path": ub_file_path}
+    elif os.path.isfile(ub_temp_file_path):
+        ub_conf_dict = {"file_path": ub_temp_file_path}
+    else:
+        # ub_conf_dict = {"file_path": ""}
+        ub_conf_dict = {}
+        print(f"Cannot find UB file {metadata['ubconf']}")
+
+    if not ub_conf_dict:
+        pass
+    else:
+        ubconf = read_spice_ubconf(ub_file_path)
+        for k, v in ubconf.items():
+            ub_conf_dict.update({k: v})
+
+        spicelogs.update({"ub_conf": ub_conf_dict})
+
+    return spicelogs
+
+
+def _create_spicelogs(path_to_scan_file: str) -> dict:
+    """read in SPICE data, return a dictionary containing metadata and data columns"""
+
     metadata, data, unrecognized, error_msg = read_spice_datafile(path_to_scan_file)
 
     *_, file_name = path_to_scan_file.split("/")

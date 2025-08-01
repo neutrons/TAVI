@@ -251,6 +251,7 @@ def test_plot_data_contour():
     plt.show()
 
 
+# TODO
 def test_plot_ellipsoids_contour_oplot():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
 
