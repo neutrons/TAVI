@@ -1,25 +1,24 @@
 import functools
+import os
 from concurrent.futures import ProcessPoolExecutor
 from time import time
 
+import cupy
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Ellipse
 from numba import cuda
-import cupy
 
-import os
-use_rocm = os.getenv('ROCM_PATH') is not None
+use_rocm = os.getenv("ROCM_PATH") is not None
 
-import numba
 if use_rocm:
     from numba import hip
+
     hip.pose_as_cuda()
 
-from numba import cuda
 
 if use_rocm:
-    from math import cos, exp, pi, sin, sqrt
+    from math import cos, pi, sin, sqrt
 
     @cuda.jit(device=True)
     def rsqrt(x):
@@ -27,10 +26,10 @@ if use_rocm:
 
     @cuda.jit(device=True)
     def sincospi(x):
-        return (sin(pi*x), cos(pi*x))
+        return (sin(pi * x), cos(pi * x))
 
 else:
-    from numba.cuda.libdevice import cos, exp, rsqrt, sin, sincospi, sqrt
+    from numba.cuda.libdevice import cos, sin, sqrt
 
 
 # -------------------------------------------------------
@@ -50,6 +49,7 @@ def _model_disp_kernel(vq1, vq2, vq3, disp):
     disp[1, i] = d + 2
     return
 
+
 def model_disp(vq1, vq2, vq3):
     """return energy for given Q points
     3d FM J=-1 meV S=1, en=6*S*J*(1-cos(Q))
@@ -68,9 +68,10 @@ def _model_inten_kernel(vq1, inten):
     i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
     if i >= len(vq1):
         return
-    inten[0, i] = 1./2.
-    inten[1, i] = 1./2.
+    inten[0, i] = 1.0 / 2.0
+    inten[1, i] = 1.0 / 2.0
     return
+
 
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points
@@ -208,6 +209,7 @@ def _compute_weights_kernel(vqe, mat, wt):
         wt[b, i] = tmp
 
     return
+
 
 def compute_weights(vqe: np.ndarray, mat: np.ndarray) -> np.ndarray:
     """calculate weiget
@@ -425,8 +427,7 @@ if __name__ == "__main__":
     ax.set_ylim((en_min, en_max))
 
     plot_rez_ellipses(ax)
-    disp = cupy.asnumpy(model_disp(cupy.asarray(q1), cupy.zeros_like(q1),
-        cupy.zeros_like(q1)))
+    disp = cupy.asnumpy(model_disp(cupy.asarray(q1), cupy.zeros_like(q1), cupy.zeros_like(q1)))
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 
