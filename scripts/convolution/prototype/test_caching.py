@@ -1,6 +1,7 @@
-import numpy as np
-from functools import lru_cache
 import time
+from functools import lru_cache
+
+import numpy as np
 
 
 # --- Cached Helper Function ---
@@ -16,7 +17,7 @@ def _calculate_single_point(q1, q2, q3):
     """
     # To see the cache in action, you can uncomment the following line:
     # print(f"Cache miss! Calculating for point: ({q1:.2f}, {q2:.2f}, {q3:.2f})")
-    
+
     sj = 5
     gamma_q = (np.cos(2 * np.pi * q1) + np.cos(2 * np.pi * q2) + np.cos(2 * np.pi * q3)) / 3
     disp = 2 * sj * (1 - gamma_q)
@@ -30,7 +31,7 @@ def model_disp_cached(vq1, vq2, vq3):
     """
     Return energy for given Q points, with caching for individual points.
     3d FM J=-1 meV S=1, formula: E = 6*S*J*(1-cos(Q))
-    
+
     Args:
         vq1 (array-like): Vector of Qx coordinates.
         vq2 (array-like): Vector of Qy coordinates.
@@ -42,25 +43,24 @@ def model_disp_cached(vq1, vq2, vq3):
     """
     # Ensure inputs are NumPy arrays for consistent processing
     vq1 = np.asarray(vq1)
-    
+
     # Handle the case where a single point (scalar) is passed as input
     if vq1.ndim == 0:
-        result = _calculate_single_point(vq1.item(), 
-                                          np.asarray(vq2).item(), 
-                                          np.asarray(vq3).item())
+        result = _calculate_single_point(vq1.item(), np.asarray(vq2).item(), np.asarray(vq3).item())
         # Reshape to the standard (2 bands, 1 point) output format
         return np.array(result).reshape(2, 1)
 
     # If we have vectors, iterate over each point, call the cached helper,
     # and collect the results. The list comprehension is a concise way to do this.
     results = [_calculate_single_point(q1, q2, q3) for q1, q2, q3 in zip(vq1, vq2, vq3)]
-    
+
     # The `results` is a list of tuples: [(e1_p1, e2_p1), (e1_p2, e2_p2), ...]
-    # Convert this list to a NumPy array and transpose it to get the 
+    # Convert this list to a NumPy array and transpose it to get the
     # desired (2, N) shape, where each column is a point.
     disp = np.array(results).T
-    
+
     return disp
+
 
 # --- Original Function (for comparison) ---
 def model_disp_original(vq1, vq2, vq3):
@@ -79,12 +79,12 @@ def model_disp_original(vq1, vq2, vq3):
 
 
 # --- Verification Example ---
-if __name__=="__main__":
+if __name__ == "__main__":
     # Define some Q points, notice the duplicates: (0,0,0) and (0.5,0,0)
-    q1_vec = np.array([0.0, 0.5, 0.0, 0.25, 0.5]*10)
-    q2_vec = np.array([0.0, 0.0, 0.0, 0.25, 0.0]*10)
-    q3_vec = np.array([0.0, 0.0, 0.0, 0.25, 0.0]*10)
-    q1_prime_vec = np.array([0.1, 0.5, 0.0, 0.25, 0.5]*10)
+    q1_vec = np.array([0.0, 0.5, 0.0, 0.25, 0.5] * 10)
+    q2_vec = np.array([0.0, 0.0, 0.0, 0.25, 0.0] * 10)
+    q3_vec = np.array([0.0, 0.0, 0.0, 0.25, 0.0] * 10)
+    q1_prime_vec = np.array([0.1, 0.5, 0.0, 0.25, 0.5] * 10)
 
     print("--- Original function ---")
     # On the first run, all unique points will be calculated and their results stored.
@@ -94,7 +94,6 @@ if __name__=="__main__":
     end_time = time.perf_counter()
     print(f"Original function took: {end_time - start_time:.6f} seconds")
 
-
     print("--- First call with cached function ---")
     # On the first run, all unique points will be calculated and their results stored.
     # If you uncomment the `print` in _calculate_single_point, you will see "Cache miss!" here.
@@ -103,7 +102,6 @@ if __name__=="__main__":
     end_time = time.perf_counter()
     print(f"First call took: {end_time - start_time:.6f} seconds")
 
-
     print("\n--- Second call with the same data ---")
     # On the second run, all results are retrieved from the cache instantly.
     # No "Cache miss!" messages will be printed.
@@ -111,7 +109,6 @@ if __name__=="__main__":
     result2 = model_disp_cached(q1_prime_vec, q2_vec, q3_vec)
     end_time = time.perf_counter()
     print(f"Second (cached) call took: {end_time - start_time:.6f} seconds")
-
 
     print("\n--- Cache Information ---")
     # You can inspect the cache's performance

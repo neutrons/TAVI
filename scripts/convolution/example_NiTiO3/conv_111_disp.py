@@ -6,26 +6,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axisartist import Axes
 
+from tavi.data.scan import Scan
 from tavi.instrument.resolution.convolution import convolution
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
-from tavi.data.scan import Scan
+
 
 def model_disp(vq1, vq2, vq3):
-    """return energy for given Q points
-    """
+    """return energy for given Q points"""
 
-    disp1 = 0.5+2*np.abs(np.cos( np.pi * vq3/2))
-    disp2 = 3.7*np.ones_like(vq3,dtype=float)
+    disp1 = 0.5 + 2 * np.abs(np.cos(np.pi * vq3 / 2))
+    disp2 = 3.7 * np.ones_like(vq3, dtype=float)
 
-    return np.array([disp1,disp2])
+    return np.array([disp1, disp2])
 
 
 def model_inten(vq1, vq2, vq3):
-    """return intensity for given Q points
-    """
-    inten1 = np.abs(np.cos( np.pi * vq3/2))
+    """return intensity for given Q points"""
+    inten1 = np.abs(np.cos(np.pi * vq3 / 2))
     inten2 = np.ones_like(vq1, dtype=float) / 4
 
     return np.array((inten1, inten2))
@@ -37,7 +36,7 @@ if __name__ == "__main__":
     ctax = TAS(fixed_ef=4.8)
     ctax.load_instrument_params_from_json(instrument_config_json_path)
     path_to_spice_folder = "test_data/exp424/"
-    sample = Sample.from_scan( Scan.from_spice(path_to_spice_folder, scan_num=42))
+    sample = Sample.from_scan(Scan.from_spice(path_to_spice_folder, scan_num=42))
     ctax.mount_sample(sample)
 
     # ----------------------------------------------------
@@ -54,7 +53,9 @@ if __name__ == "__main__":
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
         for reso in ctax.cooper_nathans(hkle=qe_list)
     ]
-    conv_model = partial(convolution,energy_rez_factor=1/10,max_step=200, model_disp=model_disp, model_inten=model_inten)
+    conv_model = partial(
+        convolution, energy_rez_factor=1 / 10, max_step=200, model_disp=model_disp, model_inten=model_inten
+    )
     t0 = time()
     num_worker = 8
     with ProcessPoolExecutor(max_workers=num_worker) as executor:
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     ql_rez = np.linspace(ql_min, ql_max, int((ql_max - ql_min) / (ql_step * 10)) + 1)
     en_rez = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 10)) + 1)
     qe_rez = np.array([(0, 0, ql, en) for ql in ql_rez for en in en_rez])
-    rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1,0), (-2, 1, 0), (0, 0, 1), "en"))
+    rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
 
     p = Plot2D()
     for rez in rez_list:
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     ax.set_ylim((en_min, en_max))
 
     ax.set_title(
-       f"3D Convolution for {len(ql_list) * len(en_list)} points, "
+        f"3D Convolution for {len(ql_list) * len(en_list)} points, "
         + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
     )
     ax.grid(alpha=0.6)

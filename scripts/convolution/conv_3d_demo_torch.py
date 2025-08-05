@@ -1,12 +1,11 @@
 import functools
-from concurrent.futures import ProcessPoolExecutor
 from time import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Ellipse
-from numba import njit, prange
 import torch
+from matplotlib.patches import Ellipse
+
 
 # -------------------------------------------------------
 # user input model_disp and model_inten
@@ -170,6 +169,7 @@ def coh_sigma(mat: np.ndarray, axis: int):
 
 #     return weights
 
+
 def compute_weights_torch(vqe: torch.Tensor, mat: torch.Tensor) -> torch.Tensor:
     """
     vqe: shape (4, num_bands, num_pts)
@@ -183,6 +183,7 @@ def compute_weights_torch(vqe: torch.Tensor, mat: torch.Tensor) -> torch.Tensor:
     weights = torch.sum(v * mv, dim=-1)  # shape: (num_bands, num_pts)
 
     return weights
+
 
 @functools.cache
 def generate_meshgrid(num_of_sigmas=3, num_pts=(10, 10, 10)):
@@ -306,7 +307,7 @@ def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     vqe_torch = torch.tensor(vqe, dtype=torch.float32, device=device)
     mat_torch = torch.tensor(mat, dtype=torch.float32, device=device)
     weights = compute_weights_torch(vqe_torch, mat_torch).cpu().numpy()
-   # weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
+    # weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
     # ----------------------------------------------------
     # Keep only the points within the 4D ellipsoid
     # ----------------------------------------------------
