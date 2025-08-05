@@ -113,6 +113,7 @@ def test_sample_from_scan():
     assert sample.ub_conf.plane_normal.shape == (3,)
     assert scan.sample_ub_info.mosaic_v == 30.0
     assert scan.sample_ub_info.mosaic_h == 30.0
+    pass
 
 
 def test_instrument_error_handling():
@@ -251,7 +252,6 @@ def test_plot_data_contour():
     plt.show()
 
 
-# TODO
 def test_plot_ellipsoids_contour_oplot():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
 
