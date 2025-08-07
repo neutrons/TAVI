@@ -17,7 +17,7 @@ def model_disp(vq1, vq2, vq3):
     """return energy for given Q points"""
 
     # disp1 = 0.5 + 2 * np.abs(np.cos(np.pi * vq3 / 2))
-    disp1 = 1.45 + 0.4 * np.cos(np.pi * vq3* 2/3)- 1.05 * np.cos(np.pi * vq3 *4/3)
+    disp1 = 1.45 + 0.4 * np.cos(np.pi * vq3 * 2 / 3) - 1.05 * np.cos(np.pi * vq3 * 4 / 3)
     disp2 = 3.6 * np.ones_like(vq3, dtype=float)
 
     return np.array([disp1, disp2])
@@ -25,7 +25,7 @@ def model_disp(vq1, vq2, vq3):
 
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points"""
-    inten1 = np.abs(np.cos(np.pi * vq3 *2/ 3))**4
+    inten1 = np.abs(np.cos(np.pi * vq3 * 2 / 3)) ** 4
     inten2 = np.ones_like(vq3, dtype=float) / 3
 
     return np.array((inten1, inten2))
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     for i in range(np.shape(disp)[0]):
         ax.plot(ql_list, disp[i], "-w")
 
-    ax.set_xlim((ql_min-0.1, ql_max+0.1))
-    ax.set_ylim((en_min-0.1, en_max))
+    ax.set_xlim((ql_min - 0.1, ql_max + 0.1))
+    ax.set_ylim((en_min - 0.1, en_max))
 
     ax.set_title(
         f"3D Convolution for {len(ql_list) * len(en_list)} points, "

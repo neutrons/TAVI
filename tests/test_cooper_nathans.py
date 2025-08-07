@@ -115,7 +115,12 @@ def ctax():
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax = TAS(fixed_ef=4.8)
     ctax.load_instrument_params_from_json(instrument_config_json_path)
-
+    (
+        ctax.collimators.v_pre_mono,
+        ctax.collimators.v_pre_sample,
+        ctax.collimators.v_post_sample,
+        ctax.collimators.v_post_ana,
+    ) = 600, 600, 600, 600
     sample_json_path = "./test_data/test_samples/nitio3.json"
     sample = Sample.from_json(sample_json_path)
     ctax.mount_sample(sample)
