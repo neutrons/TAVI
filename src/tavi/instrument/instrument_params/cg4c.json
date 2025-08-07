@@ -65,9 +65,9 @@
         "h_pre_sample": 100,
         "h_post_sample": 80,
         "h_post_ana": 120,
-        "v_pre_mono": 600,
-        "v_pre_sample": 600,
-        "v_post_sample": 600,
-        "v_post_ana": 600
+        "v_pre_mono": 120,
+        "v_pre_sample": 120,
+        "v_post_sample": 120,
+        "v_post_ana": 120
     }
 }
