@@ -1,7 +1,8 @@
 [project]
 authors = [{name = "Bing Li", email = "lib1@ornl.gov"}]
 dependencies = [
-  # list all runtime dependencies here
+  "qtpy",
+  "pyside6",
 ]
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]

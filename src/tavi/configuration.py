@@ -7,12 +7,12 @@ import shutil
 from configparser import ConfigParser
 from pathlib import Path
 
-from mantid.kernel import Logger
+import logging
 
-logger = Logger("PACKAGENAME")
+logger = logging.getLogger("tavi")
 
 # configuration settings file path
-CONFIG_PATH_FILE = os.path.join(Path.home(), ".packagename", "configuration.ini")
+CONFIG_PATH_FILE = os.path.join(Path.home(), ".tavi", "configuration.ini")
 
 
 class Configuration:
