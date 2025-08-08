@@ -13,13 +13,13 @@ from tavi.mainwindow import MainWindow
 logger = logging.getLogger("tavi")
 
 
-class tavi(QMainWindow):
+class Tavi(QMainWindow):
     """Main Package window"""
 
     def __init__(self, parent=None):
         """Constructor"""
         super().__init__(parent)
-        logger.info(f"tavi version: {__version__}")
+        logger.info(f"Tavi version: {__version__}")
         config = Configuration()
 
         if not config.is_valid():
@@ -47,6 +47,6 @@ def gui():
         sys.exit()
     else:
         app = QApplication(sys.argv)
-        window = tavi()
+        window = Tavi()
         window.show()
         sys.exit(app.exec_())

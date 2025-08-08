@@ -9,10 +9,10 @@ from pathlib import Path
 
 import logging
 
-logger = logging.getLogger("tavi")
+logger = logging.getLogger("Tavi")
 
 # configuration settings file path
-CONFIG_PATH_FILE = os.path.join(Path.home(), ".tavi", "configuration.ini")
+CONFIG_PATH_FILE = os.path.join(Path.home(), ".Tavi", "configuration.ini")
 
 
 class Configuration:
