@@ -249,6 +249,7 @@ class Scan(object):
 
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)
+            # expecting a string like "del_q(omega)" or "del_q(s1)"
             *_, angle_str = re.match(r"(.+)\((.+)\)", ax_str).groups()
 
             if not _:  # using "s1" by default

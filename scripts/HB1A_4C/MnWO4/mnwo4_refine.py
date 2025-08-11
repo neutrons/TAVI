@@ -70,7 +70,7 @@ def analyze_s1_scan_in_q(hkl, s1_scan, fit_range=None):
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=s1_scan)
 
     # --------------- analyze in del_q ----------------
-    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_s1 = s1.get_data(axes=("del_q(s1)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_s1_fit = Fit1D(scan_s1, fit_range)
     scan_s1_fit.add_signal(model="Gaussian")
@@ -137,7 +137,7 @@ def plot_s1_nuclear_peaks():
     for i, hkl in enumerate(hkl_list):
         s1_q, p1, q = analyze_s1_scan_in_q(hkl, scan_nums[i])
 
-        rez = hb1a_4c.cooper_nathans(hkl=hkl, axes=None)
+        rez = hb1a_4c.cooper_nathans(hkle=hkl+(0,), axes=None)
         p1.add_reso_bar(
             pos=s1_q,
             fwhm=rez.coh_fwhms(axis=1),
