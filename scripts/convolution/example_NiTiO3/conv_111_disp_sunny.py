@@ -12,26 +12,50 @@ from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D
 from tavi.sample import Sample
 
+from juliacall import Main as jl # noqa: N813
 
-def model_disp(vq1, vq2, vq3):
+def model_sunny():
+    jl.seval('using Sunny, LinearAlgebra') 
+    jl.include("./scripts/convolution/example_NiTiO3//NiTiO3_R_model.jl")
+    return jl.model()
+
+
+
+def _model_disp(vq1, vq2, vq3, model):
     """return energy for given Q points"""
+    # Hexagonal -> Rhombohedral (obverse setting)
+    T_H2R = np.array([
+        [ 2/3,  1/3,  1/3],
+        [-1/3,  1/3,  1/3],
+        [-1/3, -2/3,  1/3],
+    ], dtype=float)
+    vq = np.column_stack((vq1, vq2, vq3)).astype(float, copy=False)  # shape (N, 3)
+    vq_r = list(vq @ T_H2R)  # still (N, 3), now in rhombohedral indices
+    # If a C-contiguous array is required downstream, keep this:
+    return np.array(jl.disp(model, vq_r), order='C')
+    # vq = np.array(list(zip(vq1, vq2, vq3)))
+    # vq_r=list(vq.dot(np.array([[2/3,1/3,1/3],[-1/3,1/3,1/3],[-1/3,-2/3,1/3]])))
+    # return np.array(jl.disp(model, vq_r),order='F')
 
-    # disp1 = 0.5 + 2 * np.abs(np.cos(np.pi * vq3 / 2))
-    disp1 = 1.45 + 0.4 * np.cos(np.pi * vq3 * 2 / 3) - 1.05 * np.cos(np.pi * vq3 * 4 / 3)
-    disp2 = 3.6 * np.ones_like(vq3, dtype=float)
 
-    return np.array([disp1, disp2])
-
-
-def model_inten(vq1, vq2, vq3):
+def _model_inten(vq1, vq2, vq3, model):
     """return intensity for given Q points"""
-    inten1 = np.abs(np.cos(np.pi * vq3 * 2 / 3)) ** 4
-    inten2 = np.ones_like(vq3, dtype=float) / 3
+    # Hexagonal -> Rhombohedral (obverse setting)
+    T_H2R = np.array([
+        [ 2/3,  1/3,  1/3],
+        [-1/3,  1/3,  1/3],
+        [-1/3, -2/3,  1/3],
+    ], dtype=float)
+    vq = np.column_stack((vq1, vq2, vq3)).astype(float, copy=False)  # shape (N, 3)
+    vq_r = list(vq @ T_H2R ) # still (N, 3), now in rhombohedral indices
+    # If a C-contiguous array is required downstream, keep this:
+    return np.array(jl.inten(model, vq_r), order='C')
+    # vq = np.array(list(zip(vq1, vq2, vq3)))
+    # vq_r=list(vq.dot(np.array([[2/3,1/3,1/3],[-1/3,1/3,1/3],[-1/3,-2/3,1/3]])))
+    # return np.array(jl.inten(model, vq_r),order='F')
 
-    return np.array((inten1, inten2))
 
-
-if __name__ == "__main__":
+if __name__ == "__main__":    
     # setup instrument
     instrument_config_json_path = "./src/tavi/instrument/instrument_params/cg4c.json"
     ctax = TAS(fixed_ef=4.8)
@@ -43,24 +67,34 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # points being measured
     # ----------------------------------------------------
-    ql_min, ql_max, ql_step = 2.5, 3.9, 0.1
+    ql_min, ql_max, ql_step = 2.5, 2.9, 0.1
     en_min, en_max, en_step = 0.1, 4.1, 0.1
 
-    ql_list = np.linspace(ql_min, ql_max, int((ql_max - ql_min) / ql_step) + 1)
-    en_list = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
+    ql_list = np.linspace(ql_min, ql_max, round((ql_max - ql_min) / ql_step+1))
+    en_list = np.linspace(en_min, en_max, round((en_max - en_min) / en_step+1) )
     qe_list = np.array([(0, 0, ql, en) for ql in ql_list for en in en_list])
 
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
         for reso in ctax.cooper_nathans(hkle=qe_list, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
     ]
-    conv_model = partial(convolution, model_disp=model_disp, model_inten=model_inten)
+    model=model_sunny()
+    model_disp = partial(_model_disp, model=model)
+    model_inten = partial(_model_inten, model=model)
+    conv_model = partial(
+        convolution, model_disp=model_disp, model_inten=model_inten
+    )
     t0 = time()
-    num_worker = 8
-    with ProcessPoolExecutor(max_workers=num_worker) as executor:
-        results = executor.map(conv_model, reso_params)
-    measurement_inten = np.asarray(list(results))
-
+    # num_worker = 8
+    # with ProcessPoolExecutor(max_workers=num_worker) as executor:
+    #     results = executor.map(conv_model, reso_params)
+    # measurement_inten = np.asarray(list(results))
+    # ------------------- single core ------------------
+    sz = len(reso_params)
+    measurement_inten = np.empty(shape=sz)
+    for i in range(sz):
+        measurement_inten[i] = conv_model(reso_params[i])
+    # --------------------------------------------------
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
 
     # ----------------------------------------------------
@@ -98,7 +132,7 @@ if __name__ == "__main__":
     fig.colorbar(im, ax=ax)
 
     # plot dispersion
-    disp = model_disp(ql_list, ql_list, ql_list)
+    disp = model_disp(np.zeros_like(ql_list), np.zeros_like(ql_list), ql_list)
     for i in range(np.shape(disp)[0]):
         ax.plot(ql_list, disp[i], "-w")
 
@@ -107,7 +141,7 @@ if __name__ == "__main__":
 
     ax.set_title(
         f"3D Convolution for {len(ql_list) * len(en_list)} points, "
-        + f"completed in {t1 - t0:.3f} s with {num_worker:1d} cores"
+        + f"completed in {t1 - t0:.3f} s"#+f"with {num_worker:1d} cores"
     )
     ax.grid(alpha=0.6)
     # plt.tight_layout()
