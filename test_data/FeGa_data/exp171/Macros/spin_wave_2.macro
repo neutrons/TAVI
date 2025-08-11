@@ -1,0 +1,23 @@
+scantitle "Measure spin wave dispersion E=35 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 35 preset mcu 50
+
+scantitle "Measure spin wave dispersion E=30 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 30 preset mcu 40
+
+scantitle "Measure spin wave dispersion E=27 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 27 preset mcu 30
+
+scantitle "Measure spin wave dispersion E=24 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 24 preset mcu 30
+
+scantitle "Measure spin wave dispersion E=21 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 21 preset mcu 25
+
+scantitle "Measure spin wave dispersion E=18 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 18 preset mcu 25
+
+scantitle "Measure spin wave dispersion E=15 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 15 preset mcu 20
+
+scantitle "Measure spin wave dispersion E=12 meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 20

@@ -1,0 +1,34 @@
+scantitle "sw; T110 fr 110, 5 meV"
+scan h .8 1.2 .01 k 1.2 .8 -.01 l 0 e -5 preset mcu 20
+scantitle "sw; L110 fr 110, 5 meV"
+scan h .8 1.2 .01 k .8 1.2 .01 l 0 e -5 preset mcu 20
+
+scantitle "sw; T110 fr 110, 5 meV, e-loss"
+scan h .8 1.2 .01 k 1.2 .8 -.01 l 0 e 5 preset mcu 20
+scantitle "sw; L110 fr 110, 5 meV, e-loss"
+scan h .8 1.2 .01 k .8 1.2 .01 l 0 e 5 preset mcu 20
+
+scantitle "sw; T110 fr 110, 10 meV"
+scan h .7 1.3 .01 k 1.3 .7 -.01 l 0 e -10 preset mcu 50
+scantitle "sw; L110 fr 110, 10 meV"
+scan h .7 1.3 .02 k .7 1.3 .02 l 0 e -10 preset mcu 50
+
+scantitle "sw; T110 fr 110, 15 meV"
+scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -15 preset mcu 100
+scantitle "sw; L110 fr 110, 15 meV"
+scan h .64 .98 .01 k .64 .98 .01 l 0 e -15 preset mcu 100
+
+scantitle "sw; T110 fr 110, 20 meV"
+scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -20 preset mcu 150
+scantitle "sw; L110 fr 110, 20 meV"
+scan h .64 .98 .02 k .64 .98 .02 l 0 e -20 preset mcu 150
+
+scantitle "sw; T110 fr 110, 25 meV"
+scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -25 preset mcu 200
+scantitle "sw; L110 fr 110, 25 meV"
+scan h .64 .98 .01 k .64 .98 .01 l 0 e -25 preset mcu 200
+
+scantitle "sw; T110 fr 110, 30 meV"
+scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -30 preset mcu 300
+scantitle "sw; L110 fr 110, 30 meV"
+scan h .64 .98 .02 k .64 .98 .02 l 0 e -30 preset mcu 300

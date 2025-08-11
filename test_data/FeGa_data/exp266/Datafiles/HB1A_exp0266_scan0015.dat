@@ -1,0 +1,37 @@
+# scan = 15
+# date = 9/28/2008
+# time = 1:56:34 PM
+# proposal = IPTS-890
+# experiment = FM short-range ord in AFM Tb5Ge4
+# experiment_number = 266
+# command = scanrel s1 1 -1 0.1
+# builtin_command = scan s1 @(s1)+1 @(s1)+-1 0.100000
+# users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
+# local_contact = J.L. Zarestky
+# scan_title = Tb5Ge crystal #1 (long)
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-48-40-68
+# samplename = Tb5Ge4 sc
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 2.890000,2.890000,2.890000,90.000000,90.000000,90.000000
+# ubmatrix = 0.345846,0.010865,0.001751,-0.010781,0.345542,-0.014650,-0.002209,0.014588,0.345706
+# mode = 0
+# plane_normal = 0.005061,-0.042339,0.999090
+# ubconf = UB28Sep2008_15057PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu         m2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
+      1   -77.5512      1.000  17796.000   4345.000      1.035    41.2647   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0172     0.9825     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      2   -77.6516      1.000  23064.000   4275.000      1.018    41.2647   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0155     0.9843     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      3   -77.7520      0.000      0.000      0.000      0.000    41.2647   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0138     0.9861     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+# Sum of Counts = 40860
+# Center of Mass = -77.607872+/-0.542965
+# Full Width Half-Maximum = 0.099562+/-0.761460
+# 1:56:43 PM  9/28/2008   scan stopped!!

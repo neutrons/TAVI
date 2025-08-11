@@ -1,0 +1,39 @@
+# scan = 53
+# date = 9/29/2008
+# time = 3:33:25 PM
+# proposal = IPTS-890
+# experiment = FM short-range ord in AFM Tb5Ge4
+# experiment_number = 266
+# command = scan h 0.8 1.2 0.005 k 1.2 0.8 -0.005 l 0 e 5 preset mcu 20
+# builtin_command = scan h 0.8 1.2 0.005 k 1.2 0.8 -0.005 l 0 e 5 preset mcu 20
+# users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
+# local_contact = J.L. Zarestky
+# scan_title = spin wave, Fe-Ga 10.8%, e = 5 meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-48-40-68
+# samplename = Tb5Ge4 sc
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 2.890000,2.890000,2.890000,90.000000,90.000000,90.000000
+# ubmatrix = 0.345665,0.015659,-0.001051,-0.015693,0.345190,-0.018109,0.000229,0.018138,0.345545
+# mode = 0
+# plane_normal = -0.003037,-0.052334,0.998625
+# ubconf = UB28Sep2008_20532PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 20.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
+      1     0.7998     1.2001    -0.0000     5.0001     19.667      2.000  84000.000     20.000    41.2647  -101.0108   -80.5605     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1355    14.6330     9.6329     1.0000   480.0000   300.000
+      2     0.8050     1.1950    -0.0000     5.0001     19.594      6.000  84000.000     20.000    41.2647  -100.6909   -80.4690     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1326    14.6330     9.6329     1.0000   480.0000   300.000
+      3     0.8100     1.1900    -0.0000     4.9998     19.664     10.000  84000.000     20.000    41.2647  -100.3809   -80.3755     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4802     3.1297    14.6330     9.6332     1.0000   480.0000   300.000
+      4     0.8150     1.1850    -0.0000     5.0001     19.680     10.000  84000.000     20.000    41.2647  -100.0699   -80.2859     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1268    14.6330     9.6329     1.0000   480.0000   300.000
+      5     0.8200     1.1800    -0.0000     4.9998     16.943      8.000  72668.000     17.302    41.2647   -99.7598   -80.1973     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4802     3.1241    14.6330     9.6332     1.0000   480.0000   300.000
+# Sum of Counts = 36
+# Center of Mass = 0.812211+/-0.191442
+# Full Width Half-Maximum = 0.011700+/-0.158892
+# 3:35:41 PM  9/29/2008   scan stopped!!

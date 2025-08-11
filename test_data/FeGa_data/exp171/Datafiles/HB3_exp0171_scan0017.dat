@@ -1,0 +1,35 @@
+# scan = 17
+# date = 9/29/2008
+# time = 3:29:04 PM
+# proposal = IPTS-1454
+# experiment = Spin wave and phonon dispersion in Fe-Ga solid solution
+# experiment_number = 171
+# command = scantitle "Look for phonon and spin wave"; scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 5
+# builtin_command = scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 5
+# users = Summer School
+# local_contact = 
+# scan_title = Look for phonon and spin wave
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = FeGa 28.8%
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 2.909750,2.909750,2.909750,90.000000,90.000000,90.000000
+# ubmatrix = -0.248264,-0.237003,0.017469,0.237458,-0.248401,0.004615,0.009443,0.015404,0.343197
+# mode = 0
+# plane_normal = 0.050829,0.013429,0.998616
+# ubconf = UB29Sep2008_10947PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 5.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef   tcoldtip    tsample       temp
+      1     1.3272     0.7139    -0.0001     9.0313      0.000      0.000      0.000      0.000    48.1100   -28.7955   -32.1341   120.1201     0.2500     9.5000   -48.6083    58.1460    63.8272    -2.9105     0.7705     4.0000     0.0020   159.4167   -41.1825     3.2541    23.7202    14.6889     1.0000     1.0000   200.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 3:29:16 PM  9/29/2008   scan stopped!!
