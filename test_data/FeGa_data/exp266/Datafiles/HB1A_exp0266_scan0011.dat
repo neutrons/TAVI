@@ -1,0 +1,39 @@
+# scan = 11
+# date = 9/28/2008
+# time = 1:26:04 PM
+# proposal = IPTS-890
+# experiment = FM short-range ord in AFM Tb5Ge4
+# experiment_number = 266
+# command = scan s1 -45 -25 0.2
+# builtin_command = scan s1 -45 -25 0.2
+# users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
+# local_contact = J.L. Zarestky
+# scan_title = check of point piece sample; h0l plane, 004 peak
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 48-48-40-68
+# samplename = Tb5Ge4 sc
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 7.627875,14.680000,7.690000,90.000000,90.000000,90.000000
+# ubmatrix = 0.131071,-0.001191,0.001327,-0.001338,0.000000,0.130032,-0.002292,-0.068109,-0.000023
+# mode = 0
+# plane_normal = 0.017487,0.000000,0.999847
+# ubconf = UB28Sep2008_122812PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 1.000000
+# def_x = s1
+# def_y = detector
+# col_headers = 
+#   Pt.         s1       time   detector    monitor        mcu         m2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
+      1   -45.0010      1.000     15.000   4312.000      1.027    41.2647   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9678     0.0001     0.5108    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      2   -44.8002      1.000     13.000   4226.000      1.006    41.2647   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9695     0.0001     0.4968    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      3   -44.6004      1.000      6.000   4291.000      1.022    41.2647   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9712     0.0001     0.4828    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      4   -44.3996      1.000     11.000   4381.000      1.043    41.2647   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9729     0.0001     0.4688    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+      5   -44.1821      0.000      0.000      0.000      0.000    41.2647   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9746     0.0001     0.4536    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
+# Sum of Counts = 45
+# Center of Mass = -44.742569+/-9.432626
+# Full Width Half-Maximum = 0.467633+/-9.910146
+# 1:26:30 PM  9/28/2008   scan stopped!!

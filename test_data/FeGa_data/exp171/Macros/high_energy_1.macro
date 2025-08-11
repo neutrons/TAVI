@@ -1,0 +1,15 @@
+
+scantitle "Spin wave E=60meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 e 60 ef 30.5 preset mcu 90
+
+scantitle "Spin wave E=55meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 e 55 ef 30.5 preset mcu 90
+
+scantitle "Spin wave E=50meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 e 50 ef 30.5 preset mcu 90
+
+scantitle "Spin wave E=45meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 e 45 ef 30.5 preset mcu 90
+
+scantitle "Spin wave E=40meV"
+scan h 0.5 1 0.025 k 1.5 1 0.025 e 40 ef 30.5 preset mcu 90

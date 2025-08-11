@@ -1,0 +1,11 @@
+scantitle "calibration scans Fe-Ga 10.8%"
+
+scantitle " calibration (200) , Trans"
+scan h 2 k -0.05 0.05 0.005 l 0 e 0
+scantitle " calibration (200) , Long"
+scan h 1.95 2.05 .005 k 0 l 0 e 0
+
+scantitle " calibration (020) , Trans"
+scan h -0.05 0.05 0.005 k 2 l 0 e 0
+scantitle " calibration (020) , Long"
+scan h 0 k 1.95 2.05 .005 l 0 e 0

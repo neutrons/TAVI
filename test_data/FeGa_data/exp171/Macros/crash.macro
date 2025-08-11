@@ -1,0 +1,17 @@
+
+preset mcu 90
+
+scantitle "Spin wave E=80meV"
+scan h 2 k -0.5 0.5 0.025 e 80 ef 30.5
+
+scantitle "Spin wave E=75meV"
+scan h 2 k -0.5 0.5 0.025 e 75 ef 30.5
+
+scantitle "Spin wave E=70meV"
+scan h 2 k -0.5 0.5 0.025 e 70 ef 30.5
+
+scantitle "Spin wave E=65meV"
+scan h 2 k -0.5 0.5 0.025 e 65 ef 30.5
+
+scantitle "Spin wave E=60meV"
+scan h 2 k -0.5 0.5 0.025 e 60 ef 30.5

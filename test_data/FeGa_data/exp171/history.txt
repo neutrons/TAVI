@@ -1,0 +1,114 @@
+9/29/2008 12:55 PM        ubcalc file c:\user\exp171\ubconf\summer_school.ini
+9/29/2008 12:55 PM        br 1 1 0
+9/29/2008 12:57 PM        gotopg002
+9/29/2008 12:57 PM        comment "Running macro C:\Program Files\Spice\Instrument\Macros\goto_pg002.macro"
+9/29/2008 12:57 PM        drive mcrystal pg002
+9/29/2008 12:57 PM        drive marc 0.25
+9/29/2008 12:57 PM        monochromator pg002
+9/29/2008 12:57 PM        drive ei @(ei)
+9/29/2008 12:57 PM        preset time 1
+9/29/2008 12:57 PM        defcount monitor
+9/29/2008 12:57 PM        center mcrystal
+9/29/2008 12:58 PM        defcount detector
+9/29/2008 12:59 PM        drive ei 14.7
+9/29/2008 1:00 PM        scantitle "Align (110)"
+9/29/2008 1:00 PM        preset time 1; scanrel s1 -2 2 0.2
+9/29/2008 1:02 PM        drive s1 22.6
+9/29/2008 1:02 PM        drive s1 33.6
+9/29/2008 1:02 PM        preset time 1; scanrel s1 -2.5 2.5 0.2
+9/29/2008 1:03 PM        drive s1 33.68
+9/29/2008 1:04 PM        scanrel sgl -4 4 0.5
+9/29/2008 1:05 PM        drive sgl -2.92
+9/29/2008 1:05 PM        ubcalc file "C:\User\exp171\UBConf\tmp\UB29Sep2008_10532PM.ini"
+9/29/2008 1:05 PM        br 1 -1  0
+9/29/2008 1:06 PM        scanrel sgu -4 4 .5
+9/29/2008 1:07 PM        drive sgu 0.77
+9/29/2008 1:07 PM        scanrel s1 -2.5 2.5 0.2
+9/29/2008 1:09 PM        drive stl 2.5
+9/29/2008 1:09 PM        drive s1 123.7518
+9/29/2008 1:09 PM        ubcalc file "C:\User\exp171\UBConf\tmp\UB29Sep2008_10945PM.ini"
+9/29/2008 1:09 PM        br 1 1 0
+9/29/2008 1:11 PM        scan stl -10 10 1
+9/29/2008 1:12 PM        drive stl 4
+9/29/2008 1:15 PM        mcu 9000; scan h 0.5 1.5 0.05 k 1.5 0.5 0.05 l 0 e 5 preset mcu 10
+9/29/2008 1:21 PM        scan h 0.5 1.5 0.025 k 1.5 0.5 0.025 l 0 e 7 preset mcu 5
+9/29/2008 1:27 PM        scan h 0.5 1 0.025 k 1 0.5 0.025 l 0 e 12 preset mcu 10
+9/29/2008 1:33 PM        scan h 0.5 1 0.025 k 1 0.5 0.025 l 0 e 15 preset mcu 15
+9/29/2008 1:40 PM        scan h 0.5 1 0.025 k 1 0.5 0.025 l 0 e 25 preset mcu 30
+9/29/2008 1:44 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 25 preset mcu 30
+9/29/2008 2:51 PM        drive s2 0
+9/29/2008 2:52 PM        drive s2 -20
+9/29/2008 2:53 PM        drive ei 14.7
+9/29/2008 2:54 PM        drive s2 20
+9/29/2008 2:56 PM        br 1 1 0
+9/29/2008 2:59 PM        br 1 -1 0
+9/29/2008 3:07 PM        scantitle "Check focussing q=-0.3"
+9/29/2008 3:07 PM        scan h 0.7 k 1.3 l 0 e 10 4 -.4 preset mcu 10
+9/29/2008 3:13 PM        scantitle "Check focussing q=0.3"
+9/29/2008 3:14 PM        scan h 1.3 k 0.7 l 0 e 10 4 -.4 preset mcu 10
+9/29/2008 3:22 PM        scantitle "Look for phonon and spin wave"; scan h 0.5 1.5 0.025 k 1.5 0.5 0.025 l 0 e 7 preset mcu 5
+9/29/2008 3:29 PM        scantitle "Look for phonon and spin wave"; scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 5
+9/29/2008 3:29 PM        scantitle "Look for phonon and spin wave"; scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 10
+9/29/2008 3:34 PM        scantitle "T2[110] q=0.5"
+9/29/2008 3:34 PM        scan h 0.5 k 1.5 l 0 e 12 5 -.4 preset mcu 15
+9/29/2008 3:39 PM        scantitle "T2[110] q=0.45"
+9/29/2008 3:39 PM        scan h 0.55 k 1.45 l 0 e 12 5 -.4 preset mcu 15
+9/29/2008 3:45 PM        scantitle "T2[110] q=0.4"
+9/29/2008 3:45 PM        scan h 0.6 k 1.4 l 0 e 12 5 -.4 preset mcu 10
+9/29/2008 3:50 PM        scan h 0.65 k 1.35 l 0 e 11 4 -.4 preset mcu 10
+9/29/2008 3:54 PM        scantitle "T2[110] q=0.3"
+9/29/2008 3:54 PM        scan h 0.7 k 1.3 l 0 e 10 4 -.4 preset mcu 10
+9/29/2008 3:59 PM        scan h 0.75 k 1.25 l 0 e 8 2 -.4 preset mcu 10
+9/29/2008 4:04 PM        scan h 0.8 k 1.2 l 0 e 8 2 -.4 preset mcu 10
+9/29/2008 4:08 PM        scan h 0.85 k 1.15 l 0 e 7 1 -.4 preset mcu 10
+9/29/2008 4:13 PM        scan h 0.9 k 1.1 l 0 e 6 1 -.4 preset mcu 10
+9/29/2008 4:17 PM        scantitle "Measure spin wave dispersion E=35 meV"
+9/29/2008 4:17 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 35 preset mcu 50
+9/29/2008 4:36 PM        scantitle "Measure spin wave dispersion E=30 meV"
+9/29/2008 4:36 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 30 preset mcu 40
+9/29/2008 4:49 PM        scantitle "Measure spin wave dispersion E=27 meV"
+9/29/2008 4:49 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 27 preset mcu 30
+9/29/2008 4:58 PM        scantitle "Measure spin wave dispersion E=24 meV"
+9/29/2008 4:58 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 24 preset mcu 30
+9/29/2008 5:07 PM        scantitle "Measure spin wave dispersion E=21 meV"
+9/29/2008 5:07 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 21 preset mcu 25
+9/29/2008 5:16 PM        scantitle "Measure spin wave dispersion E=18 meV"
+9/29/2008 5:16 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 18 preset mcu 25
+9/29/2008 5:25 PM        scantitle "Measure spin wave dispersion E=15 meV"
+9/29/2008 5:25 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 15 preset mcu 20
+9/29/2008 5:33 PM        scantitle "Measure spin wave dispersion E=12 meV"
+9/29/2008 5:33 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 12 preset mcu 20
+9/29/2008 5:42 PM        scantitle "Measure spin wave dispersion E=10 meV"
+9/29/2008 5:43 PM        scan h 0.7 1 0.025 k 1.3 1 0.025 l 0 e 10 preset mcu 20
+9/29/2008 5:57 PM        scantitle "Measure spin wave dispersion E=30 meV"
+9/29/2008 5:58 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 30 preset mcu 40
+9/29/2008 6:13 PM        scantitle "Measure spin wave dispersion E=70 meV"
+9/29/2008 6:13 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 70 ef 30.5 preset mcu 90
+9/29/2008 8:49 PM        scantitle "Spin wave E=60meV"
+9/29/2008 8:49 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 e 60 ef 30.5 preset mcu 90
+9/29/2008 9:51 PM        scantitle "Spin wave E=55meV"
+9/29/2008 9:51 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 e 55 ef 30.5 preset mcu 90
+9/29/2008 10:42 PM        scantitle "Spin wave E=50meV"
+9/29/2008 10:42 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 e 50 ef 30.5 preset mcu 90
+9/29/2008 11:27 PM        scantitle "Spin wave E=45meV"
+9/29/2008 11:27 PM        scan h 0.5 1 0.025 k 1.5 1 0.025 e 45 ef 30.5 preset mcu 90
+9/30/2008 12:07 AM        scantitle "Spin wave E=40meV"
+9/30/2008 12:07 AM        scan h 0.5 1 0.025 k 1.5 1 0.025 e 40 ef 30.5 preset mcu 90
+9/30/2008 12:44 AM        preset mcu 90
+9/30/2008 12:44 AM        scantitle "Spin wave E=80meV"
+9/30/2008 12:44 AM        scan h 2 k -0.5 0.5 0.025 e 80 ef 30.5
+9/30/2008 4:16 AM        scantitle "Spin wave E=75meV"
+9/30/2008 4:16 AM        scan h 2 k -0.5 0.5 0.025 e 75 ef 30.5
+9/30/2008 4:21 AM        scantitle "Spin wave E=70meV"
+9/30/2008 4:21 AM        scan h 2 k -0.5 0.5 0.025 e 70 ef 30.5
+9/30/2008 4:21 AM        scantitle "Spin wave E=65meV"
+9/30/2008 4:21 AM        scan h 2 k -0.5 0.5 0.025 e 65 ef 30.5
+9/30/2008 4:21 AM        scantitle "Spin wave E=60meV"
+9/30/2008 4:21 AM        scan h 2 k -0.5 0.5 0.025 e 60 ef 30.5
+9/30/2008 9:16 AM        drive e 0
+9/30/2008 9:19 AM        drive sgl 0 sgu 0
+9/30/2008 9:20 AM        drive sgu 0 sgl 0
+9/30/2008 9:20 AM        drive stu 0 stl 0
+9/30/2008 9:20 AM        drive stu 2.5
+9/30/2008 9:21 AM        drive stu -3
+9/30/2008 9:21 AM        begin

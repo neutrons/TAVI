@@ -1,0 +1,217 @@
+9/28/2008 11:49 AM        lattice 7.640000 14.680000 7.690000 90.000000 90.000000 90.000000
+9/28/2008 11:52 AM        dr s2 -76.48 s1 -76.48/2
+9/28/2008 11:52 AM        za
+9/28/2008 11:52 AM        ce
+9/28/2008 11:57 AM        dr e 0 
+9/28/2008 11:57 AM        dr s2 -76.48 s1 -76.48/2
+9/28/2008 12:00 PM        scantitle "check of point piece sample; h0l plane"
+9/28/2008 12:01 PM        scanrel s1 2 -2 -.15
+9/28/2008 12:02 PM        dr s1 -37.89
+9/28/2008 12:02 PM        scan sgl -4 4 .5
+9/28/2008 12:03 PM        dr sgl -.39
+9/28/2008 12:03 PM        scanrel s2 2 -2  -.2
+9/28/2008 12:05 PM        dr s2 -76.65
+9/28/2008 12:05 PM        comment "this is the 400 peak"
+9/28/2008 12:05 PM        scantitle "check of point piece sample; h0l plane, 400 peak"
+9/28/2008 12:05 PM        scanrel s1 2 -2 -.15
+9/28/2008 12:07 PM        dr s1 -37.97
+9/28/2008 12:09 PM        lattice a 7.627875 b 14.680000 c 7.690000
+9/28/2008 12:09 PM        lattice 7.627875 14.680000 7.690000 90.000000 90.000000 90.000000
+9/28/2008 12:09 PM        ubcalc file "C:\User\exp266\UBConf\tmp\UB28Sep2008_120947PM.ini"
+9/28/2008 12:10 PM        br 4 0 0 
+9/28/2008 12:10 PM        dr s1 -37.97
+9/28/2008 12:10 PM        dr s2 -76.65
+9/28/2008 12:10 PM        br 0 0 4
+9/28/2008 12:12 PM        scantitle "check of point piece sample; h0l plane, 004 peak"
+9/28/2008 12:12 PM        scan sgu -4 4 .4
+9/28/2008 12:14 PM        br 4 0 0
+9/28/2008 12:15 PM        dr s1 0
+9/28/2008 12:16 PM        dr s1 90
+9/28/2008 12:17 PM        dr s2 -30
+9/28/2008 12:20 PM        br 4 0 0 
+9/28/2008 12:25 PM        scanrel s1 1 -1 0.1
+9/28/2008 12:26 PM        dr s1 -37.7225
+9/28/2008 12:26 PM        dr sgl 3
+9/28/2008 12:26 PM        dr sgl -2
+9/28/2008 12:26 PM        dr sgl -1
+9/28/2008 12:26 PM        scanrel sgl -3 3 0.3
+9/28/2008 12:27 PM        dr sgl -1
+9/28/2008 12:28 PM        ubcalc file "C:\User\exp266\UBConf\tmp\UB28Sep2008_122809PM.ini"
+9/28/2008 12:28 PM        br 4 0 0
+9/28/2008 12:28 PM        br 0 0 4
+9/28/2008 12:29 PM        scanrel sgu -4 4 0.4
+9/28/2008 12:31 PM        br 4 0 0
+9/28/2008 12:33 PM        dr s2 30
+9/28/2008 12:33 PM        dr s1 -90
+9/28/2008 12:34 PM        dr s2 -30
+9/28/2008 12:57 PM        br 4 0 0
+9/28/2008 1:00 PM        driverel s1 -15
+9/28/2008 1:00 PM        driverel s1 -15
+9/28/2008 1:00 PM        driverel s1 -60
+9/28/2008 1:01 PM        driverel s1 90
+9/28/2008 1:02 PM        dr s1 -40
+9/28/2008 1:02 PM        dr s1 -45
+9/28/2008 1:02 PM        dr s1 -50
+9/28/2008 1:02 PM        dr sgl 0
+9/28/2008 1:02 PM        dr s1 -45
+9/28/2008 1:02 PM        dr s1 -40
+9/28/2008 1:03 PM        dr s1 -35
+9/28/2008 1:03 PM        dr s1 -45
+9/28/2008 1:04 PM        dr s1 -50
+9/28/2008 1:04 PM        dr sgl -1
+9/28/2008 1:05 PM        dr s1 -45
+9/28/2008 1:05 PM        dr s1 -46
+9/28/2008 1:05 PM        dr s1 -39
+9/28/2008 1:08 PM        dr s1 -46
+9/28/2008 1:08 PM        dr s1 -47
+9/28/2008 1:08 PM        dr s1 -48
+9/28/2008 1:08 PM        dr s1 -47
+9/28/2008 1:09 PM        dr s1 -39
+9/28/2008 1:09 PM        dr s1 -40
+9/28/2008 1:09 PM        dr s1 -41
+9/28/2008 1:09 PM        dr s1 -39
+9/28/2008 1:10 PM        dr s1 -42
+9/28/2008 1:10 PM        dr s1 -47
+9/28/2008 1:10 PM        dr s1 -41
+9/28/2008 1:11 PM        dr s1 -48
+9/28/2008 1:11 PM        dr s1 -49
+9/28/2008 1:11 PM        dr s1 -48
+9/28/2008 1:11 PM        dr s1 -42
+9/28/2008 1:11 PM        dr s1 -41
+9/28/2008 1:12 PM        dr s1 -42
+9/28/2008 1:12 PM        dr si -48
+9/28/2008 1:12 PM        dr s1 -48
+9/28/2008 1:12 PM        dr s1 -50
+9/28/2008 1:13 PM        dr s1 -49
+9/28/2008 1:13 PM        dr s1 -42
+9/28/2008 1:13 PM        dr s1 -43
+9/28/2008 1:13 PM        dr s1 -41
+9/28/2008 1:13 PM        dr s1 -41.5
+9/28/2008 1:16 PM        dr s1 -35
+9/28/2008 1:17 PM        dr s1 -30
+9/28/2008 1:17 PM        dr s1 -35
+9/28/2008 1:17 PM        dr s1 -40
+9/28/2008 1:17 PM        dr s1 -37
+9/28/2008 1:17 PM        dr s1 -31
+9/28/2008 1:18 PM        dr s1 -29
+9/28/2008 1:18 PM        dr s1 -30
+9/28/2008 1:19 PM        dr s1 -35
+9/28/2008 1:19 PM        dr s1 -39
+9/28/2008 1:20 PM        dr s1 -37
+9/28/2008 1:20 PM        dr s1 -30
+9/28/2008 1:21 PM        scanrel s1 1 -1 0.1
+9/28/2008 1:23 PM        dr s1 -37
+9/28/2008 1:23 PM        scanrel s1 1 -1 0.1
+9/28/2008 1:25 PM        dr s1 -40
+9/28/2008 1:25 PM        dr s1 -29
+9/28/2008 1:26 PM        scan s1 -45 -25 0.2
+9/28/2008 1:26 PM        scan s1 -25 -45 -0.2
+9/28/2008 1:31 PM        scan s1 -25 -45 -0.2
+9/28/2008 1:39 PM        scantitle "Tb5Ge crystal #1 (long)"
+9/28/2008 1:39 PM        scan s1 -20 -50 -0.2
+9/28/2008 1:50 PM        comment "going to Fe-Ga 10.8 at% sample"
+9/28/2008 1:50 PM        ubcalc file c:\user\exp262\ubconf\ub24sep2008_32347pm.ini
+9/28/2008 1:51 PM        br 1 1 0
+9/28/2008 1:56 PM        scanrel s1 1 -1 0.1
+9/28/2008 1:56 PM        dr s1 -78
+9/28/2008 1:56 PM        scanrel s1 1 -1 0.1
+9/28/2008 1:58 PM        br 2 0 0
+9/28/2008 1:58 PM        scanrel s1 1 -1 0.1
+9/28/2008 1:59 PM        dr s1 -52.3
+9/28/2008 2:00 PM        scanrel shl -3 3 0.3
+9/28/2008 2:00 PM        scanrel sgl -3 3 0.3
+9/28/2008 2:01 PM        dr sgl 0.1746
+9/28/2008 2:02 PM        ubcalc file "C:\User\exp266\UBConf\tmp\UB28Sep2008_20201PM.ini"
+9/28/2008 2:02 PM        br 2 0 0
+9/28/2008 2:02 PM        br 0 2 0
+9/28/2008 2:03 PM        scanrel sgu -3 3 0.3
+9/28/2008 2:04 PM        dr sgu -3
+9/28/2008 2:05 PM        ubcalc file "C:\User\exp266\UBConf\tmp\UB28Sep2008_20528PM.ini"
+9/28/2008 2:05 PM        br 0 2 0
+9/28/2008 2:05 PM        br 2 0 0
+9/28/2008 2:06 PM        scantitle "calibration scans Fe-Ga 10.8%"
+9/28/2008 2:06 PM        scantitle " calibration (200) , Trans"
+9/28/2008 2:07 PM        scan h 2 k -0.05 0.05 0.005 l 0 e 0
+9/28/2008 2:08 PM        scantitle " calibration (200) , Long"
+9/28/2008 2:08 PM        scan h 1.95 2.05 .005 k 0 l 0 e 0
+9/28/2008 2:09 PM        scantitle " calibration (020) , Trans"
+9/28/2008 2:09 PM        scan h -0.05 0.05 0.005 k 2 l 0 e 0
+9/28/2008 2:11 PM        scantitle " calibration (020) , Long"
+9/28/2008 2:11 PM        scan h 0 k 1.95 2.05 .005 l 0 e 0
+9/28/2008 2:15 PM        scantitle "T2[110] phonon, Fe-Ga 10.8%, [1.1 0.9 0]"
+9/28/2008 2:15 PM        scan h 1.1 k 0.9 l 0 e -1 -8 -0.4 preset mcu 20
+9/28/2008 2:23 PM        scantitle "T2[110] phonon, Fe-Ga 10.8%, [0.9 1.1 0]"
+9/28/2008 2:23 PM        scan h 0.9 k 1.1 l 0 e -1 -8 -0.2 preset mcu 20
+9/28/2008 2:37 PM        scantitle "spin wave, Fe-Ga 10.8%, e = 5 meV"
+9/28/2008 2:37 PM        scan h 0.8 1.2 0.005 k 1.2 0.8 -0.005 l 0 e 5 preset mcu 20
+9/28/2008 3:09 PM        scantitle "T2110, q = .15, focused, E-gain"
+9/28/2008 3:09 PM        scan h .85 k 1.15 l 0 e -3 -11 -.25 preset mcu 50
+9/28/2008 3:39 PM        scantitle "T2110, q = .20, focused, E-gain"
+9/28/2008 3:39 PM        scan h .80 k 1.20 l 0 e -4.5 -14 -.3 preset mcu 75
+9/28/2008 4:20 PM        scantitle "T2110, q = .25, focused, E-gain"
+9/28/2008 4:20 PM        scan h .75 k 1.25 l 0 e -4.5 -16 -.3 preset mcu 100
+9/28/2008 5:28 PM        scantitle "T2110, q = .30, focused, E-gain"
+9/28/2008 5:28 PM        scan h .70 k 1.30 l 0 e -8 -18 -.4 preset mcu 125
+9/28/2008 6:23 PM        scantitle "T2110, q = .35, focused, E-gain"
+9/28/2008 6:23 PM        scan h .65 k 1.35 l 0 e -8 -20 -.4 preset mcu 150
+9/28/2008 7:42 PM        scantitle "T2110, q = .40, focused, E-gain"
+9/28/2008 7:42 PM        scan h .60 k 1.40 l 0 e -9 -22 -.5 preset mcu 175
+9/28/2008 9:01 PM        scantitle "T2110, q = .45, focused, E-gain"
+9/28/2008 9:01 PM        scan h .55 k 1.45 l 0 e -9 -23 -.5 preset mcu 200
+9/28/2008 10:39 PM        scantitle "T2110, q = .50, focused, E-gain"
+9/28/2008 10:39 PM        scan h .50 k 1.50 l 0 e -9 -23 -.6 preset mcu 250
+9/29/2008 12:19 AM        scantitle "sw; L110 fr 110, 5 meV"
+9/29/2008 12:19 AM        scan h .8 1.2 .01 k .8 1.2 .01 l 0 e -5 preset mcu 20
+9/29/2008 12:34 AM        scantitle "sw; T110 fr 110, 5 meV, e-loss"
+9/29/2008 12:34 AM        scan h .8 1.2 .01 k 1.2 .8 -.01 l 0 e 5 preset mcu 20
+9/29/2008 12:51 AM        scantitle "sw; L110 fr 110, 5 meV, e-loss"
+9/29/2008 12:51 AM        scan h .8 1.2 .01 k .8 1.2 .01 l 0 e 5 preset mcu 20
+9/29/2008 1:06 AM        scantitle "sw; T110 fr 110, 10 meV"
+9/29/2008 1:06 AM        scan h .7 1.3 .01 k 1.3 .7 -.01 l 0 e -10 preset mcu 50
+9/29/2008 2:01 AM        scantitle "sw; L110 fr 110, 10 meV"
+9/29/2008 2:01 AM        scan h .7 1.3 .02 k .7 1.3 .02 l 0 e -10 preset mcu 50
+9/29/2008 2:28 AM        scantitle "sw; T110 fr 110, 15 meV"
+9/29/2008 2:28 AM        scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -15 preset mcu 100
+9/29/2008 3:28 AM        scantitle "sw; L110 fr 110, 15 meV"
+9/29/2008 3:28 AM        scan h .64 .98 .01 k .64 .98 .01 l 0 e -15 preset mcu 100
+9/29/2008 4:27 AM        scantitle "sw; T110 fr 110, 20 meV"
+9/29/2008 4:27 AM        scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -20 preset mcu 150
+9/29/2008 5:56 AM        scantitle "sw; L110 fr 110, 20 meV"
+9/29/2008 5:56 AM        scan h .64 .98 .02 k .64 .98 .02 l 0 e -20 preset mcu 150
+9/29/2008 6:42 AM        scantitle "sw; T110 fr 110, 25 meV"
+9/29/2008 6:42 AM        scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -25 preset mcu 200
+9/29/2008 8:39 AM        scantitle "sw; L110 fr 110, 25 meV"
+9/29/2008 8:39 AM        scan h .64 .98 .01 k .64 .98 .01 l 0 e -25 preset mcu 200
+9/29/2008 10:36 AM        scantitle "sw; T110 fr 110, 30 meV"
+9/29/2008 10:36 AM        scan h .64 .98 .01 k 1.36 1.02 -.01 l 0 e -30 preset mcu 300
+9/29/2008 1:30 PM        scantitle "sw; L110 fr 110, 30 meV"
+9/29/2008 1:30 PM        scan h .64 .98 .02 k .64 .98 .02 l 0 e -30 preset mcu 300
+9/29/2008 3:01 PM        br 2 0 0 
+9/29/2008 3:03 PM        scan s2 1.5 -1.5 -.2 
+9/29/2008 3:03 PM        br 2 0 0 
+9/29/2008 3:04 PM        scanrel s2 1.5 -1.5 -.2 
+9/29/2008 3:05 PM        br 0 0 2
+9/29/2008 3:06 PM        scanrel s1 1 -1 -.1
+9/29/2008 3:08 PM        br 1 1 0
+9/29/2008 3:11 PM        scantitle "T2[110] phonon, Fe-Ga 10.8%, [1.1 0.9 0]"
+9/29/2008 3:11 PM        scan h 1.1 k 0.9 l 0 e -1 -8 -0.4 preset mcu 20
+9/29/2008 3:19 PM        scantitle "T2[110] phonon, Fe-Ga 10.8%, [0.9 1.1 0]"
+9/29/2008 3:19 PM        scan h 0.9 k 1.1 l 0 e -1 -8 -0.2 preset mcu 20
+9/29/2008 3:33 PM        scantitle "spin wave, Fe-Ga 10.8%, e = 5 meV"
+9/29/2008 3:33 PM        scan h 0.8 1.2 0.005 k 1.2 0.8 -0.005 l 0 e 5 preset mcu 20
+9/29/2008 3:36 PM        scantitle "spin wave, Fe-Ga 10.8%, e = 5 meV"
+9/29/2008 3:36 PM        scan h 0.8 1.2 0.02 k 1.2 0.8 -0.02 l 0 e 5 preset mcu 10
+9/29/2008 3:47 PM        scantitle "T2110, q = .15, focused, E-gain"
+9/29/2008 3:47 PM        scan h .85 k 1.15 l 0 e -3 -11 -.25 preset mcu 25
+9/29/2008 4:03 PM        scantitle "T2110, q = .20, focused, E-gain"
+9/29/2008 4:03 PM        scan h .80 k 1.20 l 0 e -4.5 -14 -.3 preset mcu 50
+9/29/2008 4:31 PM        scantitle "T2110, q = .25, focused, E-gain"
+9/29/2008 4:31 PM        scan h .75 k 1.25 l 0 e -4.5 -16 -.3 preset mcu 75
+9/29/2008 5:26 PM        scantitle "T2110, q = .30, focused, E-gain"
+9/29/2008 5:26 PM        scan h .70 k 1.30 l 0 e -8 -18 -.4 preset mcu 100
+9/29/2008 6:28 PM        scantitle "T2110, q = .35, focused, E-gain"
+9/29/2008 6:28 PM        scan h .65 k 1.35 l 0 e -8 -20 -.4 preset mcu 125
+9/29/2008 7:25 PM        ce
+9/29/2008 7:37 PM        za
+9/29/2008 7:37 PM        dr s2 -65
+9/29/2008 7:37 PM        begin

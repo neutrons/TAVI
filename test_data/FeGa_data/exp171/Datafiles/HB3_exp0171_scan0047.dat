@@ -1,0 +1,198 @@
+# scan = 47
+# date = 9/30/2008
+# time = 4:21:23 AM
+# proposal = IPTS-1454
+# experiment = Spin wave and phonon dispersion in Fe-Ga solid solution
+# experiment_number = 171
+# command = scan h 2 k -0.5 0.5 0.025 e 65 ef 30.5
+# builtin_command = scan h 2 k -0.5 0.5 0.025 e 65 ef 30.5
+# users = Summer School
+# local_contact = 
+# scan_title = Spin wave E=65meV
+# monochromator = PG002
+# analyzer = Pg002
+# sense = -+-
+# collimation = 48-40-40-120
+# samplename = FeGa 28.8%
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 2.909750,2.909750,2.909750,90.000000,90.000000,90.000000
+# ubmatrix = -0.248264,-0.237003,0.017469,0.237458,-0.248401,0.004615,0.009443,0.015404,0.343197
+# mode = 0
+# plane_normal = 0.050829,0.013429,0.998616
+# ubconf = UB29Sep2008_10947PM.ini
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 90.000000
+# def_x = k
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q          l         ei   tcoldtip    tsample       temp
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:23 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
+# ERROR in driving: Tue, Sep 30, 2008 [4:21:24 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# Q is not in the specified scattering plane
+# ...Move aborted.
+# Sum of Counts = 0
+# Center of Mass = 0.000000+/-0.000000
+# Full Width Half-Maximum = 0.000000+/-0.000000
+# 4:21:24 AM  9/30/2008   scan completed.

@@ -1,0 +1,1 @@
+scantitle "T2110, q = .40, focused, E-gain"scan h .60 k 1.40 l 0 e -9 -22 -.5 preset mcu 150scantitle "T2110, q = .45, focused, E-gain"scan h .55 k 1.45 l 0 e -9 -23 -.5 preset mcu 175scantitle "T2110, q = .50, focused, E-gain"scan h .50 k 1.50 l 0 e -9 -23 -.6 preset mcu 200
