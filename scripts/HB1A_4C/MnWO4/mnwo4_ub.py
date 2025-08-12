@@ -1,12 +1,4 @@
-import matplotlib.backends.backend_pdf
-import matplotlib.pyplot as plt
-import numpy as np
-
-from tavi.data.fit import Fit1D
-from tavi.data.scan import Scan
-from tavi.data.tavi import TAVI
 from tavi.instrument.tas import TAS
-from tavi.plotter import Plot1D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
 
@@ -69,7 +61,6 @@ def check_ub():
             print(f"Calculated agnles for {hkl_list[i]} are {angle_cal}")
 
 
-
 if __name__ == "__main__":
     scan_nums, hkl_list, angles_list = read_macro()
 
@@ -91,4 +82,3 @@ if __name__ == "__main__":
     print(hb1a_4c.sample)
 
     check_ub()
-   

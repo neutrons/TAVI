@@ -137,7 +137,7 @@ def plot_s1_nuclear_peaks():
     for i, hkl in enumerate(hkl_list):
         s1_q, p1, q = analyze_s1_scan_in_q(hkl, scan_nums[i])
 
-        rez = hb1a_4c.cooper_nathans(hkle=hkl+(0,), axes=None)
+        rez = hb1a_4c.cooper_nathans(hkle=hkl + (0,), axes=None)
         p1.add_reso_bar(
             pos=s1_q,
             fwhm=rez.coh_fwhms(axis=1),
