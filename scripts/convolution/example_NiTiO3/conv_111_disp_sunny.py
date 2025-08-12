@@ -19,44 +19,28 @@ def model_sunny():
     return jl.model()
 
 
-def _model_disp(vq1, vq2, vq3, model):
+def hexagonal_to_rhombohedral(vq1, vq2, vq3):
+    """Convert hexagonal indices to rhombohedral indices."""
+    T_H2R = np.array(
+        [
+            [2 / 3, 1 / 3, 1 / 3],
+            [-1 / 3, 1 / 3, 1 / 3],
+            [-1 / 3, -2 / 3, 1 / 3],
+        ],
+        dtype=float,
+    ).T
+    vq = np.column_stack((vq1, vq2, vq3)).astype(float, copy=False)  # shape (N, 3)
+    return list(vq @ T_H2R)  # still (N, 3), now in rhombohedral indices
+
+
+def _model_disp(vq, model):
     """return energy for given Q points"""
-    # Hexagonal -> Rhombohedral (obverse setting)
-    T_H2R = np.array(
-        [
-            [2 / 3, 1 / 3, 1 / 3],
-            [-1 / 3, 1 / 3, 1 / 3],
-            [-1 / 3, -2 / 3, 1 / 3],
-        ],
-        dtype=float,
-    )
-    vq = np.column_stack((vq1, vq2, vq3)).astype(float, copy=False)  # shape (N, 3)
-    vq_r = list(vq @ T_H2R)  # still (N, 3), now in rhombohedral indices
-    # If a C-contiguous array is required downstream, keep this:
-    return np.array(jl.disp(model, vq_r), order="C")
-    # vq = np.array(list(zip(vq1, vq2, vq3)))
-    # vq_r=list(vq.dot(np.array([[2/3,1/3,1/3],[-1/3,1/3,1/3],[-1/3,-2/3,1/3]])))
-    # return np.array(jl.disp(model, vq_r),order='F')
+    return np.array(jl.disp(model, vq), order="C")
 
 
-def _model_inten(vq1, vq2, vq3, model):
+def _model_inten(vq, model):
     """return intensity for given Q points"""
-    # Hexagonal -> Rhombohedral (obverse setting)
-    T_H2R = np.array(
-        [
-            [2 / 3, 1 / 3, 1 / 3],
-            [-1 / 3, 1 / 3, 1 / 3],
-            [-1 / 3, -2 / 3, 1 / 3],
-        ],
-        dtype=float,
-    )
-    vq = np.column_stack((vq1, vq2, vq3)).astype(float, copy=False)  # shape (N, 3)
-    vq_r = list(vq @ T_H2R)  # still (N, 3), now in rhombohedral indices
-    # If a C-contiguous array is required downstream, keep this:
-    return np.array(jl.inten(model, vq_r), order="C")
-    # vq = np.array(list(zip(vq1, vq2, vq3)))
-    # vq_r=list(vq.dot(np.array([[2/3,1/3,1/3],[-1/3,1/3,1/3],[-1/3,-2/3,1/3]])))
-    # return np.array(jl.inten(model, vq_r),order='F')
+    return np.array(jl.inten(model, vq), order="C")
 
 
 if __name__ == "__main__":
@@ -71,7 +55,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # points being measured
     # ----------------------------------------------------
-    ql_min, ql_max, ql_step = 2.5, 2.9, 0.1
+    ql_min, ql_max, ql_step = 0, 2.9, 0.1
     en_min, en_max, en_step = 0.1, 4.1, 0.1
 
     ql_list = np.linspace(ql_min, ql_max, round((ql_max - ql_min) / ql_step + 1))
@@ -79,7 +63,7 @@ if __name__ == "__main__":
     qe_list = np.array([(0, 0, ql, en) for ql in ql_list for en in en_list])
 
     reso_params = [
-        (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
+        (tuple(hexagonal_to_rhombohedral(*reso.hkl)[0]), reso.en, reso.r0, reso.mat) if reso is not None else None
         for reso in ctax.cooper_nathans(hkle=qe_list, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
     ]
     model = model_sunny()
@@ -87,16 +71,17 @@ if __name__ == "__main__":
     model_inten = partial(_model_inten, model=model)
     conv_model = partial(convolution, model_disp=model_disp, model_inten=model_inten)
     t0 = time()
+    # ------------------- muliti core ------------------
     # num_worker = 8
     # with ProcessPoolExecutor(max_workers=num_worker) as executor:
     #     results = executor.map(conv_model, reso_params)
     # measurement_inten = np.asarray(list(results))
     # ------------------- single core ------------------
-    sz = len(reso_params)
+    """sz = len(reso_params)
     measurement_inten = np.empty(shape=sz)
     for i in range(sz):
         measurement_inten[i] = conv_model(reso_params[i])
-    # --------------------------------------------------
+    # --------------------------------------------------"""
     print(f"Convolution completed in {(t1 := time()) - t0:.4f} s")
 
     # ----------------------------------------------------
@@ -109,20 +94,21 @@ if __name__ == "__main__":
     rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
 
     p = Plot2D()
-    for rez in rez_list:
+    """ for rez in rez_list:
         if rez is None:
             continue
         e_co = rez.get_ellipse(axes=(2, 3), PROJECTION=False)
         e_inco = rez.get_ellipse(axes=(2, 3), PROJECTION=True)
         p.add_reso(e_co, c="w", linestyle="solid")
         p.add_reso(e_inco, c="w", linestyle="dashed")
+    """
     # create plot
     fig = plt.figure()
     ax = fig.add_subplot(111, axes_class=Axes)
     p.plot(ax)
 
     # overplot contour
-    vq1, ven = np.meshgrid(ql_list, en_list, indexing="ij")
+    """vq1, ven = np.meshgrid(ql_list, en_list, indexing="ij")
     im = ax.pcolormesh(
         vq1,
         ven,
@@ -131,12 +117,13 @@ if __name__ == "__main__":
         vmin=0,
         vmax=0.00025,
     )
-    fig.colorbar(im, ax=ax)
+    fig.colorbar(im, ax=ax)"""
 
     # plot dispersion
-    disp = model_disp(np.zeros_like(ql_list), np.zeros_like(ql_list), ql_list)
+    vq = hexagonal_to_rhombohedral(np.zeros_like(ql_list), np.zeros_like(ql_list), ql_list)
+    disp = model_disp(vq)
     for i in range(np.shape(disp)[0]):
-        ax.plot(ql_list, disp[i], "-w")
+        ax.plot(ql_list, disp[i], "-ok")
 
     ax.set_xlim((ql_min - 0.1, ql_max + 0.1))
     ax.set_ylim((en_min - 0.1, en_max))

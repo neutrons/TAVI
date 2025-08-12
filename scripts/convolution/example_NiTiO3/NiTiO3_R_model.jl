@@ -45,3 +45,10 @@ function inten(swt, qpts)
     return res.data
 end
 
+# units = Units(:meV, :angstrom);
+# swt = model()
+# qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1]]
+# path = q_space_path(swt.sys.crystal, qs, 200)
+# res = intensities_bands(swt, path)
+# using GLMakie
+# plot_intensities(res; units, colorrange=(0, 5))
