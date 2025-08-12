@@ -10,7 +10,7 @@ from tavi import __version__
 from tavi.configuration import Configuration
 from tavi.mainwindow import MainWindow
 
-logger = logging.getLogger("Tavi")
+logger = logging.getLogger("TAVI")
 
 
 class Tavi(QMainWindow):

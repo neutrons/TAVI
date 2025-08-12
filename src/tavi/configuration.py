@@ -9,10 +9,10 @@ from pathlib import Path
 
 import logging
 
-logger = logging.getLogger("Tavi")
+logger = logging.getLogger("TAVI")
 
 # configuration settings file path
-CONFIG_PATH_FILE = os.path.join(Path.home(), ".Tavi", "configuration.ini")
+CONFIG_PATH_FILE = os.path.join(Path.home(), ".TAVI", "configuration.ini")
 
 
 class Configuration:
@@ -29,7 +29,7 @@ class Configuration:
 
         # retrieve the file path of the file
         self.config_file_path = CONFIG_PATH_FILE
-        logger.information(f"{self.config_file_path} will be used")
+        logger.info(f"{self.config_file_path} will be used")
 
         # if template conf file path exists
         if os.path.exists(self.template_file_path):

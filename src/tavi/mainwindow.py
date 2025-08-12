@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 from tavi.help.help_model import help_function
 # from tavi.tavi.tavi_model import taviModel
 # from tavi.tavi.tavi_presenter import taviPresenter
-from tavi.tavi_view import taviView
+from tavi.tavi_view.taviView import taviView
 
 
 class MainWindow(QWidget):
