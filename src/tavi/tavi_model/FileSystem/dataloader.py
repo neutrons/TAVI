@@ -1,13 +1,15 @@
 import json
+import logging
 import os
 from dataclasses import dataclass, field, make_dataclass
-from pyclbr import Class
-from typing import NewType, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional, Type
 
 import numpy as np
 
 import tavi.tavi_model.FileSystem.spice_reader as spice_reader
 
+logger = logging.getLogger("TAVI")
 TYPE_MAP = {
     "str": Optional[str],
     "float": Optional[float],
@@ -17,21 +19,38 @@ TYPE_MAP = {
     "ndarray": Optional[np.ndarray],
 }
 
-TaviData = NewType("TaviData", Class)
+DEFAULT_TYPE = Optional[str]
 
 
-def generate_dataclass(class_name: str, schema: dict, use_slots=True) -> TaviData:
-    fields = []
-    for name, type_str in schema.items():
-        typ = TYPE_MAP.get(type_str, Optional[str])  # fallback
-        fields.append((name, typ, field(default=None)))
+def generate_dataclass(class_name: str, schema: dict, use_slots=True) -> Type[Any]:
+    """
+    Dynamically create a dataclass from a schema.
+
+    Args:
+        class_name: Name of the generated class.
+        schema: Dictionary mapping field names to type strings.
+        use_slots: Whether to use __slots__ for the generated class.
+
+    Returns:
+        A new dataclass type.
+    """
+    fields = [(name, TYPE_MAP.get(type_str, DEFAULT_TYPE), field(default=None)) for name, type_str in schema.items()]
     return make_dataclass(class_name, fields, slots=use_slots)
 
 
-def load_schema(filename):
-    with open(filename, "r") as f:
-        data = json.load(f)
-    return data
+def load_schema(filename: str | Path) -> Dict[str, Any]:
+    """
+    Load a JSON schema file into a Python dictionary.
+
+    Args:
+        filename: Path to the JSON file.
+
+    Returns:
+        The parsed JSON object as a dictionary.
+    """
+    path = Path(filename)
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -44,6 +63,23 @@ RawData = generate_dataclass("RawData", schema["RawData"])
 
 @dataclass
 class Scan:
+    """
+    Represents a single scan within a Tavi project, containing both raw measurement
+    data and associated metadata.
+
+    Attributes:
+        data (RawData): Numerical measurement arrays collected during the scan
+            (e.g., motor positions, detector counts, temperatures).
+        metadata (RawMetaData): Descriptive information about the scan
+            (e.g., experiment details, instrument settings, sample information).
+        column_names (tuple): Ordered names of data columns in `data`, typically
+            matching measurement channels or parameters.
+        error_message (tuple): Messages or warnings associated with the scan,
+            such as instrument errors or data quality issues.
+        others (tuple): Miscellaneous or auxiliary information related to the scan
+            that does not fit into `data` or `metadata`.
+    """
+
     data: RawData
     metadata: RawMetaData
     column_names: tuple
@@ -53,44 +89,77 @@ class Scan:
 
 @dataclass
 class TaviProject:
-    scans: dict[str, Scan]
+    """
+    Represents a complete Tavi project containing one or more scans.
+
+    Attributes:
+        scans (dict[str, Scan]): A mapping of scan identifiers (e.g., scan numbers or
+            unique labels) to their corresponding `Scan` objects. Each `Scan` holds
+            both the raw measurement data and the associated metadata for that scan.
+    """
+
+    scans: dict[str, Scan] = field(default_factory=dict)
 
 
 def load_folder(dir):
-    # initialize TaviProject class
-    tavi_project = TaviProject(dict())
+    """
+    Load SPICE data files from a directory into a TaviProject.
+
+    This function reads each file in the specified directory using
+    `spice_reader.read_spice_datafile()`, converts the numeric arrays and
+    metadata into `RawData` and `RawMetaData` dataclass instances, and stores
+    them as `Scan` objects in a `TaviProject`.
+
+    Args:
+        directory (str | Path): Path to the folder containing SPICE data files.
+
+    Returns:
+        TaviProject: A project object containing all loaded scans.
+    """
+
+    # Initialize TaviProject class
+    tavi_project = TaviProject()
 
     # load files into TaviProject scans
-    for filename in os.listdir(dir)[0:1]:
-        spice_data = spice_reader.read_spice_datafile(os.path.join(dir, filename))
+    for filename in os.listdir(dir):
+        numeric_data, col_names, meta_data, others, error_message = spice_reader.read_spice_datafile(
+            os.path.join(dir, filename)
+        )
         rawdata = RawData()
         rawmetadata = RawMetaData()
-        numeric_data = spice_data[0]
-        col_names = spice_data[1]
-        meta_data = spice_data[2]
-        others = spice_data[3]
-        error_message = spice_data[4]
 
         for col_name in col_names:
-            if col_name == "Pt.":
-                if hasattr(rawdata, "Pt"):
-                    setattr(rawdata, "Pt", numeric_data[:, col_names.index("Pt.")])
-            if hasattr(rawdata, col_name):
-                setattr(rawdata, col_name, numeric_data[:, col_names.index(col_name)])
+            attr_name = "Pt" if col_name == "Pt." else col_name
+            if hasattr(rawdata, attr_name):
+                try:
+                    setattr(rawdata, attr_name, numeric_data[:, col_names.index(col_name)])
+                # if the numeric_data only has 1 entry, we'd still like to parse it as a 1D numpy array
+                except IndexError:
+                    setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
+            else:
+                logger.warning("New data entry detected, consider updating RawData entry in tavi_data_schema.json")
 
-        for name in meta_data:
-            if hasattr(rawmetadata, name):
-                setattr(rawmetadata, name, meta_data[name])
+        for key, value in meta_data.items():
+            # replace "-" or " " with "_" to consolidate with python attribute's format
+            key = key.replace("-", "_").replace(" ", "_")
+            if hasattr(rawmetadata, key):
+                setattr(rawmetadata, key, value)
+            else:
+                logger.warning(
+                    "New meta data entry detected, consider updating RawMetaData entry in tavi_data_schema.json"
+                )
 
-        scan = Scan(rawdata, rawmetadata, col_names, error_message, others)
+        scan = Scan(
+            data=rawdata, metadata=rawmetadata, column_names=col_names, error_message=error_message, others=others
+        )
         tavi_project.scans[filename] = scan
-    # print(meta_data)
-    # print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].metadata.sampletype)
+
     return tavi_project
 
 
 if __name__ == "__main__":
     current_directory = os.getcwd()
     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
+    file = os.path.join(filepath, "CG4C_exp0424_scan0081.dat")
     tavi_project = load_folder(filepath)
-    print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].others)
+    print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].metadata)
