@@ -28,9 +28,9 @@
         "preset_value": "str",
         "def_x": "str",
         "def_y": "str",
-        "sum_of_counts": "str",
-        "center_of_mass": "str",
-        "full_width_half_maximum": "str",
+        "Sum_of_Counts": "str",
+        "Center_of_Mass": "str",
+        "Full_Width_Half_Maximum": "str",
         "end_time": "str"
     },
   "RawData": {
