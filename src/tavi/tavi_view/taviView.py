@@ -4,7 +4,7 @@ from qtpy.QtCore import QObject
 from qtpy.QtWidgets import QDialog, QFileDialog, QHBoxLayout, QLineEdit, QListView, QPushButton, QStackedWidget, QWidget
 
 
-class taviView(QWidget):
+class TaviView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
