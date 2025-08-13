@@ -4,7 +4,7 @@ from qtpy.QtCore import QObject
 from qtpy.QtWidgets import QDialog, QFileDialog, QHBoxLayout, QLineEdit, QListView, QPushButton, QStackedWidget, QWidget
 
 
-class taviView(QWidget):
+class TaviView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -65,9 +65,16 @@ class LoadWidget(QWidget):
         # QFileDialog.accept() shows the contents of that directory, but we
         # need to be able to "open" directories as we can do with files, so we
         # just override accept() with the default QDialog implementation which
+        # by default, if a directory is opened in file listing mode,
+        # QFileDialog.accept() shows the contents of that directory, but we
+        # need to be able to "open" directories as we can do with files, so we
+        # just override accept() with the default QDialog implementation which
         # will just return exec_()
         dialog.accept = lambda: QDialog.accept(dialog)
 
+        # there are many item views in a non-native dialog, but the ones displaying
+        # the actual contents are created inside a QStackedWidget; they are a
+        # QTreeView and a QListView, and the tree is only used when the
         # there are many item views in a non-native dialog, but the ones displaying
         # the actual contents are created inside a QStackedWidget; they are a
         # QTreeView and a QListView, and the tree is only used when the
@@ -80,10 +87,13 @@ class LoadWidget(QWidget):
         # clear the line edit contents whenever the current directory changes
         lineEdit.blockSignals(True)
         dialog.directoryEntered.connect(lambda: lineEdit.setText(""))
+        dialog.directoryEntered.connect(lambda: lineEdit.setText(""))
         lineEdit.blockSignals(False)
 
         dialog.exec_()
         return dialog.selectedFiles()
 
+
     def handleLoad(self):
         print(self.getOpenFilesAndDirs(parent=self))
+
