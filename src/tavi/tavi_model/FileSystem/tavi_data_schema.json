@@ -89,5 +89,21 @@
     "sample": "ndarray",
     "temp": "ndarray",
     "temp_2": "ndarray"
-  }
+  },
+  "UbConf":{
+    "UBMode": "int",
+    "ScatteringPlaneVectors": "ndarray",
+    "Peak1": "ndarray",
+    "Peak2": "ndarray",
+    "LatticeParams": "ndarray",
+    "Energy": "int",
+    "UBMatrix": "ndarray",
+    "UBInverse": "ndarray",
+    "BMatrix": "ndarray",
+    "AngleMode": "int",
+    "PlaneNormal": "ndarray",
+    "InPlaneRef": "ndarray",
+    "UpperArc": "int",
+    "LowerArc": "int"
+}
 }
