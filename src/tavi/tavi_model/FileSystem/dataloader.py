@@ -61,6 +61,7 @@ RawMetaData = generate_dataclass("RawMetaData", schema["RawMetaData"])
 RawData = generate_dataclass("RawData", schema["RawData"])
 UbConf = generate_dataclass("UbConf", schema["UbConf"])
 
+
 @dataclass
 class Scan:
     """
@@ -85,7 +86,6 @@ class Scan:
     column_names: tuple
     error_message: tuple
     others: tuple
-    
 
 
 @dataclass
@@ -100,7 +100,8 @@ class TaviProject:
     """
 
     scans: dict[str, Scan] = field(default_factory=dict)
-    ubConf: dict[str, UbConf] = field(default_factory=dict)
+    ubconf: dict[str, UbConf] = field(default_factory=dict)
+
 
 def load_folder(dir):
     """
@@ -120,7 +121,7 @@ def load_folder(dir):
 
     # Initialize TaviProject class
     tavi_project = TaviProject()
-    data_dir = os.path.join(dir,"Datafiles")
+    data_dir = os.path.join(dir, "Datafiles")
     # load files into TaviProject scans
     for filename in os.listdir(data_dir):
         numeric_data, col_names, meta_data, others, error_message = spice_reader.read_spice_datafile(
@@ -151,39 +152,39 @@ def load_folder(dir):
                 )
 
         scan = Scan(
-            data=rawdata, metadata=rawmetadata, column_names=col_names, error_message=error_message, others=others,
+            data=rawdata,
+            metadata=rawmetadata,
+            column_names=col_names,
+            error_message=error_message,
+            others=others,
         )
         tavi_project.scans[filename] = scan
-    
+
     tmp_exist = False
     ub_dir = os.path.join(dir, "UBConf")
     for ub_filename in os.listdir(ub_dir):
-        ubconf = UbConf()
+        ub_conf = UbConf()
         if ub_filename == "tmp":
             tmp_exist = True
             continue
         ub_data = spice_reader.read_spice_ubconf(os.path.join(ub_dir, ub_filename))
         for key, value in ub_data.items():
-            if hasattr(ubconf, key):
-                setattr(ubconf, key, value)
+            if hasattr(ub_conf, key):
+                setattr(ub_conf, key, value)
             else:
-                logger.warning(
-                    "New UbConf found, consider updating UbConf entry in tavi_data_schema.json"
-                )
-        tavi_project.ubConf[ub_filename] = ubconf
-    
+                logger.warning("New UbConf found, consider updating UbConf entry in tavi_data_schema.json")
+        tavi_project.ubconf[ub_filename] = ub_conf
+
     if tmp_exist:
-        for ub_filename in os.listdir(os.path.join(ub_dir,"tmp")):
-            ubconf = UbConf()
+        for ub_filename in os.listdir(os.path.join(ub_dir, "tmp")):
+            ub_conf = UbConf()
             ub_data = spice_reader.read_spice_ubconf(os.path.join(ub_dir, "tmp", ub_filename))
             for key, value in ub_data.items():
-                if hasattr(ubconf, key):
-                    setattr(ubconf, key, value)
+                if hasattr(ub_conf, key):
+                    setattr(ub_conf, key, value)
                 else:
-                    logger.warning(
-                        "New UbConf found, consider updating UbConf entry in tavi_data_schema.json"
-                    )
-        tavi_project.ubConf["tmp-" + ub_filename] = ubconf
+                    logger.warning("New UbConf found, consider updating UbConf entry in tavi_data_schema.json")
+        tavi_project.ubconf["tmp-" + ub_filename] = ub_conf
 
     return tavi_project
 
@@ -196,5 +197,4 @@ if __name__ == "__main__":
     ub = spice_reader.read_spice_ubconf(ubpath)
     # print(ub)
     # print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].metadata)
-    print(tavi_project.ubConf["tmp-UB02Jul2024_21029PM.ini"])
-
+    print(tavi_project.ubconf["tmp-UB02Jul2024_21029PM.ini"])
