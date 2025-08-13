@@ -9,7 +9,6 @@ coverage:
         threshold: 0.5%
 
 ignore:
-  - "src/tavi/tavi_model"
   - "src/tavi/tavi_view"
   - "src/tavi/mainwindow.py"
   - "src/tavi/tavimain.py"
