@@ -6,7 +6,7 @@ from tavi.help.help_model import help_function
 
 # from tavi.tavi.tavi_model import taviModel
 # from tavi.tavi.tavi_presenter import taviPresenter
-from tavi.tavi_view.taviView import taviView
+from tavi.tavi_view.taviView import TaviView
 
 
 class MainWindow(QWidget):
@@ -17,7 +17,7 @@ class MainWindow(QWidget):
         super().__init__(parent)
 
         ### Create widgets here ###
-        tavi_view = taviView(self)
+        tavi_view = TaviView(self)
         # tavi_model = taviModel()
         # self.tavi_presenter = taviPresenter(tavi_view, tavi_model)
 
