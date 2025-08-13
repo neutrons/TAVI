@@ -1,7 +1,8 @@
 [project]
 authors = [{name = "Bing Li", email = "lib1@ornl.gov"}]
 dependencies = [
-  # list all runtime dependencies here
+  "qtpy",
+  "pyside6",
 ]
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
@@ -46,8 +47,8 @@ where = ["src"]
 # [project.scripts]
 # packagename-cli = "packagenamepy.packagename:main"
 
-# [project.gui-scripts]
-# packagenamepy = "packagenamepy.packagename:gui"
+[project.gui-scripts]
+tavi = "tavi.tavimain:gui"
 
 [tool.pytest.ini_options]
 markers = [
