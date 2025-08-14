@@ -1,9 +1,10 @@
-from dataclasses import dataclass, field, make_dataclass
 import json
+import os
+from dataclasses import dataclass, field, make_dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional, Type
+
 import numpy as np
-import os
 
 TYPE_MAP = {
     "str": Optional[str],
@@ -96,4 +97,3 @@ class TaviProject:
 
     scans: dict[str, Scan] = field(default_factory=dict)
     ubconf: dict[str, UbConf] = field(default_factory=dict)
-

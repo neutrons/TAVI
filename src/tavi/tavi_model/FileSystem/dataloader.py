@@ -1,11 +1,13 @@
-import os
-from pathlib import Path
 import logging
+import os
+
 import numpy as np
+
 import tavi.tavi_model.FileSystem.spice_reader as spice_reader
-from tavi.tavi_model.FileSystem.tavi_class import TaviProject, RawData, RawMetaData, UbConf,Scan
+from tavi.tavi_model.FileSystem.tavi_class import RawData, RawMetaData, Scan, TaviProject, UbConf
 
 logger = logging.getLogger("TAVI")
+
 
 def load_folder(dir):
     """
