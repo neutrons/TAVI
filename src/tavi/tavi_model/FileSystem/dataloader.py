@@ -104,3 +104,4 @@ if __name__ == "__main__":
     # print(ub)
     # print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].metadata)
     print(tavi_project.ubconf["tmp-UB02Jul2024_21029PM.ini"])
+    print(tavi_project.ubconf["UB02Jul2024_14108PM.ini"])

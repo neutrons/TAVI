@@ -45,3 +45,15 @@ def test_load_raw_data_with_error():
     assert len(scan.data.Pt) == 1
     assert len(scan.error_message) == 4
     assert scan.metadata.Sum_of_Counts == "0"
+
+
+def test_load_ub():
+    folder_dir = os.path.dirname(os.path.realpath(__file__))
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
+    tavi_project = load_folder(filepath)
+    ub = tavi_project.ubconf["UB02Jul2024_14108PM.ini"]
+    ub_tmp = tavi_project.ubconf["tmp-UB02Jul2024_21029PM.ini"]
+    assert ub.UBMode == 1
+    assert ub.Peak1.all() == np.array([[0.0, 0.0, 3.0, 53.24, 32.865, 2.3108, 0.0, 4.799999, 4.799998]]).all()
+    assert ub_tmp.UBMode == 1
+    assert ub_tmp.LatticeParams.all() == np.array([5.044, 5.044, 13.82, 90.0, 90.0, 120.0]).all()
