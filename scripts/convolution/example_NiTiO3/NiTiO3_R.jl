@@ -3,30 +3,39 @@ using Sunny, GLMakie, LinearAlgebra
 units = Units(:meV, :angstrom);
 
 a = 5.45;
-latvecs = lattice_vectors(a, a, a, 55.13, 55.13, 55.13)
+latvecs = lattice_vectors(a, a, a, 55.13, 55.13, 55.13);
 positions = [[0.35300, 0.35300, 0.35300]];
-cryst = Crystal(latvecs, positions, 148, choice="R"; types=["Ni"])
+cryst = Crystal(latvecs, positions, 148, choice="R"; types=["Ni"]);
 view_crystal(cryst)
 
 print_symmetry_table(cryst, 8.0)
 
+# published parameters
+# Jab1 = -0.15;
+# Jab2 = -0.05;
+# Jc1 = 0;
+# Jc2 = 0.27;
+# Jab3 = -0.05;
+# Jc3 = 0.27;
+# D = 0.1; # (meV) hard-axis
+# 
+Jab1 = -0.12;
+Jc1 = 0.24;
+Jab2 = -0.08;
+Jc2 = 0.25;
+Jab3 = -0.07;
+Jc3 = 0.23;
+D = 0.12; # (meV) hard-axis
 
-sys = System(cryst, [1 => Moment(s=1, g=2)], :dipole, seed=7)
-Jab1 = -0.15;
+sys = System(cryst, [1 => Moment(s=1, g=2)], :dipole, seed=1)
 set_exchange!(sys, Jab1, Bond(1, 2, [-1, 0, 0]));
-Jab2 = -0.05;
 set_exchange!(sys, Jab2, Bond(1, 1, [-1, 1, 0]));
-Jc1 = 0;
 set_exchange!(sys, Jc1, Bond(1, 2, [0, 0, 0]));
-Jc2 = 0.27;
 set_exchange!(sys, Jc2, Bond(1, 1, [1, 0, 0]));
-Jab3 = -0.05;
 set_exchange!(sys, Jab3, Bond(1, 2, [-1, -1, 1]));
-Jc3 = 0.27;
 set_exchange!(sys, Jc3, Bond(2, 1, [1, 1, 0]));
-n = normalize(cryst.latvecs * [1, 1, 1])
-D = 0.1; # (meV) hard-axis
-set_onsite_coupling!(sys, S -> D * (n' * S)^2, 1)
+n = normalize(cryst.latvecs * [1, 1, 1]);
+set_onsite_coupling!(sys, S -> D * (n' * S)^2, 1);
 
 
 # find the ground state
@@ -49,14 +58,14 @@ swt = SpinWaveTheory(sys_min; measure)
 
 kernel = gaussian(fwhm=0.1)
 
-qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1], [1.5, 1.5, 1.5]];
+qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1], [1.5, 1.5, 1.5], [2, 2, 2], [2.5, 2.5, 2.5],];
 path = q_space_path(cryst, qs, 2000)
 energies = range(0, 4, 1000)
 res = intensities(swt, path; energies, kernel)
-plot_intensities(res; units, colormap=:jet, colorrange=(0, 50))
+plot_intensities(res; units, colormap=:jet, colorrange=(0, 20))
 
 
-qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1]]
+qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1], [1.5, 1.5, 1.5], [2, 2, 2]]
 path = q_space_path(cryst, qs, 200)
 res = intensities_bands(swt, path)
 plot_intensities(res; units, colorrange=(0, 5))

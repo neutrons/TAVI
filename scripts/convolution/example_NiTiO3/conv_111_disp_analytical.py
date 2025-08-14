@@ -38,6 +38,7 @@ if __name__ == "__main__":
     ctax.load_instrument_params_from_json(instrument_config_json_path)
     path_to_spice_folder = "test_data/exp424/"
     sample = Sample.from_scan(Scan.from_spice(path_to_spice_folder, scan_num=42))
+    sample.mosaic_h, sample.mosaic_v = 180, 180
     ctax.mount_sample(sample)
 
     # ----------------------------------------------------
@@ -50,9 +51,11 @@ if __name__ == "__main__":
     en_list = np.linspace(en_min, en_max, int((en_max - en_min) / en_step) + 1)
     qe_list = np.array([(0, 0, ql, en) for ql in ql_list for en in en_list])
 
+    # axes=((1, 1, 0), (-1, 1, 0), (0, 0, 1), "en")
+    axes = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
-        for reso in ctax.cooper_nathans(hkle=qe_list, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
+        for reso in ctax.cooper_nathans(hkle=qe_list, axes=axes)
     ]
     conv_model = partial(convolution, model_disp=model_disp, model_inten=model_inten)
     t0 = time()
@@ -70,7 +73,7 @@ if __name__ == "__main__":
     ql_rez = np.linspace(ql_min, ql_max, int((ql_max - ql_min) / (ql_step * 5)) + 1)
     en_rez = np.linspace(en_min, en_max, int((en_max - en_min) / (en_step * 5)) + 1)
     qe_rez = np.array([(0, 0, ql, en) for ql in ql_rez for en in en_rez])
-    rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en"))
+    rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-1, 1, 0), (0, 0, 1), "en"))
 
     p = Plot2D()
     for rez in rez_list:
