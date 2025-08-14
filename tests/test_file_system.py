@@ -8,7 +8,7 @@ from tavi.tavi_model.FileSystem.dataloader import load_folder
 
 def test_load_raw_data():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
-    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424", "Datafiles")
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
     tavi_project = load_folder(filepath)
     scan = tavi_project.scans["CG4C_exp0424_scan0073.dat"]
     assert len(scan.data.Pt) == len(scan.data.q)
@@ -21,7 +21,7 @@ def test_load_raw_data():
 
 def test_load_all_raw_data_are_pased_correctly():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
-    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424", "Datafiles")
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
     tavi_project = load_folder(filepath)
     scan = tavi_project.scans["CG4C_exp0424_scan0001.dat"]
     for field in fields(scan.data):
@@ -30,7 +30,7 @@ def test_load_all_raw_data_are_pased_correctly():
 
 def test_load_all_raw_meata_data_are_pased_correctly():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
-    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424", "Datafiles")
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
     tavi_project = load_folder(filepath)
     scan = tavi_project.scans["CG4C_exp0424_scan0041.dat"]
     for field in fields(scan.metadata):
@@ -39,7 +39,7 @@ def test_load_all_raw_meata_data_are_pased_correctly():
 
 def test_load_raw_data_with_error():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
-    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424", "Datafiles")
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
     tavi_project = load_folder(filepath)
     scan = tavi_project.scans["CG4C_exp0424_scan0041.dat"]
     assert len(scan.data.Pt) == 1
