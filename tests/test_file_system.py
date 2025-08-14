@@ -55,6 +55,7 @@ def test_load_ub():
     assert ub.UBMode == 1
     assert ub.Peak1.all() == np.array([[0.0, 0.0, 3.0, 53.24, 32.865, 2.3108, 0.0, 4.799999, 4.799998]]).all()
 
+
 def test_load_ub_tmp():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
     filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
