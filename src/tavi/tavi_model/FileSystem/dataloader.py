@@ -90,7 +90,7 @@ def load_folder(dir):
                     setattr(ub_conf, key, value)
                 else:
                     logger.warning("New UbConf found, consider updating UbConf entry in tavi_data_schema.json")
-        tavi_project.ubconf["tmp-" + ub_filename] = ub_conf
+            tavi_project.ubconf["tmp-" + ub_filename] = ub_conf
 
     return tavi_project
 
@@ -99,9 +99,9 @@ if __name__ == "__main__":
     current_directory = os.getcwd()
     filepath = os.path.join(current_directory, "test_data", "exp424")
     tavi_project = load_folder(filepath)
-    ubpath = os.path.join(current_directory, "test_data", "exp424", "UBConf", "UB02Jul2024_14108PM.ini")
+    ubpath = os.path.join(current_directory, "test_data", "exp424", "UBConf", "tmp", "UB02Jul2024_21029PM.ini")
     ub = spice_reader.read_spice_ubconf(ubpath)
     # print(ub)
     # print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].metadata)
-    print(tavi_project.ubconf["tmp-UB02Jul2024_21029PM.ini"])
-    print(tavi_project.ubconf["UB02Jul2024_14108PM.ini"])
+    print(len(tavi_project.ubconf))
+    print(tavi_project.ubconf["tmp-UB02Jul2024_24756PM.ini"])

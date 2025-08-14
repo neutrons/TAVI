@@ -47,6 +47,14 @@ def test_load_raw_data_with_error():
     assert scan.metadata.Sum_of_Counts == "0"
 
 
+def test_all_ub_files_are_loaded():
+    folder_dir = os.path.dirname(os.path.realpath(__file__))
+    filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
+    tavi_project = load_folder(filepath)
+    ub = tavi_project.ubconf
+    assert len(ub) == 13
+
+
 def test_load_ub():
     folder_dir = os.path.dirname(os.path.realpath(__file__))
     filepath = os.path.join(folder_dir, os.pardir, "test_data", "exp424")
