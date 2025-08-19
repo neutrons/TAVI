@@ -69,3 +69,8 @@ qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1], [1.5, 1.5, 1.5], [2, 2, 2]]
 path = q_space_path(cryst, qs, 200)
 res = intensities_bands(swt, path)
 plot_intensities(res; units, colorrange=(0, 5))
+
+
+# grid = q_space_grid(cryst, [1, 1, 0], range(-1, 1, 200), [0, 0, 1], (0, 10); orthogonalize=true)
+# res = intensities(swt, grid; energies=[3.7], kernel)
+# plot_intensities(res; units, colormap=:jet, colorrange=(0, 20))

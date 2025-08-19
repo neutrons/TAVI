@@ -58,18 +58,22 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # points being measured
     # ----------------------------------------------------
-    ql_min, ql_max, ql_step = 2.5, 3.9, 0.1
-    en_min, en_max, en_step = 0.1, 4.0, 0.1
+    # ql_min, ql_max, ql_step = 2.5, 3.9, 0.1
+    ql_min, ql_max, ql_step = 3, 3.1, 0.1
+    en_min, en_max, en_step = 0.1, 4.0, 3.4
 
-    ql_list = np.linspace(ql_min, ql_max, round((ql_max - ql_min) / ql_step + 1))
-    en_list = np.linspace(en_min, en_max, round((en_max - en_min) / en_step + 1))
+    # ql_list = np.linspace(ql_min, ql_max, int((ql_max - ql_min) / ql_step))
+    # en_list = np.linspace(en_min, en_max, int((en_max - en_min) / en_step))
+    ql_list = np.arange(ql_min, ql_max, ql_step)
+    en_list = np.arange(en_min, en_max, en_step)
     qe_list = np.array([(0, 0, ql, en) for ql in ql_list for en in en_list])
+    print(en_list)
 
     axes = ((1, 1, 0), (-1, 1, 0), (0, 0, 1), "en")
     # axes = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en")
     reso_params = [
         (reso.hkl, reso.en, reso.r0, reso.mat) if reso is not None else None
-        for reso in ctax.cooper_nathans(hkle=qe_list, axes=axes)
+        for reso in ctax.cooper_nathans(hkle=qe_list)
     ]
     model = model_sunny()
     model_disp = partial(_model_disp, model=model)
@@ -101,13 +105,13 @@ if __name__ == "__main__":
     rez_list = ctax.cooper_nathans(hkle=qe_rez, axes=((1, 1, 0), (-1, 1, 0), (0, 0, 1), "en"))
 
     p = Plot2D()
-    for rez in rez_list:
-        if rez is None:
-            continue
-        e_co = rez.get_ellipse(axes=(2, 3), PROJECTION=False)
-        e_inco = rez.get_ellipse(axes=(2, 3), PROJECTION=True)
-        p.add_reso(e_co, c="w", linestyle="solid")
-        p.add_reso(e_inco, c="w", linestyle="dashed")
+    # for rez in rez_list:
+    #     if rez is None:
+    #         continue
+    #     e_co = rez.get_ellipse(axes=(2, 3), PROJECTION=False)
+    #     e_inco = rez.get_ellipse(axes=(2, 3), PROJECTION=True)
+    #     p.add_reso(e_co, c="w", linestyle="solid")
+    #     p.add_reso(e_inco, c="w", linestyle="dashed")
 
     # create plot
     fig = plt.figure()
@@ -131,7 +135,7 @@ if __name__ == "__main__":
     for i in range(np.shape(disp)[0]):
         ax.plot(ql_list, disp[i], "-w")
 
-    ax.set_xlim((ql_min - 0.1, ql_max + 0.1))
+    # ax.set_xlim((ql_min - 0.1, ql_max + 0.1))
     ax.set_ylim((en_min - 0.1, en_max))
 
     ax.set_title(

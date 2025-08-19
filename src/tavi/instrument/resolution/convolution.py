@@ -190,7 +190,7 @@ def convolution(reso_params, model_disp, model_inten, energy_rez_factor=1 / 5, m
     # Compute max energy steps
     # steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
     print(f"Calculating (Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
-    # print(f"number of points = {pts}")
+    print(f"number of points = {pts}")
     # print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
