@@ -18,9 +18,12 @@ def score_ornl(dir):
         logger.error("No file in directory, check directory contains triple-axis data files!")
         return -1
     instrument_names = ["CG4C", "HB1", "HB3", "HB1A"]
+
+    # if instrument name contains HFIR instruments
     for instrument_name in instrument_names:
         if instrument_name in filename:
             score += 10
+    
     with open(os.path.join(dir, filename), encoding="utf-8") as f:
         all_content = f.readlines()
     headers = [line.strip() for line in all_content if "#" in line]
