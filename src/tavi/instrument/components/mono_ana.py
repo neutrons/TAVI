@@ -107,7 +107,7 @@ class MonoAna(TASComponent):
         Returns:
             float: Bragg angle in degrees.
         """
-        return np.degrees(np.arcsin(81.81 / (self.d_spacing * energy))) * self._sense
+        return np.degrees(np.arcsin(9.045 / 2 / self.d_spacing / np.sqrt(energy))) * self._sense
 
     def get_energy_from_bragg_angle(self, bragg_angle: float) -> float:
         """
@@ -119,4 +119,4 @@ class MonoAna(TASComponent):
         Returns:
             float: Energy in meV.
         """
-        return 81.81 / (self.d_spacing * np.sin(np.radians(np.abs(bragg_angle))))
+        return 81.81 / 4 / self.d_spacing**2 / np.sin(np.radians((bragg_angle))) ** 2
