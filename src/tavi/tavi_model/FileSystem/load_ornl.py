@@ -103,7 +103,10 @@ class LoadORNL:
             rawmetadata = make_dataclass("RawMetaData", [], slots=True)
 
             for col_name in col_names:
-                attr_name = col_name.replace(".", "") if "." in col_name else col_name
+                # guard against invalid format
+                if col_name[0].isdigit():
+                    col_name = "_" + col_name
+                attr_name = col_name.replace("-", "_").replace(" ", "_").replace(".", "")
                 try:
                     rawdata = make_dataclass(
                         "RawData", fields=[(attr_name, np.ndarray, field(default=None))], bases=(rawdata,)
@@ -114,14 +117,14 @@ class LoadORNL:
                 except ValueError:
                     # rawdata = make_dataclass("rawdata", fields = [attr_name, np.ndarray, field(default = np.array([numeric_data[col_names.index(col_name)]]))], bases = (rawdata,))
                     rawdata = make_dataclass(
-                        "rawdata", fields=[attr_name, np.ndarray, field(default=None)], bases=(rawdata,)
+                        "RawData", fields=[attr_name, np.ndarray, field(default=None)], bases=(rawdata,)
                     )
                     setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
 
             for key, value in meta_data.items():
                 # replace "-" or " " with "_" to consolidate with python attribute's format
-                digit_index = 0
-                key = "_" + key
+                if key[0].isdigit():
+                    key = "_" + key
                 key = key.replace("-", "_").replace(" ", "_").replace(".", "")
                 if hasattr(rawmetadata, key):
                     setattr(rawmetadata, key, value)
