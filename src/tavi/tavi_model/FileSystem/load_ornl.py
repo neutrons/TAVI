@@ -1,7 +1,7 @@
 import logging
 import os
 from dataclasses import field, make_dataclass
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
 
 import numpy as np
 
@@ -16,10 +16,11 @@ class LoadORNL:
         self,
         data_folder: Optional[os.PathLike | str],
         data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
+        ub_dir: Optional[os.PathLike | str] = None,
     ) -> None:
         self.data_folder = data_folder
         self.data_files = data_file
-        super().__init__()
+        self.ub_dir = ub_dir
 
     def score(self) -> float:
         # if it's below a thresh hold of 5 then we choose load_ornl
@@ -62,39 +63,10 @@ class LoadORNL:
         # Initialize TaviProject class
         if self.data_folder and not self.data_files:
             tavi_project = self._load_folder()
-        # load files into TaviProject scans
-
-        # tmp_exist = False
-        # ub_dir = os.path.join(dir, "UBConf")
-        # for ub_filename in os.listdir(ub_dir):
-        #     ub_conf = UbConf()
-        #     if ub_filename == "tmp":
-        #         tmp_exist = True
-        #         continue
-        #     ub_data = spice_reader.read_spice_ubconf(os.path.join(ub_dir, ub_filename))
-        #     for key, value in ub_data.items():
-        #         if hasattr(ub_conf, key):
-        #             setattr(ub_conf, key, value)
-        #         else:
-        #             logger.warning("New UbConf found, consider updating UbConf entry in tavi_data_schema.json")
-        #     tavi_project.ubconf[ub_filename] = ub_conf
-
-        # if tmp_exist:
-        #     for ub_filename in os.listdir(os.path.join(ub_dir, "tmp")):
-        #         ub_conf = UbConf()
-        #         ub_data = spice_reader.read_spice_ubconf(os.path.join(ub_dir, "tmp", ub_filename))
-        #         for key, value in ub_data.items():
-        #             if hasattr(ub_conf, key):
-        #                 setattr(ub_conf, key, value)
-        #             else:
-        #                 logger.warning("New UbConf found, consider updating UbConf entry in tavi_data_schema.json")
-        #         tavi_project.ubconf["tmp-" + ub_filename] = ub_conf
-
         return tavi_project
 
     def _load_folder(self):
         tavi_project = TaviProject()
-
         for filename in os.listdir(self.data_folder):
             numeric_data, col_names, meta_data, others, error_message = spice_reader.read_spice_datafile(
                 os.path.join(self.data_folder, filename)
@@ -114,12 +86,11 @@ class LoadORNL:
                     setattr(rawdata, attr_name, numeric_data[:, col_names.index(col_name)])
 
                 # if the numeric_data only has 1 entry, we'd still like to parse it as a 1D numpy array
-                except ValueError:
-                    # rawdata = make_dataclass("rawdata", fields = [attr_name, np.ndarray, field(default = np.array([numeric_data[col_names.index(col_name)]]))], bases = (rawdata,))
+                except IndexError:
                     rawdata = make_dataclass(
-                        "RawData", fields=[attr_name, np.ndarray, field(default=None)], bases=(rawdata,)
+                        "RawData", fields=[(attr_name, np.ndarray, field(default=None))], bases=(rawdata,)
                     )
-                    setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
+                    setattr(rawdata, attr_name, np.array(numeric_data[col_names.index(col_name)]))
 
             for key, value in meta_data.items():
                 # replace "-" or " " with "_" to consolidate with python attribute's format
@@ -133,16 +104,43 @@ class LoadORNL:
                 )
                 setattr(rawmetadata, key, value)
 
+                match key:
+                    case "ubconf":
+                        ub_filename = value
+                        if ub_filename:
+                            # users don't need to set specific ub_directory, the loader will try to search for ub
+                            if not self.ub_dir:
+                                prev_dir = os.path.join(self.data_folder, os.pardir)
+                                if "UBConf" in os.listdir(prev_dir):
+                                    self.ub_dir = os.path.join(prev_dir, "UBConf")
+                            # look into "UBConf" folder first
+                            if ub_filename in os.listdir(self.ub_dir):
+                                ub_data = spice_reader.read_spice_ubconf(os.path.join(self.ub_dir, ub_filename))
+                                for key, value in ub_data.items():
+                                    ub_conf = make_dataclass(
+                                        "UbConf", fields=[(attr_name, Any, field(default=None))], bases=(rawmetadata,)
+                                    )
+                                    setattr(ub_conf, key, value)
+                            # look into tmp folder just in case
+                            elif ub_filename in os.listdir(os.path.join(self.ub_dir, "tmp")):
+                                ub_data = spice_reader.read_spice_ubconf(os.path.join(self.ub_dir, ub_filename))
+                                for key, value in ub_data.items():
+                                    ub_conf = make_dataclass(
+                                        "UbConf", fields=[(attr_name, Any, field(default=None))], bases=(rawmetadata,)
+                                    )
+                                    setattr(ub_conf, key, value)
+                            else:
+                                logger.warning("Can't find %s, please double check UBMatrix data", ub_filename)
             scan = Scan(
                 data=rawdata,
                 metadata=rawmetadata,
                 column_names=col_names,
                 error_message=error_message,
                 others=others,
-                ubconf=None,
+                ubconf=ub_conf,
             )
             tavi_project.scans[filename] = scan
-            return tavi_project
+        return tavi_project
 
 
 if __name__ == "__main__":
@@ -150,4 +148,4 @@ if __name__ == "__main__":
     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
     ornl = LoadORNL(filepath)
     tavi_project = ornl.load()
-    print(tavi_project.scans["CG4C_exp0424_scan0073.dat"].data.q)
+    print(tavi_project.scans["CG4C_exp0424_scan0041.dat"].ubconf.mode)

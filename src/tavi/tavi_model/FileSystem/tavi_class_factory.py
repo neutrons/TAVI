@@ -1,8 +1,5 @@
-import json
-import os
-from dataclasses import dataclass, field, make_dataclass
-from pathlib import Path
-from typing import Any, Dict, Optional, Type
+from dataclasses import dataclass, field
+from typing import Any, Optional
 
 import numpy as np
 
@@ -16,6 +13,7 @@ TYPE_MAP = {
 }
 
 DEFAULT_TYPE = Optional[str]
+
 
 @dataclass
 class Scan:
@@ -42,7 +40,8 @@ class Scan:
     error_message: tuple
     others: tuple
     ubconf: Any
-    
+
+
 @dataclass
 class TaviProject:
     """
@@ -55,4 +54,3 @@ class TaviProject:
     """
 
     scans: dict[str, Scan] = field(default_factory=dict)
-
