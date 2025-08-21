@@ -17,47 +17,6 @@ TYPE_MAP = {
 
 DEFAULT_TYPE = Optional[str]
 
-
-def generate_dataclass(class_name: str, schema: dict, use_slots=True) -> Type[Any]:
-    """
-    Dynamically create a dataclass from a schema.
-
-    Args:
-        class_name: Name of the generated class.
-        schema: Dictionary mapping field names to type strings.
-        use_slots: Whether to use __slots__ for the generated class.
-
-    Returns:
-        A new dataclass type.
-    """
-    fields = [(name, TYPE_MAP.get(type_str, DEFAULT_TYPE), field(default=None)) for name, type_str in schema.items()]
-    return make_dataclass(class_name, fields, slots=use_slots)
-
-
-def load_schema(filename: str | Path) -> Dict[str, Any]:
-    """
-    Load a JSON schema file into a Python dictionary.
-
-    Args:
-        filename: Path to the JSON file.
-
-    Returns:
-        The parsed JSON object as a dictionary.
-    """
-    path = Path(filename)
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-schema_dir = os.path.join(dir_path, "tavi_data_schema.json")
-schema = load_schema(schema_dir)
-
-RawMetaData = generate_dataclass("RawMetaData", schema["RawMetaData"])
-RawData = generate_dataclass("RawData", schema["RawData"])
-UbConf = generate_dataclass("UbConf", schema["UbConf"])
-
-
 @dataclass
 class Scan:
     """
@@ -77,13 +36,13 @@ class Scan:
             that does not fit into `data` or `metadata`.
     """
 
-    data: RawData
-    metadata: RawMetaData
+    data: Any
+    metadata: Any
     column_names: tuple
     error_message: tuple
     others: tuple
-
-
+    ubconf: Any
+    
 @dataclass
 class TaviProject:
     """
@@ -96,4 +55,4 @@ class TaviProject:
     """
 
     scans: dict[str, Scan] = field(default_factory=dict)
-    ubconf: dict[str, UbConf] = field(default_factory=dict)
+
