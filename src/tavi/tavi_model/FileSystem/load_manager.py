@@ -1,13 +1,12 @@
 import logging
 import os
-from typing import Optional, Iterable, Dict
-import numpy as np
+from typing import Dict, Iterable, Optional
 
-import tavi.tavi_model.FileSystem.spice_reader as spice_reader
-from tavi.tavi_model.FileSystem.tavi_class import RawData, RawMetaData, Scan, TaviProject, UbConf
 import tavi.tavi_model.FileSystem.load_ornl as load_ornl
+from tavi.tavi_model.FileSystem.tavi_class import TaviProject
 
 logger = logging.getLogger("TAVI")
+
 
 class LoadManager:
     """
@@ -30,13 +29,16 @@ class LoadManager:
     # currently supported facilities
     supported_facilities = ["ORNL", "ANSTO", "ILL", "PSI", "NIST", "MLZ"]
 
-    def __init__(self, data_folder: Optional[os.PathLike | str] = None, 
-                 data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None, 
-                 facility: Optional[str] = None)-> None:
+    def __init__(
+        self,
+        data_folder: Optional[os.PathLike | str] = None,
+        data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
+        facility: Optional[str] = None,
+    ) -> None:
         self.data_folder = data_folder
         self.data_files = data_file
         self.facility = facility
-    
+
     # TO DO
     def rank_facility(self) -> str:
         """
@@ -53,7 +55,7 @@ class LoadManager:
                 scores[facility] = load_ornl.score(self.data_folder, self.data_files)
             except Exception as exc:
                 logger.exception("Can't compute proper score for %s: %s", facility, exc)
-                scores[facility] = float('-inf')
+                scores[facility] = float("-inf")
 
             # TO DO: extend to other facilities
             # elif facility == "ANSTO":
@@ -68,7 +70,7 @@ class LoadManager:
             #     score[facility] = load_mlz.score(self.data_folder, self.datafiles)
         self.facility = max(scores, key=scores.get)
         return self.facility
-    
+
     def load(self) -> TaviProject:
         """
         load the either a folder or a single file or a list of files and returns the TaviProject class
@@ -79,15 +81,15 @@ class LoadManager:
         match self.facility:
             case "ORNL":
                 return load_ornl.load_ornl(self.data_folder, self.data_files)
-            
+
             # TO DO: extend to other facilities
-            #case "ILL":
-                # return load_ill.load(self.data_folder, self.data_files)
-            #case "ANSTO":
-                # return load_ansto.load(self.data_folder, self.data_files)
-            #case "PSI":
-                # return load_psi.load(self.data_folder, self.data_files)
-            #case "NIST":
-                # return load_nist.load(self.data_folder, self.data_files)
-            #case "MLZ":
-                # return load_ill.load(self.data_folder, self.data_files)
+            # case "ILL":
+            # return load_ill.load(self.data_folder, self.data_files)
+            # case "ANSTO":
+            # return load_ansto.load(self.data_folder, self.data_files)
+            # case "PSI":
+            # return load_psi.load(self.data_folder, self.data_files)
+            # case "NIST":
+            # return load_nist.load(self.data_folder, self.data_files)
+            # case "MLZ":
+            # return load_ill.load(self.data_folder, self.data_files)

@@ -1,17 +1,21 @@
 import logging
 import os
+from typing import Iterable, Optional
 
 import numpy as np
-from typing import Optional, Iterable
+
 import tavi.tavi_model.FileSystem.spice_reader as spice_reader
 from tavi.tavi_model.FileSystem.tavi_class import RawData, RawMetaData, Scan, TaviProject, UbConf
 
 logger = logging.getLogger("TAVI")
 
-def score(data_folder: os.PathLike | str, data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]]) -> float:
+
+def score(
+    data_folder: os.PathLike | str, data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]]
+) -> float:
     # if it's below a thresh hold of 5 then we choose load_ornl
     # score = 0
-    # try: 
+    # try:
     #     filename = os.listdir(dir)[0]
     # except:
     #     logger.error("No file in directory, check directory contains triple-axis data files!")
@@ -22,13 +26,16 @@ def score(data_folder: os.PathLike | str, data_file: Optional[os.PathLike | str 
     # for instrument_name in instrument_names:
     #     if instrument_name in filename:
     #         score += 10
-    
+
     # with open(os.path.join(dir, filename), encoding="utf-8") as f:
     #     all_content = f.readlines()
     # headers = [line.strip() for line in all_content if "#" in line]
     pass
 
-def load(data_folder: os.PathLike | str, data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]]) -> TaviProject:
+
+def load(
+    data_folder: os.PathLike | str, data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]]
+) -> TaviProject:
     """
     Load SPICE data files from a directory into a TaviProject.
 
