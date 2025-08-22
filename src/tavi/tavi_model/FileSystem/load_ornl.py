@@ -63,46 +63,58 @@ class LoadORNL:
         # Initialize TaviProject class
         if self.data_folder and not self.data_files:
             tavi_project = self._load_folder()
+        # TO DO
+        # load a list of file(s)
         return tavi_project
 
     def _load_folder(self):
         tavi_project = TaviProject()
+
         for filename in os.listdir(self.data_folder):
+            rawdata = make_dataclass("RawData", [], slots=True)
+            rawmetadata = make_dataclass("RawMetaData", [], slots=True)
+            ub_conf = make_dataclass("UbConf", [], slots=True)
+
             numeric_data, col_names, meta_data, others, error_message = spice_reader.read_spice_datafile(
                 os.path.join(self.data_folder, filename)
             )
-            rawdata = make_dataclass("RawData", [], slots=True)
-            rawmetadata = make_dataclass("RawMetaData", [], slots=True)
 
+            # load data
             for col_name in col_names:
                 # guard against invalid format
                 if col_name[0].isdigit():
                     col_name = "_" + col_name
                 attr_name = col_name.replace("-", "_").replace(" ", "_").replace(".", "")
                 try:
-                    rawdata = make_dataclass(
-                        "RawData", fields=[(attr_name, np.ndarray, field(default=None))], bases=(rawdata,)
-                    )
-                    setattr(rawdata, attr_name, numeric_data[:, col_names.index(col_name)])
+                    # adding a checker to avoid re-creating class attributes, make the code faster
+                    if hasattr(rawdata, attr_name):
+                        setattr(rawdata, attr_name, numeric_data[:, col_names.index(col_name)])
+                    else:
+                        rawdata = make_dataclass(
+                            "RawData", fields=[(attr_name, np.ndarray, field(default=None))], bases=(rawdata,)
+                        )
+                        setattr(rawdata, attr_name, numeric_data[:, col_names.index(col_name)])
 
                 # if the numeric_data only has 1 entry, we'd still like to parse it as a 1D numpy array
                 except IndexError:
                     rawdata = make_dataclass(
                         "RawData", fields=[(attr_name, np.ndarray, field(default=None))], bases=(rawdata,)
                     )
-                    setattr(rawdata, attr_name, np.array(numeric_data[col_names.index(col_name)]))
+                    setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
 
             for key, value in meta_data.items():
                 # replace "-" or " " with "_" to consolidate with python attribute's format
                 if key[0].isdigit():
                     key = "_" + key
                 key = key.replace("-", "_").replace(" ", "_").replace(".", "")
+                # adding a checker to avoid re-creating class attributes, make the code faster
                 if hasattr(rawmetadata, key):
                     setattr(rawmetadata, key, value)
-                rawmetadata = make_dataclass(
-                    "RawMetaData", fields=[(attr_name, str, field(default=None))], bases=(rawmetadata,)
-                )
-                setattr(rawmetadata, key, value)
+                else:
+                    rawmetadata = make_dataclass(
+                        "RawMetaData", fields=[(key, str, field(default=None))], bases=(rawmetadata,)
+                    )
+                    setattr(rawmetadata, key, value)
 
                 match key:
                     case "ubconf":
@@ -117,18 +129,26 @@ class LoadORNL:
                             if ub_filename in os.listdir(self.ub_dir):
                                 ub_data = spice_reader.read_spice_ubconf(os.path.join(self.ub_dir, ub_filename))
                                 for key, value in ub_data.items():
-                                    ub_conf = make_dataclass(
-                                        "UbConf", fields=[(attr_name, Any, field(default=None))], bases=(rawmetadata,)
-                                    )
-                                    setattr(ub_conf, key, value)
+                                    # adding a checker to avoid re-creating class attributes, make the code faster
+                                    if hasattr(ub_conf, key):
+                                        setattr(ub_conf, key, value)
+                                    else:
+                                        ub_conf = make_dataclass(
+                                            "UbConf", fields=[(key, Any, field(default=None))], bases=(ub_conf,)
+                                        )
+                                        setattr(ub_conf, key, value)
                             # look into tmp folder just in case
                             elif ub_filename in os.listdir(os.path.join(self.ub_dir, "tmp")):
                                 ub_data = spice_reader.read_spice_ubconf(os.path.join(self.ub_dir, ub_filename))
                                 for key, value in ub_data.items():
-                                    ub_conf = make_dataclass(
-                                        "UbConf", fields=[(attr_name, Any, field(default=None))], bases=(rawmetadata,)
-                                    )
-                                    setattr(ub_conf, key, value)
+                                    # adding a checker to avoid re-creating class attributes, make the code faster
+                                    if hasattr(ub_conf, key):
+                                        setattr(ub_conf, key, value)
+                                    else:
+                                        ub_conf = make_dataclass(
+                                            "UbConf", fields=[(key, Any, field(default=None))], bases=(ub_conf,)
+                                        )
+                                        setattr(ub_conf, key, value)
                             else:
                                 logger.warning("Can't find %s, please double check UBMatrix data", ub_filename)
             scan = Scan(
@@ -148,4 +168,4 @@ if __name__ == "__main__":
     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
     ornl = LoadORNL(filepath)
     tavi_project = ornl.load()
-    print(tavi_project.scans["CG4C_exp0424_scan0041.dat"].ubconf.mode)
+    print(tavi_project.scans["CG4C_exp0424_scan0041.dat"].ubconf)

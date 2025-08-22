@@ -3,7 +3,7 @@ import os
 from typing import Dict, Iterable, Optional
 
 import tavi.tavi_model.FileSystem.load_ornl as load_ornl
-from tavi.tavi_model.FileSystem.tavi_class import TaviProject
+from tavi.tavi_model.FileSystem.tavi_class_factory import TaviProject
 
 logger = logging.getLogger("TAVI")
 
@@ -31,12 +31,14 @@ class LoadManager:
 
     def __init__(
         self,
-        data_folder: Optional[os.PathLike | str] = None,
+        data_folder: Optional[os.PathLike | str],
         data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
+        ub_dir: Optional[os.PathLike] = None,
         facility: Optional[str] = None,
     ) -> None:
         self.data_folder = data_folder
         self.data_files = data_file
+        self.ub_dir = ub_dir
         self.facility = facility
 
     # TO DO
@@ -80,7 +82,9 @@ class LoadManager:
             self.rank_facility()
         match self.facility:
             case "ORNL":
-                return load_ornl.load_ornl(self.data_folder, self.data_files)
+                return load_ornl.LoadORNL(
+                    data_folder=self.data_folder, data_file=self.data_files, ub_dir=self.ub_dir
+                ).load()
 
             # TO DO: extend to other facilities
             # case "ILL":
