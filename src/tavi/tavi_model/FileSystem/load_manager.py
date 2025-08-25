@@ -32,12 +32,12 @@ class LoadManager:
     def __init__(
         self,
         data_folder: Optional[os.PathLike | str],
-        data_file: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
+        data_files: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
         ub_dir: Optional[os.PathLike] = None,
         facility: Optional[str] = None,
     ) -> None:
         self.data_folder = data_folder
-        self.data_files = data_file
+        self.data_files = data_files
         self.ub_dir = ub_dir
         self.facility = facility
 
@@ -83,7 +83,7 @@ class LoadManager:
         match self.facility:
             case "ORNL":
                 return load_ornl.LoadORNL(
-                    data_folder=self.data_folder, data_file=self.data_files, ub_dir=self.ub_dir
+                    data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
                 ).load()
 
             # TO DO: extend to other facilities
@@ -97,3 +97,5 @@ class LoadManager:
             # return load_nist.load(self.data_folder, self.data_files)
             # case "MLZ":
             # return load_ill.load(self.data_folder, self.data_files)
+            # case "FRMII":
+            # return load_frmii.load(self.data_folder, self.data_files)
