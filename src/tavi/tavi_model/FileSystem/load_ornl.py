@@ -62,15 +62,21 @@ class LoadORNL:
 
         # Initialize TaviProject class
         if self.data_folder and not self.data_files:
-            tavi_project = self._load_folder()
+            tavi_project = self._load_files()
         # TO DO
         # load a list of file(s)
         return tavi_project
 
-    def _load_folder(self):
+    def _load_files(self):
         tavi_project = TaviProject()
+        list_of_files = []
+        if self.data_files:
+            for filename in self.data_files:
+                list_of_files.append(os.path.join(self.data_folder, filename))
+        else:
+            list_of_files = os.listdir(self.data_folder)
 
-        for filename in os.listdir(self.data_folder):
+        for filename in list_of_files:
             rawdata = make_dataclass("RawData", [], slots=True)
             rawmetadata = make_dataclass("RawMetaData", [], slots=True)
             ub_conf = make_dataclass("UbConf", [], slots=True)
