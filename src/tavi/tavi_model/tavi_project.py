@@ -20,26 +20,26 @@ class TaviProject:
     to link raw data, metadata, and analysis pipelines in TAVI.
 
     Attributes:
-        scans (dict[str, Scan]): 
-            A mapping from scan identifiers (e.g., filenames or scan numbers) 
+        scans (dict[str, Scan]):
+            A mapping from scan identifiers (e.g., filenames or scan numbers)
             to their corresponding `Scan` objects, which hold raw data and metadata.
-        
-        combined_data (dict[str, np.ndarray]): 
+
+        combined_data (dict[str, np.ndarray]):
             Stores merged or aggregated data from multiple scans for analysis.
 
-        filtered_data (dict[str, np.ndarray]): 
+        filtered_data (dict[str, np.ndarray]):
             Stores scan data after user-applied filters (e.g., Q/E cuts, masks).
 
-        view_selected_data (dict[str, Any]): 
+        view_selected_data (dict[str, Any]):
             Holds user-selected data for visualization purposes.
 
-        process_selected_data (dict[str, Any]): 
+        process_selected_data (dict[str, Any]):
             Holds user-selected data for processing workflows.
 
-        fit_manager (dict[str, Any]): 
+        fit_manager (dict[str, Any]):
             A container for fitting models, results, and related configurations.
 
-        plot_manager (dict[str, Any]): 
+        plot_manager (dict[str, Any]):
             A container for managing plotting sessions, styles, and figures.
 
     Methods:
@@ -147,12 +147,13 @@ class TaviProject:
     def plot_data():
         pass
 
+
 # if __name__ == "__main__":
 #     current_directory = os.getcwd()
 #     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
 #     files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
 #     TaviProj = TaviProject()
-    
+
 #     TaviProj.load_scans(filepath, files)
 
 #     filename = "CG4C_exp0424_scan0042.dat"
