@@ -1,9 +1,14 @@
 import logging
 import os
-from typing import Dict, Iterable, Optional
+from typing import Iterable, Optional
 
-import tavi.tavi_model.FileSystem.load_ornl as load_ornl
-from tavi.tavi_model.FileSystem.tavi_class_factory import TaviProject
+from tavi.tavi_model.FileSystem.Facilities.load_ansto import LoadANSTO
+from tavi.tavi_model.FileSystem.Facilities.load_frmii import LoadFRMII
+from tavi.tavi_model.FileSystem.Facilities.load_hzb import LoadHZB
+from tavi.tavi_model.FileSystem.Facilities.load_nist import LoadNIST
+from tavi.tavi_model.FileSystem.Facilities.load_ornl import LoadORNL
+from tavi.tavi_model.FileSystem.Facilities.load_psi import LoadPSI
+from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
 
 logger = logging.getLogger("TAVI")
 
@@ -27,11 +32,11 @@ class LoadManager:
     """
 
     # currently supported facilities
-    supported_facilities = ["ORNL", "ANSTO", "ILL", "PSI", "NIST", "MLZ"]
+    supported_facilities = ["ORNL", "ANSTO", "ILL", "PSI", "NIST", "HZB", "FRMII"]
 
     def __init__(
         self,
-        data_folder: Optional[os.PathLike | str],
+        data_folder: Optional[os.PathLike | str] = None,
         data_files: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
         ub_dir: Optional[os.PathLike] = None,
         facility: Optional[str] = None,
@@ -42,7 +47,7 @@ class LoadManager:
         self.facility = facility
 
     # TO DO
-    def rank_facility(self) -> str:
+    def rank_facility(self) -> None:
         """
         Determine and set the most likely facility using plugin score functions.
 
@@ -51,29 +56,40 @@ class LoadManager:
         str
             The selected facility name.
         """
-        scores: Dict[str, float] = {name: 0.0 for name in self.supported_facilities}
+        facility_score = dict()
         for facility in self.supported_facilities:
-            try:
-                scores[facility] = load_ornl.score(self.data_folder, self.data_files)
-            except Exception as exc:
-                logger.exception("Can't compute proper score for %s: %s", facility, exc)
-                scores[facility] = float("-inf")
+            match facility:
+                case "ORNL":
+                    facility_score[facility] = LoadORNL(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "ANSTO":
+                    facility_score[facility] = LoadANSTO(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "ILL":
+                    facility_score[facility] = LoadANSTO(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "PSI":
+                    facility_score[facility] = LoadPSI(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "NIST":
+                    facility_score[facility] = LoadNIST(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "HZB":
+                    facility_score[facility] = LoadHZB(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+                case "FRMII":
+                    facility_score[facility] = LoadFRMII(
+                        data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
+                    ).score()
+        self.facility = max(facility_score, key=facility_score.get)
 
-            # TO DO: extend to other facilities
-            # elif facility == "ANSTO":
-            #     score[facility] = load_ansto.score(self.data_folder, self.datafiles)
-            # elif facility == "ILL":
-            #     score[facility] = load_ill.score(self.data_folder, self.datafiles)
-            # elif facility == "PSI":
-            #     score[facility] = load_psi.score(self.data_folder, self.datafiles)
-            # elif facility == "NIST":
-            #     score[facility] = load_nist.score(self.data_folder, self.datafiles)
-            # elif facility == "MLZ":
-            #     score[facility] = load_mlz.score(self.data_folder, self.datafiles)
-        self.facility = max(scores, key=scores.get)
-        return self.facility
-
-    def load(self) -> TaviProject:
+    def load(self) -> Scan:
         """
         load the either a folder or a single file or a list of files and returns the TaviProject class
         """
@@ -82,9 +98,7 @@ class LoadManager:
             self.rank_facility()
         match self.facility:
             case "ORNL":
-                return load_ornl.LoadORNL(
-                    data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir
-                ).load()
+                return LoadORNL(data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir).load()
 
             # TO DO: extend to other facilities
             # case "ILL":

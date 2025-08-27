@@ -6,7 +6,7 @@ from typing import Any, Iterable, Optional
 import numpy as np
 
 import tavi.tavi_model.FileSystem.spice_reader as spice_reader
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan, TaviProject
+from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
 
 logger = logging.getLogger("TAVI")
 
@@ -22,7 +22,7 @@ class LoadORNL:
     parsed into structured dataclasses (`RawData`, `RawMetaData`, `UbConf`)
     and organized into a `TaviProject`.
 
-    Attributes:
+    args:
         data_folder (str | PathLike):
             Directory containing SPICE data files. Used if `data_files` is not provided.
         data_files (Iterable[str] | None):
@@ -45,7 +45,7 @@ class LoadORNL:
 
     def __init__(
         self,
-        data_folder: Optional[os.PathLike | str],
+        data_folder: Optional[os.PathLike | str] = None,
         data_files: Optional[Iterable[str]] = None,
         ub_dir: Optional[os.PathLike | str] = None,
     ) -> None:
@@ -54,28 +54,9 @@ class LoadORNL:
         self.ub_dir = ub_dir
 
     def score(self) -> float:
-        # if it's below a thresh hold of 5 then we choose load_ornl
-        # score = 0
-        # try:
-        #     filename = os.listdir(dir)[0]
-        # except:
-        #     logger.error("No file in directory, check directory contains triple-axis data files!")
-        #     return -1
-        # instrument_names = ["CG4C", "HB1", "HB3", "HB1A"]
-
-        # # if instrument name contains HFIR instruments
-        # for instrument_name in instrument_names:
-        #     if instrument_name in filename:
-        #         score += 10
-
-        # with open(os.path.join(dir, filename), encoding="utf-8") as f:
-        #     all_content = f.readlines()
-        # headers = [line.strip() for line in all_content if "#" in line]
-
-        # temporarily return a 100 score. Need more time in determining the scoring system
         return 100
 
-    def load(self) -> TaviProject:
+    def load(self):
         """
         Load SPICE data files into a TaviProject.
 
@@ -137,7 +118,7 @@ class LoadORNL:
         Returns:
             TaviProject: A project object containing all scans indexed by filename.
         """
-        tavi_project = TaviProject()
+        tavi_project = {}
         list_of_files = self.data_files if self.data_files else os.listdir(self.data_folder)
         for filename in list_of_files:
             rawdata = make_dataclass("RawData", [], slots=True)
@@ -148,7 +129,7 @@ class LoadORNL:
                 os.path.join(self.data_folder, filename)
             )
 
-            # load data
+            # ------------------load data------------------
             for col_name in col_names:
                 # guard against invalid format
                 if col_name[0].isdigit():
@@ -171,6 +152,12 @@ class LoadORNL:
                     )
                     setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
 
+            rawdata = make_dataclass(
+                            "RawData", fields=[("column_names", list, field(default=None))], bases=(rawdata,)
+                        )
+            setattr(rawdata, "column_names", col_names)
+
+            # ------------------load meta data and ubconf------------------
             for key, value in meta_data.items():
                 # replace "-" or " " with "_" to consolidate with python attribute's format
                 if key[0].isdigit():
@@ -220,22 +207,18 @@ class LoadORNL:
                                         setattr(ub_conf, key, value)
                             else:
                                 logger.warning("Can't find %s, please double check UBMatrix data", ub_filename)
+            
+            rawmetadata = make_dataclass(
+                        "RawMetaData", fields=[("others", str, field(default=None))], bases=(rawmetadata,)
+                    )
+            setattr(rawmetadata, "others", others)
+
             scan = Scan(
                 data=rawdata,
                 metadata=rawmetadata,
-                column_names=col_names,
                 error_message=error_message,
-                others=others,
                 ubconf=ub_conf,
             )
-            tavi_project.scans[filename] = scan
+            tavi_project[filename] = scan
         return tavi_project
 
-
-# if __name__ == "__main__":
-#     current_directory = os.getcwd()
-#     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
-#     files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
-#     ornl = LoadORNL(data_folder=filepath, data_files=files)
-#     tavi_project = ornl.load()
-#     print(tavi_project.scans["CG4C_exp0424_scan0043.dat"].ubconf.UBMode)

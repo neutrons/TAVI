@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Optional
 
 import numpy as np
@@ -36,21 +36,5 @@ class Scan:
 
     data: Any
     metadata: Any
-    column_names: tuple
+    ubconf: Optional[Any]
     error_message: tuple
-    others: tuple
-    ubconf: Any
-
-
-@dataclass
-class TaviProject:
-    """
-    Represents a complete Tavi project containing one or more scans.
-
-    Attributes:
-        scans (dict[str, Scan]): A mapping of scan identifiers (e.g., scan numbers or
-            unique labels) to their corresponding `Scan` objects. Each `Scan` holds
-            both the raw measurement data and the associated metadata for that scan.
-    """
-
-    scans: dict[str, Scan] = field(default_factory=dict)
