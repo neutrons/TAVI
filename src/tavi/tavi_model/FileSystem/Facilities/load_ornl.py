@@ -152,9 +152,7 @@ class LoadORNL:
                     )
                     setattr(rawdata, attr_name, np.array([numeric_data[col_names.index(col_name)]]))
 
-            rawdata = make_dataclass(
-                            "RawData", fields=[("column_names", list, field(default=None))], bases=(rawdata,)
-                        )
+            rawdata = make_dataclass("RawData", fields=[("column_names", list, field(default=None))], bases=(rawdata,))
             setattr(rawdata, "column_names", col_names)
 
             # ------------------load meta data and ubconf------------------
@@ -207,10 +205,10 @@ class LoadORNL:
                                         setattr(ub_conf, key, value)
                             else:
                                 logger.warning("Can't find %s, please double check UBMatrix data", ub_filename)
-            
+
             rawmetadata = make_dataclass(
-                        "RawMetaData", fields=[("others", str, field(default=None))], bases=(rawmetadata,)
-                    )
+                "RawMetaData", fields=[("others", str, field(default=None))], bases=(rawmetadata,)
+            )
             setattr(rawmetadata, "others", others)
 
             scan = Scan(
@@ -221,4 +219,3 @@ class LoadORNL:
             )
             tavi_project[filename] = scan
         return tavi_project
-
