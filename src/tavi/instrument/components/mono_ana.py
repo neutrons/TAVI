@@ -96,3 +96,27 @@ class MonoAna(TASComponent):
     def _depth(self):
         """depth in angstrom, with correction based on shape, for resolution calculation"""
         return TASComponent._cm2angstrom_given_shape(self.depth, self.shape, f"{self.component_name} depth")
+
+    def get_bragg_angle_from_energy(self, energy: float) -> float:
+        """
+        Calculate the Bragg angle m1 or a1 from the given energy in meV.
+
+        Args:
+            energy (float): Energy in electron volts (eV).
+
+        Returns:
+            float: Bragg angle in degrees.
+        """
+        return np.degrees(np.arcsin(9.045 / 2 / self.d_spacing / np.sqrt(energy))) * self._sense
+
+    def get_energy_from_bragg_angle(self, bragg_angle: float) -> float:
+        """
+        Calculate the energy from the given Bragg angle in degrees.
+
+        Args:
+            bragg_angle (float): Bragg angle in degrees.
+
+        Returns:
+            float: Energy in meV.
+        """
+        return 81.81 / 4 / self.d_spacing**2 / np.sin(np.radians((bragg_angle))) ** 2
