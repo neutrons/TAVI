@@ -34,13 +34,13 @@ assert np.allclose(tas.sample.ub_conf.ub_mat, ub_json, atol=1e-4)
 tavi = TAVI()
 path_to_spice_folder = "./test_data/IPTS31591_HB1_exp0917/exp917/"
 tavi.load_spice_data_from_disk(path_to_spice_folder)
-tavi.save("./test_data/IPTS31591_HB1_exp0917/tavi.h5")
+# tavi.save("./test_data/IPTS31591_HB1_exp0917/tavi.h5")
 
 scans = [45, 59]
 
 scan_combo = tavi.group_scans(scans, name="NiO_combo_(0,0,1.3)")
-scan_combo_data_1 = scan_combo.combine_data(axes=("en", "detector_1"))
-scan_combo_data_2 = scan_combo.combine_data(axes=("en", "detector_2"))
+scan_combo_data_1 = scan_combo.combine_data(axes=("en", "detector_1"), norm_to=(600, "mcu_1"))
+scan_combo_data_2 = scan_combo.combine_data(axes=("en", "detector_2"), norm_to=(600, "mcu_2"))
 
 p = Plot1D()
 p.add_scan(scan_combo_data_1, fmt="o")
@@ -53,20 +53,16 @@ im1 = p.plot(ax)
 
 
 R0 = False
-hkl_list = [(0, 0, ql) for ql in np.arange(0, 4, 0.2)]
-en_list = [e for e in np.arange(0, 50, 5)]
-projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0))
+hkle_list = [(0, 0, ql, en) for ql in np.arange(0, 4, 0.2) for en in np.arange(0, 50, 5)]
+# en_list = [e for e in np.arange(0, 50, 5)]
+projection = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en")
 
-rez_list = tas.cooper_nathans(
-    hkl=hkl_list,
-    en=en_list,
-    axes=projection,
-)
+rez_list = tas.cooper_nathans(hkle=hkle_list, axes=projection)
 
 # genreate plot
 p2 = Plot2D()
 
-for rez in rez_list:
+for rez in filter(None, rez_list):
     e_co = rez.get_ellipse(axes=(1, 3), PROJECTION=False)
     e_inco = rez.get_ellipse(axes=(1, 3), PROJECTION=True)
     p2.add_reso(e_co, c="k", linestyle="solid")
