@@ -4,7 +4,7 @@ import numpy as np
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D, Plot2D
 from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
@@ -17,7 +17,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     # ------------------------- th2th -------------------------
 
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=scan1)
-    scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_th2th = th2th.get_data(axes=("del_q(s1)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_th2th_fit = Fit1D(scan_th2th, fit_range=fit_range1)
     scan_th2th_fit.add_signal(model="Gaussian")
@@ -27,7 +27,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     # print(scan_th2th_fit.result.fit_report())
 
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    rez = tas.cooper_nathans(hkle=hkl + (0,), axes=None)
 
     p1 = Plot1D()
     # data
@@ -52,7 +52,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     # ------------------------- s1 -------------------------
 
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=scan2)
-    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_s1 = s1.get_data(axes=("del_q(s1)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_s1_fit = Fit1D(scan_s1, fit_range2)
     scan_s1_fit.add_signal(model="Gaussian")
@@ -102,7 +102,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
 ei = 14.450292
 ef = 14.443601
 instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
-tas = CooperNathans(fixed_ef=ef, fixed_ei=ei, spice_convention=True)
+tas = TAS(fixed_ef=ef, fixed_ei=ei)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
@@ -140,21 +140,15 @@ scan_group_data = scan_group.combine_data(
 # ----------- overplot with resoluytion ellipses -----------
 projection = ((1, 1, 0), (-2, 1, 0), (0, 0, 1))
 
-hkl_list = [(qh, qh, ql) for ql in np.arange(0, 18, 1) for qh in np.arange(0, 1.5, 0.5)]
-hkl_list.pop(0)
+hkle_list = [(qh, qh, ql, 0) for ql in np.arange(0, 18, 1) for qh in np.arange(0, 1.5, 0.5)]
+hkle_list.pop(0)
 
-rez_list = tas.rez(
-    hkl_list=hkl_list,
-    ei=ei,
-    ef=ef,
-    projection=projection,
-    R0=False,
-)
+rez_list = tas.cooper_nathans(hkle=hkle_list, axes=projection)
 
 contour = Plot2D()
 contour.add_contour(scan_group_data, cmap="turbo", vmin=0, vmax=5e3)
 
-for rez in rez_list:
+for rez in filter(None, rez_list):
     e_co = rez.get_ellipse(axes=(0, 2), PROJECTION=False)
     e_inco = rez.get_ellipse(axes=(0, 2), PROJECTION=True)
     contour.add_reso(e_co, c="k", linestyle="solid")
@@ -248,6 +242,7 @@ th2th_fwhm = np.array([th2th.params["s1_fwhm"].value for th2th in exp_th2th])
 th2th_fwhm_err = np.array([th2th.params["s1_fwhm"].stderr for th2th in exp_th2th])
 
 ax.errorbar(q_list, th2th_fwhm / np.array(q_list), yerr=th2th_fwhm_err / np.array(q_list), fmt="o", label="exp th2th")
+# -----------
 ax.plot(q_list, np.array(cn_fwhm_s1) / np.array(q_list), "s", markerfacecolor="none", label="CN s1", c="C0")
 ax.plot(q_list, np.array(cn_fwhm_th2th) / np.array(q_list), "o", markerfacecolor="none", label="CN th2th", c="C1")
 

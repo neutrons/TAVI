@@ -4,7 +4,7 @@ import numpy as np
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.sample import Sample
 
 
@@ -53,7 +53,7 @@ def analyze_in_angles_and_q(hkl, scans, fit_ranges):
     # ------------------------- s1 in Q-------------------------
 
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=scan2)
-    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_s1 = s1.get_data(axes=("del_q(s1)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_s1_fit = Fit1D(scan_s1, fit_range4)
     scan_s1_fit.add_signal(model="Gaussian")
@@ -73,8 +73,10 @@ def analyze_in_angles_and_q(hkl, scans, fit_ranges):
     )
 
 
+ei = 14.450292
+ef = 14.443601
 instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
-tas = CooperNathans(spice_convention=True)
+tas = TAS(fixed_ef=ef, fixed_ei=ei)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
@@ -102,7 +104,7 @@ good_scans = (
     # ((0,0,11), (150,151),((-0.08,0.07),None)),
     ((0, 0, 12), (152, 153), (None, None, None, None)),  # having issues if use errorbar
     # ((0,0,13), (154,155),((-0.1,0.15),None)),
-    ((0, 0, 16), (160, 161), (None, None, None, None)),
+    # ((0, 0, 16), (160, 161), (None, None, None, None)),
     # ((1,1,0), (166,167),(None,None)),# ?????? cannot be fit?????
     ((1, 1, 1), (168, 169), ((57, 61), None, (-0.16, 0.12), None)),
     ((1, 1, 2), (170, 171), ((51, 55), None, (-0.16, 0.12), None)),

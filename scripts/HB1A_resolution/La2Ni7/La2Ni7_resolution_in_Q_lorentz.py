@@ -4,10 +4,12 @@ import numpy as np
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.instrument.tas import TAS
 from tavi.plotter import Plot1D, Plot2D
-from tavi.sample.xtal import Xtal
+from tavi.sample import Sample
 from tavi.utilities import MotorAngles, Peak
+
+plt.rcParams.update({"font.size": 14})
 
 
 def analyze_in_q(hkl, scans, fit_ranges):
@@ -17,7 +19,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     # ------------------------- th2th -------------------------
 
     th2th = Scan.from_spice(path_to_spice_folder, scan_num=scan1)
-    scan_th2th = th2th.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_th2th = th2th.get_data(axes=("del_q(s2)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_th2th_fit = Fit1D(scan_th2th, fit_range=fit_range1)
     scan_th2th_fit.add_signal(model="Gaussian")
@@ -27,7 +29,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     result_th2th = scan_th2th_fit.fit(pars_th2th, USE_ERRORBAR=False)
     # print(scan_th2th_fit.result.fit_report())
 
-    rez = tas.rez(hkl_list=hkl, ei=ei, ef=ef, R0=False, projection=None)
+    rez = tas.cooper_nathans(hkle=hkl + (0,), axes=None)
 
     p1 = Plot1D()
     # data
@@ -52,7 +54,7 @@ def analyze_in_q(hkl, scans, fit_ranges):
     # ------------------------- s1 -------------------------
 
     s1 = Scan.from_spice(path_to_spice_folder, scan_num=scan2)
-    scan_s1 = s1.get_data(axes=("del_q", "detector"), norm_to=(1, "mcu"))
+    scan_s1 = s1.get_data(axes=("del_q(s1)", "detector"), norm_to=(1, "mcu"))
     # perform fit
     scan_s1_fit = Fit1D(scan_s1, fit_range2)
     scan_s1_fit.add_signal(model="Gaussian")
@@ -98,27 +100,28 @@ def analyze_in_q(hkl, scans, fit_ranges):
     )
 
 
+ei = 14.450292
+ef = 14.443601
+
 instrument_config_json_path = "test_data/IPTS9879_HB1A_exp978/hb1a_La2Ni7.json"
-tas = CooperNathans(SPICE_CONVENTION=True)
+tas = TAS(fixed_ef=ef, fixed_ei=ei)
 tas.load_instrument_params_from_json(instrument_config_json_path)
 
 sample_json_path = "test_data/IPTS9879_HB1A_exp978/La2Ni7.json"
-sample = Xtal.from_json(sample_json_path)
-ub_json = sample.ub_mat
+sample = Sample.from_json(sample_json_path)
+ub_json = sample.ub_conf.ub_mat
 tas.mount_sample(sample)
 
 # -------------- check UB calculation -----------------
 
-ei = 14.450292
-ef = 14.443601
 
 angles1 = MotorAngles(two_theta=-101.396853, omega=-48.004475, sgl=-0.770162, sgu=1.477665)
-peak1 = Peak(hkl=(0, 0, 16), angles=angles1, ei=ei, ef=ef)
+peak1 = Peak(hkl=(0, 0, 16), angles=angles1)
 angles2 = MotorAngles(two_theta=-56.150124, omega=64.624337, sgl=-0.770162, sgu=1.477665)
-peak2 = Peak(hkl=(1, 1, 0), angles=angles2, ei=ei, ef=ef)
+peak2 = Peak(hkl=(1, 1, 0), angles=angles2)
 
 tas.calculate_ub_matrix(peaks=(peak1, peak2))
-assert np.allclose(tas.sample.ub_mat, ub_json, atol=1e-4)
+assert np.allclose(tas.sample.ub_conf.ub_mat, ub_json, atol=1e-4)
 
 
 # ------------------------ load data ------------------------
@@ -137,23 +140,17 @@ scan_group_data = scan_group.combine_data(
     grid=(0.01, 0.05),
 )
 # ----------- overplot with resoluytion ellipses -----------
-projection = ((1, 1, 0), (-2, 1, 0), (0, 0, 1))
+projection = ((1, 1, 0), (-2, 1, 0), (0, 0, 1), "en")
 
-hkl_list = [(qh, qh, ql) for ql in np.arange(0, 18, 1) for qh in np.arange(0, 1.5, 0.5)]
+hkl_list = [(qh, qh, ql, 0) for ql in np.arange(0, 18, 1) for qh in np.arange(0, 1.5, 0.5)]
 hkl_list.pop(0)
 
-rez_list = tas.rez(
-    hkl_list=hkl_list,
-    ei=ei,
-    ef=ef,
-    projection=projection,
-    R0=False,
-)
+rez_list = tas.cooper_nathans(hkle=hkl_list, axes=projection)
 
 contour = Plot2D()
 contour.add_contour(scan_group_data, cmap="turbo", vmin=0, vmax=5e3)
 
-for rez in rez_list:
+for rez in filter(None, rez_list):
     e_co = rez.get_ellipse(axes=(0, 2), PROJECTION=False)
     e_inco = rez.get_ellipse(axes=(0, 2), PROJECTION=True)
     contour.add_reso(e_co, c="k", linestyle="solid")
@@ -289,7 +286,7 @@ ax.grid(alpha=0.6)
 
 ax.set_title(
     f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
-    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+    + "\nhorizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
 )
 plt.tight_layout()
 # ------------------------------
@@ -419,7 +416,7 @@ ax.legend(loc=1)
 ax.grid(alpha=0.6)
 ax.set_title(
     f"Mono, analyzer mosaic_h = ({tas.monochromator.mosaic_h}'{tas.monochromator.mosaic_h}'), "
-    + "horizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
+    + "\nhorizontal coll=({}'-{}'-{}'-{}')".format(*tas.collimators.horizontal_divergence)
 )
 
 plt.tight_layout()
