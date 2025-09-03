@@ -26,7 +26,7 @@ class Logic(Enum):
 
 class Category(Enum):
     DATA = "data"
-    METADATA = "METADATA"
+    METADATA = "metadata"
 
 
 class Filter:
