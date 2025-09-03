@@ -6,7 +6,7 @@ import numpy as np
 
 from tavi.tavi_model.FileSystem.load_manager import LoadManager
 from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
-from tavi.tavi_model.filter import Filter
+from tavi.tavi_model.filter import Filter, Logic, Operations
 
 
 class TaviProject:
@@ -132,9 +132,13 @@ class TaviProject:
 
     # TO DO
     def select_scans(
-        self, operations: Optional[list[str]] = None, and_or: Optional[str] = None, category: Optional[str] = None
+        self,
+        conditions: Optional[list[tuple[str, Operations, str | float]]] = None,
+        and_or: Optional[Logic] = None,
+        category: Optional[str] = None,
+        tol=0.01,
     ) -> None:
-        filtered_data = Filter(self.scans, operations=operations, and_or=and_or).filter_data()
+        filtered_data = Filter(self.scans, conditions=conditions, and_or=and_or).filter_data()
         match category:
             case "view":
                 self.view_selected_data.append(filtered_data)
@@ -165,7 +169,9 @@ if __name__ == "__main__":
     TaviProj.load_scans(filepath)
 
     filename = "CG4C_exp0424_scan0042.dat"
-    TaviProj.select_scans(operations=["time+contains+AM", "scan+contains+42"], and_or="and")
+    TaviProj.select_scans(
+        conditions=(["time", Operations.CONTAINS, "AM"], ["scan", Operations.IS, "42"]), and_or=Logic.AND
+    )
     print(TaviProj.process_selected_data)
     # print(type(TaviProj.scans[filename].metadata.scan))
 #     print(TaviProj.scans[filename].ubconf)
