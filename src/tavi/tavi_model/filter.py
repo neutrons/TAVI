@@ -1,17 +1,20 @@
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
-from typing import Any, Optional
 from dataclasses import fields
+from typing import Optional
 from venv import logger
+
+from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+
 
 class Filter:
     """
     Arg:
         scans: the class that holds the loaded scan data, meta data, ubconf etc. Defined in TaviProject
-        operations: a string of filter operations. keyword + operation + value. 
+        operations: a string of filter operations. keyword + operation + value.
                     example: "title+contains+temp", "sample_temp + < + 100". If the operations is: contains, notcontain,
                     then we look in scans.metadata. If the operations is: <, >, <=, >=, ==, !=, then we look in scans.data.
     """
-    def __init__(self,scans:dict[str, Scan], operations:Optional[list[str]] = None, and_or: Optional[str] = None):
+
+    def __init__(self, scans: dict[str, Scan], operations: Optional[list[str]] = None, and_or: Optional[str] = None):
         self.scans = scans
         self.operations = operations
         self.and_or = and_or
@@ -29,12 +32,12 @@ class Filter:
                     case _:
                         logger.error("Filter operation not supported!")
             # print(self.output)
-            # set union or intersection 
+            # set union or intersection
             match self.and_or:
                 case "or":
                     return sorted(set().union(*self.output))
                 case "and":
-                    return sorted(set.intersection(*map(set,self.output)))
+                    return sorted(set.intersection(*map(set, self.output)))
                 case _:
                     logger.error("Logic operation not accepted!")
 
@@ -59,7 +62,6 @@ class Filter:
 
     def _is(self):
         pass
-
 
     def _less_than(self):
         pass
