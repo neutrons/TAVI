@@ -6,6 +6,7 @@ import numpy as np
 
 from tavi.tavi_model.FileSystem.load_manager import LoadManager
 from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+from tavi.tavi_model.filter import Filter
 
 
 class TaviProject:
@@ -69,17 +70,15 @@ class TaviProject:
         self,
         scans: dict[str, Scan] = field(default_factory=dict),
         combined_data: dict[str, np.array] = field(default_factory=dict),
-        filtered_data: dict[str, np.array] = field(default_factory=dict),
-        view_selected_data: dict[str, Any] = field(default_factory=dict),  # view select, process select
-        process_selected_data: dict[str, Any] = field(default_factory=dict),  # view select, process select
+        process_selected_data: list[str] = [],  # view select, process select
+        view_selected_data: list[str] = [],  # view select, process select
         fit_manager: dict[str, Any] = field(default_factory=dict),
         plot_manager: dict[str, Any] = field(default_factory=dict),
     ):
         self.scans = scans
         self.combined_data = combined_data
-        self.filtered_data = filtered_data
-        self.view_selected_data = view_selected_data
         self.process_selected_data = process_selected_data
+        self.view_selected_data = view_selected_data
         self.fit_manager = fit_manager
         self.plot_manager = plot_manager
 
@@ -132,8 +131,17 @@ class TaviProject:
         pass
 
     # TO DO
-    def filter_scans():
-        pass
+    def select_scans(
+        self, operations: Optional[list[str]] = None, and_or: Optional[str] = None, category: Optional[str] = None
+    ) -> None:
+        filtered_data = Filter(self.scans, operations=operations, and_or=and_or).filter_data()
+        match category:
+            case "view":
+                self.view_selected_data.append(filtered_data)
+            case "model":
+                self.process_selected_data.append(filtered_data)
+            case _:
+                self.process_selected_data.append(filtered_data)
 
     # TO DO
     def combine_data():
@@ -148,17 +156,19 @@ class TaviProject:
         pass
 
 
-# if __name__ == "__main__":
-#     current_directory = os.getcwd()
-#     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
-#     files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
-#     TaviProj = TaviProject()
+if __name__ == "__main__":
+    current_directory = os.getcwd()
+    filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
+    # files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
+    TaviProj = TaviProject()
 
-#     TaviProj.load_scans(filepath, files)
+    TaviProj.load_scans(filepath)
 
-#     filename = "CG4C_exp0424_scan0042.dat"
-#     print(TaviProj.scans[filename].data.h)
+    filename = "CG4C_exp0424_scan0042.dat"
+    TaviProj.select_scans(operations=["time+contains+AM", "scan+contains+42"], and_or="and")
+    print(TaviProj.process_selected_data)
+    # print(type(TaviProj.scans[filename].metadata.scan))
 #     print(TaviProj.scans[filename].ubconf)
 #     print(TaviProj.scans[filename].data.column_names)
 #     print(TaviProj.scans[filename].error_message)
-#     print(TaviProj.scans[filename].metadata.others)
+# print(TaviProj.scans[filename].metadata.time)
