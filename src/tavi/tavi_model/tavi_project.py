@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
     filename = "CG4C_exp0424_scan0042.dat"
     TaviProj.select_scans(
-        conditions=(["time", Operations.CONTAINS, "AM"], ["scan", Operations.IS, "42"]), and_or=Logic.AND
+        conditions=([["h", Operations.EQUAL, "-0.5"], ["scan", Operations.IS, "42"]]), and_or=Logic.AND
     )
     print(TaviProj.process_selected_data)
     # print(type(TaviProj.scans[filename].metadata.scan))

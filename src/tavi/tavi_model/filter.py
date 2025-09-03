@@ -24,6 +24,11 @@ class Logic(Enum):
     OR = "OR"
 
 
+class Category(Enum):
+    DATA = "data"
+    METADATA = "METADATA"
+
+
 class Filter:
     """
     Arg:
@@ -38,7 +43,7 @@ class Filter:
         scans: dict[str, Scan],
         conditions: Optional[list[Operations]] = None,
         and_or: Optional[Logic] = None,
-        tol: float = 0.01,
+        tol: float = 0.01,  # this can be put into a TAVI config json file as filter equal tolerance
     ):
         self.scans = scans
         self.conditions = conditions
@@ -83,41 +88,54 @@ class Filter:
                     logger.error("Logic operation not accepted!")
 
     def _contains(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.CONTAINS, category="metadata")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.CONTAINS, category=Category.METADATA
+        )
 
     def _notcontain(self, keyword, value):
         return self.condition_factory(
-            keyword=keyword, value=value, condition=Operations.NOTCONTAIN, category="metadata"
+            keyword=keyword, value=value, condition=Operations.NOTCONTAIN, category=Category.METADATA
         )
 
     def _is(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.IS, category="metadata")
+        return self.condition_factory(keyword=keyword, value=value, condition=Operations.IS, category=Category.METADATA)
 
     def _is_not(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.ISNOT, category="metadata")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.ISNOT, category=Category.METADATA
+        )
 
     def _equal(self, keyword, value, tol):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.EQUAL, category="data")
+        return self.condition_factory(keyword=keyword, value=value, condition=Operations.EQUAL, category=Category.DATA)
 
     def _not_equal(self, keyword, value, tol):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.NOTEQUAL, category="data")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.NOTEQUAL, category=Category.DATA
+        )
 
     def _less_than(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.LESS, category="data")
+        return self.condition_factory(keyword=keyword, value=value, condition=Operations.LESS, category=Category.DATA)
 
     def _less_than_equal_to(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.LESSEQUAL, category="data")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.LESSEQUAL, category=Category.DATA
+        )
 
     def _greater_than(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.GREATER, category="data")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.GREATER, category=Category.DATA
+        )
 
     def _greater_than_equal_to(self, keyword, value):
-        return self.condition_factory(keyword=keyword, value=value, condition=Operations.GREATEREUQAL, category="data")
+        return self.condition_factory(
+            keyword=keyword, value=value, condition=Operations.GREATEREUQAL, category=Category.DATA
+        )
 
     def condition_factory(self, keyword, value, condition, category):
         tmp_output = set()
-        if category == "metadata":
+        if category == Category.METADATA:
             for filename, scan in self.scans.items():
+                # search meta data
                 for att in fields(scan.metadata):
                     if keyword == att.name:
                         match condition:
@@ -133,33 +151,50 @@ class Filter:
                             case Operations.ISNOT:
                                 if value != getattr(scan.metadata, att.name):
                                     tmp_output.add(filename)
-        elif category == "data":
+                # search ubconf
+                for att in fields(scan.ubconf):
+                    if keyword == att.name:
+                        match condition:
+                            case Operations.CONTAINS:
+                                if value in getattr(scan.metadata, att.name):
+                                    tmp_output.add(filename)
+                            case Operations.NOTCONTAIN:
+                                if value not in getattr(scan.metadata, att.name):
+                                    tmp_output.add(filename)
+                            case Operations.IS:
+                                if value == getattr(scan.metadata, att.name):
+                                    tmp_output.add(filename)
+                            case Operations.ISNOT:
+                                if value != getattr(scan.metadata, att.name):
+                                    tmp_output.add(filename)
+        elif category == Category.DATA:
+            value = float(value)
             for filename, scan in self.scans.items():
                 for att in fields(scan.data):
                     if keyword == att.name:
                         match condition:
-                            case "==":
+                            case Operations.EQUAL:
                                 if (
                                     abs(value - max(getattr(scan.data, att.name))) <= self.tol
                                     and abs(value - min(getattr(scan.data, att.name))) <= self.tol
                                 ):
                                     tmp_output.add(filename)
-                            case "!=":
+                            case Operations.NOTEQUAL:
                                 if (
                                     abs(value - max(getattr(scan.data, att.name))) >= self.tol
                                     and abs(value - min(getattr(scan.data, att.name))) >= self.tol
                                 ):
                                     tmp_output.add(filename)
-                            case ">":
+                            case Operations.GREATER:
                                 if min(getattr(scan.data, att.name)) > value:
                                     tmp_output.add(filename)
-                            case ">=":
+                            case Operations.GREATEREUQAL:
                                 if min(getattr(scan.data, att.name)) >= value:
                                     tmp_output.add(filename)
-                            case "<":
+                            case Operations.LESS:
                                 if max(getattr(scan.data, att.name)) < value:
                                     tmp_output.add(filename)
-                            case "<=":
+                            case Operations.LESSEQUAL:
                                 if min(getattr(scan.data, att.name)) <= value:
                                     tmp_output.add(filename)
 
