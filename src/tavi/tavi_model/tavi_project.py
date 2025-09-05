@@ -70,15 +70,15 @@ class TaviProject:
         self,
         scans: dict[str, Scan] = field(default_factory=dict),
         combined_data: dict[str, np.array] = field(default_factory=dict),
-        process_selected_data: list[str] = [],  # view select, process select
-        view_selected_data: list[str] = [],  # view select, process select
+        process_selected_data: list[str] = [],  # mouse selection
+        show_selected_data: list[str] = [],  # display
         fit_manager: dict[str, Any] = field(default_factory=dict),
         plot_manager: dict[str, Any] = field(default_factory=dict),
     ):
         self.scans = scans
         self.combined_data = combined_data
         self.process_selected_data = process_selected_data
-        self.view_selected_data = view_selected_data
+        self.show_selected_data = show_selected_data
         self.fit_manager = fit_manager
         self.plot_manager = plot_manager
 
@@ -168,13 +168,13 @@ if __name__ == "__main__":
 
     TaviProj.load_scans(filepath)
 
-    filename = "CG4C_exp0424_scan0042.dat"
+    # filename = "CG4C_exp0424_scan0042.dat"
     TaviProj.select_scans(
-        conditions=([["h", Operations.EQUAL, "-0.5"], ["scan", Operations.IS, "42"]]), and_or=Logic.AND
+        conditions=([["scan", Operations.CONTAINS, "42"], ["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR
     )
     print(TaviProj.process_selected_data)
     # print(type(TaviProj.scans[filename].metadata.scan))
 #     print(TaviProj.scans[filename].ubconf)
-#     print(TaviProj.scans[filename].data.column_names)
+# print(TaviProj.scans[filename].data.Pt)
 #     print(TaviProj.scans[filename].error_message)
-# print(TaviProj.scans[filename].metadata.time)
+#   print(TaviProj.scans[filename].metadata.time)
