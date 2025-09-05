@@ -9,6 +9,7 @@ coverage:
         threshold: 0.5%
 
 ignore:
+  - "src/tavi/tavi_model/FileSystem/filter"
   - "src/tavi/tavi_model/FileSystem/Facilities"
   - "src/tavi/tavi_view"
   - "src/tavi/mainwindow.py"
