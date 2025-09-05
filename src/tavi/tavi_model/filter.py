@@ -58,9 +58,9 @@ class Filter:
             for condition in self.conditions:
                 keyword, action, value = condition
                 if action in [Operations.CONTAINS, Operations.NOTCONTAIN, Operations.IS, Operations.ISNOT]:
-                    self.output.append(self.condition_factory(keyword, value, action, Category.METADATA))
+                    self.output.append(self._condition_factory(keyword, value, action, Category.METADATA))
                 else:
-                    self.output.append(self.condition_factory(keyword, value, action, Category.DATA))
+                    self.output.append(self._condition_factory(keyword, value, action, Category.DATA))
 
             match self.and_or:
                 case Logic.OR:
@@ -70,7 +70,7 @@ class Filter:
                 case _:
                     logger.error("Logic operation not accepted!")
 
-    def condition_factory(self, keyword, value, condition, category):
+    def _condition_factory(self, keyword, value, condition, category):
         """
         Abstract factory that returns the filtered results based on the keyword, value, condition and category.
         """
