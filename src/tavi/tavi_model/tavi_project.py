@@ -102,11 +102,11 @@ class TaviProject:
         filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or, tol=tol).filter_data()
         match category:
             case "view":
-                self.tavi_data.show_selected_data[filter_name]= filtered_data
+                self.tavi_data.show_selected_data[filter_name] = filtered_data
             case "model":
                 self.tavi_data.process_selected_data = filtered_data
             case _:
-                self.tavi_data.show_selected_data[filter_name]= filtered_data
+                self.tavi_data.show_selected_data[filter_name] = filtered_data
 
     # TO DO
     def combine_data():
@@ -130,9 +130,11 @@ if __name__ == "__main__":
     TaviProj.load_scans(filepath)
 
     filename = "CG4C_exp0424_scan0042.dat"
-    TaviProj.select_scans(filter_name="scan_contains_42",conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR)
+    TaviProj.select_scans(
+        filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
+    )
 
-    TaviProj.select_scans(filter_name = "filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
+    TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
     print(TaviProj.tavi_data.show_selected_data)
 #   print(type(TaviProj.scans[filename].metadata.scan))
 #   print(TaviProj.scans[filename].ubconf)

@@ -1,12 +1,9 @@
-import os
 from dataclasses import field
-from typing import Any, Iterable, Optional
+from typing import Any
 
 import numpy as np
 
-from tavi.tavi_model.FileSystem.load_manager import LoadManager
 from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
-from tavi.tavi_model.filter import Filter, Logic, Operations
 
 
 class TaviData:
@@ -71,7 +68,7 @@ class TaviData:
         scan_list: dict[str, Scan] = field(default_factory=dict),
         combined_data: dict[str, np.array] = field(default_factory=dict),
         process_selected_data: list[str] = [],  # mouse selection
-        show_selected_data: dict = {},  # display 
+        show_selected_data: dict = {},  # display
         fit_manager: dict[str, Any] = field(default_factory=dict),
         plot_manager: dict[str, Any] = field(default_factory=dict),
     ):
