@@ -1,18 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional
-
-import numpy as np
-
-TYPE_MAP = {
-    "str": Optional[str],
-    "float": Optional[float],
-    "int": Optional[int],
-    "bool": Optional[bool],
-    "list": Optional[list],
-    "ndarray": Optional[np.ndarray],
-}
-
-DEFAULT_TYPE = Optional[str]
+from typing import Optional
 
 
 @dataclass
@@ -34,7 +21,7 @@ class Scan:
             that does not fit into `data` or `metadata`.
     """
 
-    data: Any
-    metadata: Any
-    ubconf: Optional[Any]
+    data: dataclass
+    metadata: dataclass
+    ubconf: Optional[dataclass]
     error_message: tuple

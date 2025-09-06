@@ -118,7 +118,7 @@ class LoadORNL:
         Returns:
             TaviProject: A project object containing all scans indexed by filename.
         """
-        tavi_project = {}
+        scan_list = {}
         list_of_files = self.data_files if self.data_files else os.listdir(self.data_folder)
         for filename in list_of_files:
             rawdata = make_dataclass("RawData", [], slots=True)
@@ -217,5 +217,5 @@ class LoadORNL:
                 error_message=error_message,
                 ubconf=ub_conf,
             )
-            tavi_project[filename] = scan
-        return tavi_project
+            scan_list[filename] = scan
+        return scan_list
