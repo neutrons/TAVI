@@ -71,7 +71,7 @@ class TaviData:
         scan_list: dict[str, Scan] = field(default_factory=dict),
         combined_data: dict[str, np.array] = field(default_factory=dict),
         process_selected_data: list[str] = [],  # mouse selection
-        show_selected_data: list[str] = [],  # display 
+        show_selected_data: dict = {},  # display 
         fit_manager: dict[str, Any] = field(default_factory=dict),
         plot_manager: dict[str, Any] = field(default_factory=dict),
     ):

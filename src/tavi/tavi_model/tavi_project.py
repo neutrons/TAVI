@@ -93,19 +93,20 @@ class TaviProject:
     # TO DO
     def select_scans(
         self,
+        filter_name: Optional[str] = None,
         conditions: Optional[list[tuple[str, Operations, str | float]]] = None,
         and_or: Optional[Logic] = None,
         category: Optional[str] = None,
         tol=0.01,
     ) -> None:
-        filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or).filter_data()
+        filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or, tol=tol).filter_data()
         match category:
             case "view":
-                self.tavi_data.show_selected_data.append(filtered_data)
+                self.tavi_data.show_selected_data[filter_name]= filtered_data
             case "model":
                 self.tavi_data.process_selected_data = filtered_data
             case _:
-                self.tavi_data.show_selected_data.append(filtered_data)
+                self.tavi_data.show_selected_data[filter_name]= filtered_data
 
     # TO DO
     def combine_data():
@@ -129,12 +130,12 @@ if __name__ == "__main__":
     TaviProj.load_scans(filepath)
 
     filename = "CG4C_exp0424_scan0042.dat"
-    TaviProj.select_scans(conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR)
+    TaviProj.select_scans(filter_name="scan_contains_42",conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR)
 
-    TaviProj.select_scans(conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
+    TaviProj.select_scans(filter_name = "filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
     print(TaviProj.tavi_data.show_selected_data)
-    # print(type(TaviProj.scans[filename].metadata.scan))
-#     print(TaviProj.scans[filename].ubconf)
-# print(TaviProj.scans[filename].data.Pt)
-#     print(TaviProj.scans[filename].error_message)
+#   print(type(TaviProj.scans[filename].metadata.scan))
+#   print(TaviProj.scans[filename].ubconf)
+#   print(TaviProj.scans[filename].data.Pt)
+#   print(TaviProj.scans[filename].error_message)
 #   print(TaviProj.scans[filename].metadata.time)
