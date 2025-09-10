@@ -1,0 +1,5 @@
+guide 16 parq
+drive hguide 0.476*sqrt(@(ei)) vguide 1.9
+count preset mcu 600
+drive hguide 0 vguide 0
+count preset mcu 600

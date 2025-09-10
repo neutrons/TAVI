@@ -1,0 +1,14 @@
+scantitle "0 0 1.3 E-scan Px SF/NSF"
+scan h 0 k 0 l 1.3 e 16 17 1 preset countfile Px_600mcu
+
+scantitle "0 0 1.3 E-scan Px SF/NSF"
+scan h 0 k 0 l 1.3 e 18 25 0.5 preset countfile Px_600mcu
+
+scantitle "0 0 1.4 E-scan Px SF/NSF"
+scan h 0 k 0 l 1.4 e 14 16 1 preset countfile Px_600mcu
+
+scantitle "0 0 1.4 E-scan Px SF/NSF"
+scan h 0 k 0 l 1.4 e 17 23 0.5 preset countfile Px_600mcu
+
+scantitle "0 0 1.5 E-scan Px SF/NSF"
+scan h 0 k 0 l 1.5 e 13 20 0.5 preset countfile Px_600mcu
