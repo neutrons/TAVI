@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
+from tavi.sample.xtal import Xtal
 
 from tavi.data.tavi import TAVI
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot2D
-from tavi.sample.xtal import Xtal
 
 instrument_config_json_path = "./test_data/IPTS9879_HB1A_exp978/hb1a.json"
 tas = CooperNathans(SPICE_CONVENTION=True)

@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
+from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
-from tavi.instrument.resolution.cooper_nathans_bak import CooperNathans
 from tavi.plotter import Plot1D
 from tavi.sample import Sample
 
