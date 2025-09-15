@@ -25,7 +25,7 @@ def model_disp(vq1, vq2, vq3):
 
 def model_inten(vq1, vq2, vq3):
     """return intensity for given Q points"""
-    inten1 = np.abs(np.cos(np.pi * vq3 * 2 / 3)) ** 4
+    inten1 = np.abs(np.cos(np.pi * (vq3 + 0.75) * 2 / 3))
     inten2 = np.ones_like(vq3, dtype=float) / 3
 
     return np.array((inten1, inten2))
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ctax.load_instrument_params_from_json(instrument_config_json_path)
     path_to_spice_folder = "test_data/exp424/"
     sample = Sample.from_scan(Scan.from_spice(path_to_spice_folder, scan_num=42))
-    sample.mosaic_h, sample.mosaic_v = 180, 180
+    # sample.mosaic_h, sample.mosaic_v = 180, 180
     ctax.mount_sample(sample)
 
     # ----------------------------------------------------

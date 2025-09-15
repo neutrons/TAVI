@@ -66,9 +66,8 @@ if __name__ == "__main__":
     # ----------------------------------------------------
     # points being measured
     # ----------------------------------------------------
-    # ql_min, ql_max, ql_step = 2.5, 3.9, 0.1
-    ql_min, ql_max, ql_step = 3, 3.1, 0.1
-    en_min, en_max, en_step = 0.1, 4.0, 3.4
+    ql_min, ql_max, ql_step = 2.5, 3.9, 0.1
+    en_min, en_max, en_step = 0.1, 4.1, 0.1
 
     # ql_list = np.linspace(ql_min, ql_max, int((ql_max - ql_min) / ql_step))
     # en_list = np.linspace(en_min, en_max, int((en_max - en_min) / en_step))
@@ -133,7 +132,7 @@ if __name__ == "__main__":
         measurement_inten.reshape(np.shape(vq1)),
         cmap="turbo",
         vmin=0,
-        vmax=1e-4,
+        vmax=2e-4,
     )
     fig.colorbar(im, ax=ax)
 
