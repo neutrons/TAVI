@@ -1,0 +1,3 @@
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Sunny = "2b4a2ac8-8f8b-43e8-abf4-3cb0c45e8736"

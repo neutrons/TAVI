@@ -190,7 +190,7 @@ def convolution(reso_params, model_disp, model_inten, energy_rez_factor=1 / 5, m
     # Compute max energy steps
     # steps = [get_max_step(disp_arr, axis=i) for i in (1, 2, 3)]
     print(f"Calculating (Q1, Q2, Q3, E) = ({qh:.2f}, {qk:.2f}, {ql:.2f}, {en:.2f})")
-    # print(f"number of points = {pts}")
+    print(f"number of points = {pts}")
     # print(f"steps in energy = ({steps[0]:.2f}, {steps[1]:.2f}, {steps[2]:.2f})")
 
     vq = np.array((vqh, vqk, vql))  # shape: (3, num_pts)
@@ -201,12 +201,12 @@ def convolution(reso_params, model_disp, model_inten, energy_rez_factor=1 / 5, m
     weights = compute_weights(vqe, mat)  # shape: (num_bands, num_pts)
 
     idx_keep = np.any(weights < 5**3, axis=0)
-    vq_filtered = vq[:, idx_keep]
+    vqh_filtered, vqk_filtered, vql_filtered = vq[:, idx_keep]
     # num_pts_keep = np.count_nonzero(idx_keep)
     # percent_kep = num_pts_keep / np.prod(pts) * 100
     # print(f"Number of pts inside the ellipsoid = {num_pts_keep}, percentage ={percent_kep:.3f}%")
     weights_filtered = np.exp(-weights[:, idx_keep] / 2)
-    inten = model_inten(*vq_filtered)
+    inten = model_inten(vqh_filtered + qh, vqk_filtered + qk, vql_filtered + ql)
 
     # normalization
     elem_vols /= np.prod(pts)

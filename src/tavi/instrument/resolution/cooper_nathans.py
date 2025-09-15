@@ -170,7 +170,7 @@ class CooperNathans(ResolutionCalculator):
         # TODO how to add sample mosaic in cooper-nathans?
         mat_cov[1, 1] += q_norm**2 * instrument.sample._mosaic_h**2
         mat_cov[2, 2] += q_norm**2 * instrument.sample._mosaic_v**2
-
+        # times sig2fwhm^2 to convert from sigma to FWHM
         mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
 
         # TODO check normalization factor
