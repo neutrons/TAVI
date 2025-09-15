@@ -21,6 +21,7 @@ def model_disp(vq1, vq2, vq3):
     gamma_q = (np.cos(2 * np.pi * vq1) + np.cos(2 * np.pi * vq2) + np.cos(2 * np.pi * vq3)) / 3
 
     disp = 2 * sj * (1 - gamma_q)
+    # disp = 15 * np.ones_like(gamma_q)
     disp = np.array((disp - 2, disp + 2))
 
     # reshape if only one band

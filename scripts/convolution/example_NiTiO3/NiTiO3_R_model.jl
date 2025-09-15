@@ -46,9 +46,14 @@ function model()
 end
 
 
+# function disp(swt, qpts)
+#     res = dispersion(swt, qpts)
+#     return res
+# end
+
 function disp(swt, qpts)
-    res = dispersion(swt, qpts)
-    return res
+    res = intensities_bands(swt, qpts)
+    return res.disp
 end
 
 function inten(swt, qpts)
@@ -58,8 +63,8 @@ end
 
 # units = Units(:meV, :angstrom);
 # swt = model()
-# qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1]]
-# path = q_space_path(swt.sys.crystal, qs, 200)
+#qs = [[0, 0, 0], [0.5, 0.5, 0.5], [1, 1, 1]]
+#path = q_space_path(swt.sys.crystal, qs, 200)
 # res = intensities_bands(swt, path)
 # using GLMakie
 # plot_intensities(res; units, colorrange=(0, 5))
