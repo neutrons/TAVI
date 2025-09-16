@@ -204,7 +204,7 @@ def get_max_step(arr, axis: int):
     return float(np.nanmax(steps))
 
 
-def convolution(reso_params, energy_rez_factor=1 / 5, max_step=300):
+def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     """Perform the convolution
     The maxium sampling box size in Q is (max_step, max_step ,max_step)
 

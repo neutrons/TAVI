@@ -120,11 +120,7 @@ def resolution_matrix(hkl, en):
     rez_mat = rot.T @ mat @ rot
     r0 = 1
 
-    return tuple(
-        (hkl[i], en[j], r0, rez_mat)
-        for i in range(np.shape(hkl)[0])
-        for j in range(np.size(en))
-    )
+    return tuple((hkl[i], en[j], r0, rez_mat) for i in range(np.shape(hkl)[0]) for j in range(np.size(en)))
 
 
 def plot_rez_ellipses(ax):
@@ -249,9 +245,7 @@ def _gen_pts_kernel(vq, n_sigmas, Nh, Nk, Nl, s_qh, s_qk, s_ql):
 def generate_pts(sigma_qs, mat_hkl, n_sigmas, num_pts):
     """Generate points in a 3D mesh, cut the points at the corners"""
     L, M, N = (num_pts[0] + 1, num_pts[1] + 1, num_pts[2] + 1)
-    vq = cupy.array(
-        [cupy.empty((L, M, N)), cupy.empty((L, M, N)), cupy.empty((L, M, N))]
-    )
+    vq = cupy.array([cupy.empty((L, M, N)), cupy.empty((L, M, N)), cupy.empty((L, M, N))])
     threads = (8, 8, 8)
     blocks = (ceil(L / 8), ceil(M / 8), ceil(N / 8))
     s_qh, s_qk, s_ql = sigma_qs
@@ -274,7 +268,7 @@ def get_max_step(arr, axis: int):
     return float(np.nanmax(steps))
 
 
-def convolution(reso_params, energy_rez_factor=1 / 5, max_step=300):
+def convolution(reso_params, energy_rez_factor=1 / 5, max_step=100):
     """Perform the convolution
     The maxium sampling box size in Q is (max_step, max_step ,max_step)
 
@@ -441,9 +435,7 @@ if __name__ == "__main__":
     ax.set_ylim((en_min, en_max))
 
     plot_rez_ellipses(ax)
-    disp = cupy.asnumpy(
-        model_disp(cupy.asarray(q1), cupy.zeros_like(q1), cupy.zeros_like(q1))
-    )
+    disp = cupy.asnumpy(model_disp(cupy.asarray(q1), cupy.zeros_like(q1), cupy.zeros_like(q1)))
     for i in range(np.shape(disp)[0]):
         ax.plot(q1, disp[i], "-w")
 
