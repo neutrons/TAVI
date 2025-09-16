@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-
 from tavi.data.scan_old.spice_to_nexus import convert_spice_to_nexus
+
 from tavi.data.tavi import TAVI
 from tavi.plotter import Plot2DManager
 
