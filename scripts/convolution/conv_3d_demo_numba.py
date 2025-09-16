@@ -40,13 +40,13 @@ def _model_disp_kernel(vq1, vq2, vq3, disp):
     i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
     if i >= len(vq1):
         return
-    sj = 5
+    sj = 10
     twopi = 2 * np.pi
     gamma_q = (cos(twopi * vq1[i]) + cos(twopi * vq2[i]) + cos(twopi * vq3[i])) / 3
 
     d = 2 * sj * (1 - gamma_q)
-    disp[0, i] = d - 2
-    disp[1, i] = d + 2
+    disp[0, i] = d
+    disp[1, i] = d + 4
     return
 
 
@@ -113,7 +113,7 @@ def resolution_matrix(hkl, en):
     """
 
     sigma1, sigma2 = 0.3, 0.02
-    sigma3 = sigma4 = 0.2
+    sigma3 = sigma4 = 0.02
     angle = -80
     mat = np.diag([1 / sigma1**2, 1 / sigma3**2, 1 / sigma4**2, 1 / sigma2**2])
 
@@ -437,7 +437,7 @@ if __name__ == "__main__":
         f"1D FM chain S=1 J=-5, total intensity = {total_intent:.3f}"
         + f"\n3D Convolution for {len(q1) * len(en)} points, "
         + f"completed in {t1 - t0:.3f} s"
-        # + " with {num_worker:1d} cores"
+        + " on GPU using numba"
     )
 
     plt.show()

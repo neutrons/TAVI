@@ -15,7 +15,7 @@ function model()
     # Jab3 = -0.05;
     # Jc3 = 0.27;
     # D = 0.1; # (meV) hard-axis
-    # 
+    #
     Jab1 = -0.12
     Jc1 = 0.24
     Jab2 = -0.08
