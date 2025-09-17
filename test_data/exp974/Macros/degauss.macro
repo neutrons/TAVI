@@ -1,0 +1,10 @@
+drive psa  0 psb 0
+drive psa 6 psb 6
+drive psa -5 psb -5
+drive psa 4 psb 4
+drive psa -3 psb -3
+drive psa 2 psb 2
+drive psa -1 psb -1
+drive psa 0.5 psb 0.5
+drive psa -0.25 psb -0.25
+drive psa 0 psb 0

@@ -1,0 +1,12 @@
+
+
+preset time 2
+drive psb -5
+
+loop n=5 50 2
+drive psc %n
+scantitle "flipping mode, psb at -5, scan psc at %n"
+scan psd -5 5 10
+endloop
+
+drive psc 0

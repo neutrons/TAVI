@@ -1,0 +1,5 @@
+scantitle "LA (002) UN test"
+
+scan h 0 k 0 l 2 e 15 22 1 preset mcu  200
+
+scan h 0 k 0 l 2.25 e 15 22 1 preset mcu  200

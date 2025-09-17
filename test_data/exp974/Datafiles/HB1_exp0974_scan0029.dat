@@ -1,0 +1,36 @@
+# scan = 29
+# date = 9/16/2025
+# time = 11:20:40 PM
+# proposal = 9880
+# experiment = HB-1 Instrument Calibration
+# experiment_number = 974
+# command = scan psd -5 5 10
+# builtin_command = scan psd -5 5 10
+# users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Masaaki Matsuda, Tao Hong, Wei Tian, Jaime Fernandez-Baca, Michael Cox
+# local_contact = M. Matsuda
+# scan_title = flipping mode, psb at -5, scan psc at 34
+# monochromator = Heusler
+# analyzer = Heusler
+# sense = +-+
+# collimation = 48-80-999-999
+# samplename = Si
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 5.000000,5.000000,5.000000,90.000000,90.000000,90.000000
+# ubmatrix = 0.141421,0.141421,-0.000000,-0.000000,-0.000000,0.200000,0.141421,-0.141421,0.000000
+# mode = 0
+# plane_normal = 0.000000,0.000000,1.000000
+# ubconf = UB16Sep2025_61228PM.ini
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 2.000000
+# def_x = psd
+# def_y = detector
+# col_headers = 
+#   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans     mfocus    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post   mode1set   mode2set   mode3set   mode4set   mode5set   mode6set output1set output2set output3set output4set output5set output6set   volt1set   volt2set   volt3set   volt4set   volt5set   volt6set        psa        psb        psc        pse        psf  ramprate1  ramprate2  ramprate3  ramprate4  ramprate5  ramprate6         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz 34972a_status      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read   pse_read   psf_read snp_status
+      1    -5.0000      2.000   2021.000   1268.000      1.371     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     2.0000    -5.0000    34.0000     0.0000     0.0000     0.1000     0.1000     0.1000     1.0000     0.1000     0.1000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0638    -0.9508     4.2701     6.5389     1.0139     0.0000     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9986    34.0097    -4.9961     0.0009     0.0000     0.000
+      2     5.0000      2.000   5129.000   1378.000      1.490     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     2.0000    -5.0000    34.0000     0.0000     0.0000     0.1000     0.1000     0.1000     1.0000     0.1000     0.1000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0638    -0.9574     4.3251     6.5419     1.1035     0.0000     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9888     2.0031    -4.9986    34.0098     4.9957     0.0008     0.0000     0.000
+# Sum of Counts = 7150
+# Center of Mass = 2.173427+/-0.064476
+# Full Width Half-Maximum = 9.005824+/-0.122710
+# 11:21:26 PM  9/16/2025   scan completed.

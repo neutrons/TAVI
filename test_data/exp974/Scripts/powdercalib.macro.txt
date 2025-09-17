@@ -1,0 +1,24 @@
+powcalib ni 1.000000 energy 13.500000 maxpeaks 6
+preset time [1.000000]
+drive ei 13.500000
+scantitle "Ni Powder (0.5,0.5,0.5)"
+scan s2 -33.410000 -37.020000 0.090250
+calibrate fit indices 0.5 0.5 0.5
+scantitle "Ni Powder (1.0,0.0,0.0)
+scan s2 -38.940000 -42.830000 0.097250
+calibrate fit indices 1.0 0.0 0.0
+scantitle "Ni Powder (1.0,1.0,0.0)
+scan s2 -56.640000 -61.770000 0.128250
+calibrate fit indices 1.0 1.0 0.0
+scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1)
+scan s2 -67.690000 -77.740000 0.125625
+calibrate fit indices 1.5 0.5 0.5 npeaks 2 peakstore 1
+calibrate fit indices 1 1 1 npeaks 2 peakstore 2
+scantitle "Ni Powder (2,0,0)"
+scan s2 -84.460000 -92.790000 0.208250
+calibrate fit indices 2 0 0
+calibrate finish
+comment "Setting zeros based on calibration file C:\SPICE\User\expXXX\Calibration\[ni09Apr2024_125551PMxxx]"
+zero m2 [-0.767483xxx]
+zero s2 [0.371334xxx]
+drive e 0

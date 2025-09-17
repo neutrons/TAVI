@@ -1,0 +1,265 @@
+9/16/2025 6:13 PM        drive s2 -46.2
+9/16/2025 6:17 PM        drive s1 -23
+9/16/2025 6:18 PM        driverel s1 5
+9/16/2025 6:18 PM        driverel s1 -10
+9/16/2025 6:19 PM        driverel s1 -5
+9/16/2025 6:19 PM        driverel s1 3
+9/16/2025 6:19 PM        driverel s1 -0.5
+9/16/2025 6:19 PM        driverel s1 -0.2
+9/16/2025 6:19 PM        driverel s1 -0.2
+9/16/2025 6:20 PM        driverel s1 -0.25
+9/16/2025 6:20 PM        driverel s1 -0.25
+9/16/2025 6:20 PM        driverel s1 -0.2
+9/16/2025 6:20 PM        driverel s1 -0.2
+9/16/2025 6:21 PM        scanrel s1 1.2 -1.2 0.2
+9/16/2025 6:25 PM        drive s1 -31.6256
+9/16/2025 6:25 PM        drive sgu 2
+9/16/2025 6:26 PM        drive sgu -3
+9/16/2025 6:26 PM        drive sgu -2
+9/16/2025 6:26 PM        scanrel sgu 3 -3 1
+9/16/2025 6:28 PM        drive sgu -1.5
+9/16/2025 6:30 PM        th2th 2 -2 0.2
+9/16/2025 6:36 PM        drive s2 -46.4028 s1 -31.7271
+9/16/2025 9:59 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 1 curr2 1 curr3 1 curr4 1 curr5 1 curr6 1 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 9:59 PM        drive psa 0.5 psb 0.5 psc 0.5
+9/16/2025 10:01 PM        drive nut_pre 5 nut_post 5
+9/16/2025 10:02 PM        preset mcu 1
+9/16/2025 10:03 PM        scantitle "rocking curve of si 111"
+9/16/2025 10:03 PM        scanrel s1 -1 1 0.1
+9/16/2025 10:08 PM        drive s1 -31.5946
+9/16/2025 10:09 PM        th2th 1.5 -1.5 -0.15
+9/16/2025 10:13 PM        drive s2   -47.1524   s1 -31.9690 
+9/16/2025 10:14 PM        scan nut_pre -5 5 10
+9/16/2025 10:15 PM        drive nut_post -5
+9/16/2025 10:15 PM        scan nut_pre -5 5 10
+9/16/2025 10:16 PM        drive nut_post 5
+9/16/2025 10:23 PM        scan nut_pre -5 5 10
+9/16/2025 10:24 PM        drive nut_pre -5
+9/16/2025 10:25 PM        scanrel mag_pre -2 2 0.2
+9/16/2025 10:28 PM        drive psa 2 psb 2 psc 2
+9/16/2025 10:29 PM        scan nut_pre -5 5 10
+9/16/2025 10:32 PM        drive nut_pre 5 nut_post 5
+9/16/2025 10:33 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:46 PM        drive ramprate4 0.5
+9/16/2025 10:46 PM        drive psd 5
+9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:47 PM        drive ramprate4 1
+9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:47 PM        drive psd 5
+9/16/2025 10:49 PM        scan psd -5 5 10
+9/16/2025 10:53 PM        scan psd -5 5 10
+9/16/2025 10:58 PM        preset time 2
+9/16/2025 10:58 PM        drive psb -5
+9/16/2025 10:59 PM        drive psc 2
+9/16/2025 10:59 PM        scantitle "flipping mode, psb at -5, scan psc at 2"
+9/16/2025 10:59 PM        scan psd -5 5 10
+9/16/2025 11:00 PM        drive psc 4
+9/16/2025 11:01 PM        scantitle "flipping mode, psb at -5, scan psc at 4"
+9/16/2025 11:01 PM        scan psd -5 5 10
+9/16/2025 11:01 PM        drive psc 6
+9/16/2025 11:02 PM        scantitle "flipping mode, psb at -5, scan psc at 6"
+9/16/2025 11:02 PM        scan psd -5 5 10
+9/16/2025 11:03 PM        drive psc 8
+9/16/2025 11:03 PM        scantitle "flipping mode, psb at -5, scan psc at 8"
+9/16/2025 11:03 PM        scan psd -5 5 10
+9/16/2025 11:04 PM        drive psc 10
+9/16/2025 11:05 PM        scantitle "flipping mode, psb at -5, scan psc at 10"
+9/16/2025 11:05 PM        scan psd -5 5 10
+9/16/2025 11:05 PM        drive psc 12
+9/16/2025 11:06 PM        scantitle "flipping mode, psb at -5, scan psc at 12"
+9/16/2025 11:06 PM        scan psd -5 5 10
+9/16/2025 11:07 PM        drive psc 14
+9/16/2025 11:07 PM        scantitle "flipping mode, psb at -5, scan psc at 14"
+9/16/2025 11:07 PM        scan psd -5 5 10
+9/16/2025 11:08 PM        drive psc 16
+9/16/2025 11:08 PM        scantitle "flipping mode, psb at -5, scan psc at 16"
+9/16/2025 11:08 PM        scan psd -5 5 10
+9/16/2025 11:09 PM        drive psc 18
+9/16/2025 11:10 PM        scantitle "flipping mode, psb at -5, scan psc at 18"
+9/16/2025 11:10 PM        scan psd -5 5 10
+9/16/2025 11:10 PM        drive psc 20
+9/16/2025 11:11 PM        scantitle "flipping mode, psb at -5, scan psc at 20"
+9/16/2025 11:11 PM        scan psd -5 5 10
+9/16/2025 11:12 PM        drive psc 22
+9/16/2025 11:12 PM        scantitle "flipping mode, psb at -5, scan psc at 22"
+9/16/2025 11:12 PM        scan psd -5 5 10
+9/16/2025 11:13 PM        drive psc 24
+9/16/2025 11:14 PM        scantitle "flipping mode, psb at -5, scan psc at 24"
+9/16/2025 11:14 PM        scan psd -5 5 10
+9/16/2025 11:14 PM        drive psc 26
+9/16/2025 11:15 PM        scantitle "flipping mode, psb at -5, scan psc at 26"
+9/16/2025 11:15 PM        scan psd -5 5 10
+9/16/2025 11:16 PM        drive psc 28
+9/16/2025 11:16 PM        scantitle "flipping mode, psb at -5, scan psc at 28"
+9/16/2025 11:16 PM        scan psd -5 5 10
+9/16/2025 11:17 PM        drive psc 30
+9/16/2025 11:18 PM        scantitle "flipping mode, psb at -5, scan psc at 30"
+9/16/2025 11:18 PM        scan psd -5 5 10
+9/16/2025 11:18 PM        drive psc 32
+9/16/2025 11:19 PM        scantitle "flipping mode, psb at -5, scan psc at 32"
+9/16/2025 11:19 PM        scan psd -5 5 10
+9/16/2025 11:20 PM        drive psc 34
+9/16/2025 11:20 PM        scantitle "flipping mode, psb at -5, scan psc at 34"
+9/16/2025 11:20 PM        scan psd -5 5 10
+9/16/2025 11:21 PM        drive psc 36
+9/16/2025 11:21 PM        scantitle "flipping mode, psb at -5, scan psc at 36"
+9/16/2025 11:21 PM        scan psd -5 5 10
+9/16/2025 11:22 PM        drive psc 38
+9/16/2025 11:23 PM        scantitle "flipping mode, psb at -5, scan psc at 38"
+9/16/2025 11:23 PM        scan psd -5 5 10
+9/16/2025 11:24 PM        drive psc 40
+9/16/2025 11:24 PM        scantitle "flipping mode, psb at -5, scan psc at 40"
+9/16/2025 11:24 PM        scan psd -5 5 10
+9/16/2025 11:25 PM        drive psc 42
+9/16/2025 11:25 PM        scantitle "flipping mode, psb at -5, scan psc at 42"
+9/16/2025 11:25 PM        scan psd -5 5 10
+9/16/2025 11:26 PM        drive psc 44
+9/16/2025 11:27 PM        scantitle "flipping mode, psb at -5, scan psc at 44"
+9/16/2025 11:27 PM        scan psd -5 5 10
+9/16/2025 11:27 PM        drive psc 46
+9/16/2025 11:28 PM        scantitle "flipping mode, psb at -5, scan psc at 46"
+9/16/2025 11:28 PM        scan psd -5 5 10
+9/16/2025 11:29 PM        drive psc 48
+9/16/2025 11:29 PM        scantitle "flipping mode, psb at -5, scan psc at 48"
+9/16/2025 11:29 PM        scan psd -5 5 10
+9/16/2025 11:30 PM        drive psc 50
+9/16/2025 11:31 PM        scantitle "flipping mode, psb at -5, scan psc at 50"
+9/16/2025 11:31 PM        scan psd -5 5 10
+9/16/2025 11:31 PM        drive psc 0
+9/16/2025 11:40 PM        drive psc -5
+9/16/2025 11:41 PM        scantitle "sanity check after 50A"
+9/16/2025 11:41 PM        scan psd -5 5 10
+9/16/2025 11:42 PM        drive psa -6 psb -6
+9/16/2025 11:43 PM        drive psa -6 psb -6 psc -6
+9/16/2025 11:44 PM        drive psa 4 psb 4 psc 4
+9/16/2025 11:46 PM        drive psa -3 psb -3 psc -3
+9/16/2025 11:47 PM        drive psa 2 psb 2 psc 2
+9/16/2025 11:48 PM        drive psa -1 psb -1 psc -1
+9/16/2025 11:49 PM        drive psa 0.5 psb 0.5 psc 0.5
+9/16/2025 11:49 PM        drive psa -0.25 psb -0.25 psc -0.25
+9/16/2025 11:49 PM        drive psa 0 psb 0 psc 0
+9/17/2025 10:25 AM        ADMIN
+9/17/2025 10:25 AM        spos m2 31.75
+9/17/2025 10:27 AM        drive m2 29
+9/17/2025 10:28 AM        drive m2 33
+9/17/2025 10:29 AM        spos m2 32.75
+9/17/2025 10:29 AM        drive m2 33.75
+9/17/2025 10:31 AM        drive ei 13.5
+9/17/2025 10:35 AM        drive a2 0
+9/17/2025 10:38 AM        powcalib ni 1.000000 energy 13.500000 maxpeaks 6
+9/17/2025 10:39 AM        drive s2 -20
+9/17/2025 10:39 AM        drive psd 0
+9/17/2025 10:49 AM        powcalib ni 1.000000 energy 13.500000 maxpeaks 6
+9/17/2025 10:49 AM        preset time 1.000000
+9/17/2025 10:49 AM        drive ei 13.500000
+9/17/2025 10:49 AM        scantitle "Ni Powder (0.5,0.5,0.5)"
+9/17/2025 10:49 AM        scan s2 -33.410000 -37.020000 0.090250
+9/17/2025 10:51 AM        calibrate fit indices 0.5 0.5 0.5
+9/17/2025 10:51 AM        scan s2 -38.940000 -42.830000 0.097250
+9/17/2025 10:52 AM        calibrate fit indices 1.0 0.0 0.0
+9/17/2025 10:52 AM        scan s2 -56.640000 -61.770000 0.128250
+9/17/2025 10:54 AM        calibrate fit indices 1.0 1.0 0.0
+9/17/2025 10:54 AM        scan s2 -67.690000 -77.740000 0.125625
+9/17/2025 10:57 AM        calibrate fit indices 1.5 0.5 0.5 npeaks 2 peakstore 1
+9/17/2025 10:57 AM        calibrate fit indices 1 1 1 npeaks 2 peakstore 2
+9/17/2025 10:57 AM        scantitle "Ni Powder (2,0,0)"
+9/17/2025 10:57 AM        scan s2 -84.460000 -92.0000 0.208250
+9/17/2025 10:58 AM        calibrate fit indices 2 0 0
+9/17/2025 10:58 AM        calibrate finish
+9/17/2025 11:10 AM        calibrate finish
+9/17/2025 11:21 AM        calibrate begin standard ni energy 13.500000
+9/17/2025 11:21 AM        preset time 1.000000
+9/17/2025 11:21 AM        drive ei 13.500000
+9/17/2025 11:21 AM        scantitle "Ni Powder (0.5,0.5,0.5)"
+9/17/2025 11:21 AM        scan s2 -33.410000 -37.020000 0.090250
+9/17/2025 11:23 AM        calibrate begin standard ni energy 13.500000
+9/17/2025 11:23 AM        preset time 1.000000
+9/17/2025 11:23 AM        drive ei 13.500000
+9/17/2025 11:23 AM        scantitle "Ni Powder (0.5,0.5,0.5)"
+9/17/2025 11:23 AM        scan s2 -33.410000 -37.020000 0.090250
+9/17/2025 11:24 AM        calibrate fit indices 0.5 0.5 0.5
+9/17/2025 11:24 AM        scan s2 -38.940000 -42.830000 0.097250
+9/17/2025 11:26 AM        calibrate fit indices 1.0 0.0 0.0
+9/17/2025 11:26 AM        scan s2 -56.640000 -61.770000 0.128250
+9/17/2025 11:27 AM        calibrate fit indices 1.0 1.0 0.0
+9/17/2025 11:27 AM        scan s2 -67.690000 -77.740000 0.125625
+9/17/2025 11:30 AM        calibrate fit indices 1.5 0.5 0.5 npeaks 2 peakstore 1
+9/17/2025 11:30 AM        calibrate fit indices 1 1 1 npeaks 2 peakstore 2
+9/17/2025 11:30 AM        scantitle "Ni Powder (2,0,0)"
+9/17/2025 11:30 AM        scan s2 -84.460000 -92.0000 0.208250
+9/17/2025 11:32 AM        calibrate fit indices 2 0 0
+9/17/2025 11:32 AM        calibrate finish
+9/17/2025 11:32 AM        zero m2 -1.077951
+9/17/2025 11:33 AM        zero s2 0.274802
+9/17/2025 11:33 AM        drive e 0
+9/17/2025 11:33 AM        drive s2 -30
+9/17/2025 11:34 AM        drive e 0
+9/17/2025 11:39 AM        hide m1 1 m2 0 marc 1 mtrans 1 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1 
+9/17/2025 11:40 AM        driverel a1 1
+9/17/2025 11:40 AM        driverel a1 -2
+9/17/2025 11:40 AM        driverel a1 3
+9/17/2025 11:40 AM        driverel a1 -1
+9/17/2025 11:40 AM        driverel a1 -0.5
+9/17/2025 11:40 AM        scanrel a1 -2.5 2.5 0.25
+9/17/2025 11:42 AM        drive a1 21.1033
+9/17/2025 11:42 AM        preset time 5
+9/17/2025 11:42 AM        ta2ta -2.5 2.5 0.25
+9/17/2025 11:45 AM        drive a2 42.2036 a1 21.2201
+9/17/2025 11:45 AM        Comment "Current Analyzer setting corresponds to Ef = 13.500174 meV "
+9/17/2025 11:45 AM        nosetpos a2 41.967546
+9/17/2025 11:45 AM        nosetpos a1 20.983773
+9/17/2025 11:49 AM        drive sgu 0
+9/17/2025 11:51 AM        lattice 4.890000 4.890000 4.890000 90.000000 90.000000 90.000000
+9/17/2025 11:52 AM        drive s2 -60.45
+9/17/2025 11:52 AM        driverel s1 5
+9/17/2025 11:53 AM        driverel s1 5
+9/17/2025 11:53 AM        driverel s1 5
+9/17/2025 11:53 AM        driverel s1 5
+9/17/2025 11:53 AM        driverel s1 5
+9/17/2025 11:53 AM        driverel s1 5
+9/17/2025 11:54 AM        driverel s1 -25
+9/17/2025 11:54 AM        driverel s1 -25
+9/17/2025 11:55 AM        drive sgu 3
+9/17/2025 11:55 AM        driverel s1  40
+9/17/2025 11:55 AM        driverel s1  10
+9/17/2025 11:56 AM        drive sgu -3
+9/17/2025 11:56 AM        driverel s1  -50
+9/17/2025 11:56 AM        drive s1 -40
+9/17/2025 11:57 AM        drive s1 +1
+9/17/2025 11:57 AM        drive s1 -39
+9/17/2025 11:57 AM        driverel s1 -1
+9/17/2025 11:57 AM        driverel s1 -1
+9/17/2025 11:57 AM        driverel s1 -1
+9/17/2025 11:57 AM        driverel s1 -1
+9/17/2025 11:58 AM        driverel s1 1
+9/17/2025 11:58 AM        preset time 1
+9/17/2025 11:58 AM        drive sgu -5 
+9/17/2025 11:58 AM        drive sgu -6 
+9/17/2025 11:59 AM        drive sgu -5
+9/17/2025 12:00 PM        drive sgu -4.5
+9/17/2025 12:03 PM        drive sgu 3
+9/17/2025 12:03 PM        drive sgu 0
+9/17/2025 12:03 PM        drive sgu -1
+9/17/2025 12:04 PM        drive sgu -1.5
+9/17/2025 12:04 PM        driverel s1 0.5
+9/17/2025 12:04 PM        driverel s1 -0.55
+9/17/2025 12:04 PM        driverel s1 +1
+9/17/2025 12:04 PM        driverel s1 +0.5
+9/17/2025 12:05 PM        ubcalc file "C:\SPICE\User\exp974\UBConf\tmp\UB17Sep2025_120547PM.ini"
+9/17/2025 12:06 PM        drive h 2.000000 k 2.000000 l 0.000000 e 0.000000
+9/17/2025 12:07 PM        driverel sgl 0.5 
+9/17/2025 12:07 PM        driverel sgl 0.5 
+9/17/2025 12:07 PM        driverel sgl 0.5 
+9/17/2025 12:08 PM        driverel sgl 0.5 
+9/17/2025 12:08 PM        driverel sgl 0.5 
+9/17/2025 12:08 PM        driverel sgl 0.5 
+9/17/2025 12:08 PM        driverel sgl 0.5 
+9/17/2025 12:09 PM        driverel sgl -0.5 
+9/17/2025 12:09 PM        ubcalc file "C:\SPICE\User\exp974\UBConf\tmp\UB17Sep2025_120954PM.ini"
+9/17/2025 12:10 PM        drive s2 -30
+9/17/2025 12:11 PM        drive m2 37
+9/17/2025 12:12 PM        drive m2 33
+9/17/2025 12:16 PM        drive h 0.000000 k 0.000000 l 2.000000 e 22.000000
+9/17/2025 12:19 PM        drive h 0.000000 k 0.000000 l 2.500000 e 22.000000
+9/17/2025 12:22 PM        scantitle "LA (002) UN test"
+9/17/2025 12:22 PM        scan h 0 k 0 l 2 e 15 22 1 preset mcu 200
