@@ -39,12 +39,12 @@ class Filter:
 
     def __init__(
         self,
-        scans: dict[str, Scan],
+        scan_list: dict[str, Scan],
         conditions: Optional[list[Operations]] = None,
         and_or: Optional[Logic] = None,
         tol: float = 0.01,  # this can be put into a TAVI config json file as filter equal tolerance
     ):
-        self.scans = scans
+        self.scan_list = scan_list
         self.conditions = conditions
         self.and_or = and_or
         self.tol = tol
@@ -76,7 +76,7 @@ class Filter:
         """
         tmp_output = set()
         if category == Category.METADATA:
-            for filename, scan in self.scans.items():
+            for filename, scan in self.scan_list.items():
                 if hasattr(scan.metadata, keyword):
                     att = scan.metadata
                 elif hasattr(scan.ubconf, keyword):
@@ -99,7 +99,7 @@ class Filter:
                             tmp_output.add(filename)
         elif category == Category.DATA:
             value = float(value)
-            for filename, scan in self.scans.items():
+            for filename, scan in self.scan_list.items():
                 if not hasattr(scan.data, keyword):
                     logger.log("No matching entry with", keyword)
                 else:
