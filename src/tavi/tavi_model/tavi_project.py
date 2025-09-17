@@ -78,7 +78,7 @@ class TaviProject:
             None
                 The method updates the `scans` attribute in place.
         """
-        self.tavi_data.scan_list = LoadManager(
+        self.tavi_data.rawdataptr = LoadManager(
             data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
         ).load()
 

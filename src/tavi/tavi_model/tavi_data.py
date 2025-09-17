@@ -22,7 +22,7 @@ class TaviData:
             A mapping from scan identifiers (e.g., filenames or scan numbers)
             to their corresponding `Scan` objects, which hold raw data and metadata.
 
-        combined_data (dict[str, np.ndarray]):
+        CombineDataPtr (dict[str, np.ndarray]):
             Stores merged or aggregated data from multiple scans for analysis.
 
         filtered_data (dict[str, np.ndarray]):
@@ -65,16 +65,16 @@ class TaviData:
 
     def __init__(
         self,
-        scan_list: dict[str, Scan] = field(default_factory=dict),
-        combined_data: dict[str, np.array] = field(default_factory=dict),
+        rawdataptr: dict[str, Scan] = field(default_factory=dict),
+        combinedataptr: dict[str, np.array] = field(default_factory=dict),
         process_selected_data: list[str] = [],  # mouse selection
         show_selected_data: dict = {},  # display
-        fit_manager: dict[str, Any] = field(default_factory=dict),
-        plot_manager: dict[str, Any] = field(default_factory=dict),
+        fitptr: dict[str, Any] = field(default_factory=dict),
+        plotptr: dict[str, Any] = field(default_factory=dict),
     ):
-        self.scan_list = scan_list
-        self.combined_data = combined_data
+        self.rawdataptr = rawdataptr
+        self.combinedataptr = combinedataptr
         self.process_selected_data = process_selected_data
         self.show_selected_data = show_selected_data
-        self.fit_manager = fit_manager
-        self.plot_manager = plot_manager
+        self.fitptr = fitptr
+        self.plotptr = plotptr
