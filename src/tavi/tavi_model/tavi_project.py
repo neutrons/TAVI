@@ -109,8 +109,12 @@ class TaviProject:
                 self.tavi_data.show_selected_data[filter_name] = filtered_data
 
     # TO DO
-    def combine_data():
-        pass
+    def combine_data(
+        self, target_list: list[str], background_list: Optional[list[str]] = [], tol: Optional[float] = 0.01
+    ):
+        target = [self.tavi_data.rawdataptr[scan_name] for scan_name in target_list]
+        background = [self.tavi_data.rawdataptr[scan_name] for scan_name in background_list]
+        return target
 
     # TO DO
     def fit_data():
@@ -129,15 +133,19 @@ if __name__ == "__main__":
 
     TaviProj.load_scans(filepath)
 
-    filename = "CG4C_exp0424_scan0042.dat"
-    TaviProj.select_scans(
-        filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
-    )
+    # filename = "CG4C_exp0424_scan0042.dat"
+    # TaviProj.select_scans(
+    #     filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
+    # )
 
-    TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
-    print(TaviProj.tavi_data.show_selected_data)
-#   print(type(TaviProj.scans[filename].metadata.scan))
-#   print(TaviProj.scans[filename].ubconf)
-#   print(TaviProj.scans[filename].data.Pt)
-#   print(TaviProj.scans[filename].error_message)
-#   print(TaviProj.scans[filename].metadata.time)
+    # TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
+    # print(TaviProj.tavi_data.show_selected_data)
+    #   print(type(TaviProj.scans[filename].metadata.scan))
+    #   print(TaviProj.scans[filename].ubconf)
+    #   print(TaviProj.scans[filename].data.Pt)
+    #   print(TaviProj.scans[filename].error_message)
+    #   print(TaviProj.scans[filename].metadata.time)
+
+    # -----------------------combine data---------------------------
+    target = ["CG4C_exp0424_scan0042.dat", "CG4C_exp0424_scan0043.dat"]
+    print(TaviProj.combine_data(target_list=target))
