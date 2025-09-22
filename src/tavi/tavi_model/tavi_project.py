@@ -2,6 +2,7 @@ import os
 from typing import Iterable, Optional
 
 from tavi.tavi_model.FileSystem.load_manager import LoadManager
+from tavi.tavi_model.combine_data import CombineManager
 from tavi.tavi_model.filter import Filter, Logic, Operations
 from tavi.tavi_model.tavi_data import TaviData
 
@@ -110,11 +111,13 @@ class TaviProject:
 
     # TO DO
     def combine_data(
-        self, target_list: list[str], background_list: Optional[list[str]] = [], tol: Optional[float] = 0.01
+        self, target_list: list[str], background_list: Optional[list[str]] = [], axis:Optional[tuple[str, str]] = None, tol: Optional[float] = 0.01
     ):
         target = [self.tavi_data.rawdataptr[scan_name] for scan_name in target_list]
         background = [self.tavi_data.rawdataptr[scan_name] for scan_name in background_list]
-        return target
+        combine_manager = CombineManager(target=target, background=background)
+        combined_data_1d = combine_manager.combine_1d(axis)
+        return combined_data_1d
 
     # TO DO
     def fit_data():
@@ -147,5 +150,6 @@ if __name__ == "__main__":
     #   print(TaviProj.scans[filename].metadata.time)
 
     # -----------------------combine data---------------------------
-    target = ["CG4C_exp0424_scan0042.dat", "CG4C_exp0424_scan0043.dat"]
-    print(TaviProj.combine_data(target_list=target))
+    target = ["CG4C_exp0424_scan0042.dat", "CG4C_exp0424_scan0042.dat"]
+    x, y, err = TaviProj.combine_data(target_list=target, axis=("e", "detector"))
+    print(x,y,err)
