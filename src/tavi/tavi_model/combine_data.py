@@ -18,17 +18,16 @@ class CombineManager:
             y = getattr(scan.data, y_axis)
             new_x = np.append(new_x, x)
             new_y = np.append(new_y, y)
-        
+
         # sort based on x
         ind = np.argsort(new_x)
         new_y = new_y[ind]
         new_x = new_x[ind]
         new_err = np.sqrt(new_y)
         return (new_x, new_y, new_err)
-    
+
     def _equal_rebin_1d(self, x, y, err):
-        return np.histogramdd(np.array(x,y))
-        
+        return np.histogramdd(np.array(x, y))
 
     def combine_2d():
         pass
