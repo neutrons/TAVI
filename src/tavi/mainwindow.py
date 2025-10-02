@@ -4,9 +4,9 @@ from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
 from tavi.help.help_model import help_function
 
-# from tavi.tavi.tavi_model import taviModel
-# from tavi.tavi.tavi_presenter import taviPresenter
-from tavi.tavi_view.taviView import TaviView
+from tavi.tavi_model.tavi_project import TaviProject
+from tavi.tavi_presenter.load_presenter import LoadPresenter
+from tavi.tavi_view.load_view import TaviView
 
 
 class MainWindow(QWidget):
@@ -18,8 +18,8 @@ class MainWindow(QWidget):
 
         ### Create widgets here ###
         tavi_view = TaviView(self)
-        # tavi_model = taviModel()
-        # self.tavi_presenter = taviPresenter(tavi_view, tavi_model)
+        tavi_model = TaviProject()
+        self.tavi_presenter = LoadPresenter(tavi_view, tavi_model)
 
         ### Set the layout
         layout = QVBoxLayout()

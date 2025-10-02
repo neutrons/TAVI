@@ -42,6 +42,8 @@ class TaviProject:
     def __init__(self):
         self.tavi_data = TaviData()
 
+    def print_test(sefl, input):
+        print(input)
     # --------------------Load Manager-------------------------------------
     def load_scans(
         self,
@@ -81,6 +83,7 @@ class TaviProject:
         self.tavi_data.rawdataptr = LoadManager(
             data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
         ).load()
+        print(self.tavi_data.rawdataptr.keys())
 
     # TO DO
     def load_tavi():

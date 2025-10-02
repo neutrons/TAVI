@@ -1,6 +1,6 @@
 from typing import Optional
 
-from qtpy.QtCore import QObject
+from qtpy.QtCore import QObject, Signal
 from qtpy.QtWidgets import QDialog, QFileDialog, QHBoxLayout, QLineEdit, QListView, QPushButton, QStackedWidget, QWidget
 
 
@@ -14,16 +14,27 @@ class TaviView(QWidget):
 
         """
         super().__init__(parent)
-        self.directory_callback = None
+        self.load_data_callback = None
 
         layout = QHBoxLayout()
         self.setLayout(layout)
         self.load_widget = LoadWidget(self)
         layout.addWidget(self.load_widget)
 
+        self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
+    
+    def connect_load_data(self, callback):
+        """Building callback connections for the load data - set by the presenter"""
+        self.load_data_callback = callback
+    
+    def load_view_data(self, data_dir_or_files):
+        """Pass loaded file through callback conenctions"""
+        self.load_data_callback(data_dir_or_files)
+
 
 class LoadWidget(QWidget):
     """Widget that displays the plot"""
+    data_dir_or_files_signal = Signal(list)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """Constructor for the plotting widget
@@ -40,6 +51,10 @@ class LoadWidget(QWidget):
 
         self.load_button.clicked.connect(self.handleLoad)
         layoutTop.addWidget(self.load_button)
+
+    def handleLoad(self):
+        data_dir_or_files = self.getOpenFilesAndDirs(parent=self)
+        self.data_dir_or_files_signal.emit(data_dir_or_files)
 
     def getOpenFilesAndDirs(self, parent=None, caption="", directory="", filter="", initialFilter="", options=None):
         def updateText():
@@ -84,6 +99,3 @@ class LoadWidget(QWidget):
 
         dialog.exec_()
         return dialog.selectedFiles()
-
-    def handleLoad(self):
-        print(self.getOpenFilesAndDirs(parent=self))
