@@ -4,6 +4,7 @@ dependencies = [
   "qtpy",
   "pyside6",
   "numpy",
+  "scipy",
 ]
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
