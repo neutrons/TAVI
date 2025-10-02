@@ -44,6 +44,7 @@ class TaviProject:
 
     def print_test(sefl, input):
         print(input)
+
     # --------------------Load Manager-------------------------------------
     def load_scans(
         self,

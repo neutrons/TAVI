@@ -3,7 +3,6 @@
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
 from tavi.help.help_model import help_function
-
 from tavi.tavi_model.tavi_project import TaviProject
 from tavi.tavi_presenter.load_presenter import LoadPresenter
 from tavi.tavi_view.load_view import TaviView

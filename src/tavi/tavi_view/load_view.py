@@ -22,11 +22,11 @@ class TaviView(QWidget):
         layout.addWidget(self.load_widget)
 
         self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
-    
+
     def connect_load_data(self, callback):
         """Building callback connections for the load data - set by the presenter"""
         self.load_data_callback = callback
-    
+
     def load_view_data(self, data_dir_or_files):
         """Pass loaded file through callback conenctions"""
         self.load_data_callback(data_dir_or_files)
@@ -34,6 +34,7 @@ class TaviView(QWidget):
 
 class LoadWidget(QWidget):
     """Widget that displays the plot"""
+
     data_dir_or_files_signal = Signal(list)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
