@@ -119,8 +119,7 @@ class TaviProject:
     ):
         target = [self.tavi_data.rawdataptr[scan_name] for scan_name in target_list]
         background = [self.tavi_data.rawdataptr[scan_name] for scan_name in background_list]
-        combine_manager = CombineManager(target=target, background=background)
-        combined_data_1d = combine_manager.combine_1d(axis)
+        combined_data_1d = CombineManager(target=target, background=background).combine_1d(axis)
         return combined_data_1d
 
     # TO DO
@@ -155,5 +154,14 @@ if __name__ == "__main__":
 
     # -----------------------combine data---------------------------
     target = ["CG4C_exp0424_scan0042.dat", "CG4C_exp0424_scan0042.dat"]
-    x, y, err = TaviProj.combine_data(target_list=target, axis=("e", "detector"))
-    print(x, y, err)
+    test_return = TaviProj.combine_data(target_list=target, axis=("e", "detector"))
+    print(test_return[0])
+    print(test_return[1])
+    print(test_return[2])
+    print(test_return[3])
+    print(test_return[4])
+    print(test_return[5])
+    print(len(test_return))
+    # import matplotlib.pyplot as plt
+    # plt.plot(test_return[3], test_return[4], '.')
+    # plt.show()
