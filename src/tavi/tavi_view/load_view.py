@@ -1,7 +1,19 @@
 from typing import Optional
 
 from qtpy.QtCore import QObject, Signal
-from qtpy.QtWidgets import QDialog, QFileDialog, QHBoxLayout, QLineEdit, QListView, QPushButton, QStackedWidget, QWidget
+from qtpy.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QListView,
+    QPushButton,
+    QStackedWidget,
+    QTreeView,
+    QTreeWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class TaviView(QWidget):
@@ -16,10 +28,13 @@ class TaviView(QWidget):
         super().__init__(parent)
         self.load_data_callback = None
 
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
         self.setLayout(layout)
+        self.tree_widget = TreeViewWidget(self)
+
         self.load_widget = LoadWidget(self)
         layout.addWidget(self.load_widget)
+        layout.addWidget(self.tree_widget)
 
         self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
 
@@ -100,3 +115,49 @@ class LoadWidget(QWidget):
 
         dialog.exec_()
         return dialog.selectedFiles()
+
+
+class TreeViewWidget(QWidget):
+    def __init__(self, parent: Optional["QObject"] = None) -> None:
+        super().__init__(parent)
+
+        layoutTreeView = QVBoxLayout()
+        self.setLayout(layoutTreeView)
+        self.treeView = QTreeView(self)
+        self.treeView.setHeaderHidden(True)
+        data = {
+            "Project A": ["file_a.py", "file_a.txt", "something.xls"],
+            "Project B": ["file_b.csv", "photo.jpg"],
+            "Project C": [],
+        }
+
+        items = []
+        for key, values in data.items():
+            item = QTreeWidgetItem([key])
+            for value in values:
+                ext = value.split(".")[-1].upper()
+                child = QTreeWidgetItem([value, ext])
+                item.addChild(child)
+            items.append(item)
+
+        # self.treeView.insertTopLevelItems(0, items)
+
+        layoutTreeView.addWidget(self.treeView)
+
+    def add_tree_view_data(self):
+        data = {
+            "Project A": ["file_a.py", "file_a.txt", "something.xls"],
+            "Project B": ["file_b.csv", "photo.jpg"],
+            "Project C": [],
+        }
+
+        items = []
+        for key, values in data.items():
+            item = QTreeWidgetItem([key])
+            for value in values:
+                ext = value.split(".")[-1].upper()
+                child = QTreeWidgetItem([value, ext])
+                item.addChild(child)
+            items.append(item)
+
+        self.treeView.insertTopLevelItems(0, items)
