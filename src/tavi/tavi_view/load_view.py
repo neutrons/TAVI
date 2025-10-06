@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 
 from qtpy.QtCore import QObject, Signal
+from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
     QDialog,
     QFileDialog,
@@ -10,7 +11,6 @@ from qtpy.QtWidgets import (
     QPushButton,
     QStackedWidget,
     QTreeView,
-    QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
 )
@@ -30,10 +30,11 @@ class TaviView(QWidget):
 
         layout = QVBoxLayout()
         self.setLayout(layout)
-        self.tree_widget = TreeViewWidget(self)
 
         self.load_widget = LoadWidget(self)
         layout.addWidget(self.load_widget)
+
+        self.tree_widget = TreeViewWidget(self)
         layout.addWidget(self.tree_widget)
 
         self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
@@ -125,39 +126,30 @@ class TreeViewWidget(QWidget):
         self.setLayout(layoutTreeView)
         self.treeView = QTreeView(self)
         self.treeView.setHeaderHidden(True)
-        data = {
-            "Project A": ["file_a.py", "file_a.txt", "something.xls"],
-            "Project B": ["file_b.csv", "photo.jpg"],
-            "Project C": [],
-        }
-
-        items = []
-        for key, values in data.items():
-            item = QTreeWidgetItem([key])
-            for value in values:
-                ext = value.split(".")[-1].upper()
-                child = QTreeWidgetItem([value, ext])
-                item.addChild(child)
-            items.append(item)
-
-        # self.treeView.insertTopLevelItems(0, items)
-
         layoutTreeView.addWidget(self.treeView)
 
-    def add_tree_view_data(self):
-        data = {
-            "Project A": ["file_a.py", "file_a.txt", "something.xls"],
-            "Project B": ["file_b.csv", "photo.jpg"],
-            "Project C": [],
-        }
+    def add_tree_data(self, list_of_files: List[str]):
+        self.treeModel = QStandardItemModel()
+        self.rootNode = self.treeModel.invisibleRootItem()
+        self.treeView.setModel(self.treeModel)
+        if "exp" in list_of_files[0]:
+            filename = list_of_files[0].split("_")
+            self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
+        else:
+            self.experiment_folder = StandardItem("Folder", 16, set_bold=True)
+        self.rootNode.appendRow(self.experiment_folder)
 
-        items = []
-        for key, values in data.items():
-            item = QTreeWidgetItem([key])
-            for value in values:
-                ext = value.split(".")[-1].upper()
-                child = QTreeWidgetItem([value, ext])
-                item.addChild(child)
-            items.append(item)
+        for file in list_of_files:
+            self.experiment_folder.appendRow(StandardItem(file))
 
-        self.treeView.insertTopLevelItems(0, items)
+
+class StandardItem(QStandardItem):
+    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):
+        super().__init__()
+        fnt = QFont("Open Sans", font_size)
+        fnt.setBold(set_bold)
+
+        self.setEditable(False)
+        self.setForeground(color)
+        self.setFont(fnt)
+        self.setText(txt)

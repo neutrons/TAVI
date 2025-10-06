@@ -18,4 +18,4 @@ class LoadPresenter:
         self._model.attach(self.load_observer)
         self._model.load(folder=data_dir_or_files[0])
         loaded_files = self.load_observer.get_loaded_data()
-        print(loaded_files)
+        self._view.tree_widget.add_tree_data(loaded_files)

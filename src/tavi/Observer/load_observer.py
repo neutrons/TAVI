@@ -11,4 +11,5 @@ class LoadObserver(Observer):
         self.loaded_data = subject.file_list
 
     def get_loaded_data(self):
+        self.loaded_data.sort()
         return self.loaded_data
