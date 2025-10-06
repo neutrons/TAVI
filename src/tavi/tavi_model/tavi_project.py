@@ -42,7 +42,7 @@ class TaviProject:
     def __init__(self):
         self.tavi_data = TaviData()
 
-     # --------------------Load Manager-------------------------------------
+    # --------------------Load Manager-------------------------------------
     def load_scans(
         self,
         data_folder: Optional[os.PathLike | str] = None,
