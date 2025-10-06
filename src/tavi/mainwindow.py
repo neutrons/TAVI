@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 from tavi.help.help_model import help_function
 from tavi.tavi_model.dummy_model import TaviProject
 from tavi.tavi_presenter.load_presenter import LoadPresenter
-from tavi.tavi_view.load_view import TaviView
+from tavi.tavi_view.load_view import LoadView
 
 
 class MainWindow(QWidget):
@@ -16,13 +16,13 @@ class MainWindow(QWidget):
         super().__init__(parent)
 
         ### Create widgets here ###
-        tavi_view = TaviView(self)
-        tavi_model = TaviProject()
-        self.tavi_presenter = LoadPresenter(tavi_view, tavi_model)
+        load_view = LoadView(self)
+        load_model = TaviProject()
+        self.load_presenter = LoadPresenter(load_view, load_model)
 
         ### Set the layout
         layout = QVBoxLayout()
-        layout.addWidget(tavi_view)
+        layout.addWidget(load_view)
 
         ### Create bottom interface here ###
 
@@ -38,7 +38,7 @@ class MainWindow(QWidget):
         self.setLayout(layout)
 
         # register child widgets to make testing easier
-        self.tavi_view = tavi_view
+        self.load_view = load_view
 
     def handle_help(self):
         help_function(context="tavi_View")

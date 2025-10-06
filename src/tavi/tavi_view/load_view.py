@@ -16,7 +16,7 @@ from qtpy.QtWidgets import (
 )
 
 
-class TaviView(QWidget):
+class LoadView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
