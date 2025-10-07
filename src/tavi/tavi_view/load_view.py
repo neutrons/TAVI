@@ -27,6 +27,7 @@ class LoadView(QWidget):
         """
         super().__init__(parent)
         self.load_data_callback = None
+        self.click_on_a_scan_callback = None
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -38,6 +39,7 @@ class LoadView(QWidget):
         layout.addWidget(self.tree_widget)
 
         self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
+        self.tree_widget.clicked_file_signal.connect(self.pass_selected_file)
 
     def connect_load_data(self, callback):
         """Building callback connections for the load data - set by the presenter"""
@@ -47,9 +49,15 @@ class LoadView(QWidget):
         """Pass loaded file through callback conenctions"""
         self.load_data_callback(data_dir_or_files)
 
+    def connect_click_on_a_scan(self, callback):
+        self.click_on_a_scan_callback = callback
+
+    def pass_selected_file(self, filename):
+        self.click_on_a_scan_callback(filename)
+
 
 class LoadWidget(QWidget):
-    """Widget that displays the plot"""
+    """Widget that displays the loaded data"""
 
     data_dir_or_files_signal = Signal(list)
 
@@ -119,6 +127,8 @@ class LoadWidget(QWidget):
 
 
 class TreeViewWidget(QWidget):
+    clicked_file_signal = Signal(str)
+
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         super().__init__(parent)
 
@@ -126,21 +136,28 @@ class TreeViewWidget(QWidget):
         self.setLayout(layoutTreeView)
         self.treeView = QTreeView(self)
         self.treeView.setHeaderHidden(True)
-        layoutTreeView.addWidget(self.treeView)
-
-    def add_tree_data(self, list_of_files: List[str]):
         self.treeModel = QStandardItemModel()
         self.rootNode = self.treeModel.invisibleRootItem()
-        self.treeView.setModel(self.treeModel)
+
+        layoutTreeView.addWidget(self.treeView)
+
+        self.treeView.clicked.connect(self.select_file)
+
+    def add_tree_data(self, list_of_files: List[str]):
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
-            self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
+            self.experiment_folder = StandardItem(filename[0], 16, set_bold=True)
         else:
             self.experiment_folder = StandardItem("Folder", 16, set_bold=True)
         self.rootNode.appendRow(self.experiment_folder)
 
         for file in list_of_files:
             self.experiment_folder.appendRow(StandardItem(file))
+        self.treeView.setModel(self.treeModel)
+
+    def select_file(self, val):
+        if val.parent().isValid():
+            self.clicked_file_signal.emit(val.data())
 
 
 class StandardItem(QStandardItem):
