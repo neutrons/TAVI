@@ -1,10 +1,13 @@
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
+
+from typing import TYPE_CHECKING
+
 from tavi.Observer.observer import Observer
 
 if TYPE_CHECKING:
-    from tavi.tavi_view.load_view import LoadView
     from tavi.tavi_model.dummy_model import TaviProject
+    from tavi.tavi_view.load_view import LoadView
+
 
 class LoadPresenter(Observer):
     def __init__(self, view: LoadView, model: TaviProject):
@@ -28,7 +31,7 @@ class LoadPresenter(Observer):
         self.loaded_data.sort()
         self._view.tree_widget.add_tree_data(self.loaded_data)
         self._model.detach(self)
-        
+
     def get_loaded_data(self):
         self.loaded_data.sort()
         return self.loaded_data
