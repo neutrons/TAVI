@@ -1,7 +1,5 @@
 from typing import Optional
-from typing import Optional
 
-from qtpy.QtCore import QObject
 from qtpy.QtCore import QObject
 from qtpy.QtWidgets import (
     QHBoxLayout,
@@ -36,10 +34,8 @@ class MetaDataView(QWidget):
         # self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
 
 
-
 class MetaDataWidget(QWidget):
     """Widget that displays the metadata"""
-
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """Constructor for the plotting widget
