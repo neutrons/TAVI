@@ -146,7 +146,7 @@ class TreeViewWidget(QWidget):
     def add_tree_data(self, list_of_files: List[str]):
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
-            self.experiment_folder = StandardItem(filename[0], 16, set_bold=True)
+            self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
         else:
             self.experiment_folder = StandardItem("Folder", 16, set_bold=True)
         self.rootNode.appendRow(self.experiment_folder)
