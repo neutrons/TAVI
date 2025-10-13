@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
-from tavi.Observer.observer import Observer
 
+from typing import TYPE_CHECKING
+
+from tavi.Observer.observer import Observer
 
 if TYPE_CHECKING:
     from tavi.tavi_model.random_model import RandomModel

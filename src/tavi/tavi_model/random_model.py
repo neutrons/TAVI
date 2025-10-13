@@ -1,21 +1,22 @@
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
-from tavi.Observer.observer import Observer
-from typing import List
 
+from typing import TYPE_CHECKING, List
+
+from tavi.Observer.observer import Observer
 
 if TYPE_CHECKING:
     from tavi.tavi_model.dummy_model import TaviProject
 
+
 class RandomModel(Observer):
     _observers: List[Observer] = []
-    
+
     def __init__(self, parent_model: TaviProject):
         self._parent_model = parent_model
         self.next_file = "Listening..."
 
         self._parent_model.attach(self)
-    
+
     def attach(self, observer) -> None:
         print("Attaching an observer")
         self._observers.append(observer)
@@ -30,7 +31,7 @@ class RandomModel(Observer):
 
     def update(self, subject: TaviProject):
         self.get_next_file(subject.view_slected_file)
-    
+
     def get_next_file(self, current_selected_file):
         if current_selected_file:
             filename = current_selected_file.split("_")
@@ -39,7 +40,7 @@ class RandomModel(Observer):
                 if name.startswith("scan"):
                     file_number = name.strip("scan").strip(".dat")
                     file_number = int(file_number)
-                    new_name.append("scan"+str(file_number + 1)+".dat")
+                    new_name.append("scan" + str(file_number + 1) + ".dat")
                 else:
                     new_name.append(name)
             self.next_file = "_".join(new_name)

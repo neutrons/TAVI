@@ -27,6 +27,7 @@ class RandomView(QWidget):
         self.random_widget = RandomWidget(self)
         layout.addWidget(self.random_widget)
 
+
 class RandomWidget(QWidget):
     """Widget that displays the metadata"""
 
