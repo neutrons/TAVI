@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, List
+from typing import TYPE_CHECKING, List
+
+if TYPE_CHECKING:
+    from tavi.Observer.observer import Observer
 
 
 class TaviProject:
-    _observers: List[Any] = []
+    _observers: List[Observer] = []
     _total_files = 0
     _loaded_files = 0
 
@@ -12,7 +17,7 @@ class TaviProject:
         self.file_list = []
         self.temp_file_list = []
         self.view_slected_file = None
-        self.selected_metadata = None
+        self.selected_metadata = "Listening..."
 
     def attach(self, observer) -> None:
         print("Attaching an observer")

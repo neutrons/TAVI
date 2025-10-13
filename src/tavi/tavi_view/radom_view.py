@@ -10,7 +10,7 @@ from qtpy.QtWidgets import (
 )
 
 
-class MetaDataView(QWidget):
+class RandomView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -20,21 +20,14 @@ class MetaDataView(QWidget):
 
         """
         super().__init__(parent)
-        self.display_metadata_callback = None
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        self.metadata_widget = MetaDataWidget(self)
-        layout.addWidget(self.metadata_widget)
+        self.random_widget = RandomWidget(self)
+        layout.addWidget(self.random_widget)
 
-        # self.tree_widget = TreeViewWidget(self)
-        # layout.addWidget(self.tree_widget)
-
-        # self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
-
-
-class MetaDataWidget(QWidget):
+class RandomWidget(QWidget):
     """Widget that displays the metadata"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -48,7 +41,7 @@ class MetaDataWidget(QWidget):
         layoutTop = QHBoxLayout()
         self.setLayout(layoutTop)
 
-        self.filename_label = QLabel("File name:", self)
+        self.filename_label = QLabel("Next file:", self)
         self.filename_edit = QLineEdit(self)
         self.filename_edit.setStyleSheet("color: black;")
         self.filename_edit.setEnabled(False)
