@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tavi.Observer.observer import Observer
-
 if TYPE_CHECKING:
     from tavi.tavi_model.random_model import RandomModel
     from tavi.tavi_view.radom_view import RandomView
 
 
-class RandomPresenter(Observer):
+class RandomPresenter:
     def __init__(self, view: RandomView, model: RandomModel):
         super().__init__()
         """Constructor

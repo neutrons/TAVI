@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tavi.Observer.observer import Observer
-
 if TYPE_CHECKING:
     from tavi.tavi_model.dummy_model import TaviProject
     from tavi.tavi_view.metadata_view import MetaDataView
 
 
-class MetaDataPresenter(Observer):
+class MetaDataPresenter:
     def __init__(self, view: MetaDataView, model: TaviProject):
         super().__init__()
         """Constructor

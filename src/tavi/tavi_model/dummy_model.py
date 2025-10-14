@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import TYPE_CHECKING, List
 
-if TYPE_CHECKING:
-    from tavi.Observer.observer import Observer
+from tavi.MessageBroker.message_broker import MessageBroker
+from tavi.MessageBroker.message_type import scan_uuid
 
 
 class TaviProject:
-    _observers: List[Observer] = []
+    _message_broker = MessageBroker()
+    _load_folder_is_called = False
     _total_files = 0
     _loaded_files = 0
 
@@ -19,17 +19,8 @@ class TaviProject:
         self.view_slected_file = None
         self.selected_metadata = "Listening..."
 
-    def attach(self, observer) -> None:
-        print("Attaching an observer")
-        self._observers.append(observer)
-
-    def detach(self, observer) -> None:
-        print("detaching an observer")
-        self._observers.remove(observer)
-
-    def notify(self) -> None:
-        for observer in self._observers:
-            observer.update(self)
+    def send(self, message):
+        self._message_broker.publish(message)
 
     def set_selected_file(self, filename):
         self.view_slected_file = filename
@@ -64,4 +55,6 @@ class TaviProject:
                 self.file_list.extend(completed_batch)
                 self.temp_file_list.extend(completed_batch)
                 self._loaded_files += len(completed_batch)
-        self.notify()
+        self.temp_file_list.sort()
+        message = scan_uuid(self.temp_file_list)
+        self.send(message)

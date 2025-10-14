@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
-
-from tavi.Observer.observer import Observer
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tavi.tavi_model.dummy_model import TaviProject
 
 
-class RandomModel(Observer):
-    _observers: List[Observer] = []
+class RandomModel:
+    # _observers: List[Observer] = []
 
     def __init__(self, parent_model: TaviProject):
         self._parent_model = parent_model
