@@ -1,0 +1,172 @@
+from typing import List, Optional
+
+from qtpy.QtCore import QObject, Signal
+from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
+from qtpy.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QListView,
+    QPushButton,
+    QStackedWidget,
+    QTreeView,
+    QVBoxLayout,
+    QWidget,
+)
+
+
+class LoadView(QWidget):
+    """Main widget"""
+
+    def __init__(self, parent: Optional["QObject"] = None) -> None:
+        """Constructor for the main widget
+        Args:
+            parent (QObject): Optional parent
+
+        """
+        super().__init__(parent)
+        self.load_data_callback = None
+        self.click_on_a_scan_callback = None
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        self.load_widget = LoadWidget(self)
+        layout.addWidget(self.load_widget)
+
+        self.tree_widget = TreeViewWidget(self)
+        layout.addWidget(self.tree_widget)
+
+        self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
+        self.tree_widget.clicked_file_signal.connect(self.pass_selected_file)
+
+    def connect_load_data(self, callback):
+        """Building callback connections for the load data - set by the presenter"""
+        self.load_data_callback = callback
+
+    def load_view_data(self, data_dir_or_files):
+        """Pass loaded file through callback conenctions"""
+        self.load_data_callback(data_dir_or_files)
+
+    def connect_click_on_a_scan(self, callback):
+        self.click_on_a_scan_callback = callback
+
+    def pass_selected_file(self, filename):
+        self.click_on_a_scan_callback(filename)
+
+
+class LoadWidget(QWidget):
+    """Widget that displays the loaded data"""
+
+    data_dir_or_files_signal = Signal(list)
+
+    def __init__(self, parent: Optional["QObject"] = None) -> None:
+        """Constructor for the plotting widget
+
+        Args:
+            parent (QObject): Optional parent
+
+        """
+        super().__init__(parent)
+        layoutTop = QHBoxLayout()
+        self.setLayout(layoutTop)
+
+        self.load_button = QPushButton("Load")
+
+        self.load_button.clicked.connect(self.handleLoad)
+        layoutTop.addWidget(self.load_button)
+
+    def handleLoad(self):
+        data_dir_or_files = self.getOpenFilesAndDirs(parent=self)
+        self.data_dir_or_files_signal.emit(data_dir_or_files)
+
+    def getOpenFilesAndDirs(self, parent=None, caption="", directory="", filter="", initialFilter="", options=None):
+        def updateText():
+            # update the contents of the line edit widget with the selected files
+            selected = []
+            for index in view.selectionModel().selectedRows():
+                selected.append(f'"{index.data()}"')
+            lineEdit.setText(" ".join(selected))
+
+        dialog = QFileDialog(parent, windowTitle=caption)
+        dialog.setFileMode(dialog.FileMode.ExistingFiles)
+        if options:
+            dialog.setOptions(options)
+        dialog.setOption(dialog.Option.DontUseNativeDialog, True)
+        if directory:
+            dialog.setDirectory(directory)
+        if filter:
+            dialog.setNameFilter(filter)
+            if initialFilter:
+                dialog.selectNameFilter(initialFilter)
+
+        # by default, if a directory is opened in file listing mode,
+        # QFileDialog.accept() shows the contents of that directory, but we
+        # need to be able to "open" directories as we can do with files, so we
+        # just override accept() with the default QDialog implementation which
+        # will just return exec_()
+        dialog.accept = lambda: QDialog.accept(dialog)
+
+        # there are many item views in a non-native dialog, but the ones displaying
+        # the actual contents are created inside a QStackedWidget; they are a
+        # QTreeView and a QListView, and the tree is only used when the
+        # viewMode is set to QFileDialog.Details, which is not this case
+        stackedWidget = dialog.findChild(QStackedWidget)
+        view = stackedWidget.findChild(QListView)
+        view.selectionModel().selectionChanged.connect(updateText)
+
+        lineEdit = dialog.findChild(QLineEdit)
+        # clear the line edit contents whenever the current directory changes
+        lineEdit.blockSignals(True)
+        dialog.directoryEntered.connect(lambda: lineEdit.setText(""))
+        lineEdit.blockSignals(False)
+
+        dialog.exec_()
+        return dialog.selectedFiles()
+
+
+class TreeViewWidget(QWidget):
+    clicked_file_signal = Signal(str)
+
+    def __init__(self, parent: Optional["QObject"] = None) -> None:
+        super().__init__(parent)
+
+        layoutTreeView = QVBoxLayout()
+        self.setLayout(layoutTreeView)
+        self.treeView = QTreeView(self)
+        self.treeView.setHeaderHidden(True)
+        self.treeModel = QStandardItemModel()
+        self.rootNode = self.treeModel.invisibleRootItem()
+
+        layoutTreeView.addWidget(self.treeView)
+
+        self.treeView.clicked.connect(self.select_file)
+
+    def add_tree_data(self, list_of_files: List[str]):
+        if "exp" in list_of_files[0]:
+            filename = list_of_files[0].split("_")
+            self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
+        else:
+            self.experiment_folder = StandardItem("Folder", 16, set_bold=True)
+        self.rootNode.appendRow(self.experiment_folder)
+
+        for file in list_of_files:
+            self.experiment_folder.appendRow(StandardItem(file))
+        self.treeView.setModel(self.treeModel)
+
+    def select_file(self, val):
+        if val.parent().isValid():
+            self.clicked_file_signal.emit(val.data())
+
+
+class StandardItem(QStandardItem):
+    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):
+        super().__init__()
+        fnt = QFont("Open Sans", font_size)
+        fnt.setBold(set_bold)
+
+        self.setEditable(False)
+        self.setForeground(color)
+        self.setFont(fnt)
+        self.setText(txt)
