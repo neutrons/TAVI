@@ -1,36 +1,23 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from tavi.tavi_model.dummy_model import TaviProject
+from tavi.EventBroker.event_broker import EventBroker
+from tavi.EventBroker.event_type import random_data, selected_uuid
+from tavi.tavi_model.dummy_model import TaviProject
 
 
 class RandomModel:
     # _observers: List[Observer] = []
 
-    def __init__(self, parent_model: TaviProject):
-        self._parent_model = parent_model
-        self.next_file = "Listening..."
+    def __init__(self):
+        self.event_broker = EventBroker()
+        self.tavi_project = TaviProject()
+        self.event_broker.register(selected_uuid, self.get_next_file)
 
-        self._parent_model.attach(self)
-
-    def attach(self, observer) -> None:
-        print("Attaching an observer")
-        self._observers.append(observer)
-
-    def detach(self, observer) -> None:
-        print("detaching an observer")
-        self._observers.remove(observer)
-
-    def notify(self) -> None:
-        for observer in self._observers:
-            observer.update(self)
-
-    def update(self, subject: TaviProject):
-        self.get_next_file(subject.view_slected_file)
+    def send(self, event):
+        self.event_broker.publish(event)
 
     def get_next_file(self, current_selected_file):
+        current_selected_file = current_selected_file.selected_uuid
         if current_selected_file:
             filename = current_selected_file.split("_")
             new_name = []
@@ -42,4 +29,6 @@ class RandomModel:
                 else:
                     new_name.append(name)
             self.next_file = "_".join(new_name)
-        self.notify()
+        event = random_data(random_data=self.next_file)
+        print(self.tavi_project.file_list.index(current_selected_file))
+        self.send(event)
