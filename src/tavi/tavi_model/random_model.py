@@ -12,7 +12,6 @@ class RandomModel(RandomModelInterface):
     def __init__(self):
         self.event_broker = EventBroker()
         self.tavi_project = TaviProject()
-        self.event_broker.register(selected_uuid, self.get_next_file)
 
     def send(self, event):
         self.event_broker.publish(event)
