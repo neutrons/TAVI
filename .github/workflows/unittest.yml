@@ -41,6 +41,7 @@ jobs:
       - name: build python wheel - pypi
         run: |
           # test that the python wheel builds
+          python -m pip install -U setuptools wheel versioningit toml build twine
           python -m build --wheel --no-isolation
           twine check dist/neutron_tavi-*.whl
       # - name: build conda package

@@ -44,6 +44,9 @@ class MainWindow(QWidget):
         layout.addWidget(load_view)
         layout.addWidget(metadata_view)
         layout.addWidget(random_view)
+        layout.addWidget(load_view)
+        layout.addWidget(metadata_view)
+        layout.addWidget(random_view)
         ### Create bottom interface here ###
 
         # Help button
@@ -58,6 +61,7 @@ class MainWindow(QWidget):
         self.setLayout(layout)
 
         # register child widgets to make testing easier
+        self.load_view = load_view
         self.load_view = load_view
 
     def handle_help(self):

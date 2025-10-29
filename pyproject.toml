@@ -3,6 +3,8 @@ authors = [{name = "Bing Li", email = "lib1@ornl.gov"}]
 dependencies = [
   "qtpy",
   "pyside6",
+  "numpy",
+  "scipy",
 ]
 description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
