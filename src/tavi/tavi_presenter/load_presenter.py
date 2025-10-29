@@ -6,12 +6,12 @@ from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import scan_uuid
 
 if TYPE_CHECKING:
-    from tavi.tavi_model.dummy_model import TaviProject
+    from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.load_view import LoadView
 
 
 class LoadPresenter:
-    def __init__(self, view: LoadView, model: TaviProject):
+    def __init__(self, view: LoadView, model: TaviProjectInterface):
         super().__init__()
         """Constructor
         :view: hppt_view class type

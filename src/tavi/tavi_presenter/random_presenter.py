@@ -6,12 +6,12 @@ from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import random_data
 
 if TYPE_CHECKING:
-    from tavi.tavi_model.random_model import RandomModel
+    from tavi.ModelInterface.random_model_interface import RandomModelInterface
     from tavi.tavi_view.radom_view import RandomView
 
 
 class RandomPresenter:
-    def __init__(self, view: RandomView, model: RandomModel):
+    def __init__(self, view: RandomView, model: RandomModelInterface):
         super().__init__()
         """Constructor
         :view: hppt_view class type

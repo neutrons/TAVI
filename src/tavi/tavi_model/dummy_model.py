@@ -5,9 +5,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import meta_data, scan_uuid, selected_uuid
+from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
 
 
-class TaviProject:
+class TaviProject(TaviProjectInterface):
     _event_broker = EventBroker()
     _total_files = 0
     _loaded_files = 0

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import random_data, selected_uuid
+from tavi.ModelInterface.random_model_interface import RandomModelInterface
 from tavi.tavi_model.dummy_model import TaviProject
 
 
-class RandomModel:
+class RandomModel(RandomModelInterface):
     # _observers: List[Observer] = []
 
     def __init__(self):

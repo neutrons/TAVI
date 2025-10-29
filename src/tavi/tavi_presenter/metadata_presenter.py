@@ -6,12 +6,12 @@ from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import meta_data
 
 if TYPE_CHECKING:
-    from tavi.tavi_model.dummy_model import TaviProject
+    from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.metadata_view import MetaDataView
 
 
 class MetaDataPresenter:
-    def __init__(self, view: MetaDataView, model: TaviProject):
+    def __init__(self, view: MetaDataView, model: TaviProjectInterface):
         super().__init__()
         """Constructor
         :view: hppt_view class type
@@ -19,6 +19,7 @@ class MetaDataPresenter:
         """
         self._view = view
         self._model = model
+
         self.event_broker = EventBroker()
         self.event_broker.register(meta_data, self.update_meta_data)
 
