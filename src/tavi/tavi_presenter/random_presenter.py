@@ -2,35 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tavi.EventBroker.event_type import selected_uuid, random_data
 from tavi.EventBroker.event_broker import EventBroker
-from tavi.EventBroker.event_type import random_data
-
-if TYPE_CHECKING:
-    from tavi.tavi_model.random_model import RandomModel
-    from tavi.tavi_view.radom_view import RandomView
-
-
-class RandomPresenter:
-    def __init__(self, view: RandomView, model: RandomModel):
-        super().__init__()
-        """Constructor
-        :view: hppt_view class type
-        :model:hppt_model class type
-        """
-        self._view = view
-        self._model = model
-        self.event_broker = EventBroker()
-        self.event_broker.register(random_data, self.update)
-
-    def update(self, event) -> None:
-        self._view.random_widget.set_values(event.random_data)
-
-
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-from tavi.EventBroker.event_type import selected_uuid
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.random_model_interface import RandomModelInterface
