@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tavi.EventBroker.event_type import selected_uuid, random_data
 from tavi.EventBroker.event_broker import EventBroker
+from tavi.EventBroker.event_type import random_data, selected_uuid
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.random_model_interface import RandomModelInterface
