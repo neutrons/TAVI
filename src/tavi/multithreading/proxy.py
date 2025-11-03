@@ -7,7 +7,6 @@ T = TypeVar("T")
 
 def Proxy(_type: Type[T]):
     def __init__(self, host: T):
-    def __init__(self, host: T):
         self.host = host
 
 
