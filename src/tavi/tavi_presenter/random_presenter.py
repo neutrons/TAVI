@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from qtpy.QtCore import QObject, Qt, Signal
+
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import random_data, selected_uuid
-from qtpy.QtCore import Signal, Qt, QObject
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.random_model_interface import RandomModelInterface
     from tavi.tavi_view.radom_view import RandomView
 
+
 class _UiBridge(QObject):
     set_random_signal = Signal(str)
+
 
 class RandomPresenter:
     def __init__(self, view: RandomView, model: RandomModelInterface):

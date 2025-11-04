@@ -18,6 +18,7 @@ class RandomModel(RandomModelInterface):
 
     def get_next_file(self, current_selected_file):
         import threading
+
         print(f"Running get_next_file on {threading.current_thread().name}")
         current_selected_file = current_selected_file.selected_uuid
         if current_selected_file:

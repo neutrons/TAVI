@@ -2,17 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from qtpy.QtCore import QObject, Qt, Signal
+
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import scan_uuid
-from qtpy.QtCore import Signal, Qt, QObject, QMetaObject
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.load_view import LoadView
 
+
 class _UiBridge(QObject):
     """Thread-safe bridge to deliver updates on the GUI thread."""
+
     update_tree_signal = Signal(list)
+
 
 class LoadPresenter:
     def __init__(self, view: LoadView, model: TaviProjectInterface):

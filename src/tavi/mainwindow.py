@@ -1,5 +1,7 @@
 """Main Qt window"""
 
+import threading
+
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
 from tavi.help.help_model import help_function
@@ -13,7 +15,7 @@ from tavi.tavi_presenter.random_presenter import RandomPresenter
 from tavi.tavi_view.load_view import LoadView
 from tavi.tavi_view.metadata_view import MetaDataView
 from tavi.tavi_view.radom_view import RandomView
-import threading
+
 
 class MainWindow(QWidget):
     """Main widget"""

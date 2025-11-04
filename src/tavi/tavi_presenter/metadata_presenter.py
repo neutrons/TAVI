@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from qtpy.QtCore import QObject, Qt, Signal
+
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import meta_data
-from qtpy.QtCore import Signal, Qt, QObject
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 
 class _UiBridge(QObject):
     set_metadata_signal = Signal(str)
+
 
 class MetaDataPresenter:
     def __init__(self, view: MetaDataView, model: TaviProjectInterface):
@@ -33,10 +35,11 @@ class MetaDataPresenter:
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
 
-
     def update_meta_data(self, event) -> None:
         self.selected_meta_data = event.meta_data_dict
         # self._view.metadata_widget.set_values(
         #     f"key is {self.selected_meta_data.keys()}, value is {self.selected_meta_data.values()}"
         # )
-        self._ui_bridge.set_metadata_signal.emit(f"key is {self.selected_meta_data.keys()}, value is {self.selected_meta_data.values()}")
+        self._ui_bridge.set_metadata_signal.emit(
+            f"key is {self.selected_meta_data.keys()}, value is {self.selected_meta_data.values()}"
+        )
