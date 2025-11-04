@@ -17,8 +17,7 @@ def Proxy(_type: Type[T]):
 
     def make_proxy_method(method_name: str):
         def executeOnWorker(self, *args, **kwargs):
-            with ThreadPoolExecutor(max_workers=1) as executor:
-                print(f"Running {method_name} on {threading.get_ident()}")
+            with ThreadPoolExecutor(max_workers=2) as executor:
                 host_method = getattr(self.host, method_name)
                 fut = executor.submit(host_method, *args, **kwargs)
                 return fut.result()
@@ -35,27 +34,3 @@ def Proxy(_type: Type[T]):
 
     ProxyClass = type(f"Proxy{_type.__name__}", (_type,), namespace)
     return ProxyClass
-
-
-# same file
-# class MyClassInterface(metaclass=abc.ABCMeta):
-#         @abc.abstractmethod
-#         def foo(self):
-#             pass
-# MyClassProxy = Proxy(MyClassInterface)
-
-# separate file
-# separate file
-# class MyClass(MyClassInterface):
-#     def foo(self):
-#         print("Foo!")
-
-
-# if __name__ == "__main__":
-#     myClass = MyClass()
-#     myClassProxy = MyClassProxy(myClass)
-
-#     print(type(myClass))
-#     myClass.foo()
-#     print(type(myClassProxy))
-#     myClassProxy.foo()

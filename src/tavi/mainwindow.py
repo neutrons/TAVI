@@ -13,7 +13,7 @@ from tavi.tavi_presenter.random_presenter import RandomPresenter
 from tavi.tavi_view.load_view import LoadView
 from tavi.tavi_view.metadata_view import MetaDataView
 from tavi.tavi_view.radom_view import RandomView
-
+import threading
 
 class MainWindow(QWidget):
     """Main widget"""
@@ -22,6 +22,7 @@ class MainWindow(QWidget):
         """Constructor"""
         super().__init__(parent)
 
+        print(f"main GUI running on {threading.current_thread().name}")
         ### Create widgets here ###
         # initalize view
         load_view = LoadView(self)
@@ -44,9 +45,6 @@ class MainWindow(QWidget):
         layout.addWidget(load_view)
         layout.addWidget(metadata_view)
         layout.addWidget(random_view)
-        layout.addWidget(load_view)
-        layout.addWidget(metadata_view)
-        layout.addWidget(random_view)
         ### Create bottom interface here ###
 
         # Help button
@@ -61,7 +59,6 @@ class MainWindow(QWidget):
         self.setLayout(layout)
 
         # register child widgets to make testing easier
-        self.load_view = load_view
         self.load_view = load_view
 
     def handle_help(self):
