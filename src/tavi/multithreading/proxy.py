@@ -13,8 +13,6 @@ def Proxy(_type: Type[T]):
 
     namespace = {"__init__": __init__}
 
-    namespace = {"__init__": __init__}
-
     def make_proxy_method(method_name: str):
         def executeOnWorker(self, *args, **kwargs):
             with ThreadPoolExecutor(max_workers=2) as executor:
