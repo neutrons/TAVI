@@ -40,4 +40,3 @@ class MetaDataPresenter:
         #     f"key is {self.selected_meta_data.keys()}, value is {self.selected_meta_data.values()}"
         # )
         self._ui_bridge.set_metadata_signal.emit(f"key is {self.selected_meta_data.keys()}, value is {self.selected_meta_data.values()}")
-        print("!!!!!!!!")
