@@ -1,6 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import Type, TypeVar
 
+# include this in a config file
+num_of_workers = 1
+
 T = TypeVar("T")
 
 
@@ -14,7 +17,7 @@ def Proxy(_type: Type[T]):
 
     def make_proxy_method(method_name: str):
         def executeOnWorker(self, *args, **kwargs):
-            with ThreadPoolExecutor(max_workers=2) as executor:
+            with ThreadPoolExecutor(max_workers=num_of_workers) as executor:
                 host_method = getattr(self.host, method_name)
                 fut = executor.submit(host_method, *args, **kwargs)
                 return fut.result()
