@@ -1,8 +1,8 @@
 .. _installation:
 
-++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Installation for Triple-Axis Data Visualization (TAVI) development
-++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 * Create and activate a virtual environment with [Pixi](https://pixi.sh/). Prerequisites: Pixi installation e.g. for Linux:
 
