@@ -1,0 +1,11 @@
+/* makes the width expand the entire width*/
+.wy-nav-content {
+    min-width: 360px;
+    max-width: 100%;
+}
+
+/* allows table to be multi-line */
+table.docutils td {
+    word-wrap:break-word;
+    white-space:pre-wrap;
+}

@@ -33,6 +33,10 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - twine
+  # docs
+  - sphinx
+  - sphinx_rtd_theme
+  - sphinxcontrib-mermaid
   # --------------------------------------------------
   # add additional sections such as Qt, etc. if needed
   # --------------------------------------------------
