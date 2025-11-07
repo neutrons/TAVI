@@ -8,8 +8,8 @@ It includes the function signatures and classes of the various modules.
 Tavi
 ----------
 
-.. automodule:: Tavi
-   :members:
+.. .. automodule:: Tavi
+..    :members:
 
 Tavi
 ------

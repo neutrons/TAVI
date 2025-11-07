@@ -1,25 +1,25 @@
-.. _hyspecpptclasses:
+.. _Taviclasses:
 
 HPPT
 #############################
 
 The software is organized in a Model-View-Presenter pattern.
-The main (HyspecPPT) model, view and presenter classes and their components interactions are described here.
+The main (Tavi) model, view and presenter classes and their components interactions are described here.
 
 
-HyspecPPT Model
+Tavi Model
 +++++++++++++++
 
-The HyspecPPTModel encapsulates the backend functionality of data calculations. The object fields are updated
+The TaviModel encapsulates the backend functionality of data calculations. The object fields are updated
 every time there are new valid values received from the user (front end).
 
 .. mermaid::
 
  classDiagram
-    HyspecPPTModel "1" -->"1" CrosshairParameters
+    TaviModel "1" -->"1" CrosshairParameters
     CrosshairParameters "1" -->"1" SingleCrystalParameters
 
-    class HyspecPPTModel{
+    class TaviModel{
         +float incident_energy_ei
         +float detector_tank_angle_s2
         +float polarization_direction_angle_p
@@ -63,20 +63,20 @@ every time there are new valid values received from the user (front end).
     }
 
 
-HyspecPPT View
+Tavi View
 +++++++++++++++
 
 
 .. mermaid::
 
  classDiagram
-    HyspecPPTView "1" -->"1" ExperimentWidget
-    HyspecPPTView "1" -->"1" CrosshairWidget
-    HyspecPPTView "1" -->"1" SingleCrystalWidget
-    HyspecPPTView "1" -->"1" SelectorWidget
-    HyspecPPTView "1" -->"1" PlotWidget
+    TaviView "1" -->"1" ExperimentWidget
+    TaviView "1" -->"1" CrosshairWidget
+    TaviView "1" -->"1" SingleCrystalWidget
+    TaviView "1" -->"1" SelectorWidget
+    TaviView "1" -->"1" PlotWidget
 
-    class HyspecPPTView{
+    class TaviView{
         +ExperimentWidget:experiment_widget
         +SingleCrystalWidget:sc_widget
         +CrosshairWidget:crosshair_widget
@@ -167,29 +167,29 @@ HyspecPPT View
 
 
 
-HyspecPPT Presenter
+Tavi Presenter
 ++++++++++++++++++++++
 
 .. mermaid::
 
  classDiagram
-    HyspecPPTPresenter "1" -->"1" HyspecPPTModel
-    HyspecPPTPresenter "1" -->"1" HyspecPPTView
+    TaviPresenter "1" -->"1" TaviModel
+    TaviPresenter "1" -->"1" TaviView
 
-    class HyspecPPTPresenter{
-        -HyspecPPTModel:model
-        -HyspecPPTView:view
+    class TaviPresenter{
+        -TaviModel:model
+        -TaviView:view
         +handle_field_values_update()
         +handle_switch_to_powder()
         +handle_switch_to_sc()
         +handle_QZ_angle()
     }
 
-    class HyspecPPTModel{
+    class TaviModel{
         #from above
     }
 
-    class HyspecPPTView{
+    class TaviView{
         #from above
     }
 
@@ -198,7 +198,7 @@ The Presenter describes the main workflows that require communication and coordi
 Any value processing and/or filtering to match the requirements and logic of the View and Model side should happen on the Presenter.
 
 
-#. Application Start - HyspecPPTView Initialization. All default values are retrieved from the settings file.
+#. Application Start - TaviView Initialization. All default values are retrieved from the settings file.
 
     .. mermaid::
 
@@ -207,7 +207,7 @@ Any value processing and/or filtering to match the requirements and logic of the
             participant Presenter
             participant Model
 
-            Note over View,Model:  HyspecPPTView Initialization
+            Note over View,Model:  TaviView Initialization
             Presenter->>Model: A. Get Experiment parameters
             Presenter->>View: Set Experiment parameters (experiment_widget.set_values)
             Note left of View: Display Experiment parameters values
@@ -486,7 +486,7 @@ Experiment Settings
 ++++++++++++++++++++++
 
 The parameters' default values for the application are stored in a file, experiment_settings.py, next to the model file. They are imported
-in the HyspecPPT Model file and used during the Experiment object's initialization and data calculations. The options for experiment and plot types are used in HyspecPPT Model and View files.
+in the Tavi Model file and used during the Experiment object's initialization and data calculations. The options for experiment and plot types are used in Tavi Model and View files.
 More specifically the parameters with their values are:
 
     * Experiment type options
