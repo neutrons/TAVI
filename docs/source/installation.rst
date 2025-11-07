@@ -1,7 +1,7 @@
 .. _installation:
 
 +++++++++++++
-Installation for Hyspecppt development
+Installation for Tavi development
 +++++++++++++
 
 * Create and activate a virtual environment with [Pixi](https://pixi.sh/). Prerequisites: Pixi installation e.g. for Linux:
@@ -10,7 +10,7 @@ Installation for Hyspecppt development
 
       $ curl -fsSL https://pixi.sh/install.sh | sh
 
-* Setup/Update the environment of Hyspecppt (make sure you are in hyspecppt project folder where pyproject.toml is)
+* Setup/Update the environment of Tavi (make sure you are in Tavi project folder where pyproject.toml is)
 
    .. code-block:: bash
 
@@ -26,4 +26,4 @@ Installation for Hyspecppt development
 
    .. code-block:: bash
 
-      $ hyspecppt
+      $ Tavi
