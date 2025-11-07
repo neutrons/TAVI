@@ -2,12 +2,12 @@
 .. of the "table of contents tree" (or toctree).
 
 ==========
-Hyspecppt
+Tavi
 ==========
 
-**Hyspec P**\ olarization **P**\ lanning **T**\ ool for Single Crystal and Powder samples
+**T**\ riple - **A**\ xis Data **Vi**\ sualization Toolkit
 
-This tool enables users to select the polarization angle neutron experiments on powder and single crystal samples, when using the HYSPEC instrument.
+This tool enables users to visualize and analysis triple-axis data
 
 .. note::
 
