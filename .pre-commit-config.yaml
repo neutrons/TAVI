@@ -1,8 +1,9 @@
-exclude: "test_data/*.*"
-
+exclude: "scripts/.*|.*\\.mat$"
+ci:
+    skip: [pixi-lock-check]
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v6.0.0
+  rev: v5.0.0
   hooks:
     - id: check-added-large-files
       args: [--maxkb=8192]
@@ -11,16 +12,26 @@ repos:
       args: [--allow-multiple-documents]
       exclude: "conda.recipe/meta.yaml"
     - id: end-of-file-fixer
+      exclude: "tests/cis_tests/.*"
     - id: trailing-whitespace
-
+      exclude: "tests/cis_tests/.*"
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.0
+  rev: v0.9.7
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
+      exclude: "tests/cis_tests/.*"
     - id: ruff-format
-
-# - repo: https://github.com/codespell-project/codespell
-#   rev: v2.4.1
-#   hooks:
-#     - id: codespell
+      exclude: "tests/cis_tests/.*"
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+    - id: codespell
+      exclude: pixi.lock
+- repo: local
+  hooks:
+    - id: pixi-lock-check
+      name: pixi-lock-check
+      entry: bash -c "pixi lock --check"
+      stage: pre-push
+      language: system
