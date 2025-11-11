@@ -22,10 +22,6 @@ def Proxy(_type: Type[T]):
                 fut = executor.submit(host_method, *args, **kwargs)
                 return fut.result()
 
-        # def executeOnWorker(self, *args, **kwargs):
-        #     print(f"Running {method_name} on workerthread")
-        #     return getattr(self.host, method_name)(*args, **kwargs)
-
         executeOnWorker.__name__ = method_name
         return executeOnWorker
 
