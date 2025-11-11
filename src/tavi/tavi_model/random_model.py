@@ -1,22 +1,25 @@
 from __future__ import annotations
 
 from tavi.EventBroker.event_broker import EventBroker
-from tavi.EventBroker.event_type import random_data, selected_uuid
+from tavi.EventBroker.event_type import random_data
+from tavi.ModelInterface.random_model_interface import RandomModelInterface
 from tavi.tavi_model.dummy_model import TaviProject
 
 
-class RandomModel:
+class RandomModel(RandomModelInterface):
     # _observers: List[Observer] = []
 
     def __init__(self):
         self.event_broker = EventBroker()
         self.tavi_project = TaviProject()
-        self.event_broker.register(selected_uuid, self.get_next_file)
 
     def send(self, event):
         self.event_broker.publish(event)
 
     def get_next_file(self, current_selected_file):
+        import threading
+
+        print(f"Running get_next_file on {threading.current_thread().name}")
         current_selected_file = current_selected_file.selected_uuid
         if current_selected_file:
             filename = current_selected_file.split("_")
