@@ -53,4 +53,4 @@ jobs:
           # below to build the conda package in your local machine
           CHANNELS="--channel conda-forge"
           VERSION=$(versioningit ../) conda mambabuild $CHANNELS --output-folder . .
-          conda verify noarch/tavi*.tar.bz2
+          conda verify noarch/tavi*.conda
