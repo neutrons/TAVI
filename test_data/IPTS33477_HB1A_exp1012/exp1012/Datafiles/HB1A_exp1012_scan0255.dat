@@ -21,51 +21,51 @@
 # mode = 0
 # plane_normal = -0.000714,0.000226,1.000000
 # ubconf = UB10Apr2024_62322PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu         m2        chi        phi        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.99614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.89614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.79614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.69614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.59614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.49614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.39614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.29614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.19614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Apr 10, 2024 [7:32:37 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", 0.09614, exceeds the upper limit of 0.00000.
 # ...Move aborted.
      11     0.0137    -0.0037     11.088 2620147.000 106661.000     10.000    41.5367   -57.0010  -177.2000     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    15.0000    10.0000    10.0000    15.0000    20.7609    -0.0010     0.0006     0.0000    -0.0010    -0.0000    14.4503    14.4503     0.000

@@ -8,7 +8,7 @@
 # builtin_command = scan sgu @(sgu)+3 @(sgu)+-3 1.000000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Masaaki Matsuda, Tao Hong, Wei Tian, Jaime Fernandez-Baca, Michael Cox
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu         m1         m2       marc     mtrans     mfocus    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post   mode1set   mode2set   mode3set   mode4set   mode5set   mode6set output1set output2set output3set output4set output5set output6set   volt1set   volt2set   volt3set   volt4set   volt5set   volt6set        psa        psb        psc        psd        pse        psf  ramprate1  ramprate2  ramprate3  ramprate4  ramprate5  ramprate6         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz 34972a_status      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read   pse_read   psf_read snp_status
       1     1.0020      1.000    154.000    687.000      0.743     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.1000     0.1000     0.1000     0.1000     0.1000     0.1000   -31.6255   -46.1996     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    30.0603    28.4666   -64.4298 19887.5688    13.1874 19874.3814     0.0020    -0.0014    -0.9893     4.4222     6.4455     1.0202     0.0000     0.0010    -0.0017     0.0049     0.0091     0.0007     0.0007     0.0031    -0.0001     0.0017    -0.0019     0.0009     0.0000     0.000
       2     0.0008      1.000    246.000    670.000      0.724     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.1000     0.1000     0.1000     0.1000     0.1000     0.1000   -31.6255   -46.1996     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    29.2640    29.2629   -64.4397 19887.5688    13.1874 19874.3814     0.0019    -0.0014    -0.9970     4.4223     6.4457     1.0200     0.0000     0.0010    -0.0013     0.0053     0.0091     0.0007     0.0007     0.0031    -0.0001     0.0017    -0.0019     0.0009     0.0000     0.000

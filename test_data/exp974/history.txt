@@ -20,7 +20,7 @@
 9/16/2025 6:28 PM        drive sgu -1.5
 9/16/2025 6:30 PM        th2th 2 -2 0.2
 9/16/2025 6:36 PM        drive s2 -46.4028 s1 -31.7271
-9/16/2025 9:59 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 1 curr2 1 curr3 1 curr4 1 curr5 1 curr6 1 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 9:59 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 1 curr2 1 curr3 1 curr4 1 curr5 1 curr6 1 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1
 9/16/2025 9:59 PM        drive psa 0.5 psb 0.5 psc 0.5
 9/16/2025 10:01 PM        drive nut_pre 5 nut_post 5
 9/16/2025 10:02 PM        preset mcu 1
@@ -28,7 +28,7 @@
 9/16/2025 10:03 PM        scanrel s1 -1 1 0.1
 9/16/2025 10:08 PM        drive s1 -31.5946
 9/16/2025 10:09 PM        th2th 1.5 -1.5 -0.15
-9/16/2025 10:13 PM        drive s2   -47.1524   s1 -31.9690 
+9/16/2025 10:13 PM        drive s2   -47.1524   s1 -31.9690
 9/16/2025 10:14 PM        scan nut_pre -5 5 10
 9/16/2025 10:15 PM        drive nut_post -5
 9/16/2025 10:15 PM        scan nut_pre -5 5 10
@@ -39,12 +39,12 @@
 9/16/2025 10:28 PM        drive psa 2 psb 2 psc 2
 9/16/2025 10:29 PM        scan nut_pre -5 5 10
 9/16/2025 10:32 PM        drive nut_pre 5 nut_post 5
-9/16/2025 10:33 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:33 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 1 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1
 9/16/2025 10:46 PM        drive ramprate4 0.5
 9/16/2025 10:46 PM        drive psd 5
-9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 1 pse_read 1 psf_read 1 snp_status 1
 9/16/2025 10:47 PM        drive ramprate4 1
-9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1 
+9/16/2025 10:47 PM        hide m1 0 m2 0 marc 0 mtrans 0 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1
 9/16/2025 10:47 PM        drive psd 5
 9/16/2025 10:49 PM        scan psd -5 5 10
 9/16/2025 10:53 PM        scan psd -5 5 10
@@ -194,7 +194,7 @@
 9/17/2025 11:33 AM        drive e 0
 9/17/2025 11:33 AM        drive s2 -30
 9/17/2025 11:34 AM        drive e 0
-9/17/2025 11:39 AM        hide m1 1 m2 0 marc 1 mtrans 1 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1 
+9/17/2025 11:39 AM        hide m1 1 m2 0 marc 1 mtrans 1 mfocus 1 mag_top 0 mag_bot 0 mag_pre 0 mag_post 0 nut_pre 0 nut_post 0 mode1set 1 mode2set 1 mode3set 1 mode4set 1 mode5set 1 mode6set 1 output1set 1 output2set 1 output3set 1 output4set 1 output5set 1 output6set 1 volt1set 1 volt2set 1 volt3set 1 volt4set 1 volt5set 1 volt6set 1 psa 0 psb 0 psc 0 psd 0 pse 1 psf 1 ramprate1 1 ramprate2 1 ramprate3 1 ramprate4 1 ramprate5 1 ramprate6 1 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 psa_dcct 0 psb_dcct 0 hb2a_bz 0 hb1_bx 0 hb1_by 0 hb1_bz 0 34972a_status 1 curr1 0 curr2 0 curr3 0 curr4 0 curr5 0 curr6 0 psa_read 0 psb_read 0 psc_read 0 psd_read 0 pse_read 1 psf_read 1 snp_status 1
 9/17/2025 11:40 AM        driverel a1 1
 9/17/2025 11:40 AM        driverel a1 -2
 9/17/2025 11:40 AM        driverel a1 3
@@ -233,8 +233,8 @@
 9/17/2025 11:57 AM        driverel s1 -1
 9/17/2025 11:58 AM        driverel s1 1
 9/17/2025 11:58 AM        preset time 1
-9/17/2025 11:58 AM        drive sgu -5 
-9/17/2025 11:58 AM        drive sgu -6 
+9/17/2025 11:58 AM        drive sgu -5
+9/17/2025 11:58 AM        drive sgu -6
 9/17/2025 11:59 AM        drive sgu -5
 9/17/2025 12:00 PM        drive sgu -4.5
 9/17/2025 12:03 PM        drive sgu 3
@@ -247,14 +247,14 @@
 9/17/2025 12:04 PM        driverel s1 +0.5
 9/17/2025 12:05 PM        ubcalc file "C:\SPICE\User\exp974\UBConf\tmp\UB17Sep2025_120547PM.ini"
 9/17/2025 12:06 PM        drive h 2.000000 k 2.000000 l 0.000000 e 0.000000
-9/17/2025 12:07 PM        driverel sgl 0.5 
-9/17/2025 12:07 PM        driverel sgl 0.5 
-9/17/2025 12:07 PM        driverel sgl 0.5 
-9/17/2025 12:08 PM        driverel sgl 0.5 
-9/17/2025 12:08 PM        driverel sgl 0.5 
-9/17/2025 12:08 PM        driverel sgl 0.5 
-9/17/2025 12:08 PM        driverel sgl 0.5 
-9/17/2025 12:09 PM        driverel sgl -0.5 
+9/17/2025 12:07 PM        driverel sgl 0.5
+9/17/2025 12:07 PM        driverel sgl 0.5
+9/17/2025 12:07 PM        driverel sgl 0.5
+9/17/2025 12:08 PM        driverel sgl 0.5
+9/17/2025 12:08 PM        driverel sgl 0.5
+9/17/2025 12:08 PM        driverel sgl 0.5
+9/17/2025 12:08 PM        driverel sgl 0.5
+9/17/2025 12:09 PM        driverel sgl -0.5
 9/17/2025 12:09 PM        ubcalc file "C:\SPICE\User\exp974\UBConf\tmp\UB17Sep2025_120954PM.ini"
 9/17/2025 12:10 PM        drive s2 -30
 9/17/2025 12:11 PM        drive m2 37

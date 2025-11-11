@@ -3,7 +3,7 @@
 2/20/2025 1:03 PM        drive 2theta -35.5815 omega -35.5815/2
 2/20/2025 1:05 PM        preset time 10
 2/20/2025 1:05 PM        count
-2/20/2025 1:05 PM        mcu 19300 
+2/20/2025 1:05 PM        mcu 19300
 2/20/2025 1:05 PM        preset mcu 1
 2/20/2025 1:05 PM        count
 2/20/2025 1:06 PM        scantitle "La2Ni7, look for [006]"
@@ -22,10 +22,10 @@
 2/20/2025 1:12 PM        scanrel chi 6 -6 1
 2/20/2025 1:13 PM        drive chi 3.2286
 2/20/2025 1:14 PM        th2th 2 -2 0.2
-2/20/2025 1:26 PM        lowerlimit chi -85.000000 phi -180.500000 omega -45.000000 2theta -90.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 
-2/20/2025 1:26 PM        upperlimit chi 91.000000 phi 180.500000 omega 0.000000 2theta 0.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 
-2/20/2025 1:29 PM        lowerlimit chi -50.000000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 
-2/20/2025 1:29 PM        upperlimit chi 45.000000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 
+2/20/2025 1:26 PM        lowerlimit chi -85.000000 phi -180.500000 omega -45.000000 2theta -90.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000
+2/20/2025 1:26 PM        upperlimit chi 91.000000 phi 180.500000 omega 0.000000 2theta 0.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000
+2/20/2025 1:29 PM        lowerlimit chi -50.000000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000
+2/20/2025 1:29 PM        upperlimit chi 45.000000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000
 2/20/2025 2:12 PM        drive 2theta -56.1256 omega -56.1256/2 chi 3.229 phi 92
 2/20/2025 2:14 PM        scanrel phi 1 -1 0.1
 2/20/2025 2:15 PM        drive phi 92.4313
@@ -1205,8 +1205,8 @@
 2/21/2025 11:24 AM        drive phi 180
 2/21/2025 11:29 AM        drive chi 0 phi 0
 2/21/2025 11:32 AM        drive omega 0
-2/21/2025 11:36 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 
-2/21/2025 11:36 AM        upperlimit chi 45.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 
+2/21/2025 11:36 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000
+2/21/2025 11:36 AM        upperlimit chi 45.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000
 2/21/2025 11:44 AM        drive slita_bt 3 slita_tp 3 slita_lf 3 slita_rt 3
 2/21/2025 11:44 AM        drive slita_bt 2 slita_tp 2 slita_lf 2 slita_rt 2
 2/21/2025 11:45 AM        drive slita_bt 1 slita_tp 1 slita_lf 1 slita_rt 1
@@ -1274,8 +1274,8 @@
 2/21/2025 3:24 PM        br -1 -2 -2
 2/21/2025 3:24 PM        scanrel omega 1 -1 0.1
 2/21/2025 3:25 PM        drive omega -42.8564
-2/21/2025 3:25 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
-2/21/2025 3:25 PM        upperlimit chi 47.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+2/21/2025 3:25 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000
+2/21/2025 3:25 PM        upperlimit chi 47.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000
 2/21/2025 3:26 PM        scanrel chi 2.5 -5 1
 2/21/2025 3:27 PM        drive chi 44.6922
 2/21/2025 3:27 PM        th2th 3 -3 0.3
@@ -1396,8 +1396,8 @@
 2/21/2025 6:00 PM        drive chi -34.5402
 2/21/2025 6:00 PM        th4th 2.6 -2.6 0.2
 2/21/2025 6:05 PM        br -1.75 0.5 0.5
-2/21/2025 6:10 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
-2/21/2025 6:10 PM        upperlimit chi 45.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+2/21/2025 6:10 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000
+2/21/2025 6:10 PM        upperlimit chi 45.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000
 2/21/2025 6:11 PM        br -1 -2 -2
 2/21/2025 6:12 PM        preset mcu 5
 2/21/2025 6:12 PM        scanrel omega 1.5 -1.5 0.1
@@ -5785,8 +5785,8 @@
 2/26/2025 9:04 AM        scantitle "MnWO4 nuclear, (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K, 20'-S-20' "
 2/26/2025 9:04 AM        th4th 3 -3 0.2
 2/26/2025 9:11 AM        set_temp 295
-2/26/2025 9:12 AM        drive 2theta -55 
-2/26/2025 9:12 AM        drive chi 0 
+2/26/2025 9:12 AM        drive 2theta -55
+2/26/2025 9:12 AM        drive chi 0
 2/26/2025 9:13 AM        drive phi 0
 2/26/2025 9:14 AM        drive omega 0
 2/26/2025 9:14 AM        drive slita_bt 25 slita_tp 25 slita_lf 15 slita_rt 15
@@ -5879,8 +5879,8 @@
 2/26/2025 2:45 PM        drive slitb_bt 25 lsitb_tp 25 slib_lf 6 slitb_rt 5
 2/26/2025 2:45 PM        drive slitb_bt 25 slitb_tp 25 slitb_lf 6 slitb_rt 5
 2/26/2025 2:46 PM        br -2 0 6
-2/26/2025 2:46 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
-2/26/2025 2:46 PM        upperlimit chi 50.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+2/26/2025 2:46 PM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000
+2/26/2025 2:46 PM        upperlimit chi 50.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000
 2/26/2025 2:46 PM        br -2 0 6
 2/26/2025 2:50 PM        br -2 0 4
 2/26/2025 2:51 PM        br -2 0 4
@@ -6891,8 +6891,8 @@
 2/27/2025 10:15 AM        drive chi 35
 2/27/2025 10:16 AM        drive phi -107.165
 2/27/2025 10:18 AM        drive chi 45
-2/27/2025 10:19 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
-2/27/2025 10:19 AM        upperlimit chi 90.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+2/27/2025 10:19 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000
+2/27/2025 10:19 AM        upperlimit chi 90.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000
 2/27/2025 10:19 AM        drive chi 55
 2/27/2025 10:20 AM        drive chi 65
 2/27/2025 10:21 AM        drive chi 75
@@ -6904,8 +6904,8 @@
 2/27/2025 10:36 AM        preset mcu 15
 2/27/2025 10:37 AM        scanrel omega 1.2 -1.2 .12
 2/27/2025 10:43 AM        drive chi 0
-2/27/2025 10:45 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
-2/27/2025 10:45 AM        upperlimit chi 50.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+2/27/2025 10:45 AM        lowerlimit chi -45.500000 phi -180.500000 omega -46.000000 2theta -92.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000
+2/27/2025 10:45 AM        upperlimit chi 50.500000 phi 180.500000 omega 0.000000 2theta -2.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000
 2/27/2025 10:46 AM        br 1 5 0
 2/27/2025 10:47 AM        scantitle "rocking (1,5,0) at T = 100K"
 2/27/2025 10:47 AM        preset mcu 30
@@ -6940,7 +6940,7 @@
 2/27/2025 1:25 PM        mv phi -54.58
 2/27/2025 1:25 PM        scanrel chi 5 -5 .5
 2/27/2025 1:27 PM        mv chi -5
-2/27/2025 1:28 PM        br 2 0 0 
+2/27/2025 1:28 PM        br 2 0 0
 2/27/2025 1:31 PM        scanrel phi 3 -3 .2
 2/27/2025 1:34 PM        mv phi 35.5
 2/27/2025 1:34 PM        scanrel chi 5 -5 .5
@@ -7836,12 +7836,12 @@
 2/28/2025 11:41 AM        driverel s1 -40
 2/28/2025 11:42 AM        driverel s1 -40
 2/28/2025 11:45 AM        driverel s1 -40
-2/28/2025 11:45 AM        lowerlimit mag_i -6.000000 s1 -160.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-2/28/2025 11:45 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
-2/28/2025 11:45 AM        lowerlimit mag_i -6.000000 s1 -159.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-2/28/2025 11:45 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
-2/28/2025 11:46 AM        lowerlimit mag_i -6.000000 s1 -158.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-2/28/2025 11:46 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+2/28/2025 11:45 AM        lowerlimit mag_i -6.000000 s1 -160.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+2/28/2025 11:45 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
+2/28/2025 11:45 AM        lowerlimit mag_i -6.000000 s1 -159.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+2/28/2025 11:45 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
+2/28/2025 11:46 AM        lowerlimit mag_i -6.000000 s1 -158.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+2/28/2025 11:46 AM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
 2/28/2025 11:46 AM        driverel s1 -40
 2/28/2025 11:50 AM        driverel s1 -25
 2/28/2025 11:50 AM        driverel s1 -24
@@ -7853,8 +7853,8 @@
 2/28/2025 11:56 AM        driverel s1 10
 2/28/2025 11:57 AM        drive s1 -158
 2/28/2025 12:00 PM        drive s1 -157.5
-2/28/2025 12:01 PM        lowerlimit mag_i -6.000000 s1 -157.600000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-2/28/2025 12:01 PM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
-2/28/2025 12:01 PM        lowerlimit mag_i -6.000000 s1 -157.600000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-2/28/2025 12:01 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+2/28/2025 12:01 PM        lowerlimit mag_i -6.000000 s1 -157.600000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+2/28/2025 12:01 PM        upperlimit mag_i 6.000000 s1 150.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
+2/28/2025 12:01 PM        lowerlimit mag_i -6.000000 s1 -157.600000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+2/28/2025 12:01 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
 2/28/2025 12:04 PM        begin

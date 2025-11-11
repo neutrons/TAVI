@@ -21,15 +21,15 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = UBmatrix-MnWO4-UB022425.dat
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = chi
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        chi       time   detector    monitor        mcu         m2        phi      omega     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
 # Wed, Feb 26, 2025 [1:48:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Wed, Feb 26, 2025 [1:48:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Wed, Feb 26, 2025 [1:48:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "chi", 45.71725, exceeds the upper limit of 45.50000.
 # ...Move aborted.
       2    44.7180      1.000     67.000  20829.000      1.079    41.5367  -101.2071   -39.6844   -79.4509    28.0000    15.0000    15.0000    28.0000    25.0000    15.0000    15.0000    25.0000    20.7699    41.5162    -1.8932    -1.8833    -5.2527     0.0000    14.4503     4.5538    16.8174     4.000

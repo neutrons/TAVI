@@ -7,7 +7,7 @@
 # command = scan h 0.55 k 1.45 l 0 e 12 5 -.4 preset mcu 15
 # builtin_command = scan h 0.55 k 1.45 l 0 e 12 5 -.4 preset mcu 15
 # users = Summer School
-# local_contact = 
+# local_contact =
 # scan_title = T2[110] q=0.45
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 15.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef   tcoldtip    tsample       temp
       1     0.5495     1.4501    -0.0001    12.0117     12.759    180.000 135000.000     15.000    49.5636   -28.7955   -30.2420   120.1201     0.2500     9.5000   -47.0791    19.4609    62.7169    -2.9105     0.7705     4.0000     0.0020   159.4167   -41.1825     3.3485    26.7006    14.6889     1.0000     1.0000   200.000
       2     0.5495     1.4500    -0.0001    11.6106     13.129    229.000 135000.000     15.000    49.9392   -28.7955   -30.4773   120.1201     0.2500     9.5000   -46.6996    19.2395    63.1459    -2.9105     0.7705     4.0000     0.0020   159.4167   -41.1825     3.3483    26.2995    14.6889     1.0000     1.0000   200.000

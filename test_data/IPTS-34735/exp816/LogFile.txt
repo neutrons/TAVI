@@ -268,12 +268,12 @@ Find s1 100
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB21Sep2024_120546PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     8.2559      1.000    198.000   2608.000      1.038    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    38.5090     0.0010     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.7567     0.9816     0.0000     0.3574    14.7001    14.7000     0.0001   250.5850     0.000
       2     8.1560      1.000    432.000   2564.000      1.021    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    38.5090     0.0010     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.7567     0.9813     0.0000     0.3606    14.7001    14.7000     0.0001   250.5890     0.000
@@ -369,12 +369,12 @@ check theta2theta 100
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB21Sep2024_120546PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    40.5094     8.5775      1.000      3.000   2676.000      1.065    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     0.0010     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.8442     1.0281     0.0000     0.3980    14.7001    14.7000     0.0001   249.7050     0.000
       2    40.3103     8.4775      1.000     11.000   2685.000      1.069    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     0.0010     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.8355     1.0232     0.0000     0.3962    14.7001    14.7000     0.0001   249.7280     0.000
@@ -474,12 +474,12 @@ check sgl 100
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB21Sep2024_122429PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0008      1.000   8620.000   2652.000      1.056    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5561    38.4643     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.7547     0.9483     0.0592     0.3787    14.7001    14.7000     0.0001   249.7360     0.000
       2     2.0000      1.000   8839.000   2654.000      1.057    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5561    38.4643     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.7547     0.9589     0.0395     0.3787    14.7001    14.7000     0.0001   249.6370     0.000
@@ -650,12 +650,12 @@ check 002 s1
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_122841PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    99.9400      1.000    125.000   2642.000      1.052    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    41.2296     2.0000     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.8755    -0.0187    -0.0000    -1.9997    14.7001    14.7000     0.0001   249.8900     0.000
       2    99.8395      1.000    151.000   2648.000      1.054    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    41.2296     2.0000     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.8755    -0.0168    -0.0000    -1.9997    14.7001    14.7000     0.0001   250.0570     0.000
@@ -753,12 +753,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_122841PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    43.2290   100.0506      1.000      7.000   2609.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     2.0000     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.9623    -0.0022    -0.0000    -2.0924    14.7001    14.7000     0.0001   250.0700     0.000
       2    43.0298    99.9507      1.000      5.000   2693.000      1.072    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     2.0000     0.0010    -0.0005     0.0005   159.4167   -41.1662     1.9536    -0.0022    -0.0000    -2.0832    14.7001    14.7000     0.0001   250.0050     0.000
@@ -863,12 +863,12 @@ check sgu 002
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_124105PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0005      1.000  19101.000   2649.000      1.055    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0274     0.0548    -1.9981    14.7001    14.7000     0.0001   250.0810     0.000
       2     1.9998      1.000  18283.000   2596.000      1.033    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0176     0.0336    -1.9993    14.7001    14.7000     0.0001   250.0880     0.000
@@ -910,12 +910,12 @@ check sgu 002
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_124105PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     4.0010      1.000  18124.000   2577.000      1.026    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0371     0.0759    -1.9963    14.7001    14.7000     0.0001   250.0030     0.000
       2     2.9995      1.000  18788.000   2633.000      1.048    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0274     0.0547    -1.9981    14.7001    14.7000     0.0001   250.0750     0.000
@@ -969,12 +969,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_124105PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0010      1.000  17187.000   2610.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0005    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0043     0.0043    -2.0000    14.7001    14.7000     0.0001   250.0140     0.000
       2     2.0000      1.000  16986.000   2606.000      1.037    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.1141    41.3578    -0.0005    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0021    -0.0000    -2.0000    14.7001    14.7000     0.0001   250.0480     0.000
@@ -1074,12 +1074,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.034904,0.000017,0.999391
 # ubconf = UB21Sep2024_124105PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0008      1.000   5056.000   2668.000      1.062    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5565    38.4625    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.7546     1.0248    -0.0517    -0.0002    14.7001    14.7000     0.0001   250.0980     0.000
       2     1.9998      1.000   5758.000   2676.000      1.065    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5565    38.4625    -0.0003    -0.0005     0.0005   159.4167   -41.1662     1.7546     1.0229    -0.0476     0.0001    14.7001    14.7000     0.0001   250.0730     0.000
@@ -1192,12 +1192,12 @@ check 200 high q s1
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    31.5351      1.000     22.000   2588.000      1.030    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    82.4186    -0.0003     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5095     1.9988     0.0000    -0.1303    14.7001    14.7000     0.0001   249.8730     0.000
       2    31.3349      1.000     15.000   2681.000      1.067    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    82.4186    -0.0003     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5095     1.9990     0.0000    -0.1172    14.7001    14.7000     0.0001   249.8930     0.000
@@ -1283,12 +1283,12 @@ check 200 high q th2th
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    84.4184    30.5414      1.000     11.000   2584.000      1.029    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    -0.0003     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5789     2.0395     0.0000    -0.0005    14.7001    14.7000     0.0001   250.0380     0.000
       2    84.2196    30.4419      1.000      7.000   2671.000      1.063    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    -0.0003     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5720     2.0356     0.0000    -0.0005    14.7001    14.7000     0.0001   249.9990     0.000
@@ -1363,12 +1363,12 @@ check 200 high q sgl
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0010      1.000   2934.000   2600.000      1.035    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5114     1.9392     0.1185     0.0005    14.7001    14.7000     0.0001   249.9950     0.000
       2     2.0000      1.000   2963.000   2513.000      1.000    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0008    -0.0005     0.0005   159.4167   -41.1662     3.5114     1.9604     0.0790    -0.0001    14.7001    14.7000     0.0001   250.0570     0.000
@@ -1427,12 +1427,12 @@ check 200 high q sgu
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     3.0008      1.000    714.000   2637.000      1.050    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     2.0132    -0.0244    -0.0016    14.7001    14.7000     0.0001   249.9000     0.000
       2     1.9998      1.000    898.000   2659.000      1.059    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     2.0092    -0.0162    -0.0010    14.7001    14.7000     0.0001   250.0650     0.000
@@ -1474,12 +1474,12 @@ check 200 high q sgu
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     4.0008      1.000    529.000   2655.000      1.057    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     2.0172    -0.0325    -0.0023    14.7001    14.7000     0.0001   250.0470     0.000
       2     2.9995      1.000    699.000   2641.000      1.051    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     2.0132    -0.0244    -0.0016    14.7001    14.7000     0.0001   249.8720     0.000
@@ -1516,12 +1516,12 @@ check 200 high q sgu
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    -4.0010      1.000   1958.000   2611.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     1.9846     0.0327    -0.0024    14.7001    14.7000     0.0001   249.8750     0.000
       2    -2.9992      1.000   1896.000   2570.000      1.023    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    29.5709    82.4747     0.0010    -0.0005     0.0005   159.4167   -41.1662     3.5114     1.9887     0.0245    -0.0016    14.7001    14.7000     0.0001   250.0980     0.000
@@ -1611,12 +1611,12 @@ check 004 s1
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1   -55.7431      1.000      4.000   2556.000      1.018    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    89.8605     0.0010     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.7622     0.0375    -0.0000     3.9993    14.7001    14.7000     0.0001   249.9070     0.000
       2   -55.8431      1.000      8.000   2645.000      1.053    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    89.8605     0.0010     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.7622     0.0338    -0.0000     3.9995    14.7001    14.7000     0.0001   249.9210     0.000
@@ -1703,12 +1703,12 @@ check 004 th2th
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    91.8588   -55.6785      1.000      3.000   2610.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     0.0010     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.8274     0.0026    -0.0000     4.0693    14.7001    14.7000     0.0001   250.0000     0.000
       2    91.6603   -55.7781      1.000      2.000   2587.000      1.030    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     0.0010     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.8209     0.0026    -0.0000     4.0624    14.7001    14.7000     0.0001   250.0730     0.000
@@ -1794,12 +1794,12 @@ check 004 high q sgl
 # mode = 0
 # plane_normal = 0.000004,0.000013,1.000000
 # ubconf = UB21Sep2024_124911PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     4.0008      1.000    348.000   2609.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000   -56.8590    89.4979     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.7502     0.0209    -0.0347     3.9868    14.7001    14.7000     0.0001   250.1020     0.000
       2     2.9998      1.000    331.000   2610.000      1.039    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000   -56.8590    89.4979     0.0013    -0.0005     0.0005   159.4167   -41.1662     3.7502     0.0161    -0.0260     3.9870    14.7001    14.7000     0.0001   249.9360     0.000
@@ -1954,12 +1954,12 @@ final ub check 002
 # mode = 0
 # plane_normal = -0.052336,0.017428,0.998477
 # ubconf = UB21Sep2024_12025PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1   100.0065      1.000    196.000   2604.000      1.037    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    41.3582     3.0010     1.0008    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0187     0.0000    -1.9997    14.7001    14.7000     0.0001   250.0380     0.000
       2    99.9065      1.000    204.000   2589.000      1.031    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    41.3582     3.0010     1.0008    -0.0005     0.0005   159.4167   -41.1662     1.8811    -0.0168     0.0000    -1.9998    14.7001    14.7000     0.0001   250.0690     0.000
@@ -2046,12 +2046,12 @@ final ub th2th 002
 # mode = 0
 # plane_normal = -0.052336,0.017428,0.998477
 # ubconf = UB21Sep2024_12025PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    43.3592   100.0070      1.000      6.000   2638.000      1.050    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     3.0010     1.0008    -0.0005     0.0005   159.4167   -41.1662     1.9679    -0.0000     0.0000    -2.0923    14.7001    14.7000     0.0001   249.8710     0.000
       2    43.1601    99.9069      1.000     10.000   2634.000      1.049    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     3.0010     1.0008    -0.0005     0.0005   159.4167   -41.1662     1.9593     0.0000     0.0000    -2.0831    14.7001    14.7000     0.0001   249.9300     0.000
@@ -2192,12 +2192,12 @@ final ub check 100
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_12538PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     8.5609      1.000    103.000   2710.000      1.079    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    38.4635     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     0.9998    -0.0000     0.0326    14.7001    14.7000     0.0001   250.1080     0.000
       2     8.4609      1.000    140.000   2565.000      1.021    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    38.4635     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     0.9998    -0.0000     0.0293    14.7001    14.7000     0.0001   250.0790     0.000
@@ -2284,12 +2284,12 @@ final ub th2th 100
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_12538PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1    40.4617     8.5781      1.000      5.000   2590.000      1.031    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8421     1.0498    -0.0000     0.0007    14.7001    14.7000     0.0001   249.9070     0.000
       2    40.2649     8.4779      1.000      9.000   2551.000      1.016    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8335     1.0449    -0.0000     0.0006    14.7001    14.7000     0.0001   249.9770     0.000
@@ -2496,12 +2496,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bab
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bab       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   2852.000   2585.000      1.029    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   250.0740     0.000
       2     2.0000      1.000   3697.000   2588.000      1.030    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   250.0670     0.000
@@ -2545,12 +2545,12 @@ Abort issued!!
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bal
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bal       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   8049.000   2584.000      1.029    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   250.0680     0.000
       2     2.0000      1.000   8224.000   2569.000      1.023    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5725    38.4645     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7547     1.0000    -0.0000     0.0004    14.7001    14.7000     0.0001   249.8820     0.000
@@ -2658,12 +2658,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bab
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bab       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   2813.000   2566.000      1.021    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   249.9420     0.000
       2     2.0000      1.000   3634.000   2654.000      1.057    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0780     0.000
@@ -2718,12 +2718,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bal
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bal       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   7981.000   2678.000      1.066    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0120     0.000
       2     2.0000      1.000   7845.000   2546.000      1.014    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0230     0.000
@@ -2776,12 +2776,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bar
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bar       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000    415.000   2653.000      1.056    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0350     0.000
       2     2.0000      1.000   2536.000   2639.000      1.051    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0830     0.000
@@ -2834,12 +2834,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bat
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bat       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   6254.000   2638.000      1.050    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0630     0.000
       2     2.0000      1.000   6881.000   2709.000      1.078    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   249.8870     0.000
@@ -2894,12 +2894,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbb
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbb       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   3491.000   2657.000      1.058    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0550     0.000
       2     2.0000      1.000   4321.000   2577.000      1.026    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0280     0.000
@@ -2954,12 +2954,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000      2.000   2667.000      1.062    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0510     0.000
       2     2.0000      1.000      3.000   2687.000      1.070    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0370     0.000
@@ -3012,12 +3012,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbr
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbr       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   8173.000   2633.000      1.048    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0270     0.000
       2     2.0000      1.000   8093.000   2639.000      1.051    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   249.9450     0.000
@@ -3070,12 +3070,12 @@ slit scan with (100)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbt
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbt       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   6243.000   2552.000      1.016    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   250.0090     0.000
       2     2.0000      1.000   6954.000   2711.000      1.079    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000     7.5602    38.4603     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.7545     0.9999    -0.0000     0.0001    14.7001    14.7000     0.0001   249.8650     0.000
@@ -3155,12 +3155,12 @@ slit scan with (002)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bal
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bal       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   9566.000   2601.000      1.035    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   249.9520     0.000
       2     2.0000      1.000  15317.000   2554.000      1.017    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   249.9230     0.000
@@ -3213,12 +3213,12 @@ slit scan with (002)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bar
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bar       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000  13698.000   2553.000      1.016    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   250.0670     0.000
       2     2.0000      1.000  15959.000   2570.000      1.023    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   250.0420     0.000
@@ -3271,12 +3271,12 @@ slit scan with (002)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   1523.000   2579.000      1.027    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   249.8660     0.000
       2     2.0000      1.000  11993.000   2677.000      1.066    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   250.0300     0.000
@@ -3329,12 +3329,12 @@ slit scan with (002)
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbr
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbr       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample
       1     0.0000      1.000   3582.000   2660.000      1.059    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   249.8530     0.000
       2     2.0000      1.000  13631.000   2604.000      1.037    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   250.0000   300.0000    99.0083    41.3623     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.8813     0.0000    -0.0000     2.0001    14.7001    14.7000     0.0001   250.0530     0.000
@@ -3520,12 +3520,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.5/0.5, mcu = 60, E = 45 to 8 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.5001    -0.0000     1.5000    45.0058    14.7000     49.970     18.000 150721.000     60.000    33.1461   -20.0773   -20.0926   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    89.3784    19.2972     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9867    59.7059   249.9890     0.000
       2     1.5000    -0.0000     1.5001    44.8006    14.7000     49.891     23.000 150721.000     60.000    33.2017   -20.0773   -20.1276   120.0962    -0.1480    -3.0001   -72.8904   250.0000   300.0000    89.1054    19.6096     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9865    59.5006   250.0390     0.000
@@ -3752,12 +3752,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.0, mcu = 60, E = 30 to 0.5 mev
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0001    -0.0000     0.9998    30.0019    14.7000     43.406    524.000 150721.000     60.000    38.3059   -20.0773   -23.2617   120.0962    -0.1480    -3.0001   -62.2448   250.0000   300.0000   102.2009     3.2235     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.9910    44.7019   249.9320     0.000
       2     1.0000    -0.0000     1.0000    29.8008    14.7000     43.186     80.000 150721.000     60.000    38.3918   -20.0773   -23.3150   120.0962    -0.1480    -3.0001   -62.0920   250.0000   300.0000   100.3295     4.6245     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     1.9910    44.5008   250.0870     0.000
@@ -3946,12 +3946,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.05, mcu = 60, E = 30 to 0.5 me
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0501    -0.0000     1.0502    30.0022    14.7000     43.517     12.000 150721.000     60.000    38.3059   -20.0773   -23.2616   120.0962    -0.1480    -3.0001   -62.2448   250.0000   300.0000    92.5929    10.8926     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.0907    44.7022   250.0200     0.000
       2     1.0500    -0.0000     1.0500    29.4997    14.7000     42.489      7.000 150721.000     60.000    38.5219   -20.0773   -23.3954   120.0962    -0.1480    -3.0001   -61.8623   250.0000   300.0000    91.0093    12.1176     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.0905    44.1997   250.0220     0.000
@@ -4052,12 +4052,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.5, mcu = 60, E = 7.8 to 0.6 me
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.5002    -0.0000     1.5000     7.8008    14.7000     43.808     11.000 150721.000     60.000    53.9918   -20.0773   -33.0175   120.0962    -0.1480    -3.0001   -42.9618   250.0000   300.0000    56.6418    59.0308     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9867    22.5008   250.0620     0.000
       2     1.5000    -0.0000     1.5000     7.5999    14.7000     43.184     11.000 150721.000     60.000    54.2334   -20.0773   -33.1702   120.0962    -0.1480    -3.0001   -42.7578   250.0000   300.0000    56.4890    59.2405     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9864    22.2999   250.0530     0.000
@@ -4122,12 +4122,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 60, E = 40 to 1 mev 
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2501    -0.0000     1.2500    40.0033    14.7000     52.997    413.000 150721.000     60.000    34.6278   -20.0773   -21.0012   120.0962    -0.1480    -3.0001   -69.5662   250.0000   300.0000   102.1044     4.1255     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4889    54.7033   250.0800     0.000
       2     1.2500    -0.0000     1.2501    39.0001    14.7000     52.327      9.000 150721.000     60.000    34.9487   -20.0773   -21.1987   120.0962    -0.1480    -3.0001   -68.8594   250.0000   300.0000    97.3528     8.5641     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4887    53.7002   250.0080     0.000
@@ -4208,12 +4208,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 60, E = 39.5 to 0.5 
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2501    -0.0000     1.2500    39.5043    14.7000     53.500     10.000 150721.000     60.000    34.7872   -20.0773   -21.0988   120.0962    -0.1480    -3.0001   -69.2134   250.0000   300.0000    99.3324     6.7133     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4889    54.2044   249.8570     0.000
       2     1.2500    -0.0000     1.2500    38.4994    14.7000     52.853      9.000 150721.000     60.000    35.1126   -20.0773   -21.2994   120.0962    -0.1480    -3.0001   -68.5041   250.0000   300.0000    95.7203    10.0840     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4887    53.1995   250.0960     0.000
@@ -4294,12 +4294,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.45, mcu = 60, E = 45 to 1 mev 
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4501    -0.0000     1.4499    45.0053    14.7000     50.072     10.000 150721.000     60.000    33.1461   -20.0773   -20.0927   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    92.3705    15.3619     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8871    59.7053   250.0060     0.000
       2     1.4500    -0.0000     1.4501    44.0005    14.7000     49.153     10.000 150721.000     60.000    33.4272   -20.0773   -20.2658   120.0962    -0.1480    -3.0001   -72.3439   250.0000   300.0000    90.7126    17.1763     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8870    58.7005   249.8530     0.000
@@ -4385,12 +4385,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.45, mcu = 60, E = 44.5 to 0.5 
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4501    -0.0000     1.4501    44.5039    14.7000     50.246     23.000 150721.000     60.000    33.2857   -20.0773   -20.1785   120.0962    -0.1480    -3.0001   -72.6858   250.0000   300.0000    91.5205    16.2936     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8871    59.2039   250.0280     0.000
       2     1.4500    -0.0000     1.4500    43.5000    14.7000     49.502     20.000 150721.000     60.000    33.5705   -20.0773   -20.3537   120.0962    -0.1480    -3.0001   -72.0008   250.0000   300.0000    89.9398    18.0178     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8869    58.2000   249.8860     0.000
@@ -4446,12 +4446,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.15, mcu = 60, E = 36 to 0.5 me
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3790    -0.0000     1.4812    39.6256    14.7000      0.000      0.000      0.000      0.000    34.2243   -20.0773   -21.0750   120.0962    -0.1480    -3.0001   -70.4756   250.0000   300.0000    88.5564    20.6979     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.7922    54.3256   249.9190     0.000
 # Sum of Counts = 0
@@ -4493,12 +4493,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.45, mcu = 60, E = 44.5 to 0.5 
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4501    -0.0000     1.4501    30.5019    14.7000     42.713      7.000 150721.000     60.000    38.0934   -20.0773   -23.1309   120.0962    -0.1480    -3.0001   -62.6255   250.0000   300.0000    75.2689    34.2178     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8870    45.2020   250.0570     0.000
       2     1.4500    -0.0000     1.4500    29.5000    14.7000     42.280      8.000 150721.000     60.000    38.5219   -20.0773   -23.3953   120.0962    -0.1480    -3.0001   -61.8623   250.0000   300.0000    74.3443    35.2542     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8869    44.2000   250.0700     0.000
@@ -4570,12 +4570,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.15, mcu = 60, E = 36 to 0.5 me
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1501    -0.0000     1.1501    36.0032    14.7000     49.878    750.000 150721.000     60.000    35.9679   -20.0773   -21.8237   120.0962    -0.1480    -3.0001   -66.7074   250.0000   300.0000   103.3250     2.7474     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.2898    50.7032   249.8920     0.000
       2     1.1500    -0.0000     1.1501    35.4994    14.7000     48.505     11.000 150721.000     60.000    36.1466   -20.0773   -21.9343   120.0962    -0.1480    -3.0001   -66.3439   250.0000   300.0000    99.5930     5.9531     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.2896    50.1994   249.9930     0.000
@@ -4687,12 +4687,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.35, mcu = 60, E = 44 to 0.5 me
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3501    -0.0000     1.3501    44.0052    14.7000     50.475      9.000 150721.000     60.000    33.4272   -20.0773   -20.2650   120.0962    -0.1480    -3.0001   -72.3439   250.0000   300.0000   100.5957     5.9788     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.6880    58.7052   250.0080     0.000
       2     1.3500    -0.0000     1.3501    43.4994    14.7000     49.955      7.000 150721.000     60.000    33.5705   -20.0773   -20.3538   120.0962    -0.1480    -3.0001   -72.0008   250.0000   300.0000    98.5968     7.9993     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.6878    58.1995   250.0850     0.000
@@ -4820,12 +4820,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.2, mcu = 60, E = 37.5 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2001    -0.0000     1.1998    37.5030    14.7000     52.793     13.000 150721.000     60.000    35.4473   -20.0773   -21.5041   120.0962    -0.1480    -3.0001   -67.7895   250.0000   300.0000    99.5457     6.2487     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.3892    52.2030   250.0630     0.000
       2     1.2000    -0.0000     1.2001    37.0005    14.7000     51.529     10.000 150721.000     60.000    35.6183   -20.0773   -21.6096   120.0962    -0.1480    -3.0001   -67.4302   250.0000   300.0000    97.3716     8.2017     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.3892    51.7005   249.9160     0.000
@@ -4940,12 +4940,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.3, mcu = 60, E = 37.5 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3002    -0.0000     1.2999    42.0048    14.7000     51.368     59.000 150721.000     60.000    34.0116   -20.0773   -20.6232   120.0962    -0.1480    -3.0001   -70.9646   250.0000   300.0000   101.3510     5.0196     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.5884    56.7048   249.8770     0.000
       2     1.3000    -0.0000     1.3000    41.4988    14.7000     51.458      6.000 150721.000     60.000    34.1626   -20.0773   -20.7168   120.0962    -0.1480    -3.0001   -70.6168   250.0000   300.0000    99.0023     7.3062     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.5882    56.1988   249.9910     0.000
@@ -5069,12 +5069,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.1, mcu = 60, E = 34 to 0.5 mev
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1002    -0.0000     1.0997    34.0026    14.7000     46.543    829.000 150721.000     60.000    36.6990   -20.0773   -22.2731   120.0962    -0.1480    -3.0001   -65.2446   250.0000   300.0000   103.4801     2.4920     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.1902    48.7026   250.0520     0.000
       2     1.1000    -0.0000     1.1000    33.5001    14.7000     45.340     10.000 150721.000     60.000    36.8889   -20.0773   -22.3903   120.0962    -0.1480    -3.0001   -64.8752   250.0000   300.0000    99.4225     5.8316     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.1901    48.2002   250.0500     0.000
@@ -5182,12 +5182,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.4, mcu = 60, E = 45 to 0.5 mev
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4001    -0.0000     1.4001    45.0050    14.7000     50.257     16.000 150721.000     60.000    33.1461   -20.0773   -20.0928   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    96.7216    10.2592     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.7876    59.7050   250.0450     0.000
       2     1.4000    -0.0000     1.4001    44.5002    14.7000     49.731      6.000 150721.000     60.000    33.2857   -20.0773   -20.1792   120.0962    -0.1480    -3.0001   -72.6858   250.0000   300.0000    95.4725    11.5718     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.7874    59.2002   250.0390     0.000
@@ -5317,12 +5317,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.025, mcu = 60, E = 30 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0251    -0.0000     1.0249    30.0020    14.7000     43.566      6.000 150721.000     60.000    38.3059   -20.0773   -23.2617   120.0962    -0.1480    -3.0001   -62.2448   250.0000   300.0000    96.0745     7.9824     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.0408    44.7021   250.0070     0.000
       2     1.0250    -0.0000     1.0251    29.4997    14.7000     42.777      6.000 150721.000     60.000    38.5219   -20.0773   -23.3954   120.0962    -0.1480    -3.0001   -61.8623   250.0000   300.0000    93.9874     9.5725     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.0408    44.1997   250.0770     0.000
@@ -5422,12 +5422,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.075, mcu = 60, E = 30 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0751    -0.0000     1.0750    30.0019    14.7000     43.812      9.000 150721.000     60.000    38.3059   -20.0773   -23.2617   120.0962    -0.1480    -3.0001   -62.2448   250.0000   300.0000    89.9804    13.2249     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.1404    44.7019   249.9890     0.000
       2     1.0750    -0.0000     1.0750    29.4997    14.7000     42.610     12.000 150721.000     60.000    38.5219   -20.0773   -23.3954   120.0962    -0.1480    -3.0001   -61.8623   250.0000   300.0000    88.6629    14.2655     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.1403    44.1997   250.0000     0.000
@@ -5527,12 +5527,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.125, mcu = 60, E = 34 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1251    -0.0000     1.1250    34.0030    14.7000     46.575      4.000 150721.000     60.000    36.6990   -20.0773   -22.2730   120.0962    -0.1480    -3.0001   -65.2446   250.0000   300.0000    97.1149     7.8974     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.2400    48.7030   249.9960     0.000
       2     1.1250    -0.0000     1.1250    33.5004    14.7000     45.484     10.000 150721.000     60.000    36.8889   -20.0773   -22.3903   120.0962    -0.1480    -3.0001   -64.8752   250.0000   300.0000    95.1840     9.5159     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.2399    48.2004   250.0230     0.000
@@ -5640,12 +5640,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.175, mcu = 60, E = 36 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1751    -0.0000     1.1749    36.0034    14.7000     50.309      7.000 150721.000     60.000    35.9679   -20.0773   -21.8237   120.0962    -0.1480    -3.0001   -66.7074   250.0000   300.0000    97.3286     8.0627     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.3395    50.7034   249.9630     0.000
       2     1.1750    -0.0000     1.1749    35.4996    14.7000     48.472     13.000 150721.000     60.000    36.1466   -20.0773   -21.9343   120.0962    -0.1480    -3.0001   -66.3439   250.0000   300.0000    95.5072     9.6580     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.3393    50.1996   249.9070     0.000
@@ -5757,12 +5757,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.225, mcu = 60, E = 37.5 to 0.5
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2251    -0.0000     1.2249    37.5030    14.7000     53.175     10.000 150721.000     60.000    35.4473   -20.0773   -21.5041   120.0962    -0.1480    -3.0001   -67.7895   250.0000   300.0000    95.6813     9.9137     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4390    52.2030   250.0760     0.000
       2     1.2250    -0.0000     1.2250    37.0005    14.7000     51.667     10.000 150721.000     60.000    35.6183   -20.0773   -21.6096   120.0962    -0.1480    -3.0001   -67.4302   250.0000   300.0000    94.2062    11.2619     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.4390    51.7005   250.0390     0.000
@@ -5877,12 +5877,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.275, mcu = 60, E = 40 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2751    -0.0000     1.2750    40.0033    14.7000     53.211     10.000 150721.000     60.000    34.6278   -20.0773   -21.0012   120.0962    -0.1480    -3.0001   -69.5662   250.0000   300.0000    97.2986     8.7846     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.5386    54.7033   250.0480     0.000
       2     1.2750    -0.0000     1.2750    39.5002    14.7000     52.659      7.000 150721.000     60.000    34.7872   -20.0773   -21.0996   120.0962    -0.1480    -3.0001   -69.2134   250.0000   300.0000    95.7314    10.2767     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.5385    54.2002   249.8700     0.000
@@ -6002,12 +6002,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.325, mcu = 60, E = 37.5 to 0.5
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3251    -0.0000     1.3250    42.0048    14.7000     51.536     10.000 150721.000     60.000    34.0116   -20.0773   -20.6232   120.0962    -0.1480    -3.0001   -70.9646   250.0000   300.0000    97.1193     9.3088     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.6382    56.7048   250.0730     0.000
       2     1.3250    -0.0000     1.3250    41.4988    14.7000     51.447     15.000 150721.000     60.000    34.1626   -20.0773   -20.7168   120.0962    -0.1480    -3.0001   -70.6168   250.0000   300.0000    95.6830    10.7334     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.6380    56.1988   250.0230     0.000
@@ -6131,12 +6131,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.375, mcu = 60, E = 44 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3751    -0.0000     1.3751    44.0052    14.7000     50.554      3.000 150721.000     60.000    33.4272   -20.0773   -20.2650   120.0962    -0.1480    -3.0001   -72.3439   250.0000   300.0000    96.8675     9.9249     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.7378    58.7052   249.8440     0.000
       2     1.3750    -0.0000     1.3750    43.4992    14.7000     49.922      8.000 150721.000     60.000    33.5705   -20.0773   -20.3538   120.0962    -0.1480    -3.0001   -72.0008   250.0000   300.0000    95.5577    11.2722     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.7375    58.1992   250.1000     0.000
@@ -6264,12 +6264,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.425, mcu = 60, E = 45 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4251    -0.0000     1.4248    45.0050    14.7000     50.784     15.000 150721.000     60.000    33.1461   -20.0773   -20.0928   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    94.2939    13.0332     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8372    59.7050   249.9930     0.000
       2     1.4250    -0.0000     1.4251    44.4999    14.7000     49.537      8.000 150721.000     60.000    33.2857   -20.0773   -20.1792   120.0962    -0.1480    -3.0001   -72.6858   250.0000   300.0000    93.2951    14.1064     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.8372    59.1999   249.9140     0.000
@@ -6399,12 +6399,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.475, mcu = 60, E = 45 to 0.5 m
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4751    -0.0000     1.4748    45.0050    14.7000     50.294     10.000 150721.000     60.000    33.1461   -20.0773   -20.0928   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    90.7631    17.4174     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9367    59.7050   250.0030     0.000
       2     1.4750    -0.0000     1.4750    44.5002    14.7000     49.833     13.000 150721.000     60.000    33.2857   -20.0773   -20.1792   120.0962    -0.1480    -3.0001   -72.6858   250.0000   300.0000    90.0140    18.2554     3.0010     1.0017    -0.0005     0.0005   159.4167   -41.1662     2.9367    59.2002   249.9980     0.000
@@ -6534,12 +6534,12 @@ spurion check - H = 1.5
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.5001    -0.0000     1.5000    45.0041    15.7000     51.407     18.000 150721.000     60.000    32.8719   -20.0773   -19.9250   120.0962    -0.1480    -3.0001   -73.7050   250.0000   300.0000    87.9032    20.2657     3.0010     1.0017    -0.0005     0.0005   160.1120   -39.7763     2.9866    60.7042   249.9530     0.000
       2     1.5000    -0.0000     1.5001    44.7500    15.7000     51.058     13.000 150721.000     60.000    32.9398   -20.0773   -19.9673   120.0962    -0.1480    -3.0001   -73.5358   250.0000   300.0000    87.5853    20.6159     3.0010     1.0017    -0.0005     0.0005   160.1114   -39.7763     2.9865    60.4500   250.0380     0.000
@@ -6621,12 +6621,12 @@ spurion check - H = 1.45
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4501    -0.0000     1.4502    45.0038    15.7000     50.987      8.000 150721.000     60.000    32.8719   -20.0773   -19.9251   120.0962    -0.1480    -3.0001   -73.7050   250.0000   300.0000    90.5994    16.7231     3.0010     1.0017    -0.0005     0.0005   160.1114   -39.7763     2.8871    60.7039   250.0310     0.000
       2     1.4500    -0.0000     1.4501    44.7500    15.7000     50.348     19.000 150721.000     60.000    32.9398   -20.0773   -19.9673   120.0962    -0.1480    -3.0001   -73.5358   250.0000   300.0000    90.2104    17.1312     3.0010     1.0017    -0.0005     0.0005   160.1114   -39.7763     2.8869    60.4500   250.0770     0.000
@@ -6708,12 +6708,12 @@ spurion check - H = 1.4
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4001    -0.0000     1.3999    44.0038    15.7000     50.277      7.000 150721.000     60.000    33.1461   -20.0773   -20.0930   120.0962    -0.1480    -3.0001   -73.0266   250.0000   300.0000    92.2832    14.4182     3.0010     1.0017    -0.0005     0.0005   160.1114   -39.7763     2.7874    59.7039   250.0310     0.000
       2     1.4000    -0.0000     1.4000    43.7484    15.7000     49.864      8.000 150721.000     60.000    33.2157   -20.0773   -20.1366   120.0962    -0.1480    -3.0001   -72.8564   250.0000   300.0000    91.8230    14.8871     3.0010     1.0017    -0.0005     0.0005   160.1114   -39.7763     2.7873    59.4484   250.0780     0.000
@@ -6791,12 +6791,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.025, mcu = 60, E = 29.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0250    -0.0000     1.0248    29.7506    14.7000     42.687      6.000 150721.000     60.000    38.4134   -20.0773   -23.3283   120.0962    -0.1480    -3.0001   -62.0538   250.0000   300.0000    94.9864     8.8090     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.0407    44.4506   250.0360     0.000
       2     1.0250    -0.0000     1.0250    29.2507    14.7000     42.356      5.000 150721.000     60.000    38.6313   -20.0773   -23.4625   120.0962    -0.1480    -3.0001   -61.6704   250.0000   300.0000    93.0590    10.2737     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.0408    43.9507   250.0970     0.000
@@ -6895,12 +6895,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.075, mcu = 60, E = 29.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.0751    -0.0000     1.0750    29.7530    14.7000     43.672      9.000 150721.000     60.000    38.4134   -20.0773   -23.3277   120.0962    -0.1480    -3.0001   -62.0538   250.0000   300.0000    89.3104    13.7546     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.1404    44.4530   249.9830     0.000
       2     1.0750    -0.0000     1.0751    29.2502    14.7000     42.793      9.000 150721.000     60.000    38.6313   -20.0773   -23.4626   120.0962    -0.1480    -3.0001   -61.6704   250.0000   300.0000    88.0353    14.7631     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.1404    43.9502   250.0580     0.000
@@ -6999,12 +6999,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.125, mcu = 60, E = 33.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1251    -0.0000     1.1250    33.7532    14.7000     46.210     11.000 150721.000     60.000    36.7936   -20.0773   -22.3310   120.0962    -0.1480    -3.0001   -65.0601   250.0000   300.0000    96.1064     8.7422     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.2400    48.4532   249.8400     0.000
       2     1.1250    -0.0000     1.1250    33.2499    14.7000     45.178     12.000 150721.000     60.000    36.9849   -20.0773   -22.4494   120.0962    -0.1480    -3.0001   -64.6899   250.0000   300.0000    94.3285    10.2304     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.2398    47.9499   250.0480     0.000
@@ -7111,12 +7111,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.175, mcu = 60, E = 35.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.1751    -0.0000     1.1750    35.7535    14.7000     49.627      8.000 150721.000     60.000    36.0569   -20.0773   -21.8783   120.0962    -0.1480    -3.0001   -66.5258   250.0000   300.0000    96.3790     8.8952     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.3395    50.4535   250.0260     0.000
       2     1.1750    -0.0000     1.1751    35.2487    14.7000     48.077     13.000 150721.000     60.000    36.2369   -20.0773   -21.9900   120.0962    -0.1480    -3.0001   -66.1616   250.0000   300.0000    94.6972    10.3704     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.3394    49.9487   250.0240     0.000
@@ -7227,12 +7227,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.225, mcu = 60, E = 37.25 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2251    -0.0000     1.2248    37.2534    14.7000     52.532     10.000 150721.000     60.000    35.5325   -20.0773   -21.5564   120.0962    -0.1480    -3.0001   -67.6100   250.0000   300.0000    94.9216    10.6052     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.4390    51.9534   250.0560     0.000
       2     1.2250    -0.0000     1.2250    36.7498    14.7000     51.347     17.000 150721.000     60.000    35.7048   -20.0773   -21.6629   120.0962    -0.1480    -3.0001   -67.2500   250.0000   300.0000    93.5284    11.8806     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.4389    51.4498   249.8370     0.000
@@ -7346,12 +7346,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.275, mcu = 60, E = 39.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2751    -0.0000     1.2749    39.7547    14.7000     53.179      9.000 150721.000     60.000    34.7072   -20.0773   -21.0497   120.0962    -0.1480    -3.0001   -69.3900   250.0000   300.0000    96.4856     9.5570     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.5387    54.4547   250.0170     0.000
       2     1.2750    -0.0000     1.2751    39.2479    14.7000     53.084     10.000 150721.000     60.000    34.8677   -20.0773   -21.1494   120.0962    -0.1480    -3.0001   -69.0366   250.0000   300.0000    95.0250    10.9527     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.5384    53.9479   250.1010     0.000
@@ -7470,12 +7470,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.325, mcu = 60, E = 41.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3251    -0.0000     1.3251    41.7538    14.7000     51.612     12.000 150721.000     60.000    34.0869   -20.0773   -20.6694   120.0962    -0.1480    -3.0001   -70.7908   250.0000   300.0000    96.3765    10.0468     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.6382    56.4538   250.0630     0.000
       2     1.3250    -0.0000     1.3251    41.2494    14.7000     51.400      7.000 150721.000     60.000    34.2388   -20.0773   -20.7634   120.0962    -0.1480    -3.0001   -70.4425   250.0000   300.0000    95.0296    11.3822     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.6380    55.9494   250.0420     0.000
@@ -7598,12 +7598,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.375, mcu = 60, E = 43.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.3752    -0.0000     1.3751    43.7559    14.7000     50.298      8.000 150721.000     60.000    33.4986   -20.0773   -20.3086   120.0962    -0.1480    -3.0001   -72.1725   250.0000   300.0000    96.1929    10.6178     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.7378    58.4559   250.0310     0.000
       2     1.3750    -0.0000     1.3750    43.2496    14.7000     49.700      8.000 150721.000     60.000    33.6428   -20.0773   -20.3981   120.0962    -0.1480    -3.0001   -71.8288   250.0000   300.0000    94.9558    11.8916     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.7376    57.9496   249.8640     0.000
@@ -7730,12 +7730,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.425, mcu = 60, E = 44.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4251    -0.0000     1.4250    44.7555    14.7000     50.168     11.000 150721.000     60.000    33.2157   -20.0773   -20.1353   120.0962    -0.1480    -3.0001   -72.8564   250.0000   300.0000    93.7854    13.5794     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.8373    59.4555   249.8640     0.000
       2     1.4250    -0.0000     1.4250    44.2477    14.7000     49.873      5.000 150721.000     60.000    33.3562   -20.0773   -20.2228   120.0962    -0.1480    -3.0001   -72.5150   250.0000   300.0000    92.8216    14.6121     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.8370    58.9477   250.0460     0.000
@@ -7864,12 +7864,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.475, mcu = 60, E = 44.75 to 1.
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 60.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.4751    -0.0000     1.4749    44.7552    14.7000     50.199     20.000 150721.000     60.000    33.2157   -20.0773   -20.1354   120.0962    -0.1480    -3.0001   -72.8564   250.0000   300.0000    90.3849    17.8405     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.9368    59.4552   250.0770     0.000
       2     1.4750    -0.0000     1.4750    44.2477    14.7000     49.806     15.000 150721.000     60.000    33.3562   -20.0773   -20.2228   120.0962    -0.1480    -3.0001   -72.5150   250.0000   300.0000    89.6508    18.6615     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.9366    58.9477   250.0140     0.000
@@ -7998,12 +7998,12 @@ H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.25, mcu = 120, E = 40 to 1 mev
 # mode = 0
 # plane_normal = -0.052339,0.017444,0.998477
 # ubconf = UB21Sep2024_13243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 120.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       temp     temp_2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei        vti     sample
       1     1.2501    -0.0000     1.2501    40.0035    14.7000    106.219    829.000 301441.000    120.000    34.6278   -20.0773   -21.0012   120.0962    -0.1480    -3.0001   -69.5662   250.0000   300.0000   102.1044     4.1271     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.4889    54.7035   249.9590     0.000
       2     1.2500    -0.0000     1.2501    39.7505    14.7000    105.720     22.000 301441.000    120.000    34.7072   -20.0773   -21.0505   120.0962    -0.1480    -3.0001   -69.3900   250.0000   300.0000   100.5572     5.5727     3.0010     1.0017    -0.0005     0.0005   159.4165   -41.1662     2.4887    54.4505   250.0590     0.000
@@ -8177,9 +8177,9 @@ Drive completed.
                           Derived from "set_temp 1"
 
 Return Code: 0
-Integer returned values:   
-Double returned values:   
-String returned values:   
+Integer returned values:
+Double returned values:
+String returned values:
 
 
 12:02:03 PM  9/23/2024    Executing "begin"
@@ -8188,4 +8188,3 @@ The "begin" new experiment command was timed out.
 
 
 12:02:15 PM  9/23/2024    Executing "begin"
-

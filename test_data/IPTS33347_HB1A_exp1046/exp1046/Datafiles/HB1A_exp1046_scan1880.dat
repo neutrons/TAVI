@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = UBmatrix-MnWO4-UB022425.dat
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 11.000000
 # def_x = omega
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.      omega       time   detector    monitor        mcu         m2        chi        phi     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
       1   -18.7699     11.000     73.000 232012.000     12.021    41.5367     3.2010    50.1900   -39.7102    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7705    41.5162     1.0251     2.9552     0.0016     0.0000    14.4503     4.2079    16.3379     4.000
       2   -18.8898     11.000     72.000 231563.000     11.998    41.5367     3.2010    50.1900   -39.7103    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7705    41.5162     1.0224     2.9602     0.0014     0.0000    14.4503     4.2177    16.3396     4.000

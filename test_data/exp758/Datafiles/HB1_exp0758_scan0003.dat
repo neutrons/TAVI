@@ -8,7 +8,7 @@
 # builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.017436,0.008734,0.999807
 # ubconf = UB17Aug2017_120644PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu        stl        stu   slita_bt   slita_lf   slita_rt   slita_tp   slitb_bt   slitb_lf   slitb_rt   slitb_tp         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -50.3378   -25.2106      1.000    848.000   8153.000      1.530    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.1713     0.9775     0.9438     0.1180    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -50.5394   -25.3102      1.000   1219.000   7901.000      1.482    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.1794     0.9811     0.9473     0.1184    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000

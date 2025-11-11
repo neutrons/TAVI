@@ -21,15 +21,15 @@
 # mode = 0
 # plane_normal = 0.041923,-0.015730,0.998990
 # ubconf = UB28Feb2025_20212PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu         m2      mag_i         s1         s2        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp persistent_field dr_tsample    dr_temp
 # Fri, Feb 28, 2025 [3:54:59 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Fri, Feb 28, 2025 [3:54:59 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Fri, Feb 28, 2025 [3:54:59 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "sgl", 5.00000, exceeds the upper limit of 4.50000.
 # ...Move aborted.
       2     4.5008      1.000      7.000  21506.000      1.114    41.5367    -0.0000   -25.9608  -102.1192    -0.9020    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7319    41.4625     4.1115    -0.1903     0.3889     5.9121    14.4503    14.4998    -0.0495     1.7492     0.0000     1.0000    -0.0003     0.0502     0.000
@@ -52,7 +52,7 @@
      19    -4.0005      1.000    409.000  21282.000      1.103    41.5367    -0.0000   -25.9603  -102.1191    -0.9020    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7319    41.4625     4.1115     0.0574    -0.0902     5.9455    14.4503    14.4998    -0.0495     1.7513     0.0000     1.0000    -0.0003     0.0568     0.000
      20    -4.4995      1.000    260.000  21217.000      1.099    41.5367     0.0000   -25.9604  -102.1191    -0.9020    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7319    41.4625     4.1115     0.0712    -0.1184     5.9442    14.4503    14.4998    -0.0495     1.7523     0.0000     1.0000    -0.0003     0.0568     0.000
 # Fri, Feb 28, 2025 [3:55:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Fri, Feb 28, 2025 [3:55:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Fri, Feb 28, 2025 [3:55:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "sgl", -5.00000, is below the lower limit of -4.50000.
 # ...Move aborted.
 # Sum of Counts = 6251

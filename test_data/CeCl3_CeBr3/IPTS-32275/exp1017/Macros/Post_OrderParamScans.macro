@@ -1,70 +1,70 @@
 scantitle "CeCl3, (1/3 1/3 1/2) th2th scan, T = 200mK"
-br 0.3333 0.3333 0.5 
+br 0.3333 0.3333 0.5
 preset mcu 20
 th2th 1.5 -1.5 -0.15
 
 scantitle "CeCl3, (1/3 1/3 1/2) rocking scan, T = 200 mK"
-br 0.3333 0.3333 0.5 
+br 0.3333 0.3333 0.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2/3 2/3 1/2) th2th scan, T = 200 mK"
-br 0.6666 0.6666 0.5 
+br 0.6666 0.6666 0.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2/3 2/3 1/2) rocking scan, T = 200 mK"
-br 0.6666 0.6666 0.5 
+br 0.6666 0.6666 0.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (4/3 4/3 1/2) th2th scan, T = 200 mK"
-br 1.3333 1.3333 0.5 
+br 1.3333 1.3333 0.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (4/3 4/3 1/2) rocking scan, T = 200 mK"
-br 1.3333 1.3333 0.5 
+br 1.3333 1.3333 0.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (5/3 5/3 1/2) th2th scan, T = 200 mK"
-br 1.6666 1.6666 0.5 
+br 1.6666 1.6666 0.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (5/3 5/3 1/2) rocking scan, T = 200 mK"
-br 1.6666 1.6666 0.5 
+br 1.6666 1.6666 0.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1/3 1/3 3/2) th2th scan, T = 200 mK"
-br 0.3333 0.3333 1.5 
+br 0.3333 0.3333 1.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1/3 1/3 3/2) rocking scan, T = 200 mK"
-br 0.3333 0.3333 1.5 
+br 0.3333 0.3333 1.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (4/3 4/3 3/2) th2th scan, T = 200 mK"
-br 1.3333 1.3333 1.5 
+br 1.3333 1.3333 1.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (4/3 4/3 3/2) rocking scan, T = 200 mK"
-br 1.3333 1.3333 1.5 
+br 1.3333 1.3333 1.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (5/3 5/3 3/2) th2th scan, T = 200 mK"
-br 1.6667 1.6667 1.5 
+br 1.6667 1.6667 1.5
 preset mcu 20
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (5/3 5/3 3/2) rocking scan, T = 200 mK"
-br 1.6667 1.6667 1.5 
+br 1.6667 1.6667 1.5
 preset mcu 20
 scanrel s1 1.5 -1.5 0.15
 

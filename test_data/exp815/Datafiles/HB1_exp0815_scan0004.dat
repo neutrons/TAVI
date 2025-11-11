@@ -8,7 +8,7 @@
 # builtin_command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset time 10
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB13Jun2019_41635PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 10.000000
 # def_x = h
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu slit_post_bt slit_post_lf slit_post_rt slit_post_tp slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef
       1     0.3498     0.3498     1.3499    24.9966     10.000      0.000      0.000      0.000    41.2754   -43.8866    25.0930    -0.2900     0.0000   284.4146  -131.1251   -25.6163     0.0010     0.5025    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000     0.0000     0.0000    21.5218    43.0350     2.2918    38.5020    13.505
       2     0.3598     0.3598     1.3599    24.9969     10.000      0.000      0.000      0.000    41.2754   -43.8866    25.0929    -0.2900     0.0000   284.4146  -130.3384   -26.2393     0.0010     0.5025    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000    15.0000     0.0000     0.0000    21.5218    43.0350     2.3146    38.5023    13.505

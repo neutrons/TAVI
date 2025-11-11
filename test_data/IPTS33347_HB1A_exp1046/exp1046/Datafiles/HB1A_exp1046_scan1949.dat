@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = Ba3Ru4O10_UBMatrix.dat
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = phi
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        phi       time   detector    monitor        mcu         m2        chi      omega     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
       1    38.8623      1.000      2.000  21165.000      1.097    41.5367    -5.0000   -28.3881   -56.7795    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7699    41.5163    -1.9921    -0.0103     0.2089     0.0000    14.4503   300.0200   297.3490   300.000
       2    38.6621      1.000      1.000  20915.000      1.084    41.5367    -5.0000   -28.3881   -56.7796    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7699    41.5163    -1.9928    -0.0096     0.1950     0.0000    14.4503   300.0110   297.3280   300.000

@@ -6,8 +6,8 @@
 6/13/2019 4:24 PM        drive s1 95
 6/13/2019 4:24 PM        drive s1 96
 6/13/2019 4:24 PM        spos s1 0
-6/13/2019 4:25 PM        lowerlimit m1 -99.399984 m2 15.000000 marc -3.900000 mtrans -12.000000 mfocus -0.100000 s1 -165.000000 s2 -113.119424 sgl -5.000000 sgu -5.000000 slit_post_bt -74.800000 slit_post_lf -74.800000 slit_post_rt -74.800000 slit_post_tp -74.800000 slit_pre_bt -74.800000 slit_pre_lf -74.800000 slit_pre_rt -74.800000 slit_pre_tp -74.800000 stl -14.600000 stu -14.600000 a1 -87.813820 a2 -108.989448 
-6/13/2019 4:25 PM        upperlimit m1 250.000000 m2 51.967920 marc 3.850000 mtrans 12.000000 mfocus 290.000000 s1 90.000000 s2 25.000000 sgl 5.000000 sgu 5.000000 slit_post_bt 74.600000 slit_post_lf 74.600000 slit_post_rt 74.600000 slit_post_tp 74.600000 slit_pre_bt 74.600000 slit_pre_lf 74.600000 slit_pre_rt 74.600000 slit_pre_tp 74.800000 stl 14.600000 stu 14.600000 a1 171.462286 a2 90.000000 
+6/13/2019 4:25 PM        lowerlimit m1 -99.399984 m2 15.000000 marc -3.900000 mtrans -12.000000 mfocus -0.100000 s1 -165.000000 s2 -113.119424 sgl -5.000000 sgu -5.000000 slit_post_bt -74.800000 slit_post_lf -74.800000 slit_post_rt -74.800000 slit_post_tp -74.800000 slit_pre_bt -74.800000 slit_pre_lf -74.800000 slit_pre_rt -74.800000 slit_pre_tp -74.800000 stl -14.600000 stu -14.600000 a1 -87.813820 a2 -108.989448
+6/13/2019 4:25 PM        upperlimit m1 250.000000 m2 51.967920 marc 3.850000 mtrans 12.000000 mfocus 290.000000 s1 90.000000 s2 25.000000 sgl 5.000000 sgu 5.000000 slit_post_bt 74.600000 slit_post_lf 74.600000 slit_post_rt 74.600000 slit_post_tp 74.600000 slit_pre_bt 74.600000 slit_pre_lf 74.600000 slit_pre_rt 74.600000 slit_pre_tp 74.800000 stl 14.600000 stu 14.600000 a1 171.462286 a2 90.000000
 6/13/2019 4:25 PM        br 1 1 0
 6/13/2019 4:26 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
 6/13/2019 4:43 PM        scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset time 10
@@ -34,13 +34,13 @@
 6/18/2019 2:59 PM        br 0 0 1
 6/18/2019 3:06 PM        scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 5
 6/20/2019 9:53 AM        br 1 1 0
-6/20/2019 9:55 AM        hide focal_length 0 m1 0 m2 0 marc 0 mtrans 1 mfocus 0 s1 0 s2 0 sgl 0 sgu 0 slit_post_bt 1 slit_post_lf 1 slit_post_rt 1 slit_post_tp 1 slit_pre_bt 1 slit_pre_lf 1 slit_pre_rt 1 slit_pre_tp 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+6/20/2019 9:55 AM        hide focal_length 0 m1 0 m2 0 marc 0 mtrans 1 mfocus 0 s1 0 s2 0 sgl 0 sgu 0 slit_post_bt 1 slit_post_lf 1 slit_post_rt 1 slit_post_tp 1 slit_pre_bt 1 slit_pre_lf 1 slit_pre_rt 1 slit_pre_tp 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0
 6/20/2019 2:42 PM        drive m2 30
 6/20/2019 2:43 PM        drive s2 20
 6/20/2019 2:44 PM        drive s2 -20
 6/20/2019 2:59 PM        drive e 0
 6/20/2019 3:01 PM        br 1 1 0
-6/20/2019 3:06 PM        br 0.5 0.5 0.5 
+6/20/2019 3:06 PM        br 0.5 0.5 0.5
 6/21/2019 10:16 AM        drive m2 35
 6/21/2019 10:17 AM        driverel s1 -5 5 1
 6/21/2019 10:17 AM        drive s2 -10
@@ -74,8 +74,8 @@
 9/16/2019 12:52 PM        drive hguide 0
 9/16/2019 2:22 PM        admin
 9/16/2019 2:22 PM        spos m2 43
-9/16/2019 2:23 PM        hide focal_length 0 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
-9/16/2019 2:23 PM        hide focal_length 1 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+9/16/2019 2:23 PM        hide focal_length 0 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0
+9/16/2019 2:23 PM        hide focal_length 1 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0
 9/16/2019 2:23 PM        spos a2 43
 9/16/2019 2:26 PM        guide 16 perpq
 9/16/2019 2:26 PM        guide 16 parq
@@ -114,7 +114,7 @@
 9/19/2019 2:29 PM        guide 18 parq
 9/19/2019 2:30 PM        guide 16 parq
 9/20/2019 9:58 AM        init
-9/20/2019 10:14 AM        hide focal_length 0 m1 0 m2 0 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 
+9/20/2019 10:14 AM        hide focal_length 0 m1 0 m2 0 s1 0 s2 0 sgl 0 sgu 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0
 9/20/2019 10:15 AM        init
 9/27/2019 9:14 AM        init
 9/27/2019 9:21 AM        begin

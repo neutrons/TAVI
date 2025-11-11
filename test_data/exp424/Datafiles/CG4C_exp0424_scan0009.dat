@@ -8,7 +8,7 @@
 # builtin_command = scan s1 @(s1)+3 @(s1)+-3 0.150000
 # users = Armando Di Biase, John Schneeloch, Despina Louca, Rathnayaka Mudiyanselage Dilan Srimal Rathnayaka
 # local_contact = Songxue Chi
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = -+-
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.040320,0.000000,0.999187
 # ubconf = UB02Jul2024_21033PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2     afocus        qm1        qm2        qm3        qm4        qm5        qm6        qm7        qm8        xm1        xm2        xm3        xm4        xm5        xm6        xm7        xm8          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
       1   -56.5950      1.000     14.000   2393.000      0.997    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560    48.3123     2.3108     2.0210     0.0000     0.0000     0.0000     0.0000    15.0000    26.0000    30.0000    15.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.2457    -0.4689    -0.5292     0.1399     4.8000     4.8000     0.0000    47.1010    48.6708     1.0000   120.000
       2   -56.7450      1.000      9.000   2412.000      1.005    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560    48.3123     2.3108     2.0210     0.0000     0.0000     0.0000     0.0000    15.0000    26.0000    30.0000    15.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.2457    -0.4690    -0.5292     0.1327     4.8000     4.8000     0.0000    47.0299    48.6018     1.0000   120.000

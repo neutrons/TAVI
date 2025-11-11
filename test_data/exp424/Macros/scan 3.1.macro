@@ -4,23 +4,3 @@ scantitle"HH3.1 scan new at Q=[0+%i 0+%i 3.1]"
 scan h 0+%i k 0+%i l 3.1 e 0.1 4 0.1 preset mcu 60
 
 endloop
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

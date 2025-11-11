@@ -1,7 +1,7 @@
 7/2/2024 1:41 PM        lattice 5.044000 5.044000 13.820000 90.000000 90.000000 120.000000
 7/2/2024 1:42 PM        drive s2 53.24
 7/2/2024 1:44 PM        driverel s1 -20
-7/2/2024 1:44 PM        ef 4.8 
+7/2/2024 1:44 PM        ef 4.8
 7/2/2024 1:44 PM        drive e 0
 7/2/2024 1:45 PM        driverel s1 10
 7/2/2024 1:46 PM        drive sgu 0
@@ -41,17 +41,17 @@
 7/2/2024 2:48 PM        ubcalc file "C:\SPICE\User\exp424\UBConf\tmp\UB02Jul2024_24756PM.ini"
 7/2/2024 2:49 PM        scantitle "slitscan on (-0.5 -0.5 0) filter out at 1.4K"
 7/2/2024 2:49 PM        preset time 3
-7/2/2024 2:49 PM        drive bab 30 bat 30 
+7/2/2024 2:49 PM        drive bab 30 bat 30
 7/2/2024 2:50 PM        scan bab 0 30 2
-7/2/2024 2:52 PM        scan bal 0 26 2 
-7/2/2024 2:54 PM        scan bar 0 26 2 
+7/2/2024 2:52 PM        scan bal 0 26 2
+7/2/2024 2:54 PM        scan bar 0 26 2
 7/2/2024 2:56 PM        scan bat 0 30 2
 7/2/2024 2:58 PM        preset time 1
 7/2/2024 2:58 PM        br 0 0 3
 7/2/2024 2:59 PM        scantitle "slitscan on (0 0 3) at 1.4K"
 7/2/2024 2:59 PM        scan bab 0 30 2
-7/2/2024 3:02 PM        scan bal 0 26 2 
-7/2/2024 3:04 PM        scan bar 0 26 2 
+7/2/2024 3:02 PM        scan bal 0 26 2
+7/2/2024 3:04 PM        scan bar 0 26 2
 7/2/2024 3:05 PM        scan bat 0 30 2
 7/2/2024 3:23 PM        drive bab 24
 7/2/2024 3:24 PM        drive bal 4

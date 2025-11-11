@@ -21,143 +21,143 @@
 # mode = 0
 # plane_normal = 0.052336,-0.017428,0.998477
 # ubconf = UB22Sep2023_12433PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q         ei         ef        vti     sample       temp dr_tsample    dr_temp
 # Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:28 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:29 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:30 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:31 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:32 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:34 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:35 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Sat, Sep 23, 2023 [11:02:36 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sum of Counts = 0

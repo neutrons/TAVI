@@ -21,39 +21,39 @@
 # mode = 0
 # plane_normal = 0.017452,-0.000000,0.999842
 # ubconf = UB25Oct2024_25426PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbt
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bbt       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
 # Fri, Oct 25, 2024 [3:09:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:10:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:11:47 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:12:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:13:49 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:14:50 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:15:50 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:16:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:17:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:18:53 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:19:54 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:20:54 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Fri, Oct 25, 2024 [3:21:55 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit 
+# bbt hit lower controller software limit
 # Sum of Counts = 0
 # Center of Mass = 0.000000+/-0.000000
 # Full Width Half-Maximum = 0.000000+/-0.000000

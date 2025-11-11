@@ -1,5 +1,5 @@
 COMM HoV6Sn6 Nuclear refinement
-! Current global Chi2 (Bragg contrib.) =      347.3    
+! Current global Chi2 (Bragg contrib.) =      347.3
 ! Files => DAT-file: HoV6Sn6_nuc.int,  PCR-file: HoV6Sn6_nuc
 !Job Npr Nph Nba Nex Nsc Nor Dum Iwg Ilo Ias Res Ste Nre Cry Uni Cor Opt Aut
    1   0   1   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   1
@@ -26,29 +26,29 @@ HoV6Sn6o, nuclear
 !
 P 6/m m m                <--Space group symbol
 !Atom   Typ       X        Y        Z     Biso       Occ     In Fin N_t Spc /Codes
-Ho1    Ho      0.00000  0.00000  0.00000  1.00000   0.04166   0   0   0    0  
+Ho1    Ho      0.00000  0.00000  0.00000  1.00000   0.04166   0   0   0    0
                   0.00     0.00     0.00     0.00      0.00
-V      V       0.50000  0.00000  0.25300  1.00000   0.25000   0   0   0    0  
+V      V       0.50000  0.00000  0.25300  1.00000   0.25000   0   0   0    0
                   0.00     0.00     0.00     0.00      0.00
-Sn1    Sn      0.33333  0.66667  0.50000  1.00000   0.08333   0   0   0    0  
+Sn1    Sn      0.33333  0.66667  0.50000  1.00000   0.08333   0   0   0    0
                   0.00     0.00     0.00     0.00      0.00
-Sn2    Sn      0.00000  0.00000  0.33000  1.00000   0.08333   0   0   0    0  
+Sn2    Sn      0.00000  0.00000  0.33000  1.00000   0.08333   0   0   0    0
                   0.00     0.00     0.00     0.00      0.00
-Sn3    Sn      0.33333  0.66667  0.00000  1.00000   0.08333   0   0   0    0  
+Sn3    Sn      0.33333  0.66667  0.00000  1.00000   0.08333   0   0   0    0
                   0.00     0.00     0.00     0.00      0.00
 !-------> Scale, Extinction and  Cell Parameters for Pattern #  1
-!  Scale Factors 
+!  Scale Factors
 !   Sc1        Sc2         Sc3         Sc4         Sc5         Sc6
-   2.425       0.000       0.000       0.000       0.000       0.000    
+   2.425       0.000       0.000       0.000       0.000       0.000
        11.00        0.00        0.00        0.00        0.00        0.00
-!  Extinction Parameters 
+!  Extinction Parameters
 ! Ext1       Ext2       Ext3       Ext4       Ext5       Ext6       Ext7   Ext-Model
   0.000      0.000      0.000      0.000      0.000      0.000      0.000       4
        0.00       0.00       0.00       0.00       0.00       0.00       0.00
 !     a          b         c        alpha      beta       gamma      # Cell Info
-   5.520010   5.520010   9.152010  90.000000  90.000000 120.000000   
+   5.520010   5.520010   9.152010  90.000000  90.000000 120.000000
     0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
-! x-Lambda/2 
+! x-Lambda/2
      0.00000
         0.00
 !  2Th1/TOF1    2Th2/TOF2  Pattern to plot

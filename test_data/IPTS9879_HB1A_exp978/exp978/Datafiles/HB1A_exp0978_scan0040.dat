@@ -8,7 +8,7 @@
 # builtin_command = scan s2 -5 -125 5 preset time 180
 # users = Feng Ye, John Carruth, Adam Aczel, Songxue Chi, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Travis Williams, Wei Tian, Michael Cox
 # local_contact = Wei Tian, Adam Aczel
-# scan_title = New backend background, 40' S-A, 80' A-D collimators in, elastic config, comp scan#382 + 385 (EXP973) 
+# scan_title = New backend background, 40' S-A, 80' A-D collimators in, elastic config, comp scan#382 + 385 (EXP973)
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.008721,0.012280,0.999887
 # ubconf = UB24May2023_101158AM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 180.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m2   rad_coll         s1        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e
       1    -5.0005    180.000      0.000 1148724.000    161.565    41.5367     0.0149   -20.3707    -0.4993     0.7042    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0016    -0.0024    -0.0009    20.7726    41.5378     0.2304    -0.0308    -0.0308     0.5066    14.4503    14.4496     0.000
       2    -9.9985    180.000      2.000 1147196.000    161.350    41.5367     0.0149   -20.3707    -0.4993     0.7042    30.0000    12.5000    12.5000    30.0000    25.0000    10.0000    10.0000    25.0000     0.0016    -0.0024    -0.0009    20.7700    41.5377     0.4602    -0.0526    -0.0526     1.0243    14.4503    14.4496     0.000

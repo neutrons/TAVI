@@ -82,7 +82,7 @@ Web-based control will not function until these are set.  This can be accomplish
 # builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -95,55 +95,55 @@ Web-based control will not function until these are set.  This can be accomplish
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB13Jun2019_41258PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 10.000000
 # def_x = h
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.65307, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.50153, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.35879, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.22467, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.09899, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.98161, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.87234, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.77105, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.67758, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.59178, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:15:03 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.51351, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Sum of Counts = 0
@@ -221,7 +221,7 @@ Drive completed.
 # builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -234,55 +234,55 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB13Jun2019_41635PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 10.000000
 # def_x = h
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
 # Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.96115, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.81574, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.67916, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.55124, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.43180, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:17 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.32069, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.21774, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.12280, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -101.03572, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.95636, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Thu, Jun 13, 2019 [4:18:18 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -100.88457, is below the lower limit of -75.00000.
 # ...Move aborted.
 # Sum of Counts = 0
@@ -327,9 +327,9 @@ Drive completed.
                          Derived from "spos s1 0"
 
 Return Code: 0
-Integer returned values:   
-Double returned values:   
-String returned values:   
+Integer returned values:
+Double returned values:
+String returned values:
 
 
 4:25:26 PM  6/13/2019    Executing "lowerlimit m1 -99.399984 m2 15.000000 marc -3.900000 mtrans -12.000000 mfocus -0.100000 s1 -165.000000 s2 -113.119424 sgl -5.000000 sgu -5.000000 slit_post_bt -74.800000 slit_post_lf -74.800000 slit_post_rt -74.800000 slit_post_tp -74.800000 slit_pre_bt -74.800000 slit_pre_lf -74.800000 slit_pre_rt -74.800000 slit_pre_tp -74.800000 stl -14.600000 stu -14.600000 a1 -87.813820 a2 -108.989448"
@@ -420,7 +420,7 @@ Drive completed.
 # builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 10
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -433,12 +433,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB13Jun2019_41635PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 10.000000
 # def_x = h
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
       1     0.4499     0.4499     1.4503     4.9952     10.000      0.000      0.000      0.000    59.5426   -43.8866    36.5262    -0.2900     0.0000   200.2320  -101.9613   -53.5110     0.0015     0.5025    21.5218    43.0350     2.5245    18.5006    13.505
       2     0.4599     0.4599     1.4602     4.9952     10.000      0.000      0.000      0.000    59.5426   -43.8866    36.5262    -0.2900     0.0000   200.2320  -101.8154   -54.0686     0.0015     0.5025    21.5218    43.0350     2.5482    18.5006    13.505
@@ -469,7 +469,7 @@ Drive completed.
 # builtin_command = scan h 0.35 0.65 0.01 k 0.35 0.65 0.01 l 1.35 1.65 0.01 e 25 preset time 10
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -482,12 +482,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB13Jun2019_41635PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 10.000000
 # def_x = h
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
       1     0.3498     0.3498     1.3499    24.9966     10.000      0.000      0.000      0.000    41.2754   -43.8866    25.0930    -0.2900     0.0000   284.4146  -131.1251   -25.6163     0.0010     0.5025    21.5218    43.0350     2.2918    38.5020    13.505
       2     0.3598     0.3598     1.3599    24.9969     10.000      0.000      0.000      0.000    41.2754   -43.8866    25.0929    -0.2900     0.0000   284.4146  -130.3384   -26.2393     0.0010     0.5025    21.5218    43.0350     2.3146    38.5023    13.505
@@ -665,7 +665,7 @@ ubcalc file=C:\SPICE\User\exp815\UBConf\UB13Jun2019_45541PM.ini
 # builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 1
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -678,12 +678,12 @@ ubcalc file=C:\SPICE\User\exp815\UBConf\UB13Jun2019_45541PM.ini
 # mode = 0
 # plane_normal = 0.010097,0.008778,0.999910
 # ubconf = UB13Jun2019_45541PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = h
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
       1     0.4499     0.4499     1.4503     4.9952      1.000      0.000      0.000      0.000    59.5426   -43.8866    36.5262    -0.2900     0.0000   200.2320  -102.5078   -53.5108    -0.5785     0.5030    21.5218    43.0350     2.5245    18.5005    13.505
       2     0.4599     0.4599     1.4602     4.9952      1.000      0.000      0.000      0.000    59.5426   -43.8866    36.5262    -0.2900     0.0000   200.2320  -102.3625   -54.0682    -0.5785     0.5030    21.5218    43.0350     2.5481    18.5005    13.505
@@ -911,7 +911,7 @@ Drive completed.
 # builtin_command = scan h 0.45 0.55 0.01 k 0.45 0.55 0.01 l 1.45 1.55 0.01 e 5 preset time 5
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -924,12 +924,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.010097,0.008778,0.999910
 # ubconf = UB13Jun2019_45541PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = h
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef
       1     0.4497     0.4497     1.4503     4.9916      5.000      0.000      1.000      0.014    59.5426   -43.8866    36.5263    -0.2900     0.0000   200.2320  -102.5083   -53.5064    -0.5785     0.5030    21.5218    43.0291     2.5244    18.5005    13.508
       2     0.4598     0.4598     1.4604     4.9917      5.000      0.000      0.000      0.000    59.5426   -43.8866    36.5262    -0.2900     0.0000   200.2320  -102.3625   -54.0690    -0.5785     0.5030    21.5218    43.0291     2.5483    18.5005    13.508
@@ -1212,7 +1212,7 @@ Abort issued!!
 12:50:03 PM  9/13/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for a2.
 The previously recorded position was 43.02954.
@@ -1234,7 +1234,7 @@ Completed initialization.
 12:51:10 PM  9/13/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for a2.
 The previously recorded position was 43.02954.
@@ -1271,7 +1271,7 @@ The current position read from the controller is -0.00063.
 9:11:14 AM  9/16/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for a2.
 The previously recorded position was 43.02954.
@@ -1322,7 +1322,7 @@ Drive completed.
 9:17:05 AM  9/16/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for m1.
 The previously recorded position was -43.88658.
@@ -1330,7 +1330,7 @@ The current position read from the controller is 0.00002.
 ****Motor [m1] initialized to previosly recorded position [-43.88658].
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 
 Motor consistancy check failed for s2.
@@ -1391,10 +1391,10 @@ Drive completed.
 9:31:28 AM  9/16/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 
 Motor consistancy check failed for marc.
@@ -1419,10 +1419,10 @@ Drive completed.
 12:39:14 PM  9/16/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 Completed initialization.
 
@@ -1430,10 +1430,10 @@ Completed initialization.
 12:46:34 PM  9/16/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 Completed initialization.
 
@@ -1453,10 +1453,10 @@ Drive completed.
 12:49:45 PM  9/16/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 Completed initialization.
 
@@ -1464,10 +1464,10 @@ Completed initialization.
 12:50:03 PM  9/16/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
-# 
+#
 ***Warning: Motor[m2] is below the lower user limit!! (position = -0.232781, lower user limit = 15.000000).
 Completed initialization.
 
@@ -1586,7 +1586,7 @@ hguide          0.00000
 Drive completed.
 
 
-2:22:00 PM  9/16/2019    Executing "admin" ... 
+2:22:00 PM  9/16/2019    Executing "admin" ...
 
 Administrator password correctly entered - administrator mode is enabled.
 
@@ -1595,9 +1595,9 @@ Administrator password correctly entered - administrator mode is enabled.
                          Derived from "spos m2 43"
 
 Return Code: 0
-Integer returned values:   
-Double returned values:   
-String returned values:   
+Integer returned values:
+Double returned values:
+String returned values:
 
 
 2:23:16 PM  9/16/2019    Executing "hide focal_length 0 m1 0 m2 0 marc 1 mtrans 1 mfocus 0 fguide 0 hguide 0 vguide 0 tbguide 0 aguide 0 bguide 0 cguide 0 s1 0 s2 0 sgl 1 sgu 1 stl 1 stu 1 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0"
@@ -1622,14 +1622,14 @@ m1, m2, mfocus, fguide, hguide, vguide, tbguide, aguide, bguide, cguide, s1, s2,
                          Derived from "spos a2 43"
 
 Return Code: 0
-Integer returned values:   
-Double returned values:   
-String returned values:   
+Integer returned values:
+Double returned values:
+String returned values:
 
 
 2:26:34 PM  9/16/2019    Executing "guide 16 perpq"
 
-Setting Guide field of 16.000000 Gauus vertical.  
+Setting Guide field of 16.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1639,7 +1639,7 @@ Coil D:     16.000000 Gauss:       4.532578 Amps
 
 2:26:51 PM  9/16/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     5.763744 Gauss:       3.430800 Amps
@@ -1651,7 +1651,7 @@ Coil D:      off.
 
 2:27:34 PM  9/16/2019    Executing "guide 16 perpq"
 
-Setting Guide field of 16.000000 Gauus vertical.  
+Setting Guide field of 16.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1661,7 +1661,7 @@ Coil D:     16.000000 Gauss:       4.532578 Amps
 
 2:30:21 PM  9/16/2019    Executing "guide -16 parq"
 
-Setting Guide field of -16.000000 Gauss along Q.  
+Setting Guide field of -16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -5.763744 Gauss:       -3.430800 Amps
@@ -1684,7 +1684,7 @@ Drive completed.
 
 2:31:43 PM  9/16/2019    Executing "guide -16 parq"
 
-Setting Guide field of -16.000000 Gauss along Q.  
+Setting Guide field of -16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -6.900554 Gauss:       -4.107473 Amps
@@ -1718,7 +1718,7 @@ Drive completed.
 
 2:32:31 PM  9/16/2019    Executing "guide -16 parq"
 
-Setting Guide field of -16.000000 Gauss along Q.  
+Setting Guide field of -16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -5.127416 Gauss:       -3.052034 Amps
@@ -1732,7 +1732,7 @@ Coil D:      off.
 
 Error in processing the "guide" command.
 
-Two arguments were given and the second wasn't parQ, 
+Two arguments were given and the second wasn't parQ,
 perpQ, or perpQh.
 
 Syntax with two argument:
@@ -1746,7 +1746,7 @@ or perpQh (for P horizontally perpendicular to Q).
 
 2:33:11 PM  9/16/2019    Executing "guide -16 perpqh"
 
-Setting Guide field of -16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of -16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -7.526288 Gauss:       -4.479933 Amps
@@ -1757,7 +1757,7 @@ Coil D:      off.
 
 2:33:42 PM  9/16/2019    Executing "guide 16 perpqh"
 
-Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     7.526288 Gauss:       4.479933 Amps
@@ -1768,7 +1768,7 @@ Coil D:      off.
 
 2:34:13 PM  9/16/2019    Executing "guide -16 perpqh"
 
-Setting Guide field of -16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of -16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -7.526288 Gauss:       -4.479933 Amps
@@ -1779,7 +1779,7 @@ Coil D:      off.
 
 2:38:35 PM  9/16/2019    Executing "guide 16 perpqh"
 
-Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     7.526288 Gauss:       4.479933 Amps
@@ -1792,7 +1792,7 @@ Abort issued!!
 
 3:00:22 PM  9/16/2019    Executing "guide 0 parq"
 
-Setting Guide field of 0.000000 Gauss along Q.  
+Setting Guide field of 0.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     0.000000 Gauss:       0.000000 Amps
@@ -1829,7 +1829,7 @@ Drive completed.
 
 2:27:13 PM  9/18/2019    Executing "guide 16 perpq"
 
-Setting Guide field of 16.000000 Gauus vertical.  
+Setting Guide field of 16.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1840,7 +1840,7 @@ Coil D:     16.000000 Gauss:       4.532578 Amps
 
 2:28:24 PM  9/18/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.160131 Gauss:       -0.095316 Amps
@@ -1854,7 +1854,7 @@ Coil D:      off.
 
 2:34:10 PM  9/18/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.160131 Gauss:       -0.095316 Amps
@@ -1869,7 +1869,7 @@ Coil D:      off.
 2:35:05 PM  9/18/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for a2.
 The previously recorded position was 1.68544.
@@ -1881,13 +1881,13 @@ Completed initialization.
 2:36:18 PM  9/18/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 Completed initialization.
 
 
 2:36:37 PM  9/18/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.160131 Gauss:       -0.095316 Amps
@@ -1899,7 +1899,7 @@ Coil D:      off.
 
 2:37:28 PM  9/18/2019    Executing "guide 18 parq"
 
-Setting Guide field of 18.000000 Gauss along Q.  
+Setting Guide field of 18.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.180147 Gauss:       -0.107230 Amps
@@ -1915,7 +1915,7 @@ The destination for "cguide", -20.06006, is below the lower limit of -19.80000.
 
 2:38:18 PM  9/18/2019    Executing "guide 18 perpq"
 
-Setting Guide field of 18.000000 Gauus vertical.  
+Setting Guide field of 18.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1925,7 +1925,7 @@ Coil D:     18.000000 Gauss:       5.099150 Amps
 
 2:38:52 PM  9/18/2019    Executing "guide 0 parq"
 
-Setting Guide field of 0.000000 Gauss along Q.  
+Setting Guide field of 0.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.000000 Gauss:       -0.000000 Amps
@@ -1936,7 +1936,7 @@ Coil D:      off.
 
 10:03:07 AM  9/19/2019    Executing "guide 18 perpq"
 
-Setting Guide field of 18.000000 Gauus vertical.  
+Setting Guide field of 18.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1946,7 +1946,7 @@ Coil D:     18.000000 Gauss:       5.099150 Amps
 
 10:04:41 AM  9/19/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.160131 Gauss:       -0.095316 Amps
@@ -1960,7 +1960,7 @@ Coil D:      off.
 
 Error in processing the "guide" command.
 
-Two arguments were given and the second wasn't parQ, 
+Two arguments were given and the second wasn't parQ,
 perpQ, or perpQh.
 
 Syntax with two argument:
@@ -1974,7 +1974,7 @@ or perpQh (for P horizontally perpendicular to Q).
 
 10:05:56 AM  9/19/2019    Executing "guide 16 perpqh"
 
-Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     9.105480 Gauss:       5.419928 Amps
@@ -1985,7 +1985,7 @@ Coil D:      off.
 
 10:09:15 AM  9/19/2019    Executing "guide 0 perpqh"
 
-Setting Guide field of 0.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of 0.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     0.000000 Gauss:       0.000000 Amps
@@ -1996,7 +1996,7 @@ Coil D:      off.
 
 2:27:11 PM  9/19/2019    Executing "guide 16 perpqh"
 
-Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.  
+Setting Guide field of 16.000000 Gauss horizontally perpendicular to Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     9.105480 Gauss:       5.419928 Amps
@@ -2007,7 +2007,7 @@ Coil D:      off.
 
 2:27:41 PM  9/19/2019    Executing "guide 0 perpq"
 
-Setting Guide field of 0.000000 Gauus vertical.  
+Setting Guide field of 0.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -2017,7 +2017,7 @@ Coil D:     0.000000 Gauss:       0.000000 Amps
 
 2:28:52 PM  9/19/2019    Executing "guide 16 perpq"
 
-Setting Guide field of 16.000000 Gauus vertical.  
+Setting Guide field of 16.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -2027,7 +2027,7 @@ Coil D:     16.000000 Gauss:       4.532578 Amps
 
 2:29:43 PM  9/19/2019    Executing "guide 18 parq"
 
-Setting Guide field of 18.000000 Gauss along Q.  
+Setting Guide field of 18.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.180147 Gauss:       -0.107230 Amps
@@ -2043,7 +2043,7 @@ The destination for "cguide", -20.06006, is below the lower limit of -19.80000.
 
 2:30:09 PM  9/19/2019    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.  
+Setting Guide field of 16.000000 Gauss along Q.
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     -0.160131 Gauss:       -0.095316 Amps
@@ -2056,7 +2056,7 @@ Coil D:      off.
 9:58:03 AM  9/20/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 Completed initialization.
 
 
@@ -2070,7 +2070,7 @@ focal_length, m1, m2, s1, s2, sgl, sgu, stl, stu, a1, a2, q, h, k, l, ei, ef, e
 10:15:00 AM  9/20/2019    Executing "initialize"
                           Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 
 Motor consistancy check failed for marc.
 The previously recorded position was -0.01450.
@@ -2083,7 +2083,7 @@ Completed initialization.
 9:14:55 AM  9/27/2019    Executing "initialize"
                          Derived from "init"
 
-Reinitializing experiment ... 
+Reinitializing experiment ...
 #  ****Device [temp] initialized to current setting of 170.000.  Previous setting was 100.000.
 
 Completed initialization.
@@ -2091,4 +2091,3 @@ Completed initialization.
 # 9/27/2019 9:15:38 AM	VISA Open in Utilities.lvlib:Common_Utilities.lvlib:LIN Motor - Valve Controller.vi
 
 9:21:11 AM  9/27/2019    Executing "begin"
-

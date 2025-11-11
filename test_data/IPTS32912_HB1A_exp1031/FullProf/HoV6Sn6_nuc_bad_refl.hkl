@@ -2,7 +2,7 @@
   ------------------------------------------------------------
   => PCR-file:HoV6Sn6_nuc.pcr
   => F2cal= scale*Corr*F2
-   h   k   l ivk   cod      F2obs         F2cal       Dif/sig   
+   h   k   l ivk   cod      F2obs         F2cal       Dif/sig
    0   0   3   0     1      10.3200       9.4754       28.1518
    0   0   6   0     1      52.6400      44.2065       35.1394
    2   0   3   0     1       6.9600       8.6814      -34.4288

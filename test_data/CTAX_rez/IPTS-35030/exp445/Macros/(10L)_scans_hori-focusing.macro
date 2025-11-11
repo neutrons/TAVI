@@ -2,7 +2,7 @@ scantitle "(107) scans-hori-focusing"
 br 1 0 7
 preset mcu 2
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 7 e -0.2 0.2 0.01 preset mcu 2
 
@@ -10,7 +10,7 @@ scantitle "(106) scans-hori-focusing"
 br 1 0 6
 preset mcu 2
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 6 e -0.2 0.2 0.01 preset mcu 2
 
@@ -18,7 +18,7 @@ scantitle "(105) scans-hori-focusing"
 br 1 0 5
 preset mcu 10
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 5 e -0.2 0.2 0.01 preset mcu 10
 
@@ -26,7 +26,7 @@ scantitle "(104) scans-hori-focusing"
 br 1 0 4
 preset mcu 10
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 4 e -0.2 0.2 0.01 preset mcu 10
 
@@ -34,7 +34,7 @@ scantitle "(103) scans-hori-focusing"
 br 1 0 3
 preset mcu 5
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 3 e -0.2 0.2 0.01 preset mcu 5
 
@@ -42,7 +42,7 @@ scantitle "(102) scans-hori-focusing"
 br 1 0 2
 preset mcu 30
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 2 e -0.2 0.2 0.01 preset mcu 30
 
@@ -50,8 +50,6 @@ scantitle "(101) scans-hori-focusing"
 br 1 0 1
 preset mcu 2
 scanrel s1 1 -1 0.1
-com s1 
+com s1
 th2th 4 -4 0.2
 scan h 1 k 0 l 1 e -0.2 0.2 0.01 preset mcu 2
-
-

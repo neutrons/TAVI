@@ -8,7 +8,7 @@
 # builtin_command = scan sgl @(sgl)+5 @(sgl)+-5 1.000000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.017436,0.008734,0.999807
 # ubconf = UB17Aug2017_120644PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgu        stl        stu   slita_bt   slita_lf   slita_rt   slita_tp   slitb_bt   slitb_lf   slitb_rt   slitb_tp         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1     4.0010      1.000  89446.000   7862.000      1.475    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.2517     1.0797     0.9054     0.1219    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2     3.0010      1.000 116120.000   7854.000      1.474    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.2517     1.0637     0.9241     0.1221    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000

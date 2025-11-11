@@ -28,4 +28,3 @@ The calculated zero angle for s2 is:
 
 s2_zero_old - s2_offset = 0.000000 - 0.116678 = -0.116678
 Command:      zero s2 -0.116678
-

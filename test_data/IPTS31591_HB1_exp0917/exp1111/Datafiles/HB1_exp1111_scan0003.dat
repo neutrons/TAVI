@@ -2,7 +2,7 @@
 # date = 1/1/1111
 # time = 2:41:04 AM
 # proposal = 99999
-# experiment = Longitudinal polarization analysis 
+# experiment = Longitudinal polarization analysis
 # experiment_number = 1111
 # command = scan h 0 k 0.85 1.15 0.015 l 2.55 3.45 0.045 e 0 preset countfile PxPy_20s
 # builtin_command = scan h 0 k 0.85 1.15 0.015 l 2.55 3.45 0.045 e 0 preset countfile pxpy_20s
@@ -32,7 +32,7 @@
 # countfile = count preset time 20
 # def_x = k
 # def_y = detector_1
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2     time_3 detector_3  monitor_3      mcu_3         m1         m2       marc     mtrans     mfocus     fguide     hguide     vguide    tbguide     aguide     bguide     cguide fguide_mode hguide_mode vguide_mode tbguide_mode aguide_mode bguide_mode cguide_mode fguide_out hguide_out vguide_out tbguide_out aguide_out bguide_out cguide_out fguide_volt hguide_volt vguide_volt tbguide_volt aguide_volt bguide_volt cguide_volt         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0001     0.8502     2.5502    -0.0012     20.000    233.000  18807.000     21.086     20.000    158.000  18332.000     20.554     20.000    194.000  18439.000     20.674   -49.1584    41.9678     0.5070     9.0000   279.9974     4.5000     2.3801     1.9000     0.0000     5.8008    -2.5374   -14.9113     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000   -45.7560   -18.8971     2.4820    -0.6784    20.0000    20.0000    20.0000    20.0000    -0.0005     0.0000    20.9838    41.9658     0.8381    13.5000    13.5013     4.5106     2.3784     1.9015     0.0063     5.8131    -2.5436   -14.9423    10.0013    10.7551    10.000
       2    -0.0001     0.8651     2.5950    -0.0012     20.000    189.000  18619.000     20.876     20.000    147.000  18415.000     20.647     20.000    188.000  18650.000     20.910   -49.1584    41.9677     0.5070     9.0000   279.9974     4.5000     1.8000     1.9000     0.0000     4.3255    -6.3502     7.7901     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000     1.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000   -45.9244   -19.2323     2.4820    -0.6784    20.0000    20.0000    20.0000    20.0000    -0.0005     0.0000    20.9838    41.9658     0.8528    13.5001    13.5013     4.5112     1.7990     1.9028     0.0067     4.3345    -6.3611     7.8055     9.9191    10.1882    10.000

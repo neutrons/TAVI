@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000714,0.000226,1.000000
 # ubconf = UB11Apr2024_40156PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu         m2        chi        phi         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e    coldtip     sample       temp
       1   -42.2907     10.108     56.000  98001.000     10.000    41.5367   -33.8308  -171.0199   -87.5802     0.0409     0.0130    10.0000     7.0000     7.0000    10.0000    14.0000     7.0000     7.0000    14.0000    90.0025    -0.0005     3.6549 270969424370759233000000000000000.0000 51598219149063056.0000 -3891803527844810370000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
       2   -42.4406     10.072     49.000  98001.000     10.000    41.5367   -33.8308  -171.0199   -87.5802     0.0409     0.0130    10.0000     7.0000     7.0000    10.0000    14.0000     7.0000     7.0000    14.0000    90.0025    -0.0005     3.6549 255062957401114647000000000000000.0000 48569296714389936.0000 -3663346592484786120000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
@@ -48,11 +48,11 @@
      18   -44.8408     10.086     58.000  98001.000     10.000    41.5367   -33.8308  -171.0199   -87.5802     0.0409     0.0130    10.0000     7.0000     7.0000    10.0000    14.0000     7.0000     7.0000    14.0000    90.0025    -0.0005     3.6549 204534687751470918000000000000.0000 38947662330147.0000 -2937633355515350300000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
      19   -44.9907     10.103     37.000  98001.000     10.000    41.5367   -33.8308  -171.0199   -87.5802     0.0409     0.0130    10.0000     7.0000     7.0000    10.0000    14.0000     7.0000     7.0000    14.0000    90.0025    -0.0005     3.6549 -15715503430618126200000000000000.0000 -2992559001569735.0000 225714217886957892000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
 # Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.14080, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [2:45:06 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.29080, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sum of Counts = 30265

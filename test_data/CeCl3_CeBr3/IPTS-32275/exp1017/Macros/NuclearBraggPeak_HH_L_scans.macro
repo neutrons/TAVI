@@ -1,103 +1,103 @@
 scantitle "CeCl3, (0 0 1) HH-scan, T = 40 mK"
-br 0 0 1 
+br 0 0 1
 scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 1 e 0 preset mcu 5
 
 scantitle "CeCl3, (0 0 1) L-scan, T = 40 mK"
-br 0 0 1 
-scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset mcu 5 
+br 0 0 1
+scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (0 0 2) HH-scan, T = 40 mK"
-br 0 0 2 
+br 0 0 2
 scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 2 e 0 preset mcu 5
 
 scantitle "CeCl3, (0 0 2) L-scan, T = 40 mK"
-br 0 0 2 
+br 0 0 2
 scan h 0 k 0 l 1.96 2.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (0 0 3) HH-scan, T = 40 mK"
-br 0 0 3 
+br 0 0 3
 scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 3 e 0 preset mcu 5
 
 scantitle "CeCl3, (0 0 3) L-scan, T = 40 mK"
-br 0 0 3 
-scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset mcu 5 
+br 0 0 3
+scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 0) HH-scan, T = 40 mK"
-br 1 1 0 
+br 1 1 0
 scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 0 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 0) L-scan, T = 40 mK"
-br 1 1 0 
+br 1 1 0
 scan h 1 k 1 l -0.04 0.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 0) HH-scan, T = 40 mK"
-br 2 2 0 
+br 2 2 0
 scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 0 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 0) L-scan, T = 40 mK"
-br 2 2 0 
+br 2 2 0
 scan h 2 k 2 l -0.04 0.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 1) HH-scan, T = 40 mK"
-br 1 1 1 
+br 1 1 1
 scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 1 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 1) L-scan, T = 40 mK"
-br 1 1 1 
+br 1 1 1
 scan h 1 k 1 l 0.96 1.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 2) HH-scan, T = 40 mK"
-br 1 1 2 
+br 1 1 2
 scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 2 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 2) L-scan, T = 40 mK"
-br 1 1 2 
+br 1 1 2
 scan h 1 k 1 l 1.96 2.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 3) HH-scan, T = 40 mK"
-br 1 1 3 
+br 1 1 3
 scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 3 e 0 preset mcu 5
 
 scantitle "CeCl3, (1 1 3) L-scan, T = 40 mK"
-br 1 1 3 
+br 1 1 3
 scan h 1 k 1 l 2.96 3.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 1) HH-scan, T = 40 mK"
-br 2 2 1 
+br 2 2 1
 scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 1 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 1) L-scan, T = 40 mK"
-br 2 2 1 
+br 2 2 1
 scan h 2 k 2 l 0.96 1.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 2) HH-scan, T = 40 mK"
-br 2 2 2 
+br 2 2 2
 scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 2 e 0 preset mcu 5
 
 scantitle "CeCl3, (2 2 2) L-scan, T = 40 mK"
-br 2 2 2 
+br 2 2 2
 scan h 2 k 2 l 1.96 2.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 1) HH-scan, T = 40 mK"
-br -1 -1 1 
+br -1 -1 1
 scan h -1.04 -0.96 0.0025 k -1.04 -0.96 0.0025 l 1 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 1) L-scan, T = 40 mK"
-br -1 -1 1 
+br -1 -1 1
 scan h -1 k -1 l 0.96 1.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 2) HH-scan, T = 40 mK"
-br -1 -1 2 
+br -1 -1 2
 scan h -1.04 -0.96  0.0025 k -1.04 -0.96  0.0025 l 2 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 2) L-scan, T = 40 mK"
-br -1 -1 2 
+br -1 -1 2
 scan h -1 k -1 l 1.96 2.04 0.0025 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 3) HH-scan, T = 40 mK"
-br -1 -1 3 
+br -1 -1 3
 scan h -1.04 -0.96 0.0025 k -1.04 -0.96 0.0025 l 3 e 0 preset mcu 5
 
 scantitle "CeCl3, (-1 -1 3) L-scan, T = 40 mK"
-br -1 -1 3 
+br -1 -1 3
 scan h -1 k -1 l 2.96 3.04 0.0025 e 0 preset mcu 5

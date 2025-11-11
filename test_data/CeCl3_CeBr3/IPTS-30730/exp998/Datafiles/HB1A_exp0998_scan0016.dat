@@ -8,7 +8,7 @@
 # builtin_command = scan stl 9 -9 1
 # users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
 # local_contact = A. Aczel
-# scan_title = check translations on 1 1 1 
+# scan_title = check translations on 1 1 1
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.034896,0.000010,0.999390
 # ubconf = UB19Sep2023_24416PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = stl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        stl       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stu         sz         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp dr_tsample    dr_temp
       1     9.0007      1.000  35758.000   7440.000      1.078    41.5367    69.8463   -47.4919    -1.9995     0.0009    25.0000    15.0000    15.0000    25.0000    25.0000    15.0000    15.0000    25.0000     0.0000    -0.4979    20.7738    41.5367     2.1268     1.0000     1.0000     1.0001    14.4503    14.4503     0.0000     1.7079     0.0000     1.0000     0.0530     0.000
       2     8.0029      1.000  36747.000   7293.000      1.057    41.5367    69.8463   -47.4919    -1.9995     0.0009    25.0000    15.0000    15.0000    25.0000    25.0000    15.0000    15.0000    25.0000     0.0000    -0.4981    20.7738    41.5367     2.1268     1.0000     1.0000     1.0001    14.4503    14.4503     0.0000     1.7075     0.0000     1.0000     0.0530     0.000

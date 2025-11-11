@@ -1,10 +1,10 @@
 scantitle "CeCl3, (0 0 1) rocking scan, T = 55 mK"
-br 0 0 1 
+br 0 0 1
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (0 0 1) th2th scan, T = 55 mK"
-br 0 0 1  
+br 0 0 1
 preset mcu 5
 th2th 1.5 -1.5 0.15
 
@@ -14,7 +14,7 @@ preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (0 0 2) th2th scan, T =55 mK"
-br 0 0 2 
+br 0 0 2
 preset mcu 5
 th2th 2 -2 0.2
 
@@ -24,47 +24,47 @@ preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (0 0 3) th2th scan, T = 55 mK"
-br 0 0 3 
+br 0 0 3
 preset mcu 5
 th2th 3 -3 0.3
 
 scantitle "CeCl3, (1 1 0) rocking scan, T = 55 mK"
-br 1 1 0 
+br 1 1 0
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1 1 0) th2th scan, T = 55 mK"
-br 1 1 0  
+br 1 1 0
 preset mcu 5
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2 2 0) rocking scan, T = 55 mK"
-br 2 2 0 
+br 2 2 0
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2 2 0) th2th scan, T = 55 mK"
-br 2 2 0  
+br 2 2 0
 preset mcu 5
 th2th 2 -2 0.2
 
 scantitle "CeCl3, (1 1 1) rocking scan, T = 55 mK"
-br 1 1 1 
+br 1 1 1
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1 1 1) th2th scan, T = 55 mK"
-br 1 1 1  
+br 1 1 1
 preset mcu 5
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1 1 2) rocking scan, T = 55 mK"
-br 1 1 2 
+br 1 1 2
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (1 1 2) th2th scan, T = 55 mK"
-br 1 1 2  
+br 1 1 2
 preset mcu 5
 th2th 2 -2 0.2
 
@@ -79,42 +79,42 @@ preset mcu 5
 th2th 3 -3 0.3
 
 scantitle "CeCl3, (2 2 1) rocking scan, T = 55 mK"
-br 2 2 1 
+br 2 2 1
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2 2 1) th2th scan, T = 55 mK"
-br 2 2 1  
+br 2 2 1
 preset mcu 5
 th2th 2.5 -2.5 0.25
 
 scantitle "CeCl3, (2 2 2) rocking scan, T = 55 mK"
-br 2 2 2 
+br 2 2 2
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (2 2 2) th2th scan, T = 55 mK"
-br 2 2 2  
+br 2 2 2
 preset mcu 5
 th2th 3 -3 0.3
 
 scantitle "CeCl3, (-1 -1 1) rocking scan, T = 55 mK"
-br -1 -1 1 
+br -1 -1 1
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (-1 -1 1) th2th scan, T = 55 mK"
-br -1 -1 1  
+br -1 -1 1
 preset mcu 5
 th2th 1.5 -1.5 0.15
 
 scantitle "CeCl3, (-1 -1 2) rocking scan, T = 55 mK"
-br -1 -1 2 
+br -1 -1 2
 preset mcu 5
 scanrel s1 1.5 -1.5 0.15
 
 scantitle "CeCl3, (-1 -1 2) th2th scan, T = 55 mK"
-br -1 -1 2  
+br -1 -1 2
 preset mcu 5
 th2th 2 -2 0.2
 

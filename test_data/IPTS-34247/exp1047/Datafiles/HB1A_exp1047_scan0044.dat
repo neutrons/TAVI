@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.036596,-0.013239,0.999241
 # ubconf = UB28Feb2025_42331PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu         m2      mag_i         s1         s2        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp persistent_field dr_tsample    dr_temp
       1     2.9025      1.000    331.000  21153.000      1.096    41.5367     0.0001  -113.3278   -97.0522    -0.7220    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7320    41.4625     3.9606     2.9150     0.1254    -0.0088    14.4503    14.4998    -0.0495     1.7115     0.0000     1.0000    -0.0003     0.0506     0.000
       2     2.4045      1.000    392.000  21213.000      1.099    41.5367    -0.0000  -113.3277   -97.0522    -0.7220    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7320    41.4625     3.9606     2.9217     0.1128    -0.0072    14.4503    14.4998    -0.0495     1.7115     0.0000     1.0000    -0.0003     0.0506     0.000
@@ -44,11 +44,11 @@
      14    -3.5975      1.000    657.000  21295.000      1.103    41.5367    -0.0000  -113.3277   -97.0522    -0.7220    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7320    41.4625     3.9606     2.9996    -0.0403    -0.0011    14.4503    14.4998    -0.0495     1.7125     0.0000     1.0000    -0.0003     0.0506     0.000
      15    -4.0985      1.000    574.000  21128.000      1.095    41.5367    -0.0000  -113.3276   -97.0522    -0.7220    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9965     0.0020    20.7320    41.4625     3.9606     3.0059    -0.0531    -0.0017    14.4503    14.4998    -0.0495     1.7125     0.0000     1.0000    -0.0003     0.0506     0.000
 # Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "sgl", -4.59800, is below the lower limit of -4.50000.
 # ...Move aborted.
 # Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Fri, Feb 28, 2025 [4:34:42 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "sgl", -5.09800, is below the lower limit of -4.50000.
 # ...Move aborted.
 # Sum of Counts = 9067

@@ -16,4 +16,3 @@ scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K,  H=@(persis
 scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
 scantitle "HoV6Sn6, constant Q-scan, (1p98 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
 scan h 1.98 k 0 l 0 e -0.2 4 0.04 preset time 120
-

@@ -1,5 +1,5 @@
 
- 
+
 
 scantitle "HoV6Sn6, longitudinal scan (1 0 0), T=@(lt.position) K,  H=@(persistent_field.position) T"
 
@@ -15,4 +15,4 @@ scan h 1 k 0 l 0 e -0.2 4 0.2 preset time 30
 
 
 
- 
+

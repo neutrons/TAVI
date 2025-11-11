@@ -4,7 +4,7 @@
 # proposal = 32816
 # experiment = Magnetic order in epitaxial hole-doped FeSn kagome films
 # experiment_number = 1034
-# command = scan h 0 k 0 l 5.75 6.25 0.0025 preset mcu 1 
+# command = scan h 0 k 0 l 5.75 6.25 0.0025 preset mcu 1
 # builtin_command = scan h 0 k 0 l 5.75 6.25 0.0025 preset mcu 1
 # users = Rajesh Dutta, Steven May, Tarush Tandon, Tessa Tucker, Prajwal Laxmeesha
 # local_contact = A. Aczel
@@ -13,7 +13,7 @@
 # analyzer = Pg002
 # sense = +-+
 # collimation = 40-40-40-80
-# samplename = FeSn film on Al2O3 substrate 
+# samplename = FeSn film on Al2O3 substrate
 # sampletype = crystal
 # samplemosaic = 30.000000
 # latticeconstants = 4.765809,4.765809,12.990667,90.000000,90.000000,120.000000
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.043593,0.008692,0.999012
 # ubconf = UB11Sep2024_112635AM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = l
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q         ei         ef          e        vti     sample      spare       temp     temp_2
       1    -0.0001    -0.0001     5.7494      0.985      0.000  23101.000      1.000    41.5367   -32.0304   -63.5406     2.4985     0.4985    27.0000     7.0000     7.0000    25.0000    27.0000     7.0000     7.0000    25.0000    -6.0000    -0.9990    20.7706    41.5368     2.7808    14.4503    14.4502     0.0001   299.9730   304.9260     0.0000   300.0000   300.000
       2    -0.0000    -0.0000     5.7525      0.999      2.000  23101.000      1.000    41.5367   -32.0459   -63.5786     2.4985     0.4985    27.0000     7.0000     7.0000    25.0000    27.0000     7.0000     7.0000    25.0000    -6.0000    -0.9990    20.7706    41.5368     2.7823    14.4503    14.4502     0.0001   299.9680   304.9120     0.0000   300.0000   300.000

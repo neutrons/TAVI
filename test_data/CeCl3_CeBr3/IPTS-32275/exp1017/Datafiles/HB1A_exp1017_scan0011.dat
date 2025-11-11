@@ -4,7 +4,7 @@
 # proposal = 32275
 # experiment = Low Temperature Magnetic Structure of CeCl3
 # experiment_number = 1017
-# command = scan stl 9 -9 1 preset time 1 
+# command = scan stl 9 -9 1 preset time 1
 # builtin_command = scan stl 9 -9 1 preset time 1
 # users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
 # local_contact = A. Aczel
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.008727,0.026172,0.999619
 # ubconf = UB01May2024_120038PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = stl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        stl       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stu         sz         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
       1     9.0000      1.000  19174.000   9691.000      0.994    41.5367   -19.9799   -66.9893     0.5009     1.4999    25.0000    15.0000    15.0000    25.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0053    20.7713    41.5370     2.9147     0.0000    -0.0000     2.0000    14.4503    14.4501     0.0002     1.7508     0.0000     1.0000   100.000
       2     8.0000      1.000  19705.000   9624.000      0.987    41.5367   -19.9800   -66.9893     0.5009     1.4999    25.0000    15.0000    15.0000    25.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0054    20.7713    41.5370     2.9147     0.0000    -0.0000     2.0000    14.4503    14.4501     0.0002     1.7508     0.0000     1.0000   100.000

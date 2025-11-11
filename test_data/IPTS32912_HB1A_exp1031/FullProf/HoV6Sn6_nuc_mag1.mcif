@@ -1,21 +1,21 @@
 ##############################################################################
 ###      FullProf-generated mCIF output file   (version: May 2019)         ###
 ##############################################################################
- 
-# Please notify any error or suggestion to: 
+
+# Please notify any error or suggestion to:
 #           Juan Rodriguez-Carvajal (jrc@ill.eu)
 # Improvements will be progressively added as needed.
- 
+
 #      Date: 21/04/2025  Time: 12:59:23.166
- 
+
 #=============================================================================
  data_global
 #=============================================================================
- 
+
 data_
-_audit_creation_date  21/04/2025  
+_audit_creation_date  21/04/2025
 _audit_creation_method  "FullProf Suite"
- 
+
 _citation_journal_abbrev ?
 _citation_journal_volume ?
 _citation_page_first     ?
@@ -27,7 +27,7 @@ _citation_author_name
 ?
 
 _atomic_positions_source_database_code_ICSD  ?
-_atomic_positions_source_other    .  
+_atomic_positions_source_other    .
 
 _Neel_temperature  ?
 _magn_diffrn_temperature  ?
@@ -37,7 +37,7 @@ _exptl_crystal_magnetic_properties_details
 _active_magnetic_irreps_details
 ;
 ;
- 
+
 _magnetic_space_group_standard_setting  'no'
 _parent_space_group.name_H-M  "P6/mmm"
 _parent_space_group.IT_number  191
@@ -101,7 +101,7 @@ loop_
  Sn1 Sn  0.33333  0.66667  0.50000  0.01267  1.00000 Uiso
  Sn2 Sn  0.00000  0.00000  0.33000  0.01267  1.00000 Uiso
  Sn3 Sn  0.33333  0.66667  0.00000  0.01267  1.00000 Uiso
- 
+
 
 loop_
     _atom_site_moment.label
@@ -109,7 +109,7 @@ loop_
     _atom_site_moment.crystalaxis_y
     _atom_site_moment.crystalaxis_z
  Ho1  0.00000  0.00000 -4.8(4)
- 
+
 # Spherical components of magnetic moments (angles in degrees)
 # Commented because current programs as VESTA, JMOL, etc. are unable to interpret them
 #loop_
@@ -118,4 +118,3 @@ loop_
 #   _atom_site_moment.spherical_azimuthal
 #   _atom_site_moment.spherical_polar
 #  Ho1  4.8(4)  0.00000  180(-2147483647)
-

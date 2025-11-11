@@ -830,4 +830,3 @@ br -1 2 10
 preset mcu 2
 scantitle "La2Ni7, (@(h) @(k) @(l) rocking"
 scanrel omega 1 -1 0.1
-

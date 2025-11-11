@@ -5,8 +5,8 @@
 # proposal = 7733
 # experiment = LSNCO
 # experiment_number = 1240
-# command = 
-# builtin_command = 
+# command =
+# builtin_command =
 # users = Kyle Ma
 # local_contact = Kirrily
 # scan_title = elastic Scan_1p5k
@@ -15,19 +15,19 @@
 # sense = -
 # collimation = o-40-40-0
 # samplename = LNSCO
-# sampletype = 
+# sampletype =
 # samplemosaic = 0.3
 # latticeconstants = 3.755000 3.755000 13.120000 90.000000 90.000000 90.000000
 # ubmatrix = 0.256041 -0.073245 0.000000     -0.073245 -0.256041 -0.000000     0.000000 0.000000 -0.076220
 # mode = 0
-# plane_normal = 
-# ubconf = 
-# preset_type = normal 
+# plane_normal =
+# ubconf =
+# preset_type = normal
 # preset_channel = monitor
 # preset_value = 80000.0
 # def_x = qh
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          qh           q           h           k           l          ei         vei          ef           e        time    detector     det_err     monitor         mcu          m1    m1_steps   m1_counts    ps_right     ps_left      ps_top   ps_bottom    pa_right     pa_left      pa_top   pa_bottom          m2       mtilt      mtrans     vs_left    vs_right          s1          s2         sgl         sgu         stl         stu          a1          a2      atrans       atilt     ahfocus     avfocus      ptsamp      tfloat        temp        pghf        pgvf        cuhf        cuvf              qh      T1_Sensor1      T1_Sensor2      T1_Sensor3      T1_Sensor4    T1_Setpoint1    T1_Setpoint2
       1      0.3001      0.9756      0.3001      0.4999      0.0000     14.8698     14.8707     14.8718     -0.0020      34.444          91        9.54       80000      0.0000     20.4633      0.0000      0.0000    -12.5000    -12.5000    -18.0000    -15.0000    -34.1000    -29.3000   -102.5000   -104.0000     40.9294      0.0022     99.0000  -3606.7385     59.8906     64.5060    -20.9818     -2.0013     -0.0005      0.0046     -0.0143     20.4699     40.9265     -0.0006     -0.0065     -0.3516    144.1406      0.0000     28.0000       1.570      0.9668     55.7227     51.6797     75.7617          0.3001          1.5703          2.2364         28.0000         28.0000          1.0000          1.0000
       2      0.3034      0.9785      0.3034      0.4999      0.0000     14.8698     14.8707     14.8718     -0.0020      34.131         108       10.39       80002      0.0000     20.4633      0.0000      0.0000    -12.5000    -12.5000    -18.0000    -15.0000    -34.1000    -29.3000   -102.5000   -104.0000     40.9294      0.0022     99.0000  -3606.7385     59.8906     64.1950    -21.0463     -2.0013     -0.0005      0.0046     -0.0143     20.4699     40.9265     -0.0006     -0.0065     -0.3516    144.1406      0.0000     28.0000       1.571      0.9668     55.7227     51.6797     75.7617          0.3034          1.5712          1.7760         28.0000         28.0000          1.0000          1.0000

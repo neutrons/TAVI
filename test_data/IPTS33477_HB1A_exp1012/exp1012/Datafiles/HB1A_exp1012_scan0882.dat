@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000714,0.000226,1.000000
 # ubconf = UB13Apr2024_105340AM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu         m2        chi        phi         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e    coldtip     sample       temp
       1   -42.7704      1.002      4.000   9801.000      1.000    41.5367    -4.3400    52.6002   -88.5369     0.0409     0.0130    11.0000     5.0000     5.0000    11.0000    11.0000     5.0000     5.0000    11.0000    90.0024    -0.0006     3.6866 653925093341465824000000000000.0000 -36036502167711528.0000 -4360414522150976350000000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
       2   -42.9201      1.026      3.000   9801.000      1.000    41.5367    -4.3400    52.6002   -88.5369     0.0409     0.0130    11.0000     5.0000     5.0000    11.0000    11.0000     5.0000     5.0000    11.0000    90.0024    -0.0006     3.6866 615569951016753928000000000000.0000 -33922827094524404.0000 -4104659969688013260000000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
@@ -44,27 +44,27 @@
      14   -44.7205      1.014      2.000   9801.000      1.000    41.5367    -4.3400    52.6002   -88.5369     0.0409     0.0130    11.0000     5.0000     5.0000    11.0000    11.0000     5.0000     5.0000    11.0000    90.0024    -0.0006     3.6866 154040687313894561000000000000.0000 -8488873754542822.0000 -1027153196604636640000000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
      15   -44.8699      1.013      1.000   9801.000      1.000    41.5367    -4.3400    52.6002   -88.5369     0.0409     0.0130    11.0000     5.0000     5.0000    11.0000    11.0000     5.0000     5.0000    11.0000    90.0024    -0.0006     3.6866 115711385548929375000000000000.0000 -6376622702847843.0000 -771570950653701318000000000000000.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.02004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.17004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.32004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.47004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.62004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sat, Apr 13, 2024 [12:41:58 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "s1", -45.77004, is below the lower limit of -45.00000.
 # ...Move aborted.
 # Sum of Counts = 5248

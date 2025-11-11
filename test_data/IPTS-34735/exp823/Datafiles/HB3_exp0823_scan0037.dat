@@ -4,7 +4,7 @@
 # proposal = 34735
 # experiment = Magnons and paramagnon coupling in MnTe
 # experiment_number = 823
-# command = scanrel s2 2 -2 0.2 
+# command = scanrel s2 2 -2 0.2
 # builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000
 # users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
 # local_contact = Eleanor Clements
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.017452,-0.000000,0.999842
 # ubconf = UB25Oct2024_25426PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
       1    40.4618      1.000      1.000   2599.000      0.623    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   111.6523    -0.9988     0.0015     8.0000     2.0000     2.0000    33.9842    12.0000     2.0000     4.0000    10.0000    -2.0000     2.0025   159.4167   -41.1662     1.8421     1.0496     0.0000     0.0343    14.7002    14.7000     0.0002   200.7220   227.5660     5.0000     5.000
       2    40.2628      1.000      3.000   2612.000      0.627    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897   111.6523    -0.9988     0.0015     8.0000     2.0000     2.0000    33.9842    12.0000     2.0000     4.0000    10.0000    -2.0000     2.0025   159.4167   -41.1662     1.8334     1.0447     0.0000     0.0307    14.7002    14.7000     0.0002   200.6500   227.4930     5.0000     5.000

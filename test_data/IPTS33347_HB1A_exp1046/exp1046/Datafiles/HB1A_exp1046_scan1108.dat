@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = UBmatrix-MnWO4-2vec.dat
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 5.000000
 # def_x = omega
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.      omega       time   detector    monitor        mcu         m2        chi        phi     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
       1   -43.1808      4.675      4.000  96501.000      5.000    41.5367   -29.4275   147.1545   -89.3642    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7701    41.5152    -1.1914     2.5524    -1.4860     0.0000    14.4503     4.1634    14.5287     4.000
       2   -43.3299      4.680      9.000  96501.000      5.000    41.5367   -29.4275   147.1545   -89.3642    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7702    41.5152    -1.1972     2.5473    -1.4874     0.0000    14.4503     4.1630    14.5307     4.000
@@ -48,11 +48,11 @@
      18   -45.7297      4.677      7.000  96501.000      5.000    41.5367   -29.4275   147.1545   -89.3642    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7702    41.5152    -1.2904     2.4625    -1.5092     0.0000    14.4503     4.1639    14.5459     4.000
      19   -45.8806      4.645      7.000  96501.000      5.000    41.5367   -29.4275   147.1545   -89.3642    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7702    41.5152    -1.2962     2.4570    -1.5105     0.0000    14.4503     4.1665    14.5470     4.000
 # Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "omega", -46.03055, is below the lower limit of -46.00000.
 # ...Move aborted.
 # Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
+# ERROR in driving: Sun, Feb 23, 2025 [11:30:52 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
 # The destination for "omega", -46.18055, is below the lower limit of -46.00000.
 # ...Move aborted.
 # Sum of Counts = 278

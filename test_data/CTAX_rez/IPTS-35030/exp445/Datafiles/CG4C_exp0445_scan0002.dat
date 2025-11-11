@@ -8,7 +8,7 @@
 # builtin_command = scan sgl @(sgl)+-6 @(sgl)+6 1.000000
 # users = Tao Hong, Tao Hong, Bing Li
 # local_contact = Tao Hong
-# scan_title = 
+# scan_title =
 # monochromator = PG002
 # analyzer = Pg002
 # sense = -+-
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB10Mar2025_105039AM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus   vti_temp  smpl_temp         s1         s2        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2     afocus        qm1        qm2        qm3        qm4        qm5        qm6        qm7        qm8        xm1        xm2        xm3        xm4        xm5        xm6        xm7        xm8          q          h          k          l         ei         ef          e
       1    -6.0000      1.000    383.000   2324.000      1.056    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560     0.0000     0.0000    30.7800    60.0960     0.0000     0.0000     0.0000     0.0000     0.0000    14.0000     6.0000     6.0000    14.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.5242     0.4397     0.7721    -0.0767     4.8000     4.8000    -0.000
       2    -5.0000      1.000    912.000   2387.000      1.085    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560     0.0000     0.0000    30.7800    60.0960     0.0000     0.0000     0.0000     0.0000     0.0000    14.0000     6.0000     6.0000    14.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.5242     0.4196     0.7886    -0.0767     4.8000     4.8000    -0.000

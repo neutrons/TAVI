@@ -7,8 +7,3 @@ scan h 1.3 k 0.0 l 1.3 e 42 1 0.25 ef 14.7 preset mcu 120
 
 scantitle "H0L scans along (101) to (1.5, 0, 1.5) at H/L = 1.35, mcu = 120, E = 44 to 1 mev"
 scan h 1.35 k 0.0 l 1.35 e 44 1 0.25 ef 14.7 preset mcu 120
-
-
-
-
-

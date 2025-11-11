@@ -2,12 +2,11 @@ scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.50, 0.0
 scan h 1.50 k 0.0 l 0.50 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
 
 scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.48, 0.0, 0.52) - E = 40 to 30 mev"
-scan h 1.48 k 0.0 l 0.52 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
+scan h 1.48 k 0.0 l 0.52 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
 scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.46, 0.0, 0.54) - E = 40 to 30 mev"
-scan h 1.46 k 0.0 l 0.54 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
+scan h 1.46 k 0.0 l 0.54 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
 scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.44, 0.0, 0.56) - E = 40 to 30 mev"
 scan h 1.44 k 0.0 l 0.56 e 40.0 30.0 0.5 ef 30.5 preset mcu 60
 
 scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.42, 0.0, 0.58) - E = 40 to 30 mev"
-scan h 1.42 k 0.0 l 0.58 e 40 30.0 0.5 ef 30.5 preset mcu 60
-
+scan h 1.42 k 0.0 l 0.58 e 40 30.0 0.5 ef 30.5 preset mcu 60

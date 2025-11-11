@@ -84,7 +84,7 @@
 3/10/2025 12:03 PM        br 0 0 6
 3/10/2025 12:04 PM        preset mcu 2
 3/10/2025 12:04 PM        scanrel s1 1 -1 0.1
-3/10/2025 12:05 PM        com s1 
+3/10/2025 12:05 PM        com s1
 3/10/2025 12:05 PM        th2th 3 -3 0.2
 3/10/2025 12:06 PM        scanrel sgl -8 8 0.5
 3/10/2025 12:10 PM        scan h 0 k 0 l 6 e -0.2 0.2 0.01 preset mcu 2
@@ -92,7 +92,7 @@
 3/10/2025 12:14 PM        br 0 0 4
 3/10/2025 12:14 PM        preset mcu 2
 3/10/2025 12:14 PM        scanrel s1 1 -1 0.1
-3/10/2025 12:15 PM        com s1 
+3/10/2025 12:15 PM        com s1
 3/10/2025 12:15 PM        th2th 3 -3 0.2
 3/10/2025 12:17 PM        scanrel sgl -8 8 0.5
 3/10/2025 12:20 PM        scan h 0 k 0 l 4 e -0.2 0.2 0.01 preset mcu 2
@@ -120,7 +120,7 @@
 3/10/2025 2:09 PM        br 0 0 2
 3/10/2025 2:09 PM        preset mcu 2
 3/10/2025 2:09 PM        scanrel s1 1 -1 0.1
-3/10/2025 2:10 PM        com s1 
+3/10/2025 2:10 PM        com s1
 3/10/2025 2:10 PM        th2th 3 -3 0.2
 3/10/2025 2:12 PM        scanrel sgl -8 8 0.5
 3/10/2025 2:15 PM        scan h 0 k 0 l 2 e -0.2 0.2 0.01 preset mcu 2
@@ -128,7 +128,7 @@
 3/10/2025 2:19 PM        br 0 0 5
 3/10/2025 2:20 PM        preset mcu 30
 3/10/2025 2:20 PM        scanrel s1 1 -1 0.1
-3/10/2025 2:30 PM        com s1 
+3/10/2025 2:30 PM        com s1
 3/10/2025 2:30 PM        th2th 3 -3 0.2
 3/10/2025 2:46 PM        scanrel sgl -8 8 0.5
 3/10/2025 3:03 PM        scan h 0 k 0 l 5 e -0.2 0.2 0.01 preset mcu 30
@@ -136,7 +136,7 @@
 3/10/2025 3:26 PM        br 0 0 3
 3/10/2025 3:26 PM        preset mcu 30
 3/10/2025 3:26 PM        scanrel s1 1 -1 0.1
-3/10/2025 3:36 PM        com s1 
+3/10/2025 3:36 PM        com s1
 3/10/2025 3:36 PM        th2th 3 -3 0.2
 3/10/2025 3:52 PM        scanrel sgl -8 8 0.5
 3/10/2025 4:09 PM        scan h 0 k 0 l 3 e -0.2 0.2 0.01 preset mcu 30
@@ -144,7 +144,7 @@
 3/10/2025 4:32 PM        br 0 0 2
 3/10/2025 4:32 PM        preset mcu 30
 3/10/2025 4:32 PM        scanrel s1 1 -1 0.1
-3/10/2025 4:42 PM        com s1 
+3/10/2025 4:42 PM        com s1
 3/10/2025 4:43 PM        th2th 3 -3 0.2
 3/10/2025 4:58 PM        scanrel sgl -8 8 0.5
 3/10/2025 5:16 PM        scantitle "(100) scans"
@@ -159,49 +159,49 @@
 3/10/2025 5:28 PM        br 1 0 7
 3/10/2025 5:29 PM        preset mcu 2
 3/10/2025 5:29 PM        scanrel s1 1 -1 0.1
-3/10/2025 5:30 PM        com s1 
+3/10/2025 5:30 PM        com s1
 3/10/2025 5:30 PM        th2th 3 -3 0.2
 3/10/2025 5:32 PM        scan h 1 k 0 l 7 e -0.2 0.2 0.01 preset mcu 2
 3/10/2025 5:36 PM        scantitle "(106) scans"
 3/10/2025 5:36 PM        br 1 0 6
 3/10/2025 5:36 PM        preset mcu 2
 3/10/2025 5:36 PM        scanrel s1 1 -1 0.1
-3/10/2025 5:37 PM        com s1 
+3/10/2025 5:37 PM        com s1
 3/10/2025 5:37 PM        th2th 3 -3 0.2
 3/10/2025 5:39 PM        scan h 1 k 0 l 6 e -0.2 0.2 0.01 preset mcu 2
 3/10/2025 5:43 PM        scantitle "(105) scans"
 3/10/2025 5:43 PM        br 1 0 5
 3/10/2025 5:43 PM        preset mcu 10
 3/10/2025 5:43 PM        scanrel s1 1 -1 0.1
-3/10/2025 5:47 PM        com s1 
+3/10/2025 5:47 PM        com s1
 3/10/2025 5:47 PM        th2th 3 -3 0.2
 3/10/2025 5:53 PM        scan h 1 k 0 l 5 e -0.2 0.2 0.01 preset mcu 10
 3/10/2025 6:02 PM        scantitle "(104) scans"
 3/10/2025 6:02 PM        br 1 0 4
 3/10/2025 6:02 PM        preset mcu 10
 3/10/2025 6:02 PM        scanrel s1 1 -1 0.1
-3/10/2025 6:06 PM        com s1 
+3/10/2025 6:06 PM        com s1
 3/10/2025 6:06 PM        th2th 3 -3 0.2
 3/10/2025 6:12 PM        scan h 1 k 0 l 4 e -0.2 0.2 0.01 preset mcu 10
 3/10/2025 6:21 PM        scantitle "(103) scans"
 3/10/2025 6:21 PM        br 1 0 3
 3/10/2025 6:21 PM        preset mcu 5
 3/10/2025 6:21 PM        scanrel s1 1 -1 0.1
-3/10/2025 6:23 PM        com s1 
+3/10/2025 6:23 PM        com s1
 3/10/2025 6:23 PM        th2th 3 -3 0.2
 3/10/2025 6:27 PM        scan h 1 k 0 l 3 e -0.2 0.2 0.01 preset mcu 5
 3/10/2025 6:33 PM        scantitle "(102) scans"
 3/10/2025 6:33 PM        br 1 0 2
 3/10/2025 6:33 PM        preset mcu 30
 3/10/2025 6:33 PM        scanrel s1 1 -1 0.1
-3/10/2025 6:43 PM        com s1 
+3/10/2025 6:43 PM        com s1
 3/10/2025 6:43 PM        th2th 3 -3 0.2
 3/10/2025 6:59 PM        scan h 1 k 0 l 2 e -0.2 0.2 0.01 preset mcu 30
 3/10/2025 7:21 PM        scantitle "(101) scans"
 3/10/2025 7:21 PM        br 1 0 1
 3/10/2025 7:22 PM        preset mcu 2
 3/10/2025 7:22 PM        scanrel s1 1 -1 0.1
-3/10/2025 7:22 PM        com s1 
+3/10/2025 7:22 PM        com s1
 3/10/2025 7:22 PM        th2th 3 -3 0.2
 3/10/2025 7:24 PM        scan h 1 k 0 l 1 e -0.2 0.2 0.01 preset mcu 2
 3/10/2025 7:28 PM        scantitle "(H07) scan at E=-0.4 meV"
@@ -382,7 +382,7 @@
 3/11/2025 8:44 PM        br 0 0 6
 3/11/2025 8:45 PM        preset mcu 2
 3/11/2025 8:45 PM        scanrel s1 1 -1 0.1
-3/11/2025 8:46 PM        com s1 
+3/11/2025 8:46 PM        com s1
 3/11/2025 8:46 PM        th2th 4 -4 0.2
 3/11/2025 8:49 PM        scanrel sgl -8 8 0.5
 3/11/2025 8:53 PM        scan h 0 k 0 l 6 e -0.2 0.2 0.01 preset mcu 2
@@ -390,7 +390,7 @@
 3/11/2025 8:58 PM        br 0 0 4
 3/11/2025 8:59 PM        preset mcu 2
 3/11/2025 8:59 PM        scanrel s1 1 -1 0.1
-3/11/2025 9:00 PM        com s1 
+3/11/2025 9:00 PM        com s1
 3/11/2025 9:00 PM        th2th 4 -4 0.2
 3/11/2025 9:03 PM        scanrel sgl -8 8 0.5
 3/11/2025 9:07 PM        scan h 0 k 0 l 4 e -0.2 0.2 0.01 preset mcu 2
@@ -398,7 +398,7 @@
 3/11/2025 9:13 PM        br 0 0 2
 3/11/2025 9:13 PM        preset mcu 2
 3/11/2025 9:13 PM        scanrel s1 1 -1 0.1
-3/11/2025 9:14 PM        com s1 
+3/11/2025 9:14 PM        com s1
 3/11/2025 9:14 PM        th2th 4 -4 0.2
 3/11/2025 9:17 PM        scanrel sgl -8 8 0.5
 3/11/2025 9:21 PM        scan h 0 k 0 l 2 e -0.2 0.2 0.01 preset mcu 2
@@ -406,7 +406,7 @@
 3/11/2025 9:27 PM        br 0 0 5
 3/11/2025 9:27 PM        preset mcu 30
 3/11/2025 9:27 PM        scanrel s1 1 -1 0.1
-3/11/2025 9:38 PM        com s1 
+3/11/2025 9:38 PM        com s1
 3/11/2025 9:38 PM        th2th 4 -4 0.2
 3/11/2025 9:59 PM        scanrel sgl -8 8 0.5
 3/11/2025 10:17 PM        scan h 0 k 0 l 5 e -0.2 0.2 0.01 preset mcu 30
@@ -414,7 +414,7 @@
 3/11/2025 10:41 PM        br 0 0 3
 3/11/2025 10:42 PM        preset mcu 30
 3/11/2025 10:42 PM        scanrel s1 1 -1 0.1
-3/11/2025 10:52 PM        com s1 
+3/11/2025 10:52 PM        com s1
 3/11/2025 10:52 PM        th2th 4 -4 0.2
 3/11/2025 11:13 PM        scanrel sgl -8 8 0.5
 3/11/2025 11:32 PM        scan h 0 k 0 l 3 e -0.2 0.2 0.01 preset mcu 30
@@ -422,7 +422,7 @@
 3/11/2025 11:56 PM        br 0 0 1
 3/11/2025 11:56 PM        preset mcu 30
 3/11/2025 11:56 PM        scanrel s1 1 -1 0.1
-3/12/2025 12:07 AM        com s1 
+3/12/2025 12:07 AM        com s1
 3/12/2025 12:07 AM        th2th 4 -4 0.2
 3/12/2025 12:27 AM        scanrel sgl -8 8 0.5
 3/12/2025 12:46 AM        scan h 0 k 0 l 1 e -0.2 0.2 0.01 preset mcu 30
@@ -438,49 +438,49 @@
 3/12/2025 1:25 AM        br 1 0 7
 3/12/2025 1:26 AM        preset mcu 2
 3/12/2025 1:26 AM        scanrel s1 1 -1 0.1
-3/12/2025 1:27 AM        com s1 
+3/12/2025 1:27 AM        com s1
 3/12/2025 1:27 AM        th2th 4 -4 0.2
 3/12/2025 1:30 AM        scan h 1 k 0 l 7 e -0.2 0.2 0.01 preset mcu 2
 3/12/2025 1:36 AM        scantitle "(106) scans-hori-focusing"
 3/12/2025 1:36 AM        br 1 0 6
 3/12/2025 1:36 AM        preset mcu 2
 3/12/2025 1:36 AM        scanrel s1 1 -1 0.1
-3/12/2025 1:37 AM        com s1 
+3/12/2025 1:37 AM        com s1
 3/12/2025 1:38 AM        th2th 4 -4 0.2
 3/12/2025 1:41 AM        scan h 1 k 0 l 6 e -0.2 0.2 0.01 preset mcu 2
 3/12/2025 1:46 AM        scantitle "(105) scans-hori-focusing"
 3/12/2025 1:46 AM        br 1 0 5
 3/12/2025 1:47 AM        preset mcu 10
 3/12/2025 1:47 AM        scanrel s1 1 -1 0.1
-3/12/2025 1:51 AM        com s1 
+3/12/2025 1:51 AM        com s1
 3/12/2025 1:51 AM        th2th 4 -4 0.2
 3/12/2025 1:59 AM        scan h 1 k 0 l 5 e -0.2 0.2 0.01 preset mcu 10
 3/12/2025 2:09 AM        scantitle "(104) scans-hori-focusing"
 3/12/2025 2:09 AM        br 1 0 4
 3/12/2025 2:10 AM        preset mcu 10
 3/12/2025 2:10 AM        scanrel s1 1 -1 0.1
-3/12/2025 2:14 AM        com s1 
+3/12/2025 2:14 AM        com s1
 3/12/2025 2:14 AM        th2th 4 -4 0.2
 3/12/2025 2:22 AM        scan h 1 k 0 l 4 e -0.2 0.2 0.01 preset mcu 10
 3/12/2025 2:33 AM        scantitle "(103) scans-hori-focusing"
 3/12/2025 2:33 AM        br 1 0 3
 3/12/2025 2:33 AM        preset mcu 5
 3/12/2025 2:33 AM        scanrel s1 1 -1 0.1
-3/12/2025 2:35 AM        com s1 
+3/12/2025 2:35 AM        com s1
 3/12/2025 2:36 AM        th2th 4 -4 0.2
 3/12/2025 2:41 AM        scan h 1 k 0 l 3 e -0.2 0.2 0.01 preset mcu 5
 3/12/2025 2:48 AM        scantitle "(102) scans-hori-focusing"
 3/12/2025 2:48 AM        br 1 0 2
 3/12/2025 2:48 AM        preset mcu 30
 3/12/2025 2:48 AM        scanrel s1 1 -1 0.1
-3/12/2025 2:59 AM        com s1 
+3/12/2025 2:59 AM        com s1
 3/12/2025 2:59 AM        th2th 4 -4 0.2
 3/12/2025 3:20 AM        scan h 1 k 0 l 2 e -0.2 0.2 0.01 preset mcu 30
 3/12/2025 3:44 AM        scantitle "(101) scans-hori-focusing"
 3/12/2025 3:44 AM        br 1 0 1
 3/12/2025 3:44 AM        preset mcu 2
 3/12/2025 3:44 AM        scanrel s1 1 -1 0.1
-3/12/2025 3:46 AM        com s1 
+3/12/2025 3:46 AM        com s1
 3/12/2025 3:46 AM        th2th 4 -4 0.2
 3/12/2025 3:49 AM        scan h 1 k 0 l 1 e -0.2 0.2 0.01 preset mcu 2
 3/12/2025 3:54 AM        scantitle "(H07) scan at E=-0.4 meV and hori-focusing"

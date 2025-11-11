@@ -8,7 +8,7 @@
 # builtin_command = scan 2theta @(2theta)+3 @(2theta)+-3 0.200000 omega @(omega)+(3/2) @(omega)+(-3/2) 0.100000
 # users = Feng Ye, Mike McDowell, Jiasen Guo, Adam Aczel, Kaleb Burrage, Wei Tian, Bing Li, Zachary Morgan
 # local_contact = Wei Tian
-# scan_title = MnWO4 nuclear, (-0.001932 -2.99987 -0.000276) th4th, T = 4.1102 K, 20'-S-20' 
+# scan_title = MnWO4 nuclear, (-0.001932 -2.99987 -0.000276) th4th, T = 4.1102 K, 20'-S-20'
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = UBmatrix-MnWO4-UB022425.dat
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = 2theta
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.     2theta      omega       time   detector    monitor        mcu         m2        chi        phi   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
       1   -73.6670   -36.7889      9.227      1.000 193001.000     10.000    41.5367     4.7893     3.9721    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7700    41.5162    -0.0019    -2.8995    -0.0003     0.0000    14.4503     4.1160    14.1287     4.000
       2   -73.8659   -36.8893      9.272      1.000 193001.000     10.000    41.5367     4.7893     3.9721    20.0000     5.0000     4.0000    24.0000    22.0000     4.0000     4.0000    22.0000    20.7700    41.5162    -0.0018    -2.9062    -0.0003     0.0000    14.4503     4.1149    14.1293     4.000

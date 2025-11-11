@@ -7,7 +7,7 @@
 # command = preset time 1; scanrel s1 -2 2 0.2
 # builtin_command = scan s1 @(s1)+-2 @(s1)+2 0.200000
 # users = Summer School
-# local_contact = 
+# local_contact =
 # scan_title = Align (110)
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.051866,0.010812,0.998595
 # ubconf = UB29Sep2008_125550PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   tcoldtip    tsample       temp
       1    31.1521      1.000    270.000   8695.000      0.014    66.7975   -28.7955   -41.1659   120.1201     0.2500     9.5000   -34.2897    69.9565    -2.9705     0.6210     0.0030     0.0020   159.4167   -41.1825     3.0532     0.9640     1.0344    -0.0001    14.7002    14.6889     0.0113     1.0000     1.0000   200.000
       2    31.3410      1.000    470.000   8968.000      0.014    66.7975   -28.7955   -41.1659   120.1201     0.2500     9.5000   -34.2897    69.9565    -2.9705     0.6210     0.0030     0.0020   159.4167   -41.1825     3.0532     0.9674     1.0312    -0.0001    14.7002    14.6889     0.0113     1.0000     1.0000   200.000

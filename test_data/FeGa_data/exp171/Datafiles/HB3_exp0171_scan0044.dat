@@ -7,7 +7,7 @@
 # command = scan h 2 k -0.5 0.5 0.025 e 80 ef 30.5
 # builtin_command = scan h 2 k -0.5 0.5 0.025 e 80 ef 30.5
 # users = Summer School
-# local_contact = 
+# local_contact =
 # scan_title = Spin wave E=80meV
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 90.000000
 # def_x = k
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q          l         ei   tcoldtip    tsample       temp
       1     2.0004    -0.4998    80.0158    30.4931    339.136    127.000 810000.000     90.000    32.3623   -28.7955   -14.7339   120.1201     0.2500     9.5000   -75.0000   121.6812    30.6059    -2.9105     0.7725     4.0000     0.0020   165.8729   -28.2571     4.4523    -0.0001   110.5088     1.0000     1.0000   200.000
       2     2.0002    -0.4748    80.0158    30.4931    339.496    146.000 810000.000     90.000    32.3623   -28.7955   -14.7339   120.1201     0.2500     9.5000   -75.0000   121.1159    30.3709    -2.9105     0.7740     4.0000     0.0020   165.8729   -28.2571     4.4392    -0.0002   110.5088     1.0000     1.0000   200.000
@@ -66,19 +66,19 @@
      36     2.0001     0.3756    80.0158    30.4931    339.215    208.000 810000.000     90.000    32.3623   -28.7955   -14.7339   120.1201     0.2500     9.5000   -75.0000    97.5223    29.5622    -2.8655     0.8020     4.0000     0.0020   165.8729   -28.2571     4.3945    -0.0020   110.5088     1.0000     1.0000   200.000
      37     2.0002     0.4002    80.0158    30.4931    339.077    212.000 810000.000     90.000    32.3623   -28.7955   -14.7339   120.1201     0.2500     9.5000   -75.0000    96.7496    29.7504    -2.8620     0.8020     4.0000     0.0020   165.8729   -28.2571     4.4049    -0.0022   110.5088     1.0000     1.0000   200.000
 # Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
+# ERROR in driving: Tue, Sep 30, 2008 [4:16:13 AM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
 # Q is not in the specified scattering plane
 # ...Move aborted.
 # Sum of Counts = 16671

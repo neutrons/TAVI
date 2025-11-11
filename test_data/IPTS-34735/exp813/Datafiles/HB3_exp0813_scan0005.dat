@@ -8,7 +8,7 @@
 # builtin_command = scan s2 @(s2)+3 @(s2)+-3 0.300000 s1 @(s1)+(3/2) @(s1)+(-3/2) 0.150000
 # users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
 # local_contact = Eleanor Clements
-# scan_title = Th2th 002 peak 
+# scan_title = Th2th 002 peak
 # monochromator = PG002
 # analyzer = Pg002
 # sense = -+-
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000013,0.000009,1.000000
 # ubconf = UB09Sep2024_31036PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       ampl         dc       freq     output       temp     temp_2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e   ampl_out output_state        vti     sample
       1    44.1930    22.2594      1.000      7.000   2549.000      0.394    66.7975   -20.0773   -41.1657   120.0962    -0.1480    -3.0001   -34.2897     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000     0.0008     0.0018    20.0000    30.0000    30.0000    20.0000    26.0000    30.0000    30.0000    20.0000    -0.0005     0.0005   159.4164   -41.1662     2.0038    -0.0013    -0.0000     2.1389    14.7003    14.7000     0.0003     2.0000     1.0000    66.8952     0.000
       2    43.8909    22.1092      1.000      8.000   2475.000      0.382    66.7975   -20.0773   -41.1657   120.0962    -0.1480    -3.0001   -34.2897     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000     0.0008     0.0018    20.0000    30.0000    30.0000    20.0000    26.0000    30.0000    30.0000    20.0000    -0.0005     0.0005   159.4164   -41.1662     1.9908    -0.0013    -0.0000     2.1250    14.7003    14.7000     0.0003     2.0000     1.0000    67.0517     0.000

@@ -4,7 +4,7 @@
 # proposal = IPTS-890
 # experiment = FM short-range ord in AFM Tb5Ge4
 # experiment_number = 266
-# command = scanrel s2 1.5 -1.5 -.2 
+# command = scanrel s2 1.5 -1.5 -.2
 # builtin_command = scan s2 @(s2)+1.5 @(s2)+-1.5 -0.200000
 # users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
 # local_contact = J.L. Zarestky
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m2         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1  -108.2977      1.000  11506.000   4204.000      1.001    41.2647   -52.3051     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3079     1.9813     0.0259    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
       2  -108.4965      1.000  16880.000   4230.000      1.007    41.2647   -52.3051     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3133     1.9838     0.0225    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000

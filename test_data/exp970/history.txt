@@ -58,7 +58,7 @@
 3/5/2025 5:01 PM        ef 14.700000
 3/5/2025 5:01 PM        plusminus + - +
 3/5/2025 5:01 PM        exptitle "Spin-phonon coupling in NiO"
-3/5/2025 5:01 PM        collimation 48.000000 80.000000 999.000000 999.000000 
+3/5/2025 5:01 PM        collimation 48.000000 80.000000 999.000000 999.000000
 3/5/2025 5:01 PM        monochromator heusler
 3/5/2025 5:01 PM        analyzer heusler
 3/5/2025 5:04 PM        drive h 0.000000 k 0.000000 l 1.300000 e 25.000000

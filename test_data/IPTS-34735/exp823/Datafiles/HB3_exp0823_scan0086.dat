@@ -8,7 +8,7 @@
 # builtin_command = scan h 1.0 k 0.0 l 1.0 e 30.0 2.0 0.25 ef 14.7 preset mcu 120
 # users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
 # local_contact = Eleanor Clements
-# scan_title = Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse 
+# scan_title = Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse
 # monochromator = PG002
 # analyzer = Pg002
 # sense = -+-
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.017452,-0.000000,0.999848
 # ubconf = UB25Oct2024_84509PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 120.000000
 # def_x = e
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei        vti     sample       temp     temp_2
       1     0.4385     0.0000     1.3611    20.8170    14.7000      0.000      0.000      0.000      0.000    38.6396   -20.0773   -26.1441   120.0962    -0.1480    -3.0001   -61.6560   114.8071     4.5256    -0.9995     0.0015    14.0000     4.0000     4.0000     2.0000    16.0000     4.0000     6.0000    10.0000    -2.0005     2.0025   159.4167   -41.1662     1.4997    35.5170     5.0072     4.9993     5.0000     5.000
 # Sum of Counts = 0

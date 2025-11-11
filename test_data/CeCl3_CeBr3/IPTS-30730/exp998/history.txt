@@ -1,5 +1,5 @@
 9/19/2023 9:55 AM        init
-9/19/2023 10:02 AM        drive sgl 0 sgu 0 stl 0 stu 0 sz 0 
+9/19/2023 10:02 AM        drive sgl 0 sgu 0 stl 0 stu 0 sz 0
 9/19/2023 10:04 AM        drive slita_lf 15 slita_rt 15 slitb_lf 15 slitb_rt 15
 9/19/2023 10:04 AM        drive slita_tp 25 slita_bt 25 slitb_tp 25 slitb_bt 25
 9/19/2023 10:05 AM        drive s1 60
@@ -14,12 +14,12 @@
 9/19/2023 10:14 AM        drive s1 110'
 9/19/2023 10:14 AM        drive s1 110
 9/19/2023 10:18 AM        drive s1 120
-9/19/2023 10:18 AM        lowerlimit s1 -60.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-9/19/2023 10:18 AM        upperlimit s1 121.000000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+9/19/2023 10:18 AM        lowerlimit s1 -60.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+9/19/2023 10:18 AM        upperlimit s1 121.000000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
 9/19/2023 10:18 AM        drive s1 120
 9/19/2023 10:18 AM        drive s1 130
-9/19/2023 10:19 AM        lowerlimit s1 -60.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
-9/19/2023 10:19 AM        upperlimit s1 130.500000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+9/19/2023 10:19 AM        lowerlimit s1 -60.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
+9/19/2023 10:19 AM        upperlimit s1 130.500000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
 9/19/2023 10:19 AM        drive s1 130
 9/19/2023 10:19 AM        drive s1 35
 9/19/2023 1:52 PM        drive s2 -47.349
@@ -110,263 +110,263 @@
 9/19/2023 3:46 PM        drive slitb_rt 9
 9/19/2023 3:47 PM        br 1 1 1
 9/19/2023 3:54 PM        scantitle "CeBr3, (0 0 L) scan, T = 0.04 K"
-9/19/2023 3:54 PM        scan h 0 k 0 l 0.25 2.25 0.005 e 0 preset time 30 
+9/19/2023 3:54 PM        scan h 0 k 0 l 0.25 2.25 0.005 e 0 preset time 30
 9/19/2023 3:56 PM        scantitle "CeBr3, (0 0 L) scan, T = 0.04 K"
-9/19/2023 3:56 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30 
+9/19/2023 3:56 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30
 9/19/2023 6:37 PM        scantitle "CeBr3, (1/3 1/3 L) scan, T = 0.04 K"
-9/19/2023 6:37 PM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30 
+9/19/2023 6:37 PM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30
 9/19/2023 10:12 PM        scantitle "CeBr3, (2/3 2/3 L) scan, T = 0.04 K"
-9/19/2023 10:12 PM        scan h 0.6666 k 0.6666 l 0.25 1.75 0.005 e 0 preset time 30 
+9/19/2023 10:12 PM        scan h 0.6666 k 0.6666 l 0.25 1.75 0.005 e 0 preset time 30
 9/20/2023 12:55 AM        scantitle "CeBr3, (1 1 L) scan, T = 0.04 K"
-9/20/2023 12:55 AM        scan h 1 k 1 l 0.25 2.25 0.005 e 0 preset time 30 
+9/20/2023 12:55 AM        scan h 1 k 1 l 0.25 2.25 0.005 e 0 preset time 30
 9/20/2023 4:36 AM        scantitle "CeBr3, (4/3 4/3 L) scan, T = 0.04 K"
-9/20/2023 4:36 AM        scan h 1.33333 k 1.33333 l 0.25 1.75 0.005 e 0 preset time 30 
+9/20/2023 4:36 AM        scan h 1.33333 k 1.33333 l 0.25 1.75 0.005 e 0 preset time 30
 9/20/2023 7:23 AM        scantitle "CeBr3, (5/3 5/3 L) scan, T = 0.04 K"
-9/20/2023 7:23 AM        scan h 1.6667 k 1.6667 l 0.25 1.75 0.005 e 0 preset time 30 
+9/20/2023 7:23 AM        scan h 1.6667 k 1.6667 l 0.25 1.75 0.005 e 0 preset time 30
 9/20/2023 10:10 AM        scantitle "CeBr3, (H H 0.5) scan, T = 0.04 K"
-9/20/2023 10:10 AM        scan h 0.04 2.25 0.01 k 0.04 2.25 0.01 l 0.5 e 0 preset time 30 
+9/20/2023 10:10 AM        scan h 0.04 2.25 0.01 k 0.04 2.25 0.01 l 0.5 e 0 preset time 30
 9/20/2023 12:15 PM        scantitle "CeBr3, (0 0 L) scan, T = 0.04 K, part 2"
-9/20/2023 12:15 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30 
+9/20/2023 12:15 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30
 9/20/2023 12:22 PM        scantitle "CeBr3, (1/3 1/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 12:22 PM        br 0.3333 0.3333 0.5 
+9/20/2023 12:22 PM        br 0.3333 0.3333 0.5
 9/20/2023 12:23 PM        preset time 20
 9/20/2023 12:23 PM        th2th 1.5 -1.5 0.15
 9/20/2023 12:34 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 12:34 PM        br 0.3333 0.3333 0.5 
+9/20/2023 12:34 PM        br 0.3333 0.3333 0.5
 9/20/2023 12:34 PM        preset time 20
 9/20/2023 12:34 PM        scanrel s1 1 -1 0.1
 9/20/2023 12:35 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 12:35 PM        br 0.3333 0.3333 0.5 
+9/20/2023 12:35 PM        br 0.3333 0.3333 0.5
 9/20/2023 12:35 PM        preset time 20
 9/20/2023 12:35 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 12:43 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 12:43 PM        br 0.3333 0.3333 0.5 
+9/20/2023 12:43 PM        br 0.3333 0.3333 0.5
 9/20/2023 12:43 PM        preset time 20
 9/20/2023 12:43 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 12:50 PM        scantitle "CeBr3, (2/3 2/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 12:51 PM        br 0.6666 0.6666 0.5 
+9/20/2023 12:51 PM        br 0.6666 0.6666 0.5
 9/20/2023 12:51 PM        preset time 20
 9/20/2023 12:51 PM        th2th 1.5 -1.5 0.15
 9/20/2023 12:59 PM        scantitle "CeBr3, (2/3 2/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 12:59 PM        br 0.6666 0.6666 0.5 
+9/20/2023 12:59 PM        br 0.6666 0.6666 0.5
 9/20/2023 12:59 PM        preset time 20
 9/20/2023 12:59 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 1:07 PM        scantitle "CeBr3, (4/3 4/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 1:07 PM        br 1.3333 1.3333 0.5 
+9/20/2023 1:07 PM        br 1.3333 1.3333 0.5
 9/20/2023 1:07 PM        preset time 20
 9/20/2023 1:07 PM        th2th 1.5 -1.5 0.15
 9/20/2023 1:15 PM        scantitle "CeBr3, (4/3 4/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 1:15 PM        br 1.3333 1.3333 0.5 
+9/20/2023 1:15 PM        br 1.3333 1.3333 0.5
 9/20/2023 1:15 PM        preset time 20
 9/20/2023 1:15 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 1:23 PM        scantitle "CeBr3, (5/3 5/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 1:23 PM        br 1.6666 1.6666 0.5 
+9/20/2023 1:23 PM        br 1.6666 1.6666 0.5
 9/20/2023 1:23 PM        preset time 20
 9/20/2023 1:23 PM        th2th 1.5 -1.5 0.15
 9/20/2023 1:31 PM        scantitle "CeBr3, (5/3 5/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 1:31 PM        br 1.6666 1.6666 0.5 
+9/20/2023 1:31 PM        br 1.6666 1.6666 0.5
 9/20/2023 1:31 PM        preset time 20
 9/20/2023 1:31 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 1:39 PM        scantitle "CeBr3, (1/3 1/3 3/2) th2th scan, T = 40 mK"
-9/20/2023 1:39 PM        br 0.3333 0.3333 1.5 
+9/20/2023 1:39 PM        br 0.3333 0.3333 1.5
 9/20/2023 1:40 PM        preset time 20
 9/20/2023 1:40 PM        th2th 1.5 -1.5 0.15
 9/20/2023 1:48 PM        scantitle "CeBr3, (1/3 1/3 3/2) rocking scan, T = 40 mK"
-9/20/2023 1:48 PM        br 0.3333 0.3333 1.5 
+9/20/2023 1:48 PM        br 0.3333 0.3333 1.5
 9/20/2023 1:48 PM        preset time 20
 9/20/2023 1:48 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 1:55 PM        scantitle "CeBr3, (2/3 2/3 3/2) th2th scan, T = 40 mK"
-9/20/2023 1:55 PM        br 0.6666 0.6666 1.5 
+9/20/2023 1:55 PM        br 0.6666 0.6666 1.5
 9/20/2023 1:56 PM        preset time 20
 9/20/2023 1:56 PM        th2th 1.5 -1.5 0.15
 9/20/2023 2:04 PM        scantitle "CeBr3, (2/3 2/3 3/2) rocking scan, T = 40 mK"
-9/20/2023 2:04 PM        br 0.6666 0.6666 1.5 
+9/20/2023 2:04 PM        br 0.6666 0.6666 1.5
 9/20/2023 2:04 PM        preset time 20
 9/20/2023 2:04 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 2:11 PM        scantitle "CeBr3, (4/3 4/3 3/2) th2th scan, T = 40 mK"
-9/20/2023 2:11 PM        br 1.3333 1.3333 1.5 
+9/20/2023 2:11 PM        br 1.3333 1.3333 1.5
 9/20/2023 2:12 PM        preset time 20
 9/20/2023 2:12 PM        th2th 2 -2 0.2
 9/20/2023 2:20 PM        scantitle "CeBr3, (4/3 4/3 3/2) rocking scan, T = 40 mK"
-9/20/2023 2:20 PM        br 1.3333 1.3333 1.5 
+9/20/2023 2:20 PM        br 1.3333 1.3333 1.5
 9/20/2023 2:20 PM        preset time 20
 9/20/2023 2:20 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 2:27 PM        scantitle "CeBr3, (5/3 5/3 3/2) th2th scan, T = 40 mK"
-9/20/2023 2:27 PM        br 1.6666 1.6666 1.5 
+9/20/2023 2:27 PM        br 1.6666 1.6666 1.5
 9/20/2023 2:28 PM        preset time 20
 9/20/2023 2:28 PM        th2th 2.5 -2.5 0.25
 9/20/2023 2:36 PM        set_temp_dr 0.01
 9/20/2023 2:36 PM        set_temp_dr 0
 9/20/2023 2:36 PM        scantitle "CeBr3, (5/3 5/3 3/2) rocking scan, T = 40 mK"
-9/20/2023 2:36 PM        br 1.6666 1.6666 1.5 
+9/20/2023 2:36 PM        br 1.6666 1.6666 1.5
 9/20/2023 2:36 PM        preset time 20
 9/20/2023 2:36 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 2:44 PM        scantitle "CeBr3, (1/3 1/3 5/2) th2th scan, T = 40 mK"
-9/20/2023 2:44 PM        br 0.3333 0.3333 2.5 
+9/20/2023 2:44 PM        br 0.3333 0.3333 2.5
 9/20/2023 2:45 PM        preset time 20
 9/20/2023 2:45 PM        th2th 2.5 -2.5 0.25
 9/20/2023 2:53 PM        set_temp_dr 0.01
 9/20/2023 2:54 PM        set_temp_dr 0
 9/20/2023 2:54 PM        scantitle "CeBr3, (1/3 1/3 5/2) rocking scan, T = 40 mK"
-9/20/2023 2:54 PM        br 0.3333 0.3333 2.5 
+9/20/2023 2:54 PM        br 0.3333 0.3333 2.5
 9/20/2023 2:54 PM        preset time 20
 9/20/2023 2:54 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 3:02 PM        scantitle "CeBr3, (2/3 2/3 5/2) th2th scan, T = 40 mK"
-9/20/2023 3:02 PM        br 0.6666 0.6666 2.5 
+9/20/2023 3:02 PM        br 0.6666 0.6666 2.5
 9/20/2023 3:02 PM        preset time 20
 9/20/2023 3:02 PM        th2th 2.5 -2.5 0.25
 9/20/2023 3:10 PM        scantitle "CeBr3, (2/3 2/3 5/2) rocking scan, T = 40 mK"
-9/20/2023 3:10 PM        br 0.6666 0.6666 2.5 
+9/20/2023 3:10 PM        br 0.6666 0.6666 2.5
 9/20/2023 3:10 PM        preset time 20
 9/20/2023 3:10 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 3:18 PM        scantitle "CeBr3, (4/3 4/3 5/2) th2th scan, T = 40 mK"
-9/20/2023 3:18 PM        br 1.3333 1.3333 2.5 
+9/20/2023 3:18 PM        br 1.3333 1.3333 2.5
 9/20/2023 3:18 PM        preset time 20
 9/20/2023 3:18 PM        th2th 2.5 -2.5 0.25
 9/20/2023 3:26 PM        scantitle "CeBr3, (4/3 4/3 5/2) rocking scan, T = 40 mK"
-9/20/2023 3:26 PM        br 1.3333 1.3333 2.5 
+9/20/2023 3:26 PM        br 1.3333 1.3333 2.5
 9/20/2023 3:26 PM        preset time 20
 9/20/2023 3:26 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 3:34 PM        scantitle "CeBr3, (5/3 5/3 5/2) th2th scan, T = 40 mK"
-9/20/2023 3:34 PM        br 1.6666 1.6666 2.5 
+9/20/2023 3:34 PM        br 1.6666 1.6666 2.5
 9/20/2023 3:34 PM        preset time 20
 9/20/2023 3:34 PM        th2th 2.5 -2.5 0.25
 9/20/2023 3:42 PM        scantitle "CeBr3, (5/3 5/3 5/2) rocking scan, T = 40 mK"
-9/20/2023 3:42 PM        br 1.6666 1.6666 2.5 
+9/20/2023 3:42 PM        br 1.6666 1.6666 2.5
 9/20/2023 3:42 PM        preset time 20
 9/20/2023 3:42 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 3:50 PM        scantitle "CeBr3, (7/3 7/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 3:50 PM        br 2.3333 2.3333 0.5 
+9/20/2023 3:50 PM        br 2.3333 2.3333 0.5
 9/20/2023 3:51 PM        preset time 20
 9/20/2023 3:53 PM        th2th 3 -3 0.3
 9/20/2023 4:01 PM        scantitle "CeBr3, (7/3 7/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 4:01 PM        br 2.3333 2.3333 0.5 
+9/20/2023 4:01 PM        br 2.3333 2.3333 0.5
 9/20/2023 4:01 PM        preset time 20
 9/20/2023 4:01 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 4:09 PM        scantitle "CeBr3, (8/3 8/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 4:09 PM        br 2.6666 2.6666 0.5 
+9/20/2023 4:09 PM        br 2.6666 2.6666 0.5
 9/20/2023 4:09 PM        preset time 20
 9/20/2023 4:09 PM        th2th 3 -3 0.3
 9/20/2023 4:18 PM        scantitle "CeBr3, (8/3 8/3 1/2) rocking scan, T = 40 mK"
-9/20/2023 4:18 PM        br 2.6666 2.6666 0.5 
+9/20/2023 4:18 PM        br 2.6666 2.6666 0.5
 9/20/2023 4:18 PM        preset time 20
 9/20/2023 4:18 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 4:25 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 40 mK, intensity check"
-9/20/2023 4:25 PM        br 0.3333 0.3333 0.5 
+9/20/2023 4:25 PM        br 0.3333 0.3333 0.5
 9/20/2023 4:27 PM        preset time 20
 9/20/2023 4:27 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 4:35 PM        scantitle "CeBr3, (1/3 1/3 1/2) th2th scan, T = 40 mK, intensity check"
-9/20/2023 4:35 PM        br 0.3333 0.3333 0.5 
+9/20/2023 4:35 PM        br 0.3333 0.3333 0.5
 9/20/2023 4:35 PM        preset time 20
 9/20/2023 4:35 PM        th2th 1.5 -1.5 0.15
 9/20/2023 4:43 PM        scantitle "CeBr3, (2/3 2/3 1/2) th2th scan, T = 40 mK"
-9/20/2023 4:43 PM        br 0.6666 0.6666 0.5 
+9/20/2023 4:43 PM        br 0.6666 0.6666 0.5
 9/20/2023 4:44 PM        preset time 20
 9/20/2023 4:44 PM        th2th 1.5 -1.5 0.15
 9/20/2023 4:51 PM        scantitle "CeBr3, (2/3 2/3 1/2) rocking scan, T = 40 mK, recheck intensity"
-9/20/2023 4:51 PM        br 0.6666 0.6666 0.5 
+9/20/2023 4:51 PM        br 0.6666 0.6666 0.5
 9/20/2023 4:52 PM        preset time 20
 9/20/2023 4:52 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 4:59 PM        scantitle "CeBr3, (4/3 4/3 1/2) th2th scan, T = 40 mK, recheck intensity"
-9/20/2023 4:59 PM        br 1.3333 1.3333 0.5 
+9/20/2023 4:59 PM        br 1.3333 1.3333 0.5
 9/20/2023 5:00 PM        preset time 20
 9/20/2023 5:00 PM        th2th 1.5 -1.5 0.15
 9/20/2023 5:08 PM        scantitle "CeBr3, (4/3 4/3 1/2) rocking scan, T = 40 mK, recheck intensity"
-9/20/2023 5:08 PM        br 1.3333 1.3333 0.5 
+9/20/2023 5:08 PM        br 1.3333 1.3333 0.5
 9/20/2023 5:08 PM        preset time 20
 9/20/2023 5:08 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 5:15 PM        scantitle "CeBr3, (5/3 5/3 1/2) th2th scan, T = 40 mK, recheck intensity"
-9/20/2023 5:15 PM        br 1.6666 1.6666 0.5 
+9/20/2023 5:15 PM        br 1.6666 1.6666 0.5
 9/20/2023 5:16 PM        preset time 20
 9/20/2023 5:16 PM        th2th 1.5 -1.5 0.15
 9/20/2023 5:24 PM        scantitle "CeBr3, (5/3 5/3 1/2) rocking scan, T = 40 mK, recheck intensity"
-9/20/2023 5:24 PM        br 1.6666 1.6666 0.5 
+9/20/2023 5:24 PM        br 1.6666 1.6666 0.5
 9/20/2023 5:24 PM        preset time 20
 9/20/2023 5:24 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 5:25 PM        scantitle "CeBr3, (1/3 1/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 5:25 PM        br 0.3333 0.3333 0.5 
+9/20/2023 5:25 PM        br 0.3333 0.3333 0.5
 9/20/2023 5:26 PM        scan h 0.29 0.37 0.0025 k 0.29 0.37 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 5:39 PM        scantitle "CeBr3, (1/3 1/3 1/2) L-scan, T = 40 mK"
-9/20/2023 5:39 PM        br 0.3333 0.3333 0.5 
+9/20/2023 5:39 PM        br 0.3333 0.3333 0.5
 9/20/2023 5:39 PM        scan h 0.3333 k 0.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 5:52 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 5:52 PM        br 0.6666 0.6666 0.5 
+9/20/2023 5:52 PM        br 0.6666 0.6666 0.5
 9/20/2023 5:53 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 6:05 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 40 mK"
 9/20/2023 6:05 PM        br 0.6666 0.6666 0.5
 9/20/2023 6:06 PM        scan h 0.6666 k 0.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 6:19 PM        scantitle "CeBr3, (4/3 4/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 6:19 PM        br 1.3333 1.3333 0.5 
+9/20/2023 6:19 PM        br 1.3333 1.3333 0.5
 9/20/2023 6:20 PM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 6:33 PM        scantitle "CeBr3, (4/3 4/3 1/2) L-scan, T = 40 mK"
-9/20/2023 6:33 PM        br 1.3333 1.3333 0.5 
+9/20/2023 6:33 PM        br 1.3333 1.3333 0.5
 9/20/2023 6:33 PM        scan h 1.3333 k 1.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 6:46 PM        scantitle "CeBr3, (5/3 5/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 6:46 PM        br 1.6666 1.6666 0.5 
+9/20/2023 6:46 PM        br 1.6666 1.6666 0.5
 9/20/2023 6:46 PM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 6:59 PM        scantitle "CeBr3, (5/3 5/3 1/2) L-scan, T = 40 mK"
 9/20/2023 6:59 PM        br 1.6666 1.6666 0.5
 9/20/2023 6:59 PM        scan h 1.6666 k 1.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 7:13 PM        scantitle "CeBr3, (1/3 1/3 3/2) HH-scan, T = 40 mK"
-9/20/2023 7:13 PM        br 0.3333 0.3333 1.5 
+9/20/2023 7:13 PM        br 0.3333 0.3333 1.5
 9/20/2023 7:14 PM        scan h 0.29 0.37 0.0025 k 0.29 0.37 0.0025 l 1.5 e 0 preset time 20
 9/20/2023 7:27 PM        scantitle "CeBr3, (1/3 1/3 3/2) L-scan, T = 40 mK"
-9/20/2023 7:27 PM        br 0.3333 0.3333 1.5 
+9/20/2023 7:27 PM        br 0.3333 0.3333 1.5
 9/20/2023 7:27 PM        scan h 0.3333 k 0.3333 l 1.46 1.54 0.0025 e 0 preset time 20
 9/20/2023 7:40 PM        scantitle "CeBr3, (2/3 2/3 3/2) HH-scan, T = 40 mK"
-9/20/2023 7:40 PM        br 0.6666 0.6666 1.5 
+9/20/2023 7:40 PM        br 0.6666 0.6666 1.5
 9/20/2023 7:40 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 1.5 e 0 preset time 20
 9/20/2023 7:53 PM        scantitle "CeBr3, (2/3 2/3 3/2) L-scan, T = 40 mK"
 9/20/2023 7:53 PM        br 0.6666 0.6666 1.5
 9/20/2023 7:53 PM        scan h 0.6666 k 0.6666 l 1.46 1.54 0.0025 e 0 preset time 20
 9/20/2023 8:06 PM        scantitle "CeBr3, (4/3 4/3 3/2) HH-scan, T = 40 mK"
-9/20/2023 8:06 PM        br 1.3333 1.3333 1.5 
+9/20/2023 8:06 PM        br 1.3333 1.3333 1.5
 9/20/2023 8:07 PM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 1.5 e 0 preset time 20
 9/20/2023 8:20 PM        scantitle "CeBr3, (4/3 4/3 3/2) L-scan, T = 40 mK"
-9/20/2023 8:20 PM        br 1.3333 1.3333 1.5 
+9/20/2023 8:20 PM        br 1.3333 1.3333 1.5
 9/20/2023 8:20 PM        scan h 1.3333 k 1.3333 l 1.46 1.54 0.0025 e 0 preset time 20
 9/20/2023 8:34 PM        scantitle "CeBr3, (5/3 5/3 3/2) HH-scan, T = 40 mK"
-9/20/2023 8:34 PM        br 1.6666 1.6666 1.5 
+9/20/2023 8:34 PM        br 1.6666 1.6666 1.5
 9/20/2023 8:34 PM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 1.5 e 0 preset time 20
 9/20/2023 8:47 PM        scantitle "CeBr3, (5/3 5/3 3/2) L-scan, T = 40 mK"
 9/20/2023 8:47 PM        br 1.6666 1.6666 1.5
 9/20/2023 8:47 PM        scan h 1.6666 k 1.6666 l 1.46 1.54 0.0025 e 0 preset time 20
 9/20/2023 9:00 PM        scantitle "CeBr3, (2/3 2/3 5/2) HH-scan, T = 40 mK"
-9/20/2023 9:00 PM        br 0.6666 0.6666 2.5 
+9/20/2023 9:00 PM        br 0.6666 0.6666 2.5
 9/20/2023 9:01 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 2.5 e 0 preset time 20
 9/20/2023 9:14 PM        scantitle "CeBr3, (2/3 2/3 5/2) L-scan, T = 40 mK"
 9/20/2023 9:14 PM        br 0.6666 0.6666 2.5
 9/20/2023 9:14 PM        scan h 0.6666 k 0.6666 l 2.46 2.54 0.0025 e 0 preset time 20
 9/20/2023 9:27 PM        scantitle "CeBr3, (4/3 4/3 5/2) HH-scan, T = 40 mK"
-9/20/2023 9:27 PM        br 1.3333 1.3333 2.5 
+9/20/2023 9:27 PM        br 1.3333 1.3333 2.5
 9/20/2023 9:28 PM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 2.5 e 0 preset time 20
 9/20/2023 9:41 PM        scantitle "CeBr3, (4/3 4/3 5/2) L-scan, T = 40 mK"
-9/20/2023 9:41 PM        br 1.3333 1.3333 2.5 
+9/20/2023 9:41 PM        br 1.3333 1.3333 2.5
 9/20/2023 9:41 PM        scan h 1.3333 k 1.3333 l 2.46 2.54 0.0025 e 0 preset time 20
 9/20/2023 9:54 PM        scantitle "CeBr3, (5/3 5/3 5/2) HH-scan, T = 40 mK"
-9/20/2023 9:54 PM        br 1.6666 1.6666 2.5 
+9/20/2023 9:54 PM        br 1.6666 1.6666 2.5
 9/20/2023 9:54 PM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 2.5 e 0 preset time 20
 9/20/2023 10:07 PM        scantitle "CeBr3, (5/3 5/3 5/2) L-scan, T = 40 mK"
 9/20/2023 10:07 PM        br 1.6666 1.6666 2.5
 9/20/2023 10:08 PM        scan h 1.6666 k 1.6666 l 2.46 2.54 0.0025 e 0 preset time 20
 9/20/2023 10:21 PM        scantitle "CeBr3, (7/3 7/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 10:21 PM        br 2.3333 2.3333 0.5 
+9/20/2023 10:21 PM        br 2.3333 2.3333 0.5
 9/20/2023 10:21 PM        scan h 2.29 2.37 0.0025 k 2.29 2.37 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 10:35 PM        scantitle "CeBr3, (7/3 7/3 1/2) L-scan, T = 40 mK"
-9/20/2023 10:35 PM        br 2.3333 2.3333 0.5 
+9/20/2023 10:35 PM        br 2.3333 2.3333 0.5
 9/20/2023 10:35 PM        scan h 2.3333 k 2.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 10:49 PM        scantitle "CeBr3, (8/3 8/3 1/2) HH-scan, T = 40 mK"
-9/20/2023 10:49 PM        br 2.6666 2.6666 0.5 
+9/20/2023 10:49 PM        br 2.6666 2.6666 0.5
 9/20/2023 10:49 PM        scan h 2.62 2.70 0.0025 k 2.62 2.70 0.0025 l 0.5 e 0 preset time 20
 9/20/2023 11:02 PM        scantitle "CeBr3, (8/3 8/3 1/2) L-scan, T = 40 mK"
 9/20/2023 11:02 PM        br 2.6666 2.6666 0.5
 9/20/2023 11:02 PM        scan h 2.6666 k 2.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/20/2023 11:16 PM        scantitle "CeBr3, (0 0 1) rocking scan, T = 40 mK"
-9/20/2023 11:16 PM        br 0 0 1 
+9/20/2023 11:16 PM        br 0 0 1
 9/20/2023 11:18 PM        preset time 5
 9/20/2023 11:18 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 11:21 PM        scantitle "CeBr3, (0 0 1) th2th scan, T = 40 mK"
-9/20/2023 11:21 PM        br 0 0 1 
+9/20/2023 11:21 PM        br 0 0 1
 9/20/2023 11:21 PM        preset time 5
 9/20/2023 11:21 PM        th2th 1.5 -1.5 0.15
 9/20/2023 11:24 PM        scantitle "CeBr3, (0 0 2) rocking scan, T = 40 mK"
@@ -374,7 +374,7 @@
 9/20/2023 11:24 PM        preset time 20
 9/20/2023 11:24 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 11:32 PM        scantitle "CeBr3, (0 0 2) th2th scan, T = 40 mK"
-9/20/2023 11:32 PM        br 0 0 2 
+9/20/2023 11:32 PM        br 0 0 2
 9/20/2023 11:32 PM        preset time 20
 9/20/2023 11:32 PM        th2th 2 -2 0.2
 9/20/2023 11:40 PM        scantitle "CeBr3, (0 0 3) rocking scan, T = 40 mK"
@@ -382,39 +382,39 @@
 9/20/2023 11:41 PM        preset time 20
 9/20/2023 11:41 PM        scanrel s1 1.5 -1.5 0.15
 9/20/2023 11:49 PM        scantitle "CeBr3, (0 0 3) th2th scan, T = 40 mK"
-9/20/2023 11:49 PM        br 0 0 3 
+9/20/2023 11:49 PM        br 0 0 3
 9/20/2023 11:49 PM        preset time 20
 9/20/2023 11:49 PM        th2th 3 -3 0.3
 9/20/2023 11:57 PM        scantitle "CeBr3, (1 1 0) rocking scan, T = 40 mK"
-9/20/2023 11:57 PM        br 1 1 0 
+9/20/2023 11:57 PM        br 1 1 0
 9/20/2023 11:58 PM        preset time 5
 9/20/2023 11:58 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:01 AM        scantitle "CeBr3, (1 1 0) th2th scan, T = 40 mK"
-9/21/2023 12:01 AM        br 1 1 0 
+9/21/2023 12:01 AM        br 1 1 0
 9/21/2023 12:01 AM        preset time 5
 9/21/2023 12:01 AM        th2th 1.5 -1.5 0.15
 9/21/2023 12:04 AM        scantitle "CeBr3, (2 2 0) rocking scan, T = 40 mK"
-9/21/2023 12:04 AM        br 2 2 0 
+9/21/2023 12:04 AM        br 2 2 0
 9/21/2023 12:04 AM        preset time 5
 9/21/2023 12:04 AM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:07 AM        scantitle "CeBr3, (2 2 0) th2th scan, T = 40 mK"
-9/21/2023 12:07 AM        br 2 2 0 
+9/21/2023 12:07 AM        br 2 2 0
 9/21/2023 12:07 AM        preset time 5
 9/21/2023 12:07 AM        th2th 2 -2 0.2
 9/21/2023 12:10 AM        scantitle "CeBr3, (1 1 1) rocking scan, T = 40 mK"
-9/21/2023 12:10 AM        br 1 1 1 
+9/21/2023 12:10 AM        br 1 1 1
 9/21/2023 12:11 AM        preset time 5
 9/21/2023 12:11 AM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:13 AM        scantitle "CeBr3, (1 1 1) th2th scan, T = 40 mK"
-9/21/2023 12:13 AM        br 1 1 1 
+9/21/2023 12:13 AM        br 1 1 1
 9/21/2023 12:13 AM        preset time 5
 9/21/2023 12:13 AM        th2th 1.5 -1.5 0.15
 9/21/2023 12:16 AM        scantitle "CeBr3, (1 1 2) rocking scan, T = 40 mK"
-9/21/2023 12:16 AM        br 1 1 2 
+9/21/2023 12:16 AM        br 1 1 2
 9/21/2023 12:17 AM        preset time 5
 9/21/2023 12:17 AM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:19 AM        scantitle "CeBr3, (1 1 2) th2th scan, T = 40 mK"
-9/21/2023 12:19 AM        br 1 1 2 
+9/21/2023 12:19 AM        br 1 1 2
 9/21/2023 12:19 AM        preset time 5
 9/21/2023 12:19 AM        th2th 2 -2 0.2
 9/21/2023 12:22 AM        scantitle "CeBr3, (1 1 3) rocking scan, T = 40 mK"
@@ -426,83 +426,83 @@
 9/21/2023 12:26 AM        preset time 5
 9/21/2023 12:26 AM        th2th 3 -3 0.3
 9/21/2023 12:29 AM        scantitle "CeBr3, (2 2 1) rocking scan, T = 40 mK"
-9/21/2023 12:29 AM        br 2 2 1 
+9/21/2023 12:29 AM        br 2 2 1
 9/21/2023 12:29 AM        preset time 5
 9/21/2023 12:29 AM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:32 AM        scantitle "CeBr3, (2 2 1) th2th scan, T = 40 mK"
-9/21/2023 12:32 AM        br 2 2 1 
+9/21/2023 12:32 AM        br 2 2 1
 9/21/2023 12:32 AM        preset time 5
 9/21/2023 12:32 AM        th2th 2.5 -2.5 0.25
 9/21/2023 12:35 AM        scantitle "CeBr3, (2 2 2) rocking scan, T = 40 mK"
-9/21/2023 12:35 AM        br 2 2 2 
+9/21/2023 12:35 AM        br 2 2 2
 9/21/2023 12:35 AM        preset time 5
 9/21/2023 12:35 AM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 12:38 AM        scantitle "CeBr3, (2 2 2) th2th scan, T = 40 mK"
-9/21/2023 12:38 AM        br 2 2 2 
+9/21/2023 12:38 AM        br 2 2 2
 9/21/2023 12:38 AM        preset time 5
 9/21/2023 12:38 AM        th2th 3 -3 0.3
 9/21/2023 12:41 AM        scantitle "CeBr3, (0 0 1) HH-scan, T = 40 mK"
-9/21/2023 12:41 AM        br 0 0 1 
+9/21/2023 12:41 AM        br 0 0 1
 9/21/2023 12:43 AM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 1 e 0 preset time 5
 9/21/2023 12:48 AM        scantitle "CeBr3, (0 0 1) L-scan, T = 40 mK"
-9/21/2023 12:48 AM        br 0 0 1 
-9/21/2023 12:48 AM        scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/21/2023 12:48 AM        br 0 0 1
+9/21/2023 12:48 AM        scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset time 5
 9/21/2023 12:53 AM        scantitle "CeBr3, (0 0 2) HH-scan, T = 40 mK"
-9/21/2023 12:53 AM        br 0 0 2 
+9/21/2023 12:53 AM        br 0 0 2
 9/21/2023 12:54 AM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 2 e 0 preset time 5
 9/21/2023 12:59 AM        scantitle "CeBr3, (0 0 2) L-scan, T = 40 mK"
-9/21/2023 12:59 AM        br 0 0 2 
-9/21/2023 12:59 AM        scan h 0 k 0 l 1.96 2.04 0.0025 e 0 preset time 5 
+9/21/2023 12:59 AM        br 0 0 2
+9/21/2023 12:59 AM        scan h 0 k 0 l 1.96 2.04 0.0025 e 0 preset time 5
 9/21/2023 1:04 AM        scantitle "CeBr3, (0 0 3) HH-scan, T = 40 mK"
-9/21/2023 1:04 AM        br 0 0 3 
+9/21/2023 1:04 AM        br 0 0 3
 9/21/2023 1:05 AM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 3 e 0 preset time 5
 9/21/2023 1:10 AM        scantitle "CeBr3, (0 0 3) L-scan, T = 40 mK"
-9/21/2023 1:10 AM        br 0 0 3 
-9/21/2023 1:10 AM        scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset time 5 
+9/21/2023 1:10 AM        br 0 0 3
+9/21/2023 1:10 AM        scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset time 5
 9/21/2023 1:16 AM        scantitle "CeBr3, (1 1 0) HH-scan, T = 40 mK"
-9/21/2023 1:16 AM        br 1 1 0 
+9/21/2023 1:16 AM        br 1 1 0
 9/21/2023 1:17 AM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 0 e 0 preset time 5
 9/21/2023 1:22 AM        scantitle "CeBr3, (1 1 0) L-scan, T = 40 mK"
-9/21/2023 1:22 AM        br 1 1 0 
-9/21/2023 1:22 AM        scan h 1 k 1 l -0.04 0.04 0.0025 e 0 preset time 5 
+9/21/2023 1:22 AM        br 1 1 0
+9/21/2023 1:22 AM        scan h 1 k 1 l -0.04 0.04 0.0025 e 0 preset time 5
 9/21/2023 1:28 AM        scantitle "CeBr3, (2 2 0) HH-scan, T = 40 mK"
-9/21/2023 1:28 AM        br 2 2 0 
+9/21/2023 1:28 AM        br 2 2 0
 9/21/2023 1:28 AM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 0 e 0 preset time 5
 9/21/2023 1:34 AM        scantitle "CeBr3, (2 2 0) L-scan, T = 40 mK"
-9/21/2023 1:34 AM        br 2 2 0 
-9/21/2023 1:34 AM        scan h 2 k 2 l -0.04 0.04 0.0025 e 0 preset time 5 
+9/21/2023 1:34 AM        br 2 2 0
+9/21/2023 1:34 AM        scan h 2 k 2 l -0.04 0.04 0.0025 e 0 preset time 5
 9/21/2023 1:39 AM        scantitle "CeBr3, (1 1 1) HH-scan, T = 40 mK"
-9/21/2023 1:39 AM        br 1 1 1 
+9/21/2023 1:39 AM        br 1 1 1
 9/21/2023 1:40 AM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 1 e 0 preset time 5
 9/21/2023 1:46 AM        scantitle "CeBr3, (1 1 1) L-scan, T = 40 mK"
-9/21/2023 1:46 AM        br 1 1 1 
-9/21/2023 1:46 AM        scan h 1 k 1 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/21/2023 1:46 AM        br 1 1 1
+9/21/2023 1:46 AM        scan h 1 k 1 l 0.96 1.04 0.0025 e 0 preset time 5
 9/21/2023 1:51 AM        scantitle "CeBr3, (1 1 2) HH-scan, T = 40 mK"
-9/21/2023 1:51 AM        br 1 1 2 
+9/21/2023 1:51 AM        br 1 1 2
 9/21/2023 1:52 AM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 2 e 0 preset time 5
 9/21/2023 1:57 AM        scantitle "CeBr3, (1 1 2) L-scan, T = 40 mK"
-9/21/2023 1:57 AM        br 1 1 2 
+9/21/2023 1:57 AM        br 1 1 2
 9/21/2023 1:57 AM        scan h 1 k 1 l 1.96 2.04 0.0025 e 0 preset time 5
 9/21/2023 2:02 AM        scantitle "CeBr3, (1 1 3) HH-scan, T = 40 mK"
-9/21/2023 2:02 AM        br 1 1 3 
+9/21/2023 2:02 AM        br 1 1 3
 9/21/2023 2:03 AM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 3 e 0 preset time 5
 9/21/2023 2:08 AM        scantitle "CeBr3, (1 1 3) L-scan, T = 40 mK"
-9/21/2023 2:08 AM        br 1 1 3 
+9/21/2023 2:08 AM        br 1 1 3
 9/21/2023 2:08 AM        scan h 1 k 1 l 2.96 3.04 0.0025 e 0 preset time 5
 9/21/2023 2:14 AM        scantitle "CeBr3, (2 2 1) HH-scan, T = 40 mK"
-9/21/2023 2:14 AM        br 2 2 1 
+9/21/2023 2:14 AM        br 2 2 1
 9/21/2023 2:14 AM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 1 e 0 preset time 5
 9/21/2023 2:20 AM        scantitle "CeBr3, (2 2 1) L-scan, T = 40 mK"
-9/21/2023 2:20 AM        br 2 2 1 
-9/21/2023 2:20 AM        scan h 2 k 2 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/21/2023 2:20 AM        br 2 2 1
+9/21/2023 2:20 AM        scan h 2 k 2 l 0.96 1.04 0.0025 e 0 preset time 5
 9/21/2023 2:26 AM        scantitle "CeBr3, (2 2 2) HH-scan, T = 40 mK"
-9/21/2023 2:26 AM        br 2 2 2 
+9/21/2023 2:26 AM        br 2 2 2
 9/21/2023 2:26 AM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 2 e 0 preset time 5
 9/21/2023 2:31 AM        scantitle "CeBr3, (2 2 2) L-scan, T = 40 mK"
-9/21/2023 2:31 AM        br 2 2 2 
-9/21/2023 2:31 AM        scan h 2 k 2 l 1.96 2.04 0.0025 e 0 preset time 5 
+9/21/2023 2:31 AM        br 2 2 2
+9/21/2023 2:31 AM        scan h 2 k 2 l 1.96 2.04 0.0025 e 0 preset time 5
 9/21/2023 2:37 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 40 mK"
-9/21/2023 2:37 AM        br 0.6666 0.6666 0.5 
+9/21/2023 2:37 AM        br 0.6666 0.6666 0.5
 9/21/2023 2:38 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 2:52 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 40 mK"
 9/21/2023 2:52 AM        br 0.6666 0.6666 0.5
@@ -510,7 +510,7 @@
 9/21/2023 3:06 AM        set_temp_dr 0.045
 9/21/2023 3:06 AM        wait 300
 9/21/2023 3:11 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 45 mK"
-9/21/2023 3:11 AM        br 0.6666 0.6666 0.5 
+9/21/2023 3:11 AM        br 0.6666 0.6666 0.5
 9/21/2023 3:11 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 3:25 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 45 mK"
 9/21/2023 3:25 AM        br 0.6666 0.6666 0.5
@@ -518,7 +518,7 @@
 9/21/2023 3:39 AM        set_temp_dr 0.050
 9/21/2023 3:39 AM        wait 300
 9/21/2023 3:45 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 50 mK"
-9/21/2023 3:45 AM        br 0.6666 0.6666 0.5 
+9/21/2023 3:45 AM        br 0.6666 0.6666 0.5
 9/21/2023 3:45 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 3:58 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 50 mK"
 9/21/2023 3:58 AM        br 0.6666 0.6666 0.5
@@ -526,7 +526,7 @@
 9/21/2023 4:13 AM        set_temp_dr 0.055
 9/21/2023 4:13 AM        wait 300
 9/21/2023 4:18 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 55 mK"
-9/21/2023 4:18 AM        br 0.6666 0.6666 0.5 
+9/21/2023 4:18 AM        br 0.6666 0.6666 0.5
 9/21/2023 4:18 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 4:32 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 55 mK"
 9/21/2023 4:32 AM        br 0.6666 0.6666 0.5
@@ -534,7 +534,7 @@
 9/21/2023 4:46 AM        set_temp_dr 0.060
 9/21/2023 4:46 AM        wait 300
 9/21/2023 4:51 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 60 mK"
-9/21/2023 4:51 AM        br 0.6666 0.6666 0.5 
+9/21/2023 4:51 AM        br 0.6666 0.6666 0.5
 9/21/2023 4:51 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 5:05 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 50 mK"
 9/21/2023 5:05 AM        br 0.6666 0.6666 0.5
@@ -542,7 +542,7 @@
 9/21/2023 5:20 AM        set_temp_dr 0.065
 9/21/2023 5:20 AM        wait 300
 9/21/2023 5:25 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 65 mK"
-9/21/2023 5:25 AM        br 0.6666 0.6666 0.5 
+9/21/2023 5:25 AM        br 0.6666 0.6666 0.5
 9/21/2023 5:25 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 5:39 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 55 mK"
 9/21/2023 5:39 AM        br 0.6666 0.6666 0.5
@@ -550,7 +550,7 @@
 9/21/2023 5:54 AM        set_temp_dr 0.070
 9/21/2023 5:54 AM        wait 300
 9/21/2023 5:59 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 70 mK"
-9/21/2023 5:59 AM        br 0.6666 0.6666 0.5 
+9/21/2023 5:59 AM        br 0.6666 0.6666 0.5
 9/21/2023 5:59 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 6:13 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 70 mK"
 9/21/2023 6:13 AM        br 0.6666 0.6666 0.5
@@ -558,7 +558,7 @@
 9/21/2023 6:27 AM        set_temp_dr 0.075
 9/21/2023 6:27 AM        wait 300
 9/21/2023 6:32 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 75 mK"
-9/21/2023 6:32 AM        br 0.6666 0.6666 0.5 
+9/21/2023 6:32 AM        br 0.6666 0.6666 0.5
 9/21/2023 6:32 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/21/2023 6:46 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 75 mK"
 9/21/2023 6:46 AM        br 0.6666 0.6666 0.5
@@ -566,7 +566,7 @@
 9/21/2023 7:01 AM        set_temp_dr 0.080
 9/21/2023 7:01 AM        wait 300
 9/21/2023 7:06 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 80 mK"
-9/21/2023 7:06 AM        br 0.6666 0.6666 0.5 
+9/21/2023 7:06 AM        br 0.6666 0.6666 0.5
 9/21/2023 7:06 AM        scan h 0.58 0.75 0.005 k 0.58 0.74 0.005 l 0.5 e 0 preset time 60
 9/21/2023 7:42 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 80 mK"
 9/21/2023 7:42 AM        br 0.6666 0.6666 0.5
@@ -574,7 +574,7 @@
 9/21/2023 8:10 AM        set_temp_dr 0.085
 9/21/2023 8:10 AM        wait 300
 9/21/2023 8:15 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 85 mK"
-9/21/2023 8:15 AM        br 0.6666 0.6666 0.5 
+9/21/2023 8:15 AM        br 0.6666 0.6666 0.5
 9/21/2023 8:15 AM        scan h 0.58 0.75 0.005 k 0.58 0.75 0.005 l 0.5 e 0 preset time 60
 9/21/2023 8:53 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 80 mK"
 9/21/2023 8:53 AM        br 0.6666 0.6666 0.5
@@ -582,7 +582,7 @@
 9/21/2023 10:03 AM        set_temp_dr 0.090
 9/21/2023 10:03 AM        wait 300
 9/21/2023 10:08 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 90 mK"
-9/21/2023 10:08 AM        br 0.6666 0.6666 0.5 
+9/21/2023 10:08 AM        br 0.6666 0.6666 0.5
 9/21/2023 10:08 AM        scan h 0.58 0.75 0.005 k 0.58 0.75 0.005 l 0.5 e 0 preset time 60
 9/21/2023 10:46 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 90 mK"
 9/21/2023 10:46 AM        br 0.6666 0.6666 0.5
@@ -590,7 +590,7 @@
 9/21/2023 11:56 AM        set_temp_dr 0.095
 9/21/2023 11:56 AM        wait 300
 9/21/2023 12:01 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 95 mK"
-9/21/2023 12:01 PM        br 0.6666 0.6666 0.5 
+9/21/2023 12:01 PM        br 0.6666 0.6666 0.5
 9/21/2023 12:01 PM        scan h 0.58 0.75 0.005 k 0.58 0.75 0.005 l 0.5 e 0 preset time 60
 9/21/2023 12:40 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 95 mK"
 9/21/2023 12:40 PM        br 0.6666 0.6666 0.5
@@ -598,7 +598,7 @@
 9/21/2023 1:49 PM        set_temp_dr 0.100
 9/21/2023 1:49 PM        wait 300
 9/21/2023 1:54 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 100 mK"
-9/21/2023 1:54 PM        br 0.6666 0.6666 0.5 
+9/21/2023 1:54 PM        br 0.6666 0.6666 0.5
 9/21/2023 1:55 PM        scan h 0.58 0.75 0.005 k 0.58 0.75 0.005 l 0.5 e 0 preset time 60
 9/21/2023 2:33 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 100 mK"
 9/21/2023 2:33 PM        br 0.6666 0.6666 0.5
@@ -606,115 +606,115 @@
 9/21/2023 3:43 PM        set_temp_dr 0.2
 9/21/2023 3:43 PM        waitpost dr_tsample 0.2 0.03 300 3600
 9/21/2023 3:51 PM        scantitle "CeBr3, (1/3 1/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 3:51 PM        br 0.3333 0.3333 0.5 
+9/21/2023 3:51 PM        br 0.3333 0.3333 0.5
 9/21/2023 3:51 PM        preset time 20
 9/21/2023 3:51 PM        th2th 1.5 -1.5 -0.15
 9/21/2023 4:00 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 4:00 PM        br 0.3333 0.3333 0.5 
+9/21/2023 4:00 PM        br 0.3333 0.3333 0.5
 9/21/2023 4:00 PM        preset time 20
 9/21/2023 4:00 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 4:08 PM        scantitle "CeBr3, (2/3 2/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 4:08 PM        br 0.6666 0.6666 0.5 
+9/21/2023 4:08 PM        br 0.6666 0.6666 0.5
 9/21/2023 4:08 PM        preset time 20
 9/21/2023 4:08 PM        th2th 1.5 -1.5 0.15
 9/21/2023 4:17 PM        scantitle "CeBr3, (2/3 2/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 4:17 PM        br 0.6666 0.6666 0.5 
+9/21/2023 4:17 PM        br 0.6666 0.6666 0.5
 9/21/2023 4:17 PM        preset time 20
 9/21/2023 4:17 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 4:25 PM        scantitle "CeBr3, (4/3 4/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 4:25 PM        br 1.3333 1.3333 0.5 
+9/21/2023 4:25 PM        br 1.3333 1.3333 0.5
 9/21/2023 4:25 PM        preset time 20
 9/21/2023 4:25 PM        th2th 1.5 -1.5 0.15
 9/21/2023 4:34 PM        scantitle "CeBr3, (4/3 4/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 4:34 PM        br 1.3333 1.3333 0.5 
+9/21/2023 4:34 PM        br 1.3333 1.3333 0.5
 9/21/2023 4:34 PM        preset time 20
 9/21/2023 4:34 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 4:42 PM        scantitle "CeBr3, (5/3 5/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 4:42 PM        br 1.6666 1.6666 0.5 
+9/21/2023 4:42 PM        br 1.6666 1.6666 0.5
 9/21/2023 4:42 PM        preset time 20
 9/21/2023 4:42 PM        th2th 1.5 -1.5 0.15
 9/21/2023 4:50 PM        scantitle "CeBr3, (5/3 5/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 4:50 PM        br 1.6666 1.6666 0.5 
+9/21/2023 4:50 PM        br 1.6666 1.6666 0.5
 9/21/2023 4:50 PM        preset time 20
 9/21/2023 4:50 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 4:58 PM        scantitle "CeBr3, (1/3 1/3 3/2) th2th scan, T = 200 mK"
-9/21/2023 4:58 PM        br 0.3333 0.3333 1.5 
+9/21/2023 4:58 PM        br 0.3333 0.3333 1.5
 9/21/2023 5:00 PM        preset time 20
 9/21/2023 5:00 PM        th2th 1.5 -1.5 0.15
 9/21/2023 5:08 PM        scantitle "CeBr3, (1/3 1/3 3/2) rocking scan, T = 200 mK"
-9/21/2023 5:08 PM        br 0.3333 0.3333 1.5 
+9/21/2023 5:08 PM        br 0.3333 0.3333 1.5
 9/21/2023 5:08 PM        preset time 20
 9/21/2023 5:08 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 5:16 PM        scantitle "CeBr3, (2/3 2/3 3/2) th2th scan, T = 200 mK"
-9/21/2023 5:16 PM        br 0.6666 0.6666 1.5 
+9/21/2023 5:16 PM        br 0.6666 0.6666 1.5
 9/21/2023 5:16 PM        preset time 20
 9/21/2023 5:16 PM        th2th 1.5 -1.5 0.15
 9/21/2023 5:25 PM        scantitle "CeBr3, (2/3 2/3 3/2) rocking scan, T = 200 mK"
-9/21/2023 5:25 PM        br 0.6666 0.6666 1.5 
+9/21/2023 5:25 PM        br 0.6666 0.6666 1.5
 9/21/2023 5:25 PM        preset time 20
 9/21/2023 5:25 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 5:33 PM        scantitle "CeBr3, (4/3 4/3 3/2) th2th scan, T = 200 mK"
-9/21/2023 5:33 PM        br 1.3333 1.3333 1.5 
+9/21/2023 5:33 PM        br 1.3333 1.3333 1.5
 9/21/2023 5:33 PM        preset time 20
 9/21/2023 5:33 PM        th2th 2 -2 0.2
 9/21/2023 5:42 PM        scantitle "CeBr3, (4/3 4/3 3/2) rocking scan, T = 200 mK"
-9/21/2023 5:42 PM        br 1.3333 1.3333 1.5 
+9/21/2023 5:42 PM        br 1.3333 1.3333 1.5
 9/21/2023 5:42 PM        preset time 20
 9/21/2023 5:42 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 5:50 PM        scantitle "CeBr3, (5/3 5/3 3/2) th2th scan, T = 200 mK"
-9/21/2023 5:50 PM        br 1.6666 1.6666 1.5 
+9/21/2023 5:50 PM        br 1.6666 1.6666 1.5
 9/21/2023 5:50 PM        preset time 20
 9/21/2023 5:50 PM        th2th 2.5 -2.5 0.25
 9/21/2023 5:59 PM        scantitle "CeBr3, (5/3 5/3 3/2) rocking scan, T = 200 mK"
-9/21/2023 5:59 PM        br 1.6666 1.6666 1.5 
+9/21/2023 5:59 PM        br 1.6666 1.6666 1.5
 9/21/2023 5:59 PM        preset time 20
 9/21/2023 5:59 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 6:07 PM        scantitle "CeBr3, (1/3 1/3 5/2) th2th scan, T = 200 mK"
-9/21/2023 6:07 PM        br 0.3333 0.3333 2.5 
+9/21/2023 6:07 PM        br 0.3333 0.3333 2.5
 9/21/2023 6:08 PM        preset time 20
 9/21/2023 6:08 PM        th2th 2.5 -2.5 0.25
 9/21/2023 6:16 PM        scantitle "CeBr3, (1/3 1/3 5/2) rocking scan, T = 200 mK"
-9/21/2023 6:16 PM        br 0.3333 0.3333 2.5 
+9/21/2023 6:16 PM        br 0.3333 0.3333 2.5
 9/21/2023 6:16 PM        preset time 20
 9/21/2023 6:16 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 6:25 PM        scantitle "CeBr3, (2/3 2/3 5/2) th2th scan, T = 200 mK"
-9/21/2023 6:25 PM        br 0.6666 0.6666 2.5 
+9/21/2023 6:25 PM        br 0.6666 0.6666 2.5
 9/21/2023 6:25 PM        preset time 20
 9/21/2023 6:25 PM        th2th 2.5 -2.5 0.25
 9/21/2023 6:33 PM        scantitle "CeBr3, (2/3 2/3 5/2) rocking scan, T = 200 mK"
-9/21/2023 6:33 PM        br 0.6666 0.6666 2.5 
+9/21/2023 6:33 PM        br 0.6666 0.6666 2.5
 9/21/2023 6:33 PM        preset time 20
 9/21/2023 6:33 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 6:41 PM        scantitle "CeBr3, (4/3 4/3 5/2) th2th scan, T = 200 mK"
-9/21/2023 6:41 PM        br 1.3333 1.3333 2.5 
+9/21/2023 6:41 PM        br 1.3333 1.3333 2.5
 9/21/2023 6:42 PM        preset time 20
 9/21/2023 6:42 PM        th2th 2.5 -2.5 0.25
 9/21/2023 6:50 PM        scantitle "CeBr3, (4/3 4/3 5/2) rocking scan, T = 200 mK"
-9/21/2023 6:50 PM        br 1.3333 1.3333 2.5 
+9/21/2023 6:50 PM        br 1.3333 1.3333 2.5
 9/21/2023 6:51 PM        preset time 20
 9/21/2023 6:51 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 6:59 PM        scantitle "CeBr3, (5/3 5/3 5/2) th2th scan, T = 200 mK"
-9/21/2023 6:59 PM        br 1.6666 1.6666 2.5 
+9/21/2023 6:59 PM        br 1.6666 1.6666 2.5
 9/21/2023 6:59 PM        preset time 20
 9/21/2023 6:59 PM        th2th 2.5 -2.5 0.25
 9/21/2023 7:07 PM        scantitle "CeBr3, (5/3 5/3 5/2) rocking scan, T = 200 mK"
-9/21/2023 7:07 PM        br 1.6666 1.6666 2.5 
+9/21/2023 7:07 PM        br 1.6666 1.6666 2.5
 9/21/2023 7:08 PM        preset time 20
 9/21/2023 7:08 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 7:16 PM        scantitle "CeBr3, (7/3 7/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 7:16 PM        br 2.3333 2.3333 0.5 
+9/21/2023 7:16 PM        br 2.3333 2.3333 0.5
 9/21/2023 7:16 PM        preset time 20
 9/21/2023 7:16 PM        th2th 3 -3 0.3
 9/21/2023 7:25 PM        scantitle "CeBr3, (7/3 7/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 7:25 PM        br 2.3333 2.3333 0.5 
+9/21/2023 7:25 PM        br 2.3333 2.3333 0.5
 9/21/2023 7:25 PM        preset time 20
 9/21/2023 7:25 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 7:33 PM        scantitle "CeBr3, (8/3 8/3 1/2) th2th scan, T = 200 mK"
-9/21/2023 7:33 PM        br 2.6666 2.6666 0.5 
+9/21/2023 7:33 PM        br 2.6666 2.6666 0.5
 9/21/2023 7:33 PM        preset time 20
 9/21/2023 7:33 PM        th2th 3 -3 0.3
 9/21/2023 7:42 PM        scantitle "CeBr3, (8/3 8/3 1/2) rocking scan, T = 200 mK"
-9/21/2023 7:42 PM        br 2.6666 2.6666 0.5 
+9/21/2023 7:42 PM        br 2.6666 2.6666 0.5
 9/21/2023 7:42 PM        preset time 20
 9/21/2023 7:42 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 7:50 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 200 mK"
@@ -726,11 +726,11 @@
 9/21/2023 8:31 PM        preset time 60
 9/21/2023 8:31 PM        scan h 0.6666 k 0.6666 l 0.48 0.52 0.005 e 0
 9/21/2023 8:41 PM        scantitle "CeBr3, (0 0 1) rocking scan, T = 200 mK"
-9/21/2023 8:41 PM        br 0 0 1 
+9/21/2023 8:41 PM        br 0 0 1
 9/21/2023 8:42 PM        preset time 5
 9/21/2023 8:42 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 8:44 PM        scantitle "CeBr3, (0 0 1) th2th scan, T = 200 mK"
-9/21/2023 8:44 PM        br 0 0 1 
+9/21/2023 8:44 PM        br 0 0 1
 9/21/2023 8:45 PM        preset time 5
 9/21/2023 8:45 PM        th2th 1.5 -1.5 0.15
 9/21/2023 8:48 PM        scantitle "CeBr3, (0 0 2) rocking scan, T = 200 mK"
@@ -738,7 +738,7 @@
 9/21/2023 8:48 PM        preset time 20
 9/21/2023 8:48 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 8:56 PM        scantitle "CeBr3, (0 0 2) th2th scan, T = 200 mK"
-9/21/2023 8:56 PM        br 0 0 2 
+9/21/2023 8:56 PM        br 0 0 2
 9/21/2023 8:57 PM        preset time 20
 9/21/2023 8:57 PM        th2th 2 -2 0.2
 9/21/2023 9:05 PM        scantitle "CeBr3, (0 0 3) rocking scan, T = 200 mK"
@@ -746,39 +746,39 @@
 9/21/2023 9:06 PM        preset time 20
 9/21/2023 9:06 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 9:14 PM        scantitle "CeBr3, (0 0 3) th2th scan, T = 200 mK"
-9/21/2023 9:14 PM        br 0 0 3 
+9/21/2023 9:14 PM        br 0 0 3
 9/21/2023 9:14 PM        preset time 20
 9/21/2023 9:14 PM        th2th 3 -3 0.3
 9/21/2023 9:23 PM        scantitle "CeBr3, (1 1 0) rocking scan, T = 200 mK"
-9/21/2023 9:23 PM        br 1 1 0 
+9/21/2023 9:23 PM        br 1 1 0
 9/21/2023 9:24 PM        preset time 5
 9/21/2023 9:24 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 9:26 PM        scantitle "CeBr3, (1 1 0) th2th scan, T = 200 mK"
-9/21/2023 9:26 PM        br 1 1 0 
+9/21/2023 9:26 PM        br 1 1 0
 9/21/2023 9:27 PM        preset time 5
 9/21/2023 9:27 PM        th2th 1.5 -1.5 0.15
 9/21/2023 9:30 PM        scantitle "CeBr3, (2 2 0) rocking scan, T = 200 mK"
-9/21/2023 9:30 PM        br 2 2 0 
+9/21/2023 9:30 PM        br 2 2 0
 9/21/2023 9:31 PM        preset time 5
 9/21/2023 9:31 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 9:34 PM        scantitle "CeBr3, (2 2 0) th2th scan, T = 200 mK"
-9/21/2023 9:34 PM        br 2 2 0 
+9/21/2023 9:34 PM        br 2 2 0
 9/21/2023 9:34 PM        preset time 5
 9/21/2023 9:34 PM        th2th 2 -2 0.2
 9/21/2023 9:37 PM        scantitle "CeBr3, (1 1 1) rocking scan, T = 200 mK"
-9/21/2023 9:37 PM        br 1 1 1 
+9/21/2023 9:37 PM        br 1 1 1
 9/21/2023 9:38 PM        preset time 5
 9/21/2023 9:38 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 9:41 PM        scantitle "CeBr3, (1 1 1) th2th scan, T = 200 mK"
-9/21/2023 9:41 PM        br 1 1 1 
+9/21/2023 9:41 PM        br 1 1 1
 9/21/2023 9:41 PM        preset time 5
 9/21/2023 9:41 PM        th2th 1.5 -1.5 0.15
 9/21/2023 9:44 PM        scantitle "CeBr3, (1 1 2) rocking scan, T = 200 mK"
-9/21/2023 9:44 PM        br 1 1 2 
+9/21/2023 9:44 PM        br 1 1 2
 9/21/2023 9:45 PM        preset time 5
 9/21/2023 9:45 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 9:47 PM        scantitle "CeBr3, (1 1 2) th2th scan, T = 200 mK"
-9/21/2023 9:47 PM        br 1 1 2 
+9/21/2023 9:47 PM        br 1 1 2
 9/21/2023 9:48 PM        preset time 5
 9/21/2023 9:48 PM        th2th 2 -2 0.2
 9/21/2023 9:51 PM        scantitle "CeBr3, (1 1 3) rocking scan, T = 200 mK"
@@ -790,29 +790,29 @@
 9/21/2023 9:54 PM        preset time 5
 9/21/2023 9:54 PM        th2th 3 -3 0.3
 9/21/2023 9:58 PM        scantitle "CeBr3, (2 2 1) rocking scan, T = 200 mK"
-9/21/2023 9:58 PM        br 2 2 1 
+9/21/2023 9:58 PM        br 2 2 1
 9/21/2023 9:59 PM        preset time 5
 9/21/2023 9:59 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 10:01 PM        scantitle "CeBr3, (2 2 1) th2th scan, T = 200 mK"
-9/21/2023 10:01 PM        br 2 2 1 
+9/21/2023 10:01 PM        br 2 2 1
 9/21/2023 10:01 PM        preset time 5
 9/21/2023 10:01 PM        th2th 2.5 -2.5 0.25
 9/21/2023 10:05 PM        scantitle "CeBr3, (2 2 2) rocking scan, T = 200 mK"
-9/21/2023 10:05 PM        br 2 2 2 
+9/21/2023 10:05 PM        br 2 2 2
 9/21/2023 10:05 PM        preset time 5
 9/21/2023 10:05 PM        scanrel s1 1.5 -1.5 0.15
 9/21/2023 10:08 PM        scantitle "CeBr3, (2 2 2) th2th scan, T = 200 mK"
-9/21/2023 10:08 PM        br 2 2 2 
+9/21/2023 10:08 PM        br 2 2 2
 9/21/2023 10:08 PM        preset time 5
 9/21/2023 10:08 PM        th2th 3 -3 0.3
 9/21/2023 10:12 PM        scantitle "CeBr3, (H H 0.5) scan, T = 0.2 K"
-9/21/2023 10:12 PM        scan h 0.04 2 0.01 k 0.04 2 0.01 l 0.5 e 0 preset time 30 
+9/21/2023 10:12 PM        scan h 0.04 2 0.01 k 0.04 2 0.01 l 0.5 e 0 preset time 30
 9/22/2023 12:13 AM        scantitle "CeBr3, (1/3 1/3 L) scan, T = 0.2 K"
-9/22/2023 12:13 AM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30 
+9/22/2023 12:13 AM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30
 9/22/2023 4:20 AM        scantitle "CeBr3, (2/3 2/3 L) scan, T = 0.2 K"
-9/22/2023 4:20 AM        scan h 0.6666 k 0.6666 l 0.25 2.25 0.005 e 0 preset time 30 
+9/22/2023 4:20 AM        scan h 0.6666 k 0.6666 l 0.25 2.25 0.005 e 0 preset time 30
 9/22/2023 8:29 AM        scantitle "CeBr3, (4/3 4/3 L) scan, T = 0.2 K"
-9/22/2023 8:30 AM        scan h 1.33333 k 1.33333 l 0.25 2.25 0.005 e 0 preset time 30 
+9/22/2023 8:30 AM        scan h 1.33333 k 1.33333 l 0.25 2.25 0.005 e 0 preset time 30
 9/22/2023 11:47 AM        br 0 0 2
 9/22/2023 11:49 AM        scantitle "recheck 002 alignment"
 9/22/2023 11:51 AM        scan sgu 3 -3 0.5
@@ -837,7 +837,7 @@
 9/22/2023 12:22 PM        lattice a 7.911813 b 7.911813 c 4.443408
 9/22/2023 12:23 PM        ubcalc file "C:\SPICE\User\exp998\UBConf\tmp\UB22Sep2023_122302PM.ini"
 9/22/2023 12:23 PM        br 1 1 1
-9/22/2023 12:23 PM        br 1 1 0 
+9/22/2023 12:23 PM        br 1 1 0
 9/22/2023 12:24 PM        ubcalc file "C:\SPICE\User\exp998\UBConf\tmp\UB22Sep2023_122407PM.ini"
 9/22/2023 12:24 PM        ubcalc file "C:\SPICE\User\exp998\UBConf\tmp\UB22Sep2023_122457PM.ini"
 9/22/2023 12:25 PM        br 1 1 0
@@ -860,7 +860,7 @@
 9/22/2023 12:41 PM        scan sgl -5 0 0.5
 9/22/2023 12:44 PM        drive sgl -3
 9/22/2023 12:45 PM        scan sgu -4 4 0.5
-9/22/2023 12:55 PM        drive sgu 0 
+9/22/2023 12:55 PM        drive sgu 0
 9/22/2023 12:56 PM        drive sgu -1
 9/22/2023 12:57 PM        br 2 2 -2
 9/22/2023 12:59 PM        scantitle "check 2 2 -2"
@@ -879,13 +879,13 @@
 9/22/2023 1:24 PM        scantitle "CeBr3, count on (2/3 2/3 1/2) while cooling"
 9/22/2023 1:24 PM        br 0.6666 0.6666 0.5
 9/22/2023 1:26 PM        set_temp_dr 0
-9/22/2023 1:26 PM        scan n 1200 preset time 30 
+9/22/2023 1:26 PM        scan n 1200 preset time 30
 9/22/2023 2:32 PM        scantitle "CeBr3, (0 0 1) rocking scan, T = 40 mK"
-9/22/2023 2:32 PM        br 0 0 1 
+9/22/2023 2:32 PM        br 0 0 1
 9/22/2023 2:33 PM        preset time 5
 9/22/2023 2:33 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 2:36 PM        scantitle "CeBr3, (0 0 1) th2th scan, T = 40 mK"
-9/22/2023 2:36 PM        br 0 0 1 
+9/22/2023 2:36 PM        br 0 0 1
 9/22/2023 2:36 PM        preset time 5
 9/22/2023 2:36 PM        th2th 1.5 -1.5 0.15
 9/22/2023 2:40 PM        scantitle "CeBr3, (0 0 2) rocking scan, T = 40 mK"
@@ -893,7 +893,7 @@
 9/22/2023 2:41 PM        preset time 20
 9/22/2023 2:41 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 2:49 PM        scantitle "CeBr3, (0 0 2) th2th scan, T = 40 mK"
-9/22/2023 2:49 PM        br 0 0 2 
+9/22/2023 2:49 PM        br 0 0 2
 9/22/2023 2:49 PM        preset time 20
 9/22/2023 2:49 PM        th2th 2 -2 0.2
 9/22/2023 2:58 PM        scantitle "CeBr3, (0 0 3) rocking scan, T = 40 mK"
@@ -901,39 +901,39 @@
 9/22/2023 2:59 PM        preset time 20
 9/22/2023 2:59 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:07 PM        scantitle "CeBr3, (0 0 3) th2th scan, T = 40 mK"
-9/22/2023 3:07 PM        br 0 0 3 
+9/22/2023 3:07 PM        br 0 0 3
 9/22/2023 3:07 PM        preset time 20
 9/22/2023 3:07 PM        th2th 3 -3 0.3
 9/22/2023 3:16 PM        scantitle "CeBr3, (1 1 0) rocking scan, T = 40 mK"
-9/22/2023 3:16 PM        br 1 1 0 
+9/22/2023 3:16 PM        br 1 1 0
 9/22/2023 3:17 PM        preset time 5
 9/22/2023 3:17 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:21 PM        scantitle "CeBr3, (1 1 0) th2th scan, T = 40 mK"
-9/22/2023 3:21 PM        br 1 1 0 
+9/22/2023 3:21 PM        br 1 1 0
 9/22/2023 3:21 PM        preset time 5
 9/22/2023 3:21 PM        th2th 1.5 -1.5 0.15
 9/22/2023 3:24 PM        scantitle "CeBr3, (2 2 0) rocking scan, T = 40 mK"
-9/22/2023 3:24 PM        br 2 2 0 
+9/22/2023 3:24 PM        br 2 2 0
 9/22/2023 3:25 PM        preset time 5
 9/22/2023 3:25 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:28 PM        scantitle "CeBr3, (2 2 0) th2th scan, T = 40 mK"
-9/22/2023 3:28 PM        br 2 2 0 
+9/22/2023 3:28 PM        br 2 2 0
 9/22/2023 3:28 PM        preset time 5
 9/22/2023 3:28 PM        th2th 2 -2 0.2
 9/22/2023 3:32 PM        scantitle "CeBr3, (1 1 1) rocking scan, T = 40 mK"
-9/22/2023 3:32 PM        br 1 1 1 
+9/22/2023 3:32 PM        br 1 1 1
 9/22/2023 3:33 PM        preset time 5
 9/22/2023 3:33 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:36 PM        scantitle "CeBr3, (1 1 1) th2th scan, T = 40 mK"
-9/22/2023 3:36 PM        br 1 1 1 
+9/22/2023 3:36 PM        br 1 1 1
 9/22/2023 3:36 PM        preset time 5
 9/22/2023 3:36 PM        th2th 1.5 -1.5 0.15
 9/22/2023 3:40 PM        scantitle "CeBr3, (1 1 2) rocking scan, T = 40 mK"
-9/22/2023 3:40 PM        br 1 1 2 
+9/22/2023 3:40 PM        br 1 1 2
 9/22/2023 3:40 PM        preset time 5
 9/22/2023 3:40 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:43 PM        scantitle "CeBr3, (1 1 2) th2th scan, T = 40 mK"
-9/22/2023 3:43 PM        br 1 1 2 
+9/22/2023 3:43 PM        br 1 1 2
 9/22/2023 3:43 PM        preset time 5
 9/22/2023 3:43 PM        th2th 2 -2 0.2
 9/22/2023 3:47 PM        scantitle "CeBr3, (1 1 3) rocking scan, T = 40 mK"
@@ -945,266 +945,266 @@
 9/22/2023 3:51 PM        preset time 5
 9/22/2023 3:51 PM        th2th 3 -3 0.3
 9/22/2023 3:55 PM        scantitle "CeBr3, (2 2 1) rocking scan, T = 40 mK"
-9/22/2023 3:55 PM        br 2 2 1 
+9/22/2023 3:55 PM        br 2 2 1
 9/22/2023 3:56 PM        preset time 5
 9/22/2023 3:56 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 3:59 PM        scantitle "CeBr3, (2 2 1) th2th scan, T = 40 mK"
-9/22/2023 3:59 PM        br 2 2 1 
+9/22/2023 3:59 PM        br 2 2 1
 9/22/2023 3:59 PM        preset time 5
 9/22/2023 3:59 PM        th2th 2.5 -2.5 0.25
 9/22/2023 4:03 PM        scantitle "CeBr3, (2 2 2) rocking scan, T = 40 mK"
-9/22/2023 4:03 PM        br 2 2 2 
+9/22/2023 4:03 PM        br 2 2 2
 9/22/2023 4:03 PM        preset time 5
 9/22/2023 4:03 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 4:06 PM        scantitle "CeBr3, (2 2 2) th2th scan, T = 40 mK"
-9/22/2023 4:06 PM        br 2 2 2 
+9/22/2023 4:06 PM        br 2 2 2
 9/22/2023 4:06 PM        preset time 5
 9/22/2023 4:06 PM        th2th 3 -3 0.3
 9/22/2023 4:10 PM        scantitle "CeBr3, (0 0 1) HH-scan, T = 40 mK"
-9/22/2023 4:10 PM        br 0 0 1 
+9/22/2023 4:10 PM        br 0 0 1
 9/22/2023 4:12 PM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 1 e 0 preset time 5
 9/22/2023 4:19 PM        scantitle "CeBr3, (0 0 1) L-scan, T = 40 mK"
-9/22/2023 4:19 PM        br 0 0 1 
-9/22/2023 4:19 PM        scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/22/2023 4:19 PM        br 0 0 1
+9/22/2023 4:19 PM        scan h 0 k 0 l 0.96 1.04 0.0025 e 0 preset time 5
 9/22/2023 4:27 PM        scantitle "CeBr3, (0 0 2) HH-scan, T = 40 mK"
-9/22/2023 4:27 PM        br 0 0 2 
+9/22/2023 4:27 PM        br 0 0 2
 9/22/2023 4:28 PM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 2 e 0 preset time 5
 9/22/2023 4:35 PM        scantitle "CeBr3, (0 0 2) L-scan, T = 40 mK"
-9/22/2023 4:35 PM        br 0 0 2 
-9/22/2023 4:35 PM        scan h 0 k 0 l 1.96 2.04 0.0025 e 0 preset time 5 
+9/22/2023 4:35 PM        br 0 0 2
+9/22/2023 4:35 PM        scan h 0 k 0 l 1.96 2.04 0.0025 e 0 preset time 5
 9/22/2023 4:43 PM        scantitle "CeBr3, (0 0 3) HH-scan, T = 40 mK"
-9/22/2023 4:43 PM        br 0 0 3 
+9/22/2023 4:43 PM        br 0 0 3
 9/22/2023 4:43 PM        scan h -0.04 0.04 0.0025 k -0.04 0.04 0.0025 l 3 e 0 preset time 5
 9/22/2023 4:51 PM        scantitle "CeBr3, (0 0 3) L-scan, T = 40 mK"
-9/22/2023 4:51 PM        br 0 0 3 
-9/22/2023 4:51 PM        scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset time 5 
+9/22/2023 4:51 PM        br 0 0 3
+9/22/2023 4:51 PM        scan h 0 k 0 l 2.96 3.04 0.0025 e 0 preset time 5
 9/22/2023 4:58 PM        scantitle "CeBr3, (1 1 0) HH-scan, T = 40 mK"
-9/22/2023 4:58 PM        br 1 1 0 
+9/22/2023 4:58 PM        br 1 1 0
 9/22/2023 4:59 PM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 0 e 0 preset time 5
 9/22/2023 5:07 PM        scantitle "CeBr3, (1 1 0) L-scan, T = 40 mK"
-9/22/2023 5:07 PM        br 1 1 0 
-9/22/2023 5:07 PM        scan h 1 k 1 l -0.04 0.04 0.0025 e 0 preset time 5 
+9/22/2023 5:07 PM        br 1 1 0
+9/22/2023 5:07 PM        scan h 1 k 1 l -0.04 0.04 0.0025 e 0 preset time 5
 9/22/2023 5:15 PM        scantitle "CeBr3, (2 2 0) HH-scan, T = 40 mK"
-9/22/2023 5:16 PM        br 2 2 0 
+9/22/2023 5:16 PM        br 2 2 0
 9/22/2023 5:16 PM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 0 e 0 preset time 5
 9/22/2023 5:23 PM        scantitle "CeBr3, (2 2 0) L-scan, T = 40 mK"
-9/22/2023 5:23 PM        br 2 2 0 
-9/22/2023 5:24 PM        scan h 2 k 2 l -0.04 0.04 0.0025 e 0 preset time 5 
+9/22/2023 5:23 PM        br 2 2 0
+9/22/2023 5:24 PM        scan h 2 k 2 l -0.04 0.04 0.0025 e 0 preset time 5
 9/22/2023 5:32 PM        scantitle "CeBr3, (1 1 1) HH-scan, T = 40 mK"
-9/22/2023 5:32 PM        br 1 1 1 
+9/22/2023 5:32 PM        br 1 1 1
 9/22/2023 5:33 PM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 1 e 0 preset time 5
 9/22/2023 5:41 PM        scantitle "CeBr3, (1 1 1) L-scan, T = 40 mK"
-9/22/2023 5:41 PM        br 1 1 1 
-9/22/2023 5:41 PM        scan h 1 k 1 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/22/2023 5:41 PM        br 1 1 1
+9/22/2023 5:41 PM        scan h 1 k 1 l 0.96 1.04 0.0025 e 0 preset time 5
 9/22/2023 5:49 PM        scantitle "CeBr3, (1 1 2) HH-scan, T = 40 mK"
-9/22/2023 5:49 PM        br 1 1 2 
+9/22/2023 5:49 PM        br 1 1 2
 9/22/2023 5:50 PM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 2 e 0 preset time 5
 9/22/2023 5:57 PM        scantitle "CeBr3, (1 1 2) L-scan, T = 40 mK"
-9/22/2023 5:57 PM        br 1 1 2 
+9/22/2023 5:57 PM        br 1 1 2
 9/22/2023 5:57 PM        scan h 1 k 1 l 1.96 2.04 0.0025 e 0 preset time 5
 9/22/2023 6:05 PM        scantitle "CeBr3, (1 1 3) HH-scan, T = 40 mK"
-9/22/2023 6:05 PM        br 1 1 3 
+9/22/2023 6:05 PM        br 1 1 3
 9/22/2023 6:05 PM        scan h 0.96 1.04 0.0025 k 0.96 1.04 0.0025 l 3 e 0 preset time 5
 9/22/2023 6:13 PM        scantitle "CeBr3, (1 1 3) L-scan, T = 40 mK"
-9/22/2023 6:13 PM        br 1 1 3 
+9/22/2023 6:13 PM        br 1 1 3
 9/22/2023 6:13 PM        scan h 1 k 1 l 2.96 3.04 0.0025 e 0 preset time 5
 9/22/2023 6:20 PM        scantitle "CeBr3, (2 2 1) HH-scan, T = 40 mK"
-9/22/2023 6:20 PM        br 2 2 1 
+9/22/2023 6:20 PM        br 2 2 1
 9/22/2023 6:21 PM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 1 e 0 preset time 5
 9/22/2023 6:28 PM        scantitle "CeBr3, (2 2 1) L-scan, T = 40 mK"
-9/22/2023 6:28 PM        br 2 2 1 
-9/22/2023 6:29 PM        scan h 2 k 2 l 0.96 1.04 0.0025 e 0 preset time 5 
+9/22/2023 6:28 PM        br 2 2 1
+9/22/2023 6:29 PM        scan h 2 k 2 l 0.96 1.04 0.0025 e 0 preset time 5
 9/22/2023 6:37 PM        scantitle "CeBr3, (2 2 2) HH-scan, T = 40 mK"
-9/22/2023 6:37 PM        br 2 2 2 
+9/22/2023 6:37 PM        br 2 2 2
 9/22/2023 6:38 PM        scan h 1.96 2.04 0.0025 k 1.96 2.04 0.0025 l 2 e 0 preset time 5
 9/22/2023 6:45 PM        scantitle "CeBr3, (2 2 2) L-scan, T = 40 mK"
-9/22/2023 6:45 PM        br 2 2 2 
-9/22/2023 6:46 PM        scan h 2 k 2 l 1.96 2.04 0.0025 e 0 preset time 5 
+9/22/2023 6:45 PM        br 2 2 2
+9/22/2023 6:46 PM        scan h 2 k 2 l 1.96 2.04 0.0025 e 0 preset time 5
 9/22/2023 6:53 PM        scantitle "CeBr3, (1/3 1/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 6:53 PM        br 0.3333 0.3333 0.5 
+9/22/2023 6:53 PM        br 0.3333 0.3333 0.5
 9/22/2023 6:54 PM        preset time 20
 9/22/2023 6:54 PM        th2th 1.5 -1.5 -0.15
 9/22/2023 7:03 PM        scantitle "CeBr3, (1/3 1/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 7:03 PM        br 0.3333 0.3333 0.5 
+9/22/2023 7:03 PM        br 0.3333 0.3333 0.5
 9/22/2023 7:04 PM        preset time 20
 9/22/2023 7:04 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 7:12 PM        scantitle "CeBr3, (2/3 2/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 7:12 PM        br 0.6666 0.6666 0.5 
+9/22/2023 7:12 PM        br 0.6666 0.6666 0.5
 9/22/2023 7:12 PM        preset time 20
 9/22/2023 7:12 PM        th2th 1.5 -1.5 0.15
 9/22/2023 7:21 PM        scantitle "CeBr3, (2/3 2/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 7:21 PM        br 0.6666 0.6666 0.5 
+9/22/2023 7:21 PM        br 0.6666 0.6666 0.5
 9/22/2023 7:22 PM        preset time 20
 9/22/2023 7:22 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 7:30 PM        scantitle "CeBr3, (4/3 4/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 7:30 PM        br 1.3333 1.3333 0.5 
+9/22/2023 7:30 PM        br 1.3333 1.3333 0.5
 9/22/2023 7:31 PM        preset time 20
 9/22/2023 7:31 PM        th2th 1.5 -1.5 0.15
 9/22/2023 7:39 PM        scantitle "CeBr3, (4/3 4/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 7:39 PM        br 1.3333 1.3333 0.5 
+9/22/2023 7:39 PM        br 1.3333 1.3333 0.5
 9/22/2023 7:40 PM        preset time 20
 9/22/2023 7:40 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 7:48 PM        scantitle "CeBr3, (5/3 5/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 7:48 PM        br 1.6666 1.6666 0.5 
+9/22/2023 7:48 PM        br 1.6666 1.6666 0.5
 9/22/2023 7:48 PM        preset time 20
 9/22/2023 7:48 PM        th2th 1.5 -1.5 0.15
 9/22/2023 7:57 PM        scantitle "CeBr3, (5/3 5/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 7:57 PM        br 1.6666 1.6666 0.5 
+9/22/2023 7:57 PM        br 1.6666 1.6666 0.5
 9/22/2023 7:57 PM        preset time 20
 9/22/2023 7:57 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 8:06 PM        scantitle "CeBr3, (1/3 1/3 3/2) th2th scan, T = 40 mK"
-9/22/2023 8:06 PM        br 0.3333 0.3333 1.5 
+9/22/2023 8:06 PM        br 0.3333 0.3333 1.5
 9/22/2023 8:07 PM        preset time 20
 9/22/2023 8:07 PM        th2th 1.5 -1.5 0.15
 9/22/2023 8:16 PM        scantitle "CeBr3, (1/3 1/3 3/2) rocking scan, T = 40 mK"
-9/22/2023 8:16 PM        br 0.3333 0.3333 1.5 
+9/22/2023 8:16 PM        br 0.3333 0.3333 1.5
 9/22/2023 8:16 PM        preset time 20
 9/22/2023 8:16 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 8:25 PM        scantitle "CeBr3, (2/3 2/3 3/2) th2th scan, T = 40 mK"
-9/22/2023 8:25 PM        br 0.6666 0.6666 1.5 
+9/22/2023 8:25 PM        br 0.6666 0.6666 1.5
 9/22/2023 8:25 PM        preset time 20
 9/22/2023 8:25 PM        th2th 1.5 -1.5 0.15
 9/22/2023 8:34 PM        scantitle "CeBr3, (2/3 2/3 3/2) rocking scan, T = 40 mK"
-9/22/2023 8:34 PM        br 0.6666 0.6666 1.5 
+9/22/2023 8:34 PM        br 0.6666 0.6666 1.5
 9/22/2023 8:34 PM        preset time 20
 9/22/2023 8:34 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 8:43 PM        scantitle "CeBr3, (4/3 4/3 3/2) th2th scan, T = 40 mK"
-9/22/2023 8:43 PM        br 1.3333 1.3333 1.5 
+9/22/2023 8:43 PM        br 1.3333 1.3333 1.5
 9/22/2023 8:43 PM        preset time 20
 9/22/2023 8:43 PM        th2th 2 -2 0.2
 9/22/2023 8:52 PM        scantitle "CeBr3, (4/3 4/3 3/2) rocking scan, T = 40 mK"
-9/22/2023 8:52 PM        br 1.3333 1.3333 1.5 
+9/22/2023 8:52 PM        br 1.3333 1.3333 1.5
 9/22/2023 8:52 PM        preset time 20
 9/22/2023 8:52 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 9:01 PM        scantitle "CeBr3, (5/3 5/3 3/2) th2th scan, T = 40 mK"
-9/22/2023 9:01 PM        br 1.6666 1.6666 1.5 
+9/22/2023 9:01 PM        br 1.6666 1.6666 1.5
 9/22/2023 9:01 PM        preset time 20
 9/22/2023 9:01 PM        th2th 2.5 -2.5 0.25
 9/22/2023 9:10 PM        scantitle "CeBr3, (5/3 5/3 3/2) rocking scan, T = 40 mK"
-9/22/2023 9:10 PM        br 1.6666 1.6666 1.5 
+9/22/2023 9:10 PM        br 1.6666 1.6666 1.5
 9/22/2023 9:10 PM        preset time 20
 9/22/2023 9:10 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 9:19 PM        scantitle "CeBr3, (2/3 2/3 5/2) th2th scan, T = 40 mK"
-9/22/2023 9:19 PM        br 0.6666 0.6666 2.5 
+9/22/2023 9:19 PM        br 0.6666 0.6666 2.5
 9/22/2023 9:20 PM        preset time 20
 9/22/2023 9:20 PM        th2th 2.5 -2.5 0.25
 9/22/2023 9:29 PM        scantitle "CeBr3, (2/3 2/3 5/2) rocking scan, T = 40 mK"
-9/22/2023 9:29 PM        br 0.6666 0.6666 2.5 
+9/22/2023 9:29 PM        br 0.6666 0.6666 2.5
 9/22/2023 9:29 PM        preset time 20
 9/22/2023 9:29 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 9:37 PM        scantitle "CeBr3, (4/3 4/3 5/2) th2th scan, T = 40 mK"
-9/22/2023 9:37 PM        br 1.3333 1.3333 2.5 
+9/22/2023 9:37 PM        br 1.3333 1.3333 2.5
 9/22/2023 9:38 PM        preset time 20
 9/22/2023 9:38 PM        th2th 2.5 -2.5 0.25
 9/22/2023 9:47 PM        scantitle "CeBr3, (4/3 4/3 5/2) rocking scan, T = 40 mK"
-9/22/2023 9:47 PM        br 1.3333 1.3333 2.5 
+9/22/2023 9:47 PM        br 1.3333 1.3333 2.5
 9/22/2023 9:47 PM        preset time 20
 9/22/2023 9:47 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 9:56 PM        scantitle "CeBr3, (5/3 5/3 5/2) th2th scan, T = 40 mK"
-9/22/2023 9:56 PM        br 1.6666 1.6666 2.5 
+9/22/2023 9:56 PM        br 1.6666 1.6666 2.5
 9/22/2023 9:56 PM        preset time 20
 9/22/2023 9:56 PM        th2th 2.5 -2.5 0.25
 9/22/2023 10:05 PM        scantitle "CeBr3, (5/3 5/3 5/2) rocking scan, T = 40 mK"
-9/22/2023 10:05 PM        br 1.6666 1.6666 2.5 
+9/22/2023 10:05 PM        br 1.6666 1.6666 2.5
 9/22/2023 10:05 PM        preset time 20
 9/22/2023 10:05 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 10:14 PM        scantitle "CeBr3, (7/3 7/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 10:14 PM        br 2.3333 2.3333 0.5 
+9/22/2023 10:14 PM        br 2.3333 2.3333 0.5
 9/22/2023 10:14 PM        preset time 20
 9/22/2023 10:14 PM        th2th 3 -3 0.3
 9/22/2023 10:24 PM        scantitle "CeBr3, (7/3 7/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 10:24 PM        br 2.3333 2.3333 0.5 
+9/22/2023 10:24 PM        br 2.3333 2.3333 0.5
 9/22/2023 10:24 PM        preset time 20
 9/22/2023 10:24 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 10:32 PM        scantitle "CeBr3, (8/3 8/3 1/2) th2th scan, T = 40 mK"
-9/22/2023 10:32 PM        br 2.6666 2.6666 0.5 
+9/22/2023 10:32 PM        br 2.6666 2.6666 0.5
 9/22/2023 10:33 PM        preset time 20
 9/22/2023 10:33 PM        th2th 3 -3 0.3
 9/22/2023 10:42 PM        scantitle "CeBr3, (8/3 8/3 1/2) rocking scan, T = 40 mK"
-9/22/2023 10:42 PM        br 2.6666 2.6666 0.5 
+9/22/2023 10:42 PM        br 2.6666 2.6666 0.5
 9/22/2023 10:42 PM        preset time 20
 9/22/2023 10:42 PM        scanrel s1 1.5 -1.5 0.15
 9/22/2023 10:50 PM        scantitle "CeBr3, (1/3 1/3 1/2) HH-scan, T = 40 mK"
-9/22/2023 10:50 PM        br 0.3333 0.3333 0.5 
+9/22/2023 10:50 PM        br 0.3333 0.3333 0.5
 9/22/2023 10:52 PM        scan h 0.29 0.37 0.0025 k 0.29 0.37 0.0025 l 0.5 e 0 preset time 20
 9/22/2023 11:08 PM        scantitle "CeBr3, (1/3 1/3 1/2) L-scan, T = 40 mK"
-9/22/2023 11:08 PM        br 0.3333 0.3333 0.5 
+9/22/2023 11:08 PM        br 0.3333 0.3333 0.5
 9/22/2023 11:08 PM        scan h 0.3333 k 0.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/22/2023 11:24 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 40 mK"
-9/22/2023 11:24 PM        br 0.6666 0.6666 0.5 
+9/22/2023 11:24 PM        br 0.6666 0.6666 0.5
 9/22/2023 11:25 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/22/2023 11:41 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 40 mK"
 9/22/2023 11:41 PM        br 0.6666 0.6666 0.5
 9/22/2023 11:41 PM        scan h 0.6666 k 0.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/22/2023 11:58 PM        scantitle "CeBr3, (4/3 4/3 1/2) HH-scan, T = 40 mK"
-9/22/2023 11:58 PM        br 1.3333 1.3333 0.5 
+9/22/2023 11:58 PM        br 1.3333 1.3333 0.5
 9/22/2023 11:59 PM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 12:14 AM        scantitle "CeBr3, (4/3 4/3 1/2) L-scan, T = 40 mK"
-9/23/2023 12:14 AM        br 1.3333 1.3333 0.5 
+9/23/2023 12:14 AM        br 1.3333 1.3333 0.5
 9/23/2023 12:15 AM        scan h 1.3333 k 1.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/23/2023 12:31 AM        scantitle "CeBr3, (5/3 5/3 1/2) HH-scan, T = 40 mK"
-9/23/2023 12:31 AM        br 1.6666 1.6666 0.5 
+9/23/2023 12:31 AM        br 1.6666 1.6666 0.5
 9/23/2023 12:32 AM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 12:48 AM        scantitle "CeBr3, (5/3 5/3 1/2) L-scan, T = 40 mK"
 9/23/2023 12:48 AM        br 1.6666 1.6666 0.5
 9/23/2023 12:48 AM        scan h 1.6666 k 1.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/23/2023 1:05 AM        scantitle "CeBr3, (1/3 1/3 3/2) HH-scan, T = 40 mK"
-9/23/2023 1:05 AM        br 0.3333 0.3333 1.5 
+9/23/2023 1:05 AM        br 0.3333 0.3333 1.5
 9/23/2023 1:06 AM        scan h 0.29 0.37 0.0025 k 0.29 0.37 0.0025 l 1.5 e 0 preset time 20
 9/23/2023 1:22 AM        scantitle "CeBr3, (1/3 1/3 3/2) L-scan, T = 40 mK"
-9/23/2023 1:22 AM        br 0.3333 0.3333 1.5 
+9/23/2023 1:22 AM        br 0.3333 0.3333 1.5
 9/23/2023 1:22 AM        scan h 0.3333 k 0.3333 l 1.46 1.54 0.0025 e 0 preset time 20
 9/23/2023 1:39 AM        scantitle "CeBr3, (2/3 2/3 3/2) HH-scan, T = 40 mK"
-9/23/2023 1:39 AM        br 0.6666 0.6666 1.5 
+9/23/2023 1:39 AM        br 0.6666 0.6666 1.5
 9/23/2023 1:39 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 1.5 e 0 preset time 20
 9/23/2023 1:55 AM        scantitle "CeBr3, (2/3 2/3 3/2) L-scan, T = 40 mK"
 9/23/2023 1:55 AM        br 0.6666 0.6666 1.5
 9/23/2023 1:55 AM        scan h 0.6666 k 0.6666 l 1.46 1.54 0.0025 e 0 preset time 20
 9/23/2023 2:12 AM        scantitle "CeBr3, (4/3 4/3 3/2) HH-scan, T = 40 mK"
-9/23/2023 2:12 AM        br 1.3333 1.3333 1.5 
+9/23/2023 2:12 AM        br 1.3333 1.3333 1.5
 9/23/2023 2:12 AM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 1.5 e 0 preset time 20
 9/23/2023 2:28 AM        scantitle "CeBr3, (4/3 4/3 3/2) L-scan, T = 40 mK"
-9/23/2023 2:28 AM        br 1.3333 1.3333 1.5 
+9/23/2023 2:28 AM        br 1.3333 1.3333 1.5
 9/23/2023 2:28 AM        scan h 1.3333 k 1.3333 l 1.46 1.54 0.0025 e 0 preset time 20
 9/23/2023 2:45 AM        scantitle "CeBr3, (5/3 5/3 3/2) HH-scan, T = 40 mK"
-9/23/2023 2:45 AM        br 1.6666 1.6666 1.5 
+9/23/2023 2:45 AM        br 1.6666 1.6666 1.5
 9/23/2023 2:46 AM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 1.5 e 0 preset time 20
 9/23/2023 3:02 AM        scantitle "CeBr3, (5/3 5/3 3/2) L-scan, T = 40 mK"
 9/23/2023 3:02 AM        br 1.6666 1.6666 1.5
 9/23/2023 3:02 AM        scan h 1.6666 k 1.6666 l 1.46 1.54 0.0025 e 0 preset time 20
 9/23/2023 3:19 AM        scantitle "CeBr3, (2/3 2/3 5/2) HH-scan, T = 40 mK"
-9/23/2023 3:19 AM        br 0.6666 0.6666 2.5 
+9/23/2023 3:19 AM        br 0.6666 0.6666 2.5
 9/23/2023 3:20 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 2.5 e 0 preset time 20
 9/23/2023 3:36 AM        scantitle "CeBr3, (2/3 2/3 5/2) L-scan, T = 40 mK"
 9/23/2023 3:36 AM        br 0.6666 0.6666 2.5
 9/23/2023 3:36 AM        scan h 0.6666 k 0.6666 l 2.46 2.54 0.0025 e 0 preset time 20
 9/23/2023 3:52 AM        scantitle "CeBr3, (4/3 4/3 5/2) HH-scan, T = 40 mK"
-9/23/2023 3:52 AM        br 1.3333 1.3333 2.5 
+9/23/2023 3:52 AM        br 1.3333 1.3333 2.5
 9/23/2023 3:53 AM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 2.5 e 0 preset time 20
 9/23/2023 4:09 AM        scantitle "CeBr3, (4/3 4/3 5/2) L-scan, T = 40 mK"
-9/23/2023 4:09 AM        br 1.3333 1.3333 2.5 
+9/23/2023 4:09 AM        br 1.3333 1.3333 2.5
 9/23/2023 4:09 AM        scan h 1.3333 k 1.3333 l 2.46 2.54 0.0025 e 0 preset time 20
 9/23/2023 4:26 AM        scantitle "CeBr3, (5/3 5/3 5/2) HH-scan, T = 40 mK"
-9/23/2023 4:26 AM        br 1.6666 1.6666 2.5 
+9/23/2023 4:26 AM        br 1.6666 1.6666 2.5
 9/23/2023 4:26 AM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 2.5 e 0 preset time 20
 9/23/2023 4:42 AM        scantitle "CeBr3, (5/3 5/3 5/2) L-scan, T = 40 mK"
 9/23/2023 4:42 AM        br 1.6666 1.6666 2.5
 9/23/2023 4:42 AM        scan h 1.6666 k 1.6666 l 2.46 2.54 0.0025 e 0 preset time 20
 9/23/2023 4:59 AM        scantitle "CeBr3, (7/3 7/3 1/2) HH-scan, T = 40 mK"
-9/23/2023 4:59 AM        br 2.3333 2.3333 0.5 
+9/23/2023 4:59 AM        br 2.3333 2.3333 0.5
 9/23/2023 4:59 AM        scan h 2.29 2.37 0.0025 k 2.29 2.37 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 5:15 AM        scantitle "CeBr3, (7/3 7/3 1/2) L-scan, T = 40 mK"
-9/23/2023 5:15 AM        br 2.3333 2.3333 0.5 
+9/23/2023 5:15 AM        br 2.3333 2.3333 0.5
 9/23/2023 5:16 AM        scan h 2.3333 k 2.3333 l 0.46 0.54 0.0025 e 0 preset time 20
 9/23/2023 5:33 AM        scantitle "CeBr3, (8/3 8/3 1/2) HH-scan, T = 40 mK"
-9/23/2023 5:33 AM        br 2.6666 2.6666 0.5 
+9/23/2023 5:33 AM        br 2.6666 2.6666 0.5
 9/23/2023 5:34 AM        scan h 2.62 2.70 0.0025 k 2.62 2.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 5:50 AM        scantitle "CeBr3, (8/3 8/3 1/2) L-scan, T = 40 mK"
 9/23/2023 5:50 AM        br 2.6666 2.6666 0.5
 9/23/2023 5:50 AM        scan h 2.6666 k 2.6666 l 0.46 0.54 0.0025 e 0 preset time 20
 9/23/2023 6:07 AM        br 0.6666 0.6666 0.5
 9/23/2023 6:09 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 40 mK"
-9/23/2023 6:09 AM        br 0.6666 0.6666 0.5 
+9/23/2023 6:09 AM        br 0.6666 0.6666 0.5
 9/23/2023 6:09 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 6:25 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 40 mK"
 9/23/2023 6:25 AM        br 0.6666 0.6666 0.5
@@ -1212,7 +1212,7 @@
 9/23/2023 6:43 AM        set_temp_dr 0.042
 9/23/2023 6:43 AM        wait 300
 9/23/2023 6:48 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 42 mK"
-9/23/2023 6:48 AM        br 0.6666 0.6666 0.5 
+9/23/2023 6:48 AM        br 0.6666 0.6666 0.5
 9/23/2023 6:48 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 7:05 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 42 mK"
 9/23/2023 7:05 AM        br 0.6666 0.6666 0.5
@@ -1220,7 +1220,7 @@
 9/23/2023 7:22 AM        set_temp_dr 0.044
 9/23/2023 7:22 AM        wait 300
 9/23/2023 7:27 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 44 mK"
-9/23/2023 7:27 AM        br 0.6666 0.6666 0.5 
+9/23/2023 7:27 AM        br 0.6666 0.6666 0.5
 9/23/2023 7:27 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 7:43 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 44 mK"
 9/23/2023 7:43 AM        br 0.6666 0.6666 0.5
@@ -1228,7 +1228,7 @@
 9/23/2023 8:01 AM        set_temp_dr 0.046
 9/23/2023 8:01 AM        wait 300
 9/23/2023 8:06 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 46 mK"
-9/23/2023 8:06 AM        br 0.6666 0.6666 0.5 
+9/23/2023 8:06 AM        br 0.6666 0.6666 0.5
 9/23/2023 8:06 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 8:22 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 46 mK"
 9/23/2023 8:22 AM        br 0.6666 0.6666 0.5
@@ -1236,7 +1236,7 @@
 9/23/2023 8:40 AM        set_temp_dr 0.048
 9/23/2023 8:40 AM        wait 300
 9/23/2023 8:45 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 48 mK"
-9/23/2023 8:45 AM        br 0.6666 0.6666 0.5 
+9/23/2023 8:45 AM        br 0.6666 0.6666 0.5
 9/23/2023 8:45 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 9:02 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 48 mK"
 9/23/2023 9:02 AM        br 0.6666 0.6666 0.5
@@ -1244,7 +1244,7 @@
 9/23/2023 9:19 AM        set_temp_dr 0.050
 9/23/2023 9:19 AM        wait 300
 9/23/2023 9:24 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 50 mK"
-9/23/2023 9:24 AM        br 0.6666 0.6666 0.5 
+9/23/2023 9:24 AM        br 0.6666 0.6666 0.5
 9/23/2023 9:25 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 9:41 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 50 mK"
 9/23/2023 9:41 AM        br 0.6666 0.6666 0.5
@@ -1252,7 +1252,7 @@
 9/23/2023 9:59 AM        set_temp_dr 0.052
 9/23/2023 9:59 AM        wait 300
 9/23/2023 10:04 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 52 mK"
-9/23/2023 10:04 AM        br 0.6666 0.6666 0.5 
+9/23/2023 10:04 AM        br 0.6666 0.6666 0.5
 9/23/2023 10:04 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 10:21 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 52 mK"
 9/23/2023 10:21 AM        br 0.6666 0.6666 0.5
@@ -1260,7 +1260,7 @@
 9/23/2023 10:39 AM        set_temp_dr 0.054
 9/23/2023 10:39 AM        wait 300
 9/23/2023 10:44 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 54 mK"
-9/23/2023 10:44 AM        br 0.6666 0.6666 0.5 
+9/23/2023 10:44 AM        br 0.6666 0.6666 0.5
 9/23/2023 10:44 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 11:01 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 54 mK"
 9/23/2023 11:01 AM        br 0.6666 0.6666 0.5
@@ -1268,7 +1268,7 @@
 9/23/2023 11:19 AM        set_temp_dr 0.056
 9/23/2023 11:19 AM        wait 300
 9/23/2023 11:24 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 56 mK"
-9/23/2023 11:24 AM        br 0.6666 0.6666 0.5 
+9/23/2023 11:24 AM        br 0.6666 0.6666 0.5
 9/23/2023 11:24 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 11:41 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 56 mK"
 9/23/2023 11:41 AM        br 0.6666 0.6666 0.5
@@ -1276,7 +1276,7 @@
 9/23/2023 11:59 AM        set_temp_dr 0.058
 9/23/2023 11:59 AM        wait 300
 9/23/2023 12:04 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 58 mK"
-9/23/2023 12:04 PM        br 0.6666 0.6666 0.5 
+9/23/2023 12:04 PM        br 0.6666 0.6666 0.5
 9/23/2023 12:04 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 12:21 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 58 mK"
 9/23/2023 12:21 PM        br 0.6666 0.6666 0.5
@@ -1284,7 +1284,7 @@
 9/23/2023 12:39 PM        set_temp_dr 0.060
 9/23/2023 12:39 PM        wait 300
 9/23/2023 12:44 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 60 mK"
-9/23/2023 12:44 PM        br 0.6666 0.6666 0.5 
+9/23/2023 12:44 PM        br 0.6666 0.6666 0.5
 9/23/2023 12:44 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 12:44 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 60 mK"
 9/23/2023 12:44 PM        br 0.6666 0.6666 0.5
@@ -1292,7 +1292,7 @@
 9/23/2023 1:10 PM        set_temp_dr 0.062
 9/23/2023 1:10 PM        wait 300
 9/23/2023 1:15 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 62 mK"
-9/23/2023 1:15 PM        br 0.6666 0.6666 0.5 
+9/23/2023 1:15 PM        br 0.6666 0.6666 0.5
 9/23/2023 1:16 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 1:16 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 62 mK"
 9/23/2023 1:16 PM        br 0.6666 0.6666 0.5
@@ -1300,7 +1300,7 @@
 9/23/2023 1:43 PM        set_temp_dr 0.063
 9/23/2023 1:43 PM        wait 300
 9/23/2023 1:48 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 63 mK"
-9/23/2023 1:48 PM        br 0.6666 0.6666 0.5 
+9/23/2023 1:48 PM        br 0.6666 0.6666 0.5
 9/23/2023 1:48 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 1:48 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 63 mK"
 9/23/2023 1:48 PM        br 0.6666 0.6666 0.5
@@ -1308,7 +1308,7 @@
 9/23/2023 2:14 PM        set_temp_dr 0.064
 9/23/2023 2:14 PM        wait 300
 9/23/2023 2:19 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 64 mK"
-9/23/2023 2:19 PM        br 0.6666 0.6666 0.5 
+9/23/2023 2:19 PM        br 0.6666 0.6666 0.5
 9/23/2023 2:20 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 2:20 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 64 mK"
 9/23/2023 2:20 PM        br 0.6666 0.6666 0.5
@@ -1316,7 +1316,7 @@
 9/23/2023 2:47 PM        set_temp_dr 0.065
 9/23/2023 2:47 PM        wait 300
 9/23/2023 2:52 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 65 mK"
-9/23/2023 2:52 PM        br 0.6666 0.6666 0.5 
+9/23/2023 2:52 PM        br 0.6666 0.6666 0.5
 9/23/2023 2:52 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 2:52 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 65 mK"
 9/23/2023 2:52 PM        br 0.6666 0.6666 0.5
@@ -1324,7 +1324,7 @@
 9/23/2023 3:19 PM        set_temp_dr 0.066
 9/23/2023 3:19 PM        wait 300
 9/23/2023 3:24 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 66 mK"
-9/23/2023 3:24 PM        br 0.6666 0.6666 0.5 
+9/23/2023 3:24 PM        br 0.6666 0.6666 0.5
 9/23/2023 3:24 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 3:24 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 66 mK"
 9/23/2023 3:24 PM        br 0.6666 0.6666 0.5
@@ -1332,7 +1332,7 @@
 9/23/2023 3:51 PM        set_temp_dr 0.067
 9/23/2023 3:51 PM        wait 300
 9/23/2023 3:56 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 67 mK"
-9/23/2023 3:56 PM        br 0.6666 0.6666 0.5 
+9/23/2023 3:56 PM        br 0.6666 0.6666 0.5
 9/23/2023 3:56 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 3:56 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 67 mK"
 9/23/2023 3:57 PM        br 0.6666 0.6666 0.5
@@ -1340,7 +1340,7 @@
 9/23/2023 4:23 PM        set_temp_dr 0.068
 9/23/2023 4:24 PM        wait 300
 9/23/2023 4:29 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 68 mK"
-9/23/2023 4:29 PM        br 0.6666 0.6666 0.5 
+9/23/2023 4:29 PM        br 0.6666 0.6666 0.5
 9/23/2023 4:29 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 4:29 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 68 mK"
 9/23/2023 4:29 PM        br 0.6666 0.6666 0.5
@@ -1348,7 +1348,7 @@
 9/23/2023 4:56 PM        set_temp_dr 0.069
 9/23/2023 4:56 PM        wait 300
 9/23/2023 5:01 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 69 mK"
-9/23/2023 5:01 PM        br 0.6666 0.6666 0.5 
+9/23/2023 5:01 PM        br 0.6666 0.6666 0.5
 9/23/2023 5:02 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 5:02 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 69 mK"
 9/23/2023 5:02 PM        br 0.6666 0.6666 0.5
@@ -1356,7 +1356,7 @@
 9/23/2023 5:29 PM        set_temp_dr 0.070
 9/23/2023 5:29 PM        wait 300
 9/23/2023 5:34 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 70 mK"
-9/23/2023 5:34 PM        br 0.6666 0.6666 0.5 
+9/23/2023 5:34 PM        br 0.6666 0.6666 0.5
 9/23/2023 5:34 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 5:34 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 70 mK"
 9/23/2023 5:34 PM        br 0.6666 0.6666 0.5
@@ -1364,7 +1364,7 @@
 9/23/2023 6:02 PM        set_temp_dr 0.071
 9/23/2023 6:02 PM        wait 300
 9/23/2023 6:07 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 71 mK"
-9/23/2023 6:07 PM        br 0.6666 0.6666 0.5 
+9/23/2023 6:07 PM        br 0.6666 0.6666 0.5
 9/23/2023 6:07 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 6:07 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 71 mK"
 9/23/2023 6:07 PM        br 0.6666 0.6666 0.5
@@ -1372,7 +1372,7 @@
 9/23/2023 6:34 PM        set_temp_dr 0.072
 9/23/2023 6:34 PM        wait 300
 9/23/2023 6:39 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 72 mK"
-9/23/2023 6:39 PM        br 0.6666 0.6666 0.5 
+9/23/2023 6:39 PM        br 0.6666 0.6666 0.5
 9/23/2023 6:40 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 6:40 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 72 mK"
 9/23/2023 6:40 PM        br 0.6666 0.6666 0.5
@@ -1380,7 +1380,7 @@
 9/23/2023 7:07 PM        set_temp_dr 0.073
 9/23/2023 7:07 PM        wait 300
 9/23/2023 7:12 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 73 mK"
-9/23/2023 7:12 PM        br 0.6666 0.6666 0.5 
+9/23/2023 7:12 PM        br 0.6666 0.6666 0.5
 9/23/2023 7:12 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 7:12 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 73 mK"
 9/23/2023 7:12 PM        br 0.6666 0.6666 0.5
@@ -1388,7 +1388,7 @@
 9/23/2023 7:39 PM        set_temp_dr 0.074
 9/23/2023 7:39 PM        wait 300
 9/23/2023 7:44 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 74 mK"
-9/23/2023 7:44 PM        br 0.6666 0.6666 0.5 
+9/23/2023 7:44 PM        br 0.6666 0.6666 0.5
 9/23/2023 7:45 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 7:45 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 74 mK"
 9/23/2023 7:45 PM        br 0.6666 0.6666 0.5
@@ -1396,7 +1396,7 @@
 9/23/2023 8:12 PM        set_temp_dr 0.075
 9/23/2023 8:12 PM        wait 300
 9/23/2023 8:17 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 75 mK"
-9/23/2023 8:17 PM        br 0.6666 0.6666 0.5 
+9/23/2023 8:17 PM        br 0.6666 0.6666 0.5
 9/23/2023 8:17 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 8:18 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 75 mK"
 9/23/2023 8:18 PM        br 0.6666 0.6666 0.5
@@ -1404,7 +1404,7 @@
 9/23/2023 8:45 PM        set_temp_dr 0.076
 9/23/2023 8:45 PM        wait 300
 9/23/2023 8:50 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 76 mK"
-9/23/2023 8:50 PM        br 0.6666 0.6666 0.5 
+9/23/2023 8:50 PM        br 0.6666 0.6666 0.5
 9/23/2023 8:50 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 8:50 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 76 mK"
 9/23/2023 8:50 PM        br 0.6666 0.6666 0.5
@@ -1412,7 +1412,7 @@
 9/23/2023 9:18 PM        set_temp_dr 0.077
 9/23/2023 9:18 PM        wait 300
 9/23/2023 9:23 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 77 mK"
-9/23/2023 9:23 PM        br 0.6666 0.6666 0.5 
+9/23/2023 9:23 PM        br 0.6666 0.6666 0.5
 9/23/2023 9:23 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 9:23 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 77 mK"
 9/23/2023 9:23 PM        br 0.6666 0.6666 0.5
@@ -1420,7 +1420,7 @@
 9/23/2023 9:51 PM        set_temp_dr 0.078
 9/23/2023 9:51 PM        wait 300
 9/23/2023 9:56 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 78 mK"
-9/23/2023 9:56 PM        br 0.6666 0.6666 0.5 
+9/23/2023 9:56 PM        br 0.6666 0.6666 0.5
 9/23/2023 9:56 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 9:56 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 78 mK"
 9/23/2023 9:56 PM        br 0.6666 0.6666 0.5
@@ -1428,7 +1428,7 @@
 9/23/2023 10:23 PM        set_temp_dr 0.079
 9/23/2023 10:24 PM        wait 300
 9/23/2023 10:29 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 79 mK"
-9/23/2023 10:29 PM        br 0.6666 0.6666 0.5 
+9/23/2023 10:29 PM        br 0.6666 0.6666 0.5
 9/23/2023 10:29 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 10:29 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 79 mK"
 9/23/2023 10:29 PM        br 0.6666 0.6666 0.5
@@ -1436,7 +1436,7 @@
 9/23/2023 10:57 PM        set_temp_dr 0.080
 9/23/2023 10:57 PM        wait 300
 9/23/2023 11:02 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 80 mK"
-9/23/2023 11:02 PM        br 0.6666 0.6666 0.5 
+9/23/2023 11:02 PM        br 0.6666 0.6666 0.5
 9/23/2023 11:02 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 11:02 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 80 mK"
 9/23/2023 11:02 PM        br 0.6666 0.6666 0.5
@@ -1444,7 +1444,7 @@
 9/23/2023 11:30 PM        set_temp_dr 0.081
 9/23/2023 11:30 PM        wait 300
 9/23/2023 11:35 PM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 81 mK"
-9/23/2023 11:35 PM        br 0.6666 0.6666 0.5 
+9/23/2023 11:35 PM        br 0.6666 0.6666 0.5
 9/23/2023 11:35 PM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/23/2023 11:35 PM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 81 mK"
 9/23/2023 11:35 PM        br 0.6666 0.6666 0.5
@@ -1452,7 +1452,7 @@
 9/24/2023 12:02 AM        set_temp_dr 0.082
 9/24/2023 12:02 AM        wait 300
 9/24/2023 12:07 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 82 mK"
-9/24/2023 12:07 AM        br 0.6666 0.6666 0.5 
+9/24/2023 12:07 AM        br 0.6666 0.6666 0.5
 9/24/2023 12:08 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 12:08 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 82 mK"
 9/24/2023 12:08 AM        br 0.6666 0.6666 0.5
@@ -1460,7 +1460,7 @@
 9/24/2023 12:36 AM        set_temp_dr 0.084
 9/24/2023 12:36 AM        wait 300
 9/24/2023 12:41 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 84 mK"
-9/24/2023 12:41 AM        br 0.6666 0.6666 0.5 
+9/24/2023 12:41 AM        br 0.6666 0.6666 0.5
 9/24/2023 12:41 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 12:41 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 84 mK"
 9/24/2023 12:41 AM        br 0.6666 0.6666 0.5
@@ -1468,7 +1468,7 @@
 9/24/2023 1:09 AM        set_temp_dr 0.086
 9/24/2023 1:09 AM        wait 300
 9/24/2023 1:14 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 86 mK"
-9/24/2023 1:14 AM        br 0.6666 0.6666 0.5 
+9/24/2023 1:14 AM        br 0.6666 0.6666 0.5
 9/24/2023 1:14 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 1:15 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 86 mK"
 9/24/2023 1:15 AM        br 0.6666 0.6666 0.5
@@ -1476,7 +1476,7 @@
 9/24/2023 1:43 AM        set_temp_dr 0.088
 9/24/2023 1:43 AM        wait 300
 9/24/2023 1:48 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 88 mK"
-9/24/2023 1:48 AM        br 0.6666 0.6666 0.5 
+9/24/2023 1:48 AM        br 0.6666 0.6666 0.5
 9/24/2023 1:48 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 1:48 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 88 mK"
 9/24/2023 1:48 AM        br 0.6666 0.6666 0.5
@@ -1484,7 +1484,7 @@
 9/24/2023 2:16 AM        set_temp_dr 0.090
 9/24/2023 2:16 AM        wait 300
 9/24/2023 2:21 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 90 mK"
-9/24/2023 2:21 AM        br 0.6666 0.6666 0.5 
+9/24/2023 2:21 AM        br 0.6666 0.6666 0.5
 9/24/2023 2:21 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 2:21 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 90 mK"
 9/24/2023 2:21 AM        br 0.6666 0.6666 0.5
@@ -1492,7 +1492,7 @@
 9/24/2023 2:49 AM        set_temp_dr 0.092
 9/24/2023 2:49 AM        wait 300
 9/24/2023 2:54 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 92 mK"
-9/24/2023 2:54 AM        br 0.6666 0.6666 0.5 
+9/24/2023 2:54 AM        br 0.6666 0.6666 0.5
 9/24/2023 2:55 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 2:55 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 92 mK"
 9/24/2023 2:55 AM        br 0.6666 0.6666 0.5
@@ -1500,7 +1500,7 @@
 9/24/2023 3:23 AM        set_temp_dr 0.094
 9/24/2023 3:23 AM        wait 300
 9/24/2023 3:28 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 94 mK"
-9/24/2023 3:28 AM        br 0.6666 0.6666 0.5 
+9/24/2023 3:28 AM        br 0.6666 0.6666 0.5
 9/24/2023 3:28 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 3:28 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 94 mK"
 9/24/2023 3:28 AM        br 0.6666 0.6666 0.5
@@ -1508,7 +1508,7 @@
 9/24/2023 3:56 AM        set_temp_dr 0.096
 9/24/2023 3:56 AM        wait 300
 9/24/2023 4:01 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 96 mK"
-9/24/2023 4:01 AM        br 0.6666 0.6666 0.5 
+9/24/2023 4:01 AM        br 0.6666 0.6666 0.5
 9/24/2023 4:01 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 4:01 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 96 mK"
 9/24/2023 4:01 AM        br 0.6666 0.6666 0.5
@@ -1516,7 +1516,7 @@
 9/24/2023 4:29 AM        set_temp_dr 0.098
 9/24/2023 4:29 AM        wait 300
 9/24/2023 4:34 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 98 mK"
-9/24/2023 4:34 AM        br 0.6666 0.6666 0.5 
+9/24/2023 4:34 AM        br 0.6666 0.6666 0.5
 9/24/2023 4:35 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 4:35 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 98 mK"
 9/24/2023 4:35 AM        br 0.6666 0.6666 0.5
@@ -1524,7 +1524,7 @@
 9/24/2023 5:03 AM        set_temp_dr 0.100
 9/24/2023 5:03 AM        wait 300
 9/24/2023 5:08 AM        scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 100 mK"
-9/24/2023 5:08 AM        br 0.6666 0.6666 0.5 
+9/24/2023 5:08 AM        br 0.6666 0.6666 0.5
 9/24/2023 5:08 AM        scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 9/24/2023 5:08 AM        scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 100 mK"
 9/24/2023 5:08 AM        br 0.6666 0.6666 0.5
@@ -1543,8 +1543,8 @@
 9/28/2023 1:02 PM        drive stl -9
 9/28/2023 1:05 PM        drive stl 9
 9/28/2023 1:07 PM        drive stl 0
-9/28/2023 1:42 PM        lowerlimit s1 -130.500000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 
-9/28/2023 1:42 PM        upperlimit s1 130.500000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 
+9/28/2023 1:42 PM        lowerlimit s1 -130.500000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000
+9/28/2023 1:42 PM        upperlimit s1 130.500000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000
 9/28/2023 1:42 PM        drive s1 0
 9/28/2023 1:46 PM        drive s1 -125
 9/28/2023 1:49 PM        drive s1 -130
@@ -1608,7 +1608,7 @@
 12/15/2023 1:27 PM        driverel a2 -10
 12/15/2023 1:33 PM        init
 12/15/2023 1:34 PM        driverel a2 -10
-12/15/2023 1:35 PM        scan 
+12/15/2023 1:35 PM        scan
 12/15/2023 3:56 PM        drive s2 -10
 12/28/2023 1:22 PM        driverel s2 5
 12/28/2023 1:23 PM        driverel s2 5
@@ -1772,13 +1772,13 @@
 1/12/2024 8:33 AM        drive slitb_bt 30
 1/12/2024 8:33 AM        drive s2 0 a1 90 a2 0
 1/12/2024 8:34 AM        drive s2 -2 a1 90 a2 0
-1/12/2024 8:37 AM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000 
-1/12/2024 8:37 AM        upperlimit s1 160.000000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 
+1/12/2024 8:37 AM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -10.000000 sz -9.900000 a1 -160.250000 a2 -40.250000
+1/12/2024 8:37 AM        upperlimit s1 160.000000 s2 -2.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000
 1/12/2024 8:37 AM        drive s1 160
 1/12/2024 8:40 AM        drive s1 -160
 1/12/2024 8:46 AM        drive s1 0
-1/12/2024 8:49 AM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.025000 stu -10.025000 sz -9.900000 a1 -160.250000 a2 -40.250000 
-1/12/2024 8:49 AM        upperlimit s1 160.000000 s2 -2.000000 sgl 5.025000 sgu 5.025000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.025000 stu 10.025000 sz 9.900000 a1 159.900000 a2 120.100000 
+1/12/2024 8:49 AM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.025000 stu -10.025000 sz -9.900000 a1 -160.250000 a2 -40.250000
+1/12/2024 8:49 AM        upperlimit s1 160.000000 s2 -2.000000 sgl 5.025000 sgu 5.025000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.025000 stu 10.025000 sz 9.900000 a1 159.900000 a2 120.100000
 1/12/2024 8:50 AM        dr sgl 5 sgu 5 stl 10 stu 10
 1/12/2024 8:51 AM        wait 00:00:10
 1/12/2024 8:52 AM        dr sgl -5 sgu -5 stl -10 stu -10
@@ -1814,8 +1814,8 @@
 1/12/2024 12:13 PM        scanrel s2 2 -2 0.2
 1/12/2024 1:21 PM        preset time 1
 1/12/2024 1:21 PM        scanrel s2 2 -2 0.2
-1/18/2024 1:24 PM        drive s2 0 
-1/18/2024 1:24 PM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -9.600000 sz -9.900000 a1 -160.250000 a2 -40.250000 
-1/18/2024 1:24 PM        upperlimit s1 160.000000 s2 3.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000 
-1/18/2024 1:24 PM        drive s2 0 
+1/18/2024 1:24 PM        drive s2 0
+1/18/2024 1:24 PM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -5.025000 sgu -5.025000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -10.000000 stu -9.600000 sz -9.900000 a1 -160.250000 a2 -40.250000
+1/18/2024 1:24 PM        upperlimit s1 160.000000 s2 3.000000 sgl 5.000000 sgu 5.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 10.000000 stu 10.000000 sz 9.900000 a1 159.900000 a2 120.100000
+1/18/2024 1:24 PM        drive s2 0
 1/18/2024 1:25 PM        begin

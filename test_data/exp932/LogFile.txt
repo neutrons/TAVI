@@ -135,7 +135,7 @@ and the default preset value to:  5.000000
 # builtin_command = scan m1 @(m1)+-0.6 @(m1)+0.6 0.100000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Wei Tian, Michael Cox
 # local_contact = Masa Matsuda
-# scan_title = 
+# scan_title =
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -148,12 +148,12 @@ and the default preset value to:  5.000000
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = m1
 # def_y = monitor
-# col_headers = 
+# col_headers =
 #   Pt.         m1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -49.7626      5.000     74.000    527.000      0.548    41.9676     0.0013     0.0010     0.0042     0.0067     0.0000     0.0044     0.0000   -10.0000    -5.0072     0.0000     0.0000    25.0000     3.0000     3.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     0.2230     0.1244     0.1244     0.0232    13.5001    13.5001     0.000
       2   -49.6626      5.000    116.000    736.000      0.765    41.9676     0.0013     0.0007     0.0042     0.0067     0.0000    -0.0024    -0.0006   -10.0000    -5.0072     0.0000     0.0000    25.0000     3.0000     3.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     0.2230     0.1244     0.1244     0.0232    13.5001    13.5001     0.000
@@ -290,12 +290,12 @@ Ni Powder (0.5,0.5,0.5)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -33.4142      1.000    494.000    624.000      0.648   -49.1828    41.9676     0.0010     0.0010     0.0042     0.0067     0.0000     0.0209    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     1.4676     0.8201     0.8201    -0.1364    13.5001    13.5001     0.000
       2   -33.5003      1.000    532.000    629.000      0.654   -49.1828    41.9676     0.0013     0.0010     0.0042     0.0067     0.0000    -0.0151     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     1.4712     0.8221     0.8221    -0.1376    13.5001    13.5001     0.000
@@ -353,8 +353,8 @@ Chi-Squared = 4.349106
 Background =   466.772270+/-14.104639
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-4166.872339+/-50.718733            -35.152291+/-0.005264              1.119550+/-0.013064           
+Height                             Position                           Full Width
+4166.872339+/-50.718733            -35.152291+/-0.005264              1.119550+/-0.013064
 Adding the  (0.500000,0.500000,0.500000,) reflection with fit position -35.152291+/-0.005264
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125034PM
 
@@ -390,12 +390,12 @@ Ni Powder (1.0,0.0,0.0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -38.9444      1.000    470.000    549.000      0.570   -49.1828    41.9676     0.0010     0.0007     0.0042     0.0067     0.0000     0.0000    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     1.7017     0.9445     0.9445    -0.2229    13.5001    13.5001     0.000
       2   -39.0355      1.000    487.000    582.000      0.605   -49.1828    41.9676     0.0013     0.0007     0.0042     0.0067    -0.0003     0.0000    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     1.7056     0.9465     0.9465    -0.2244    13.5001    13.5001     0.000
@@ -469,12 +469,12 @@ Ni Powder (0.5,0.5,0.5)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -33.4072      1.000    981.000    818.000      0.850   -49.1828    41.9676     0.0013     0.0010     0.0046     0.0067     0.0003    -0.0038     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     1.4673     0.8200     0.8200    -0.1363    13.5001    13.5001     0.000
       2   -33.5011      1.000   1033.000    891.000      0.926   -49.1828    41.9676     0.0010     0.0010     0.0046     0.0067     0.0000    -0.0027     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     1.4713     0.8221     0.8221    -0.1376    13.5001    13.5001     0.000
@@ -532,8 +532,8 @@ Chi-Squared = 8.263507
 Background =   917.396122+/-27.253194
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-8056.731014+/-97.229458            -35.149420+/-0.005235              1.122667+/-0.012994           
+Height                             Position                           Full Width
+8056.731014+/-97.229458            -35.149420+/-0.005235              1.122667+/-0.012994
 Adding the  (0.500000,0.500000,0.500000,) reflection with fit position -35.149420+/-0.005235
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
@@ -569,12 +569,12 @@ Ni Powder (1.0,0.0,0.0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -38.9446      1.000   1013.000    836.000      0.869   -49.1828    41.9676     0.0010     0.0010     0.0046     0.0067     0.0000     0.0007    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     1.7017     0.9445     0.9445    -0.2229    13.5001    13.5001     0.000
       2   -39.0355      1.000    967.000    837.000      0.870   -49.1828    41.9676     0.0010     0.0010     0.0042     0.0067     0.0003     0.0000    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     1.7056     0.9465     0.9465    -0.2244    13.5001    13.5001     0.000
@@ -632,8 +632,8 @@ Chi-Squared = 4.566828
 Background =   910.949347+/-18.008759
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-4522.107558+/-59.392604            -40.829179+/-0.005926              1.128917+/-0.014821           
+Height                             Position                           Full Width
+4522.107558+/-59.392604            -40.829179+/-0.005926              1.128917+/-0.014821
 Adding the  (1.000000,0.000000,0.000000,) reflection with fit position -40.829179+/-0.005926
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
@@ -669,12 +669,12 @@ Ni Powder (1.0,1.0,0.0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -56.6493      1.000    971.000    820.000      0.852   -49.1828    41.9676     0.0010     0.0010     0.0042     0.0067     0.0000    -0.0007    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     2.4221     1.2938     1.2938    -0.6060    13.5001    13.5001     0.000
       2   -56.7698      1.000    919.000    795.000      0.826   -49.1828    41.9676     0.0010     0.0010     0.0042     0.0067     0.0000    -0.0003     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     2.4268     1.2959     1.2959    -0.6091    13.5001    13.5001     0.000
@@ -732,15 +732,15 @@ Chi-Squared = 5.055036
 Background =   984.170617+/-16.809830
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-4221.858565+/-67.372569            -59.182585+/-0.007981              1.247187+/-0.018990           
+Height                             Position                           Full Width
+4221.858565+/-67.372569            -59.182585+/-0.007981              1.247187+/-0.018990
 Adding the  (1.000000,1.000000,0.000000,) reflection with fit position -59.182585+/-0.007981
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
 1:06:28 PM  4/9/2024    Executing "scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1) ""
 
 Setting the scantitle to:
-Ni Powder (1.5,0.5,0.5) (1,1,1) 
+Ni Powder (1.5,0.5,0.5) (1,1,1)
 
 
 1:06:29 PM  4/9/2024    Executing "scan s2 -67.690000 -77.740000 0.125625"
@@ -756,7 +756,7 @@ Ni Powder (1.5,0.5,0.5) (1,1,1)
 # builtin_command = scan s2 -67.690000 -77.740000 0.125625
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Wei Tian, Michael Cox
 # local_contact = Masa Matsuda
-# scan_title = Ni Powder (1.5,0.5,0.5) (1,1,1) 
+# scan_title = Ni Powder (1.5,0.5,0.5) (1,1,1)
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -769,12 +769,12 @@ Ni Powder (1.5,0.5,0.5) (1,1,1)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -67.6902      1.000    948.000    862.000      0.896   -49.1828    41.9676     0.0010     0.0010     0.0042     0.0067     0.0000    -0.0017     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     2.8432     1.4633     1.4633    -0.9147    13.5001    13.5001     0.000
       2   -67.8162      1.000    964.000    833.000      0.866   -49.1828    41.9676     0.0013     0.0010     0.0042     0.0067     0.0003     0.0007     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     2.8479     1.4650     1.4650    -0.9184    13.5001    13.5001     0.000
@@ -872,9 +872,9 @@ Chi-Squared = 7.660760
 Background =   964.776694+/-18.957663
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-8534.718769+/-90.079743            -74.464934+/-0.007335              1.797345+/-0.016396           
-5619.107053+/-85.950418            -70.754354+/-0.008555              1.410769+/-0.019377           
+Height                             Position                           Full Width
+8534.718769+/-90.079743            -74.464934+/-0.007335              1.797345+/-0.016396
+5619.107053+/-85.950418            -70.754354+/-0.008555              1.410769+/-0.019377
 Adding the  (1.500000,0.500000,0.500000,) reflection with fit position -70.754354+/-0.008555
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
@@ -886,9 +886,9 @@ Chi-Squared = 7.660760
 Background =   964.776694+/-18.957663
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-8534.718769+/-90.079743            -74.464934+/-0.007335              1.797345+/-0.016396           
-5619.107053+/-85.950418            -70.754354+/-0.008555              1.410769+/-0.019377           
+Height                             Position                           Full Width
+8534.718769+/-90.079743            -74.464934+/-0.007335              1.797345+/-0.016396
+5619.107053+/-85.950418            -70.754354+/-0.008555              1.410769+/-0.019377
 Adding the  (1.000000,1.000000,1.000000,) reflection with fit position -74.464934+/-0.007335
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
@@ -924,12 +924,12 @@ Ni Powder (2,0,0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -84.4609      1.000    957.000    820.000      0.852   -49.1828    41.9676     0.0013     0.0010     0.0042     0.0070     0.0003    -0.0003    -0.0006   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     3.4311     1.6332     1.6332    -1.4562    13.5001    13.5001     0.000
       2   -84.6670      1.000   1019.000    832.000      0.865   -49.1828    41.9676     0.0013     0.0007     0.0042     0.0067     0.0000    -0.0010     0.0000   -10.0000     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    -0.0124     3.4379     1.6346     1.6346    -1.4632    13.5001    13.5001     0.000
@@ -987,8 +987,8 @@ Chi-Squared = 1.476665
 Background =   971.262449+/-9.205341
 
 Fit Parameters:
-Height                             Position                           Full Width                    
-4283.663850+/-36.060819            -88.573833+/-0.007014              2.089107+/-0.016858           
+Height                             Position                           Full Width
+4283.663850+/-36.060819            -88.573833+/-0.007014              2.089107+/-0.016858
 Adding the  (2.000000,0.000000,0.000000,) reflection with fit position -88.573833+/-0.007014
 to the calibration file: C:\SPICE\User\exp932\Calibration\ni09Apr2024_125551PM
 
@@ -1148,12 +1148,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = a1
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         a1       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a2          q          h          k          l         ei         ef          e
       1    17.9834      1.000      1.000    849.000      0.882   -49.1828    41.9675     0.0010     0.0010     0.0042     0.0067     0.0003     0.0000     0.0000   -10.0000   -30.0011     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    41.9649     1.3213     0.7407     0.7407    -0.0915    13.5002    13.5018    -0.001
       2    18.2337      1.000      1.000    858.000      0.892   -49.1828    41.9675     0.0010     0.0010     0.0046     0.0067     0.0000    -0.0003     0.0000   -10.0000   -30.0011     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    41.9649     1.3213     0.7407     0.7407    -0.0915    13.5002    13.5018    -0.001
@@ -1240,12 +1240,12 @@ and the default preset value to:  5.000000
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = a2
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.         a2         a1       time   detector    monitor        mcu         m1         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu          q          h          k          l         ei         ef          e
       1    39.4543    19.3147      5.000     73.000   4188.000      4.352   -49.1828    41.9675     0.0013     0.0010     0.0042     0.0067     0.0003    -0.0007    -0.0006   -10.0000   -30.0011     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000     1.3698     0.7706     0.7706     0.0246    13.5002    15.1951    -1.694
       2    39.7155    19.4400      5.000     87.000   4050.000      4.208   -49.1828    41.9675     0.0010     0.0010     0.0042     0.0067     0.0000    -0.0003    -0.0006   -10.0000   -30.0011     0.0000     0.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000     1.3637     0.7673     0.7673     0.0118    13.5002    15.0038    -1.503
@@ -1290,7 +1290,7 @@ Drive completed.
 1:42:37 PM  4/9/2024    Executing "comment "Current Analyzer setting corresponds to Ef = 13.500212 meV ""
 
 COMMENT:
-Current Analyzer setting corresponds to Ef = 13.500212 meV 
+Current Analyzer setting corresponds to Ef = 13.500212 meV
 
 
 1:42:37 PM  4/9/2024    Executing "zero a2 @(a2.zero)+@(a2)-41.967483"
@@ -1367,7 +1367,7 @@ Drive completed.
 
 1:52:59 PM  4/9/2024    Executing "guide 18 perpq"
 
-Setting Guide field of 18.000000 Gauus vertical.  
+Setting Guide field of 18.000000 Gauus vertical.
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -1539,10 +1539,10 @@ The argument for motor hguide, "" contains more than one motor position.
 1:57:26 PM  4/9/2024    Executing "initialize"
                         Derived from "init"
 
-Reinitializing experiment ... 
-# 
+Reinitializing experiment ...
+#
 ****Device [fguide] initialized to current setting of 4.500.  Previous setting was 4.511.
-# 
+#
 ****Device [vguide] initialized to current setting of 2.000.  Previous setting was 0.005.
 Completed initialization.
 
@@ -1696,12 +1696,12 @@ and the default preset value to:  1.000000
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_15227PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = vguide
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.     vguide       time   detector    monitor        mcu         m1         m2     fguide     hguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1     1.0027      1.000  14192.000    846.000      0.879   -49.1828    41.9675     4.5109     1.7993     5.1158     0.0000    -0.0007    -0.0006   -28.2995   -46.2483     0.0000    -3.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    41.9675     2.0048     0.9846    -0.0075     0.2817    13.5002    13.5002    -0.000
       2     1.1027      1.000  12903.000    863.000      0.897   -49.1828    41.9675     4.5112     1.7990     5.1161     0.0000    -0.0031     0.0000   -28.2995   -46.2483     0.0000    -3.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    41.9675     2.0048     0.9846    -0.0075     0.2817    13.5002    13.5002    -0.000
@@ -1823,12 +1823,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_15227PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = fguide
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.     fguide       time   detector    monitor        mcu         m1         m2     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1     1.9985      1.000   9991.000    920.000      0.956   -49.1828    41.9675     1.7990     2.2510     5.1158     0.0000     0.0007     0.0000   -28.2995   -46.2483     0.0000    -3.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    41.9675     2.0048     0.9846    -0.0075     0.2817    13.5002    13.5002    -0.000
       2     2.2484      1.000   9058.000    879.000      0.913   -49.1828    41.9675     1.7990     2.2506     5.1158     0.0003    -0.0010    -0.0006   -28.2995   -46.2483     0.0000    -3.0000    25.0000    15.0000    15.0000    25.0000     0.0000     0.0000    20.9837    41.9675     2.0048     0.9846    -0.0075     0.2817    13.5002    13.5002    -0.000
@@ -1870,4 +1870,3 @@ Drive completed.
 
 
 2:16:50 PM  4/9/2024    Executing "begin"
-

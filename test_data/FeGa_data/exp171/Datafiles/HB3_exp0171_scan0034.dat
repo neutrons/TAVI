@@ -7,7 +7,7 @@
 # command = scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 15 preset mcu 20
 # builtin_command = scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 15 preset mcu 20
 # users = Summer School
-# local_contact = 
+# local_contact =
 # scan_title = Measure spin wave dispersion E=15 meV
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef   tcoldtip    tsample       temp
       1     0.4995     1.5000    -0.0001    15.0121     17.007     85.000 180000.000     20.000    46.9938   -28.7955   -28.6393   120.1201     0.2500     9.5000   -49.8518    19.0688    61.0209    -2.9105     0.7705     4.0000     0.0020   159.4167   -41.1825     3.4139    29.7010    14.6889     1.0000     1.0000   200.000
       2     0.5245     1.4751    -0.0001    15.0121     17.005     97.000 180000.000     20.000    46.9938   -28.7955   -28.6393   120.1201     0.2500     9.5000   -49.8518    20.0886    60.2817    -2.9105     0.7705     4.0000     0.0020   159.4167   -41.1825     3.3806    29.7010    14.6889     1.0000     1.0000   200.000

@@ -7,7 +7,7 @@
 # command = scan h 0.5 1 0.025 k 1.5 1 0.025 e 55 ef 30.5 preset mcu 90
 # builtin_command = scan h 0.5 1 0.025 k 1.5 1 0.025 e 55 ef 30.5 preset mcu 90
 # users = Summer School
-# local_contact = 
+# local_contact =
 # scan_title = Spin wave E=55meV
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = mcu
 # preset_value = 90.000000
 # def_x = h
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.          h          k          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q          l         ei   tcoldtip    tsample       temp
       1     0.4995     1.5002    55.0106    30.4914    141.852    185.000 810000.000     90.000    32.3623   -28.7955   -16.7641   120.1201     0.2500     9.5000   -75.0000    32.6577    25.9315    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2579     3.4143    -0.0001    85.5020     1.0000     1.0000   200.000
       2     0.5249     1.4753    55.0106    30.4914    142.217    179.000 810000.000     90.000    32.3623   -28.7955   -16.7641   120.1201     0.2500     9.5000   -75.0000    34.2212    25.3274    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2579     3.3812    -0.0001    85.5020     1.0000     1.0000   200.000

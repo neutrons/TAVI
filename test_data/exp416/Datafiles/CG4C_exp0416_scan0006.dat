@@ -4,7 +4,7 @@
 # proposal = 32293
 # experiment = Splitting of Excitations in a High-Spin Ising Ferromagnet
 # experiment_number = 416
-# command = scan bar 0 15 1 
+# command = scan bar 0 15 1
 # builtin_command = scan bar 0 15 1
 # users = Aashish Sapkota, Benjamin Ueland, Dhurba Jaishi, Fei Li, Rob McQueeney, Tianxiong Han
 # local_contact = Tao Hong and Bing Li
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Apr2024_93121AM.ini
-# preset_type = normal 
+# preset_type = normal
 # preset_channel = time
 # preset_value = 30.000000
 # def_x = bar
 # def_y = detector
-# col_headers = 
+# col_headers =
 #   Pt.        bar       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bat        stl        stu         a1         a2     afocus        qm1        qm2        qm3        qm4        qm5        qm6        qm7        qm8        xm1        xm2        xm3        xm4        xm5        xm6        xm7        xm8          q          h          k          l         ei         ef          e        vti     sample       temp dr_tsample    dr_temp
       1     0.0000     30.000    116.000  67099.000     30.500   115.2889   133.9046   -92.1908     0.4200    -1.0000    25.3800    -0.0100    63.4750     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    11.0000     4.0000    11.0000     0.0000     0.0000   133.9046   -92.1908     3.5000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.3673     0.6543     0.6543     0.5725     3.5000     3.5000     0.0000    39.6527     0.0000    25.0000    90.9516     0.000
       2     1.0000     30.000    111.000  67408.000     30.640   115.2889   133.9046   -92.1908     0.4200    -1.0000    25.3800    -0.0100    63.4750     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    11.0000     4.0000    11.0000     0.0000     0.0000   133.9046   -92.1908     3.5000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.3673     0.6543     0.6543     0.5725     3.5000     3.5000     0.0000    39.0778     0.0000    25.0000    90.9516     0.000

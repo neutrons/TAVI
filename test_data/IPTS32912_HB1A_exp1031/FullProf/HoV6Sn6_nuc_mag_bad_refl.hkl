@@ -2,6 +2,6 @@
   ------------------------------------------------------------
   => PCR-file:HoV6Sn6_nuc_mag.pcr
   => F2cal= scale*Corr*F2
-   h   k   l ivk   cod      F2obs         F2cal       Dif/sig   
+   h   k   l ivk   cod      F2obs         F2cal       Dif/sig
    0   0   6   2     1      52.1400      44.2012       30.5339
    2   0   3   2     1       7.9100       9.9358      -40.5150
