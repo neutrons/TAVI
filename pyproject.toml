@@ -43,6 +43,13 @@ file = "src/tavi/_version.py"
 exclude = ["tests*", "scripts*", "docs*", "notebooks*"]
 where = ["src"]
 
+#readthedocs
+[tool.pixi.feature.docs.dependencies]
+sphinx = ">=8"
+sphinx_rtd_theme = ">=3.0.1"
+sphinxcontrib-mermaid = ">=1.0.0"
+
+
 [tool.setuptools.package-data]
 "*" = ["*.yml", "*.yaml", "*.ini"]
 
