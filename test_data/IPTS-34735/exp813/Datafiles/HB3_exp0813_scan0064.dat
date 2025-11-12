@@ -8,7 +8,7 @@
 # builtin_command = scan h 0 k 0 l 1 e 12.2 0.6 0.2 ef 14.7 preset mcu 90
 # users = Benjamin Frandsen, Songxue Chi, George Yumnam, Huibo Cao, Michael Manley, Raphael Hermann, Eleanor Clements
 # local_contact = Eleanor Clements
-# scan_title = H0L scan at (001) at H/L = 0/1, mcu = 120, E= 12.2 to 0.6 mev
+# scan_title = H0L scan at (001) at H/L = 0/1, mcu = 120, E= 12.2 to 0.6 mev 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = -+-
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.017470,-0.052341,0.998476
 # ubconf = UB09Sep2024_43441PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 90.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       ampl         dc       freq     output       temp     temp_2         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei   ampl_out output_state        vti     sample
       1     0.0001    -0.0000     1.0000    12.2008    14.7000     75.331   2495.000 226081.000     90.000    49.3790   -20.0773   -30.1266   120.0962    -0.1480    -3.0001   -47.2680     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000    84.9590     1.8062     1.0010    -2.9998     9.0000    10.0000     5.0000    14.0000    16.0000     5.0000    10.0000    16.0000    -0.0005     0.0005   159.4164   -41.1662     0.9447    26.9008     2.0000     1.0000     4.9998     0.000
       2    -0.0000    -0.0000     1.0000    11.9996    14.7000     74.702    142.000 226081.000     90.000    49.5636   -20.0773   -30.2426   120.0962    -0.1480    -3.0001   -47.0791     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000    80.3045     3.4491     1.0010    -2.9998     9.0000    10.0000     5.0000    14.0000    16.0000     5.0000    10.0000    16.0000    -0.0005     0.0005   159.4164   -41.1662     0.9446    26.6996     2.0000     1.0000     4.9998     0.000

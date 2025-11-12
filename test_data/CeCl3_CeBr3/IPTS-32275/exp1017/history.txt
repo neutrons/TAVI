@@ -1,8 +1,8 @@
 5/1/2024 10:38 AM        drive s1 -84
-5/1/2024 10:40 AM        drive s1 0
+5/1/2024 10:40 AM        drive s1 0 
 5/1/2024 10:42 AM        drive s1 110
-5/1/2024 10:47 AM        drive s1 0
-5/1/2024 10:50 AM        drive stl 0 stu 0 sz 0
+5/1/2024 10:47 AM        drive s1 0 
+5/1/2024 10:50 AM        drive stl 0 stu 0 sz 0 
 5/1/2024 10:51 AM        drive slita_lf 15 slita_rt 15 slita_bt 25 slita_tp 25
 5/1/2024 10:51 AM        drive slitb_lf 15 slitb_rt 15 slitb_bt 25 slitb_tp 25
 5/1/2024 11:21 AM        lattice 7.451000 7.451000 4.312000 90.000000 90.000000 120.000000
@@ -50,15 +50,15 @@
 5/1/2024 12:04 PM        com s1 th2th 2 -2 0.2
 5/1/2024 12:05 PM        th2th 2 -2 0.2
 5/1/2024 12:11 PM        scantitle "optimize sample translations"
-5/1/2024 12:11 PM        br 0 0 2
+5/1/2024 12:11 PM        br 0 0 2 
 5/1/2024 12:13 PM        scan sz 9 -9 1 preset time 1
-5/1/2024 12:22 PM        drive sz 0
-5/1/2024 12:25 PM        scan stl 9 -9 1 preset time 1
-5/1/2024 12:29 PM        drive stl 0
-5/1/2024 12:30 PM        br 1 1 0
+5/1/2024 12:22 PM        drive sz 0 
+5/1/2024 12:25 PM        scan stl 9 -9 1 preset time 1 
+5/1/2024 12:29 PM        drive stl 0 
+5/1/2024 12:30 PM        br 1 1 0 
 5/1/2024 12:31 PM        scan stu 9 -9 1 preset time 1
-5/1/2024 12:35 PM        drive stu 0
-5/1/2024 12:36 PM        br 0 0 2
+5/1/2024 12:35 PM        drive stu 0 
+5/1/2024 12:36 PM        br 0 0 2 
 5/1/2024 12:38 PM        scantitle "optimize pre-sample and post-sample slits"
 5/1/2024 12:38 PM        scan slita_tp 0 25 1 preset time 1
 5/1/2024 12:41 PM        scan slita_bt 0 25 1 preset time 1
@@ -69,7 +69,7 @@
 5/1/2024 12:52 PM        scan slitb_bt 0 25 1 preset time 1
 5/1/2024 12:53 PM        scan slitb_lf 0 15 1 preset time 1
 5/1/2024 12:54 PM        scan slitb_rt 0 15 1 preset time 1
-5/1/2024 12:55 PM        br 1 1 0
+5/1/2024 12:55 PM        br 1 1 0 
 5/1/2024 12:57 PM        scantitle "optimize pre-sample and post-sample slits"
 5/1/2024 12:57 PM        scan slita_lf 0 15 1 preset time 1
 5/1/2024 12:58 PM        scan slita_rt 0 15 1 preset time 1
@@ -81,13 +81,13 @@
 5/1/2024 1:11 PM        drive stu -5
 5/1/2024 1:11 PM        drive stu -4
 5/1/2024 1:11 PM        drive stu -5
-5/1/2024 1:12 PM        br 0 0 2
+5/1/2024 1:12 PM        br 0 0 2 
 5/1/2024 1:14 PM        scantitle "optimize pre-sample and post-sample slits"
 5/1/2024 1:14 PM        scan slita_lf 0 15 1 preset time 1
 5/1/2024 1:15 PM        scan slita_rt 0 15 1 preset time 1
 5/1/2024 1:16 PM        scan slitb_lf 0 15 1 preset time 1
 5/1/2024 1:17 PM        scan slitb_rt 0 15 1 preset time 1
-5/1/2024 1:18 PM        br 1 1 0
+5/1/2024 1:18 PM        br 1 1 0 
 5/1/2024 1:20 PM        scantitle "optimize pre-sample and post-sample slits"
 5/1/2024 1:20 PM        scan slita_lf 0 15 1 preset time 1
 5/1/2024 1:21 PM        scan slita_rt 0 15 1 preset time 1
@@ -103,167 +103,167 @@
 5/1/2024 1:32 PM        set_temp_dr 0.1
 5/1/2024 1:32 PM        set_temp_dr 0
 5/1/2024 1:33 PM        scantitle "CeCl3, (0 0 L) scan, T = 0.04 K"
-5/1/2024 1:33 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30
+5/1/2024 1:33 PM        scan h 0 k 0 l 0.75 2.25 0.005 e 0 preset time 30 
 5/1/2024 4:13 PM        scantitle "CeCl3, (1/3 1/3 L) scan, T = 0.04 K"
-5/1/2024 4:13 PM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30
+5/1/2024 4:13 PM        scan h 0.33333 k 0.33333 l 0.25 2.25 0.005 e 0 preset time 30 
 5/1/2024 7:46 PM        scantitle "CeCl3, (2/3 2/3 L) scan, T = 0.04 K"
-5/1/2024 7:46 PM        scan h 0.6666 k 0.6666 l 0.25 2.25 0.005 e 0 preset time 30
+5/1/2024 7:46 PM        scan h 0.6666 k 0.6666 l 0.25 2.25 0.005 e 0 preset time 30 
 5/1/2024 11:20 PM        scantitle "CeCl3, (1 1 L) scan, T = 0.04 K"
-5/1/2024 11:20 PM        scan h 1 k 1 l 0.25 2.25 0.005 e 0 preset time 30
+5/1/2024 11:20 PM        scan h 1 k 1 l 0.25 2.25 0.005 e 0 preset time 30 
 5/2/2024 2:54 AM        scantitle "CeCl3, (4/3 4/3 L) scan, T = 0.04 K"
-5/2/2024 2:54 AM        scan h 1.33333 k 1.33333 l 0.25 2.25 0.005 e 0 preset time 30
+5/2/2024 2:54 AM        scan h 1.33333 k 1.33333 l 0.25 2.25 0.005 e 0 preset time 30 
 5/2/2024 6:09 AM        scantitle "CeCl3, (5/3 5/3 L) scan, T = 0.04 K"
-5/2/2024 6:09 AM        scan h 1.6667 k 1.6667 l 0.25 2 0.005 e 0 preset time 30
+5/2/2024 6:09 AM        scan h 1.6667 k 1.6667 l 0.25 2 0.005 e 0 preset time 30 
 5/2/2024 8:37 AM        scantitle "CeCl3, (1/3 1/3 1/2) th2th scan, T = 40 mK"
-5/2/2024 8:37 AM        br 0.3333 0.3333 0.5
+5/2/2024 8:37 AM        br 0.3333 0.3333 0.5 
 5/2/2024 8:38 AM        preset mcu 20
 5/2/2024 8:38 AM        th2th 1.5 -1.5 -0.15
 5/2/2024 8:46 AM        scantitle "CeCl3, (1/3 1/3 1/2) rocking scan, T = 40 mK"
-5/2/2024 8:46 AM        br 0.3333 0.3333 0.5
+5/2/2024 8:46 AM        br 0.3333 0.3333 0.5 
 5/2/2024 8:46 AM        preset mcu 20
 5/2/2024 8:46 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 8:53 AM        scantitle "CeCl3, (2/3 2/3 1/2) th2th scan, T = 40 mK"
-5/2/2024 8:53 AM        br 0.6666 0.6666 0.5
+5/2/2024 8:53 AM        br 0.6666 0.6666 0.5 
 5/2/2024 8:54 AM        preset mcu 20
 5/2/2024 8:54 AM        th2th 1.5 -1.5 0.15
 5/2/2024 9:02 AM        scantitle "CeCl3, (2/3 2/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 9:02 AM        br 0.6666 0.6666 0.5
+5/2/2024 9:02 AM        br 0.6666 0.6666 0.5 
 5/2/2024 9:02 AM        preset mcu 20
 5/2/2024 9:02 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 9:09 AM        scantitle "CeCl3, (4/3 4/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 9:09 AM        br 1.3333 1.3333 0.5
+5/2/2024 9:09 AM        br 1.3333 1.3333 0.5 
 5/2/2024 9:10 AM        preset mcu 20
 5/2/2024 9:10 AM        th2th 1.5 -1.5 0.15
 5/2/2024 9:18 AM        scantitle "CeCl3, (4/3 4/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 9:18 AM        br 1.3333 1.3333 0.5
+5/2/2024 9:18 AM        br 1.3333 1.3333 0.5 
 5/2/2024 9:18 AM        preset mcu 20
 5/2/2024 9:18 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 9:25 AM        scantitle "CeCl3, (5/3 5/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 9:25 AM        br 1.6666 1.6666 0.5
+5/2/2024 9:25 AM        br 1.6666 1.6666 0.5 
 5/2/2024 9:25 AM        preset mcu 20
 5/2/2024 9:25 AM        th2th 1.5 -1.5 0.15
 5/2/2024 9:33 AM        scantitle "CeCl3, (5/3 5/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 9:33 AM        br 1.6666 1.6666 0.5
+5/2/2024 9:33 AM        br 1.6666 1.6666 0.5 
 5/2/2024 9:33 AM        preset mcu 20
 5/2/2024 9:33 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 9:41 AM        scantitle "CeCl3, (1/3 1/3 3/2) th2th scan, T = 50 mK"
-5/2/2024 9:41 AM        br 0.3333 0.3333 1.5
+5/2/2024 9:41 AM        br 0.3333 0.3333 1.5 
 5/2/2024 9:42 AM        preset mcu 20
 5/2/2024 9:42 AM        th2th 1.5 -1.5 0.15
 5/2/2024 9:50 AM        scantitle "CeCl3, (1/3 1/3 3/2) rocking scan, T = 50 mK"
-5/2/2024 9:50 AM        br 0.3333 0.3333 1.5
+5/2/2024 9:50 AM        br 0.3333 0.3333 1.5 
 5/2/2024 9:50 AM        preset mcu 20
 5/2/2024 9:50 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 9:58 AM        scantitle "CeCl3, (2/3 2/3 3/2) th2th scan, T = 50 mK"
-5/2/2024 9:58 AM        br 0.6666 0.6666 1.5
+5/2/2024 9:58 AM        br 0.6666 0.6666 1.5 
 5/2/2024 9:58 AM        preset mcu 20
 5/2/2024 9:58 AM        th2th 1.5 -1.5 0.15
 5/2/2024 10:06 AM        scantitle "CeCl3, (2/3 2/3 3/2) rocking scan, T = 50 mK"
-5/2/2024 10:06 AM        br 0.6666 0.6666 1.5
+5/2/2024 10:06 AM        br 0.6666 0.6666 1.5 
 5/2/2024 10:06 AM        preset mcu 20
 5/2/2024 10:06 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 10:14 AM        scantitle "CeCl3, (4/3 4/3 3/2) th2th scan, T = 50 mK"
-5/2/2024 10:14 AM        br 1.3333 1.3333 1.5
+5/2/2024 10:14 AM        br 1.3333 1.3333 1.5 
 5/2/2024 10:14 AM        preset mcu 20
 5/2/2024 10:14 AM        th2th 2 -2 0.2
 5/2/2024 10:22 AM        scantitle "CeCl3, (4/3 4/3 3/2) rocking scan, T = 50 mK"
-5/2/2024 10:22 AM        br 1.3333 1.3333 1.5
+5/2/2024 10:22 AM        br 1.3333 1.3333 1.5 
 5/2/2024 10:22 AM        preset mcu 20
 5/2/2024 10:22 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 10:30 AM        scantitle "CeCl3, (5/3 5/3 3/2) th2th scan, T = 50 mK"
-5/2/2024 10:30 AM        br 1.6666 1.6666 1.5
+5/2/2024 10:30 AM        br 1.6666 1.6666 1.5 
 5/2/2024 10:30 AM        preset mcu 20
 5/2/2024 10:30 AM        th2th 2.5 -2.5 0.25
 5/2/2024 10:38 AM        scantitle "CeCl3, (5/3 5/3 3/2) rocking scan, T = 50 mK"
-5/2/2024 10:38 AM        br 1.6666 1.6666 1.5
+5/2/2024 10:38 AM        br 1.6666 1.6666 1.5 
 5/2/2024 10:38 AM        preset mcu 20
 5/2/2024 10:38 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 10:46 AM        scantitle "CeCl3, (1/3 1/3 5/2) th2th scan, T = 50 mK"
-5/2/2024 10:46 AM        br 0.3333 0.3333 2.5
+5/2/2024 10:46 AM        br 0.3333 0.3333 2.5 
 5/2/2024 10:46 AM        preset mcu 20
 5/2/2024 10:46 AM        th2th 2.5 -2.5 0.25
 5/2/2024 10:54 AM        scantitle "CeCl3, (1/3 1/3 5/2) rocking scan, T = 50 mK"
-5/2/2024 10:54 AM        br 0.3333 0.3333 2.5
+5/2/2024 10:54 AM        br 0.3333 0.3333 2.5 
 5/2/2024 10:55 AM        preset mcu 20
 5/2/2024 10:55 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 11:02 AM        scantitle "CeCl3, (2/3 2/3 5/2) th2th scan, T = 50 mK"
-5/2/2024 11:02 AM        br 0.6666 0.6666 2.5
+5/2/2024 11:02 AM        br 0.6666 0.6666 2.5 
 5/2/2024 11:02 AM        preset mcu 20
 5/2/2024 11:02 AM        th2th 2.5 -2.5 0.25
 5/2/2024 11:10 AM        scantitle "CeCl3, (2/3 2/3 5/2) rocking scan, T = 50 mK"
-5/2/2024 11:10 AM        br 0.6666 0.6666 2.5
+5/2/2024 11:10 AM        br 0.6666 0.6666 2.5 
 5/2/2024 11:10 AM        preset mcu 20
 5/2/2024 11:10 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 11:18 AM        scantitle "CeCl3, (4/3 4/3 5/2) th2th scan, T = 50 mK"
-5/2/2024 11:18 AM        br 1.3333 1.3333 2.5
+5/2/2024 11:18 AM        br 1.3333 1.3333 2.5 
 5/2/2024 11:18 AM        preset mcu 20
 5/2/2024 11:18 AM        th2th 2.5 -2.5 0.25
 5/2/2024 11:26 AM        scantitle "CeCl3, (4/3 4/3 5/2) rocking scan, T = 50 mK"
-5/2/2024 11:26 AM        br 1.3333 1.3333 2.5
+5/2/2024 11:26 AM        br 1.3333 1.3333 2.5 
 5/2/2024 11:27 AM        preset mcu 20
 5/2/2024 11:27 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 11:34 AM        scantitle "CeCl3, (5/3 5/3 5/2) th2th scan, T = 50 mK"
-5/2/2024 11:34 AM        br 1.6666 1.6666 2.5
+5/2/2024 11:34 AM        br 1.6666 1.6666 2.5 
 5/2/2024 11:34 AM        preset mcu 20
 5/2/2024 11:34 AM        th2th 2.5 -2.5 0.25
 5/2/2024 11:42 AM        scantitle "CeCl3, (5/3 5/3 5/2) rocking scan, T = 50 mK"
-5/2/2024 11:42 AM        br 1.6666 1.6666 2.5
+5/2/2024 11:42 AM        br 1.6666 1.6666 2.5 
 5/2/2024 11:43 AM        preset mcu 20
 5/2/2024 11:43 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 11:50 AM        scantitle "CeCl3, (7/3 7/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 11:50 AM        br 2.3333 2.3333 0.5
+5/2/2024 11:50 AM        br 2.3333 2.3333 0.5 
 5/2/2024 11:51 AM        preset mcu 20
 5/2/2024 11:51 AM        th2th 3 -3 0.3
 5/2/2024 11:59 AM        scantitle "CeCl3, (7/3 7/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 11:59 AM        br 2.3333 2.3333 0.5
+5/2/2024 11:59 AM        br 2.3333 2.3333 0.5 
 5/2/2024 11:59 AM        preset mcu 20
 5/2/2024 11:59 AM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:07 PM        scantitle "CeCl3, (8/3 8/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 12:07 PM        br 2.6666 2.6666 0.5
+5/2/2024 12:07 PM        br 2.6666 2.6666 0.5 
 5/2/2024 12:07 PM        preset mcu 20
 5/2/2024 12:07 PM        th2th 3 -3 0.3
 5/2/2024 12:15 PM        scantitle "CeCl3, (8/3 8/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 12:15 PM        br 2.6666 2.6666 0.5
+5/2/2024 12:15 PM        br 2.6666 2.6666 0.5 
 5/2/2024 12:16 PM        preset mcu 20
 5/2/2024 12:16 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:23 PM        scantitle "CeCl3, (-1/3 -1/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 12:23 PM        br -0.3333 -0.3333 0.5
+5/2/2024 12:23 PM        br -0.3333 -0.3333 0.5 
 5/2/2024 12:25 PM        preset mcu 10
 5/2/2024 12:25 PM        th2th 1.5 -1.5 -0.15
 5/2/2024 12:29 PM        scantitle "CeCl3, (-1/3 -1/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 12:29 PM        br -0.3333 -0.3333 0.5
+5/2/2024 12:29 PM        br -0.3333 -0.3333 0.5 
 5/2/2024 12:29 PM        preset mcu 10
 5/2/2024 12:29 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:33 PM        scantitle "CeCl3, (-2/3 -2/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 12:33 PM        br -0.6666 -0.6666 0.5
+5/2/2024 12:33 PM        br -0.6666 -0.6666 0.5 
 5/2/2024 12:34 PM        preset mcu 10
 5/2/2024 12:34 PM        th2th 1.5 -1.5 0.15
 5/2/2024 12:38 PM        scantitle "CeCl, (-2/3 -2/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 12:38 PM        br -0.6666 -0.6666 0.5
+5/2/2024 12:38 PM        br -0.6666 -0.6666 0.5 
 5/2/2024 12:38 PM        preset mcu 10
 5/2/2024 12:38 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:42 PM        scantitle "CeCl3, (-4/3 -4/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 12:42 PM        br -1.3333 -1.3333 0.5
+5/2/2024 12:42 PM        br -1.3333 -1.3333 0.5 
 5/2/2024 12:42 PM        preset mcu 10
 5/2/2024 12:42 PM        th2th 1.5 -1.5 0.15
 5/2/2024 12:47 PM        scantitle "CeCl3, (-4/3 -4/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 12:47 PM        br -1.3333 -1.3333 0.5
+5/2/2024 12:47 PM        br -1.3333 -1.3333 0.5 
 5/2/2024 12:47 PM        preset mcu 10
 5/2/2024 12:47 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:51 PM        scantitle "CeCl3, (-5/3 -5/3 1/2) th2th scan, T = 50 mK"
-5/2/2024 12:51 PM        br -1.6666 -1.6666 0.5
+5/2/2024 12:51 PM        br -1.6666 -1.6666 0.5 
 5/2/2024 12:51 PM        preset mcu 10
 5/2/2024 12:51 PM        th2th 1.5 -1.5 0.15
 5/2/2024 12:55 PM        scantitle "CeCl3, (-5/3 -5/3 1/2) rocking scan, T = 50 mK"
-5/2/2024 12:55 PM        br -1.6666 -1.6666 0.5
+5/2/2024 12:55 PM        br -1.6666 -1.6666 0.5 
 5/2/2024 12:55 PM        preset mcu 10
 5/2/2024 12:55 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 12:59 PM        scantitle "CeCl3, (0 0 1) rocking scan, T = 55 mK"
-5/2/2024 12:59 PM        br 0 0 1
+5/2/2024 12:59 PM        br 0 0 1 
 5/2/2024 1:00 PM        preset mcu 5
 5/2/2024 1:00 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:03 PM        scantitle "CeCl3, (0 0 1) th2th scan, T = 55 mK"
-5/2/2024 1:03 PM        br 0 0 1
+5/2/2024 1:03 PM        br 0 0 1 
 5/2/2024 1:03 PM        preset mcu 5
 5/2/2024 1:03 PM        th2th 1.5 -1.5 0.15
 5/2/2024 1:05 PM        scantitle "CeCl3, (0 0 2) rocking scan, T = 55 mK"
@@ -271,7 +271,7 @@
 5/2/2024 1:06 PM        preset mcu 5
 5/2/2024 1:06 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:08 PM        scantitle "CeCl3, (0 0 2) th2th scan, T =55 mK"
-5/2/2024 1:08 PM        br 0 0 2
+5/2/2024 1:08 PM        br 0 0 2 
 5/2/2024 1:08 PM        preset mcu 5
 5/2/2024 1:08 PM        th2th 2 -2 0.2
 5/2/2024 1:11 PM        scantitle "CeCl3, (0 0 3) rocking scan, T = 55 mK"
@@ -279,39 +279,39 @@
 5/2/2024 1:12 PM        preset mcu 5
 5/2/2024 1:12 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:14 PM        scantitle "CeCl3, (0 0 3) th2th scan, T = 55 mK"
-5/2/2024 1:14 PM        br 0 0 3
+5/2/2024 1:14 PM        br 0 0 3 
 5/2/2024 1:14 PM        preset mcu 5
 5/2/2024 1:14 PM        th2th 3 -3 0.3
 5/2/2024 1:17 PM        scantitle "CeCl3, (1 1 0) rocking scan, T = 55 mK"
-5/2/2024 1:17 PM        br 1 1 0
+5/2/2024 1:17 PM        br 1 1 0 
 5/2/2024 1:19 PM        preset mcu 5
 5/2/2024 1:19 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:21 PM        scantitle "CeCl3, (1 1 0) th2th scan, T = 55 mK"
-5/2/2024 1:21 PM        br 1 1 0
+5/2/2024 1:21 PM        br 1 1 0 
 5/2/2024 1:21 PM        preset mcu 5
 5/2/2024 1:21 PM        th2th 1.5 -1.5 0.15
 5/2/2024 1:24 PM        scantitle "CeCl3, (2 2 0) rocking scan, T = 55 mK"
-5/2/2024 1:24 PM        br 2 2 0
+5/2/2024 1:24 PM        br 2 2 0 
 5/2/2024 1:25 PM        preset mcu 5
 5/2/2024 1:25 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:27 PM        scantitle "CeCl3, (2 2 0) th2th scan, T = 55 mK"
-5/2/2024 1:27 PM        br 2 2 0
+5/2/2024 1:27 PM        br 2 2 0 
 5/2/2024 1:27 PM        preset mcu 5
 5/2/2024 1:27 PM        th2th 2 -2 0.2
 5/2/2024 1:30 PM        scantitle "CeCl3, (1 1 1) rocking scan, T = 55 mK"
-5/2/2024 1:30 PM        br 1 1 1
+5/2/2024 1:30 PM        br 1 1 1 
 5/2/2024 1:30 PM        preset mcu 5
 5/2/2024 1:30 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:33 PM        scantitle "CeCl3, (1 1 1) th2th scan, T = 55 mK"
-5/2/2024 1:33 PM        br 1 1 1
+5/2/2024 1:33 PM        br 1 1 1 
 5/2/2024 1:33 PM        preset mcu 5
 5/2/2024 1:33 PM        th2th 1.5 -1.5 0.15
 5/2/2024 1:36 PM        scantitle "CeCl3, (1 1 2) rocking scan, T = 55 mK"
-5/2/2024 1:36 PM        br 1 1 2
+5/2/2024 1:36 PM        br 1 1 2 
 5/2/2024 1:36 PM        preset mcu 5
 5/2/2024 1:36 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:39 PM        scantitle "CeCl3, (1 1 2) th2th scan, T = 55 mK"
-5/2/2024 1:39 PM        br 1 1 2
+5/2/2024 1:39 PM        br 1 1 2 
 5/2/2024 1:39 PM        preset mcu 5
 5/2/2024 1:39 PM        th2th 2 -2 0.2
 5/2/2024 1:41 PM        scantitle "CeCl3, (1 1 3) rocking scan, T = 55 mK"
@@ -323,35 +323,35 @@
 5/2/2024 1:44 PM        preset mcu 5
 5/2/2024 1:44 PM        th2th 3 -3 0.3
 5/2/2024 1:47 PM        scantitle "CeCl3, (2 2 1) rocking scan, T = 55 mK"
-5/2/2024 1:47 PM        br 2 2 1
+5/2/2024 1:47 PM        br 2 2 1 
 5/2/2024 1:48 PM        preset mcu 5
 5/2/2024 1:48 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:51 PM        scantitle "CeCl3, (2 2 1) th2th scan, T = 55 mK"
-5/2/2024 1:51 PM        br 2 2 1
+5/2/2024 1:51 PM        br 2 2 1 
 5/2/2024 1:51 PM        preset mcu 5
 5/2/2024 1:51 PM        th2th 2.5 -2.5 0.25
 5/2/2024 1:54 PM        scantitle "CeCl3, (2 2 2) rocking scan, T = 55 mK"
-5/2/2024 1:54 PM        br 2 2 2
+5/2/2024 1:54 PM        br 2 2 2 
 5/2/2024 1:54 PM        preset mcu 5
 5/2/2024 1:54 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 1:57 PM        scantitle "CeCl3, (2 2 2) th2th scan, T = 55 mK"
-5/2/2024 1:57 PM        br 2 2 2
+5/2/2024 1:57 PM        br 2 2 2 
 5/2/2024 1:57 PM        preset mcu 5
 5/2/2024 1:57 PM        th2th 3 -3 0.3
 5/2/2024 1:59 PM        scantitle "CeCl3, (-1 -1 1) rocking scan, T = 55 mK"
-5/2/2024 1:59 PM        br -1 -1 1
+5/2/2024 1:59 PM        br -1 -1 1 
 5/2/2024 2:01 PM        preset mcu 5
 5/2/2024 2:01 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:03 PM        scantitle "CeCl3, (-1 -1 1) th2th scan, T = 55 mK"
-5/2/2024 2:03 PM        br -1 -1 1
+5/2/2024 2:03 PM        br -1 -1 1 
 5/2/2024 2:03 PM        preset mcu 5
 5/2/2024 2:03 PM        th2th 1.5 -1.5 0.15
 5/2/2024 2:06 PM        scantitle "CeCl3, (-1 -1 2) rocking scan, T = 55 mK"
-5/2/2024 2:06 PM        br -1 -1 2
+5/2/2024 2:06 PM        br -1 -1 2 
 5/2/2024 2:06 PM        preset mcu 5
 5/2/2024 2:06 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:08 PM        scantitle "CeCl3, (-1 -1 2) th2th scan, T = 55 mK"
-5/2/2024 2:08 PM        br -1 -1 2
+5/2/2024 2:08 PM        br -1 -1 2 
 5/2/2024 2:09 PM        preset mcu 5
 5/2/2024 2:09 PM        th2th 2 -2 0.2
 5/2/2024 2:11 PM        scantitle "CeCl3, (-1 -1 3) rocking scan, T = 55 mK"
@@ -368,46 +368,46 @@
 5/2/2024 2:21 PM        preset mcu 5
 5/2/2024 2:21 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:23 PM        scantitle "CeCl3, (0 0 2) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 2:23 PM        br 0 0 2
+5/2/2024 2:23 PM        br 0 0 2 
 5/2/2024 2:23 PM        preset mcu 5
 5/2/2024 2:23 PM        th2th 2 -2 0.2
 5/2/2024 2:26 PM        scantitle "CeCl3, (1 1 0) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 2:26 PM        br 1 1 0
+5/2/2024 2:26 PM        br 1 1 0 
 5/2/2024 2:28 PM        preset mcu 5
 5/2/2024 2:28 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:30 PM        scantitle "CeCl3, (1 1 0) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 2:30 PM        br 1 1 0
+5/2/2024 2:30 PM        br 1 1 0 
 5/2/2024 2:30 PM        preset mcu 5
 5/2/2024 2:30 PM        th2th 1.5 -1.5 0.15
 5/2/2024 2:33 PM        scantitle "CeCl3, (1 1 1) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 2:33 PM        br 1 1 1
+5/2/2024 2:33 PM        br 1 1 1 
 5/2/2024 2:34 PM        preset mcu 5
 5/2/2024 2:34 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:36 PM        scantitle "CeCl3, (1 1 1) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 2:36 PM        br 1 1 1
+5/2/2024 2:36 PM        br 1 1 1 
 5/2/2024 2:36 PM        preset mcu 5
 5/2/2024 2:36 PM        th2th 1.5 -1.5 0.15
 5/2/2024 2:39 PM        scantitle "CeCl3, (1 1 2) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 2:39 PM        br 1 1 2
+5/2/2024 2:39 PM        br 1 1 2 
 5/2/2024 2:39 PM        preset mcu 5
 5/2/2024 2:39 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:42 PM        scantitle "CeCl3, (1 1 2) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 2:42 PM        br 1 1 2
+5/2/2024 2:42 PM        br 1 1 2 
 5/2/2024 2:42 PM        preset mcu 5
 5/2/2024 2:42 PM        th2th 2 -2 0.2
 5/2/2024 2:45 PM        scantitle "CeCl3, (-1 -1 1) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 2:45 PM        br -1 -1 1
+5/2/2024 2:45 PM        br -1 -1 1 
 5/2/2024 2:46 PM        preset mcu 5
 5/2/2024 2:46 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:48 PM        scantitle "CeCl3, (-1 -1 1) th2th scan, T = 40 mK, attenuator in"
 5/2/2024 2:48 PM        preset mcu 5
 5/2/2024 2:48 PM        th2th 2 -2 0.2
 5/2/2024 2:51 PM        scantitle "CeCl3, (-1 -1 2) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 2:51 PM        br -1 -1 2
+5/2/2024 2:51 PM        br -1 -1 2 
 5/2/2024 2:51 PM        preset mcu 5
 5/2/2024 2:51 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 2:54 PM        scantitle "CeCl3, (-1 -1 2) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 2:54 PM        br -1 -1 2
+5/2/2024 2:54 PM        br -1 -1 2 
 5/2/2024 2:54 PM        preset mcu 5
 5/2/2024 2:54 PM        th2th 2 -2 0.2
 5/2/2024 2:57 PM        scantitle "CeCl3, (1 1 3) rocking scan, T = 40 mK, attenuator in"
@@ -419,19 +419,19 @@
 5/2/2024 3:00 PM        preset mcu 5
 5/2/2024 3:00 PM        th2th 3 -3 0.3
 5/2/2024 3:03 PM        scantitle "CeCl3, (2 2 1) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 3:03 PM        br 2 2 1
+5/2/2024 3:03 PM        br 2 2 1 
 5/2/2024 3:04 PM        preset mcu 5
 5/2/2024 3:04 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 3:06 PM        scantitle "CeCl3, (2 2 1) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 3:06 PM        br 2 2 1
+5/2/2024 3:06 PM        br 2 2 1 
 5/2/2024 3:06 PM        preset mcu 5
 5/2/2024 3:06 PM        th2th 2.5 -2.5 0.25
 5/2/2024 3:09 PM        scantitle "CeCl3, (-1 -1 3) rocking scan, T = 40 mK, attenuator in"
-5/2/2024 3:09 PM        br -1 -1 3
+5/2/2024 3:09 PM        br -1 -1 3 
 5/2/2024 3:11 PM        preset mcu 5
 5/2/2024 3:11 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 3:13 PM        scantitle "CeCl3, (-1 -1 3) th2th scan, T = 40 mK, attenuator in"
-5/2/2024 3:13 PM        br -1 -1 3
+5/2/2024 3:13 PM        br -1 -1 3 
 5/2/2024 3:13 PM        preset mcu 5
 5/2/2024 3:13 PM        th2th 3 -3 0.3
 5/2/2024 3:17 PM        br 0.333 0.333 0.5
@@ -444,43 +444,43 @@
 5/2/2024 3:32 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 3:40 PM        scanrel s1 1.5 -1.5 0.15
 5/2/2024 3:50 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 3:50 PM        br 0.3333 0.3333 0.5
+5/2/2024 3:50 PM        br 0.3333 0.3333 0.5 
 5/2/2024 3:50 PM        scan h 0.29 0.37 0.0025 k 0.29 0.37 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 3:57 PM        scantitle "CeCl3, (1/3 1/3 1/2) L-scan, T = 50 mK"
-5/2/2024 3:57 PM        br 0.3333 0.3333 0.5
+5/2/2024 3:57 PM        br 0.3333 0.3333 0.5 
 5/2/2024 3:58 PM        scan h 0.3333 k 0.3333 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 4:05 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 4:05 PM        br 0.6666 0.6666 0.5
+5/2/2024 4:05 PM        br 0.6666 0.6666 0.5 
 5/2/2024 4:05 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 4:13 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 50 mK"
 5/2/2024 4:13 PM        br 0.6666 0.6666 0.5
 5/2/2024 4:13 PM        scan h 0.6666 k 0.6666 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 4:20 PM        scantitle "CeCl3, (4/3 4/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 4:20 PM        br 1.3333 1.3333 0.5
+5/2/2024 4:20 PM        br 1.3333 1.3333 0.5 
 5/2/2024 4:21 PM        scan h 1.29 1.37 0.0025 k 1.29 1.37 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 4:28 PM        scantitle "CeCl3, (4/3 4/3 1/2) L-scan, T = 50 mK"
-5/2/2024 4:28 PM        br 1.3333 1.3333 0.5
+5/2/2024 4:28 PM        br 1.3333 1.3333 0.5 
 5/2/2024 4:28 PM        scan h 1.3333 k 1.3333 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 4:36 PM        scantitle "CeCl3, (5/3 5/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 4:36 PM        br 1.6666 1.6666 0.5
+5/2/2024 4:36 PM        br 1.6666 1.6666 0.5 
 5/2/2024 4:36 PM        scan h 1.62 1.70 0.0025 k 1.62 1.70 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 4:44 PM        scantitle "CeCl3, (5/3 5/3 1/2) L-scan, T = 50 mK"
 5/2/2024 4:44 PM        br 1.6666 1.6666 0.5
 5/2/2024 4:44 PM        scan h 1.6666 k 1.6666 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 4:51 PM        scantitle "CeCl3, (7/3 7/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 4:51 PM        br 2.3333 2.3333 0.5
+5/2/2024 4:51 PM        br 2.3333 2.3333 0.5 
 5/2/2024 4:52 PM        scan h 2.29 2.37 0.0025 k 2.29 2.37 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 4:59 PM        scantitle "CeCl3, (7/3 7/3 1/2) L-scan, T = 50 mK"
-5/2/2024 4:59 PM        br 2.3333 2.3333 0.5
+5/2/2024 4:59 PM        br 2.3333 2.3333 0.5 
 5/2/2024 4:59 PM        scan h 2.3333 k 2.3333 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 5:07 PM        scantitle "CeCl3, (8/3 8/3 1/2) HH-scan, T = 50 mK"
-5/2/2024 5:07 PM        br 2.6666 2.6666 0.5
+5/2/2024 5:07 PM        br 2.6666 2.6666 0.5 
 5/2/2024 5:07 PM        scan h 2.62 2.70 0.0025 k 2.62 2.70 0.0025 l 0.5 e 0 preset mcu 10
 5/2/2024 5:15 PM        scantitle "CeCl3, (8/3 8/3 1/2) L-scan, T = 50 mK"
 5/2/2024 5:15 PM        br 2.6666 2.6666 0.5
 5/2/2024 5:15 PM        scan h 2.6666 k 2.6666 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/2/2024 5:24 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = base"
-5/2/2024 5:24 PM        br 0.6666 0.6666 0.5
+5/2/2024 5:24 PM        br 0.6666 0.6666 0.5 
 5/2/2024 5:25 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 20
 5/2/2024 5:40 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = base"br 0.6666 0.6666 0.5scan h 0.6666 k 0.6666 l 0.46 0.54 0.0025 e 0 preset mcu 20
 5/2/2024 5:40 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = base"
@@ -497,7 +497,7 @@
 5/2/2024 6:22 PM        set_temp_dr 0.052
 5/2/2024 6:22 PM        wait 300
 5/2/2024 6:27 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 52 mK"
-5/2/2024 6:27 PM        br 0.6666 0.6666 0.5
+5/2/2024 6:27 PM        br 0.6666 0.6666 0.5 
 5/2/2024 6:27 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 6:38 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 52 mK"
 5/2/2024 6:38 PM        br 0.6666 0.6666 0.5
@@ -512,7 +512,7 @@
 5/2/2024 7:12 PM        set_temp_dr 0.053
 5/2/2024 7:12 PM        wait 300
 5/2/2024 7:17 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 53 mK"
-5/2/2024 7:17 PM        br 0.6666 0.6666 0.5
+5/2/2024 7:17 PM        br 0.6666 0.6666 0.5 
 5/2/2024 7:17 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 7:28 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 53 mK"
 5/2/2024 7:28 PM        br 0.6666 0.6666 0.5
@@ -527,7 +527,7 @@
 5/2/2024 8:02 PM        set_temp_dr 0.054
 5/2/2024 8:02 PM        wait 300
 5/2/2024 8:07 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 54 mK"
-5/2/2024 8:07 PM        br 0.6666 0.6666 0.5
+5/2/2024 8:07 PM        br 0.6666 0.6666 0.5 
 5/2/2024 8:07 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 8:18 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 54 mK"
 5/2/2024 8:18 PM        br 0.6666 0.6666 0.5
@@ -542,7 +542,7 @@
 5/2/2024 8:52 PM        set_temp_dr 0.055
 5/2/2024 8:52 PM        wait 300
 5/2/2024 8:57 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 55 mK"
-5/2/2024 8:57 PM        br 0.6666 0.6666 0.5
+5/2/2024 8:57 PM        br 0.6666 0.6666 0.5 
 5/2/2024 8:57 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 9:08 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 55 mK"
 5/2/2024 9:08 PM        br 0.6666 0.6666 0.5
@@ -557,7 +557,7 @@
 5/2/2024 9:42 PM        set_temp_dr 0.056
 5/2/2024 9:42 PM        wait 300
 5/2/2024 9:47 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 56 mK"
-5/2/2024 9:47 PM        br 0.6666 0.6666 0.5
+5/2/2024 9:47 PM        br 0.6666 0.6666 0.5 
 5/2/2024 9:48 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 9:58 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 56 mK"
 5/2/2024 9:58 PM        br 0.6666 0.6666 0.5
@@ -572,7 +572,7 @@
 5/2/2024 10:33 PM        set_temp_dr 0.057
 5/2/2024 10:33 PM        wait 300
 5/2/2024 10:38 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 57 mK"
-5/2/2024 10:38 PM        br 0.6666 0.6666 0.5
+5/2/2024 10:38 PM        br 0.6666 0.6666 0.5 
 5/2/2024 10:38 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 10:49 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 57 mK"
 5/2/2024 10:49 PM        br 0.6666 0.6666 0.5
@@ -587,7 +587,7 @@
 5/2/2024 11:24 PM        set_temp_dr 0.058
 5/2/2024 11:24 PM        wait 300
 5/2/2024 11:29 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 58 mK"
-5/2/2024 11:29 PM        br 0.6666 0.6666 0.5
+5/2/2024 11:29 PM        br 0.6666 0.6666 0.5 
 5/2/2024 11:29 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/2/2024 11:40 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 58 mK"
 5/2/2024 11:40 PM        br 0.6666 0.6666 0.5
@@ -602,7 +602,7 @@
 5/3/2024 12:15 AM        set_temp_dr 0.059
 5/3/2024 12:15 AM        wait 300
 5/3/2024 12:20 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 59 mK"
-5/3/2024 12:20 AM        br 0.6666 0.6666 0.5
+5/3/2024 12:20 AM        br 0.6666 0.6666 0.5 
 5/3/2024 12:20 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 12:31 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 59 mK"
 5/3/2024 12:31 AM        br 0.6666 0.6666 0.5
@@ -617,7 +617,7 @@
 5/3/2024 1:06 AM        set_temp_dr 0.060
 5/3/2024 1:06 AM        wait 300
 5/3/2024 1:11 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 60 mK"
-5/3/2024 1:11 AM        br 0.6666 0.6666 0.5
+5/3/2024 1:11 AM        br 0.6666 0.6666 0.5 
 5/3/2024 1:12 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 1:22 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 60 mK"
 5/3/2024 1:22 AM        br 0.6666 0.6666 0.5
@@ -632,7 +632,7 @@
 5/3/2024 1:58 AM        set_temp_dr 0.061
 5/3/2024 1:58 AM        wait 300
 5/3/2024 2:03 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 61 mK"
-5/3/2024 2:03 AM        br 0.6666 0.6666 0.5
+5/3/2024 2:03 AM        br 0.6666 0.6666 0.5 
 5/3/2024 2:03 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 2:14 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 61 mK"
 5/3/2024 2:14 AM        br 0.6666 0.6666 0.5
@@ -647,7 +647,7 @@
 5/3/2024 2:49 AM        set_temp_dr 0.062
 5/3/2024 2:49 AM        wait 300
 5/3/2024 2:54 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 62 mK"
-5/3/2024 2:54 AM        br 0.6666 0.6666 0.5
+5/3/2024 2:54 AM        br 0.6666 0.6666 0.5 
 5/3/2024 2:55 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 3:06 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 62 mK"
 5/3/2024 3:06 AM        br 0.6666 0.6666 0.5
@@ -662,7 +662,7 @@
 5/3/2024 3:41 AM        set_temp_dr 0.063
 5/3/2024 3:41 AM        wait 300
 5/3/2024 3:46 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 63 mK"
-5/3/2024 3:46 AM        br 0.6666 0.6666 0.5
+5/3/2024 3:46 AM        br 0.6666 0.6666 0.5 
 5/3/2024 3:47 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 3:58 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 63 mK"
 5/3/2024 3:58 AM        br 0.6666 0.6666 0.5
@@ -677,7 +677,7 @@
 5/3/2024 4:33 AM        set_temp_dr 0.064
 5/3/2024 4:33 AM        wait 300
 5/3/2024 4:38 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 64 mK"
-5/3/2024 4:38 AM        br 0.6666 0.6666 0.5
+5/3/2024 4:38 AM        br 0.6666 0.6666 0.5 
 5/3/2024 4:39 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 4:50 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 64 mK"
 5/3/2024 4:50 AM        br 0.6666 0.6666 0.5
@@ -692,7 +692,7 @@
 5/3/2024 5:26 AM        set_temp_dr 0.065
 5/3/2024 5:26 AM        wait 300
 5/3/2024 5:31 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 65 mK"
-5/3/2024 5:31 AM        br 0.6666 0.6666 0.5
+5/3/2024 5:31 AM        br 0.6666 0.6666 0.5 
 5/3/2024 5:31 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 5:42 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 65 mK"
 5/3/2024 5:42 AM        br 0.6666 0.6666 0.5
@@ -707,7 +707,7 @@
 5/3/2024 6:18 AM        set_temp_dr 0.066
 5/3/2024 6:18 AM        wait 300
 5/3/2024 6:23 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 66 mK"
-5/3/2024 6:23 AM        br 0.6666 0.6666 0.5
+5/3/2024 6:23 AM        br 0.6666 0.6666 0.5 
 5/3/2024 6:23 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 6:34 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 66 mK"
 5/3/2024 6:34 AM        br 0.6666 0.6666 0.5
@@ -722,7 +722,7 @@
 5/3/2024 7:11 AM        set_temp_dr 0.067
 5/3/2024 7:11 AM        wait 300
 5/3/2024 7:16 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 67 mK"
-5/3/2024 7:16 AM        br 0.6666 0.6666 0.5
+5/3/2024 7:16 AM        br 0.6666 0.6666 0.5 
 5/3/2024 7:16 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 7:27 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 67 mK"
 5/3/2024 7:27 AM        br 0.6666 0.6666 0.5
@@ -737,7 +737,7 @@
 5/3/2024 8:04 AM        set_temp_dr 0.068
 5/3/2024 8:04 AM        wait 300
 5/3/2024 8:09 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 68 mK"
-5/3/2024 8:09 AM        br 0.6666 0.6666 0.5
+5/3/2024 8:09 AM        br 0.6666 0.6666 0.5 
 5/3/2024 8:09 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 8:20 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 68 mK"
 5/3/2024 8:20 AM        br 0.6666 0.6666 0.5
@@ -752,7 +752,7 @@
 5/3/2024 8:57 AM        set_temp_dr 0.069
 5/3/2024 8:57 AM        wait 300
 5/3/2024 9:02 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 69 mK"
-5/3/2024 9:02 AM        br 0.6666 0.6666 0.5
+5/3/2024 9:02 AM        br 0.6666 0.6666 0.5 
 5/3/2024 9:02 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 9:14 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 69 mK"
 5/3/2024 9:14 AM        br 0.6666 0.6666 0.5
@@ -767,7 +767,7 @@
 5/3/2024 9:50 AM        set_temp_dr 0.070
 5/3/2024 9:50 AM        wait 300
 5/3/2024 9:55 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 70 mK"
-5/3/2024 9:55 AM        br 0.6666 0.6666 0.5
+5/3/2024 9:55 AM        br 0.6666 0.6666 0.5 
 5/3/2024 9:55 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 10:07 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 70 mK"
 5/3/2024 10:07 AM        br 0.6666 0.6666 0.5
@@ -782,7 +782,7 @@
 5/3/2024 10:44 AM        set_temp_dr 0.071
 5/3/2024 10:44 AM        wait 300
 5/3/2024 10:49 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 71 mK"
-5/3/2024 10:49 AM        br 0.6666 0.6666 0.5
+5/3/2024 10:49 AM        br 0.6666 0.6666 0.5 
 5/3/2024 10:49 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 11:00 AM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 71 mK"
 5/3/2024 11:00 AM        br 0.6666 0.6666 0.5
@@ -799,7 +799,7 @@
 5/3/2024 11:46 AM        set_temp_dr 0.072
 5/3/2024 11:46 AM        wait 300
 5/3/2024 11:51 AM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 72 mK"
-5/3/2024 11:51 AM        br 0.6666 0.6666 0.5
+5/3/2024 11:51 AM        br 0.6666 0.6666 0.5 
 5/3/2024 11:51 AM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 12:03 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 72 mK"
 5/3/2024 12:03 PM        br 0.6666 0.6666 0.5
@@ -814,7 +814,7 @@
 5/3/2024 12:40 PM        set_temp_dr 0.073
 5/3/2024 12:40 PM        wait 300
 5/3/2024 12:45 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 73 mK"
-5/3/2024 12:45 PM        br 0.6666 0.6666 0.5
+5/3/2024 12:45 PM        br 0.6666 0.6666 0.5 
 5/3/2024 12:45 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 12:57 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 73 mK"
 5/3/2024 12:57 PM        br 0.6666 0.6666 0.5
@@ -829,7 +829,7 @@
 5/3/2024 1:34 PM        set_temp_dr 0.074
 5/3/2024 1:34 PM        wait 300
 5/3/2024 1:39 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 74 mK"
-5/3/2024 1:39 PM        br 0.6666 0.6666 0.5
+5/3/2024 1:39 PM        br 0.6666 0.6666 0.5 
 5/3/2024 1:40 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 15
 5/3/2024 1:51 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 74 mK"
 5/3/2024 1:51 PM        br 0.6666 0.6666 0.5
@@ -842,71 +842,71 @@
 5/3/2024 2:17 PM        set_temp_dr 0.2
 5/3/2024 2:17 PM        wait 120
 5/3/2024 2:19 PM        scantitle "CeCl3, (2/3 2/3 1/2) HH-scan, T = 200 mK"
-5/3/2024 2:19 PM        br 0.6666 0.6666 0.5
+5/3/2024 2:19 PM        br 0.6666 0.6666 0.5 
 5/3/2024 2:20 PM        scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset mcu 10
 5/3/2024 2:28 PM        scantitle "CeCl3, (2/3 2/3 1/2) L-scan, T = 200 mK"
-5/3/2024 2:28 PM        br 0.6666 0.6666 0.5
+5/3/2024 2:28 PM        br 0.6666 0.6666 0.5 
 5/3/2024 2:29 PM        scan h 0.6666 k 0.6666 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/3/2024 2:37 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 200 mK"
-5/3/2024 2:37 PM        br 0.3333 0.3333 0.5
+5/3/2024 2:37 PM        br 0.3333 0.3333 0.5 
 5/3/2024 2:37 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 10
 5/3/2024 2:46 PM        scantitle "CeCl3, (1/3 1/3 1/2) L-scan, T = 200 mK"
-5/3/2024 2:46 PM        br 0.3333 0.3333 0.5
+5/3/2024 2:46 PM        br 0.3333 0.3333 0.5 
 5/3/2024 2:47 PM        scan h 0.3333 k 0.3333 l 0.46 0.54 0.0025 e 0 preset mcu 10
 5/3/2024 2:55 PM        scantitle "CeCl3, (1/3 1/3 1/2) th2th scan, T = 200mK"
-5/3/2024 2:55 PM        br 0.3333 0.3333 0.5
+5/3/2024 2:55 PM        br 0.3333 0.3333 0.5 
 5/3/2024 2:55 PM        preset mcu10
 5/3/2024 2:55 PM        th2th 1.5 -1.5 -0.15
 5/3/2024 3:04 PM        scantitle "CeCl3, (1/3 1/3 1/2) rocking scan, T = 200 mK"
-5/3/2024 3:04 PM        br 0.3333 0.3333 0.5
+5/3/2024 3:04 PM        br 0.3333 0.3333 0.5 
 5/3/2024 3:04 PM        preset mcu 10
 5/3/2024 3:04 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:09 PM        scantitle "CeCl3, (2/3 2/3 1/2) th2th scan, T = 200 mK"
-5/3/2024 3:09 PM        br 0.6666 0.6666 0.5
+5/3/2024 3:09 PM        br 0.6666 0.6666 0.5 
 5/3/2024 3:09 PM        preset mcu 10
 5/3/2024 3:09 PM        th2th 1.5 -1.5 0.15
 5/3/2024 3:14 PM        scantitle "CeCl3, (2/3 2/3 1/2) rocking scan, T = 200 mK"
-5/3/2024 3:14 PM        br 0.6666 0.6666 0.5
+5/3/2024 3:14 PM        br 0.6666 0.6666 0.5 
 5/3/2024 3:14 PM        preset mcu 10
 5/3/2024 3:14 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:19 PM        scantitle "CeCl3, (4/3 4/3 1/2) th2th scan, T = 200 mK"
-5/3/2024 3:19 PM        br 1.3333 1.3333 0.5
+5/3/2024 3:19 PM        br 1.3333 1.3333 0.5 
 5/3/2024 3:19 PM        preset mcu 10
 5/3/2024 3:19 PM        th2th 1.5 -1.5 0.15
 5/3/2024 3:24 PM        scantitle "CeCl3, (4/3 4/3 1/2) rocking scan, T = 200 mK"
-5/3/2024 3:24 PM        br 1.3333 1.3333 0.5
+5/3/2024 3:24 PM        br 1.3333 1.3333 0.5 
 5/3/2024 3:24 PM        preset mcu 10
 5/3/2024 3:24 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:29 PM        scantitle "CeCl3, (5/3 5/3 1/2) th2th scan, T = 200 mK"
-5/3/2024 3:29 PM        br 1.6666 1.6666 0.5
+5/3/2024 3:29 PM        br 1.6666 1.6666 0.5 
 5/3/2024 3:29 PM        preset mcu 10
 5/3/2024 3:29 PM        th2th 1.5 -1.5 0.15
 5/3/2024 3:34 PM        scantitle "CeCl3, (5/3 5/3 1/2) rocking scan, T = 200 mK"
-5/3/2024 3:34 PM        br 1.6666 1.6666 0.5
+5/3/2024 3:34 PM        br 1.6666 1.6666 0.5 
 5/3/2024 3:34 PM        preset mcu 10
 5/3/2024 3:34 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:39 PM        scantitle "CeCl3, (1/3 1/3 3/2) th2th scan, T = 200 mK"
-5/3/2024 3:39 PM        br 0.3333 0.3333 1.5
+5/3/2024 3:39 PM        br 0.3333 0.3333 1.5 
 5/3/2024 3:40 PM        preset mcu 10
 5/3/2024 3:40 PM        th2th 1.5 -1.5 0.15
 5/3/2024 3:45 PM        scantitle "CeCl3, (1/3 1/3 3/2) rocking scan, T = 200 mK"
-5/3/2024 3:45 PM        br 0.3333 0.3333 1.5
+5/3/2024 3:45 PM        br 0.3333 0.3333 1.5 
 5/3/2024 3:45 PM        preset mcu 10
 5/3/2024 3:45 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:49 PM        scantitle "CeCl3, (4/3 4/3 3/2) th2th scan, T = 200 mK"
-5/3/2024 3:49 PM        br 1.3333 1.3333 1.5
+5/3/2024 3:49 PM        br 1.3333 1.3333 1.5 
 5/3/2024 3:50 PM        preset mcu 10
 5/3/2024 3:50 PM        th2th 1.5 -1.5 0.15
 5/3/2024 3:55 PM        scantitle "CeCl3, (4/3 4/3 3/2) rocking scan, T = 200 mK"
-5/3/2024 3:55 PM        br 1.3333 1.3333 1.5
+5/3/2024 3:55 PM        br 1.3333 1.3333 1.5 
 5/3/2024 3:55 PM        preset mcu 10
 5/3/2024 3:55 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 3:59 PM        scantitle "CeCl3, (5/3 5/3 3/2) th2th scan, T = 200 mK"
-5/3/2024 3:59 PM        br 1.6667 1.6667 1.5
+5/3/2024 3:59 PM        br 1.6667 1.6667 1.5 
 5/3/2024 4:00 PM        preset mcu 10
 5/3/2024 4:00 PM        th2th 1.5 -1.5 0.15
 5/3/2024 4:04 PM        scantitle "CeCl3, (5/3 5/3 3/2) rocking scan, T = 200 mK"
-5/3/2024 4:04 PM        br 1.6667 1.6667 1.5
+5/3/2024 4:04 PM        br 1.6667 1.6667 1.5 
 5/3/2024 4:05 PM        preset mcu 10
 5/3/2024 4:05 PM        scanrel s1 1.5 -1.5 0.15
 5/3/2024 4:09 PM        set_temp_dr 0.09
@@ -914,7 +914,7 @@
 5/3/2024 4:10 PM        scantitle "Cooling on 1/3 1/3 1/2 to T = 90 mK"
 5/3/2024 4:10 PM        scan n 90 preset mcu 10
 5/3/2024 4:26 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 90 mK"
-5/3/2024 4:26 PM        br 0.3333 0.3333 0.5
+5/3/2024 4:26 PM        br 0.3333 0.3333 0.5 
 5/3/2024 4:26 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 5
 5/3/2024 4:32 PM        scantitle "CeCl3, (1/3 1/3 1/2) s1 scan, T = 90 mK"
 5/3/2024 4:32 PM        br 0.3333 0.3333 0.5
@@ -924,7 +924,7 @@
 5/3/2024 4:37 PM        scantitle "Cooling on 1/3 1/3 1/2 to T = 70 mK"
 5/3/2024 4:37 PM        scan n 60 preset mcu 10
 5/3/2024 4:48 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 70 mK"
-5/3/2024 4:48 PM        br 0.3333 0.3333 0.5
+5/3/2024 4:48 PM        br 0.3333 0.3333 0.5 
 5/3/2024 4:48 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 5
 5/3/2024 4:54 PM        scantitle "CeCl3, (1/3 1/3 1/2) s1 scan, T = 70 mK"
 5/3/2024 4:54 PM        br 0.3333 0.3333 0.5
@@ -934,7 +934,7 @@
 5/3/2024 4:59 PM        scantitle "Cooling on 1/3 1/3 1/2 to T = 55 mK"
 5/3/2024 4:59 PM        scan n 60 preset mcu 10
 5/3/2024 5:09 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 55 mK"
-5/3/2024 5:09 PM        br 0.3333 0.3333 0.5
+5/3/2024 5:09 PM        br 0.3333 0.3333 0.5 
 5/3/2024 5:10 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 5
 5/3/2024 5:16 PM        scantitle "CeCl3, (1/3 1/3 1/2) s1 scan, T = 55 mK"
 5/3/2024 5:16 PM        br 0.3333 0.3333 0.5
@@ -947,7 +947,7 @@
 5/3/2024 5:26 PM        scantitle "Cooling on 1/3 1/3 1/2 to T = 40 mK"
 5/3/2024 5:26 PM        scan n 60 preset mcu 10
 5/3/2024 5:36 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 40 mK"
-5/3/2024 5:36 PM        br 0.3333 0.3333 0.5
+5/3/2024 5:36 PM        br 0.3333 0.3333 0.5 
 5/3/2024 5:36 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 5
 5/3/2024 5:43 PM        scantitle "CeCl3, (1/3 1/3 1/2) s1 scan, T = 40 mK"
 5/3/2024 5:43 PM        br 0.3333 0.3333 0.5
@@ -956,7 +956,7 @@
 5/3/2024 5:47 PM        br 0.6666 0.6666 0.5
 5/3/2024 5:48 PM        scanrel s1 1.5 -1.5 0.15 e 0 preset mcu 5
 5/3/2024 5:52 PM        scantitle "CeCl3, (1/3 1/3 1/2) HH-scan, T = 40 mK"
-5/3/2024 5:52 PM        br 0.3333 0.3333 0.5
+5/3/2024 5:52 PM        br 0.3333 0.3333 0.5 
 5/3/2024 5:53 PM        scan h 0.3 0.38 0.0025 k 0.3 0.38 0.0025 l 0.5 e 0 preset mcu 5
 5/3/2024 5:59 PM        scantitle "CeCl3, (1/3 1/3 1/2) s1 scan, T = 40 mK"
 5/3/2024 5:59 PM        br 0.3333 0.3333 0.5
@@ -1079,13 +1079,13 @@
 6/3/2024 1:09 PM        drive sgl -15
 6/3/2024 1:10 PM        drive stu 10
 6/3/2024 1:11 PM        drive s1 -90
-6/3/2024 1:12 PM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000
-6/3/2024 1:12 PM        upperlimit s1 160.000000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000
+6/3/2024 1:12 PM        lowerlimit s1 -160.000000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 
+6/3/2024 1:12 PM        upperlimit s1 160.000000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 
 6/3/2024 1:12 PM        drive s1 -90
 6/3/2024 1:14 PM        drive s1 -160
 6/3/2024 1:16 PM        drive stu -10
-6/3/2024 1:20 PM        lowerlimit s1 -160.500000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000
-6/3/2024 1:20 PM        upperlimit s1 160.500000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000
+6/3/2024 1:20 PM        lowerlimit s1 -160.500000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 
+6/3/2024 1:20 PM        upperlimit s1 160.500000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 
 6/3/2024 1:20 PM        drive s1 -155
 6/3/2024 1:20 PM        drive s1 -160
 6/3/2024 1:22 PM        drive s1 159.5

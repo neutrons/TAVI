@@ -42,7 +42,7 @@ set_ht %i
 wait 100
 scantitle "OP on Hc (2 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
 scanrel s1 1 -1 0.1
-end loop
+end loop
 
 set_ht 0
 wait 1920

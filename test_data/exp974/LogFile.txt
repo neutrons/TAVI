@@ -237,7 +237,7 @@ Drive completed.
 # builtin_command = scan s1 @(s1)+1.2 @(s1)+-1.2 0.200000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Masaaki Matsuda, Tao Hong, Wei Tian, Jaime Fernandez-Baca, Michael Cox
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -250,12 +250,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read
       1   -30.5998      1.000      6.000    660.000      0.713     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000   -46.1996     0.0000     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    28.4431    28.4431   -65.1702 19887.5688    13.1874 19874.3814     0.0018    -0.0014    -0.9861     4.4273     6.4442     1.0189     0.0031    -0.000
       2   -30.8005      1.000     14.000    660.000      0.713     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000   -46.1996     0.0000     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    28.6043    28.6043   -65.0289 19887.5688    13.1874 19874.3814     0.0020    -0.0013    -0.9982     4.4273     6.4439     1.0188     0.0031    -0.000
@@ -347,7 +347,7 @@ Drive completed.
 # builtin_command = scan sgu @(sgu)+3 @(sgu)+-3 1.000000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Masaaki Matsuda, Tao Hong, Wei Tian, Jaime Fernandez-Baca, Michael Cox
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -360,12 +360,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read
       1     1.0020      1.000    154.000    687.000      0.743     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000   -31.6255   -46.1996     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    30.0603    28.4666   -64.4298 19887.5688    13.1874 19874.3814     0.0020    -0.0014    -0.9893     4.4222     6.4455     1.0202     0.0031    -0.000
       2     0.0008      1.000    246.000    670.000      0.724     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000   -31.6255   -46.1996     0.0000     0.0020     0.0000    21.3613    42.4861    96.2388    29.2640    29.2629   -64.4397 19887.5688    13.1874 19874.3814     0.0019    -0.0014    -0.9970     4.4223     6.4457     1.0200     0.0031    -0.000
@@ -418,7 +418,7 @@ Drive completed.
 # builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Masaaki Matsuda, Tao Hong, Wei Tian, Jaime Fernandez-Baca, Michael Cox
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -431,12 +431,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read
       1   -44.1989   -30.6251      1.000      0.000    719.000      0.777     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4863    96.1752    27.2106    29.6203   -65.1125 19887.5688    13.1873 19874.3815     0.0020    -0.0013    -1.0019     4.4171     6.4473     1.0177     0.0031    -0.000
       2   -44.4000   -30.7256      1.000      0.000    719.000      0.777     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     0.0000     0.0000     0.0000     0.0000     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4863    96.1815    27.2975    29.7046   -65.0436 19887.5688    13.1873 19874.3815     0.0020    -0.0013    -1.0097     4.4182     6.4479     1.0180     0.0031    -0.000
@@ -565,12 +565,12 @@ rocking curve of si 111
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1   -32.7265      1.232      2.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.5000     0.5000     0.5000   -46.4012     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2454    28.9614    31.3155   -63.6125 19887.5688    13.1872 19874.3816     0.5080     0.5050    -0.9536     4.3768     6.4296     1.0874     0.5032     0.4997     0.501
       2   -32.6258      1.318      1.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.5000     0.5000     0.5000   -46.4012     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2454    28.8808    31.2377   -63.6873 19887.5688    13.1872 19874.3816     0.5080     0.5050    -0.9603     4.3763     6.4296     1.0867     0.5033     0.4997     0.501
@@ -656,12 +656,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1   -44.9032   -30.8443      1.402      0.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.5000     0.5000     0.5000     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.1973    27.4063    29.8105   -64.9642 19887.5688    13.1872 19874.3816     0.5080     0.5054    -0.9719     4.3734     6.4291     1.0832     0.5033     0.4998     0.502
       2   -45.0489   -30.9195      1.470      3.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.5000     0.5000     0.5000     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2020    27.4711    29.8733   -64.9123 19887.5688    13.1872 19874.3816     0.5080     0.5053    -0.9689     4.3787     6.4297     1.0810     0.5033     0.4998     0.502
@@ -741,12 +741,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = nut_pre
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.    nut_pre       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1    -5.0000      1.394   1680.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5053    -0.9650     4.3794     6.4296     1.0876     0.5034     0.4999     0.502
       2     5.0000      1.424   1650.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5054    -0.9554     4.3793     6.4293     1.0877     0.5034     0.4999     0.502
@@ -794,12 +794,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = nut_pre
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.    nut_pre       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1    -5.0000      1.381   1541.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000    -5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5054    -0.9599     4.3793     6.4296     1.0875     0.5033     0.4999     0.502
       2     5.0000      1.526   1808.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000    -5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5054    -0.9671     4.3794     6.4294     1.0877     0.5034     0.4999     0.502
@@ -847,12 +847,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = nut_pre
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.    nut_pre       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1    -5.0000      1.227   2325.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5054    -0.9648     4.3820     6.4230     1.0846     0.5034     0.4999     0.502
       2     5.0000      1.219   2210.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5081     0.5054    -0.9559     4.3822     6.4229     1.0847     0.5034     0.4999     0.502
@@ -901,12 +901,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = mag_pre
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.    mag_pre       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1    -3.2000      1.280   2424.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -0.2000    -5.0000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5082     0.5054    -0.9640     4.3821     6.4230     1.0843     0.5034     0.4999     0.502
       2    -3.0000      1.286   2345.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -0.2000    -5.0000     5.0000     0.5000     0.5000     0.5000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     0.5082     0.5054    -0.9654     4.3823     6.4229     1.0843     0.5034     0.4998     0.502
@@ -987,12 +987,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = nut_pre
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.    nut_pre       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz   psa_read   psb_read   psc_read
       1    -5.0000      1.296   1858.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0243     2.0249    -0.9598     4.3129     6.4594     1.0737     2.0031     2.0002     2.002
       2     5.0000      1.364   1965.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0242     2.0248    -0.9627     4.3127     6.4593     1.0739     2.0031     2.0002     2.002
@@ -1112,12 +1112,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      1.304   2679.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0243     2.0250    -0.9613     4.3012     6.4672     1.0668     0.0010    -0.0013     0.0053     0.0091     0.0007     5.9868     2.0031     2.0002     2.0024    -4.995
       2     5.0000      1.263   1805.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244     2.0249    -0.9563     4.3537     6.4709     1.1525     0.0010    -0.0013     0.0056     0.0091     0.0007     5.9847     2.0031     2.0002     2.0023     4.995
@@ -1154,12 +1154,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      1.251    812.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244     2.0250    -0.9486     4.2671     6.5612     1.0196     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9875     2.0031     2.0002     2.0023    -4.995
       2     5.0000      1.329   3948.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000     2.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244     2.0250    -0.9438     4.3211     6.5643     1.1074     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9888     2.0031     2.0002     2.0024     4.995
@@ -1231,12 +1231,12 @@ flipping mode, psb at -5, scan psc at 2
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1362.000   1326.000      1.433     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9582     4.2661     6.5660     1.0205     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9878     2.0031    -4.9987     2.0023    -4.995
       2     5.0000      2.000   6027.000   1388.000      1.500     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     2.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9459     4.3206     6.5691     1.1088     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9847     2.0031    -4.9986     2.0023     4.995
@@ -1290,12 +1290,12 @@ flipping mode, psb at -5, scan psc at 4
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1291.000   1239.000      1.339     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     4.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0635    -0.9502     4.2666     6.5633     1.0196     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9882     2.0031    -4.9986     4.0032    -4.995
       2     5.0000      2.000   5877.000   1346.000      1.455     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     4.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0635    -0.9577     4.3211     6.5664     1.1084     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9882     2.0031    -4.9986     4.0032     4.995
@@ -1349,12 +1349,12 @@ flipping mode, psb at -5, scan psc at 6
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1371.000   1375.000      1.486     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     6.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0243    -5.0635    -0.9471     4.2671     6.5606     1.0193     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9868     2.0031    -4.9987     6.0033    -4.995
       2     5.0000      2.000   6108.000   1374.000      1.485     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     6.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0635    -0.9532     4.3220     6.5638     1.1081     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9868     2.0031    -4.9987     6.0033     4.995
@@ -1408,12 +1408,12 @@ flipping mode, psb at -5, scan psc at 8
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1373.000   1358.000      1.468     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     8.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9557     4.2675     6.5583     1.0186     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9875     2.0031    -4.9987     8.0039    -4.995
       2     5.0000      2.000   5859.000   1338.000      1.446     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000     8.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9440     4.3222     6.5615     1.1077     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9864     2.0031    -4.9986     8.0039     4.995
@@ -1467,12 +1467,12 @@ flipping mode, psb at -5, scan psc at 10
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1392.000   1345.000      1.454     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    10.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9552     4.2679     6.5560     1.0184     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9878     2.0031    -4.9987    10.0047    -4.996
       2     5.0000      2.000   5921.000   1320.000      1.427     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    10.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9445     4.3227     6.5592     1.1073     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9868     2.0031    -4.9987    10.0047     4.995
@@ -1526,12 +1526,12 @@ flipping mode, psb at -5, scan psc at 12
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1478.000   1342.000      1.451     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    12.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9446     4.2682     6.5542     1.0179     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9878     2.0031    -4.9986    12.0044    -4.996
       2     5.0000      2.000   5849.000   1391.000      1.504     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    12.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9549     4.3229     6.5573     1.1070     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9864     2.0031    -4.9987    12.0044     4.995
@@ -1585,12 +1585,12 @@ flipping mode, psb at -5, scan psc at 14
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1417.000   1379.000      1.491     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    14.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0635    -0.9498     4.2686     6.5525     1.0176     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9986    14.0049    -4.996
       2     5.0000      2.000   5816.000   1382.000      1.494     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    14.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0637    -0.9599     4.3235     6.5558     1.1066     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9864     2.0031    -4.9987    14.0049     4.995
@@ -1644,12 +1644,12 @@ flipping mode, psb at -5, scan psc at 16
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1475.000   1317.000      1.424     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    16.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0637    -0.9461     4.2689     6.5511     1.0170     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9864     2.0031    -4.9987    16.0051    -4.996
       2     5.0000      2.000   5793.000   1401.000      1.514     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    16.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9521     4.3236     6.5543     1.1064     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9878     2.0031    -4.9987    16.0051     4.995
@@ -1703,12 +1703,12 @@ flipping mode, psb at -5, scan psc at 18
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1587.000   1343.000      1.452     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    18.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0637    -0.9538     4.2687     6.5497     1.0168     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9861     2.0030    -4.9986    18.0051    -4.996
       2     5.0000      2.000   5750.000   1317.000      1.424     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    18.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0637    -0.9509     4.3238     6.5531     1.1059     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9875     2.0031    -4.9987    18.0052     4.995
@@ -1762,12 +1762,12 @@ flipping mode, psb at -5, scan psc at 20
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1635.000   1340.000      1.448     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    20.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0635    -0.9563     4.2690     6.5485     1.0165     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9878     2.0031    -4.9986    20.0063    -4.996
       2     5.0000      2.000   5553.000   1303.000      1.408     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    20.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0637    -0.9487     4.3239     6.5515     1.1057     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9885     2.0031    -4.9987    20.0064     4.995
@@ -1821,12 +1821,12 @@ flipping mode, psb at -5, scan psc at 22
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1458.000   1386.000      1.498     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    22.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0638    -0.9552     4.2691     6.5471     1.0162     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9875     2.0031    -4.9987    22.0062    -4.996
       2     5.0000      2.000   5781.000   1330.000      1.438     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    22.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0637    -0.9543     4.3240     6.5502     1.1054     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9858     2.0031    -4.9987    22.0063     4.995
@@ -1880,12 +1880,12 @@ flipping mode, psb at -5, scan psc at 24
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1716.000   1325.000      1.432     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    24.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0637    -0.9554     4.2693     6.5455     1.0158     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9864     2.0031    -4.9987    24.0077    -4.996
       2     5.0000      2.000   5514.000   1350.000      1.459     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    24.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0636    -0.9519     4.3244     6.5486     1.1051     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9864     2.0031    -4.9986    24.0078     4.995
@@ -1939,12 +1939,12 @@ flipping mode, psb at -5, scan psc at 26
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1669.000   1291.000      1.395     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    26.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0637    -0.9548     4.2699     6.5441     1.0153     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     2.0031    -4.9986    26.0070    -4.996
       2     5.0000      2.000   5534.000   1337.000      1.445     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    26.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0638    -0.9497     4.3244     6.5473     1.1046     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9878     2.0031    -4.9986    26.0070     4.995
@@ -1998,12 +1998,12 @@ flipping mode, psb at -5, scan psc at 28
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1798.000   1355.000      1.465     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    28.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0637    -0.9565     4.2698     6.5427     1.0150     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9986    28.0084    -4.996
       2     5.0000      2.000   5346.000   1329.000      1.437     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    28.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0639    -0.9541     4.3247     6.5459     1.1043     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9899     2.0031    -4.9986    28.0085     4.995
@@ -2057,12 +2057,12 @@ flipping mode, psb at -5, scan psc at 30
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1839.000   1414.000      1.528     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    30.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0638    -0.9546     4.2700     6.5412     1.0146     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     2.0031    -4.9986    30.0086    -4.996
       2     5.0000      2.000   5329.000   1382.000      1.494     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    30.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0638    -0.9576     4.3250     6.5445     1.1040     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9861     2.0031    -4.9986    30.0087     4.995
@@ -2116,12 +2116,12 @@ flipping mode, psb at -5, scan psc at 32
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1914.000   1407.000      1.521     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    32.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0638    -0.9579     4.2701     6.5400     1.0144     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9837     2.0031    -4.9986    32.0092    -4.996
       2     5.0000      2.000   5310.000   1357.000      1.467     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    32.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0639    -0.9570     4.3249     6.5433     1.1036     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9875     2.0031    -4.9986    32.0093     4.995
@@ -2175,12 +2175,12 @@ flipping mode, psb at -5, scan psc at 34
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2021.000   1268.000      1.371     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    34.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0638    -0.9508     4.2701     6.5389     1.0139     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9986    34.0097    -4.996
       2     5.0000      2.000   5129.000   1378.000      1.490     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    34.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0638    -0.9574     4.3251     6.5419     1.1035     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9888     2.0031    -4.9986    34.0098     4.995
@@ -2234,12 +2234,12 @@ flipping mode, psb at -5, scan psc at 36
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2114.000   1339.000      1.447     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    36.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0639    -0.9475     4.2704     6.5376     1.0137     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9875     2.0031    -4.9986    36.0104    -4.996
       2     5.0000      2.000   5155.000   1434.000      1.550     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    36.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0244    -5.0640    -0.9389     4.3250     6.5409     1.1032     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9885     2.0031    -4.9986    36.0104     4.995
@@ -2293,12 +2293,12 @@ flipping mode, psb at -5, scan psc at 38
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2188.000   1323.000      1.430     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    38.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0640    -0.9503     4.2703     6.5366     1.0135     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9882     2.0031    -4.9986    38.0118    -4.996
       2     5.0000      2.000   5014.000   1411.000      1.525     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    38.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0247    -5.0640    -0.9544     4.3252     6.5397     1.1029     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     2.0031    -4.9986    38.0118     4.995
@@ -2352,12 +2352,12 @@ flipping mode, psb at -5, scan psc at 40
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2223.000   1391.000      1.504     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    40.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0640    -0.9551     4.2705     6.5354     1.0130     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9885     2.0031    -4.9986    40.0117    -4.996
       2     5.0000      2.000   4954.000   1343.000      1.452     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    40.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0641    -0.9483     4.3252     6.5384     1.1027     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9868     2.0031    -4.9986    40.0118     4.995
@@ -2411,12 +2411,12 @@ flipping mode, psb at -5, scan psc at 42
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2471.000   1368.000      1.479     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    42.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0642    -0.9430     4.2706     6.5342     1.0128     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9986    42.0128    -4.996
       2     5.0000      2.000   4689.000   1368.000      1.479     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    42.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0642    -0.9463     4.3253     6.5374     1.1025     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9885     2.0031    -4.9986    42.0129     4.995
@@ -2470,12 +2470,12 @@ flipping mode, psb at -5, scan psc at 44
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2520.000   1334.000      1.442     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    44.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0640    -0.9468     4.2706     6.5331     1.0123     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9875     2.0031    -4.9985    44.0135    -4.996
       2     5.0000      2.000   4599.000   1301.000      1.406     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    44.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0640    -0.9468     4.3257     6.5362     1.1019     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9892     2.0031    -4.9985    44.0135     4.995
@@ -2529,12 +2529,12 @@ flipping mode, psb at -5, scan psc at 46
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2662.000   1392.000      1.505     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    46.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0639    -0.9530     4.2708     6.5320     1.0120     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9854     2.0031    -4.9985    46.0148    -4.996
       2     5.0000      2.000   4642.000   1433.000      1.549     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    46.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0640    -0.9418     4.3258     6.5351     1.1017     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9882     2.0031    -4.9985    46.0149     4.995
@@ -2588,12 +2588,12 @@ flipping mode, psb at -5, scan psc at 48
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2779.000   1387.000      1.499     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    48.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0641    -0.9517     4.2707     6.5309     1.0117     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9871     2.0031    -4.9985    48.0155    -4.996
       2     5.0000      2.000   4542.000   1306.000      1.412     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    48.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0642    -0.9461     4.3258     6.5341     1.1016     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9888     2.0031    -4.9985    48.0155     4.995
@@ -2647,12 +2647,12 @@ flipping mode, psb at -5, scan psc at 50
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   2921.000   1349.000      1.458     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    50.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0245    -5.0641    -0.9404     4.2710     6.5298     1.0115     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9871     2.0031    -4.9985    50.0160    -4.996
       2     5.0000      2.000   4420.000   1333.000      1.441     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    50.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0642    -0.9501     4.3260     6.5331     1.1011     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9871     2.0031    -4.9985    50.0161     4.995
@@ -2717,12 +2717,12 @@ sanity check after 50A
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 2.000000
 # def_x = psd
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        psd       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc         s1         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    -5.0000      2.000   1527.000   1410.000      1.524     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    -5.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0247    -5.0644    -0.9510     4.2644     6.5780     1.0231     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9861     2.0031    -4.9984    -4.9961    -4.996
       2     5.0000      2.000   5900.000   1395.000      1.508     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     2.0000    -5.0000    -5.0000   -31.9689   -47.1530     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2699    28.3713    30.7464   -64.1770 19887.5688    13.1872 19874.3816     2.0246    -5.0643    -0.9490     4.3192     6.5814     1.1124     0.0013    -0.0017    -1.2236     0.0091     0.0007     5.9861     2.0031    -4.9985    -4.9962     4.995
@@ -2855,7 +2855,7 @@ psc             0.00000
 
 Drive completed.
 
-# Error connecting to the Galil controller at address 10.112.120.2.  Error Code: -2147352567.  Controller will be disabled.
+# Error connecting to the Galil controller at address 10.112.120.2.  Error Code: -2147352567.  Controller will be disabled. 
 
 Motor consistancy check failed for a1.
 The previously recorded position was 0.53458.
@@ -2873,7 +2873,7 @@ The current position read from the controller is 0.00002.
 ****Motor [m1] initialized to previosly recorded position [-49.16374].
 
 ***Warning: Motor[m2] is below the lower user limit!! (position = 1.069169, lower user limit = 1.919169).
-#
+# 
 ***Warning: Motor[m2] is below the lower user limit!! (position = 1.069169, lower user limit = 1.919169).
 
 Motor consistancy check failed for marc.
@@ -2893,7 +2893,7 @@ The current position read from the controller is 0.00000.
 The user lower limit for motor m2 (1.9192) is less than the minimum lower limit of 1.9192.  The lower limit is being reset to this minimum value.
 The user upper limit for motor a2 (54.4627) exceeds the maximum upper limit of 54.4627.  The upper limit is being reset to this maximum value.
 
-10:25:02 AM  9/17/2025    Executing "admin" ...
+10:25:02 AM  9/17/2025    Executing "admin" ... 
 
 Administrator password correctly entered - administrator mode is enabled.
 
@@ -2902,9 +2902,9 @@ Administrator password correctly entered - administrator mode is enabled.
                           Derived from "spos m2 31.75"
 
 Return Code: 0
-Integer returned values:
-Double returned values:
-String returned values:
+Integer returned values:   
+Double returned values:   
+String returned values:   
 
 
 10:27:03 AM  9/17/2025    Executing "drive m2 29"
@@ -2939,9 +2939,9 @@ Drive completed.
                           Derived from "spos m2 32.75"
 
 Return Code: 0
-Integer returned values:
-Double returned values:
-String returned values:
+Integer returned values:   
+Double returned values:   
+String returned values:   
 
 
 10:29:59 AM  9/17/2025    Executing "drive m2 33.75"
@@ -2981,7 +2981,7 @@ Drive completed.
                           Derived from "powcalib ni 1.000000 energy 13.500000 maxpeaks 6"
 
 
-The script "powcalib.py" failed to initialize correctly.  This is most often
+The script "powcalib.py" failed to initialize correctly.  This is most often 
 the result of a syntax error in the script or a failure
 to import the spice python module.
 
@@ -3014,7 +3014,7 @@ Drive completed.
                           Derived from "powcalib ni 1.000000 energy 13.500000 maxpeaks 6"
 
 
-The script "powcalib.py" failed to initialize correctly.  This is most often
+The script "powcalib.py" failed to initialize correctly.  This is most often 
 the result of a syntax error in the script or a failure
 to import the spice python module.
 
@@ -3069,12 +3069,12 @@ Ni Powder (0.5,0.5,0.5)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -33.4128      1.000    329.000    773.000      0.836   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4675     0.8023     0.7910     0.3073    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.9665     4.4744     6.5334     1.0899     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
       2   -33.5028      1.000    316.000    798.000      0.863   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4713     0.8046     0.7932     0.3072    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.9562     4.4744     6.5321     1.0894     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
@@ -3132,11 +3132,11 @@ Chi-Squared = 11.896784
 Background =   305.569316+/-19.631067
 
 Fit Parameters:
-Height                             Position                           Full Width
-2656.453865+/-60.333870            -36.094568+/-0.015344              1.503450+/-0.038116
+Height                             Position                           Full Width                    
+2656.453865+/-60.333870            -36.094568+/-0.015344              1.503450+/-0.038116           
 The calibration path isn't set - data is not written to a file.
 
-10:51:32 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,0.0,0.0)" ...
+10:51:32 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,0.0,0.0)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -3168,12 +3168,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -38.9430      1.000    387.000    682.000      0.737   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     1.7017     0.9403     0.9294     0.2929    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.9323     4.4884     6.5282     1.0998     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
       2   -39.0363      1.000    362.000    696.000      0.752   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     1.7056     0.9426     0.9317     0.2925    13.5001    13.5001     0.0000     0.0017    -0.0014    -0.9349     4.4887     6.5278     1.1002     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
@@ -3231,11 +3231,11 @@ Chi-Squared = 5.903790
 Background =   337.921478+/-13.525885
 
 Fit Parameters:
-Height                             Position                           Full Width
-1448.233284+/-35.072680            -41.771404+/-0.015460              1.513156+/-0.040312
+Height                             Position                           Full Width                    
+1448.233284+/-35.072680            -41.771404+/-0.015460              1.513156+/-0.040312           
 The calibration path isn't set - data is not written to a file.
 
-10:52:57 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,1.0,0.0)" ...
+10:52:57 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,1.0,0.0)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -3267,12 +3267,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -56.6437      1.000    350.000    667.000      0.721   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     2.4219     1.3623     1.3578     0.1226    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.8806     4.5314     6.5157     1.1290     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
       2   -56.7680      1.000    358.000    718.000      0.776   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     2.4268     1.3651     1.3606     0.1207    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.8718     4.5314     6.5158     1.1289     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
@@ -3330,11 +3330,11 @@ Chi-Squared = 2.187690
 Background =   330.331357+/-7.532551
 
 Fit Parameters:
-Height                             Position                           Full Width
-1417.946107+/-22.795486            -60.094417+/-0.010372              1.611428+/-0.025914
+Height                             Position                           Full Width                    
+1417.946107+/-22.795486            -60.094417+/-0.010372              1.611428+/-0.025914           
 The calibration path isn't set - data is not written to a file.
 
-10:54:31 AM  9/17/2025    Executing "scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1)" ...
+10:54:31 AM  9/17/2025    Executing "scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -3366,12 +3366,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -67.6918      1.000    307.000    644.000      0.696   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     2.8433     1.5977     1.6004    -0.0741    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.8488     4.5610     6.5139     1.1457     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0013    -0.002
       2   -67.8134      1.000    332.000    656.000      0.709   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     2.8478     1.6001     1.6029    -0.0766    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.8477     4.5621     6.5140     1.1459     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0027    -0.0006     0.0012    -0.002
@@ -3469,9 +3469,9 @@ Chi-Squared = 3.147947
 Background =   342.709990+/-7.473167
 
 Fit Parameters:
-Height                             Position                           Full Width
-2759.725428+/-33.993793            -75.358015+/-0.008239              1.721754+/-0.018381
-1992.651185+/-30.383849            -71.666390+/-0.010039              1.657932+/-0.023023
+Height                             Position                           Full Width                    
+2759.725428+/-33.993793            -75.358015+/-0.008239              1.721754+/-0.018381           
+1992.651185+/-30.383849            -71.666390+/-0.010039              1.657932+/-0.023023           
 The calibration path isn't set - data is not written to a file.
 
 10:57:27 AM  9/17/2025    Executing "calibrate fit indices 1 1 1 npeaks 2 peakstore 2"
@@ -3482,9 +3482,9 @@ Chi-Squared = 3.147947
 Background =   342.709990+/-7.473167
 
 Fit Parameters:
-Height                             Position                           Full Width
-2759.725428+/-33.993793            -75.358015+/-0.008239              1.721754+/-0.018381
-1992.651185+/-30.383849            -71.666390+/-0.010039              1.657932+/-0.023023
+Height                             Position                           Full Width                    
+2759.725428+/-33.993793            -75.358015+/-0.008239              1.721754+/-0.018381           
+1992.651185+/-30.383849            -71.666390+/-0.010039              1.657932+/-0.023023           
 The calibration path isn't set - data is not written to a file.
 
 10:57:28 AM  9/17/2025    Executing "scantitle "Ni Powder (2,0,0)""
@@ -3519,12 +3519,12 @@ Ni Powder (2,0,0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -84.4544      1.000    395.000    679.000      0.734   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     3.4309     1.8907     1.9087    -0.4860    13.5001    13.5001     0.0000     0.0019    -0.0013    -0.8278     4.6179     6.5524     1.1729     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -84.6674      1.000    344.000    693.000      0.749   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0094     3.4379     1.8938     1.9120    -0.4920    13.5001    13.5001     0.0000     0.0019    -0.0012    -0.8263     4.6187     6.5523     1.1727     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -3578,8 +3578,8 @@ Chi-Squared = 1.392064
 Background =   360.856406+/-6.039888
 
 Fit Parameters:
-Height                             Position                           Full Width
-1415.271028+/-20.514326            -89.523454+/-0.012158              2.095168+/-0.029909
+Height                             Position                           Full Width                    
+1415.271028+/-20.514326            -89.523454+/-0.012158              2.095168+/-0.029909           
 The calibration path isn't set - data is not written to a file.
 
 10:58:58 AM  9/17/2025    Executing "calibrate finish"
@@ -3601,10 +3601,10 @@ will fit the LAST scan using options specified in fit_opts
 will complete the calibration.
 
 beg_opts: any of: file=filename;
-                  standard=name (specified in configuration file);
+                  standard=name (specified in configuration file); 
                   energy=val (if omitted will assume the current value of Ei)
 
-fit_opts:   any of: indices=h k l;
+fit_opts:   any of: indices=h k l; 
                     npeaks=n (the number of Gaussians to fit to)
                     guess=back. height1 fwhm1 pos1 height2 fwhm2 pos2...
                     peakstore=n (the peak position to store in the calibration file)
@@ -3629,10 +3629,10 @@ will fit the LAST scan using options specified in fit_opts
 will complete the calibration.
 
 beg_opts: any of: file=filename;
-                  standard=name (specified in configuration file);
+                  standard=name (specified in configuration file); 
                   energy=val (if omitted will assume the current value of Ei)
 
-fit_opts:   any of: indices=h k l;
+fit_opts:   any of: indices=h k l; 
                     npeaks=n (the number of Gaussians to fit to)
                     guess=back. height1 fwhm1 pos1 height2 fwhm2 pos2...
                     peakstore=n (the peak position to store in the calibration file)
@@ -3695,12 +3695,12 @@ Ni Powder (0.5,0.5,0.5)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -33.4087      1.000      0.000      0.000      0.000   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4673     0.8022     0.7908     0.3073    13.5001    13.5001     0.0000     0.0019    -0.0012    -0.9716     4.4733     6.5610     1.0814     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -33.5026      1.000      0.000      0.000      0.000   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4713     0.8046     0.7932     0.3072    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.9688     4.4733     6.5609     1.0814     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -3799,12 +3799,12 @@ Ni Powder (0.5,0.5,0.5)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -33.4089      1.000    332.000    844.000      0.912   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4673     0.8022     0.7909     0.3073    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.9790     4.4739     6.5623     1.0826     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -33.5024      1.000    359.000    821.000      0.887   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.4713     0.8046     0.7932     0.3072    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.9691     4.4737     6.5610     1.0819     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -3862,12 +3862,12 @@ Chi-Squared = 9.968071
 Background =   306.247154+/-18.118074
 
 Fit Parameters:
-Height                             Position                           Full Width
-2628.778039+/-54.798528            -36.094406+/-0.014299              1.521345+/-0.035688
+Height                             Position                           Full Width                    
+2628.778039+/-54.798528            -36.094406+/-0.014299              1.521345+/-0.035688           
 Adding the  (0.500000,0.500000,0.500000,) reflection with fit position -36.094406+/-0.014299
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
-11:24:46 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,0.0,0.0)" ...
+11:24:46 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,0.0,0.0)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -3899,12 +3899,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -38.9433      1.000    353.000    717.000      0.775   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.7017     0.9403     0.9294     0.2929    13.5001    13.5001     0.0000     0.0017    -0.0012    -0.9511     4.4867     6.5571     1.0939     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -39.0359      1.000    362.000    732.000      0.791   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     1.7056     0.9426     0.9317     0.2925    13.5001    13.5001     0.0000     0.0018    -0.0012    -0.9436     4.4866     6.5566     1.0938     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -3962,12 +3962,12 @@ Chi-Squared = 7.378876
 Background =   333.980555+/-14.938720
 
 Fit Parameters:
-Height                             Position                           Full Width
-1437.589044+/-39.219807            -41.764188+/-0.017032              1.483355+/-0.044116
+Height                             Position                           Full Width                    
+1437.589044+/-39.219807            -41.764188+/-0.017032              1.483355+/-0.044116           
 Adding the  (1.000000,0.000000,0.000000,) reflection with fit position -41.764188+/-0.017032
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
-11:26:11 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,1.0,0.0)" ...
+11:26:11 AM  9/17/2025    Executing "scantitle "Ni Powder (1.0,1.0,0.0)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -3999,12 +3999,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -56.6426      1.000    383.000    700.000      0.757   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     2.4219     1.3623     1.3577     0.1226    13.5001    13.5001     0.0000     0.0017    -0.0014    -0.8866     4.5299     6.5454     1.1237     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -56.7682      1.000    356.000    699.000      0.756   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     2.4268     1.3651     1.3606     0.1207    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.8908     4.5308     6.5445     1.1237     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -4062,12 +4062,12 @@ Chi-Squared = 2.516061
 Background =   335.451080+/-7.990234
 
 Fit Parameters:
-Height                             Position                           Full Width
-1422.905135+/-24.775420            -60.100848+/-0.010981              1.568354+/-0.027208
+Height                             Position                           Full Width                    
+1422.905135+/-24.775420            -60.100848+/-0.010981              1.568354+/-0.027208           
 Adding the  (1.000000,1.000000,0.000000,) reflection with fit position -60.100848+/-0.010981
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
-11:27:46 AM  9/17/2025    Executing "scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1)" ...
+11:27:46 AM  9/17/2025    Executing "scantitle "Ni Powder (1.5,0.5,0.5) (1,1,1)" ... 
 
 Syntax error:
    Command contains an odd number of quotation marks
@@ -4099,12 +4099,12 @@ Syntax error:
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -67.6922      1.000    341.000    707.000      0.764   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     2.8433     1.5977     1.6004    -0.0741    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.8663     4.5600     6.5431     1.1417     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -67.8130      1.000    373.000    735.000      0.794   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     2.8477     1.6001     1.6029    -0.0766    13.5001    13.5001     0.0000     0.0017    -0.0013    -0.8567     4.5604     6.5429     1.1409     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -4202,9 +4202,9 @@ Chi-Squared = 3.083948
 Background =   341.725943+/-7.449432
 
 Fit Parameters:
-Height                             Position                           Full Width
-2758.594546+/-33.513100            -75.360110+/-0.008196              1.735011+/-0.018261
-2004.094271+/-29.994415            -71.673205+/-0.009967              1.677630+/-0.022916
+Height                             Position                           Full Width                    
+2758.594546+/-33.513100            -75.360110+/-0.008196              1.735011+/-0.018261           
+2004.094271+/-29.994415            -71.673205+/-0.009967              1.677630+/-0.022916           
 Adding the  (1.500000,0.500000,0.500000,) reflection with fit position -71.673205+/-0.009967
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
@@ -4216,9 +4216,9 @@ Chi-Squared = 3.083948
 Background =   341.725943+/-7.449432
 
 Fit Parameters:
-Height                             Position                           Full Width
-2758.594546+/-33.513100            -75.360110+/-0.008196              1.735011+/-0.018261
-2004.094271+/-29.994415            -71.673205+/-0.009967              1.677630+/-0.022916
+Height                             Position                           Full Width                    
+2758.594546+/-33.513100            -75.360110+/-0.008196              1.735011+/-0.018261           
+2004.094271+/-29.994415            -71.673205+/-0.009967              1.677630+/-0.022916           
 Adding the  (1.000000,1.000000,1.000000,) reflection with fit position -75.360110+/-0.008196
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
@@ -4254,12 +4254,12 @@ Ni Powder (2,0,0)
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         m1         m2       marc     mtrans    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1   -84.4550      1.000    367.000    719.000      0.777   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     3.4309     1.8907     1.9087    -0.4861    13.5001    13.5001     0.0000     0.0018    -0.0014    -0.8362     4.6129     6.5556     1.1691     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
       2   -84.6680      1.000    347.000    708.000      0.765   -49.1637    41.9676     0.4233    10.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690     0.0000    -1.4990     0.0020     0.0000    21.3613    -0.0092     3.4379     1.8938     1.9121    -0.4921    13.5001    13.5001     0.0000     0.0018    -0.0013    -0.8388     4.6142     6.5562     1.1695     0.0013    -0.0017    -1.2233     0.0091     0.0007     5.9861     0.0026    -0.0006     0.0012    -0.002
@@ -4313,8 +4313,8 @@ Chi-Squared = 1.329255
 Background =   368.814566+/-5.882437
 
 Fit Parameters:
-Height                             Position                           Full Width
-1409.044063+/-20.287022            -89.508347+/-0.011827              2.042409+/-0.028983
+Height                             Position                           Full Width                    
+1409.044063+/-20.287022            -89.508347+/-0.011827              2.042409+/-0.028983           
 Adding the  (2.000000,0.000000,0.000000,) reflection with fit position -89.508347+/-0.011827
 to the calibration file: C:\SPICE\User\exp974\Calibration\ni17Sep2025_112317AM
 
@@ -4362,7 +4362,7 @@ Setting the following motor zeros:
  Motor Name     Motor Alias            Zero     Previous Zero
          m2              m2         -1.0780         -1.0692
 
-Warning: Changing the zero changes the allowable range of user limits.
+Warning: Changing the zero changes the allowable range of user limits. 
 The changes made to the zero created the following changes to the user limits:
 The user lower limit for motor m2 (1.9192) is less than the minimum lower limit of 1.9280.  The lower limit is being reset to this minimum value.
 
@@ -4517,12 +4517,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = a1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         a1       time   detector    monitor        mcu         m2    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1         s2        sgl        sgu        stl        stu         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    18.9826      1.000      5.000    735.000      0.794    41.9675     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690   -30.0020     0.0000    -1.4990     0.0020     0.0000    41.9700     1.3213     0.7168     0.7055     0.3066    13.5002    13.4987     0.0015     0.0018    -0.0013    -0.9837     4.4640     6.5578     1.0730     0.0013    -0.0017     0.0056     0.0091     0.0007     0.0007     0.0026    -0.0006     0.0012    -0.002
       2    19.2324      1.000     10.000    717.000      0.775    41.9675     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690   -30.0020     0.0000    -1.4990     0.0020     0.0000    41.9700     1.3213     0.7168     0.7055     0.3066    13.5002    13.4987     0.0015     0.0017    -0.0013    -0.9844     4.4639     6.5577     1.0728     0.0013    -0.0017     0.0053     0.0091     0.0007     0.0007     0.0027    -0.0006     0.0012    -0.002
@@ -4609,12 +4609,12 @@ and the default preset value to:  5.000000
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = a2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         a2         a1       time   detector    monitor        mcu         m2    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1         s2        sgl        sgu        stl        stu          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1    39.4572    19.8529      5.000     23.000   3548.000      3.835    41.9675     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690   -30.0020     0.0000    -1.4990     0.0020     0.0000     1.3698     0.7161     0.7002     0.4302    13.5002    15.1930    -1.6928     0.0018    -0.0013    -0.9876     4.4642     6.5576     1.0730     0.0013    -0.0017     0.0053     0.0091     0.0007     0.0000     0.0027    -0.0006     0.0012    -0.002
       2    39.7196    19.9782      5.000     24.000   3533.000      3.819    41.9675     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -31.9690   -30.0020     0.0000    -1.4990     0.0020     0.0000     1.3636     0.7162     0.7008     0.4166    13.5002    15.0008    -1.5007     0.0018    -0.0013    -0.9896     4.4642     6.5575     1.0730     0.0013    -0.0017     0.0053     0.0091     0.0007     0.0010     0.0027    -0.0006     0.0012    -0.002
@@ -4659,7 +4659,7 @@ Drive completed.
 11:45:44 AM  9/17/2025    Executing "comment "Current Analyzer setting corresponds to Ef = 13.500174 meV ""
 
 COMMENT:
-Current Analyzer setting corresponds to Ef = 13.500174 meV
+Current Analyzer setting corresponds to Ef = 13.500174 meV 
 
 
 11:45:44 AM  9/17/2025    Executing "zero a2 @(a2.zero)+@(a2)-41.967546"
@@ -4669,7 +4669,7 @@ Setting the following motor zeros:
  Motor Name     Motor Alias            Zero     Previous Zero
          a2              a2         36.1639         35.9373
 
-Warning: Changing the zero changes the allowable range of user limits.
+Warning: Changing the zero changes the allowable range of user limits. 
 The changes made to the zero created the following changes to the user limits:
 The user upper limit for motor a2 (54.4627) exceeds the maximum upper limit of 54.2360.  The upper limit is being reset to this maximum value.
 
@@ -5391,12 +5391,12 @@ LA (002) UN test
 # mode = 0
 # plane_normal = -0.052336,-0.026150,0.998287
 # ubconf = UB17Sep2025_120956PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 200.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         m2    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post        psa        psb        psc        psd         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read
       1     0.0000    -0.0005     2.0001    14.9955    324.071     48.000 185028.000    200.001    28.5365     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -56.8949   -43.7992     3.0115    -1.4992     0.0020     0.0000    20.9838    41.9595     2.5699    28.5007    13.5051     0.0018    -0.0013    -0.4851     4.4619     6.5001     1.0187     0.0013    -0.0017     0.0053     0.0091     0.0007     0.0021     0.0027    -0.0006     0.0013    -0.002
       2     0.0000    -0.0005     2.0000    15.9958    357.165     59.000 185028.000    200.001    28.0386     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000   -57.9440   -42.7343     3.0115    -1.4992     0.0020     0.0000    20.9838    41.9597     2.5698    29.5008    13.5050     0.0018    -0.0012    -0.4722     4.4176     6.4116     1.0233     0.0013    -0.0017     0.0056     0.0091     0.0007     0.0010     0.0028    -0.0006     0.0013    -0.002

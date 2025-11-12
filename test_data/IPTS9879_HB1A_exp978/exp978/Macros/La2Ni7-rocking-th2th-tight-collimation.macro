@@ -1,28 +1,28 @@
 
 loop i=2,18 1
 
-br 0 0 %i
+br 0 0 %i 
 scantitle "La2Ni7, ( @(h) @(k) @(l) ), th2th, 40'-20'-S-20'-20' colli"
 preset mcu 10
 th2th 3 -3 0.15
 
-br 0 0 %i
+br 0 0 %i 
 scantitle "La2Ni7, ( @(h) @(k) @(l) ), rocking, 40'-20'-S-20'-20' colli"
 preset mcu 10
-scanrel s1 0.9 -0.9 0.075
+scanrel s1 0.9 -0.9 0.075 
 
 endloop
 
 loop i=0,15 1
 
-br 1 1 %i
+br 1 1 %i 
 scantitle "La2Ni7, ( @(h) @(k) @(l) ), th2th, 40'-20'-S-20'-20' colli"
 preset mcu 10
 th2th 3 -3 0.15
 
-br 1 1 %i
+br 1 1 %i 
 scantitle "La2Ni7, ( @(h) @(k) @(l) ), rocking, 40'-20'-S-20'-20' colli"
 preset mcu 10
-scanrel s1 0.9 -0.9 0.075
+scanrel s1 0.9 -0.9 0.075 
 
 endloop

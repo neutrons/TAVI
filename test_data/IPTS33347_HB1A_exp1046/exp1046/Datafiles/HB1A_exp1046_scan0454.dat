@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = UB20Feb2025_44550PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 2.000000
 # def_x = 2theta
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.     2theta       time   detector    monitor        mcu         m2        chi        phi      omega   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei
       1   -80.9743      1.967     30.000  38601.000      2.000    41.5367     3.2298     2.3853   -42.2000    24.0000    10.0000    13.0000    24.0000    24.0000    10.0000    10.0000    24.0000    20.7702    41.5141     0.0384     0.0440   -13.4379     0.0000    14.450
       2   -81.2274      1.933     47.000  38601.000      2.000    41.5367     3.2298     2.3853   -42.2000    24.0000    10.0000    13.0000    24.0000    24.0000    10.0000    10.0000    24.0000    20.7702    41.5141     0.0357     0.0408   -13.4734     0.0000    14.450

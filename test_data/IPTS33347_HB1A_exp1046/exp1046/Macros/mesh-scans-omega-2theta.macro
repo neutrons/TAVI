@@ -38,4 +38,4 @@ loop i=-30.2 -27.2 0.1
 drive omega %i
 scanrel 2theta 3 -3 0.2
 endloop
-
+ 

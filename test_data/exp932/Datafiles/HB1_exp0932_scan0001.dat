@@ -8,7 +8,7 @@
 # builtin_command = scan m1 @(m1)+-0.6 @(m1)+0.6 0.100000
 # users = Adam Aczel, Andrew Christianson, Songxue Chi, Fankang Li, Jaime Fernandez-Baca, Masaaki Matsuda, Tao Hong, Wei Tian, Michael Cox
 # local_contact = Masa Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = Heusler
 # analyzer = Heusler
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB09Apr2024_122243PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = m1
 # def_y = monitor
-# col_headers =
+# col_headers = 
 #   Pt.         m1       time   detector    monitor        mcu         m2       marc     mtrans     mfocus     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e
       1   -49.7626      5.000     74.000    527.000      0.548    41.9676     0.5070     9.0000   279.9974     0.0013     0.0010     0.0042     0.0067     0.0000     0.0044     0.0000   -10.0000    -5.0072     0.0000     0.0000    25.0000     3.0000     3.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     0.2230     0.1244     0.1244     0.0232    13.5001    13.5001     0.000
       2   -49.6626      5.000    116.000    736.000      0.765    41.9676     0.5070     9.0000   279.9974     0.0013     0.0007     0.0042     0.0067     0.0000    -0.0024    -0.0006   -10.0000    -5.0072     0.0000     0.0000    25.0000     3.0000     3.0000    25.0000     0.0000     0.0000    20.9837    -0.0126     0.2230     0.1244     0.1244     0.0232    13.5001    13.5001     0.000

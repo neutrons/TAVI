@@ -2,31 +2,31 @@
 ###      FullProf-generated CIF output file  (version: May 2019)           ###
 ###      Template of CIF submission form for structure report              ###
 ##############################################################################
-
-# This file has been generated using FullProf.2k taking one example of
-# structure report provided by Acta Cryst. It is given as a 'template' with
-# filled structural items. Many other items are left unfilled and it is the
-# responsibility of the user to properly fill or suppress them. In principle
-# all question marks '?' should be replaced by the appropriate text or
-# numerical value depending on the kind of CIF item.
-# See the document: cif_core.dic (URL: http://www.iucr.org) for details.
-
-# Please notify any error or suggestion to:
+ 
+# This file has been generated using FullProf.2k taking one example of 
+# structure report provided by Acta Cryst. It is given as a 'template' with 
+# filled structural items. Many other items are left unfilled and it is the  
+# responsibility of the user to properly fill or suppress them. In principle 
+# all question marks '?' should be replaced by the appropriate text or 
+# numerical value depending on the kind of CIF item. 
+# See the document: cif_core.dic (URL: http://www.iucr.org) for details. 
+ 
+# Please notify any error or suggestion to: 
 #           Juan Rodriguez-Carvajal (jrc@ill.eu)
 # Improvements will be progressively added as needed.
 #      Date: 21/04/2025  Time: 12:59:23.166
-
-
+ 
+ 
 #=============================================================================
  data_global
 #=============================================================================
-
-_audit_creation_date  21/04/2025
+ 
+_audit_creation_date  21/04/2025  
 _audit_creation_method  "FullProf Suite"
 # PROCESSING SUMMARY (IUCr Office Use Only)
-
+ 
 _journal_data_validation_number      ?
-
+ 
 _journal_date_recd_electronic        ?
 _journal_date_to_coeditor            ?
 _journal_date_from_coeditor          ?
@@ -54,11 +54,11 @@ _journal_page_last                   ?
 _journal_paper_category              ?
 _journal_suppl_publ_number           ?
 _journal_suppl_publ_pages            ?
-
+ 
 #=============================================================================
-
+ 
 # 1. SUBMISSION DETAILS
-
+ 
 _publ_contact_author_name            ?  # Name of author for correspondence
 _publ_contact_author_address            # Address of author for correspondence
 ; ?
@@ -66,19 +66,19 @@ _publ_contact_author_address            # Address of author for correspondence
 _publ_contact_author_email           ?
 _publ_contact_author_fax             ?
 _publ_contact_author_phone           ?
-
+ 
 _publ_contact_letter
 ; ?
 ;
-
+ 
 _publ_requested_journal              ?
 _publ_requested_coeditor_name        ?
 _publ_requested_category             ?   # Acta C: one of CI/CM/CO/FI/FM/FO
-
-
-# Definition of non standard CIF items (Reliability indices used in FULLPROF)
-
-loop_
+ 
+ 
+# Definition of non standard CIF items (Reliability indices used in FULLPROF) 
+ 
+loop_ 
 _publ_manuscript_incl_extra_item
 _publ_manuscript_incl_extra_info
 _publ_manuscript_incl_extra_defn
@@ -90,44 +90,44 @@ _publ_manuscript_incl_extra_defn
  '_pd_proc_ls_prof_chi2'         'Chi-square for all considered points'      no
  '_pd_proc_ls_prof_echi2'        'Chi-2 for points with Bragg contribution'  no
 #=============================================================================
-
+ 
 # 3. TITLE AND AUTHOR LIST
-
+ 
 _publ_section_title
 ; ' HoV6Sn6 Nuclear refinement'
 ;
 _publ_section_title_footnote
 ;
 ;
-
-# The loop structure below should contain the names and addresses of all
+ 
+# The loop structure below should contain the names and addresses of all 
 # authors, in the required order of publication. Repeat as necessary.
-
+ 
 loop_
     _publ_author_name
     _publ_author_footnote
     _publ_author_address
-?                                   #<--'Last name, first name'
+?                                   #<--'Last name, first name' 
 ; ?
 ;
 ; ?
 ;
-
+ 
 #=============================================================================
-
+ 
 # 4. TEXT
-
+ 
 _publ_section_synopsis
 ;  ?
 ;
 _publ_section_abstract
 ; ?
-;
+;          
 _publ_section_comment
 ; ?
 ;
 _publ_section_exptl_prep      # Details of the preparation of the sample(s)
-                              # should be given here.
+                              # should be given here. 
 ; ?
 ;
 _publ_section_exptl_refinement
@@ -142,15 +142,15 @@ _publ_section_figure_captions
 _publ_section_acknowledgements
 ; ?
 ;
-
+ 
 #=============================================================================
-
+ 
 #=============================================================================
-# If more than one structure is reported, the remaining sections should be
+# If more than one structure is reported, the remaining sections should be 
 # completed per structure. For each data set, replace the '?' in the
 # data_? line below by a unique identifier.
-
-# The following lines are used to test the character set of files sent by
-# network email or other means. They are not part of the CIF data set.
-# abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-# !@#$%^&*()_+{}:"~<>?|\-=[];'`,./
+ 
+# The following lines are used to test the character set of files sent by     
+# network email or other means. They are not part of the CIF data set.        
+# abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789              
+# !@#$%^&*()_+{}:"~<>?|\-=[];'`,./ 

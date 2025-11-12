@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB16Sep2025_61228PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m1         m2       marc     mtrans     mfocus    mag_top    mag_bot    mag_pre   mag_post    nut_pre   nut_post   mode1set   mode2set   mode3set   mode4set   mode5set   mode6set output1set output2set output3set output4set output5set output6set   volt1set   volt2set   volt3set   volt4set   volt5set   volt6set        psa        psb        psc        psd        pse        psf  ramprate1  ramprate2  ramprate3  ramprate4  ramprate5  ramprate6         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e   psa_dcct   psb_dcct    hb2a_bz     hb1_bx     hb1_by     hb1_bz 34972a_status      curr1      curr2      curr3      curr4      curr5      curr6   psa_read   psb_read   psc_read   psd_read   pse_read   psf_read snp_status
       1   -32.7265      1.232      2.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     0.5000     0.5000     0.5000     0.0000     0.0000     0.0000     0.1000     0.1000     0.1000     0.1000     0.1000     0.1000   -46.4012     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2454    28.9614    31.3155   -63.6125 19887.5688    13.1872 19874.3816     0.5080     0.5050    -0.9536     4.3768     6.4296     1.0874     0.0000     0.0010    -0.0013     0.0053     0.0091     0.0007     0.0007     0.5032     0.4997     0.5019    -0.0019     0.0009     0.0000     0.000
       2   -32.6258      1.318      1.000    926.000      1.001     0.0000     1.0692     0.0000     0.0000     0.0000     0.0000     0.0000    -1.2000    -0.2000     5.0000     5.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000    20.0000    20.0000    20.0000    20.0000    20.0000    20.0000     0.5000     0.5000     0.5000     0.0000     0.0000     0.0000     0.1000     0.1000     0.1000     0.1000     0.1000     0.1000   -46.4012     0.0000    -1.4990     0.0020     0.0000    21.3613    42.4865    96.2454    28.8808    31.2377   -63.6873 19887.5688    13.1872 19874.3816     0.5080     0.5050    -0.9603     4.3763     6.4296     1.0867     0.0000     0.0013    -0.0013     0.0053     0.0091     0.0007     0.0007     0.5033     0.4997     0.5019    -0.0019     0.0009     0.0000     0.000

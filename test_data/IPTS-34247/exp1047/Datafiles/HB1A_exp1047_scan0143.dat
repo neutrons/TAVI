@@ -8,7 +8,7 @@
 # builtin_command = scan s1 @(s1)+1 @(s1)+-1 0.100000
 # users = Aashish Sapkota, Benjamin Ueland, Dhurba Jaishi, Fei Li, Rob McQueeney, Tianxiong Han, Bing Li
 # local_contact = A. Aczel
-# scan_title = align (2 0 0), H = -0 T, T = 0.3 K
+# scan_title = align (2 0 0), H = -0 T, T = 0.3 K 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.035087,-0.017067,0.999238
 # ubconf = UB28Feb2025_100007PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2      mag_i         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp persistent_field dr_tsample    dr_temp
       1   -86.1470      1.000      4.000  21254.000      1.101    41.5367    -0.0000   -59.8131    -2.0107    -0.9782    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9970     0.0020    20.7314    41.4623     2.6356     1.9980    -0.0000     0.0614    14.4503    14.4999    -0.0496     1.7049     0.0000     1.0000     1.2000     0.3014     0.300
       2   -86.2467      1.000      4.000  21174.000      1.097    41.5367    -0.0000   -59.8131    -2.0107    -0.9782    25.0000     6.0000     6.0000    25.0000    25.0000     9.0000     7.0000    22.0000    -3.9970     0.0020    20.7314    41.4622     2.6356     1.9981    -0.0000     0.0547    14.4503    14.4999    -0.0496     1.7049     0.0000     1.0000     1.2000     0.3014     0.300

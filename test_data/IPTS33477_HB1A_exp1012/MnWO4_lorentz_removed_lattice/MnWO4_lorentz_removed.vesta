@@ -1,22 +1,22 @@
 #VESTA_FORMAT_VERSION 3.1.9
-
-
+ 
+ 
 CRYSTAL
 TITLE
    MnWO4 Nuclear refinement
-
+ 
 IMPORT_STRUCTURE
 MnWO4_lorentz_removed.cif
-
+ 
 IMPORT_DENSITY 1
 +1.000000E+000 MnWO4_lorentz_removed.pgrid
-
+ 
 BOUND
-    -0.1      1.1      -0.1      1.1      -0.1     1.1
+    -0.1      1.1      -0.1      1.1      -0.1     1.1 
   0   0   0   0  0
 SBOND
   0 0 0 0
-
+ 
 STYLE
 MODEL   2  1  0
 SURFS   0  1  1

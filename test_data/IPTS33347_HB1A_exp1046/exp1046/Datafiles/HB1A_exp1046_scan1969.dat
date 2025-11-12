@@ -21,47 +21,47 @@
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = Ba3Ru4O10_UBMatrix.dat
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = 2theta
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.     2theta      omega       time   detector    monitor        mcu         m2        chi        phi   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
 # Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.89982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:40 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.79982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.69982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:41 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.59982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.49982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:43 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.39982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:45 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:45 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:45 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.29982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:46 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.19982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
 # Thu, Feb 27, 2025 [2:38:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Thu, Feb 27, 2025 [2:38:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Thu, Feb 27, 2025 [2:38:48 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "omega", 0.09982, exceeds the upper limit of 0.00000.
 # ...Move aborted.
      10   -39.2521     0.0000      1.000      5.000  20906.000      1.083    41.5367     2.4548    80.2702    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7702    41.5163    -0.5767    -0.0626     2.5608     0.0000    14.4503    59.9985    76.5864    60.000

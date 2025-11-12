@@ -3,20 +3,20 @@
         **********************************************************
         ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
         **********************************************************
-                       M U L T I -- P A T T E R N
-            Rietveld, Profile Matching & Integrated Intensity
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
                  Refinement of X-ray and/or Neutron Data
 
 
-    Date: 21/04/2025  Time: 12:59:23.166
+    Date: 21/04/2025  Time: 12:59:23.166                              
 
  => PCR file code: HoV6Sn6_nuc_mag
- => DAT file code: HoV6Sn6_nuc_mag.int  -> Relative contribution: 1.0000
+ => DAT file code: HoV6Sn6_nuc_mag.int  -> Relative contribution: 1.0000                                                            
  => Title: HoV6Sn6 Nuclear refinement
 
  ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
 
- => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
  =>-------> Pattern#  1
  => Integrated intensities or Flipping Ratios as observations for phase: 1
  => Crystal+Magnetic Structure or Magnetic Form-Factor Refinement for phase: 1
@@ -32,7 +32,7 @@
  => Phase No.  1 Nuclear and Magnetic Structure of: HoV6SP6/mm'm'  number:191
 ------------------------------------------------------------------------------
 
- =>  No. of reflections for pattern#:   1:    13
+ =>  No. of reflections for pattern#:   1:    13  
 
 
  ==> ATOM PARAMETERS:
@@ -60,7 +60,7 @@
 
 
 
- => Scale factors ( 1: 6):
+ => Scale factors ( 1: 6): 
              2.425000        0.000000
              0.000000        0.000000
              0.000000        0.000000
@@ -69,7 +69,7 @@
              0.000000        0.000000
 
 
- => Extinction parameters:
+ => Extinction parameters: 
              0.000000        0.000000
              0.000000        0.000000
              0.000000        0.000000
@@ -79,22 +79,22 @@
              0.000000        0.000000
 
 
- => Global user-weigthed Chi2 (Bragg contrib.):   354.
+ => Global user-weigthed Chi2 (Bragg contrib.):   354.    
 
      -----------------------------------------------------
      R-Factors and Chi2 for Integrated Intensity Pattern #  1
      -----------------------------------------------------
  => Phase:  1
- =>    RF2 -factor :   13.5
- =>    RF2w-factor :   13.5
- =>    RF  -factor :   7.09
- =>    Chi2(Intens):   354.
+ =>    RF2 -factor :   13.5    
+ =>    RF2w-factor :   13.5    
+ =>    RF  -factor :   7.09    
+ =>    Chi2(Intens):   354.    
  =>  N_eff Reflect.:     13 with I >  2.00 sigma
- =>    RF2-mixed Mag+Nuc :   13.5
- =>    RF -mixed Mag+Nuc :   7.09
+ =>    RF2-mixed Mag+Nuc :   13.5    
+ =>    RF -mixed Mag+Nuc :   7.09    
 
-
+ 
               CPU Time:     0.078 seconds
                             0.001 minutes
 
- => Run finished at:     Date: 21/04/2025  Time: 12:59:23.241
+ => Run finished at:     Date: 21/04/2025  Time: 12:59:23.241                              

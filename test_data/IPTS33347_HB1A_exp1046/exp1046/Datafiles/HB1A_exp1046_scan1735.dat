@@ -23,7 +23,7 @@
 # ubconf = C:\SPICE\User\exp1046\UBConf\UBmatrix-MnWO4-UB022425.dat
 # def_x = coldtip
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         m2        chi        phi      omega     2theta   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp       time   detector    monitor        mcu
       1    41.5367    -3.4265  -100.7434   -13.0133   -26.0275    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7705    41.5162    -1.0000    -1.0000    -0.0000     0.0000    14.4503     4.2190    16.9856     4.000    551.998   9824.000 11580001.000    600.000
       2    41.5367    -3.4265  -100.7434   -13.0133   -26.0274    25.0000     6.0000     5.0000    25.0000    23.0000     4.0000     4.0000    23.0000    20.7705    41.5162    -1.0000    -1.0000    -0.0000     0.0000    14.4503     7.3135    16.4563     8.000    551.524  10007.000 11580001.000    600.000

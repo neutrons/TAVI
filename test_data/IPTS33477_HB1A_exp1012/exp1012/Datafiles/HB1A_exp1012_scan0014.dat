@@ -16,17 +16,17 @@
 # samplename = La2Ni7, Al-doped CuFeO2
 # sampletype = crystal
 # samplemosaic = 30.000000
-# latticeconstants =
-# ubmatrix =
+# latticeconstants = 
+# ubmatrix = 
 # mode = 0
 # plane_normal = 0.000000,0.000000,0.000000
 # ubconf = /C/SPICE/User/exp1012/UBConf/UB09Apr2024_32926PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu         m2        chi        phi        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e
       1    -9.1072    -4.5557     11.656    123.000 106661.000     10.000    41.5367     2.7868   -94.2700     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    10.0000    10.0000    10.0000    10.0000    20.7606    -0.0007     0.4193     0.0000     0.0000     0.0000    14.4503    14.4503     0.000
       2    -9.3146    -4.6562     11.594    111.000 106661.000     10.000    41.5367     2.7868   -94.2700     0.0409     0.0130    20.0000    10.0000    10.0000    20.0000    10.0000    10.0000    10.0000    10.0000    20.7606    -0.0008     0.4288     0.0000     0.0000     0.0000    14.4503    14.4503     0.000

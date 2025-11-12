@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 150.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     0.6400    -0.0000   -19.9986    147.340     27.000 630000.000    150.000    41.2647    -8.8583   -23.6511     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4822     1.9678    14.6330    34.6316     1.0000   480.0000   300.000
       2     0.6601     0.6600    -0.0000   -20.0012    147.629     17.000 630000.000    150.000    41.2647   -11.5344   -25.2180     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4812     2.0294    14.6330    34.6342     1.0000   480.0000   300.000

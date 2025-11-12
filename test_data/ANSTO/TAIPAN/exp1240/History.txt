@@ -120,7 +120,7 @@
 [2020-03-10 12:07:51] ERROR: Interrupting s1
 [2020-03-10 12:07:53] ERROR: Driving Interrupted!
 [2020-03-10 12:07:57] drive s 1 -38
-[2020-03-10 12:07:57] ERROR: Cannot find s to drive
+[2020-03-10 12:07:57] ERROR: Cannot find s to drive 
 [2020-03-10 12:08:10] drive s1 -38
 [2020-03-10 12:08:34] drive s1 -40
 [2020-03-10 12:08:40] drive s1 -42
@@ -133,7 +133,7 @@
 [2020-03-10 12:10:27] Exported: ..//data//TPN0079804.nx.hdf
 [2020-03-10 12:10:36] drive s1 -41.67
 [2020-03-10 12:11:05] drive sgl -5 5 11 time 1
-[2020-03-10 12:11:05] ERROR: Cannot find 5 to drive
+[2020-03-10 12:11:05] ERROR: Cannot find 5 to drive 
 [2020-03-10 12:11:05] ERROR: Interrupting sgl
 [2020-03-10 12:12:01] Exported: ..//data//TPN0079805.nx.hdf
 [2020-03-10 12:13:12] drive sgl 2.5
@@ -653,7 +653,7 @@
 [2020-03-11 10:43:11] drive s1 -26.9
 [2020-03-11 10:44:51] drive sgu 0
 [2020-03-11 10:49:04] drive sgl -10 10 21 time 1
-[2020-03-11 10:49:04] ERROR: Cannot find 10 to drive
+[2020-03-11 10:49:04] ERROR: Cannot find 10 to drive 
 [2020-03-11 10:49:04] ERROR: Interrupting sgl
 [2020-03-11 10:49:30] ERROR: Interrupting bm
 [2020-03-11 10:49:30] ERROR: Interrupting bm
@@ -880,7 +880,7 @@
 [2020-03-11 13:57:01] Exported: ..//data//TPN0079998.nx.hdf
 [2020-03-11 13:57:11] drive sgu 3.5
 [2020-03-11 13:57:38] drive sgul 0
-[2020-03-11 13:57:38] ERROR: Cannot find sgul to drive
+[2020-03-11 13:57:38] ERROR: Cannot find sgul to drive 
 [2020-03-11 13:57:46] drive sgl 0
 [2020-03-11 13:57:54] drive sgl -4
 [2020-03-11 13:58:01] drive sgl -5
@@ -1308,7 +1308,7 @@
 [2020-03-11 17:50:57] Exported: ..//data//TPN0080049.nx.hdf
 [2020-03-11 17:54:13] drive sgu -1.5
 [2020-03-11 18:01:00] ERROR: Object  -> tassub <- NOT found
-[2020-03-11 18:01:38] drive s1 47
+[2020-03-11 18:01:38] drive s1 47 
 [2020-03-11 18:03:38] ERROR: subcommand cal to tasub not defined
 [2020-03-11 18:03:52] drive qh 1 qk 1 ql 0 en 0
 [2020-03-11 18:06:10] Exported: ..//data//TPN0080050.nx.hdf
@@ -1399,7 +1399,7 @@
 [2020-03-12 09:53:32] Exported: ..//data//TPN0080064.nx.hdf
 [2020-03-12 09:53:42] drive sgl -2
 [2020-03-12 09:54:05] drive sgu -5 5 11 time 1
-[2020-03-12 09:54:05] ERROR: Cannot find 5 to drive
+[2020-03-12 09:54:05] ERROR: Cannot find 5 to drive 
 [2020-03-12 09:54:05] ERROR: Interrupting sgu
 [2020-03-12 09:55:13] Exported: ..//data//TPN0080065.nx.hdf
 [2020-03-12 09:55:33] drive sgu 0
@@ -1425,10 +1425,10 @@
 [2020-03-12 10:18:39] drive  qh 0 qk 2 ql 0 en 0
 [2020-03-12 10:20:18] Exported: ..//data//TPN0080070.nx.hdf
 [2020-03-12 10:20:28] drive s1 67.47
-[2020-03-12 10:23:16] drive qh 0 qk 2.00514 ql 0 en 0
+[2020-03-12 10:23:16] drive qh 0 qk 2.00514 ql 0 en 0 
 [2020-03-12 10:23:16] ERROR: Busy
 [2020-03-12 10:23:28] Exported: ..//data//TPN0080071.nx.hdf
-[2020-03-12 10:23:30] drive qh 0 qk 2.00514 ql 0 en 0
+[2020-03-12 10:23:30] drive qh 0 qk 2.00514 ql 0 en 0 
 [2020-03-12 10:24:25] drive qh 0.5 qk 0.5 ql 0 en 0
 [2020-03-12 10:25:11] ERROR: Busy
 [2020-03-12 10:38:17] ERROR: Interrupting bm

@@ -14,3 +14,4 @@ scan slita_lf 0 20 1 preset time 1
 scan slita_rt 0 20 1 preset time 1
 scan slitb_lf 0 20 1 preset time 1
 scan slitb_rt 0 20 1 preset time 1
+

@@ -187,12 +187,12 @@ check of point piece sample; h0l plane
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB28Sep2008_114953AM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -36.2421      1.000      4.000   4202.000      1.000   -76.4808    -0.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2897    -0.0002     7.6815    -0.1403    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -36.3927      1.000      3.000   4321.000      1.029   -76.4808    -0.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2897    -0.0002     7.6822    -0.1297    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -276,12 +276,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB28Sep2008_114953AM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -4.0030      1.000      2.000   4214.000      1.003   -37.8898   -76.4808     0.0000     0.0020     0.0010    20.6321    41.2627     3.2897    -0.2792     7.6673    -0.0245    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -3.5005      1.000      2.000   4269.000      1.016   -37.8898   -76.4808     0.0000     0.0020     0.0010    20.6321    41.2627     3.2897    -0.2442     7.6717    -0.0245    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -344,12 +344,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB28Sep2008_114953AM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -74.4828      1.000      3.000   4277.000      1.018   -37.8898    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2165    -0.0268     7.5143     0.0447    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -74.6796      1.000      1.000   4293.000      1.022   -37.8898    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2237    -0.0269     7.5314     0.0380    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -440,12 +440,12 @@ check of point piece sample; h0l plane, 400 peak
 # mode = 0
 # plane_normal = 0.000000,0.000000,1.000000
 # ubconf = UB28Sep2008_114953AM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -35.8907      1.000      1.000   4339.000      1.033   -76.6521    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2960    -0.0274     7.6936    -0.1713    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -36.0394      1.000      1.000   4301.000      1.024   -76.6521    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2960    -0.0274     7.6944    -0.1608    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -643,12 +643,12 @@ check of point piece sample; h0l plane, 004 peak
 # mode = 0
 # plane_normal = 0.006850,0.000000,0.999977
 # ubconf = UB28Sep2008_120955PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -4.0000      1.000      2.000   4247.000      1.011  -127.5925   -75.8942    -0.3925     0.0020     0.0010    20.6321    41.2627     3.2683    -0.0020    -0.5326     3.9904    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -3.6000      1.000      5.000   4255.000      1.013  -127.5925   -75.8942    -0.3925     0.0020     0.0010    20.6321    41.2627     3.2683    -0.0018    -0.4795     3.9922    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -773,12 +773,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.006850,0.000000,0.999977
 # ubconf = UB28Sep2008_120955PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -36.9518      1.000      3.000   4263.000      1.015   -76.6196    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9993     0.0000    -0.0705    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -37.0512      1.000      7.000   4291.000      1.022   -76.6196    -0.3925     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9994     0.0000    -0.0635    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -893,12 +893,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.006850,0.000000,0.999977
 # ubconf = UB28Sep2008_120955PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -4.0025      1.000     23.000   4332.000      1.031   -37.7234   -76.6196     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9920     0.4847    -0.0162    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -3.7000      1.000     63.000   4185.000      0.996   -37.7234   -76.6196     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9932     0.4441    -0.0162    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -1046,12 +1046,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -4.0000      1.000      7.000   4243.000      1.010  -127.3622   -75.8942    -1.0045     0.0020     0.0010    20.6321    41.2627     3.2683    -0.0048    -0.5326     3.9904    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -3.6000      1.000      6.000   4147.000      0.987  -127.3622   -75.8942    -1.0045     0.0020     0.0010    20.6321    41.2627     3.2683    -0.0044    -0.4794     3.9922    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -1841,12 +1841,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -28.9990      1.000    480.000   4333.000      1.032   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9537     0.0001    -0.6117    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -29.0984      1.000    789.000   4313.000      1.027   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9547     0.0001    -0.6048    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -1925,12 +1925,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -35.9990      1.000     21.000   4166.000      0.992   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9982     0.0001    -0.1214    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -36.0994      1.000     33.000   4191.000      0.998   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9984     0.0001    -0.1143    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2020,12 +2020,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -45.0010      1.000     15.000   4312.000      1.027   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9678     0.0001     0.5108    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -44.8002      1.000     13.000   4226.000      1.006   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9695     0.0001     0.4968    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2065,12 +2065,12 @@ Abort issued!!
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -25.0000      1.000     11.000   4269.000      1.016   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9017     0.0001    -0.8882    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -25.1988      1.000      8.000   4181.000      0.995   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9048     0.0001    -0.8745    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2204,12 +2204,12 @@ Abort issued!!
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -25.0000      1.000     18.000   4324.000      1.030   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9017     0.0001    -0.8882    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -25.1988      1.000     37.000   4211.000      1.003   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.9048     0.0001    -0.8745    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2349,12 +2349,12 @@ Tb5Ge crystal #1 (long)
 # mode = 0
 # plane_normal = 0.017487,0.000000,0.999847
 # ubconf = UB28Sep2008_122812PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -20.0000      1.000      9.000   4244.000      1.010   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.8101     0.0001    -1.2276    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -20.1998      1.000      6.000   4282.000      1.020   -76.6206    -1.0025     0.0000     0.0020     0.0010    20.6321    41.2627     3.2948     3.8143     0.0001    -1.2142    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2600,12 +2600,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.005061,-0.042339,0.999090
 # ubconf = UB28Sep2008_15057PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -77.5512      1.000  17796.000   4345.000      1.035   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0172     0.9825     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -77.6516      1.000  23064.000   4275.000      1.018   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0155     0.9843     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2656,12 +2656,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.005061,-0.042339,0.999090
 # ubconf = UB28Sep2008_15057PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -77.0010      1.000   1051.000   4280.000      1.019   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0266     0.9727     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -77.1004      1.000   1636.000   4227.000      1.006   -70.6924    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     3.0748     1.0249     0.9745     0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2745,12 +2745,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.005061,-0.042339,0.999090
 # ubconf = UB28Sep2008_15057PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -52.0984      1.000   5478.000   4199.000      1.000  -109.7898    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     4.3481     1.9997    -0.0348    -0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2   -52.1988      1.000   7170.000   4192.000      0.998  -109.7898    -0.2905    -2.4266     0.0020     0.0010    20.6321    41.2627     4.3481     1.9997    -0.0313    -0.0000    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -2847,12 +2847,12 @@ Error - the input variable "shl" does not have a valid entry in the variable con
 # mode = 0
 # plane_normal = 0.005061,-0.042339,0.999090
 # ubconf = UB28Sep2008_15057PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         s1         s2        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -3.2930      1.000     25.000   4309.000      1.026   -52.3002  -109.7898    -2.4266     0.0020     0.0010    20.6321    41.2627     4.3481     1.9970    -0.0278    -0.1047    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -2.9900      1.000     69.000   4294.000      1.022   -52.3002  -109.7898    -2.4266     0.0020     0.0010    20.6321    41.2627     4.3481     1.9976    -0.0278    -0.0941    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -3000,12 +3000,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.003037,-0.042339,0.999099
 # ubconf = UB28Sep2008_20204PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu         s1         s2        sgl        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1    -5.4266      1.000    190.000   4275.000      1.018  -142.3051  -109.7898     0.1715     0.0020     0.0010    20.6321    41.2627     4.3481     0.0003     1.9972     0.1046    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
       2    -5.1266      1.000    333.000   4435.000      1.056  -142.3051  -109.7898     0.1715     0.0020     0.0010    20.6321    41.2627     4.3481     0.0002     1.9977     0.0941    14.6330    14.6343    -0.0013     1.0000   480.0000   300.000
@@ -3167,12 +3167,12 @@ Setting the scantitle to:
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = k
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     2.0000    -0.0499    -0.0001    -0.0013      1.000     59.000   4358.000      1.038   -50.8976  -109.8459     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.3496    14.6330    14.6343     1.0000   480.0000   300.000
       2     2.0000    -0.0449    -0.0001    -0.0013      1.000     74.000   4281.000      1.019   -51.0364  -109.8361     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.3494    14.6330    14.6343     1.0000   480.0000   300.000
@@ -3232,12 +3232,12 @@ Setting the scantitle to:
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     1.9500     0.0001    -0.0001    -0.0013      1.000      6.000   4169.000      0.993   -50.3159  -105.8184     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.2396    14.6330    14.6343     1.0000   480.0000   300.000
       2     1.9550     0.0000    -0.0001    -0.0013      1.000      6.000   4215.000      1.004   -50.5089  -106.2072     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.2505    14.6330    14.6343     1.0000   480.0000   300.000
@@ -3297,12 +3297,12 @@ Setting the scantitle to:
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1    -0.0500     2.0000     0.0000    -0.0013      1.000   1563.000   4400.000      1.048  -143.7618  -109.8469     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.3497    14.6330    14.6343     1.0000   480.0000   300.000
       2    -0.0451     2.0000     0.0000    -0.0013      1.000   2479.000   4251.000      1.012  -143.6142  -109.8361     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.3494    14.6330    14.6343     1.0000   480.0000   300.000
@@ -3362,12 +3362,12 @@ Setting the scantitle to:
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = k
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.0000     1.9501     0.0000    -0.0013      1.000      6.000   4296.000      1.023  -140.3150  -105.8194     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.2397    14.6330    14.6343     1.0000   480.0000   300.000
       2    -0.0001     1.9550     0.0000    -0.0013      1.000     11.000   4243.000      1.010  -140.5098  -106.2062     0.1715    -3.0000     0.0020     0.0010    20.6321    41.2627     4.2504    14.6330    14.6343     1.0000   480.0000   300.000
@@ -3427,12 +3427,12 @@ T2[110] phonon, Fe-Ga 10.8%, [1.1 0.9 0]
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     1.1000     0.9000    -0.0000    -0.9993     19.839     22.000  84000.000     20.000   -70.1998   -69.7278     0.1715    -3.0000     0.0020     0.0010    19.9317    39.8661     3.0900    14.6330    15.6323     1.0000   480.0000   300.000
       2     1.1000     0.9000    -0.0000    -1.4004     19.784      8.000  84000.000     20.000   -69.3967   -69.1944     0.1715    -3.0000     0.0020     0.0010    19.6705    39.3434     3.0900    14.6330    16.0333     1.0000   480.0000   300.000
@@ -3489,12 +3489,12 @@ T2[110] phonon, Fe-Ga 10.8%, [0.9 1.1 0]
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.9000     1.1001    -0.0000    -1.0008     19.641    960.000  84000.000     20.000   -81.6250   -69.7288     0.1715    -3.0000     0.0020     0.0010    19.9325    39.8641     3.0901    14.6330    15.6337     1.0000   480.0000   300.000
       2     0.9000     1.1000    -0.0000    -1.1997     19.656    133.000  84000.000     20.000   -81.2185   -69.4601     0.1715    -3.0000     0.0020     0.0010    19.7993    39.6023     3.0900    14.6330    15.8327     1.0000   480.0000   300.000
@@ -3569,12 +3569,12 @@ spin wave, Fe-Ga 10.8%, e = 5 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7998     1.2001    -0.0000     5.0001     19.607      4.000  84000.000     20.000  -101.0108   -80.5605     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1355    14.6330     9.6329     1.0000   480.0000   300.000
       2     0.8050     1.1950    -0.0000     5.0001     19.585     10.000  84000.000     20.000  -100.6919   -80.4690     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1326    14.6330     9.6329     1.0000   480.0000   300.000
@@ -3694,12 +3694,12 @@ T2110, q = .15, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 50.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8500     1.1500    -0.0000    -3.0007     49.284     22.000 210000.000     50.000   -80.7628   -67.6127     0.1715    -3.0000     0.0020     0.0010    18.7224    37.4458     3.1091    14.6330    17.6337     1.0000   480.0000   300.000
       2     0.8500     1.1500    -0.0000    -3.2501     49.201     36.000 210000.000     50.000   -80.2815   -67.2987     0.1715    -3.0000     0.0020     0.0010    18.5860    37.1741     3.1091    14.6330    17.8831     1.0000   480.0000   300.000
@@ -3771,12 +3771,12 @@ T2110, q = .20, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 75.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8000     1.2000    -0.0000    -4.4980     74.087     16.000 315000.000     75.000   -81.0846   -66.4099     0.1715    -3.0000     0.0020     0.0010    17.9482    35.8985     3.1355    14.6330    19.1309     1.0000   480.0000   300.000
       2     0.8000     1.2000    -0.0000    -4.8009     73.625     22.000 315000.000     75.000   -80.5207   -66.0458     0.1715    -3.0000     0.0020     0.0010    17.8033    35.6082     3.1356    14.6330    19.4339     1.0000   480.0000   300.000
@@ -3847,12 +3847,12 @@ T2110, q = .25, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 100.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7500     1.2499    -0.0000    -4.4949     98.383     19.000 420000.000    100.000   -84.3110   -67.2288     0.1715    -3.0000     0.0020     0.0010    17.9485    35.9015     3.1690    14.6330    19.1279     1.0000   480.0000   300.000
       2     0.7500     1.2500    -0.0000    -4.7999     98.670     25.000 420000.000    100.000   -83.7510   -66.8617     0.1715    -3.0000     0.0020     0.0010    17.8034    35.6092     3.1693    14.6330    19.4329     1.0000   480.0000   300.000
@@ -3930,12 +3930,12 @@ T2110, q = .30, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 125.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7000     1.2999    -0.0000    -7.9948    123.105     26.000 525000.000    125.000   -81.3002   -64.0733     0.1715    -3.0000     0.0020     0.0010    16.4596    32.9222     3.2098    14.6330    22.6277     1.0000   480.0000   300.000
       2     0.7000     1.3000    -0.0000    -8.4002    123.367     36.000 525000.000    125.000   -80.5974   -63.6215     0.1715    -3.0000     0.0020     0.0010    16.3102    32.6230     3.2101    14.6330    23.0332     1.0000   480.0000   300.000
@@ -4000,12 +4000,12 @@ T2110, q = .35, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 150.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6501     1.3499    -0.0000    -7.9934    147.662     26.000 630000.000    150.000   -84.6496   -65.1845     0.1715    -3.0000     0.0020     0.0010    16.4595    32.9231     3.2573    14.6330    22.6264     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000    -8.4002    147.308     32.000 630000.000    150.000   -83.9547   -64.7249     0.1715    -3.0000     0.0020     0.0010    16.3103    32.6230     3.2576    14.6330    23.0332     1.0000   480.0000   300.000
@@ -4075,12 +4075,12 @@ T2110, q = .40, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 175.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6000     1.3999    -0.0000    -8.9945    171.790     26.000 735000.000    175.000   -86.3159   -65.3007     0.1715    -3.0000     0.0020     0.0010    16.0972    32.1987     3.3114    14.6330    23.6275     1.0000   480.0000   300.000
       2     0.6000     1.4000    -0.0000    -9.4991    172.067     26.000 735000.000    175.000   -85.4665   -64.7328     0.1715    -3.0000     0.0020     0.0010    15.9241    31.8513     3.3115    14.6330    24.1321     1.0000   480.0000   300.000
@@ -4146,12 +4146,12 @@ T2110, q = .45, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 200.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.5502     1.4499    -0.0000    -8.9945    196.373     28.000 840000.000    200.000   -89.7126   -66.7062     0.1715    -3.0000     0.0020     0.0010    16.0973    32.1987     3.3715    14.6330    23.6275     1.0000   480.0000   300.000
       2     0.5500     1.4500    -0.0000    -9.4991    196.347     44.000 840000.000    200.000   -88.8770   -66.1284     0.1715    -3.0000     0.0020     0.0010    15.9241    31.8513     3.3716    14.6330    24.1321     1.0000   480.0000   300.000
@@ -4219,12 +4219,12 @@ T2110, q = .50, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 250.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.5000     1.4999    -0.0000    -8.9945    245.744     28.000 1050000.000    250.000   -93.1230   -68.2564     0.1715    -3.0000     0.0020     0.0010    16.0975    32.1987     3.4374    14.6330    23.6275     1.0000   480.0000   300.000
       2     0.5000     1.5001    -0.0000    -9.6011    246.108     31.000 1050000.000    250.000   -92.1260   -67.5556     0.1715    -3.0000     0.0020     0.0010    15.8900    31.7824     3.4377    14.6330    24.2341     1.0000   480.0000   300.000
@@ -4287,12 +4287,12 @@ sw; L110 fr 110, 5 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8001     0.7999    -0.0000    -4.9958     19.773      8.000  84000.000     20.000   -58.5600   -50.1363     0.1715    -3.0000     0.0020     0.0010    17.7109    35.4251     2.4596    14.6330    19.6287     1.0000   480.0000   300.000
       2     0.8100     0.8100    -0.0000    -5.0000     19.571      5.000  84000.000     20.000   -59.0404   -50.8243     0.1715    -3.0000     0.0020     0.0010    17.7085    35.4212     2.4904    14.6330    19.6330     1.0000   480.0000   300.000
@@ -4372,12 +4372,12 @@ sw; T110 fr 110, 5 meV, e-loss
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7999     1.2001    -0.0000     5.0001     19.809     10.000  84000.000     20.000  -101.0079   -80.5625     0.1715    -3.0000     0.0020     0.0010    25.7403    51.4812     3.1355    14.6330     9.6329     1.0000   480.0000   300.000
       2     0.8100     1.1900    -0.0000     5.0001     19.614      8.000  84000.000     20.000  -100.3799   -80.3745     0.1715    -3.0000     0.0020     0.0010    25.7403    51.4812     3.1296    14.6330     9.6329     1.0000   480.0000   300.000
@@ -4457,12 +4457,12 @@ sw; L110 fr 110, 5 meV, e-loss
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8000     0.8000    -0.0000     5.0001     19.684      1.000  84000.000     20.000   -82.7520   -60.4001     0.1715    -3.0000     0.0020     0.0010    25.7403    51.4812     2.4598    14.6330     9.6329     1.0000   480.0000   300.000
       2     0.8100     0.8100    -0.0000     4.9998     19.697      1.000  84000.000     20.000   -83.0138   -61.2702     0.1715    -3.0000     0.0020     0.0010    25.7403    51.4802     2.4905    14.6330     9.6332     1.0000   480.0000   300.000
@@ -4542,12 +4542,12 @@ sw; T110 fr 110, 10 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 50.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7000     1.2999    -0.0000    -9.9980     49.211     17.000 210000.000     50.000   -77.8356   -61.8509     0.1715    -3.0000     0.0020     0.0010    15.7577    31.5186     3.2100    14.6330    24.6309     1.0000   480.0000   300.000
       2     0.7100     1.2900    -0.0000    -9.9995     49.213     34.000 210000.000     50.000   -77.1624   -61.6530     0.1715    -3.0000     0.0020     0.0010    15.7577    31.5176     3.2014    14.6330    24.6324     1.0000   480.0000   300.000
@@ -4647,12 +4647,12 @@ sw; L110 fr 110, 10 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 50.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7000     0.7000    -0.0000    -9.9995     49.178      9.000 210000.000     50.000   -41.4370   -38.6206     0.1715    -3.0000     0.0020     0.0010    15.7577    31.5176     2.1523    14.6330    24.6324     1.0000   480.0000   300.000
       2     0.7200     0.7200    -0.0000   -10.0010     49.268     11.000 210000.000     50.000   -42.7707   -39.9463     0.1715    -3.0000     0.0020     0.0010    15.7577    31.5167     2.2139    14.6330    24.6339     1.0000   480.0000   300.000
@@ -4722,12 +4722,12 @@ sw; T110 fr 110, 15 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 100.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     1.3600    -0.0000   -14.9995     98.393    257.000 420000.000    100.000   -73.6289   -57.8893     0.1715    -3.0000     0.0020     0.0010    14.3352    28.6731     3.2678    14.6330    29.6325     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000   -14.9995     98.701    206.000 420000.000    100.000   -72.9291   -57.6629     0.1715    -3.0000     0.0020     0.0010    14.3352    28.6731     3.2576    14.6330    29.6325     1.0000   480.0000   300.000
@@ -4801,12 +4801,12 @@ sw; L110 fr 110, 15 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 100.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     0.6400    -0.0000   -14.9995     98.224     41.000 420000.000    100.000   -23.6270   -29.5162     0.1715    -3.0000     0.0020     0.0010    14.3352    28.6731     1.9678    14.6330    29.6325     1.0000   480.0000   300.000
       2     0.6500     0.6500    -0.0000   -15.0015     98.259     30.000 420000.000    100.000   -24.6181   -30.2121     0.1715    -3.0000     0.0020     0.0010    14.3352    28.6722     1.9985    14.6330    29.6345     1.0000   480.0000   300.000
@@ -4880,12 +4880,12 @@ sw; T110 fr 110, 20 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 150.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     1.3600    -0.0000   -19.9986    147.426     43.000 630000.000    150.000   -65.5935   -52.9326     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4822     3.2678    14.6330    34.6316     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000   -19.9986    147.718     40.000 630000.000    150.000   -64.8740   -52.7111     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4822     3.2575    14.6330    34.6316     1.0000   480.0000   300.000
@@ -4959,12 +4959,12 @@ sw; L110 fr 110, 20 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 150.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     0.6400    -0.0000   -19.9986    147.340     27.000 630000.000    150.000    -8.8583   -23.6511     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4822     1.9678    14.6330    34.6316     1.0000   480.0000   300.000
       2     0.6601     0.6600    -0.0000   -20.0012    147.629     17.000 630000.000    150.000   -11.5344   -25.2180     0.1715    -3.0000     0.0020     0.0010    13.2392    26.4812     2.0294    14.6330    34.6342     1.0000   480.0000   300.000
@@ -5021,12 +5021,12 @@ sw; T110 fr 110, 25 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 200.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     1.3600    -0.0000   -24.9980    196.772     34.000 840000.000    200.000   -57.6319   -48.1452     0.1715    -3.0000     0.0020     0.0010    12.3624    24.7273     3.2678    14.6330    39.6309     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000   -25.0011    196.713     37.000 840000.000    200.000   -56.8809   -47.9217     0.1715    -3.0000     0.0020     0.0010    12.3624    24.7263     3.2576    14.6330    39.6340     1.0000   480.0000   300.000
@@ -5100,12 +5100,12 @@ sw; L110 fr 110, 25 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 200.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6400     0.6400    -0.0000   -25.0011    196.172     29.000 840000.000    200.000     9.1644   -16.2406     0.1715    -3.0000     0.0020     0.0010    12.3624    24.7263     1.9678    14.6330    39.6340     1.0000   480.0000   300.000
       2     0.6500     0.6500    -0.0000   -25.0011    197.113     40.000 840000.000    200.000     7.0433   -17.2830     0.1715    -3.0000     0.0020     0.0010    12.3624    24.7263     1.9986    14.6330    39.6340     1.0000   480.0000   300.000
@@ -5179,12 +5179,12 @@ sw; T110 fr 110, 30 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 300.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6398     1.3600    -0.0000   -29.9981    294.433     49.000 1260000.000    300.000   -49.5748   -43.3942     0.1715    -3.0000     0.0020     0.0010    11.6380    23.2804     3.2676    14.6330    44.6310     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000   -30.0018    295.413     66.000 1260000.000    300.000   -48.7923   -43.1708     0.1715    -3.0000     0.0020     0.0010    11.6380    23.2794     3.2576    14.6330    44.6348     1.0000   480.0000   300.000
@@ -5258,15 +5258,15 @@ sw; L110 fr 110, 30 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 300.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
 # Mon, Sep 29, 2008 [1:30:33 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [1:30:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [1:30:33 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
       2     0.6600     0.6599    -0.0000   -29.9943    294.856    104.000 1260000.000    300.000    31.4498    -6.9847     0.1715    -3.0000     0.0020     0.0010    11.6380    23.2814     2.0290    14.6330    44.6273     1.0000   480.0000   300.000
@@ -5317,7 +5317,7 @@ Drive completed.
 # proposal = IPTS-890
 # experiment = FM short-range ord in AFM Tb5Ge4
 # experiment_number = 266
-# command = scan s2 1.5 -1.5 -.2
+# command = scan s2 1.5 -1.5 -.2 
 # builtin_command = scan s2 1.5 -1.5 -.2
 # users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
 # local_contact = J.L. Zarestky
@@ -5334,12 +5334,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -72.2288      0.000      0.000      0.000      0.000   -52.3130     0.1715    -3.0000     0.0020     0.0010    20.6326    41.2647     3.1326     1.3640     0.4642    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
 # Sum of Counts = 0
@@ -5376,7 +5376,7 @@ Drive completed.
 # proposal = IPTS-890
 # experiment = FM short-range ord in AFM Tb5Ge4
 # experiment_number = 266
-# command = scanrel s2 1.5 -1.5 -.2
+# command = scanrel s2 1.5 -1.5 -.2 
 # builtin_command = scan s2 @(s2)+1.5 @(s2)+-1.5 -0.200000
 # users = Rob McQueeney, Andreas Kreyssig, Alan Goldman, Wei Tian, Jerel Zarestky
 # local_contact = J.L. Zarestky
@@ -5393,12 +5393,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2       time   detector    monitor        mcu         s1        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1  -108.2977      1.000  11506.000   4204.000      1.001   -52.3051     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3079     1.9813     0.0259    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
       2  -108.4965      1.000  16880.000   4230.000      1.007   -52.3051     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3133     1.9838     0.0225    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
@@ -5470,12 +5470,12 @@ Q is not in the specified scattering plane
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         s2        sgl        sgu        stl        stu         a1         a2          q          h          k          l         ei         ef          e cold_tip_[a] sample_[b]       temp
       1   -51.3051      1.000   2713.000   4350.000      1.036  -109.7977     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3483     1.9997    -0.0349    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
       2   -51.4055      1.000   3845.000   4333.000      1.032  -109.7977     0.1715    -3.0000     0.0020     0.0010    20.6312    41.2647     4.3483     1.9998    -0.0314    -0.0001    14.6330    14.6330     0.0000     1.0000   480.0000   300.000
@@ -5564,12 +5564,12 @@ T2[110] phonon, Fe-Ga 10.8%, [1.1 0.9 0]
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     1.1000     0.9000    -0.0000    -1.0000     19.647     14.000  84000.000     20.000   -70.2008   -69.7278     0.1715    -3.0000     0.0020     0.0010    19.9314    39.8651     3.0900    14.6330    15.6330     1.0000   480.0000   300.000
       2     1.1000     0.9000    -0.0000    -1.4004     19.515     11.000  84000.000     20.000   -69.3967   -69.1954     0.1715    -3.0000     0.0020     0.0010    19.6705    39.3434     3.0901    14.6330    16.0333     1.0000   480.0000   300.000
@@ -5626,12 +5626,12 @@ T2[110] phonon, Fe-Ga 10.8%, [0.9 1.1 0]
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.9000     1.1001    -0.0000    -1.0000     19.593    949.000  84000.000     20.000   -81.6250   -69.7288     0.1715    -3.0000     0.0020     0.0010    19.9324    39.8651     3.0901    14.6330    15.6330     1.0000   480.0000   300.000
       2     0.9000     1.1000    -0.0000    -1.1997     19.640    122.000  84000.000     20.000   -81.2185   -69.4601     0.1715    -3.0000     0.0020     0.0010    19.7993    39.6023     3.0900    14.6330    15.8327     1.0000   480.0000   300.000
@@ -5706,12 +5706,12 @@ spin wave, Fe-Ga 10.8%, e = 5 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7998     1.2001    -0.0000     5.0001     19.667      2.000  84000.000     20.000  -101.0108   -80.5605     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1355    14.6330     9.6329     1.0000   480.0000   300.000
       2     0.8050     1.1950    -0.0000     5.0001     19.594      6.000  84000.000     20.000  -100.6909   -80.4690     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1326    14.6330     9.6329     1.0000   480.0000   300.000
@@ -5757,12 +5757,12 @@ spin wave, Fe-Ga 10.8%, e = 5 meV
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8000     1.2000    -0.0000     4.9998      9.846      3.000  42000.000     10.000  -101.0030   -80.5645     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4802     3.1356    14.6330     9.6332     1.0000   480.0000   300.000
       2     0.8200     1.1800    -0.0000     5.0001      9.819      3.000  42000.000     10.000   -99.7598   -80.1973     0.1715    -3.0000     0.0020     0.0010    25.7401    51.4812     3.1240    14.6330     9.6329     1.0000   480.0000   300.000
@@ -5822,12 +5822,12 @@ T2110, q = .15, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 25.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8500     1.1500    -0.0000    -2.9998     24.540      9.000 105000.000     25.000   -80.7628   -67.6127     0.1715    -3.0000     0.0020     0.0010    18.7224    37.4468     3.1091    14.6330    17.6328     1.0000   480.0000   300.000
       2     0.8500     1.1500    -0.0000    -3.2501     24.498     16.000 105000.000     25.000   -80.2815   -67.2987     0.1715    -3.0000     0.0020     0.0010    18.5859    37.1741     3.1091    14.6330    17.8831     1.0000   480.0000   300.000
@@ -5899,12 +5899,12 @@ T2110, q = .20, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 50.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.8000     1.2000    -0.0000    -4.4969     49.082     16.000 210000.000     50.000   -81.0856   -66.4099     0.1715    -3.0000     0.0020     0.0010    17.9481    35.8995     3.1355    14.6330    19.1299     1.0000   480.0000   300.000
       2     0.8000     1.2000    -0.0000    -4.7999     49.258     14.000 210000.000     50.000   -80.5217   -66.0458     0.1715    -3.0000     0.0020     0.0010    17.8034    35.6092     3.1356    14.6330    19.4329     1.0000   480.0000   300.000
@@ -5975,12 +5975,12 @@ T2110, q = .25, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 75.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7499     1.2499    -0.0000    -4.4949     73.699     14.000 315000.000     75.000   -84.3120   -67.2278     0.1715    -3.0000     0.0020     0.0010    17.9484    35.9015     3.1690    14.6330    19.1279     1.0000   480.0000   300.000
       2     0.7500     1.2500    -0.0000    -4.7999     73.577     12.000 315000.000     75.000   -83.7510   -66.8627     0.1715    -3.0000     0.0020     0.0010    17.8034    35.6092     3.1693    14.6330    19.4329     1.0000   480.0000   300.000
@@ -6058,12 +6058,12 @@ T2110, q = .30, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 100.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.7000     1.2999    -0.0000    -7.9934    178.933     24.000 420000.000    100.000   -81.3002   -64.0743     0.1715    -3.0000     0.0020     0.0010    16.4596    32.9231     3.2098    14.6330    22.6264     1.0000   480.0000   300.000
       2     0.7000     1.3000    -0.0000    -8.3989    179.317     28.000 420000.000    100.000   -80.5974   -63.6206     0.1715    -3.0000     0.0020     0.0010    16.3102    32.6239     3.2100    14.6330    23.0318     1.0000   480.0000   300.000
@@ -6128,12 +6128,12 @@ T2110, q = .35, focused, E-gain
 # mode = 0
 # plane_normal = -0.003037,-0.052334,0.998625
 # ubconf = UB28Sep2008_20532PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 125.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei         ef cold_tip_[a] sample_[b]       temp
       1     0.6500     1.3499    -0.0000    -7.9934    121.950     19.000 525000.000    125.000   -84.6506   -65.1845     0.1715    -3.0000     0.0020     0.0010    16.4596    32.9231     3.2573    14.6330    22.6264     1.0000   480.0000   300.000
       2     0.6500     1.3500    -0.0000    -8.4002    121.752     26.000 525000.000    125.000   -83.9537   -64.7249     0.1715    -3.0000     0.0020     0.0010    16.3103    32.6230     3.2576    14.6330    23.0332     1.0000   480.0000   300.000
@@ -6225,3 +6225,4 @@ Drive completed.
 
 
 7:38:00 PM  9/29/2008    Executing "begin"
+

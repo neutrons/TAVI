@@ -607,3 +607,4 @@ scanrel omega 1.5 -1.5 0.15
 com omega
 scantitle "MnWO4 nuclear, (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
 th4th 3 -3 0.2
+

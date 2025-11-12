@@ -3,19 +3,19 @@
         **********************************************************
         ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
         **********************************************************
-                       M U L T I -- P A T T E R N
-            Rietveld, Profile Matching & Integrated Intensity
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
                  Refinement of X-ray and/or Neutron Data
 
 
-    Date: 15/04/2025  Time: 14:04:32.524
+    Date: 15/04/2025  Time: 14:04:32.524                              
 
  => PCR file code: MnWO4_nuc_300K_3X_HB1A
- => DAT file code: MnWO4_nuc_300K_3X_HB -> Relative contribution: 1.0000
+ => DAT file code: MnWO4_nuc_300K_3X_HB -> Relative contribution: 1.0000                                                            
 
  ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
 
- => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
 
  ==> INPUT/OUTPUT OPTIONS:
 
@@ -28,7 +28,7 @@
  => Number of Least-Squares parameters varied:    20
  --------------------------------------------------------------------------------
  => Phase  No. 1
-      MnWO4, 5p-Co, nuclear
+      MnWO4, 5p-Co, nuclear                                                 
  --------------------------------------------------------------------------------
  =>-------> Pattern#  1
  => Integrated intensities or Flipping Ratios as observations for phase: 1
@@ -39,10 +39,10 @@
  => Number of distance  constraints:    0
  => Number of angle     constraints:    0
 
- => Symmetry information on space group: P 1 2/c 1
+ => Symmetry information on space group: P 1 2/c 1           
  -> The multiplicity of the general position is:   4
- -> The space group is Centric (-1 at origin)
- -> Lattice type  P: { 000 }
+ -> The space group is Centric (-1 at origin)   
+ -> Lattice type  P: { 000 }                                       
  -> Reduced set of symmetry operators:
 
   No.  IT   Symmetry symbol    Rotation part     Associated Translation
@@ -50,8 +50,8 @@
    2: ( 3)   2 ( 0, y, 0) -->     (-x, y,-z) + {  0.0000  0.0000  0.5000}
 
 
-        Information on Space Group:
-        ---------------------------
+        Information on Space Group: 
+        --------------------------- 
 
  =>   Number of Space group:  13
  =>  Hermann-Mauguin Symbol: P 1 2/c 1
@@ -71,7 +71,7 @@
                               0.000 <= y <=  1.000
                               0.000 <= z <=  0.500
  => Centring vectors:  0
-
+                                                                                                    
 
  => List of all Symmetry Operators and Symmetry Symbols
 
@@ -92,7 +92,7 @@
  O2     O                  0.25135   0.37364   0.39334   8.89304   1.00000           0    0    0    4
                  Codes:   61.00000  51.00000  31.00000 121.00000   0.00000
 
- => It is assumed that THE FIRST GIVEN SITE plus all the other atoms
+ => It is assumed that THE FIRST GIVEN SITE plus all the other atoms 
     occupying THE SAME POSITION have a total full occupation (no vacancies!)
   (if this is not the case, change the order of atoms to obtain correct values for the content of the unit cell)
     The given occupation factors have been obtained mutiplying m/M by   0.4949
@@ -102,15 +102,15 @@
       -> Atom: O   ,  Chemical element: O   Atomic Mass:    15.9994
  => The given value of ATZ is        598.25 the program has calculated:         598.26
     The value of ATZ given in the input PCR file will be used for quantitative analysis
- => The chemical content of the unit cell is:
-       2.0000 MN   +   2.0207 W    +   4.0414 O    +   4.0414 O
- => The normalized site occupation numbers in % are:
-     100.0000 Mn1    :      101.0346 W1     :      101.0346 O1     :      101.0346 O2
+ => The chemical content of the unit cell is: 
+       2.0000 MN   +   2.0207 W    +   4.0414 O    +   4.0414 O      
+ => The normalized site occupation numbers in % are: 
+     100.0000 Mn1    :      101.0346 W1     :      101.0346 O1     :      101.0346 O2       
  => The density (volumic mass) of the compound is:    7.421 g/cm3
 
  =>-------> SCALE FACTORS, EXTINCTION AND CELL PARAMETERS FOR PATTERN:  1
 
- => Scale factors ( 1: 6) :    579.600       0.00000       0.00000       0.00000       0.00000       0.00000
+ => Scale factors ( 1: 6) :    579.600       0.00000       0.00000       0.00000       0.00000       0.00000    
 
  => Extinction  parameters:         0.4302        1.2930       -0.0215        0.1379        0.5571        0.1000        0.0000
  => Direct cell parameters:         4.8000        5.7270        4.9720       90.0000       91.1600       90.0000
@@ -124,7 +124,7 @@
  => Extinction parameters:  151.000 161.000 171.000 181.000 191.000   0.000   0.000
 
 
- => Cell constraints according to Laue symmetry: 2/m
+ => Cell constraints according to Laue symmetry: 2/m  
 
         Metric information:
         -------------------
@@ -148,24 +148,24 @@
       0.0000     32.7985      0.0000          0.000000    0.030489    0.000000
      -0.4831      0.0000     24.7208          0.000849    0.000000    0.040468
 
- =>  Cartesian frame: x // a; z is along c*; y is within the ab-plane
+ =>  Cartesian frame: x // a; z is along c*; y is within the ab-plane   
 
      Crystal_to_Orthonormal_Matrix              Orthonormal_to_Crystal Matrix
-              Cr_Orth_cel                               Orth_Cr_cel
+              Cr_Orth_cel                               Orth_Cr_cel  
       4.8000      0.0000     -0.1007          0.208333   -0.000000    0.004218
       0.0000      5.7270      0.0000          0.000000    0.174611   -0.000000
       0.0000      0.0000      4.9710          0.000000    0.000000    0.201168
 
      Busing-Levy B-matrix: Hc=B.H            Inverse of the Busing-Levy B-matrix
-                BL_M                                      BL_Minv
+                BL_M                                      BL_Minv  
     0.208376    0.000000    0.004073            4.7990     -0.0000     -0.0972
     0.000000    0.174611   -0.000000            0.0000      5.7270      0.0000
     0.000000    0.000000    0.201126            0.0000      0.0000      4.9720
  => Header of the Integrated Intensity file:
- -> Title: Single crystal data of MnWO4 (hb1a)
- -> Format of data: (3i5,2f8.2,i4,3f8.2)
+ -> Title: Single crystal data of MnWO4 (hb1a)                                                                                     
+ -> Format of data: (3i5,2f8.2,i4,3f8.2)                                        
  -> Wavelength (Angstr.):   2.3800
- -> Type of data:  F2 and Sig(F2) have been input
+ -> Type of data:  F2 and Sig(F2) have been input                                                                                         
  -> Reflection: (  -2   0  -1)  of domain  1 is forbidden (excluded)
  -> Reflection: (  -2   0   1)  of domain  1 is forbidden (excluded)
  -> Reflection: (  -1   0  -1)  of domain  1 is forbidden (excluded)
@@ -192,28 +192,28 @@
       SYMBOLIC NAMES AND INITIAL VALUES OF PARAMETERS TO BE VARIED:
      --------------------------------------------------------------
 
-      ->  Parameter number    1   -> Symbolic Name:                                             Scale1     579.59998
+      ->  Parameter number    1   -> Symbolic Name:                                             Scale1     579.59998    
       ->  Parameter number    2   -> Symbolic Name:                                          x-Lamb1_2    0.19000000E-02
-      ->  Parameter number    3   -> Symbolic Name:                                               Z_O2    0.39333999
-      ->  Parameter number    4   -> Symbolic Name:                                              Y_Mn1    0.68589002
-      ->  Parameter number    5   -> Symbolic Name:                                               Y_O2    0.37364000
-      ->  Parameter number    6   -> Symbolic Name:                                               X_O2    0.25134999
-      ->  Parameter number    7   -> Symbolic Name:                                               Y_W1    0.18021999
-      ->  Parameter number    8   -> Symbolic Name:                                               Z_O1    0.94524997
-      ->  Parameter number    9   -> Symbolic Name:                                               X_O1    0.21107000
-      ->  Parameter number   10   -> Symbolic Name:                                               Y_O1    0.10103000
-      ->  Parameter number   11   -> Symbolic Name:                                           Biso_Mn1     8.7030096
-      ->  Parameter number   12   -> Symbolic Name:                                            Biso_O2     8.8930397
-      ->  Parameter number   13   -> Symbolic Name:                                            Biso_W1     8.1649704
-      ->  Parameter number   14   -> Symbolic Name:                                            Biso_O1     9.1862898
-      ->  Parameter number   15   -> Symbolic Name:                                               Ext1    0.43020001
-      ->  Parameter number   16   -> Symbolic Name:                                               Ext2     1.2930000
+      ->  Parameter number    3   -> Symbolic Name:                                               Z_O2    0.39333999    
+      ->  Parameter number    4   -> Symbolic Name:                                              Y_Mn1    0.68589002    
+      ->  Parameter number    5   -> Symbolic Name:                                               Y_O2    0.37364000    
+      ->  Parameter number    6   -> Symbolic Name:                                               X_O2    0.25134999    
+      ->  Parameter number    7   -> Symbolic Name:                                               Y_W1    0.18021999    
+      ->  Parameter number    8   -> Symbolic Name:                                               Z_O1    0.94524997    
+      ->  Parameter number    9   -> Symbolic Name:                                               X_O1    0.21107000    
+      ->  Parameter number   10   -> Symbolic Name:                                               Y_O1    0.10103000    
+      ->  Parameter number   11   -> Symbolic Name:                                           Biso_Mn1     8.7030096    
+      ->  Parameter number   12   -> Symbolic Name:                                            Biso_O2     8.8930397    
+      ->  Parameter number   13   -> Symbolic Name:                                            Biso_W1     8.1649704    
+      ->  Parameter number   14   -> Symbolic Name:                                            Biso_O1     9.1862898    
+      ->  Parameter number   15   -> Symbolic Name:                                               Ext1    0.43020001    
+      ->  Parameter number   16   -> Symbolic Name:                                               Ext2     1.2930000    
       ->  Parameter number   17   -> Symbolic Name:                                               Ext3   -0.21520000E-01
-      ->  Parameter number   18   -> Symbolic Name:                                               Ext4    0.13789999
-      ->  Parameter number   19   -> Symbolic Name:                                               Ext5    0.55710000
-      ->  Parameter number   20   -> Symbolic Name:                                            Occ_Mn1    0.49487999
-
-
+      ->  Parameter number   18   -> Symbolic Name:                                               Ext4    0.13789999    
+      ->  Parameter number   19   -> Symbolic Name:                                               Ext5    0.55710000    
+      ->  Parameter number   20   -> Symbolic Name:                                            Occ_Mn1    0.49487999    
+  
+ 
  => No optimization for routine tasks
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -232,7 +232,7 @@
 
  ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
 
- => Scale factors ( 1: 6):
+ => Scale factors ( 1: 6): 
            579.565430       -0.034576       37.823189
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -241,7 +241,7 @@
              0.000000        0.000000        0.000000
 
 
- => Extinction Parameters:
+ => Extinction Parameters: 
              0.430170       -0.000030        0.140722
              1.292626       -0.000374        0.246494
             -0.021606       -0.000086        0.279368
@@ -251,17 +251,17 @@
              0.000000        0.000000        0.000000
 
 
- => Lambda/2 param:
+ => Lambda/2 param: 
               0.001901        0.000001        0.000424
 
- => Global user-weigthed Chi2 (Bragg contrib.):   10.8
+ => Global user-weigthed Chi2 (Bragg contrib.):   10.8    
 
  => ---------> Pattern#  1
  => Phase:  1
- =>    RF2 -factor :   4.07
- =>    RF2w-factor :   10.0
- =>    RF  -factor :   2.45
- =>    Chi2(Intens):   10.8
+ =>    RF2 -factor :   4.07    
+ =>    RF2w-factor :   10.0    
+ =>    RF  -factor :   2.45    
+ =>    Chi2(Intens):   10.8    
  =>  N_eff Reflect.:     86 with I >  2.00 sigma
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -282,7 +282,7 @@
 
  ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
 
- => Scale factors ( 1: 6):
+ => Scale factors ( 1: 6): 
            579.565430        0.000000       37.823189
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -291,7 +291,7 @@
              0.000000        0.000000        0.000000
 
 
- => Extinction Parameters:
+ => Extinction Parameters: 
              0.430170        0.000000        0.140722
              1.292626        0.000000        0.246494
             -0.021606        0.000000        0.279368
@@ -301,17 +301,17 @@
              0.000000        0.000000        0.000000
 
 
- => Lambda/2 param:
+ => Lambda/2 param: 
               0.001901        0.000000        0.000424
 
- => Global user-weigthed Chi2 (Bragg contrib.):   10.8
+ => Global user-weigthed Chi2 (Bragg contrib.):   10.8    
 
  => ---------> Pattern#  1
  => Phase:  1
- =>    RF2 -factor :   4.07
- =>    RF2w-factor :   10.0
- =>    RF  -factor :   2.45
- =>    Chi2(Intens):   10.8
+ =>    RF2 -factor :   4.07    
+ =>    RF2w-factor :   10.0    
+ =>    RF  -factor :   2.45    
+ =>    Chi2(Intens):   10.8    
  =>  N_eff Reflect.:     86 with I >  2.00 sigma
 
  --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -417,10 +417,10 @@
      R-Factors and Chi2 for Integrated Intensity Pattern #  1
      -----------------------------------------------------
  => Phase:  1
- =>    RF2 -factor :   4.07
- =>    RF2w-factor :   10.0
- =>    RF  -factor :   2.45
- =>    Chi2(Intens):   10.8
+ =>    RF2 -factor :   4.07    
+ =>    RF2w-factor :   10.0    
+ =>    RF  -factor :   2.45    
+ =>    Chi2(Intens):   10.8    
  =>  N_eff Reflect.:     86 with I >  2.00 sigma
 
      -----------------------------------------------------------------
@@ -455,39 +455,39 @@
 
  => Total approximate array memory (dynamic + static): 796404588 bytes
 
-    MaxPOINT=    80000 Max.num. of points(+int. Inten.)/diffraction pattern
-    MaxREFLT=    25000 Max.num. of reflections/diffraction pattern
-    MaxPARAM=      500 Max.num. of refinable parameters
-    MaxOVERL=     9000 Max.num. of overlapping reflections
+    MaxPOINT=    80000 Max.num. of points(+int. Inten.)/diffraction pattern       
+    MaxREFLT=    25000 Max.num. of reflections/diffraction pattern               
+    MaxPARAM=      500 Max.num. of refinable parameters                          
+    MaxOVERL=     9000 Max.num. of overlapping reflections                       
 
  ----------------------------------------------------------
  => Number of bytes for floating point arrays: 4
  => Dimensions of fixed arrays in this release of FullProf:
  ----------------------------------------------------------
 
-    NPATT   =       80 Max.num. of powder diffraction patterns
-    NATS    =      830 Max.num. of atoms (all kind) in asymmetric unit
-    MPAR    =     1800 Max.num. of non atomic parameters/phase
-    IEXCL   =       30 Max.num. of excluded regions
-    IBACP   =      377 Max.num. of background points for interpolation
-    NPHT    =       16 Max.num. of phases
-    NMAGM   =        8 Max.num. of rotation-matrices sets for magnetic structure
-    NBASIS  =       12 Max.num. of basis functions associated to a single atom
-    NIREPS  =        9 Max.num. of irreducible representations to be combined
+    NPATT   =       80 Max.num. of powder diffraction patterns                    
+    NATS    =      830 Max.num. of atoms (all kind) in asymmetric unit            
+    MPAR    =     1800 Max.num. of non atomic parameters/phase                    
+    IEXCL   =       30 Max.num. of excluded regions                               
+    IBACP   =      377 Max.num. of background points for interpolation            
+    NPHT    =       16 Max.num. of phases                                         
+    NMAGM   =        8 Max.num. of rotation-matrices sets for magnetic structure  
+    NBASIS  =       12 Max.num. of basis functions associated to a single atom    
+    NIREPS  =        9 Max.num. of irreducible representations to be combined     
     N_EQ    =      384 Max.num. of user-supplied symmetry operators/propagation vectors
-    NGL     =      400 Max.num. of global parameters/diffraction pattern
-    N_LINC  =       50 Max.num. of global linear restraints
-    NAT_P   =       80 Max.num. of atomic parameters per atom
-    NCONST  =     3500 Max.num. of slack constraints per phase
-    N_SPE   =       30 Max.num. of different chemical species
-    N_FORM  =       60 Max.num. of scattering factor values in a table
-    NPR     =      150 Max.num. of points defining a numerical profile
-    INPR    =       25 Max.num. of different numerical peak shapes
-    NPRC    =      150 Max.num. of terms in the table for correcting intensities
-    NSOL    =       10 Max.num. of solutions to be stored in Montecarlo searchs
+    NGL     =      400 Max.num. of global parameters/diffraction pattern          
+    N_LINC  =       50 Max.num. of global linear restraints                        
+    NAT_P   =       80 Max.num. of atomic parameters per atom                     
+    NCONST  =     3500 Max.num. of slack constraints per phase                    
+    N_SPE   =       30 Max.num. of different chemical species                     
+    N_FORM  =       60 Max.num. of scattering factor values in a table            
+    NPR     =      150 Max.num. of points defining a numerical profile            
+    INPR    =       25 Max.num. of different numerical peak shapes                
+    NPRC    =      150 Max.num. of terms in the table for correcting intensities  
+    NSOL    =       10 Max.num. of solutions to be stored in Montecarlo searchs   
 
-
+ 
               CPU Time:     0.078 seconds
                             0.001 minutes
 
- => Run finished at:     Date: 15/04/2025  Time: 14:04:32.604
+ => Run finished at:     Date: 15/04/2025  Time: 14:04:32.604                              

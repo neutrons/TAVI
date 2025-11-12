@@ -1,12 +1,12 @@
 scantitle "optimize sample translations"
 br 0 0 6
-scan stl 9 -9 1 preset time 1
-drive stl 0
-br 3 0 0
+scan stl 9 -9 1 preset time 1 
+drive stl 0 
+br 3 0 0 
 scan stu 9 -9 1 preset time 1
-drive stu 0
+drive stu 0 
 
-br 0 0 6
+br 0 0 6 
 scantitle "optimize pre-sample and post-sample slits"
 scan slita_tp 0 30 1 preset time 1
 scan slita_bt 0 30 1 preset time 1
@@ -17,13 +17,13 @@ scan slitb_bt 0 30 1 preset time 1
 scan slitb_lf 0 20 1 preset time 1
 scan slitb_rt 0 20 1 preset time 1
 
-br 3 0 0
+br 3 0 0 
 scantitle "optimize pre-sample and post-sample slits"
 scan slita_lf 0 20 1 preset time 1
 scan slita_rt 0 20 1 preset time 1
 scan slitb_lf 0 20 1 preset time 1
 scan slitb_rt 0 20 1 preset time 1
 
-scan n 20000 preset time 10
+scan n 20000 preset time 10 
 
-set_field mag_i 2
+set_field mag_i 2 

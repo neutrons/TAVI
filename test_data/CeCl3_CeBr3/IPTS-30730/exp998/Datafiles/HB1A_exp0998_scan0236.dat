@@ -8,7 +8,7 @@
 # builtin_command = scan sgl -5 0 0.5
 # users = Adam Aczel, David Mandrus, Matthew Cothrine, Stephen Nagler
 # local_contact = A. Aczel
-# scan_title = check alignment 1 1 1
+# scan_title = check alignment 1 1 1 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.052336,-0.017428,0.998477
 # ubconf = UB22Sep2023_123143PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         m2         s1         s2        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         sz         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp dr_tsample    dr_temp
       1    -4.9995      1.000  47562.000   7358.000      1.066    41.5367    69.8360   -47.4958    -0.9998    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0023     1.0000    -0.4986    20.7739    41.5369     2.1269     0.9949     1.0050     1.0001    14.4503    14.4502     0.0001     1.7078     0.0000     1.0000     0.1994     0.200
       2    -4.4997      1.000  47910.000   7481.000      1.084    41.5367    69.8360   -47.4958    -0.9998    26.0000     4.0000     9.0000    22.0000    26.0000    10.0000     5.0000    20.0000     3.0024     1.0000    -0.4986    20.7739    41.5369     2.1269     0.9961     1.0037     1.0001    14.4503    14.4502     0.0001     1.7079     0.0000     1.0000     0.1994     0.200

@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.010528,0.003477,0.999939
 # ubconf = UB12Aug2024_54830PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 5.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2      mag_i         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti       temp     temp_2         lt         ht      1kpot  sorb_temp       sorb  sample_ht persistent_field
       1    -9.7732      5.000     23.000 130934.000      5.529    41.5367     0.0001   -30.1389     0.6038     0.1988    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0020    20.7691    41.5374     1.3731    -0.0183     0.0000     1.9998    14.4503    14.4498     0.0005     1.6724     1.0000     0.0000     0.2619     0.3483     1.7037     1.7527     0.0000     0.0000     3.500
       2    -9.8732      5.000     30.000 130968.000      5.531    41.5367    -0.0001   -30.1390     0.6038     0.1988    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0020    20.7691    41.5374     1.3731    -0.0165     0.0000     1.9998    14.4503    14.4498     0.0005     1.6723     1.0000     0.0000     0.2617     0.3492     1.7030     1.7527     0.0000     0.0000     3.500

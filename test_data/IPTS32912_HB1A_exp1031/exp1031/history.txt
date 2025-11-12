@@ -976,7 +976,7 @@
 8/14/2024 12:34 PM        wait 120
 8/14/2024 12:36 PM        scantitle "OP while warming (1 0 0) H = @(persistent_field.position) T, T = @(ht.position) K"
 8/14/2024 12:36 PM        scanrel s1 1 -1 0.1
-8/14/2024 12:41 PM        drive sample_ht 2
+8/14/2024 12:41 PM        drive sample_ht 2 
 8/14/2024 12:45 PM        drive s1 -30
 8/14/2024 12:48 PM        init
 8/14/2024 12:51 PM        set_ht 2.1
@@ -1310,7 +1310,7 @@
 8/15/2024 4:39 PM        scan h 2 k 0 l -0.1 0.1 0.005 e 0.1 preset time 60
 8/15/2024 5:22 PM        scantitle "HoV6Sn6, longitudinal scan (0 0 1), T=@(lt.position) K, H=@(persistent_field.position) T"
 8/15/2024 5:22 PM        scan h 0 k 0 l 0.9 1.1 0.008 e 0.1 preset time 60
-8/15/2024 5:27 PM        set_field mag_i 0
+8/15/2024 5:27 PM        set_field mag_i 0 
 8/15/2024 5:37 PM        br 2 0 0
 8/15/2024 5:39 PM        scantitle "HoV6Sn6, field dependence of (@h) @(k) @(l)), T = @(sample.position) K, UP"
 8/15/2024 5:39 PM        start_field_scan mag_i
@@ -1376,7 +1376,7 @@
 8/15/2024 10:13 PM        stepend
 8/15/2024 10:13 PM        set_sorb 15
 8/15/2024 10:13 PM        wait 120
-8/15/2024 10:15 PM        set_sorb 0
+8/15/2024 10:15 PM        set_sorb 0 
 8/15/2024 10:19 PM        scanoff
 8/15/2024 10:21 PM        preset time 1
 8/15/2024 10:21 PM        br 1 0 0
@@ -3160,8 +3160,8 @@
 8/29/2024 1:47 PM        wait 00:00:10
 8/29/2024 1:47 PM        drive sgl 0 sgu 0 stl 0 stu 0
 8/29/2024 1:47 PM        drive sgl 0 sgu 0 stl 0 stu 0
-8/29/2024 1:49 PM        lowerlimit iout -1.500000 set_output 0.000000 vout -20.000000 s1 -160.000000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000
-8/29/2024 1:49 PM        upperlimit iout 1.500000 set_output 1.000000 vout 20.000000 s1 30.000000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000
+8/29/2024 1:49 PM        lowerlimit iout -1.500000 set_output 0.000000 vout -20.000000 s1 -160.000000 s2 -135.000000 sgl -15.000000 sgu -15.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 
+8/29/2024 1:49 PM        upperlimit iout 1.500000 set_output 1.000000 vout 20.000000 s1 30.000000 s2 3.000000 sgl 15.000000 sgu 15.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 
 8/29/2024 1:49 PM        dr sgl 15 sgu 15 stl 10 stu 10
 8/29/2024 1:49 PM        wait 00:00:10
 8/29/2024 1:49 PM        dr sgl -15 sgu -15 stl -10 stu -10

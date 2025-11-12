@@ -13,7 +13,7 @@
 # analyzer = Pg002
 # sense = +-+
 # collimation = 40-40-40-80
-# samplename = FeSn film on Al2O3 substrate
+# samplename = FeSn film on Al2O3 substrate 
 # sampletype = crystal
 # samplemosaic = 30.000000
 # latticeconstants = 4.765809,4.765809,4.439077,90.000000,90.000000,120.000000
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.043593,0.008692,0.999012
 # ubconf = UB10Sep2024_35010PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 120.000000
 # def_x = l
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l       time   detector    monitor        mcu         m2         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q         ei         ef          e        vti     sample      spare       temp     temp_2
       1     0.0000     0.0000     0.4001    118.715    591.000 2772001.000    120.000    41.5367    -6.3126   -12.3092     2.4985     0.4985    27.0000     7.0000     7.0000    25.0000    27.0000     7.0000     7.0000    25.0000    -6.0000    -0.9990    20.7711    41.5369     0.5662    14.4503    14.4502     0.0001   299.9680   301.6710     0.0000   300.0000   300.000
       2    -0.0000    -0.0000     0.4023    118.778    565.000 2772001.000    120.000    41.5367    -6.3512   -12.3799     2.4985     0.4985    27.0000     7.0000     7.0000    25.0000    27.0000     7.0000     7.0000    25.0000    -6.0000    -0.9990    20.7711    41.5369     0.5695    14.4503    14.4502     0.0001   299.9740   301.3810     0.0000   300.0000   300.000

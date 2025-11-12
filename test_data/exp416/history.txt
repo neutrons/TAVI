@@ -9,12 +9,12 @@
 4/16/2024 10:49 AM        drive s2 63.475
 4/16/2024 10:49 AM        preset time 30
 4/16/2024 10:49 AM        drive bal 15 bar 15
-4/16/2024 10:52 AM        scan bal 0 15 1
-4/16/2024 11:01 AM        scan bar 0 10 1
+4/16/2024 10:52 AM        scan bal 0 15 1 
+4/16/2024 11:01 AM        scan bar 0 10 1 
 4/16/2024 11:07 AM        scan bat 0 25 1
 4/16/2024 11:23 AM        scan bab 0 20 1
 4/16/2024 11:35 AM        drive bal 4 bar 4 bat 11 bab 11
-4/16/2024 11:35 AM        scan bar 0 15 1
+4/16/2024 11:35 AM        scan bar 0 15 1 
 4/16/2024 11:46 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(dr_tsample) K"
 4/16/2024 11:46 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(temp) K"
 4/16/2024 11:47 AM        scantitle "Bragg peaks (1 0 0) and (0 0 2) T = @(tsample) K"
@@ -48,9 +48,9 @@
 4/16/2024 4:54 PM        drive s2 60.7
 4/16/2024 4:55 PM        drive e 0
 4/16/2024 4:59 PM        preset time 30
-4/16/2024 4:59 PM        scan bal 0 15 1
+4/16/2024 4:59 PM        scan bal 0 15 1 
 4/16/2024 5:06 PM        drive bal 4
-4/16/2024 5:06 PM        scan bar 0 10 1
+4/16/2024 5:06 PM        scan bar 0 10 1 
 4/16/2024 5:13 PM        drive bar 4
 4/16/2024 5:14 PM        drive q 0.5
 4/16/2024 5:17 PM        scantitle "Energy scan at q = 0.5, T = 1.7 K"
@@ -75,8 +75,8 @@
 4/17/2024 1:32 PM        drive s2 52.974
 4/17/2024 1:33 PM        scantitle "slit scans no filter"
 4/17/2024 1:33 PM        preset time 30
-4/17/2024 1:33 PM        scan bal 0 15 1
-4/17/2024 1:43 PM        scan bar 0 10 1
+4/17/2024 1:33 PM        scan bal 0 15 1 
+4/17/2024 1:43 PM        scan bar 0 10 1 
 4/17/2024 1:51 PM        scan bab 0 20 1
 4/17/2024 2:04 PM        scan bat 0 20 1
 4/17/2024 2:16 PM        drive bal 4 bar 4

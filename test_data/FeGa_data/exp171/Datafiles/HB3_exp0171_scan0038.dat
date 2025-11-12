@@ -7,7 +7,7 @@
 # command = scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 70 ef 30.5 preset mcu 90
 # builtin_command = scan h 0.5 1 0.025 k 1.5 1 0.025 l 0 e 70 ef 30.5 preset mcu 90
 # users = Summer School
-# local_contact =
+# local_contact = 
 # scan_title = Measure spin wave dispersion E=70 meV
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 90.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu         a1         a2          q         ei   tcoldtip    tsample       temp
       1     0.4999     1.5005    -0.0001    70.0179    30.4885    258.865    154.000 810000.000     90.000    32.3623   -28.7955   -15.4539   120.1201     0.2500     9.5000   -75.0000    44.9434    15.2220    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2593     3.4151   100.5064     1.0000     1.0000   200.000
       2     0.5249     1.4754    -0.0001    70.0181    30.4889    258.922    136.000 810000.000     90.000    32.3623   -28.7955   -15.4539   120.1201     0.2500     9.5000   -75.0000    47.0267    14.2622    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2591     3.3816   100.5070     1.0000     1.0000   200.000
@@ -41,39 +41,39 @@
      11     0.7503     1.2503    -0.0001    70.0160    30.4910    256.833  49585.000 810000.000     90.000    32.3623   -28.7955   -15.4539   120.1201     0.2500     9.5000   -75.0000    69.8382     3.9384    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2581     3.1486   100.5070     1.0000     1.0000   200.000
      12     0.7752     1.2253    -0.0001    70.0160    30.4910    256.036 125270.000 810000.000     90.000    32.3623   -28.7955   -15.4539   120.1201     0.2500     9.5000   -75.0000    74.3153     1.3657    -2.9105     0.7705     4.0000     0.0020   165.8729   -28.2581     3.1309   100.5070     1.0000     1.0000   200.000
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Mon, Sep 29, 2008 [7:06:51 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Sum of Counts = 252349

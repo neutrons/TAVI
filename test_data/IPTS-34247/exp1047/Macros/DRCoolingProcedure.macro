@@ -1,4 +1,4 @@
 waitpost dr_tsample 25 1 120 30000
-set_temp 17
+set_temp 17 
 waitpost dr_tsample 19 1 120 30000
-set_temp 1
+set_temp 1 

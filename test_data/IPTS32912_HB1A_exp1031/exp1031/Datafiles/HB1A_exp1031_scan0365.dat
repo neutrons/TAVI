@@ -23,7 +23,7 @@
 # ubconf = C:\SPICE\User\exp1031\UBConf\UB12Aug2024_54830PM.ini
 # def_x = lt
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         m2      mag_i         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti       temp     temp_2         lt         ht      1kpot  sorb_temp       sorb  sample_ht persistent_field       time   detector    monitor        mcu
       1    41.5367    -0.0000  -100.1144   -28.8133     0.6032     0.1990    22.0000     7.0000     8.0000    22.0000    23.0000     3.0000     7.0000    23.0000    -3.0005     0.0010    20.7684    41.5444     1.3139     0.9997     0.0000     0.0006    14.4503    14.4452     0.0051     1.6594     1.0000     0.0000     0.2635     0.3184     1.6840     1.8944     7.0000     0.0000     1.700     40.000  20763.000 1585637.000     66.962
 # # Fault during the RANGE command when calling

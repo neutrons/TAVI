@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        stl        stu   slita_bt   slita_lf   slita_rt   slita_tp   slitb_bt   slitb_lf   slitb_rt   slitb_tp         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.4498     0.4498     1.4501     9.9945      8.161     17.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.5406   -48.0827     0.0010     0.5025    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.5242    23.5006    13.5061     0.0000     0.0000     0.000
       2     0.4599     0.4599     1.4603     9.9945      8.155     51.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.2859   -48.6258     0.0010     0.5025    -0.0010     0.0000    22.0000     7.5000     7.5000    22.0000    22.0000     7.5000     7.5000    22.0000    21.5216    43.0338     2.5482    23.5006    13.5061     0.0000     0.0000     0.000

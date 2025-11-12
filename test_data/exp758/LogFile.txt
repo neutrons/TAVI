@@ -332,7 +332,7 @@ Drive completed.
 # builtin_command = scan s1 @(s1)+2 @(s1)+-2 0.200000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -345,12 +345,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017436,0.008734,0.999807
 # ubconf = UB17Aug2017_120644PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -23.9384      1.000   1177.000   8080.000      1.516    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9990     0.9990     0.0666    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -24.1386      1.000   1732.000   7939.000      1.489    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -52.3388    -0.9990     0.5015    21.5216    43.0338     2.2517     0.9988     0.9988     0.0715    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -416,7 +416,7 @@ Drive completed.
 # builtin_command = scan sgl @(sgl)+5 @(sgl)+-5 1.000000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -429,12 +429,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017436,0.008734,0.999807
 # ubconf = UB17Aug2017_120644PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1     4.0010      1.000  89446.000   7862.000      1.475    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0797     0.9054     0.1219    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2     3.0010      1.000 116120.000   7854.000      1.474    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859   -26.2105   -52.3388     0.5015    21.5216    43.0338     2.2517     1.0637     0.9241     0.1221    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -489,7 +489,7 @@ Drive completed.
 # builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -502,12 +502,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.017436,0.008734,0.999807
 # ubconf = UB17Aug2017_120644PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -50.3378   -25.2106      1.000    848.000   8153.000      1.530    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1713     0.9775     0.9438     0.1180    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -50.5394   -25.3102      1.000   1219.000   7901.000      1.482    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5015    21.5216    43.0338     2.1794     0.9811     0.9473     0.1184    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -624,7 +624,7 @@ Drive completed.
 # builtin_command = scan sgu @(sgu)+5 @(sgu)+-5 1.000000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -637,12 +637,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008753,0.999962
 # ubconf = UB17Aug2017_121350PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1     5.5025      1.000 100724.000   8059.000      1.512    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0621     0.0615     0.9962    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2     4.5015      1.000 118021.000   8001.000      1.501    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859  -108.3042   -36.4981     0.0005    21.5216    43.0338     1.5988    -0.0497     0.0492     0.9976    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -697,7 +697,7 @@ Drive completed.
 # builtin_command = scan s2 @(s2)+2 @(s2)+-2 0.200000 s1 @(s1)+(2/2) @(s1)+(-2/2) 0.100000
 # users = M. Matsuda
 # local_contact = M. Matsuda
-# scan_title =
+# scan_title = 
 # monochromator = PG002
 # analyzer = Pg002
 # sense = +-+
@@ -710,12 +710,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008753,0.999962
 # ubconf = UB17Aug2017_121350PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -34.4959  -107.3039      1.000    126.000   7964.000      1.494    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5138    -0.0003    -0.0003     0.9469    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -34.6977  -107.4039      1.000    174.000   8040.000      1.508    69.7033   -43.1512    43.0439     0.0700     0.0000   169.4859     0.0005     0.5025    21.5216    43.0338     1.5224    -0.0003    -0.0002     0.9523    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -834,12 +834,12 @@ BiFeO3 (0.5, 0.5, 1.5) 5 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.0819     0.0819     1.0926     0.3381      0.000      0.000      0.000      0.000    68.0958   -43.1512    42.4790     0.0700     0.0000   173.8376  -104.9052   -39.8536     0.0010     0.5025    21.5216    43.0336     1.7513    13.8444    13.5062     0.0000     0.0000     0.000
 # Sum of Counts = 0
@@ -940,12 +940,12 @@ BiFeO3 (0.5, 0.5, 1.5) 5 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.4498     0.4498     1.4501     4.9945      9.026     24.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -101.9604   -53.5034     0.0010     0.5025    21.5216    43.0338     2.5242    18.5006    13.5061     0.0000     0.0000     0.000
       2     0.4598     0.4598     1.4602     4.9946      8.983     16.000  79741.000     10.000    59.5426   -43.1512    36.5261     0.0700     0.0000   200.2320  -101.8150   -54.0666     0.0010     0.5025    21.5216    43.0338     2.5481    18.5007    13.5061     0.0000     0.0000     0.000
@@ -995,12 +995,12 @@ BiFeO3 (0.5, 0.5, 1.5) 10 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.4498     0.4498     1.4501     9.9945      8.161     17.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.5406   -48.0827     0.0010     0.5025    21.5216    43.0338     2.5242    23.5006    13.5061     0.0000     0.0000     0.000
       2     0.4599     0.4599     1.4603     9.9945      8.155     51.000  79741.000     10.000    52.8312   -43.1512    32.2879     0.0700     0.0000   225.7386  -107.2859   -48.6258     0.0010     0.5025    21.5216    43.0338     2.5482    23.5006    13.5061     0.0000     0.0000     0.000
@@ -1050,12 +1050,12 @@ BiFeO3 (0.5, 0.5, 1.5) 15 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3998     0.3998     1.4001    14.9947      7.178      6.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.9239   -40.1280     0.0010     0.5025    21.5216    43.0338     2.4069    28.5008    13.5061     0.0000     0.0000     0.000
       2     0.4098     0.4098     1.4102    14.9948      7.236      6.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -114.5096   -40.6581     0.0010     0.5025    21.5216    43.0338     2.4304    28.5009    13.5061     0.0000     0.0000     0.000
@@ -1115,12 +1115,12 @@ BiFeO3 (0.5, 0.5, 1.5) 20 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3998     0.3998     1.4000    19.9951      6.744      4.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -120.9755   -34.6355     0.0010     0.5025    21.5216    43.0338     2.4069    33.5012    13.5061     0.0000     0.0000     0.000
       2     0.4098     0.4098     1.4100    19.9949      6.783     16.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -120.4449   -35.1845     0.0010     0.5025    21.5216    43.0338     2.4301    33.5011    13.5061     0.0000     0.0000     0.000
@@ -1179,12 +1179,12 @@ BiFeO3 (0.5, 0.5, 1.5) 25 meV
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3498     0.3498     1.3500    24.9954      6.363      9.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -131.1251   -25.6189     0.0010     0.5025    21.5216    43.0338     2.2919    38.5015    13.5061     0.0000     0.0000     0.000
       2     0.3598     0.3598     1.3600    24.9954      6.406      9.000  79741.000     10.000    41.2754   -43.1512    25.0932     0.0700     0.0000   284.4146  -130.3384   -26.2423     0.0010     0.5025    21.5216    43.0338     2.3146    38.5015    13.5061     0.0000     0.0000     0.000
@@ -1293,7 +1293,7 @@ stu             -1.00000
 Drive completed.
 
 
-12:49:15 PM  8/17/2017    Executing "admin" ...
+12:49:15 PM  8/17/2017    Executing "admin" ... 
 
 Administrator password correctly entered - administrator mode is enabled.
 
@@ -1302,9 +1302,9 @@ Administrator password correctly entered - administrator mode is enabled.
                           Derived from "spos stu 0"
 
 Return Code: 0
-Integer returned values:
-Double returned values:
-String returned values:
+Integer returned values:   
+Double returned values:   
+String returned values:   
 
 
 2:22:42 PM  8/17/2017    Executing "drive s1 0"
@@ -1400,12 +1400,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -24.2748      1.000    681.000   8011.000      1.005    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9995     0.9995    -0.0491    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -24.4746      1.000   1085.000   7996.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -52.4418     0.0005     0.5030    21.5216    43.0338     2.2558     0.9996     0.9996    -0.0441    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -1483,12 +1483,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1     5.0005      1.000  42730.000   7885.000      0.989    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0834     0.9091     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2     4.0005      1.000  83964.000   7999.000      1.003    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859   -26.8216   -52.4418     0.5030    21.5216    43.0338     2.2558     1.0674     0.9279     0.0138    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -1556,12 +1556,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.008770,0.999961
 # ubconf = UB17Aug2017_121657PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -50.4404   -25.8212      1.000   1333.000   7956.000      0.998    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1754     0.9546     0.9741     0.0134    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
       2   -50.6420   -25.9216      1.000   1890.000   7970.000      0.999    69.7033   -43.1512    43.0440     0.0700     0.0000   169.4859    -0.5785     0.5030    21.5216    43.0338     2.1836     0.9582     0.9778     0.0134    13.5000    13.5061    -0.0061     0.0000     0.0000     0.000
@@ -1704,12 +1704,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.010097,0.008778,0.999910
 # ubconf = UB17Aug2017_23318PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s2        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1  -106.8074      1.000    789.000   7973.000      1.000    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0245     0.0245     0.9996    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
       2  -107.0075      1.000   1596.000   7925.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859   -36.3906    -0.5785     0.5030    21.5216    43.0338     1.5942     0.0220     0.0220     0.9997    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
@@ -1787,12 +1787,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.010097,0.008778,0.999910
 # ubconf = UB17Aug2017_23318PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1     5.5040      1.000  98633.000   8053.000      1.010    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0616     0.0616     0.9964    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
       2     4.5030      1.000 118695.000   7924.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859  -108.8401   -36.3906    -0.5785    21.5216    43.0338     1.5942    -0.0494     0.0492     0.9978    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
@@ -1860,12 +1860,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.010097,0.008778,0.999910
 # ubconf = UB17Aug2017_23318PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus        sgl        sgu         a1         a2          q          h          k          l         ei         ef          e    coldtip    tsample     temp_a
       1   -34.3927  -107.8401      1.000    198.000   8175.000      1.025    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5094     0.0016    -0.0028     0.9470    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
       2   -34.5900  -107.9398      1.000    275.000   7928.000      0.994    69.7033   -43.1512    43.0436     0.0700     0.0000   169.4859    -0.5785     0.3180    21.5216    43.0338     1.5178     0.0016    -0.0028     0.9523    13.5002    13.5061    -0.0059     0.0000     0.0000     0.000
@@ -2128,12 +2128,12 @@ BiFeO3 (0.5, 0.5, 1.5) 5 meV
 # mode = 0
 # plane_normal = 0.010097,0.005550,0.999933
 # ubconf = UB17Aug2017_23845PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.4498     0.4498     1.4502     4.9945      9.014     16.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.5215   -53.5057    -0.5770     0.3180    21.5216    43.0338     2.5243    18.5006    13.5061     0.0000     0.0000     0.000
       2     0.4598     0.4598     1.4602     4.9945      8.993     10.000  79741.000     10.000    59.5426   -43.1512    36.5262     0.0700     0.0000   200.2320  -102.3749   -54.0664    -0.5770     0.3180    21.5216    43.0338     2.5481    18.5006    13.5061     0.0000     0.0000     0.000
@@ -2183,12 +2183,12 @@ BiFeO3 (0.5, 0.5, 1.5) 10 meV
 # mode = 0
 # plane_normal = 0.010097,0.005550,0.999933
 # ubconf = UB17Aug2017_23845PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.4498     0.4498     1.4501     9.9945      8.156     19.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -108.1000   -48.0831    -0.5770     0.3190    21.5216    43.0338     2.5242    23.5006    13.5061     0.0000     0.0000     0.000
       2     0.4598     0.4598     1.4603     9.9945      8.199     57.000  79741.000     10.000    52.8312   -43.1512    32.2880     0.0700     0.0000   225.7386  -107.8465   -48.6250    -0.5770     0.3190    21.5216    43.0338     2.5482    23.5006    13.5061     0.0000     0.0000     0.000
@@ -2238,12 +2238,12 @@ BiFeO3 (0.5, 0.5, 1.5) 15 meV
 # mode = 0
 # plane_normal = 0.010097,0.005550,0.999933
 # ubconf = UB17Aug2017_23845PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3998     0.3998     1.4001    14.9947      7.255     10.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -115.4851   -40.1282    -0.5770     0.3190    21.5216    43.0338     2.4069    28.5008    13.5061     0.0000     0.0000     0.000
       2     0.4098     0.4098     1.4102    14.9948      7.215     11.000  79741.000     10.000    47.9729   -43.1512    29.2493     0.0700     0.0000   247.7012  -115.0694   -40.6577    -0.5770     0.3190    21.5216    43.0338     2.4304    28.5009    13.5061     0.0000     0.0000     0.000
@@ -2303,12 +2303,12 @@ BiFeO3 (0.5, 0.5, 1.5) 20 meV
 # mode = 0
 # plane_normal = 0.010097,0.005550,0.999933
 # ubconf = UB17Aug2017_23845PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3998     0.3998     1.4000    19.9951      6.790     15.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -121.5359   -34.6341    -0.5770     0.3190    21.5216    43.0338     2.4068    33.5012    13.5061     0.0000     0.0000     0.000
       2     0.4098     0.4098     1.4100    19.9949      6.766     19.000  79741.000     10.000    44.2485   -43.1512    26.9336     0.0700     0.0000   267.0585  -121.0048   -35.1837    -0.5770     0.3190    21.5216    43.0338     2.4301    33.5011    13.5061     0.0000     0.0000     0.000
@@ -2367,12 +2367,12 @@ BiFeO3 (0.5, 0.5, 1.5) 25 meV
 # mode = 0
 # plane_normal = 0.010097,0.005550,0.999933
 # ubconf = UB17Aug2017_23845PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 10.000000
 # def_x = h
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu         a1         a2          q         ei         ef    coldtip    tsample     temp_a
       1     0.3498     0.3498     1.3500    24.9955      6.366      7.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -131.6854   -25.6179    -0.5770     0.3190    21.5216    43.0338     2.2918    38.5017    13.5061     0.0000     0.0000     0.000
       2     0.3598     0.3598     1.3600    24.9955      6.388      6.000  79741.000     10.000    41.2754   -43.1512    25.0931     0.0700     0.0000   284.4146  -130.8984   -26.2431    -0.5770     0.3190    21.5216    43.0338     2.3146    38.5017    13.5061     0.0000     0.0000     0.000
@@ -2448,3 +2448,4 @@ Drive completed.
 
 
 3:44:39 PM  8/17/2017    Executing "begin"
+

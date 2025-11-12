@@ -471,12 +471,12 @@ and the default preset value to:  1.000000
 # mode = 0
 # plane_normal = -0.000009,0.000000,1.000000
 # ubconf = UB05Mar2025_44345PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    49.2773      1.000    302.000    931.000      1.044    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000   -72.2006     0.0005     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081     0.0494     0.0494     1.9990    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0046     5.1161     0.0003    -0.0010     0.0000     0.0000     0.0000   300.000
       2    49.0764      1.000    530.000    920.000      1.032    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000   -72.2006     0.0005     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081     0.0444     0.0444     1.9993    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0046     5.1158     0.0000    -0.0014     0.0000     0.0000     0.0000   300.000
@@ -567,12 +567,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.000000,1.000000
 # ubconf = UB05Mar2025_44345PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0010      1.000  22712.000    874.000      0.980    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.2771   -72.2006     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081     0.0000     0.0000     2.0002    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0046     5.1158    -0.0007    -0.0003     0.0000     0.0000     0.0000   300.000
       2    -0.4995      1.000  22898.000    907.000      1.017    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.2771   -72.2006     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081    -0.0014     0.0014     2.0002    13.5001    13.5051    -0.0051     4.5112     0.0013     0.0042     5.1158     0.0003    -0.0007    -0.0006     0.0000     0.0000   300.000
@@ -612,12 +612,12 @@ Abort issued!!
 # mode = 0
 # plane_normal = -0.000009,0.000000,1.000000
 # ubconf = UB05Mar2025_44345PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgl       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     3.0005      1.000    621.000    896.000      1.005    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.2771   -72.2006     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081     0.0088    -0.0083     2.0002    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0046     5.1158     0.0003    -0.0003    -0.0006     0.0000     0.0000   300.000
       2     2.5000      1.000   2628.000    940.000      1.054    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.2771   -72.2006     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     3.0081     0.0073    -0.0070     2.0002    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0042     5.1158     0.0003    -0.0007     0.0000     0.0000     0.0000   300.000
@@ -675,12 +675,12 @@ The argument for motor sgi, "" contains more than one motor position.
 # mode = 0
 # plane_normal = -0.000009,0.000000,1.000000
 # ubconf = UB05Mar2025_44345PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1   -70.1996    48.2775      1.000    160.000    910.000      1.020    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -2.9995     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.9356    -0.0081     0.0086     1.9520    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0042     5.1158     0.0003    -0.0003     0.0000     0.0000     0.0000   300.000
       2   -70.4012    48.1770      1.000    470.000    900.000      1.009    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -2.9995     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.9430    -0.0081     0.0086     1.9569    13.5001    13.5051    -0.0051     4.5116     0.0013     0.0046     5.1158     0.0003     0.0007    -0.0006     0.0000     0.0000   300.000
@@ -762,12 +762,12 @@ Drive completed.
 # mode = 0
 # plane_normal = -0.000009,0.000000,1.000000
 # ubconf = UB05Mar2025_44345PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s2
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s2         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1   -70.1967    48.2706      1.000    173.000    914.000      1.025    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -0.5000     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.9355    -0.0016     0.0012     1.9520    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0042     5.1158     0.0003     0.0000    -0.0006     0.0000     0.0000   300.000
       2   -70.3981    48.1703      1.000    385.000    882.000      0.989    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -0.5000     0.0000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.9429    -0.0016     0.0012     1.9568    13.5001    13.5051    -0.0051     4.5116     0.0013     0.0042     5.1158     0.0003     0.0007     0.0000     0.0000     0.0000   300.000
@@ -897,12 +897,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.008727,0.000000,0.999962
 # ubconf = UB05Mar2025_45048PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = sgu
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        sgu       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     3.0000      1.000   8478.000    899.000      1.008    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -1.9398   -61.1382    -0.5000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.5965    -0.9693    -1.0307     0.9995    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0042     5.1158     0.0000    -0.0003     0.0000     0.0000     0.0000   300.000
       2     2.5000      1.000  11413.000    937.000      1.051    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    -1.9398   -61.1382    -0.5000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.5965    -0.9744    -1.0256     0.9997    13.5001    13.5051    -0.0051     4.5116     0.0013     0.0042     5.1158     0.0003     0.0007     0.0000     0.0000     0.0000   300.000
@@ -985,12 +985,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.008727,0.000000,0.999962
 # ubconf = UB05Mar2025_45048PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0610      1.000    218.000    871.000      0.977    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000   -61.1382    -0.5000     1.5000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.5965    -0.9585    -0.9911     1.0487    13.5001    13.5051    -0.0051     4.5112     0.0013     0.0046     5.1158     0.0000     0.0003     0.0000     0.0000     0.0000   300.000
       2    -0.1393      1.000    279.000    941.000      1.055    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000   -61.1382    -0.5000     1.5000    15.0000    10.0000    10.0000    15.0000    -0.0005     0.0000    20.9839    41.9595     2.5965    -0.9612    -0.9936     1.0439    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0046     5.1158     0.0000    -0.0003    -0.0006     0.0000     0.0000   300.000
@@ -1134,12 +1134,12 @@ Nothing to scan
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = slit_pre_tp
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt. slit_pre_tp       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0000      1.000  14565.000    912.000      1.023    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    15.0000    10.0000    10.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0046     5.1158     0.0000     0.0007    -0.0006     0.0000     0.0000   300.000
       2     1.0000      1.000  15399.000    910.000      1.020    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    15.0000    10.0000    10.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0046     5.1158     0.0007    -0.0003    -0.0006     0.0000     0.0000   300.000
@@ -1200,12 +1200,12 @@ Nothing to scan
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = slit_pre_bt
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt. slit_pre_bt       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0000      1.000  13027.000    911.000      1.021    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    10.0000    10.0000    25.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5116     0.0013     0.0046     5.1158     0.0003    -0.0007    -0.0006     0.0000     0.0000   300.000
       2     1.0000      1.000  13804.000    886.000      0.993    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    10.0000    10.0000    25.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0046     5.1158     0.0000     0.0007    -0.0006     0.0000     0.0000   300.000
@@ -1277,12 +1277,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = slit_pre_lf
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt. slit_pre_lf       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0000      1.000  20095.000    941.000      1.055    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    25.0000    10.0000    18.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5112     0.0013     0.0046     5.1158     0.0000    -0.0007    -0.0006     0.0000     0.0000   300.000
       2     1.0000      1.000  21722.000    935.000      1.048    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    25.0000    10.0000    18.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5116     0.0010     0.0042     5.1158     0.0000    -0.0010     0.0000     0.0000     0.0000   300.000
@@ -1333,12 +1333,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = slit_pre_rt
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt. slit_pre_rt       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1     0.0000      1.000  11891.000    917.000      1.028    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    25.0000    15.0000    18.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0042     5.1158     0.0000     0.0021    -0.0006     0.0000     0.0000   300.000
       2     1.0000      1.000  13947.000    894.000      1.002    41.9677     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    47.4042   -71.9180    -0.5000     1.5000    25.0000    15.0000    18.0000    -0.0005     0.0000    20.9839    41.9595     2.9979    -0.0002    -0.0002     2.0001    13.5001    13.5051    -0.0051     4.5112     0.0010     0.0046     5.1158     0.0000     0.0007    -0.0006     0.0000     0.0000   300.000
@@ -1492,7 +1492,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 60
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0003    -0.0003     1.3000    14.9941     71.200      5.000  53515.000     60.001     71.876      4.000  53515.000     60.001    27.9424     4.5000     0.0000     0.0000     5.0991     0.0000     0.0000     0.0000    34.9481   -29.0514    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9485    29.7002    14.7061     4.5116     0.0010     0.0046     5.1158     0.0000     0.0003     0.0000     0.0000     0.0000   300.000
 # The following errors/messages were generated while processing the countfile
@@ -1552,7 +1552,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 60
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0002    -0.0002     1.2998    14.9940     71.552      5.000  53515.000     60.001     71.704      6.000  53515.000     60.001    27.9424     4.5000     2.6159     1.9000     0.0000     0.4717     3.8962   -18.6134    34.9483   -29.0465    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9483    29.7001    14.7061     4.5112     2.6204     1.9015     0.0063     0.4718     3.9050   -18.6511     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.2999    15.4944      0.000      0.000      0.000     60.000    27.7053     4.5000     0.0000     0.0000     0.0000     0.5536     3.8335   -18.7100    34.0770   -28.5036    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9485    30.2006    14.7061     4.5116     0.0010     0.0042     0.0063     0.5540     3.8393   -18.7485     0.0000     0.0000   300.000
@@ -1588,7 +1588,7 @@ Drive completed.
 
 5:19:47 PM  3/5/2025    Executing "guide 16 parq"
 
-Setting Guide field of 16.000000 Gauss along Q.
+Setting Guide field of 16.000000 Gauss along Q.  
 
 For the 3 coils, the magnetic field  and current in each is:
 Coil A:     2.860367 Gauss:       1.702599 Amps
@@ -1642,12 +1642,12 @@ Setting the scantitle to:
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    49.4053      1.000    509.000    905.000      1.015    41.9676     4.5000     0.0000     0.0000     0.0000     1.7026     2.8472   -19.6118   -71.9205    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.9842    41.9654     2.9978     0.0493     0.0493     1.9988    13.5001    13.5015    -0.0014     4.5116     0.0010     0.0042     0.0063     1.7024     2.7255   -19.6525     0.0000     0.0000   300.000
       2    49.2036      1.000    797.000    858.000      0.962    41.9676     4.5000     0.0000     0.0000     0.0000     1.7026     2.8472   -19.6118   -71.9205    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.9842    41.9654     2.9978     0.0444     0.0444     1.9991    13.5001    13.5015    -0.0014     4.5116     0.0013     0.0046     0.0063     1.6270     2.8528   -19.6525     0.0000     0.0000   300.000
@@ -1734,12 +1734,12 @@ Drive completed.
 # mode = 0
 # plane_normal = 0.007126,0.021375,0.816262
 # ubconf = UB05Mar2025_45400PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q          h          k          l         ei         ef          e fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    49.4065      1.000     56.000    931.000      1.044    41.9676     4.5000     1.8000     1.9000     0.0000     1.7026     2.8472   -19.6118   -71.9205    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.9842    41.9654     2.9978     0.0494     0.0494     1.9988    13.5001    13.5015    -0.0014     4.5112     1.7993     1.9015     0.0063     1.7024     2.8528   -19.6525     0.0000     0.0000   300.000
       2    49.2056      1.000     79.000    963.000      1.080    41.9676     4.5000     1.8000     1.9000     0.0000     1.7026     2.8472   -19.6118   -71.9205    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.9842    41.9654     2.9978     0.0444     0.0444     1.9991    13.5001    13.5015    -0.0014     4.5116     1.7993     1.9015     0.0063     1.7024     2.8559   -19.6525     0.0000     0.0000   300.000
@@ -1826,7 +1826,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 60
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0002    -0.0002     1.2999    16.9950     67.724      3.000  53515.000     60.001     70.544      9.000  53515.000     60.001    27.0289     4.5000     1.8000     1.9000     0.0000     1.7026     2.8472   -19.6118    31.4273   -26.8095    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9483    31.7012    14.7061     4.5116     1.7993     1.9015     0.0067     1.7020     2.8518   -19.6531     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.2999    17.4953     72.786      3.000  53515.000     60.001     72.334      5.000  53515.000     60.001    26.8142     4.5000     0.0000     0.0000     0.0000     0.2214     4.0817   -18.2924    30.5285   -26.2276    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9483    32.2014    14.7061     4.5116     0.0013     0.0046     0.0063     0.2217     4.0885   -18.3313     0.0000     0.0000   300.000
@@ -1883,7 +1883,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 600
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0002    -0.0002     1.2998    15.9940    703.016     50.000 535141.000    600.001    704.217     50.000 535141.000    600.001    27.4745     4.5000     0.0000     0.0000     0.0000    -0.3958     4.5005   -17.3367    33.2011   -27.9459    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     1.9483    30.7001    14.7061     4.5116     0.0013     0.0046     0.0067    -0.3953     4.5107   -17.3744     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.2998    16.9948    712.005     38.000 535141.000    600.001    712.116     66.000 535141.000    600.001    27.0290     4.5000     0.0000     0.0000     0.0000     0.3890     3.9585   -18.5116    31.4277   -26.8089    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1327     1.9483    31.7008    14.7060     4.5116     0.0013     0.0042     0.0067     0.3892     3.9656   -18.5505     0.0000     0.0000   300.000
@@ -1934,7 +1934,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 600
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0002    -0.0002     1.2998    17.9950    741.709     43.000 535141.000    600.001    740.230     43.000 535141.000    600.001    26.6047     4.5000     0.0000     0.0000     0.0000     0.2214     4.0818   -18.2923    29.6210   -25.6357    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1327     1.9483    32.7010    14.7060     4.5116     0.0010     0.0049     0.0063     0.2217     4.0885   -18.3306     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.2998    18.4951    756.692     45.000 535141.000    600.001    757.159     59.000 535141.000    600.001    26.4000     4.5000     0.0000     0.0000     0.0000     0.0505     4.2032   -18.0511    28.7033   -25.0331    -0.5000     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1327     1.9483    33.2011    14.7060     4.5116     0.0010     0.0046     0.0063     0.0507     4.2104   -18.0895     0.0000     0.0000   300.000
@@ -1998,7 +1998,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 600
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0003    -0.0003     1.4000    13.9943    694.606     47.000 535141.000    600.001    696.547     48.000 535141.000    600.001    28.4350     4.5000     0.0000     0.0000     0.0000    -1.3246     5.0251   -15.4515    37.7623   -33.4526    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     2.0984    28.7004    14.7061     4.5112     0.0013     0.0042     0.0063    -1.3236     5.0353   -15.4839     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.3999    14.9944    693.274     47.000 535141.000    600.001    692.750     75.000 535141.000    600.001    27.9422     4.5000     0.0000     0.0000     0.0000     0.8178     3.6246   -18.9932    36.2479   -32.4201    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     2.0982    29.7005    14.7061     4.5109     0.0010     0.0042     0.0067     0.7849     3.6311   -19.0335     0.0000     0.0000   300.000
@@ -2050,7 +2050,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 600
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0003    -0.0003     1.3999    16.9942    689.777     40.000 535141.000    600.001    689.715     43.000 535141.000    600.001    27.0292     4.5000     0.0000     0.0000     0.0000     0.5324     3.8498   -18.6854    33.1853   -30.3024    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1325     2.0983    31.7004    14.7061     4.5109     0.0010     0.0046     0.0063     0.5324     3.6828   -18.7252     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.3999    17.4943    702.949     47.000 535141.000    600.001    700.945     60.000 535141.000    600.001    26.8145     4.5000     0.0000     0.0000     0.0000     0.3876     3.9596   -18.5098    32.4105   -29.7548    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0706    40.1323     2.0982    32.2006    14.7063     4.5109     0.0010     0.0042     0.0063     0.3878     3.9667   -18.5492     0.0000     0.0000   300.000
@@ -2112,7 +2112,7 @@ Setting the scantitle to:
 # countfile = count preset mcu 600
 # def_x = e
 # def_y = detector_1
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e     time_1 detector_1  monitor_1      mcu_1     time_2 detector_2  monitor_2      mcu_2         m2     fguide     hguide     vguide    tbguide     aguide     bguide     cguide         s1         s2        sgl        sgu slit_pre_bt slit_pre_lf slit_pre_rt slit_pre_tp        stl        stu         a1         a2          q         ei         ef fguide_amps hguide_amps vguide_amps tbguide_amps aguide_amps bguide_amps cguide_amps    coldtip     sample       temp
       1    -0.0003    -0.0003     1.5001    12.9939    709.617     34.000 535141.000    600.001    709.615     55.000 535141.000    600.001    28.9548     4.5000     0.0000     0.0000     0.0000    -0.5409     4.5909   -17.0782    39.8081   -37.7197    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0705    40.1323     2.2485    27.7002    14.7063     4.5112     0.0010     0.0046     0.0063    -0.5402     4.5994   -17.1146     0.0000     0.0000   300.000
       2    -0.0002    -0.0002     1.4999    13.4944    700.727     37.000 535141.000    600.001    699.367     50.000 535141.000    600.001    28.6912     4.5000     0.0000     0.0000     0.0000     1.0086     3.4673   -19.1702    39.1391   -37.2207    -0.4995     1.5000    18.0000     9.0000     9.0000    18.0000    -0.0005     0.0000    20.0705    40.1323     2.2482    28.2006    14.7063     4.5112     0.0013     0.0042     0.0063     1.0086     3.4736   -19.2108     0.0000     0.0000   300.000
@@ -2179,7 +2179,7 @@ Drive completed.
 
 12:05:49 PM  3/6/2025    Executing "guide 18 perpq"
 
-Setting Guide field of 18.000000 Gauus vertical.
+Setting Guide field of 18.000000 Gauus vertical.  
 
 For the 3 in-plane coils, the currents are off:
 Coil A, B, and C are off
@@ -2188,3 +2188,4 @@ Coil D:     18.000000 Gauss:       5.099150 Amps
 
 
 12:36:05 PM  3/6/2025    Executing "begin"
+

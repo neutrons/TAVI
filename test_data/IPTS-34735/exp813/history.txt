@@ -24,19 +24,19 @@
 9/9/2024 12:47 PM        scantitle "check 100 s1"
 9/9/2024 12:47 PM        scanrel s1 3 -3 0.3 preset 1
 9/9/2024 12:49 PM        drive s1 -57.1243
-9/9/2024 2:58 PM        driverel s1 5
-9/9/2024 2:59 PM        driverel s1 -15
-9/9/2024 2:59 PM        driverel s1 -5
+9/9/2024 2:58 PM        driverel s1 5 
+9/9/2024 2:59 PM        driverel s1 -15 
+9/9/2024 2:59 PM        driverel s1 -5 
 9/9/2024 3:00 PM        driverel s1 1
 9/9/2024 3:00 PM        scanrel s1 3 -3 0.2
 9/9/2024 3:02 PM        drive s1 -70.6267
 9/9/2024 3:02 PM        scantitle "Check 100 th2th"
-9/9/2024 3:03 PM        th2th 3 -3 0.2
+9/9/2024 3:03 PM        th2th 3 -3 0.2 
 9/9/2024 3:08 PM        drive s2 38.6223
 9/9/2024 3:08 PM        lattice a 4.118479 b 4.118479 c 6.706600
 9/9/2024 3:10 PM        ubcalc file "C:\SPICE\User\exp813\UBConf\tmp\UB09Sep2024_31028PM.ini"
 9/9/2024 3:11 PM        drive h 0.000000 k 0.000000 l 2.000000 e 0.000000
-9/9/2024 3:12 PM        scantitle 'Find peak 002 s1'
+9/9/2024 3:12 PM        scantitle 'Find peak 002 s1' 
 9/9/2024 3:12 PM        scanrel s1 3 -3 0.2
 9/9/2024 3:15 PM        drive s1 20.7585
 9/9/2024 3:15 PM        scantitle "Th2th 002 peak "
@@ -103,13 +103,13 @@
 9/9/2024 4:59 PM        scan bar 0 38 2
 9/9/2024 5:01 PM        scan bbl 0 38 2
 9/9/2024 5:04 PM        scan bbr 0 38 2
-9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0
-9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0
-9/9/2024 5:12 PM        drive bal 5 bar 10 bat 16 bab 16 bbl 10 bbr 5 bbt 14 bbb 9
+9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0 
+9/9/2024 5:06 PM        hide focal_length 0 m1 0 m2 0 mcrystal 0 marc 0 mtrans 0 mfocus 0 ampl 1 dc 0 freq 1 output 0 temp 0 temp_2 0 s1 0 s2 0 sgl 0 sgu 0 bbb 0 bbl 0 bbr 0 bbt 0 bab 0 bal 0 bar 0 bat 0 stl 0 stu 0 a1 0 a2 0 q 0 h 0 k 0 l 0 ei 0 ef 0 e 0 ampl_out 1 output_state 0 vti 0 sample 0 
+9/9/2024 5:12 PM        drive bal 5 bar 10 bat 16 bab 16 bbl 10 bbr 5 bbt 14 bbb 9 
 9/9/2024 5:14 PM        br 0 0 1
 9/9/2024 5:16 PM        scanrel s1 2 -2 0.2
 9/9/2024 5:18 PM        count preset time 10
-9/9/2024 5:19 PM        mcu 2512
+9/9/2024 5:19 PM        mcu 2512 
 9/9/2024 5:19 PM        count preset time 1
 9/9/2024 5:20 PM        scantitle "L scan 001 magn"
 9/9/2024 5:20 PM        scan h 0 k 0 l 0.8 1.2 0.05 preset mcu 1

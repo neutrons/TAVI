@@ -1,4 +1,5 @@
 scantitle "CeBr3, count on (2/3 2/3 1/2) while cooling"
 br 0.6666 0.6666 0.5
 set_temp_dr 0
-scan n 1200 preset time 30
+scan n 1200 preset time 30 
+

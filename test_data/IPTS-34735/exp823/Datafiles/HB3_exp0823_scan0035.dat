@@ -21,23 +21,23 @@
 # mode = 0
 # plane_normal = 0.017452,-0.000000,0.999842
 # ubconf = UB25Oct2024_25426PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bbt
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        bbt       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bab        bal        bar        bat        stl        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
 # Fri, Oct 25, 2024 [4:15:13 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit
+# bbt hit lower controller software limit 
 # Fri, Oct 25, 2024 [4:15:14 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit
+# bbt hit lower controller software limit 
 # Fri, Oct 25, 2024 [4:15:15 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_motors.vi.
-# bbt hit lower controller software limit
+# bbt hit lower controller software limit 
       4    33.9842      1.000   6247.000   2633.000      0.632    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897    22.9974    41.1579    -0.9988     0.0015     8.0000     2.0000     2.0000    12.0000     2.0000     4.0000    10.0000    -2.0000     2.0025   159.4167   -41.1662     1.8724    -0.0000     0.0000     2.0000    14.7002    14.7000     0.0002   210.2750   237.4090     5.0000     5.000
       5    33.9842      1.000   5912.000   2583.000      0.620    66.7975   -20.0773   -41.1660   120.0962    -0.1480    -3.0001   -34.2897    22.9974    41.1579    -0.9988     0.0015     8.0000     2.0000     2.0000    12.0000     2.0000     4.0000    10.0000    -2.0000     2.0025   159.4167   -41.1662     1.8724    -0.0000     0.0000     2.0000    14.7002    14.7000     0.0002   208.7870   235.8730     5.0000     5.000
 # Fri, Oct 25, 2024 [4:16:49 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Fri, Oct 25, 2024 [4:16:49 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi.
+# ERROR in driving: Fri, Oct 25, 2024 [4:16:49 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:CheckLimits.vi. 
 # The destination for "bbt", 40.00000, exceeds the upper limit of 39.00000.
 # ...Move aborted.
 # Sum of Counts = 12159

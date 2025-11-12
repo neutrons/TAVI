@@ -2,7 +2,7 @@
 9/21/2024 12:06 PM        ef 14.700000
 9/21/2024 12:06 PM        plusminus - + -
 9/21/2024 12:06 PM        exptitle "Magnons and paramagnon coupling in MnTe"
-9/21/2024 12:06 PM        collimation 48.000000 40.000000 40.000000 120.000000
+9/21/2024 12:06 PM        collimation 48.000000 40.000000 40.000000 120.000000 
 9/21/2024 12:06 PM        monochromator pg002
 9/21/2024 12:06 PM        analyzer pg002
 9/21/2024 12:07 PM        drive ei 14.7

@@ -4,7 +4,7 @@
 # proposal = 32124
 # experiment = Investigation of Spin Waves and Magnetic Interactions in NiTiO3
 # experiment_number = 424
-# command = scan bar 0 26 2
+# command = scan bar 0 26 2 
 # builtin_command = scan bar 0 26 2
 # users = Armando Di Biase, John Schneeloch, Despina Louca, Rathnayaka Mudiyanselage Dilan Srimal Rathnayaka
 # local_contact = Songxue Chi
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.040320,0.035237,0.998565
 # ubconf = UB02Jul2024_24803PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = bar
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        bar       time   detector    monitor        mcu focal_length         m1         m2       marc     mtrans     mfocus         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bat        stl        stu         a1         a2     afocus        qm1        qm2        qm3        qm4        qm5        qm6        qm7        qm8        xm1        xm2        xm3        xm4        xm5        xm6        xm7        xm8          q          h          k          l         ei         ef          e        vti     sample       temp     temp_2
       1     0.0000      1.000  71301.000   2463.000      1.026    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560    32.8675    53.2404     2.3108     2.0210     0.0000     0.0000     0.0000     0.0000    30.0000    26.0000    30.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.3639    -0.0000    -0.0000     3.0000     4.8000     4.8000     0.0000     1.4410     1.4286     1.0000   120.000
       2     2.0000      1.000  93743.000   2449.000      1.020    98.4288   142.0306   -75.9388     0.4200    -1.0000    28.2560    32.8675    53.2404     2.3108     2.0210     0.0000     0.0000     0.0000     0.0000    30.0000    26.0000    30.0000     0.0000     0.0000   142.0306   -75.9388     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     1.3639    -0.0000    -0.0000     3.0000     4.8000     4.8000     0.0000     1.4409     1.4298     1.0000   120.000

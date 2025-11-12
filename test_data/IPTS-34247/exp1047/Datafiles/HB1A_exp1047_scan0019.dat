@@ -4,7 +4,7 @@
 # proposal = 34247
 # experiment = Investigating the Transverse Field Ising Ferromagnet HoV6Sn6: A Rare Example of a Ferromagnetic Metal with a Quantum Critical Point?
 # experiment_number = 1047
-# command = scan stl 9 -9 1 preset time 1
+# command = scan stl 9 -9 1 preset time 1 
 # builtin_command = scan stl 9 -9 1 preset time 1
 # users = Aashish Sapkota, Benjamin Ueland, Dhurba Jaishi, Fei Li, Rob McQueeney, Tianxiong Han, Bing Li
 # local_contact = A. Aczel
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.041923,-0.015730,0.998990
 # ubconf = UB28Feb2025_20212PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = stl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        stl       time   detector    monitor        mcu         m2      mag_i         s1         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp        stu         a1         a2          q          h          k          l         ei         ef          e        vti     sample       temp persistent_field dr_tsample    dr_temp
       1     9.0030      1.000    183.000  21231.000      1.100    41.5367     0.0001  -113.6167   -97.8250    -2.4025    -0.9020    25.0000    20.0000    20.0000    25.0000    25.0000    20.0000    20.0000    25.0000     0.0020    20.7320    41.4626     3.9841     2.9974     0.0000    -0.0043    14.4503    14.4997    -0.0494     1.7608     0.0000     1.0000    -0.0003     1.2556     0.000
       2     8.0005      1.000    222.000  21186.000      1.098    41.5367     0.0000  -113.6167   -97.8250    -2.4025    -0.9020    25.0000    20.0000    20.0000    25.0000    25.0000    20.0000    20.0000    25.0000     0.0020    20.7320    41.4626     3.9841     2.9974     0.0000    -0.0044    14.4503    14.4997    -0.0494     1.7607     0.0000     1.0000    -0.0003     1.2556     0.000

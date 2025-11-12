@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.000714,0.000226,1.000000
 # ubconf = UB15Apr2024_11557PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 1.000000
 # def_x = s1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.         s1       time   detector    monitor        mcu         m2        chi        phi         s2        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          q          h          k          l         ei         ef          e    coldtip     sample       temp
       1   -27.8612      1.010      0.000   9801.000      1.000    41.5367   -31.3203   113.8902   -57.7032     0.0409     0.0130    10.0000     5.0000     5.0000    10.0000    12.0000     8.0000     8.0000    12.0000    90.0028    -0.0009     2.5486     0.0000     0.0000     0.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000
       2   -27.9611      1.021      4.000   9801.000      1.000    41.5367   -31.3203   113.8902   -57.7032     0.0409     0.0130    10.0000     5.0000     5.0000    10.0000    12.0000     8.0000     8.0000    12.0000    90.0028    -0.0009     2.5486     0.0000     0.0000     0.0000    14.4503    14.4503     0.0000     0.0000     0.0000   300.000

@@ -1,7 +1,7 @@
 br 0.6666 0.6666 0.5
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 40 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 40 mK"
@@ -12,7 +12,7 @@ set_temp_dr 0.042
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 42 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 42 mK"
@@ -23,7 +23,7 @@ set_temp_dr 0.044
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 44 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 44 mK"
@@ -34,7 +34,7 @@ set_temp_dr 0.046
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 46 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 46 mK"
@@ -45,7 +45,7 @@ set_temp_dr 0.048
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 48 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 48 mK"
@@ -56,7 +56,7 @@ set_temp_dr 0.050
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 50 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 50 mK"
@@ -67,7 +67,7 @@ set_temp_dr 0.052
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 52 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 52 mK"
@@ -78,7 +78,7 @@ set_temp_dr 0.054
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 54 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 54 mK"
@@ -89,7 +89,7 @@ set_temp_dr 0.056
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 56 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 56 mK"
@@ -100,7 +100,7 @@ set_temp_dr 0.058
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 58 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.62 0.70 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 58 mK"
@@ -111,7 +111,7 @@ set_temp_dr 0.060
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 60 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 60 mK"
@@ -122,7 +122,7 @@ set_temp_dr 0.062
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 62 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 62 mK"
@@ -133,7 +133,7 @@ set_temp_dr 0.063
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 63 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 63 mK"
@@ -144,7 +144,7 @@ set_temp_dr 0.064
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 64 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 64 mK"
@@ -155,7 +155,7 @@ set_temp_dr 0.065
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 65 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 65 mK"
@@ -166,7 +166,7 @@ set_temp_dr 0.066
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 66 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 66 mK"
@@ -177,7 +177,7 @@ set_temp_dr 0.067
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 67 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 67 mK"
@@ -188,7 +188,7 @@ set_temp_dr 0.068
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 68 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 68 mK"
@@ -199,7 +199,7 @@ set_temp_dr 0.069
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 69 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 69 mK"
@@ -210,7 +210,7 @@ set_temp_dr 0.070
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 70 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 70 mK"
@@ -221,7 +221,7 @@ set_temp_dr 0.071
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 71 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 71 mK"
@@ -232,7 +232,7 @@ set_temp_dr 0.072
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 72 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 72 mK"
@@ -243,7 +243,7 @@ set_temp_dr 0.073
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 73 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 73 mK"
@@ -254,7 +254,7 @@ set_temp_dr 0.074
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 74 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 74 mK"
@@ -265,7 +265,7 @@ set_temp_dr 0.075
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 75 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 75 mK"
@@ -276,7 +276,7 @@ set_temp_dr 0.076
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 76 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 76 mK"
@@ -287,7 +287,7 @@ set_temp_dr 0.077
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 77 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 77 mK"
@@ -298,7 +298,7 @@ set_temp_dr 0.078
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 78 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 78 mK"
@@ -309,7 +309,7 @@ set_temp_dr 0.079
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 79 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 79 mK"
@@ -320,7 +320,7 @@ set_temp_dr 0.080
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 80 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 80 mK"
@@ -331,7 +331,7 @@ set_temp_dr 0.081
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 81 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 81 mK"
@@ -342,7 +342,7 @@ set_temp_dr 0.082
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 82 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 82 mK"
@@ -353,7 +353,7 @@ set_temp_dr 0.084
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 84 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 84 mK"
@@ -364,7 +364,7 @@ set_temp_dr 0.086
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 86 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 86 mK"
@@ -375,7 +375,7 @@ set_temp_dr 0.088
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 88 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 88 mK"
@@ -386,7 +386,7 @@ set_temp_dr 0.090
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 90 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 90 mK"
@@ -397,7 +397,7 @@ set_temp_dr 0.092
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 92 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 92 mK"
@@ -408,7 +408,7 @@ set_temp_dr 0.094
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 94 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 94 mK"
@@ -419,7 +419,7 @@ set_temp_dr 0.096
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 96 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 96 mK"
@@ -430,7 +430,7 @@ set_temp_dr 0.098
 wait 300
 
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 98 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 98 mK"
@@ -440,9 +440,10 @@ scan h 0.6666 k 0.6666 l 0.44 0.56 0.0025 e 0 preset time 20
 set_temp_dr 0.100
 wait 300
 scantitle "CeBr3, (2/3 2/3 1/2) HH-scan, T = 100 mK"
-br 0.6666 0.6666 0.5
+br 0.6666 0.6666 0.5 
 scan h 0.62 0.70 0.0025 k 0.60 0.72 0.0025 l 0.5 e 0 preset time 20
 
 scantitle "CeBr3, (2/3 2/3 1/2) L-scan, T = 100 mK"
 br 0.6666 0.6666 0.5
 scan h 0.6666 k 0.6666 l 0.44 0.56 0.0025 e 0 preset time 20
+

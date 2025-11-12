@@ -7,7 +7,7 @@
 # command = scan stl -10 10 1
 # builtin_command = scan stl -10 10 1
 # users = Summer School
-# local_contact =
+# local_contact = 
 # scan_title = Align (110)
 # monochromator = PG002
 # analyzer = Pg002
@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = 0.050829,0.013429,0.998616
 # ubconf = UB29Sep2008_10947PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.000000
 # def_x = stl
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.        stl       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus         s1         s2        sgl        sgu        stu         a1         a2          q          h          k          l         ei         ef          e   tcoldtip    tsample       temp
       1   -10.0000      1.000    470.000   8867.000      0.014    66.7975   -28.7955   -41.1659   120.1201     0.2500     9.5000   -34.2897    33.6490    69.9565    -2.9105     0.7705     0.0020   159.4167   -41.1825     3.0532     0.9995     1.0001    -0.0001    14.7002    14.6889     0.0113     1.0000     1.0000   200.000
       2    -8.9960      1.000    543.000   8853.000      0.014    66.7975   -28.7955   -41.1659   120.1201     0.2500     9.5000   -34.2897    33.6490    69.9565    -2.9105     0.7705     0.0020   159.4167   -41.1825     3.0532     0.9995     1.0001    -0.0001    14.7002    14.6889     0.0113     1.0000     1.0000   200.000

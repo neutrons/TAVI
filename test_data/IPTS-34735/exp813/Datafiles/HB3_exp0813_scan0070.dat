@@ -21,12 +21,12 @@
 # mode = 0
 # plane_normal = -0.017470,-0.052341,0.998476
 # ubconf = UB09Sep2024_43441PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 20.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       ampl         dc       freq     output       temp     temp_2         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei   ampl_out output_state        vti     sample
       1    -0.3358    -0.0000     2.0137   -13.0672    72.7724      0.000      0.000      0.000      0.000    33.1461   -20.0773   -20.0927   120.0962    -0.1480    -3.0001   -73.0266     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000    11.0220    19.5153     1.0010    -2.9998     9.0000    10.0000     5.0000    14.0000    16.0000     5.0000    10.0000    16.0000    -0.0005     0.0005   159.4165   -18.1827     1.9916    59.7053     2.0000     1.0000     4.9994     0.000
 # Sum of Counts = 0

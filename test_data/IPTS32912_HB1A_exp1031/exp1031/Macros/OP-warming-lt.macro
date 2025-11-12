@@ -14,7 +14,7 @@ loop i=8, 35 0.5
 set_sorb %i
 
 wait 120
-
+
 stepbegin
 count preset time 10
 stepend

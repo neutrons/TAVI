@@ -3,19 +3,19 @@
         **********************************************************
         ** PROGRAM FullProf.2k (Version 8.20 - Feb2025-ILL JRC) **
         **********************************************************
-                       M U L T I -- P A T T E R N
-            Rietveld, Profile Matching & Integrated Intensity
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
                  Refinement of X-ray and/or Neutron Data
 
 
-    Date: 17/04/2025  Time: 14:45:58.591
+    Date: 17/04/2025  Time: 14:45:58.591                              
 
  => PCR file code: HoV6Sn6_nuc
- => DAT file code: HoV6Sn6_nuc.int      -> Relative contribution: 1.0000
+ => DAT file code: HoV6Sn6_nuc.int      -> Relative contribution: 1.0000                                                            
 
  ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
 
- => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios
+ => Refinement/Calculation of Neutron integrated intensity(Laue or monochromatic) data or Flipping Ratios                           
 
  ==> INPUT/OUTPUT OPTIONS:
 
@@ -28,7 +28,7 @@
  => Number of Least-Squares parameters varied:     1
  --------------------------------------------------------------------------------
  => Phase  No. 1
-      HoV6Sn6o, nuclear
+      HoV6Sn6o, nuclear                                                     
  --------------------------------------------------------------------------------
  =>-------> Pattern#  1
  => Integrated intensities or Flipping Ratios as observations for phase: 1
@@ -39,10 +39,10 @@
  => Number of distance  constraints:    0
  => Number of angle     constraints:    0
 
- => Symmetry information on space group: P 6/m m m
+ => Symmetry information on space group: P 6/m m m           
  -> The multiplicity of the general position is:  24
- -> The space group is Centric (-1 at origin)
- -> Lattice type  P: { 000 }
+ -> The space group is Centric (-1 at origin)   
+ -> Lattice type  P: { 000 }                                       
  -> Reduced set of symmetry operators:
 
   No.  IT   Symmetry symbol    Rotation part     Associated Translation
@@ -60,8 +60,8 @@
   12: (11)   2 ( x,2x, 0) --> (-x+y,   y,-z) + {  0.0000  0.0000  0.0000}
 
 
-        Information on Space Group:
-        ---------------------------
+        Information on Space Group: 
+        --------------------------- 
 
  =>   Number of Space group: 191
  =>  Hermann-Mauguin Symbol: P 6/m m m
@@ -80,7 +80,7 @@
                               0.000 <= y <=  0.333
                               0.000 <= z <=  0.500
  => Centring vectors:  0
-
+                                                                                                    
 
  => List of all Symmetry Operators and Symmetry Symbols
 
@@ -110,60 +110,60 @@
  => SYMM( 24): -x+y,y,-z                         Symbol: 2 x,2x,0
 
  => Special Wyckoff Positions for P 6/m m m
-
+ 
     Multp     Site        Representative Coordinates (centring translations excluded)
-     12       q              x,y,1/2             x-y,x,1/2           -y,x-y,1/2
-                             -x,-y,1/2           -x+y,-x,1/2         y,-x+y,1/2
-                             -y,-x,1/2           -x,-x+y,1/2         -x+y,y,1/2
-                             y,x,1/2             x,x-y,1/2           x-y,-y,1/2
-
-     12       p              x,y,0               x-y,x,0             -y,x-y,0
-                             -x,-y,0             -x+y,-x,0           y,-x+y,0
-                             -y,-x,0             -x,-x+y,0           -x+y,y,0
-                             y,x,0               x,x-y,0             x-y,-y,0
-
-     12       o              x,2x,z              -x,x,z              -2x,-x,z
-                             -x,-2x,z            x,-x,z              2x,x,z
-                             -x,-2x,-z           x,-x,-z             2x,x,-z
-                             x,2x,-z             -x,x,-z             -2x,-x,-z
-
-     12       n              x,0,z               x,x,z               0,x,z
-                             -x,0,z              -x,-x,z             0,-x,z
-                             -x,0,-z             -x,-x,-z            0,-x,-z
-                             x,0,-z              x,x,-z              0,x,-z
-
-      6       m              x,2x,1/2            -x,x,1/2            -2x,-x,1/2
-                             -x,-2x,1/2          x,-x,1/2            2x,x,1/2
-
-      6       l              x,2x,0              -x,x,0              -2x,-x,0
-                             -x,-2x,0            x,-x,0              2x,x,0
-
-      6       k              x,0,1/2             x,x,1/2             0,x,1/2
-                             -x,0,1/2            -x,-x,1/2           0,-x,1/2
-
-      6       j              x,0,0               x,x,0               0,x,0
-                             -x,0,0              -x,-x,0             0,-x,0
-
-      6       i              1/2,0,z             1/2,1/2,z           0,1/2,z
-                             1/2,0,-z            1/2,1/2,-z          0,1/2,-z
-
-      4       h              1/3,2/3,z           2/3,1/3,z           2/3,1/3,-z
-                             1/3,2/3,-z
-
-      3       g              1/2,0,1/2           1/2,1/2,1/2         0,1/2,1/2
-
-      3       f              1/2,0,0             1/2,1/2,0           0,1/2,0
-
-      2       e              0,0,z               0,0,-z
-
-      2       d              1/3,2/3,1/2         2/3,1/3,1/2
-
-      2       c              1/3,2/3,0           2/3,1/3,0
-
-      1       b              0,0,1/2
-
-      1       a              0,0,0
-
+     12       q              x,y,1/2             x-y,x,1/2           -y,x-y,1/2                              
+                             -x,-y,1/2           -x+y,-x,1/2         y,-x+y,1/2                              
+                             -y,-x,1/2           -x,-x+y,1/2         -x+y,y,1/2                              
+                             y,x,1/2             x,x-y,1/2           x-y,-y,1/2                              
+ 
+     12       p              x,y,0               x-y,x,0             -y,x-y,0                                
+                             -x,-y,0             -x+y,-x,0           y,-x+y,0                                
+                             -y,-x,0             -x,-x+y,0           -x+y,y,0                                
+                             y,x,0               x,x-y,0             x-y,-y,0                                
+ 
+     12       o              x,2x,z              -x,x,z              -2x,-x,z                                
+                             -x,-2x,z            x,-x,z              2x,x,z                                  
+                             -x,-2x,-z           x,-x,-z             2x,x,-z                                 
+                             x,2x,-z             -x,x,-z             -2x,-x,-z                               
+ 
+     12       n              x,0,z               x,x,z               0,x,z                                   
+                             -x,0,z              -x,-x,z             0,-x,z                                  
+                             -x,0,-z             -x,-x,-z            0,-x,-z                                 
+                             x,0,-z              x,x,-z              0,x,-z                                  
+ 
+      6       m              x,2x,1/2            -x,x,1/2            -2x,-x,1/2                              
+                             -x,-2x,1/2          x,-x,1/2            2x,x,1/2                                
+ 
+      6       l              x,2x,0              -x,x,0              -2x,-x,0                                
+                             -x,-2x,0            x,-x,0              2x,x,0                                  
+ 
+      6       k              x,0,1/2             x,x,1/2             0,x,1/2                                 
+                             -x,0,1/2            -x,-x,1/2           0,-x,1/2                                
+ 
+      6       j              x,0,0               x,x,0               0,x,0                                   
+                             -x,0,0              -x,-x,0             0,-x,0                                  
+ 
+      6       i              1/2,0,z             1/2,1/2,z           0,1/2,z                                 
+                             1/2,0,-z            1/2,1/2,-z          0,1/2,-z                                
+ 
+      4       h              1/3,2/3,z           2/3,1/3,z           2/3,1/3,-z                              
+                             1/3,2/3,-z                                                                      
+ 
+      3       g              1/2,0,1/2           1/2,1/2,1/2         0,1/2,1/2                               
+ 
+      3       f              1/2,0,0             1/2,1/2,0           0,1/2,0                                 
+ 
+      2       e              0,0,z               0,0,-z                                                      
+ 
+      2       d              1/3,2/3,1/2         2/3,1/3,1/2                                                 
+ 
+      2       c              1/3,2/3,0           2/3,1/3,0                                                   
+ 
+      1       b              0,0,1/2                                                                         
+ 
+      1       a              0,0,0                                                                           
+ 
 
  => Initial parameters ==>
  Atom    Ntyp                  X         Y         Z         B         occ.         in  fin  Spc  Mult
@@ -179,7 +179,7 @@
  Sn3    Sn                 0.33333   0.66667   0.00000   1.00000   0.08333           0    0    0    2
                  Codes:    0.00000   0.00000   0.00000   0.00000   0.00000
 
- => It is assumed that THE FIRST GIVEN SITE plus all the other atoms
+ => It is assumed that THE FIRST GIVEN SITE plus all the other atoms 
     occupying THE SAME POSITION have a total full occupation (no vacancies!)
   (if this is not the case, change the order of atoms to obtain correct values for the content of the unit cell)
     The given occupation factors have been obtained mutiplying m/M by   0.0417
@@ -190,15 +190,15 @@
       -> Atom: Sn  ,  Chemical element: SN  Atomic Mass:   118.6900
  => The given value of ATZ is       1182.47 the program has calculated:        1182.47
     The value of ATZ given in the input PCR file will be used for quantitative analysis
- => The chemical content of the unit cell is:
-       1.0000 Ho   +   6.0010 V    +   2.0002 Sn   +   2.0002 Sn   +   2.0002 Sn
- => The normalized site occupation numbers in % are:
-     100.0000 Ho1    :      100.0160 V      :      100.0120 Sn1    :      100.0120 Sn2    :      100.0120 Sn3
+ => The chemical content of the unit cell is: 
+       1.0000 Ho   +   6.0010 V    +   2.0002 Sn   +   2.0002 Sn   +   2.0002 Sn     
+ => The normalized site occupation numbers in % are: 
+     100.0000 Ho1    :      100.0160 V      :      100.0120 Sn1    :      100.0120 Sn2    :      100.0120 Sn3      
  => The density (volumic mass) of the compound is:    8.133 g/cm3
 
  =>-------> SCALE FACTORS, EXTINCTION AND CELL PARAMETERS FOR PATTERN:  1
 
- => Scale factors ( 1: 6) :    2.42500       0.00000       0.00000       0.00000       0.00000       0.00000
+ => Scale factors ( 1: 6) :    2.42500       0.00000       0.00000       0.00000       0.00000       0.00000    
 
  => Extinction  parameters:         0.0000        0.0000        0.0000        0.0000        0.0000        0.0000        0.0000
  => Direct cell parameters:         5.5200        5.5200        9.1520       90.0000       90.0000      120.0000
@@ -236,24 +236,24 @@
     -15.2353     30.4705      0.0000          0.021879    0.043758    0.000000
       0.0000      0.0000     83.7593          0.000000    0.000000    0.011939
 
- =>  Cartesian frame: x // a; z is along c*; y is within the ab-plane
+ =>  Cartesian frame: x // a; z is along c*; y is within the ab-plane   
 
      Crystal_to_Orthonormal_Matrix              Orthonormal_to_Crystal Matrix
-              Cr_Orth_cel                               Orth_Cr_cel
+              Cr_Orth_cel                               Orth_Cr_cel  
       5.5200     -2.7600      0.0000          0.181159    0.104592   -0.000000
       0.0000      4.7805      0.0000          0.000000    0.209185   -0.000000
       0.0000      0.0000      9.1520          0.000000    0.000000    0.109266
 
      Busing-Levy B-matrix: Hc=B.H            Inverse of the Busing-Levy B-matrix
-                BL_M                                      BL_Minv
+                BL_M                                      BL_Minv  
     0.209185    0.104592    0.000000            4.7805     -2.7600     -0.0000
     0.000000    0.181159   -0.000000            0.0000      5.5200      0.0000
     0.000000    0.000000    0.109266            0.0000      0.0000      9.1520
  => Header of the Integrated Intensity file:
- -> Title: Single crystal data of HoV6Sn6 (hb1a)
- -> Format of data: (3i5,2f8.2,i4,3f8.2)
+ -> Title: Single crystal data of HoV6Sn6 (hb1a)                                                                                   
+ -> Format of data: (3i5,2f8.2,i4,3f8.2)                                        
  -> Wavelength (Angstr.):   2.3793
- -> Type of data:  F2 and Sig(F2) have been input
+ -> Type of data:  F2 and Sig(F2) have been input                                                                                         
  -> Reflections included only when F2> 2.0* sF2
  -> Nobserv (I>n*sigma):     13 -> Total Number of reflections:         13
  -> SumF:        32.8 SumF2:       127.8 SumF2w:    304333.7
@@ -273,9 +273,9 @@
       SYMBOLIC NAMES AND INITIAL VALUES OF PARAMETERS TO BE VARIED:
      --------------------------------------------------------------
 
-      ->  Parameter number    1   -> Symbolic Name:                                             Scale1     2.4250000
-
-
+      ->  Parameter number    1   -> Symbolic Name:                                             Scale1     2.4250000    
+  
+ 
  => No optimization for routine tasks
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -295,7 +295,7 @@
 
  ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
 
- => Scale factors ( 1: 6):
+ => Scale factors ( 1: 6): 
              2.425293        0.000293        0.082543
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -304,7 +304,7 @@
              0.000000        0.000000        0.000000
 
 
- => Extinction Parameters:
+ => Extinction Parameters: 
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -314,17 +314,17 @@
              0.000000        0.000000        0.000000
 
 
- => Lambda/2 param:
+ => Lambda/2 param: 
               0.000000        0.000000        0.000000
 
- => Global user-weigthed Chi2 (Bragg contrib.):   347.
+ => Global user-weigthed Chi2 (Bragg contrib.):   347.    
 
  => ---------> Pattern#  1
  => Phase:  1
- =>    RF2 -factor :   14.0
- =>    RF2w-factor :   12.2
- =>    RF  -factor :   7.63
- =>    Chi2(Intens):   347.
+ =>    RF2 -factor :   14.0    
+ =>    RF2w-factor :   12.2    
+ =>    RF  -factor :   7.63    
+ =>    Chi2(Intens):   347.    
  =>  N_eff Reflect.:     13 with I >  2.00 sigma
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -346,7 +346,7 @@
 
  ==> SCALE, EXTINCTION, CELL PARAMETERS FOR PATTERN#  1
 
- => Scale factors ( 1: 6):
+ => Scale factors ( 1: 6): 
              2.425293        0.000000        0.082543
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -355,7 +355,7 @@
              0.000000        0.000000        0.000000
 
 
- => Extinction Parameters:
+ => Extinction Parameters: 
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
              0.000000        0.000000        0.000000
@@ -365,17 +365,17 @@
              0.000000        0.000000        0.000000
 
 
- => Lambda/2 param:
+ => Lambda/2 param: 
               0.000000        0.000000        0.000000
 
- => Global user-weigthed Chi2 (Bragg contrib.):   347.
+ => Global user-weigthed Chi2 (Bragg contrib.):   347.    
 
  => ---------> Pattern#  1
  => Phase:  1
- =>    RF2 -factor :   14.0
- =>    RF2w-factor :   12.2
- =>    RF  -factor :   7.63
- =>    Chi2(Intens):   347.
+ =>    RF2 -factor :   14.0    
+ =>    RF2w-factor :   12.2    
+ =>    RF  -factor :   7.63    
+ =>    Chi2(Intens):   347.    
  =>  N_eff Reflect.:     13 with I >  2.00 sigma
 
  --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -401,10 +401,10 @@
      R-Factors and Chi2 for Integrated Intensity Pattern #  1
      -----------------------------------------------------
  => Phase:  1
- =>    RF2 -factor :   14.0
- =>    RF2w-factor :   12.2
- =>    RF  -factor :   7.63
- =>    Chi2(Intens):   347.
+ =>    RF2 -factor :   14.0    
+ =>    RF2w-factor :   12.2    
+ =>    RF  -factor :   7.63    
+ =>    Chi2(Intens):   347.    
  =>  N_eff Reflect.:     13 with I >  2.00 sigma
 
      -----------------------------------------------------------------
@@ -420,39 +420,39 @@
 
  => Total approximate array memory (dynamic + static): 219053688 bytes
 
-    MaxPOINT=    80000 Max.num. of points(+int. Inten.)/diffraction pattern
-    MaxREFLT=    25000 Max.num. of reflections/diffraction pattern
-    MaxPARAM=      500 Max.num. of refinable parameters
-    MaxOVERL=     9000 Max.num. of overlapping reflections
+    MaxPOINT=    80000 Max.num. of points(+int. Inten.)/diffraction pattern       
+    MaxREFLT=    25000 Max.num. of reflections/diffraction pattern               
+    MaxPARAM=      500 Max.num. of refinable parameters                          
+    MaxOVERL=     9000 Max.num. of overlapping reflections                       
 
  ----------------------------------------------------------
  => Number of bytes for floating point arrays: 4
  => Dimensions of fixed arrays in this release of FullProf:
  ----------------------------------------------------------
 
-    NPATT   =       80 Max.num. of powder diffraction patterns
-    NATS    =      830 Max.num. of atoms (all kind) in asymmetric unit
-    MPAR    =     1800 Max.num. of non atomic parameters/phase
-    IEXCL   =       30 Max.num. of excluded regions
-    IBACP   =      377 Max.num. of background points for interpolation
-    NPHT    =       16 Max.num. of phases
-    NMAGM   =        8 Max.num. of rotation-matrices sets for magnetic structure
-    NBASIS  =       12 Max.num. of basis functions associated to a single atom
-    NIREPS  =        9 Max.num. of irreducible representations to be combined
+    NPATT   =       80 Max.num. of powder diffraction patterns                    
+    NATS    =      830 Max.num. of atoms (all kind) in asymmetric unit            
+    MPAR    =     1800 Max.num. of non atomic parameters/phase                    
+    IEXCL   =       30 Max.num. of excluded regions                               
+    IBACP   =      377 Max.num. of background points for interpolation            
+    NPHT    =       16 Max.num. of phases                                         
+    NMAGM   =        8 Max.num. of rotation-matrices sets for magnetic structure  
+    NBASIS  =       12 Max.num. of basis functions associated to a single atom    
+    NIREPS  =        9 Max.num. of irreducible representations to be combined     
     N_EQ    =      384 Max.num. of user-supplied symmetry operators/propagation vectors
-    NGL     =      400 Max.num. of global parameters/diffraction pattern
-    N_LINC  =       50 Max.num. of global linear restraints
-    NAT_P   =       80 Max.num. of atomic parameters per atom
-    NCONST  =     3500 Max.num. of slack constraints per phase
-    N_SPE   =       30 Max.num. of different chemical species
-    N_FORM  =       60 Max.num. of scattering factor values in a table
-    NPR     =      150 Max.num. of points defining a numerical profile
-    INPR    =       25 Max.num. of different numerical peak shapes
-    NPRC    =      150 Max.num. of terms in the table for correcting intensities
-    NSOL    =       10 Max.num. of solutions to be stored in Montecarlo searchs
+    NGL     =      400 Max.num. of global parameters/diffraction pattern          
+    N_LINC  =       50 Max.num. of global linear restraints                        
+    NAT_P   =       80 Max.num. of atomic parameters per atom                     
+    NCONST  =     3500 Max.num. of slack constraints per phase                    
+    N_SPE   =       30 Max.num. of different chemical species                     
+    N_FORM  =       60 Max.num. of scattering factor values in a table            
+    NPR     =      150 Max.num. of points defining a numerical profile            
+    INPR    =       25 Max.num. of different numerical peak shapes                
+    NPRC    =      150 Max.num. of terms in the table for correcting intensities  
+    NSOL    =       10 Max.num. of solutions to be stored in Montecarlo searchs   
 
-
+ 
               CPU Time:     0.078 seconds
                             0.001 minutes
 
- => Run finished at:     Date: 17/04/2025  Time: 14:45:58.673
+ => Run finished at:     Date: 17/04/2025  Time: 14:45:58.673                              

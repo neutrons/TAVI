@@ -123,21 +123,21 @@
 10/25/2024 3:58 PM        drive bbr 2
 10/25/2024 3:58 PM        drive bbl 2
 10/25/2024 3:58 PM        drive bar 4
-10/25/2024 3:58 PM        drive bal 2
+10/25/2024 3:58 PM        drive bal 2 
 10/25/2024 4:09 PM        drive bab 12
 10/25/2024 4:09 PM        drive bat 10
-10/25/2024 4:09 PM        drive bbb 8
+10/25/2024 4:09 PM        drive bbb 8 
 10/25/2024 4:10 PM        scantitle "bbt recheck 0 0 2"
 10/25/2024 4:10 PM        br 0 0 2
 10/25/2024 4:11 PM        scan bbt 0 24 2
 10/25/2024 4:15 PM        scan bbt 30 40 2
 10/25/2024 4:19 PM        scantitle "Final th2th scan around bragg peaks for confirmation"
 10/25/2024 4:19 PM        br 1 0 0
-10/25/2024 4:20 PM        scanrel s1 2 -2 0.2
+10/25/2024 4:20 PM        scanrel s1 2 -2 0.2 
 10/25/2024 4:22 PM        scantitle "Final th2th scan around bragg peaks for confirmation - s2"
-10/25/2024 4:22 PM        scanrel s2 2 -2 0.2
+10/25/2024 4:22 PM        scanrel s2 2 -2 0.2 
 10/25/2024 4:24 PM        scantitle "Final th2th scan around bragg peaks for confirmation - th2th"
-10/25/2024 4:24 PM        th2th 2 -2 0.2
+10/25/2024 4:24 PM        th2th 2 -2 0.2 
 10/25/2024 4:32 PM        br 0 0 2
 10/25/2024 5:07 PM        drive bat 35 bab 35 bar 35 bal 35 bbt 35 bbb 35 bbr 35 bbl 35
 10/25/2024 5:12 PM        init
@@ -204,7 +204,7 @@
 10/25/2024 6:42 PM        scanrel s1  2 -2 0.2
 10/25/2024 6:45 PM        scanrel s1  1 -1 0.1
 10/25/2024 6:50 PM        lattice a 4.132500 b 4.132500 c 6.610917
-10/25/2024 6:51 PM        br 1 0 0
+10/25/2024 6:51 PM        br 1 0 0 
 10/25/2024 6:52 PM        scantitle "check at 5k around 1 0 0 for s1"
 10/25/2024 6:52 PM        scanrel s1  2 -2 0.2
 10/25/2024 6:53 PM        scantitle "check at 5k around 1 0 0 for s2"
@@ -223,7 +223,7 @@
 10/25/2024 7:06 PM        scanrel s1 2 -2 0.2
 10/25/2024 7:07 PM        scanrel s1 1 -1 0.1
 10/25/2024 7:11 PM        ubcalc file "C:\SPICE\User\exp823\UBConf\tmp\UB25Oct2024_71151PM.ini"
-10/25/2024 7:12 PM        br 0 0 2
+10/25/2024 7:12 PM        br 0 0 2 
 10/25/2024 7:12 PM        scantitle "check scans 0 0 2"
 10/25/2024 7:12 PM        scanrel s2 1 -1 0.1
 10/25/2024 7:14 PM        lattice a 4.090770 b 4.090770 c 6.619386
@@ -244,7 +244,7 @@
 10/25/2024 7:28 PM        scanrel s2 1 -1 0.1
 10/25/2024 7:29 PM        lattice a 4.090770 b 4.090770 c 6.656209
 10/25/2024 7:30 PM        ubcalc file "C:\SPICE\User\exp823\UBConf\tmp\UB25Oct2024_73035PM.ini"
-10/25/2024 7:30 PM        br 1 0 0
+10/25/2024 7:30 PM        br 1 0 0 
 10/25/2024 7:31 PM        scantitle "scans again for 100 "
 10/25/2024 7:32 PM        scanrel s1 2 -2 0.2
 10/25/2024 7:34 PM        drive s1 111.1246
@@ -252,7 +252,7 @@
 10/25/2024 7:35 PM        lattice a 4.112263 b 4.112263 c 6.656209
 10/25/2024 7:36 PM        th2th 2 -2 0.1
 10/25/2024 7:38 PM        drive s2 38.6814
-10/25/2024 7:38 PM        scanrel s1 1 -1 0.1
+10/25/2024 7:38 PM        scanrel s1 1 -1 0.1 
 10/25/2024 7:39 PM        drive s1 111.1
 10/25/2024 7:40 PM        th2th 1 -1 0.1
 10/25/2024 7:41 PM        lattice a 4.113061 b 4.113061 c 6.656209
@@ -274,21 +274,21 @@
 10/25/2024 7:57 PM        scan bar 0 24 2
 10/25/2024 7:58 PM        scan bbl 0 24 2
 10/25/2024 8:00 PM        scan bbr 0 24 2
-10/25/2024 8:26 PM        drive bbr 4
+10/25/2024 8:26 PM        drive bbr 4 
 10/25/2024 8:26 PM        drive bbl 4
 10/25/2024 8:31 PM        drive bar 6
-10/25/2024 8:31 PM        drive bal 4
-10/25/2024 8:32 PM        drive bbr 4
-10/25/2024 8:32 PM        drive bbl 4
-10/25/2024 8:32 PM         drive bab 16
+10/25/2024 8:31 PM        drive bal 4 
+10/25/2024 8:32 PM        drive bbr 4 
+10/25/2024 8:32 PM        drive bbl 4 
+10/25/2024 8:32 PM         drive bab 16 
 10/25/2024 8:32 PM        drive bbt 2
-10/25/2024 8:32 PM        drive bbb 14
-10/25/2024 8:32 PM        drive bat 10
-10/25/2024 8:33 PM        br 1 0 0
+10/25/2024 8:32 PM        drive bbb 14 
+10/25/2024 8:32 PM        drive bat 10 
+10/25/2024 8:33 PM        br 1 0 0 
 10/25/2024 8:35 PM        scantitle "final check scans on 1 0 0 after swapping reflection"
 10/25/2024 8:35 PM        scanrel s1 2 -2 0.1
 10/25/2024 8:39 PM        drive s1 111.15
-10/25/2024 8:39 PM        scanrel s2 1 -1 0.1
+10/25/2024 8:39 PM        scanrel s2 1 -1 0.1 
 10/25/2024 8:43 PM        lattice a 4.113532 b 4.113532 c 6.656209
 10/25/2024 8:45 PM        ubcalc file "C:\SPICE\User\exp823\UBConf\tmp\UB25Oct2024_84355PM.ini"
 10/25/2024 8:54 PM        scantitle "Scans starting - checking sides hkl = 101 "
@@ -395,7 +395,7 @@
 10/28/2024 1:44 PM        ef 30.500000
 10/28/2024 1:44 PM        plusminus - + -
 10/28/2024 1:44 PM        exptitle "Magnons and paramagnon coupling in MnTe"
-10/28/2024 1:44 PM        collimation 48.000000 40.000000 40.000000 120.000000
+10/28/2024 1:44 PM        collimation 48.000000 40.000000 40.000000 120.000000 
 10/28/2024 1:44 PM        monochromator pg002
 10/28/2024 1:44 PM        analyzer pg002
 10/28/2024 1:46 PM        scantitle "Scans H0L = (1.0, 0, 1.0) to (1.5, 0, 0.5) - Transverse at (1.40, 0.0, 0.60) - E = 40 to 25 mev"
@@ -487,7 +487,7 @@
 10/29/2024 10:05 AM        ef 14.700000
 10/29/2024 10:05 AM        plusminus - + -
 10/29/2024 10:05 AM        exptitle "Magnons and paramagnon coupling in MnTe"
-10/29/2024 10:05 AM        collimation 48.000000 40.000000 40.000000 120.000000
+10/29/2024 10:05 AM        collimation 48.000000 40.000000 40.000000 120.000000 
 10/29/2024 10:05 AM        monochromator pg002
 10/29/2024 10:05 AM        analyzer pg002
 10/29/2024 10:05 AM        drive ef 14.7

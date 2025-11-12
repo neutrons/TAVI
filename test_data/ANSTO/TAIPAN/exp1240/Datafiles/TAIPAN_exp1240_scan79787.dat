@@ -5,8 +5,8 @@
 # proposal = 7733
 # experiment = LSNCO
 # experiment_number = 1240
-# command =
-# builtin_command =
+# command = 
+# builtin_command = 
 # users = Kyle Ma
 # local_contact = Kirrily
 # scan_title = 0.2 0.2 6 En scans T=5K
@@ -15,19 +15,19 @@
 # sense = -
 # collimation = o-40-40-0
 # samplename = LNSCO
-# sampletype =
+# sampletype = 
 # samplemosaic = 0.3
 # latticeconstants = 3.760000 3.760000 13.170000 90.000000 90.000000 90.000000
 # ubmatrix = 0.196996 0.196996 -0.000706     -0.001945 -0.001945 -0.071456     -0.113741 0.113741 0.000000
 # mode = 0
-# plane_normal =
-# ubconf =
-# preset_type = normal
+# plane_normal = 
+# ubconf = 
+# preset_type = normal 
 # preset_channel = time
 # preset_value = 1.0
 # def_x = m1
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          m1           q           h           k           l          ei         vei          ef           e        time    detector     det_err     monitor         mcu    m1_steps   m1_counts    ps_right     ps_left      ps_top   ps_bottom    pa_right     pa_left      pa_top   pa_bottom          m2       mtilt      mtrans     vs_left    vs_right          s1          s2         sgl         sgu         stl         stu          a1          a2      atrans       atilt     ahfocus     avfocus      ptsamp      tfloat        temp        pghf        pgvf        cuhf        cuvf      T1_Sensor1      T1_Sensor2      T1_Sensor3      T1_Sensor4    T1_Setpoint1    T1_Setpoint2
       1     18.4983      2.6789      0.0107      0.0107      5.9662     14.8698     14.8707      0.0000     14.8698       1.002           2        1.41          30      0.0000      0.0000      0.0000    -15.0000    -15.0000    -21.0000    -21.0000    -34.1000    -29.3000   -102.5000   -104.0000     40.9293      0.0022     99.0000  -3606.7385     59.8891     -0.0028    -29.9962     -0.0017     -0.0006      0.0046     -0.0143      0.0077     -0.0038     18.9976     -0.0065     -0.3516    144.1406      0.0000      0.0000      67.338      0.9668     55.8984     51.6797     75.7617         67.3380         60.9780          0.0000         95.8640          5.0000          0.0000
       2     18.6985      2.6789      0.0107      0.0107      5.9662     14.8698     14.8707      0.0000     14.8698       1.008           2        1.41          28      0.0000      0.0000      0.0000    -15.0000    -15.0000    -21.0000    -21.0000    -34.1000    -29.3000   -102.5000   -104.0000     40.9293      0.0022     99.0000  -3606.7385     59.8891     -0.0028    -29.9962     -0.0017     -0.0006      0.0046     -0.0143      0.0077     -0.0039     18.9976     -0.0065     -0.3516    144.1406      0.0000      0.0000      67.338      0.9668     55.8984     51.6797     75.7617         67.3380         60.9780          0.0000         95.8640          5.0000          0.0000

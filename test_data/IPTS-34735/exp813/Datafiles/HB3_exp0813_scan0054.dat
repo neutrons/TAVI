@@ -21,19 +21,19 @@
 # mode = 0
 # plane_normal = -0.017470,-0.052341,0.998476
 # ubconf = UB09Sep2024_43441PM.ini
-# preset_type = normal
+# preset_type = normal 
 # preset_channel = mcu
 # preset_value = 120.000000
 # def_x = e
 # def_y = detector
-# col_headers =
+# col_headers = 
 #   Pt.          h          k          l          e         ef       time   detector    monitor        mcu focal_length         m1         m2   mcrystal       marc     mtrans     mfocus       ampl         dc       freq     output       temp     temp_2         s1         s2        sgl        sgu        bbb        bbl        bbr        bbt        bab        bal        bar        bat        stl        stu         a1         a2          q         ei   ampl_out output_state        vti     sample
 # Tue, Sep 10, 2024 [4:40:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 10, 2024 [4:40:10 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Tue, Sep 10, 2024 [4:40:10 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
 # Tue, Sep 10, 2024 [4:40:11 PM] : SPICE Error in Common.lvlib:Common_Commands.lvlib:drive_scan.vi.
-# ERROR in driving: Tue, Sep 10, 2024 [4:40:11 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi.
+# ERROR in driving: Tue, Sep 10, 2024 [4:40:11 PM] : SPICE Warning in Devices.lvlib:Common_Converter.lvlib:PseudoToRealNew.vi. 
 # Cannot complete scattering triangle.
 # ...Move aborted.
       3     1.3501     0.0000     1.3500    44.6040    14.7000    102.765    278.000 301441.000    120.000    33.2576   -20.0773   -20.1613   120.0962    -0.1480    -3.0001   -72.7541     0.0000     0.0000     0.0000     1.0000     5.0000   300.0000    25.3395     3.0188     1.0010    -2.9998     9.0000    10.0000     5.0000    14.0000    16.0000     5.0000    10.0000    16.0000    -0.0005     0.0005   159.4164   -41.1662     2.6936    59.3041     2.0000     1.0000     4.9995     0.000

@@ -1,4 +1,4 @@
-2/28/2025 12:10 PM        drive s1 0
+2/28/2025 12:10 PM        drive s1 0 
 2/28/2025 12:20 PM        drive slita_bt 25 slita_tp 25 slita_lf 20 slita_rt 20
 2/28/2025 12:20 PM        drive slitb_bt 25 slitb_tp 25 slitb_lf 20 slitb_rt 20
 2/28/2025 12:27 PM        lattice 5.515570 5.515570 9.169000 90.000000 90.000000 120.000000
@@ -32,9 +32,9 @@
 2/28/2025 12:52 PM        drive s1 -157.5
 2/28/2025 12:53 PM        drive s1 24
 2/28/2025 12:58 PM        waitpost dr_tsample 25 1 120 30000
-2/28/2025 1:03 PM        set_temp 17
+2/28/2025 1:03 PM        set_temp 17 
 2/28/2025 1:03 PM        waitpost dr_tsample 19 1 120 30000
-2/28/2025 1:11 PM        set_temp 1
+2/28/2025 1:11 PM        set_temp 1 
 2/28/2025 1:20 PM        br 0 0 6
 2/28/2025 1:21 PM        driverel s1 5
 2/28/2025 1:22 PM        driverel s1 5
@@ -64,13 +64,13 @@
 2/28/2025 2:02 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_20205PM.ini"
 2/28/2025 2:04 PM        scantitle "optimize sample translations"
 2/28/2025 2:04 PM        br 0 0 6
-2/28/2025 2:06 PM        scan stl 9 -9 1 preset time 1
-2/28/2025 2:08 PM        scan stl 12 10 1 preset time 1
-2/28/2025 2:10 PM        drive stl 0
+2/28/2025 2:06 PM        scan stl 9 -9 1 preset time 1 
+2/28/2025 2:08 PM        scan stl 12 10 1 preset time 1 
+2/28/2025 2:10 PM        drive stl 0 
 2/28/2025 2:10 PM        scan stu 9 -9 1 preset time 1
 2/28/2025 2:12 PM        drive stu 0
 2/28/2025 2:12 PM        br 3 0 0
-2/28/2025 2:14 PM        scan stl 9 -9 1 preset time 1
+2/28/2025 2:14 PM        scan stl 9 -9 1 preset time 1 
 2/28/2025 2:15 PM        drive stl -4
 2/28/2025 2:16 PM        scantitle "optimize pre-sample and post-sample slits"
 2/28/2025 2:17 PM        scan slita_tp 0 30 1 preset time 1
@@ -160,10 +160,10 @@
 2/28/2025 5:40 PM        scanrel s1 1 -1 0.1
 2/28/2025 5:41 PM        br 0 0 6
 2/28/2025 5:44 PM        scanrel s1 1 -1 0.1
-2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -160.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
-2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
-2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -159.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000
-2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000
+2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -160.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
+2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
+2/28/2025 5:46 PM        lowerlimit mag_i -6.000000 s1 -159.000000 s2 -128.000000 sgl -4.500000 sgu -4.500000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 stl -12.000000 stu -12.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 dr_temp 0.000000 
+2/28/2025 5:46 PM        upperlimit mag_i 6.000000 s1 24.000000 s2 2.000000 sgl 4.500000 sgu 4.500000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 stl 12.000000 stu 12.000000 a1 159.900000 a2 120.100000 temp 300.000000 dr_temp 350.000000 
 2/28/2025 5:49 PM        set_temp_dr 0.06
 2/28/2025 5:51 PM        set_temp_dr 0.05
 2/28/2025 5:52 PM        drive s1 -21.75
@@ -322,7 +322,7 @@
 2/28/2025 9:03 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_90353PM.ini"
 2/28/2025 9:04 PM        lattice 5.499416 5.499416 9.164350 90.000000 90.000000 120.000000
 2/28/2025 9:04 PM        ubcalc file "C:\SPICE\User\exp1047\UBConf\tmp\UB28Feb2025_90417PM.ini"
-2/28/2025 9:05 PM        br 2 0 0
+2/28/2025 9:05 PM        br 2 0 0 
 2/28/2025 9:12 PM        drive ef 14.45
 2/28/2025 9:12 PM        scantitle "alignment 2 0 0"
 2/28/2025 9:12 PM        scanrel s1 1 -1 0.1
