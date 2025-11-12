@@ -35,7 +35,7 @@ def _recast_type(ds, dtype):
                 dataset = np.array([float(d) for d in ds.split(",")])
             else:
                 dataset = np.array([int(d) for d in ds.split(",")])
-        elif ds.replace(".", "").isnumeric():  # numebrs only
+        elif ds.replace(".", "").isnumeric():  # numbers only
             if dtype == "NX_FLOAT":
                 dataset = float(ds)
             else:
@@ -59,7 +59,7 @@ def _recast_type(ds, dtype):
 
 
 class NXdataset(dict):
-    """Dataset in a format consistent with NeXus, containg attrs and dataset"""
+    """Dataset in a format consistent with NeXus, containing attrs and dataset"""
 
     def __init__(self, ds, **kwargs):
         if ds is None:

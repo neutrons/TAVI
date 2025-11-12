@@ -14,7 +14,7 @@ from tavi.utilities import get_angle_vec, labels_from_projection, sig2fwhm
 class ResoEllipsoid(object):
     """Manage the 4D resolution ellipoid
 
-    Attributs:
+    Attributes:
         frame (str): "q", "hkl", or "proj"
         projection (tuple): three non-coplanar vectors
         q_vec (tuple): momentum transfer (h', k', l') in the coordinate system specified by projection
@@ -209,7 +209,7 @@ class ResoEllipsoid(object):
         PROJECTION: bool = False,
         ORIGIN: bool = True,
     ) -> ResoEllipse:
-        """Gnerate a 2D ellipse by either making a cut or projection
+        """Generate a 2D ellipse by either making a cut or projection
 
         Arguments:
             axes(tuple)

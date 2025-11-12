@@ -32,7 +32,7 @@ class TASComponent(object):
         param: str,
         value: Union[str, float, int],
     ) -> None:
-        """update a paramter if exist"""
+        """update a parameter if exist"""
         if hasattr(self, param):
             setattr(self, param, value)
             print(f"Setting {self.component_name} parameter {param} to {value}")

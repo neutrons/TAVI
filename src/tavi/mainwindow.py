@@ -26,12 +26,12 @@ class MainWindow(QWidget):
 
         print(f"main GUI running on {threading.current_thread().name}")
         ### Create widgets here ###
-        # initalize view
+        # initialize view
         load_view = LoadView(self)
         metadata_view = MetaDataView(self)
         random_view = RandomView(self)
 
-        # initalize model/Proxy
+        # initialize model/Proxy
         tavi_dummy_model = TaviProject()
         tavi_dummy_model_proxy = TaviProjectProxy(tavi_dummy_model)
 

@@ -102,7 +102,7 @@ class TAS(TASBase):
 
         Args:
             hkl (tuple): miller indice of a peak
-            en (float): energy trnasfer en = ei - ef, in emV
+            en (float): energy transfer en = ei - ef, in emV
 
         Returns:
             two_theta (float): two theta angle, in degrees. Raise ValueError if can't reach.
@@ -266,7 +266,7 @@ class TAS(TASBase):
 
         Return:
             Return MotorAngles
-            Return None if the intented position is out of reach
+            Return None if the intended position is out of reach
 
         Note"
             Convert UB matrix, plane_normal, in_plane_ref to Mantind/International Table

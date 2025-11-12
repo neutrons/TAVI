@@ -1,4 +1,4 @@
-exclude: "scripts/.*|.*\\.mat|test_data/.*|tests/.*$"
+exclude: "(^|/)(scripts/.*|test_data/.*|tests/.*|.*\\.mat$|pixi\\.lock$)"
 ci:
     skip: [pixi-lock-check]
 repos:
@@ -28,10 +28,11 @@ repos:
   hooks:
     - id: codespell
       exclude: pixi.lock
+      args: ["--ignore-words-list", "te, Missings, Takin"]
 - repo: local
   hooks:
     - id: pixi-lock-check
       name: pixi-lock-check
       entry: bash -c "pixi lock --check"
-      stage: pre-push
+      stages: [pre-push]
       language: system

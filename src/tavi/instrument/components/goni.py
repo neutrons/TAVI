@@ -136,7 +136,7 @@ class Goniometer(TASComponent):
                     ),
                 )
             case _:
-                raise ValueError(f"Unknow goniometer type={operating_mode}")
+                raise ValueError(f"Unknown goniometer type={operating_mode}")
 
         return r_mat
 
@@ -220,7 +220,7 @@ class Goniometer(TASComponent):
             case "YXYazimuthal":
                 print("Not implemented yet.")
             case _:
-                raise ValueError("Unknow goniometer type. Curruntly support Y,-Z,X ....")
+                raise ValueError("Unknown goniometer type. Curruntly support Y,-Z,X ....")
 
         return angles
 
@@ -229,7 +229,7 @@ class Goniometer(TASComponent):
         motor_name: Literal["two_theta", "omega", "sgl", "sgu", "chi", "phi"],
         motor_range: tuple[Optional[float], Optional[float]] = (-180, 180),
     ):
-        "set goiometer motor limt"
+        "set goiometer motor limit"
         if motor_name in ("two_theta", "omega", "sgl", "sgu", "chi", "phi"):
             self.limits.update({motor_name: motor_range})
         else:

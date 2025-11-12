@@ -12,7 +12,7 @@ class ScanGroup(object):
     """
     Manage combined scans
 
-    Atributes:
+    Attributes:
         name (string): Name of combined scans, default is CombinedScansNum
 
     Methods:
@@ -252,7 +252,7 @@ class ScanGroup(object):
         norm_to: tuple[float, str] = (1, "mcu"),
     ) -> ScanData2D:
         # if not isinstance(det := axes[-1], str) and not det.startswith("detector"):
-        #     raise ValueError(f"Last paramter of axes={axes} should be detector.")
+        #     raise ValueError(f"Last parameter of axes={axes} should be detector.")
 
         axes_to_plot = []
         for i in range(4):

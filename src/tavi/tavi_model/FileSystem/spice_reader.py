@@ -52,7 +52,7 @@ def read_spice_datafile(file_name: str):
         elif "=" in line:  # useful line
             parts = line.split("=")
             key = parts[0].strip()
-            val = "=".join(parts[1:])[1:]  # remove the fisrt space character
+            val = "=".join(parts[1:])[1:]  # remove the first space character
             metadata.update({key: val})
         else:  # how did you get here?
             others.append(line)

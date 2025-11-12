@@ -60,7 +60,7 @@ class MotorAngles(NamedTuple):
 
 class Peak(NamedTuple):
     """
-    Phsical/virtual monitor positions
+    Phyical/virtual monitor positions
 
     hkl: miller indice (h,k,l)
     angles: moter angles
@@ -117,7 +117,7 @@ def get_side_from_triangle(a: float, b: float, angle: float) -> float:
 
 
 def get_angle_vec(v1, v2):
-    """Get the angle in degress between two vectors v1 and v2"""
+    """Get the angle in degrees between two vectors v1 and v2"""
     return np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)) / np.pi * 180
 
 

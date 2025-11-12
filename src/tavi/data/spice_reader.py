@@ -9,7 +9,7 @@ import numpy as np
 
 
 def parse_countfile(countfile: str):
-    """Pasre the countfile for HB1 in polarized mode."""
+    """Parse the countfile for HB1 in polarized mode."""
     norm_vals = []
     norm_channels = []
     labels = []
@@ -19,7 +19,7 @@ def parse_countfile(countfile: str):
 
     for line in countfile.split(","):
         line = line.strip()
-        # determin the directio of polarization
+        # determine the directio of polarization
         if "parq" in line:
             label_p = "Px"
         elif "perpqh" in line:
@@ -27,7 +27,7 @@ def parse_countfile(countfile: str):
         elif "perpq" in line:
             label_p = "Pz"
 
-        # detemine SF or NSF
+        # determine SF or NSF
         if any(s in line for s in ["drive hguide off vguide off", "floff", "drive hguide 0 vguide 0"]):
             label_sf = "NSF"
         elif any(s in line for s in ["drive hguide on vguide on", "flon", "drive"]):
@@ -126,7 +126,7 @@ def read_spice_datafile(
         # index_of_pt = col_names.index("Pt.")
         # col_names[index_of_pt] = "Pt"
     except ValueError:
-        # should not reach here, "# col_headers =" always exsits
+        # should not reach here, "# col_headers =" always exists
         raise ValueError("Missing '# col_headers =' in header")
 
     metadata_list = headers[:index_col_headers]
