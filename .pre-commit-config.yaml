@@ -1,4 +1,4 @@
-exclude: "scripts/.*|.*\\.mat$"
+exclude: "scripts/.*|.*\\.mat|test_data/.*|tests/.*$"
 ci:
     skip: [pixi-lock-check]
 repos:
