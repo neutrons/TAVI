@@ -4,16 +4,6 @@ description = "Triple-Axis Data Visualization Toolkit"
 dynamic = ["version"]
 requires-python = ">=3.10"
 dependencies = [
-  "qtpy",
-  "pyside6",
-  "numpy",
-  "scipy",
-  "matplotlib",
-  "h5py",
-  "numba",
-  "pandas",
-  "jupyterlab",
-  "ipympl"
   # Dependencies available from both PyPI and conda should be listed here
 ]
 license = { text = "MIT" }
