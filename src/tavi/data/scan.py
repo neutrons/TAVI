@@ -48,7 +48,7 @@ class SampleUBInfo:
     # angle_mode: int = 0  # mode for goni angle calculation in SPICE
     plane_normal: Optional[np.ndarray] = None
     # in_plane_ref: Optional[np.ndarray] = None
-    ubconf: Optional[str] = None  # path to UB configration file
+    ubconf: Optional[str] = None  # path to UB configuration file
 
 
 # TODO
@@ -65,7 +65,7 @@ class InstrumentInfo:
 
 class Scan(object):
     """
-    Manage a single measued scan
+    Manage a single measured scan
 
     Attributes:
         name (str): scan name
@@ -168,7 +168,7 @@ class Scan(object):
             # angle_mode: int = 0  # mode for goni angle calculation in SPICE
             plane_normal=self._nexus_dict.get("sample/plane_normal"),
             # in_plane_ref: Optional[np.ndarray] = None
-            ubconf=None,  # path to UB configration file
+            ubconf=None,  # path to UB configuration file
         )
 
         return sample_ub_info
@@ -272,7 +272,7 @@ class Scan(object):
             norm_to (norm_val (float), norm_channel(str)): value and channel for normalization
                 norm_channel should be "time", "monitor" or"mcu".
             rebin_type (str | None): "tol" or "grid"
-            rebin_params (float | tuple(flot, float, float)): take as step size if a numer is given,
+            rebin_params (float | tuple(flot, float, float)): take as step size if a number is given,
                 take as (min, max, step) if a tuple of size 3 is given
         """
 
@@ -346,7 +346,7 @@ class Scan(object):
         norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         **rebin_params_dict: Union[float, tuple],
     ):
-        """Plot a 1D curve gnerated from a singal scan in a new window"""
+        """Plot a 1D curve generated from a single scan in a new window"""
 
         fig, ax = plt.subplots()
         plot1d = Plot1D()

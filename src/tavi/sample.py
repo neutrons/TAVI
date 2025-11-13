@@ -233,7 +233,7 @@ class Sample(object):
 
     @property
     def real_space_vectors(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Reutrun real space lattice vectors in Cartesian coordiantes"""
+        """Return real space lattice vectors in Cartesian coordinates"""
         return real_space_vectors(self.lattice_params)
 
     @property
@@ -263,7 +263,7 @@ class Sample(object):
         return q_norm
 
     def update_lattice_parametres_from_b_mat(self, b_mat: np.ndarray):
-        """Update lattice paramters based on B matrix"""
+        """Update lattice parameters based on B matrix"""
         lattice_params = lattice_params_from_b_mat(b_mat)
         self.update_lattice_parameters(lattice_params)
 

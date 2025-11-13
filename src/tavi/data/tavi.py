@@ -37,7 +37,7 @@ class TAVI(object):
 
     @staticmethod
     def load_data(scan_dict: dict):
-        """Load data under coresponding exp_id"""
+        """Load data under corresponding exp_id"""
         data_dict: dict = {}
         for scan_name, nxentry in scan_dict.items():
             exp_id = nxentry["attrs"]["dataset_name"]

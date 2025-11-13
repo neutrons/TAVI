@@ -127,7 +127,7 @@ class Plot1D(object):
                     data.fmt.update({key: val[i]})
 
     def add_reso_bar(self, pos: Union[tuple, ModelResult], fwhm: float, **kwargs):
-        """add the resolution bar at a given posotion
+        """add the resolution bar at a given position
 
         Note:
             if pos is a tuple, put the reso bar at pos=(x,y)

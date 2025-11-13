@@ -14,8 +14,8 @@ def convert_spice_to_nexus(
 
     Note:
         if path_to_nexus_folder if not provided, the nexus data entries
-        will be creatred in the same parent folder as the SPICE data,
-        using the defalut folder name IPTSxxxxx_INSTRU_exp0000"""
+        will be created in the same parent folder as the SPICE data,
+        using the default folder name IPTSxxxxx_INSTRU_exp0000"""
 
     scan_dict = NexusEntry.from_spice(
         path_to_spice_folder,

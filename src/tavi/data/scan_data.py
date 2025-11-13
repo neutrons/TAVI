@@ -120,7 +120,7 @@ class ScanData1D(object):
         elif self.norm is not None:
             norm_col = self.norm
         else:
-            raise ValueError("Normalizaion collumns cannot be None.")
+            raise ValueError("Normalizaion columns cannot be None.")
 
         rebin_min, rebin_max, rebin_step = rebin_params
         rebin_min = np.min(self.x) if rebin_min is None else rebin_min

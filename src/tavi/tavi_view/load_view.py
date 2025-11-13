@@ -46,7 +46,7 @@ class LoadView(QWidget):
         self.load_data_callback = callback
 
     def load_view_data(self, data_dir_or_files):
-        """Pass loaded file through callback conenctions"""
+        """Pass loaded file through callback connections"""
         self.load_data_callback(data_dir_or_files)
 
     def connect_click_on_a_scan(self, callback):

@@ -50,7 +50,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
+test_data/
 # Translations
 *.mo
 *.pot
@@ -64,6 +64,9 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+
+# pixi environments
+.pixi
 
 # Scrapy stuff:
 .scrapy

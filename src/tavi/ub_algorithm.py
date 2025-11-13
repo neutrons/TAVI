@@ -279,7 +279,7 @@ def r_matrix_with_minimal_tilt(
     Args:
         hkl: tuple of Miller indices
         ei: incident energy, in meV
-        ef: finial energy, in meV
+        ef: final energy, in meV
         two_theta: two_theta angle, in degrees
         ub_conf: need to have ub_mat, plane_normal and in_plane_ref
     Raises:

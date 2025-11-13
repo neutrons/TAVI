@@ -14,7 +14,7 @@ class Collimators(TASComponent):
         param_dict: Optional[dict] = None,
         component_name: str = "collimitors",
     ):
-        # defalut values
+        # default values
         self.h_pre_mono: float = 30.0  # mins of arc
         self.h_pre_sample: float = 30.0
         self.h_post_sample: float = 30.0
