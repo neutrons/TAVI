@@ -4282,19 +4282,8 @@ packages:
   timestamp: 1733569565672
 - pypi: ./
   name: tavi
-  version: 0.3.0.dev88
-  sha256: 58d6ae9ca312cb973115a5f647fde544401b9f26d04d4d35df2508367ca94f46
-  requires_dist:
-  - h5py
-  - ipympl
-  - jupyterlab
-  - matplotlib
-  - numba
-  - numpy
-  - pandas
-  - pyside6
-  - qtpy
-  - scipy
+  version: 0.3.0.dev96
+  sha256: 5c974d795638a5f9b1a490c6bc70e54780bd747bc7699874f7043c0b43714d2d
   requires_python: '>=3.10'
   editable: true
 - conda: https://conda.anaconda.org/conda-forge/noarch/terminado-0.18.1-pyh0d859eb_0.conda
