@@ -26,6 +26,9 @@ build-backend = "hatchling.build"
 [project.gui-scripts]
 tavi = "tavi.tavimain:gui"
 
+[project.scripts]
+tavi = "tavi.tavimain:gui"
+
 [tool.hatch.version]
 source = "versioningit"
 
