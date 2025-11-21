@@ -1,23 +1,15 @@
-from qtpy.QtWidgets import QMenuBar, QAction
-from qtpy.QtCore import QObject, Signal
 from qtpy.QtWidgets import (
-    QDialog,
+    QAction,
     QFileDialog,
-    QHBoxLayout,
-    QLineEdit,
-    QListView,
-    QPushButton,
-    QStackedWidget,
-    QTreeView,
-    QVBoxLayout,
-    QWidget,
+    QMenuBar,
 )
-class MainMenuBar(QMenuBar):
 
+
+class MainMenuBar(QMenuBar):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.load_folder_callback = None
-    
+
         # ---- File Menu ----
         file_menu = self.addMenu("File")
 
@@ -36,7 +28,7 @@ class MainMenuBar(QMenuBar):
     def connect_load_folder(self, callback):
         """Building callback connections for the load data - set by the presenter"""
         self.load_folder_callback = callback
-    
+
     def load_folder(self, folder):
         """Pass loaded file through callback connections"""
         self.load_folder_callback(folder)
@@ -45,7 +37,7 @@ class MainMenuBar(QMenuBar):
         dlg = QFileDialog(self, "Select a folder")
         dlg.setFileMode(QFileDialog.Directory)
         dlg.setOption(QFileDialog.Option.ShowDirsOnly, True)
-        
+
         if dlg.exec_():
-            folder = dlg.selectedFiles()     # returns a list
+            folder = dlg.selectedFiles()  # returns a list
             self.load_folder(folder)

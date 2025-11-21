@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qtpy.QtCore import QObject, Qt, Signal
+from qtpy.QtCore import QObject, Signal
 
 from tavi.EventBroker.event_broker import EventBroker
-from tavi.EventBroker.event_type import scan_uuid
 
 if TYPE_CHECKING:
     from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
