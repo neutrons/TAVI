@@ -10,12 +10,13 @@ from tavi.ModelInterface.tavi_project_interface import TaviProjectProxy
 from tavi.tavi_model.dummy_model import TaviProject
 from tavi.tavi_model.random_model import RandomModel
 from tavi.tavi_presenter.load_presenter import LoadPresenter
+from tavi.tavi_presenter.menu_presenter import MenuePresenter
 from tavi.tavi_presenter.metadata_presenter import MetaDataPresenter
 from tavi.tavi_presenter.random_presenter import RandomPresenter
 from tavi.tavi_view.load_view import LoadView
 from tavi.tavi_view.metadata_view import MetaDataView
 from tavi.tavi_view.radom_view import RandomView
-
+from tavi.tavi_view.menu_view import MainMenuBar
 
 class MainWindow(QWidget):
     """Main widget"""
@@ -42,8 +43,13 @@ class MainWindow(QWidget):
         self.load_presenter = LoadPresenter(load_view, tavi_dummy_model_proxy)
         self.metadata_presenter = MetaDataPresenter(metadata_view, tavi_dummy_model_proxy)
         self.random_presenter = RandomPresenter(random_view, random_model_proxy)
+
         ### Set the layout
         layout = QVBoxLayout()
+        menu_bar = MainMenuBar(self)
+        layout.setMenuBar(menu_bar)
+        self.menu_presenter = MenuePresenter(menu_bar, tavi_dummy_model)
+
         layout.addWidget(load_view)
         layout.addWidget(metadata_view)
         layout.addWidget(random_view)
