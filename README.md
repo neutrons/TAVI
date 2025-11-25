@@ -35,5 +35,5 @@ tavi
 
 Documentation [tavi.readthedocs.io](https://tavi.readthedocs.io/)
 
-[![CI](https://github.com/neutrons/tavi/actions/workflows/unittest.yml/badge.svg?branch=next)](https://github.com/neutrons/hyspecppt/actions/workflows/unittest.yml)
+[![CI](https://github.com/neutrons/TAVI/actions/workflows/test_and_deploy.yml/badge.svg?branch=next)](https://github.com/neutrons/TAVI/actions/workflows/test_and_deploy.yml)
 [![codecov](https://codecov.io/gh/neutrons/TAVI/graph/badge.svg?token=AYB1X932FV)](https://codecov.io/gh/neutrons/TAVI)
