@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qtpy.QtCore import QObject, Qt, Signal
-
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import selected_uuid, template_data
 
 if TYPE_CHECKING:
     from tavi.model_interface.template_model_interface import TemplateModelInterface
     from tavi.tavi_view.template_view import TemplateView
+
 
 class TemplatePresenter:
     def __init__(self, view: TemplateView, model: TemplateModelInterface) -> None:
