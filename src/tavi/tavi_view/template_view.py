@@ -1,6 +1,6 @@
 from typing import Optional
 
-from qtpy.QtCore import QObject
+from qtpy.QtCore import QObject, Signal, Qt
 from qtpy.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -9,6 +9,8 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+class _UiBridge(QObject):
+    set_template_signal = Signal(str)
 
 class TemplateView(QWidget):
     """Main widget"""
@@ -26,6 +28,14 @@ class TemplateView(QWidget):
 
         self.template_widget = TemplateWidget(self)
         layout.addWidget(self.template_widget)
+
+        self._bridge = _UiBridge()
+        self._bridge.set_template_signal.connect(
+            self.template_widget.set_values,
+            type=Qt.QueuedConnection,
+        )
+    def update_template(self, event) -> None:
+        self._bridge.set_template_signal.emit(event)
 
 
 class TemplateWidget(QWidget):
