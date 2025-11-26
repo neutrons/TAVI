@@ -10,25 +10,27 @@ class MainMenuBar(QMenuBar):
         file_menu = self.addMenu("File")
 
         self.new_project_action = QAction("New Project", self)
-        # self.load_file_action = QAction("Load Project", self)
+        self.load_project_action = QAction("Load Project", self)
         self.load_file_action = QAction("Load File(s)", self)
         self.load_folder_action = QAction("Load Folder", self)
         self.save_action = QAction("Save Project", self)
         self.exit_action = QAction("Exit", self)
 
         file_menu.addAction(self.new_project_action)
+        file_menu.addAction(self.load_project_action)
         file_menu.addAction(self.load_folder_action)
         file_menu.addAction(self.load_file_action)
         file_menu.addAction(self.save_action)
         file_menu.addAction(self.exit_action)
 
         self.new_project_action.triggered.connect(self.handle_new_project)
+        self.new_project_action.triggered.connect(self.handle_load_project)
         self.load_folder_action.triggered.connect(self.handle_load_folder)
         self.load_file_action.triggered.connect(self.handle_load_files)
         self.save_action.triggered.connect(self.handle_save)
         self.exit_action.triggered.connect(self.handle_exit)
 
-    # TODO Loading a new file
+    # TODO Loading a new taviproject
     def connect_new_project(self, callback):
         self.load_file_callback = callback
 
@@ -36,6 +38,16 @@ class MainMenuBar(QMenuBar):
         print("TODO: creates a new taviproject")
 
     def handle_new_project(self):
+        print("TODO: delete everything in taviproject")
+
+    # TODO Loading a new project
+    def connect_load_project(self, callback):
+        self.load_file_callback = callback
+
+    def load_project(self):
+        print("TODO: creates a new taviproject")
+
+    def handle_load_project(self):
         print("TODO: delete everything in taviproject")
 
     # Loading a folder of data

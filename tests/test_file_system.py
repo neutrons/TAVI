@@ -3,7 +3,7 @@ from dataclasses import fields
 
 import numpy as np
 
-from tavi.tavi_model.tavi_project import TaviProject
+from tavi.tavi_library.tavi_project import TaviProject
 
 
 def test_load_raw_data():

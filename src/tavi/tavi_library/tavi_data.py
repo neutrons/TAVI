@@ -3,7 +3,7 @@ from typing import Any
 
 import numpy as np
 
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
 
 
 class TaviData:

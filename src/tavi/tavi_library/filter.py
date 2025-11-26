@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 from venv import logger
 
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
 
 
 class Operations(Enum):

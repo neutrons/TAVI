@@ -5,8 +5,8 @@ from typing import Any, Iterable, Optional
 
 import numpy as np
 
-import tavi.tavi_model.FileSystem.spice_reader as spice_reader
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+import tavi.tavi_library.FileSystem.spice_reader as spice_reader
+from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
 
 logger = logging.getLogger("TAVI")
 

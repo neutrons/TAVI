@@ -1,9 +1,9 @@
 import os
 from typing import Iterable, Optional
 
-from tavi.tavi_model.FileSystem.load_manager import LoadManager
-from tavi.tavi_model.filter import Filter, Logic, Operations
-from tavi.tavi_model.tavi_data import TaviData
+from tavi.tavi_library.FileSystem.load_manager import LoadManager
+from tavi.tavi_library.filter import Filter, Logic, Operations
+from tavi.tavi_library.tavi_data import TaviData
 
 
 class TaviProject:

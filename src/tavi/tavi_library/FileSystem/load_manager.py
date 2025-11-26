@@ -2,13 +2,13 @@ import logging
 import os
 from typing import Iterable, Optional
 
-from tavi.tavi_model.FileSystem.Facilities.load_ansto import LoadANSTO
-from tavi.tavi_model.FileSystem.Facilities.load_frmii import LoadFRMII
-from tavi.tavi_model.FileSystem.Facilities.load_hzb import LoadHZB
-from tavi.tavi_model.FileSystem.Facilities.load_nist import LoadNIST
-from tavi.tavi_model.FileSystem.Facilities.load_ornl import LoadORNL
-from tavi.tavi_model.FileSystem.Facilities.load_psi import LoadPSI
-from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
+from tavi.tavi_library.FileSystem.Facilities.load_ansto import LoadANSTO
+from tavi.tavi_library.FileSystem.Facilities.load_frmii import LoadFRMII
+from tavi.tavi_library.FileSystem.Facilities.load_hzb import LoadHZB
+from tavi.tavi_library.FileSystem.Facilities.load_nist import LoadNIST
+from tavi.tavi_library.FileSystem.Facilities.load_ornl import LoadORNL
+from tavi.tavi_library.FileSystem.Facilities.load_psi import LoadPSI
+from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
 
 logger = logging.getLogger("TAVI")
 
