@@ -2,20 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qtpy.QtCore import QObject, Qt, Signal
-
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import scan_uuid
 
 if TYPE_CHECKING:
     from tavi.model_interface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.load_view import LoadView
-
-
-class _UiBridge(QObject):
-    """Thread-safe bridge to deliver updates on the GUI thread."""
-
-    update_tree_signal = Signal(list)
 
 
 class LoadPresenter:
@@ -33,15 +25,8 @@ class LoadPresenter:
         # # click on a scan
         self._view.connect_click_on_a_scan(self.handle_click_on_a_scan)
 
-        self._ui_bridge = _UiBridge()
-        self._ui_bridge.update_tree_signal.connect(
-            self._view.tree_widget.add_tree_data,
-            type=Qt.QueuedConnection,  # run safely on GUI thread
-        )
-
     def update_treeview(self, event) -> None:
-        # self._view.tree_widget.add_tree_data(event.scan_uuid_list)
-        self._ui_bridge.update_tree_signal.emit(event.scan_uuid_list)
+        self._view.update_add_tree_data(event.scan_uuid_list)
 
     def handle_click_on_a_scan(self, selected_file) -> None:
         self._model.set_selected_scan(selected_file)

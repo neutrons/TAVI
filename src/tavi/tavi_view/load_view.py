@@ -1,12 +1,18 @@
 from typing import List, Optional
 
-from qtpy.QtCore import QObject, Signal
+from qtpy.QtCore import QObject, Qt, Signal
 from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
     QTreeView,
     QVBoxLayout,
     QWidget,
 )
+
+
+class _UiBridge(QObject):
+    """Thread-safe bridge to deliver updates on the GUI thread."""
+
+    update_tree_signal = Signal(list)
 
 
 class LoadView(QWidget):
@@ -29,11 +35,21 @@ class LoadView(QWidget):
 
         self.tree_widget.clicked_file_signal.connect(self.pass_selected_file)
 
+        # handle thread safe operations from secondary thread
+        self._bridge = _UiBridge()
+        self._bridge.update_tree_signal.connect(
+            self.tree_widget.add_tree_data,
+            type=Qt.QueuedConnection,  # run safely on GUI thread
+        )
+
     def connect_click_on_a_scan(self, callback):
         self.click_on_a_scan_callback = callback
 
     def pass_selected_file(self, filename):
         self.click_on_a_scan_callback(filename)
+
+    def update_add_tree_data(self, event) -> None:
+        self._bridge.update_tree_signal.emit(event)
 
 
 class TreeViewWidget(QWidget):

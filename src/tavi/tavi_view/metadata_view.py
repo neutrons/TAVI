@@ -1,6 +1,6 @@
 from typing import Optional
 
-from qtpy.QtCore import QObject
+from qtpy.QtCore import QObject, Qt, Signal
 from qtpy.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -8,6 +8,10 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+
+class _UiBridge(QObject):
+    set_metadata_signal = Signal(str)
 
 
 class MetaDataView(QWidget):
@@ -32,6 +36,15 @@ class MetaDataView(QWidget):
         # layout.addWidget(self.tree_widget)
 
         # self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
+
+        self._bridge = _UiBridge()
+        self._bridge.set_metadata_signal.connect(
+            self.metadata_widget.set_values,
+            type=Qt.QueuedConnection,  # run safely on GUI thread
+        )
+
+    def update_metadata(self, event) -> None:
+        self._bridge.set_metadata_signal.emit(event)
 
 
 class MetaDataWidget(QWidget):
