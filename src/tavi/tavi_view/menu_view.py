@@ -10,9 +10,10 @@ class MainMenuBar(QMenuBar):
         file_menu = self.addMenu("File")
 
         self.new_project_action = QAction("New Project", self)
+        # self.load_file_action = QAction("Load Project", self)
         self.load_file_action = QAction("Load File(s)", self)
         self.load_folder_action = QAction("Load Folder", self)
-        self.save_action = QAction("Save", self)
+        self.save_action = QAction("Save Project", self)
         self.exit_action = QAction("Exit", self)
 
         file_menu.addAction(self.new_project_action)

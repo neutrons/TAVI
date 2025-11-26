@@ -21,5 +21,5 @@ class meta_data(Event):
 
 
 @dataclass
-class random_data(Event):
-    random_data: str
+class template_data(Event):
+    template_data: str

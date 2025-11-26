@@ -8,7 +8,7 @@ from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import scan_uuid
 
 if TYPE_CHECKING:
-    from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
+    from tavi.model_interface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.load_view import LoadView
 
 

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from tavi.EventBroker.event_broker import EventBroker
-from tavi.EventBroker.event_type import random_data
-from tavi.ModelInterface.random_model_interface import RandomModelInterface
-from tavi.tavi_model.dummy_model import TaviProject
+from tavi.EventBroker.event_type import template_data
+from tavi.model_interface.template_model_interface import TemplateModelInterface
+from tavi.tavi_model.tavi_project_model import TaviProject
 
 
-class RandomModel(RandomModelInterface):
+class TemplateModel(TemplateModelInterface):
     # _observers: List[Observer] = []
 
     def __init__(self):

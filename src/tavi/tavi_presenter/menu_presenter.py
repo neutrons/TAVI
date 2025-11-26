@@ -7,7 +7,7 @@ from qtpy.QtCore import QObject, Signal
 from tavi.EventBroker.event_broker import EventBroker
 
 if TYPE_CHECKING:
-    from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
+    from tavi.model_interface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.menu_view import MainMenuBar
 
 
@@ -28,6 +28,7 @@ class MenuePresenter:
         self._model = model
         self.event_broker = EventBroker()
         # load data
+        # set_callback_for_
         self._view.connect_load_folder(self.handle_load_folder)
 
     def handle_load_folder(self, data_dir_or_files):

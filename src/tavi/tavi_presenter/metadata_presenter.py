@@ -8,7 +8,7 @@ from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import meta_data
 
 if TYPE_CHECKING:
-    from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
+    from tavi.model_interface.tavi_project_interface import TaviProjectInterface
     from tavi.tavi_view.metadata_view import MetaDataView
 
 

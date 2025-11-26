@@ -5,10 +5,10 @@ import threading
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
 from tavi.help.help_model import help_function
-from tavi.ModelInterface.random_model_interface import RandomModelProxy
-from tavi.ModelInterface.tavi_project_interface import TaviProjectProxy
-from tavi.tavi_model.dummy_model import TaviProject
-from tavi.tavi_model.random_model import RandomModel
+from tavi.model_interface.tavi_project_interface import TaviProjectProxy
+from tavi.model_interface.template_model_interface import TemplateModelProxy
+from tavi.tavi_model.tavi_project_model import TaviProject
+from tavi.tavi_model.template_model import TemplateModel
 from tavi.tavi_presenter.load_presenter import LoadPresenter
 from tavi.tavi_presenter.menu_presenter import MenuePresenter
 from tavi.tavi_presenter.metadata_presenter import MetaDataPresenter
@@ -37,8 +37,8 @@ class MainWindow(QWidget):
         tavi_dummy_model = TaviProject()
         tavi_dummy_model_proxy = TaviProjectProxy(tavi_dummy_model)
 
-        random_model = RandomModel()
-        random_model_proxy = RandomModelProxy(random_model)
+        random_model = TemplateModel()
+        random_model_proxy = TemplateModelProxy(random_model)
 
         # pass proxy to presenter
         self.load_presenter = LoadPresenter(load_view, tavi_dummy_model_proxy)

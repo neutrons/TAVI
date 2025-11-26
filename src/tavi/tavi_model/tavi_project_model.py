@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from tavi.EventBroker.event_broker import EventBroker
 from tavi.EventBroker.event_type import meta_data, scan_uuid, selected_uuid
-from tavi.ModelInterface.tavi_project_interface import TaviProjectInterface
+from tavi.model_interface.tavi_project_interface import TaviProjectInterface
 
 
 class TaviProject(TaviProjectInterface):
