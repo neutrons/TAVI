@@ -36,5 +36,5 @@ class TemplatePresenter:
         )
 
     def update(self, event) -> None:
-        # self._view.random_widget.set_values(event.random_data)
+        # self._view.template_widget.set_values(event.template_data)
         self._ui_bridge.set_template_signal.emit(event.template_data)

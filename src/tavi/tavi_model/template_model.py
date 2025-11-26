@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from tavi.EventBroker.event_broker import EventBroker
+from tavi.EventBroker.event_type import template_data
 from tavi.model_interface.template_model_interface import TemplateModelInterface
 from tavi.tavi_model.tavi_project_model import TaviProject
 
@@ -31,6 +32,6 @@ class TemplateModel(TemplateModelInterface):
                 else:
                     new_name.append(name)
             self.next_file = "_".join(new_name)
-        event = random_data(random_data=self.next_file)
+        event = template_data(template_data=self.next_file)
         print(self.tavi_project.file_list.index(current_selected_file))
         self.send(event)
