@@ -10,7 +10,7 @@ from qtpy.QtWidgets import (
 )
 
 
-class RandomView(QWidget):
+class TemplateView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -24,11 +24,11 @@ class RandomView(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        self.random_widget = RandomWidget(self)
-        layout.addWidget(self.random_widget)
+        self.template_widget = TemplateWidget(self)
+        layout.addWidget(self.template_widget)
 
 
-class RandomWidget(QWidget):
+class TemplateWidget(QWidget):
     """Widget that displays the metadata"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:

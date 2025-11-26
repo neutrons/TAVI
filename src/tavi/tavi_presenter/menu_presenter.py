@@ -17,7 +17,7 @@ class _UiBridge(QObject):
     update_tree_signal = Signal(list)
 
 
-class MenuePresenter:
+class MenuPresenter:
     def __init__(self, view: MainMenuBar, model: TaviProjectInterface):
         super().__init__()
         """Constructor
