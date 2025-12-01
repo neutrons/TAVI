@@ -11,11 +11,34 @@ from qtpy.QtWidgets import (
 
 
 class _UiBridge(QObject):
+    """
+    Thread-safe bridge to deliver updates on the GUI thread. Qt forbitds modifying
+    UI elements from a different thread. The data needs to be passed as a signal.
+
+    """
+
     set_metadata_signal = Signal(str)
 
 
 class MetaDataView(QWidget):
-    """Main widget"""
+    """
+    Prototypical widget responsible for displaying metadata associated
+    with loaded scans or files.
+
+    Parameters
+    ----------
+    parent : Optional[QObject], default=None
+        Parent widget used for Qt ownership and memory management.
+
+    Attributes
+    ----------
+    metadata_widget : MetaDataWidget
+        The inner widget responsible for displaying filename and related metadata.
+    _bridge : _UiBridge
+        Thread-safe bridge for routing metadata updates to the GUI.
+    display_metadata_callback : Callable or None
+        Placeholder for a presenter-provided callback (future use).
+    """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """Constructor for the main widget
@@ -32,23 +55,36 @@ class MetaDataView(QWidget):
         self.metadata_widget = MetaDataWidget(self)
         layout.addWidget(self.metadata_widget)
 
-        # self.tree_widget = TreeViewWidget(self)
-        # layout.addWidget(self.tree_widget)
-
-        # self.load_widget.data_dir_or_files_signal.connect(self.load_view_data)
-
         self._bridge = _UiBridge()
         self._bridge.set_metadata_signal.connect(
             self.metadata_widget.set_values,
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
 
-    def update_metadata(self, event) -> None:
+    def update_metadata(self, event: None) -> None:
+        """
+        Request a metadata update by emitting the change through the `_UiBridge`.
+
+        This method should be called by the presenter when the model produces
+        new metadata.
+
+        Parameters
+        ----------
+        event : str
+            The metadata value to display. Typically the filename or metadata
+            summary associated with the currently selected scan.
+        """
         self._bridge.set_metadata_signal.emit(event)
 
 
 class MetaDataWidget(QWidget):
-    """Widget that displays the metadata"""
+    """
+    Widget responsible for displaying metadata fields (e.g., filename).
+
+    The widget contains a label and a disabled QLineEdit. The presenter or
+    parent view updates its contents through `set_values()`, typically routed
+    via `_UiBridge` to ensure thread safety.
+    """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """Constructor for the plotting widget
@@ -71,4 +107,12 @@ class MetaDataWidget(QWidget):
         layoutTop.addWidget(self.filename_edit)
 
     def set_values(self, values: str) -> None:
+        """
+        Update the metadata display field.
+
+        Parameters
+        ----------
+        values : str
+            Text to display in the filename field (e.g., the selected scan name).
+        """
         self.filename_edit.setText(values)
