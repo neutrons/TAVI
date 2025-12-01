@@ -11,12 +11,30 @@ if TYPE_CHECKING:
 
 
 class MetaDataPresenter:
+    """
+    Presenter responsible for mediating metadata-related updates between the
+    model (`TaviProjectInterface`) and the metadata view (`MetaDataView`).
+
+    This presenter subscribes to the application's event broker and listens for
+    `meta_data` events emitted by the model.
+
+    Attributes
+    ----------
+    _view : MetaDataView
+        The metadata view associated with this presenter.
+    _model : TaviProjectInterface
+        The model providing metadata updates.
+    event_broker : EventBroker
+        The event system used to subscribe to metadata update events.
+    selected_meta_data : dict
+        The last metadata dictionary received from the model.
+    """
+
     def __init__(self, view: MetaDataView, model: TaviProjectInterface):
-        super().__init__()
-        """Constructor
-        :view: hppt_view class type
-        :model:hppt_model class type
         """
+        Initialize the metadata presenter and register for `meta_data` events.
+        """
+        super().__init__()
         self._view = view
         self._model = model
 
