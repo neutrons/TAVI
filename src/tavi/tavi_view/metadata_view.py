@@ -87,7 +87,7 @@ class MetaDataWidget(QWidget):
     """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the plotting widget
+        """Constructor for the metadata widget
 
         Args:
             parent (QObject): Optional parent
