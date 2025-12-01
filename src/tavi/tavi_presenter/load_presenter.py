@@ -15,7 +15,7 @@ class LoadPresenter:
     Presenter responsible for coordinating interactions between the LoadView and
     the TaviProjectInterface model during data-loading workflows in TAVI.
 
-    The "scan_uuid" event type is pre-registered here in EventBroker()to refresh 
+    The "scan_uuid" event type is pre-registered here in EventBroker()to refresh
     the UI when scans are loaded.
 
     Parameters
@@ -37,6 +37,7 @@ class LoadPresenter:
         Event broker used for subscribing to application-wide events.
         "scan_uuid" event type is pre-registered.
     """
+
     def __init__(self, view: LoadView, model: TaviProjectInterface):
         super().__init__()
         """

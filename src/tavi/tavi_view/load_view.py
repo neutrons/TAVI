@@ -13,9 +13,9 @@ from tavi.EventBroker.event_type import scan_uuid
 
 class _UiBridge(QObject):
     """
-    Thread-safe bridge to deliver updates on the GUI thread. Qt forbitds modifying 
+    Thread-safe bridge to deliver updates on the GUI thread. Qt forbitds modifying
     UI elements from a different thread. The data needs to be passed as a signal.
-    
+
     """
 
     update_tree_signal = Signal(list)
@@ -60,7 +60,7 @@ class LoadView(QWidget):
         """
         self.click_on_a_scan_callback(filename)
 
-    def update_add_tree_data(self, event:scan_uuid) -> None:
+    def update_add_tree_data(self, event: scan_uuid) -> None:
         """
         invoke update_tree_signal to process data coming in from a different thread.
         """
@@ -87,6 +87,7 @@ class TreeViewWidget(QWidget):
     parent : Optional[QObject], default=None
         Parent widget for proper Qt ownership.
     """
+
     clicked_file_signal = Signal(str)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -159,6 +160,7 @@ class StandardItem(QStandardItem):
     color : QColor, default=QColor(0, 0, 0)
         Text color to apply to the item.
     """
+
     def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):
         """
         Initialize a styled non-editable `QStandardItem`.
