@@ -29,6 +29,12 @@ class MainWindow(QWidget):
         print(f"main GUI running on {threading.current_thread().name}")
         ### Create widgets here ###
         # initialize view
+
+        #!!!!!!!!!!!!!!!!!!!!
+        # self.load_view = load_view
+        # self.load_view.setParent(self)
+        #!!!!!!!!!!!!!!!!!!!!
+
         load_view = LoadView(self)
         metadata_view = MetaDataView(self)
         random_view = TemplateView(self)
