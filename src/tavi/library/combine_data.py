@@ -2,7 +2,6 @@ from typing import Optional
 
 import numpy as np
 from scipy.stats import binned_statistic
-
 from tavi.tavi_model.FileSystem.tavi_class_factory import Scan
 
 

@@ -58,7 +58,6 @@ class MainWindow(QWidget):
 class Tavi(QMainWindow):
     """Main Package window"""
 
-
     exit_requested = Signal()
 
     def __init__(self, parent=None):
@@ -85,7 +84,6 @@ class Tavi(QMainWindow):
     def install_menu_bar(self, menu_bar):
         """Called by MainPresenter to attach the menu bar."""
         self.setMenuBar(menu_bar)
-
 
     def closeEvent(self, event):
         """
