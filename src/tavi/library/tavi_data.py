@@ -2,6 +2,7 @@ from dataclasses import field
 from typing import Any
 
 import numpy as np
+
 from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
 
 

@@ -8,6 +8,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from tavi.EventBroker.event_type import template_data
 
 

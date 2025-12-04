@@ -3,6 +3,8 @@
 import threading
 
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
+
+from tavi.help.help_model import help_function
 from tavi.model_interface.tavi_project_interface import TaviProjectProxy
 from tavi.model_interface.template_model_interface import TemplateModelProxy
 from tavi.tavi_model.tavi_project_model import TaviProject
@@ -15,8 +17,6 @@ from tavi.tavi_view.load_view import LoadView
 from tavi.tavi_view.menu_view import MainMenuBar
 from tavi.tavi_view.metadata_view import MetaDataView
 from tavi.tavi_view.template_view import TemplateView
-
-from tavi.help.help_model import help_function
 
 
 class MainWindow(QWidget):

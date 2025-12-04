@@ -7,6 +7,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from tavi.EventBroker.event_type import scan_uuid
 
 

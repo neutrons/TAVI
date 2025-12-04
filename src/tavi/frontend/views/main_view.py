@@ -3,22 +3,18 @@
 import argparse
 import logging
 import sys
+import threading
 
 from qtpy.QtCore import Signal
-from qtpy.QtWidgets import QApplication, QMainWindow
+from qtpy.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from tavi import __version__
 from tavi.configuration import Configuration
+from tavi.help.help_model import help_function
 
 logger = logging.getLogger("TAVI")
 
 """Main Qt window"""
-
-import threading
-
-from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
-
-from tavi.help.help_model import help_function
 
 
 class MainWindow(QWidget):
@@ -62,6 +58,7 @@ class MainWindow(QWidget):
 class Tavi(QMainWindow):
     """Main Package window"""
 
+
     exit_requested = Signal()
 
     def __init__(self, parent=None):
@@ -83,16 +80,22 @@ class Tavi(QMainWindow):
         self.setWindowTitle(f"TAVI - {__version__}")
         self.main_window = MainWindow(self)
         self.setCentralWidget(self.main_window)
+        self._force_closing = False
 
     def install_menu_bar(self, menu_bar):
         """Called by MainPresenter to attach the menu bar."""
         self.setMenuBar(menu_bar)
 
+
     def closeEvent(self, event):
         """
+        This is the triggered when close event happens, we over-write it here.
         User clicked X, so request exit permission from presenter.
         Do NOT close here. Signal presenter instead.
         """
+        if self._force_closing:
+            event.accept()
+            return
         self.exit_requested.emit()
         event.ignore()  # Presenter will decide what happens next
 
@@ -100,7 +103,7 @@ class Tavi(QMainWindow):
         """
         Presenter calls this when exit is approved.
         """
-        print("22222222")
+        self._force_closing = True
         super().close()
 
 

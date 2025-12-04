@@ -16,7 +16,7 @@ class MainPresenter:
         Presenter handles dirty-save confirmation.
         Return True to allow exit.
         """
-        if False:
+        if True:
             from qtpy.QtWidgets import QMessageBox
 
             reply = QMessageBox.question(
@@ -30,6 +30,5 @@ class MainPresenter:
                 return False  # do not exit
 
         # Exit approved → Close the window
-        print("111111111")
         self.view.force_close()
         return True

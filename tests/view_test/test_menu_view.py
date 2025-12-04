@@ -1,28 +1,24 @@
 import pytest
-from qtpy.QtWidgets import QAction
-
-from tavi.frontend.views.menubar_view import MainMenuBar
+from tavi.frontend.views.file_menu_view import FileMenu
 
 
-@pytest.fixture
-def menubar(qtbot):
-    bar = MainMenuBar()
-    qtbot.addWidget(bar)
-    return bar
+def test_file_menu_action_labels(qtbot):
+    menu = FileMenu()
+    qtbot.addWidget(menu)
 
+    # Collect QAction → text mapping
+    labels = {
+        "new_project": menu.new_project_action.text(),
+        "load_project": menu.load_project_action.text(),
+        "load_file": menu.load_file_action.text(),
+        "load_folder": menu.load_folder_action.text(),
+        "save": menu.save_action.text(),
+        "exit": menu.exit_action.text(),
+    }
 
-def test_actions_attributes_exist(menubar):
-    """Check that all QAction attributes are created on MainMenuBar."""
-    assert isinstance(menubar.file_menu.new_project_action, QAction)
-    assert isinstance(menubar.file_menu.load_project_action, QAction)
-    assert isinstance(menubar.file_menu.load_file_action, QAction)
-    assert isinstance(menubar.file_menu.load_folder_action, QAction)
-    assert isinstance(menubar.file_menu.save_action, QAction)
-    assert isinstance(menubar.file_menu.exit_action, QAction)
-
-    assert menubar.file_menu.new_project_action.text() == "New Project"
-    assert menubar.file_menu.load_project_action.text() == "Load Project"
-    assert menubar.file_menu.load_file_action.text() == "Load File(s)"
-    assert menubar.file_menu.load_folder_action.text() == "Load Folder"
-    assert menubar.file_menu.save_action.text() == "Save Project"
-    assert menubar.file_menu.exit_action.text() == "Exit"
+    assert labels["new_project"] == "New Project"
+    assert labels["load_project"] == "Load Project"
+    assert labels["load_file"] == "Load File(s)"
+    assert labels["load_folder"] == "Load Folder"
+    assert labels["save"] == "Save Project"
+    assert labels["exit"] == "Exit"
