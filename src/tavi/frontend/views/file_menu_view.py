@@ -1,5 +1,5 @@
-from qtpy.QtWidgets import QAction, QApplication, QFileDialog, QMenu
-from qtpy.QtCore import Signal
+from qtpy.QtWidgets import QAction, QFileDialog, QMenu
+
 
 class FileMenu(QMenu):
     """
@@ -16,6 +16,7 @@ class FileMenu(QMenu):
     Each menu action triggers a handler method that emits callbacks
     (registered via `setup_callback_*` methods) which are called in presenters.
     """
+
     def __init__(self, parent=None):
         """
         Initialize the main menu bar, create all file-related actions, and connect
@@ -185,7 +186,7 @@ class FileMenu(QMenu):
 
     # Exit
     def setup_callback_exit(self, callback: None) -> None:
-        self.exit_callback=callback
+        self.exit_callback = callback
 
     def handle_exit(self) -> None:
         """

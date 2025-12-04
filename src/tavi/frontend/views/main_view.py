@@ -4,8 +4,9 @@ import argparse
 import logging
 import sys
 
-from qtpy.QtWidgets import QApplication, QMainWindow
 from qtpy.QtCore import Signal
+from qtpy.QtWidgets import QApplication, QMainWindow
+
 from tavi import __version__
 from tavi.configuration import Configuration
 
@@ -18,8 +19,7 @@ import threading
 from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
 from tavi.help.help_model import help_function
-from tavi.frontend.views.file_menu_view import FileMenu
-from tavi.frontend.views.menubar_view import MainMenuBar
+
 
 class MainWindow(QWidget):
     """Main widget"""
@@ -36,7 +36,6 @@ class MainWindow(QWidget):
         # self.load_view = load_view
         # self.load_view.setParent(self)
         #!!!!!!!!!!!!!!!!!!!!
-
 
         ### Set the layout
         layout = QVBoxLayout()
@@ -56,14 +55,13 @@ class MainWindow(QWidget):
 
         # register child widgets to make testing easier
 
-
     def handle_help(self):
         help_function(context="tavi_View")
 
 
-
 class Tavi(QMainWindow):
     """Main Package window"""
+
     exit_requested = Signal()
 
     def __init__(self, parent=None):
@@ -85,11 +83,11 @@ class Tavi(QMainWindow):
         self.setWindowTitle(f"TAVI - {__version__}")
         self.main_window = MainWindow(self)
         self.setCentralWidget(self.main_window)
-    
+
     def install_menu_bar(self, menu_bar):
         """Called by MainPresenter to attach the menu bar."""
         self.setMenuBar(menu_bar)
-    
+
     def closeEvent(self, event):
         """
         User clicked X, so request exit permission from presenter.

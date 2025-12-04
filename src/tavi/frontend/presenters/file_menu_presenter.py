@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from tavi.frontend.views.file_menu_view import FileMenu
 
 if TYPE_CHECKING:

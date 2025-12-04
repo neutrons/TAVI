@@ -1,5 +1,5 @@
-from qtpy.QtWidgets import QAction, QApplication, QFileDialog, QMenuBar
-from tavi.frontend.views.file_menu_view import FileMenu
+from qtpy.QtWidgets import QMenuBar
+
 
 class MainMenuBar(QMenuBar):
     """
@@ -17,7 +17,7 @@ class MainMenuBar(QMenuBar):
     (registered via `setup_callback_*` methods) which are called in presenters.
     """
 
-    def __init__(self,parent=None, file_menu_presenter = None):
+    def __init__(self, parent=None, file_menu_presenter=None):
         """
         Initialize the main menu bar, create all file-related actions, and connect
         them to internal handlers.
