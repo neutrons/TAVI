@@ -4282,8 +4282,8 @@ packages:
   timestamp: 1733569565672
 - pypi: ./
   name: tavi
-  version: 0.3.0
-  sha256: ba5b96b5420ec8cc8fca0210db20482ff61ceb13e3a39025e61c7009f54bea2f
+  version: 0.4.0.dev23
+  sha256: fe6e861a4368e62bb176eb050cf45a758aafb7b88913396487835354a3aca5e1
   requires_python: '>=3.10'
   editable: true
 - conda: https://conda.anaconda.org/conda-forge/noarch/terminado-0.18.1-pyh0d859eb_0.conda

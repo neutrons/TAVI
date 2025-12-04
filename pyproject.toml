@@ -24,10 +24,10 @@ requires = [
 build-backend = "hatchling.build"
 
 [project.gui-scripts]
-tavi = "tavi.tavimain:gui"
+tavi = "tavi.__main__:execute"
 
 [project.scripts]
-tavi = "tavi.tavimain:gui"
+tavi = "tavi.__main__:execute"
 
 [tool.hatch.version]
 source = "versioningit"
