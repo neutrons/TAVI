@@ -30,7 +30,7 @@ class FileMenuPresenter:
         self._view.setup_callback_load_folder(self.handle_load_folder)
         self._view.setup_callback_exit(self.exit)
 
-    def handle_load_folder(self, folder_dir):
+    def handle_load_folder(self, folder_dir) -> None:
         """
         Handle folder-loading requests from the view.
         This method is triggered when the user selects a folder via the menu
@@ -46,5 +46,5 @@ class FileMenuPresenter:
         """
         self._model.print()
 
-    def exit(self):
+    def exit(self) -> None:
         self._exit_routine()

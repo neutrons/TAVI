@@ -78,11 +78,11 @@ class TaviView(QMainWindow):
         self.setCentralWidget(self.main_window)
         self._force_closing = False
 
-    def install_menu_bar(self, menu_bar):
+    def install_menu_bar(self, menu_bar) -> None:
         """Called by MainPresenter to attach the menu bar."""
         self.setMenuBar(menu_bar)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event) -> None:
         """
         This is the triggered when close event happens, we over-write it here.
         User clicked X, so request exit permission from presenter.
@@ -94,14 +94,14 @@ class TaviView(QMainWindow):
         self.exit_requested.emit()
         event.ignore()  # Presenter will decide what happens next
 
-    def force_close(self):
+    def force_close(self) -> None:
         """
         Presenter calls this when exit is approved.
         """
         self._force_closing = True
         super().close()
 
-    def exit_message_box(self):
+    def exit_message_box(self) -> bool:
         reply = QMessageBox.question(
             self,
             "Unsaved Changes",

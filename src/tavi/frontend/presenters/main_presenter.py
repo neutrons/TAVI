@@ -11,7 +11,7 @@ class MainPresenter:
         menu_bar = MainMenuBar(self._view, file_menu_presenter=self.file_menu_presenter)
         self._view.install_menu_bar(menu_bar)
 
-    def exit(self):
+    def exit(self) -> bool:
         """
         Presenter handles dirty-save confirmation.
         Return True to allow exit.
