@@ -20,7 +20,7 @@ class MainPresenter:
             from qtpy.QtWidgets import QMessageBox
 
             reply = QMessageBox.question(
-                self.view,
+                self._view,
                 "Unsaved Changes",
                 "You have unsaved changes. Exit anyway?",
                 QMessageBox.Yes | QMessageBox.No,

@@ -12,7 +12,7 @@ def execute():
     dict_of_model = {"TaviProjectInterface": TaviProjectInterFace()}
 
     presenter = MainPresenter(dict_of_model)
-    presenter.view.show()
+    presenter._view.show()
 
     sys.exit(app.exec_())
 
