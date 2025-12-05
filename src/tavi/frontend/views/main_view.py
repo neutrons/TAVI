@@ -1,12 +1,11 @@
 """Main Qt application"""
 
-import argparse
 import logging
 import sys
 import threading
 
 from qtpy.QtCore import Signal
-from qtpy.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from tavi import __version__
 from tavi.configuration import Configuration
@@ -53,7 +52,7 @@ class MainWindow(QWidget):
         help_function(context="tavi_View")
 
 
-class Tavi(QMainWindow):
+class TaviView(QMainWindow):
     """Main Package window"""
 
     exit_requested = Signal()
@@ -102,17 +101,13 @@ class Tavi(QMainWindow):
         self._force_closing = True
         super().close()
 
-
-def gui():
-    """Main entry point for Qt application"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-v", "--version", help="print the version", action="store_true")
-    args = parser.parse_args()
-    if args.version:
-        print(__version__)
-        sys.exit()
-    else:
-        app = QApplication(sys.argv)
-        window = Tavi()
-        window.show()
-        sys.exit(app.exec_())
+    def exit_message_box(self):
+        reply = QMessageBox.question(
+            self,
+            "Unsaved Changes",
+            "You have unsaved changes. Exit anyway?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.No:
+            return False  # do not exit
