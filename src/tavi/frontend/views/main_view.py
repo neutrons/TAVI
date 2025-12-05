@@ -24,7 +24,7 @@ class MainWindow(QWidget):
         """Constructor"""
         super().__init__(parent)
 
-        print(f"main GUI running on {threading.current_thread().name}")
+        logger.info(f"main GUI running on {threading.current_thread().name}")
         ### Create widgets here ###
         # initialize view
 
