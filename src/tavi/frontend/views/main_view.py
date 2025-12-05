@@ -35,8 +35,6 @@ class MainWindow(QWidget):
 
         ### Set the layout
         layout = QVBoxLayout()
-        # self.menu_presenter = MenuPresenter(menu_bar, tavi_dummy_model)
-        ### Create bottom interface here ###
 
         # Help button
         help_button = QPushButton("Help")

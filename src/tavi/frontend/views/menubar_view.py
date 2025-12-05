@@ -5,16 +5,8 @@ class MainMenuBar(QMenuBar):
     """
     Main application menu bar for TAVI, providing project and file-loading actions.
 
-    This menu bar defines the standard "File" menu for the TAVI GUI, including:
-    - New Project
-    - Load Project
-    - Load File(s)
-    - Load Folder
-    - Save Project
-    - Exit
-
-    Each menu action triggers a handler method that emits callbacks
-    (registered via `setup_callback_*` methods) which are called in presenters.
+    This menu bar defines the standard "File" menu for the TAVI GUI. Additional tab
+    can be added similar to the "File" menu.
     """
 
     def __init__(self, parent=None, file_menu_presenter=None):
@@ -26,6 +18,9 @@ class MainMenuBar(QMenuBar):
         ----------
         parent : QWidget, optional
             Parent widget, typically the main window.
+        file_menu_presenter : QWidget
+            FileMenuPresenter, it also initialize the FileMenu view which is created
+            as an instance here.
         """
         super().__init__(parent)
 
