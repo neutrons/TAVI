@@ -1,7 +1,6 @@
 """Main Qt application"""
 
 import logging
-import sys
 import threading
 
 from qtpy.QtCore import Signal

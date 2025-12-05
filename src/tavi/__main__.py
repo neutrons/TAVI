@@ -2,8 +2,8 @@ import sys
 
 from qtpy.QtWidgets import QApplication
 
-from tavi.configuration import Configuration
 from tavi.backend.model_interface.TaviProjectInterface import TaviProjectInterFace
+from tavi.configuration import Configuration
 from tavi.frontend.presenters.main_presenter import MainPresenter
 
 
