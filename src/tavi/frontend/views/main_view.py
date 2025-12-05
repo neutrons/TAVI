@@ -8,7 +8,6 @@ from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from tavi import __version__
-from tavi.configuration import Configuration
 from tavi.help.help_model import help_function
 
 logger = logging.getLogger("TAVI")
@@ -61,18 +60,7 @@ class TaviView(QMainWindow):
         """Constructor"""
         super().__init__(parent)
         logger.info(f"Tavi version: {__version__}")
-        config = Configuration()
 
-        if not config.is_valid():
-            msg = (
-                "Error with configuration settings!",
-                f"Check and update your file: {config.config_file_path}",
-                "with the latest settings found here:",
-                f"{config.template_file_path} and start the application again.",
-            )
-
-            print(" ".join(msg))
-            sys.exit(-1)
         self.setWindowTitle(f"TAVI - {__version__}")
         self.main_window = MainWindow(self)
         self.setCentralWidget(self.main_window)
