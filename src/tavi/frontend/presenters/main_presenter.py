@@ -8,7 +8,7 @@ class MainPresenter:
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
         self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectInterface"])
-        menu_bar = MainMenuBar(self._view, file_menu_presenter=self.file_menu_presenter)
+        menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(menu_bar)
 
     def exit(self) -> bool:

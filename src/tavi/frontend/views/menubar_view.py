@@ -9,7 +9,7 @@ class MainMenuBar(QMenuBar):
     can be added similar to the "File" menu.
     """
 
-    def __init__(self, parent=None, file_menu_presenter=None):
+    def __init__(self, parent=None, file_menu_view=None):
         """
         Initialize the main menu bar, create all file-related actions, and connect
         them to internal handlers.
@@ -25,5 +25,5 @@ class MainMenuBar(QMenuBar):
         super().__init__(parent)
 
         # ---- File Menu ----
-        self.file_menu = file_menu_presenter._view
+        self.file_menu = file_menu_view
         self.addMenu(self.file_menu)
