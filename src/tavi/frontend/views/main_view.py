@@ -111,3 +111,4 @@ class TaviView(QMainWindow):
         )
         if reply == QMessageBox.No:
             return False  # do not exit
+        return True
