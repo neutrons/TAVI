@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
 
 import matplotlib.pyplot as plt
-
 from tavi.data.scan import Scan
 from tavi.data.scan_data import ScanData1D
 from tavi.data.scan_group import ScanGroup

@@ -5,7 +5,6 @@ import json
 from typing import TYPE_CHECKING, Literal, Optional
 
 import numpy as np
-
 from tavi.lattice_algorithm import (
     b_mat_from_lattice,
     lattice_params_from_b_mat,

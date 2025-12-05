@@ -2,7 +2,6 @@
 from typing import Literal, Optional, Union
 
 import numpy as np
-
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.instrument.resolution.ellipsoid import ResoEllipsoid
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator

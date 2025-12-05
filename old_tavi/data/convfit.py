@@ -4,7 +4,6 @@ from typing import Literal, Optional
 import numpy as np
 from lmfit import Model, Parameters, models
 from lmfit.model import ModelResult
-
 from tavi.data.scan_data import ScanData1D
 
 

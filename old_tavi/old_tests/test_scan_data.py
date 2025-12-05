@@ -3,7 +3,6 @@ import copy
 
 import numpy as np
 import pytest
-
 from tavi.data.scan_data import ScanData1D
 
 

@@ -1,6 +1,5 @@
 import numpy as np
 import numpy.linalg as la
-
 from tavi.utilities import sig2fwhm
 
 

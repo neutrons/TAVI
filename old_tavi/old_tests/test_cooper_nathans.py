@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-
 from tavi.instrument.resolution.cooper_nathans import CooperNathans
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample

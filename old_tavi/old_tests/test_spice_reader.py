@@ -1,5 +1,4 @@
 import numpy as np
-
 from tavi.data.spice_reader import read_spice_datafile, read_spice_ubconf
 
 

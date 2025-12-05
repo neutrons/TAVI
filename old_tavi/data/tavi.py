@@ -3,7 +3,6 @@ import os
 from typing import Optional, Union
 
 import h5py
-
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan import Scan
 from tavi.data.scan_group import ScanGroup

@@ -2,7 +2,6 @@ import copy
 
 import numpy as np
 import pytest
-
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample

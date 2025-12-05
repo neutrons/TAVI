@@ -2,7 +2,6 @@
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.axisartist import Axes
-
 from tavi.data.tavi import TAVI
 from tavi.instrument.tas import TAS
 from tavi.plotter import Plot2D

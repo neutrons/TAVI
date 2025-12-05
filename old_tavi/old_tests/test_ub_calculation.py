@@ -1,5 +1,4 @@
 import numpy as np
-
 from tavi.instrument.components.goni import Goniometer
 from tavi.instrument.tas import TAS
 from tavi.sample import Sample

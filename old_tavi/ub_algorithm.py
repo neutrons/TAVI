@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Literal, Optional
 
 import numpy as np
-
 from tavi.lattice_algorithm import b_mat_from_lattice, lattice_params_from_g_star_mat
 from tavi.utilities import MotorAngles, Peak, en2q, get_angle_from_triangle
 

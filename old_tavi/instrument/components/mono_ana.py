@@ -1,7 +1,6 @@
 from typing import Literal, Optional
 
 import numpy as np
-
 from tavi.instrument.components.component_base import TASComponent
 
 # ---------------------------------------------------------------

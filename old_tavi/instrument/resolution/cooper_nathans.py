@@ -1,5 +1,4 @@
 import numpy as np
-
 from tavi.instrument.resolution.resolution_calculator import ResolutionCalculator
 from tavi.utilities import en2q, ksq2eng, rotation_matrix_2d, sig2fwhm
 

@@ -4,7 +4,6 @@ from typing import Optional
 
 import h5py
 import numpy as np
-
 from tavi.data.nexus_builder import spice_data_to_nxdict
 
 

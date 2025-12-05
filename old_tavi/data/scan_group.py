@@ -2,7 +2,6 @@ import re
 from typing import Literal, Optional, Union
 
 import numpy as np
-
 from tavi.data.scan import Scan
 from tavi.data.scan_data import ScanData1D, ScanData2D
 from tavi.utilities import labels_from_projection

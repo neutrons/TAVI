@@ -8,7 +8,6 @@ from zoneinfo import ZoneInfo
 
 import h5py
 import numpy as np
-
 from tavi.data.spice_reader import _create_spicelogs, read_spice_datafile
 
 

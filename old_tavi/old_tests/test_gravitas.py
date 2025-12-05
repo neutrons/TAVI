@@ -5,7 +5,6 @@ import numpy as np
 import pytest
 from matplotlib.colors import Normalize
 from mpl_toolkits.axisartist import Axes
-
 from tavi.data.scan import Scan
 from tavi.data.scan_group import ScanGroup
 from tavi.instrument.tas import TAS

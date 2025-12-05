@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from lmfit.models import ConstantModel, GaussianModel
-
 from tavi.data.fit import Fit1D
 from tavi.data.scan import Scan
 from tavi.plotter import Plot1D

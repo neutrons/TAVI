@@ -2,7 +2,6 @@
 from typing import Optional, Union
 
 import numpy as np
-
 from tavi.utilities import cm2angstrom
 
 

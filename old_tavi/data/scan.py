@@ -5,7 +5,6 @@ from typing import Literal, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 from tavi.data.nexus_entry import NexusEntry
 from tavi.data.scan_data import ScanData1D, ScanData2D
 

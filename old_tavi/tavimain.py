@@ -5,10 +5,10 @@ import logging
 import sys
 
 from qtpy.QtWidgets import QApplication, QMainWindow
+from tavi.mainwindow import MainWindow
 
 from old_tavi import __version__
 from tavi.configuration import Configuration
-from tavi.mainwindow import MainWindow
 
 logger = logging.getLogger("TAVI")
 

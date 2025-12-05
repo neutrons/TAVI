@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from mpl_toolkits.axisartist import Axes
-
 from tavi.instrument.resolution.ellipse import ResoEllipse
 from tavi.plotter import Plot2D
 from tavi.utilities import get_angle_vec, labels_from_projection, sig2fwhm

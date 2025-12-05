@@ -6,7 +6,6 @@ import numpy as np
 from lmfit.model import ModelResult
 from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
-
 from tavi.data.convfit import ConvFit1D
 from tavi.data.fit import Fit1D
 from tavi.data.scan_data import ScanData1D, ScanData2D

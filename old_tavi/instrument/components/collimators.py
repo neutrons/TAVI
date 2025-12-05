@@ -2,7 +2,6 @@
 from typing import Optional
 
 import numpy as np
-
 from tavi.instrument.components.component_base import TASComponent
 
 

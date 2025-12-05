@@ -3,7 +3,6 @@ import os
 from dataclasses import fields
 
 import numpy as np
-
 from tavi.tavi_library.tavi_project import TaviProject
 
 
