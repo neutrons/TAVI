@@ -1,3 +1,5 @@
+"""prototype."""
+
 import datetime
 import os
 
