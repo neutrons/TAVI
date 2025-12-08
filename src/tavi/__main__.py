@@ -1,3 +1,5 @@
+"""Entry point."""
+
 import sys
 
 from qtpy.QtWidgets import QApplication
@@ -7,7 +9,8 @@ from tavi.configuration import Configuration
 from tavi.frontend.presenters.main_presenter import MainPresenter
 
 
-def execute():
+def execute() -> None:
+    """Entry point."""
     app = QApplication(sys.argv)
     config = Configuration()
 

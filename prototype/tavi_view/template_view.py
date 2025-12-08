@@ -35,6 +35,7 @@ class TemplateView(QWidget):
         The inner display widget showing the template value.
     _bridge : _UiBridge
         Thread-safe event bridge used to route updates to the GUI.
+
     """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -68,6 +69,7 @@ class TemplateView(QWidget):
         ----------
         event : str
             The new template text to display.
+
         """
         self._bridge.set_template_signal.emit(event)
 
@@ -82,7 +84,8 @@ class TemplateWidget(QWidget):
     """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the template widget
+        """
+        Constructor for the template widget
 
         Args:
             parent (QObject): Optional parent
@@ -109,5 +112,6 @@ class TemplateWidget(QWidget):
         ----------
         values : str
             The template text to display (typically a filename or prefix).
+
         """
         self.filename_edit.setText(values)

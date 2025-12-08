@@ -28,6 +28,7 @@ class MonoAna(TASComponent):
 
     Note:
         protected attributes are reserved for resolution calculation
+
     """
 
     def __init__(
@@ -83,17 +84,17 @@ class MonoAna(TASComponent):
 
     @property
     def _width(self):
-        """width in angstrom, with correction based on shape, for resolution calculation"""
+        """Width in angstrom, with correction based on shape, for resolution calculation"""
         return TASComponent._cm2angstrom_given_shape(self.width, self.shape, f"{self.component_name} width")
 
     @property
     def _height(self):
-        """height in angstrom, with correction based on shape, for resolution calculation"""
+        """Height in angstrom, with correction based on shape, for resolution calculation"""
         return TASComponent._cm2angstrom_given_shape(self.height, self.shape, f"{self.component_name} height")
 
     @property
     def _depth(self):
-        """depth in angstrom, with correction based on shape, for resolution calculation"""
+        """Depth in angstrom, with correction based on shape, for resolution calculation"""
         return TASComponent._cm2angstrom_given_shape(self.depth, self.shape, f"{self.component_name} depth")
 
     def get_bragg_angle_from_energy(self, energy: float) -> float:
@@ -105,6 +106,7 @@ class MonoAna(TASComponent):
 
         Returns:
             float: Bragg angle in degrees.
+
         """
         return np.degrees(np.arcsin(9.045 / 2 / self.d_spacing / np.sqrt(energy))) * self._sense
 
@@ -117,5 +119,6 @@ class MonoAna(TASComponent):
 
         Returns:
             float: Energy in meV.
+
         """
         return 81.81 / 4 / self.d_spacing**2 / np.sin(np.radians((bragg_angle))) ** 2

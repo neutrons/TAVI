@@ -29,17 +29,19 @@ def _find_val_path(val, grp, prefix=""):
 
 
 class NexusEntry(dict):
-    """Read and write NeXus data files.
+    """
+    Read and write NeXus data files.
 
     Methods:
         from_nexus
         to_nexus
         get
+
     """
 
     @staticmethod
     def _getitem_recursively(obj: dict, key: str, ATTRS: bool):
-        "find key in obj recursively, return None if nonexsiting"
+        """Find key in obj recursively, return None if nonexsiting"""
         value = None
         if key.split("/")[0] in obj:
             for key_item in key.split("/"):
@@ -74,13 +76,14 @@ class NexusEntry(dict):
 
     @staticmethod
     def _write_recursively(items, nexus_entry):
-        """write items to nexus entry recursively
+        """
+        Write items to nexus entry recursively
         Note:
         string encoded with utf-8
         """
 
         def format_dataset(value):
-            """format if type is given in attributes"""
+            """Format if type is given in attributes"""
             dv = value["dataset"]
 
             if not (attr := value.get("attrs")):
@@ -129,7 +132,7 @@ class NexusEntry(dict):
 
     @staticmethod
     def _read_recursively(nexus_entry, items=None):
-        """read item from nexus_entry recursively"""
+        """Read item from nexus_entry recursively"""
         if items is None:
             items = {}
         for key, value in nexus_entry.items():
@@ -159,7 +162,7 @@ class NexusEntry(dict):
 
     @staticmethod
     def _dict_to_nexus_entry(nexus_dict):
-        """convert nested dict to instances of the NexusEntry class"""
+        """Convert nested dict to instances of the NexusEntry class"""
         nexus_entries = {}
         for scan_num, scan_content in nexus_dict.items():
             content_list = []
@@ -177,15 +180,16 @@ class NexusEntry(dict):
         path_to_instrument_json: Optional[str] = None,
         path_to_sample_json: Optional[str] = None,
     ):
-        """return a NexusEntry instance from loading a SPICE file
+        """
+        Return a NexusEntry instance from loading a SPICE file
 
         Args:
             path_to_spice_folder (str): path to a SPICE folder
             scan_num (int): read all scans in folder if not None
             path_to_instrument_json: Optional[str] = None,
             path_to_sample_json: Optional[str] = None,
-        """
 
+        """
         path_to_spice_folder = os.path.abspath(path_to_spice_folder)
 
         # Check that it exists
@@ -217,12 +221,14 @@ class NexusEntry(dict):
         scan_num: Optional[int] = None,
         prefix: Optional[str] = None,
     ):
-        """return a NexusEntry instance from loading a NeXus file
+        """
+        Return a NexusEntry instance from loading a NeXus file
 
         Args:
             path_to_nexus (str): path to a NeXus file with the extension .h5
             scan_num (int): read all scans in file if not None
             prefix (str)
+
         """
         with h5py.File(path_to_nexus, "r") as nexus_file:
             if prefix is not None:
@@ -236,10 +242,12 @@ class NexusEntry(dict):
         return cls._dict_to_nexus_entry(nexus_dict)
 
     def to_nexus(self, path_to_nexus: str, name="scan") -> None:
-        """write a NexueEntry instance to a NeXus file
+        """
+        Write a NexueEntry instance to a NeXus file
 
         Args:
             path_to_nexus (str): path to a NeXus file with the extension .h5
+
         """
         with h5py.File(path_to_nexus, "a") as nexus_file:
             h5py.get_config().track_order = True
@@ -286,6 +294,7 @@ class NexusEntry(dict):
         Note:
             Unique keys like 's1' or 'm2' can be found straight forwardly.
             To find monitor or detecor data use monitor/data or detector/data
+
         """
         # remove daslogs
         for log in ("SPICElogs", "DASlogs"):
@@ -323,7 +332,7 @@ class NexusEntry(dict):
         return value if value is not None else default
 
     def get_dataset_names(self) -> list:
-        """return the list of dataset names"""
+        """Return the list of dataset names"""
 
         def _get_name(val_dict):
             for key, val in val_dict.items():

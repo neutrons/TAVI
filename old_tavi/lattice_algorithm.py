@@ -6,9 +6,7 @@ import numpy as np
 
 
 def v_alpha_beta_gamma_calc(alpha: float, beta: float, gamma: float) -> float:
-    """
-    Calculate V_alpha_bet_gamma = Volume/(abc) where Volume = a * (b x c) is the volume of real space cell
-    """
+    """Calculate V_alpha_bet_gamma = Volume/(abc) where Volume = a * (b x c) is the volume of real space cell"""
     cos_alpha = np.cos(np.deg2rad(alpha))
     cos_beta = np.cos(np.deg2rad(beta))
     cos_gamma = np.cos(np.deg2rad(gamma))
@@ -30,6 +28,7 @@ def real_space_vectors(
 
     Note:
         a-vec is always along x-axis
+
     """
     a, b, c, alpha, beta, gamma = lattice_params
     cos_alpha = np.cos(np.deg2rad(alpha))
@@ -54,7 +53,6 @@ def reciprocal_latt_params(
     lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[float, float, float, float, float, float]:
     """Calculate the reciprocal lattice parameter lengths and angles in inverse Angstrom and degrees"""
-
     a, b, c, alpha, beta, gamma = lattice_params
     alpha_rad = np.deg2rad(alpha)
     beta_rad = np.deg2rad(beta)
@@ -85,9 +83,7 @@ def reciprocal_latt_params(
 def reciprocal_space_vectors(
     lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Calculate the reciprocal space lattice vectors in the Cartesian coordinates
-    """
+    """Calculate the reciprocal space lattice vectors in the Cartesian coordinates"""
     a, b, c, alpha, beta, gamma = lattice_params
     v_abg = v_alpha_beta_gamma_calc(alpha, beta, gamma)
     v = v_abg * a * b * c
@@ -104,7 +100,6 @@ def reciprocal_basis(
     lattice_params: tuple[float, float, float, float, float, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Calculate the reciprocal basis vectors i_star, j_star, k_star"""
-
     (a_star_vec, b_star_vec, c_star_vec) = reciprocal_space_vectors(lattice_params)
     i_star = a_star_vec / np.linalg.norm(a_star_vec)
     a_star_perp = np.cross(
@@ -121,7 +116,6 @@ def reciprocal_basis(
 # -----------------------------------------------------
 def b_mat_from_lattice(lattice_params) -> np.ndarray:
     """Calculate the B matrix from lattice parameters"""
-
     _, _, c, alpha, _, _ = lattice_params
     (a_star, b_star, c_star, _, beta_star, gamma_star) = reciprocal_latt_params(lattice_params)
 
@@ -144,13 +138,15 @@ def b_mat_from_lattice(lattice_params) -> np.ndarray:
 def lattice_params_from_g_star_mat(
     g_star_mat: np.ndarray,
 ) -> tuple[float, float, float, float, float, float]:
-    """Return lattice parameters from G* matrix
+    """
+    Return lattice parameters from G* matrix
 
     Args:
         g_star_mat: G* = B^T * B, 3 by 3
 
     Return:
        lattice_params = (a, b, c, alpha, beta, gamma) in Angstrom and degrees
+
     """
     try:
         g_mat = np.linalg.inv(g_star_mat)
@@ -172,12 +168,14 @@ def lattice_params_from_g_star_mat(
 
 
 def lattice_params_from_b_mat(b_mat: np.ndarray) -> tuple[float, float, float, float, float, float]:
-    """Calculate lattice parameters from B matrix
+    """
+    Calculate lattice parameters from B matrix
     Args:
         b_mat: B matrix, 3 by 3
 
     Return:
        lattice_params = (a, b, c, alpha, beta, gamma) in Angstrom and degrees
+
     """
     g_star_mat = np.matmul(np.transpose(b_mat), b_mat)
     return lattice_params_from_g_star_mat(g_star_mat)

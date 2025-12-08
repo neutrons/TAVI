@@ -8,14 +8,15 @@ from numba import njit, prange
 
 
 def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
-    """projects along one axis of the quadric
+    """
+    Projects along one axis of the quadric
 
     # comparing with simple projection
     # rank = len(quadric)
     # vec /= np.sqrt(np.dot(vec, vec))
     # proj_op = np.outer(vec, vec)
-    # ortho_proj = np.dot((np.identity(rank) - proj_op), quadric)"""
-
+    # ortho_proj = np.dot((np.identity(rank) - proj_op), quadric)
+    """
     # delete if orthogonal
     if np.abs(qii := quadric[idx, idx]) < 1e-8:
         mask = np.arange(quadric.shape[0]) != idx
@@ -33,7 +34,6 @@ def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
 
 def incoh_sigma_en(mat: np.ndarray) -> float:
     """Incoherent sigma for energy"""
-
     elem = quadric_proj(quadric_proj(quadric_proj(mat, 2), 1), 0)[0, 0]
 
     return 1 / np.sqrt(np.abs(elem))
@@ -41,7 +41,6 @@ def incoh_sigma_en(mat: np.ndarray) -> float:
 
 def incoh_sigma_qs(mat: np.ndarray) -> tuple[float, float, float]:
     """Incoherent sigmas for q1, q2 and q3"""
-
     mat_2 = quadric_proj(mat, 2)
     elem1 = abs(quadric_proj(mat_2, 1)[0, 0])
     elem2 = abs(quadric_proj(mat_2, 0)[0, 0])

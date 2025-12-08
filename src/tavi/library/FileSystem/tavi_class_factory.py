@@ -1,3 +1,5 @@
+"""Tavi data scan class."""
+
 from dataclasses import dataclass
 from typing import Optional
 
@@ -5,6 +7,8 @@ from typing import Optional
 @dataclass
 class Scan:
     """
+    Tavi scan data class.
+
     Represents a single scan within a Tavi project, containing both raw measurement
     data and associated metadata.
 
@@ -19,6 +23,7 @@ class Scan:
             such as instrument errors or data quality issues.
         others (tuple): Miscellaneous or auxiliary information related to the scan
             that does not fit into `data` or `metadata`.
+
     """
 
     data: dataclass

@@ -20,12 +20,11 @@ class MenuPresenter:
     model : TaviProjectInterface
         The underlying project model that handles loading, saving, and maintaining
         TAVI project state.
+
     """
 
     def __init__(self, view: MainMenuBar, model: TaviProjectInterface):
-        """
-        Initialize the menu presenter and register view-to-presenter callbacks.
-        """
+        """Initialize the menu presenter and register view-to-presenter callbacks."""
         super().__init__()
         self._view = view
         self._model = model
@@ -46,5 +45,6 @@ class MenuPresenter:
             A list containing one or more filesystem paths. Only the first entry
             is used, as Qt's `QFileDialog` returns a list even when selecting a
             single folder.
+
         """
         self._model.load(folder=data_dir_or_files[0])

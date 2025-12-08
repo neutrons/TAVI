@@ -1,26 +1,32 @@
-from qtpy.QtWidgets import QMenuBar
+"""Main menu bar."""
+
+from qtpy.QtWidgets import QMenu, QMenuBar, QWidget
 
 
 class MainMenuBar(QMenuBar):
     """
-    Main application menu bar for TAVI, providing project and file-loading actions.
+    Main application menu bar for TAVI.
+
+    It provides project and file-loading actions.
 
     This menu bar defines the standard "File" menu for the TAVI GUI. Additional tab
     can be added similar to the "File" menu.
     """
 
-    def __init__(self, parent=None, file_menu_view=None):
+    def __init__(self, parent: QWidget = None, file_menu_view: QMenu = None) -> None:  # noqa: D417
         """
-        Initialize the main menu bar, create all file-related actions, and connect
-        them to internal handlers.
+        Initialize the main menu bar.
+
+        Create all file-related actions and attach the provided File menu view
+        to the menu bar if supplied.
 
         Parameters
         ----------
-        parent : QWidget, optional
-            Parent widget, typically the main window.
-        file_menu_presenter : QWidget
-            FileMenuPresenter, it also initialize the FileMenu view which is created
-            as an instance here.
+        file_menu_view : QMenu
+        The File menu instance to be added to the menu bar.
+        parent : QWidget
+        Parent widget, typically the main application window.
+
         """
         super().__init__(parent)
 

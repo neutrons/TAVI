@@ -1,9 +1,11 @@
+"""Tavi Project."""
+
 import os
 from typing import Iterable, Optional
 
-from tavi.tavi_library.FileSystem.load_manager import LoadManager
-from tavi.tavi_library.filter import Filter, Logic, Operations
-from tavi.tavi_library.tavi_data import TaviData
+from tavi.library.FileSystem.load_manager import LoadManager
+from tavi.library.filter import Filter, Logic, Operations
+from tavi.library.tavi_data import TaviData
 
 
 class TaviProject:
@@ -37,9 +39,11 @@ class TaviProject:
         - Future methods (`load_tavi`, `save_tavi`, `combine_data`,
           `fit_data`, `plot_data`) will extend project persistence,
           advanced analysis, and visualization.
+
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Init tavi data."""
         self.tavi_data = TaviData()
 
     # --------------------Load Manager-------------------------------------
@@ -77,17 +81,20 @@ class TaviProject:
         Returns:
             None
                 The method updates the `scans` attribute in place.
+
         """
         self.tavi_data.rawdataptr = LoadManager(
             data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
         ).load()
 
     # TO DO
-    def load_tavi():
+    def load_tavi() -> None:
+        """Load tavi project."""
         pass
 
     # TO DO
-    def save_tavi():
+    def save_tavi() -> None:
+        """Save tavi project."""
         pass
 
     # TO DO
@@ -97,8 +104,9 @@ class TaviProject:
         conditions: Optional[list[tuple[str, Operations, str | float]]] = None,
         and_or: Optional[Logic] = None,
         category: Optional[str] = None,
-        tol=0.01,
+        tol: float = 0.01,
     ) -> None:
+        """Select scans."""
         filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or, tol=tol).filter_data()
         match category:
             case "view":
@@ -109,15 +117,18 @@ class TaviProject:
                 self.tavi_data.show_selected_data[filter_name] = filtered_data
 
     # TO DO
-    def combine_data():
+    def combine_data() -> None:
+        """Combine data."""
         pass
 
     # TO DO
-    def fit_data():
+    def fit_data() -> None:
+        """Fit data."""
         pass
 
     # TO DO
-    def plot_data():
+    def plot_data() -> None:
+        """Plot data."""
         pass
 
 

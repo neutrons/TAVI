@@ -1,3 +1,7 @@
+"""File menu view."""
+
+from typing import Any
+
 from qtpy.QtWidgets import QAction, QFileDialog, QMenu
 
 
@@ -17,15 +21,17 @@ class FileMenu(QMenu):
     (registered via `setup_callback_*` methods) which are called in presenters.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None) -> None:
         """
-        Initialize the main menu bar, create all file-related actions, and connect
-        them to internal handlers.
+        Initialize the main menu bar.
+
+        Create all file-related actions, and connect them to internal handlers.
 
         Parameters
         ----------
         parent : QWidget, optional
             Parent widget, typically the main window.
+
         """
         super().__init__(parent)
         self.load_folder_callback = None
@@ -63,19 +69,22 @@ class FileMenu(QMenu):
         ----------
         callback : Callable
             Function to be called to initialize a new TAVI project.
+
         """
         self.new_project_callback = callback
 
     def new_project(self) -> None:
         """
         Create a new TAVI project.
+
         Placeholder logic.
         """
         print("TODO: creates a new taviproject")
 
     def handle_new_project(self) -> None:
         """
-        Handler for the 'New Project' menu action.
+        Handle the 'New Project' menu action.
+
         Placeholder logic
         """
         print("TODO: delete everything in taviproject")
@@ -89,39 +98,39 @@ class FileMenu(QMenu):
         ----------
         callback : Callable
             Function called when the 'Load Project' action is triggered.
+
         """
         self.load_project_callback = callback
 
     def load_project(self) -> None:
         """
         Load a TAVI project.
+
         Placeholder logic.
         """
         print("TODO: creates a new taviproject")
 
     def handle_load_project(self) -> None:
         """
-        Handler for the 'Load Project' action.
+        Handle the 'Load Project' action.
+
         Placeholder logic.
         """
         print("TODO: delete everything in taviproject")
 
     # Loading a folder of data
-    def setup_callback_load_folder(self, callback) -> None:
-        """
-        Building callback connections for the load data - set by the presenter
-        """
+    def setup_callback_load_folder(self, callback: Any) -> None:
+        """Build callback connections for the load data - set by the presenter."""
         self.load_folder_callback = callback
 
-    def load_folder(self, folder) -> None:
-        """
-        Pass loaded file through callback connections
-        """
+    def load_folder(self, folder: str) -> None:
+        """Pass loaded file through callback connections."""
         self.load_folder_callback(folder)
 
     def handle_load_folder(self) -> None:
         """
-        Opens a system window and allow users to select a folder directory.
+        Open a system window and allow users to select a folder directory.
+
         It executes the "load_folder" function.
         """
         dlg = QFileDialog(self, "Select a folder")
@@ -141,19 +150,22 @@ class FileMenu(QMenu):
         ----------
         callback : Callable
             Function that will receive a list of file paths selected by the user.
+
         """
         self.load_file_callback = callback
 
-    def load_file(self, list_of_file) -> None:
+    def load_file(self, list_of_file: list[str]) -> None:
         """
         Load a list of files into the current TAVI project.
+
         Placeholder logic.
         """
         print("TODO: Loading a list of files")
 
     def handle_load_files(self) -> None:
         """
-        Handler for the 'Load File(s)' action.
+        Handle the 'Load File(s)' action.
+
         Placeholder logic.
         """
         print("TODO: get list of files and call self.load_file to load")
@@ -167,29 +179,31 @@ class FileMenu(QMenu):
         ----------
         callback : Callable
             Function invoked to serialize and store the project.
+
         """
         self.save_callback = callback
 
     def save(self) -> None:
         """
         Save the current TAVI project.
+
         Placeholder logic.
         """
         print("TODO: save current taviproject")
 
     def handle_save(self) -> None:
         """
-        Handler for the 'Save Project' action.
+        Handle the 'Save Project' action.
+
         Placeholder logic.
         """
         print("TODO: get taviproject and write to local disk")
 
     # Exit
     def setup_callback_exit(self, callback: None) -> None:
+        """Set up callback connections."""
         self.exit_callback = callback
 
     def handle_exit(self) -> None:
-        """
-        Exit Tavi
-        """
+        """Exit Tavi."""
         self.exit_callback()

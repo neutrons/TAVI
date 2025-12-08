@@ -1,10 +1,15 @@
+"""Main presenter for tavi."""
+
 from tavi.frontend.presenters.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.views.main_view import TaviView
 from tavi.frontend.views.menubar_view import MainMenuBar
 
 
 class MainPresenter:
-    def __init__(self, model_dict):
+    """Main presenter to construct views."""
+
+    def __init__(self, model_dict: dict) -> None:
+        """Init main views."""
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
         self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectInterface"])
@@ -14,6 +19,7 @@ class MainPresenter:
     def exit(self) -> bool:
         """
         Presenter handles dirty-save confirmation.
+
         Return True to allow exit.
         """
         if True:  # replace with model dirty flag later

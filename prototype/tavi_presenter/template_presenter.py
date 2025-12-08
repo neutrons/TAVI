@@ -35,6 +35,7 @@ class TemplatePresenter:
         The model providing template data and processing user selections.
     event_broker : EventBroker
         Event system used to subscribe to application-level updates.
+
     """
 
     def __init__(self, view: TemplateView, model: TemplateModelInterface) -> None:
@@ -66,5 +67,6 @@ class TemplatePresenter:
             Event object containing template information. Expected to provide
             the attribute `event.template_data : str`, representing the
             next expected filename or template string.
+
         """
         self._view.update_template(event.template_data)

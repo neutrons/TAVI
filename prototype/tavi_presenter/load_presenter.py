@@ -36,6 +36,7 @@ class LoadPresenter:
     event_broker : EventBroker
         Event broker used for subscribing to application-wide events.
         "scan_uuid" event type is pre-registered.
+
     """
 
     def __init__(self, view: LoadView, model: TaviProjectInterface):

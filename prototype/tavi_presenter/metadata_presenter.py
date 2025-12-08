@@ -28,12 +28,11 @@ class MetaDataPresenter:
         The event system used to subscribe to metadata update events.
     selected_meta_data : dict
         The last metadata dictionary received from the model.
+
     """
 
     def __init__(self, view: MetaDataView, model: TaviProjectInterface):
-        """
-        Initialize the metadata presenter and register for `meta_data` events.
-        """
+        """Initialize the metadata presenter and register for `meta_data` events."""
         super().__init__()
         self._view = view
         self._model = model

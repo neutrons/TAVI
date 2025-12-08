@@ -1,11 +1,14 @@
+"""Load ORNL data."""
+
 import logging
 import os
 from dataclasses import field, make_dataclass
 from typing import Any, Iterable, Optional
 
 import numpy as np
-import tavi.tavi_library.FileSystem.spice_reader as spice_reader
-from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
+
+import tavi.library.FileSystem.spice_reader as spice_reader
+from tavi.library.FileSystem.tavi_class_factory import Scan
 
 logger = logging.getLogger("TAVI")
 
@@ -21,7 +24,7 @@ class LoadORNL:
     parsed into structured dataclasses (`RawData`, `RawMetaData`, `UbConf`)
     and organized into a `TaviProject`.
 
-    args:
+    Args:
         data_folder (str | PathLike):
             Directory containing SPICE data files. Used if `data_files` is not provided.
         data_files (Iterable[str] | None):
@@ -40,6 +43,7 @@ class LoadORNL:
         _load_files() -> TaviProject:
             Internal method implementing the actual parsing and data
             organization logic.
+
     """
 
     def __init__(
@@ -48,14 +52,16 @@ class LoadORNL:
         data_files: Optional[Iterable[str]] = None,
         ub_dir: Optional[os.PathLike | str] = None,
     ) -> None:
+        """Init."""
         self.data_folder = data_folder
         self.data_files = data_files
         self.ub_dir = ub_dir
 
     def score(self) -> float:
+        """Score."""
         return 100
 
-    def load(self):
+    def load(self) -> dict:
         """
         Load SPICE data files into a TaviProject.
 
@@ -72,12 +78,13 @@ class LoadORNL:
 
         Returns:
             TaviProject: A project object containing all loaded scans, indexed by filename.
+
         """
         return self._load_files()
 
-    def _load_files(self):
+    def _load_files(self) -> dict:
         """
-        Internal method to load SPICE data files into a TaviProject.
+        Load SPICE data files into a TaviProject.
 
         This function reads each SPICE data file from either the provided list
         of `data_files` or from the `data_folder` directory. For each file, it:
@@ -116,6 +123,7 @@ class LoadORNL:
 
         Returns:
             TaviProject: A project object containing all scans indexed by filename.
+
         """
         scan_list = {}
         list_of_files = self.data_files if self.data_files else os.listdir(self.data_folder)

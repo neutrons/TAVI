@@ -134,7 +134,6 @@ class NXentry(dict):
 
 def _formatted_spicelogs(spicelogs: dict) -> NXentry:
     """Format SPICE logs into NeXus dict"""
-
     formatted_spicelogs = NXentry(NX_class="NXcollection", EX_required="false")
     if spicelogs.get("ub_conf") is not None:
         ub_conf = spicelogs.pop("ub_conf")
@@ -158,12 +157,13 @@ def spice_scan_to_nxdict(
     path_to_instrument_json: Optional[str] = None,
     path_to_sample_json: Optional[str] = None,
 ) -> NXentry:
-    """Format SPICE data in a nested dictionary format
+    """
+    Format SPICE data in a nested dictionary format
 
     Note:
         json files can overwrite the parameters in SPICE
-    """
 
+    """
     # parse instruemnt and sample json files
     instrument_config_params = None
     if path_to_instrument_json is not None:
@@ -554,15 +554,16 @@ def spice_data_to_nxdict(
     path_to_instrument_json: Optional[str] = None,
     path_to_sample_json: Optional[str] = None,
 ) -> dict:
-    """Read SPICE data files into nested dictionary, ready to be converted to NeXus format
+    """
+    Read SPICE data files into nested dictionary, ready to be converted to NeXus format
 
     Args:
            path_to_spice_folder (str): path to a SPICE folder
            scan_num (int): read all scans in folder if not None, otherwise read one scan only
            path_to_instrument_json: Optional[str] = None,
            path_to_sample_json: Optional[str] = None,
-    """
 
+    """
     # Ensure trailing separator is not required
     datafiles_dir = os.path.join(path_to_spice_folder, "Datafiles")
 

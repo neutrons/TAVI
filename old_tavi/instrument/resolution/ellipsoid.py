@@ -11,7 +11,8 @@ from tavi.utilities import get_angle_vec, labels_from_projection, sig2fwhm
 
 
 class ResoEllipsoid(object):
-    """Manage the 4D resolution ellipoid
+    """
+    Manage the 4D resolution ellipoid
 
     Attributes:
         frame (str): "q", "hkl", or "proj"
@@ -89,8 +90,7 @@ class ResoEllipsoid(object):
         return "\n".join(summary_str) + self.instrument_params
 
     def _project_to_frame(self, instrument):
-        """determinate the frame from the projection vectors"""
-
+        """Determinate the frame from the projection vectors"""
         ZERO = 1e-8
 
         motor_angles = instrument.calculate_motor_angles(hkl=self.hkl, en=self.en)
@@ -152,7 +152,7 @@ class ResoEllipsoid(object):
 
     # TODO
     def volume(self):
-        """volume of the ellipsoid"""
+        """Volume of the ellipsoid"""
         pass
 
     def coh_fwhms(self, axis=None):
@@ -180,7 +180,7 @@ class ResoEllipsoid(object):
 
     @staticmethod
     def quadric_proj(quadric, idx):
-        """projects along one axis of the quadric"""
+        """Projects along one axis of the quadric"""
         ZERO = 1e-8
 
         if np.abs(quadric[idx, idx]) < ZERO:
@@ -208,7 +208,8 @@ class ResoEllipsoid(object):
         PROJECTION: bool = False,
         ORIGIN: bool = True,
     ) -> ResoEllipse:
-        """Generate a 2D ellipse by either making a cut or projection
+        """
+        Generate a 2D ellipse by either making a cut or projection
 
         Arguments:
             axes(tuple)
@@ -216,7 +217,6 @@ class ResoEllipsoid(object):
             ORIGIN: shift the center if True
 
         """
-
         x_axis, y_axis = axes
         try:
             en_idx = self.axes.index("en")
@@ -292,6 +292,5 @@ class ResoEllipsoid(object):
 
     def plot(self):
         """Plot all 2D ellipses"""
-
         fig = plt.figure(figsize=(12, 8), constrained_layout=True)
         self.plot_ellipses(fig)

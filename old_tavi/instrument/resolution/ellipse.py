@@ -4,7 +4,8 @@ from tavi.utilities import sig2fwhm
 
 
 class ResoEllipse(object):
-    """2D ellipses
+    """
+    2D ellipses
 
     Attributes:
         mat(2 by 2 matrix)
@@ -36,7 +37,6 @@ class ResoEllipse(object):
 
     def get_points(self, num_points=128):
         """Generate points on a ellipse"""
-
         phi = np.linspace(0, 2.0 * np.pi, num_points)
         length = np.array([self.fwhms[0] / 2 * np.cos(phi), self.fwhms[1] / 2 * np.sin(phi)])
         pts = np.dot(self.evecs, length)

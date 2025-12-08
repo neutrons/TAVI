@@ -98,7 +98,6 @@ class Sample(object):
     @classmethod
     def from_json(cls, path_to_json):
         """Alternate constructor from json"""
-
         with open(path_to_json, "r", encoding="utf-8") as file:
             sample_params_dict = json.load(file)
 
@@ -175,7 +174,7 @@ class Sample(object):
         height: float = 1.0,  # in cm
         depth: float = 1.0,  # in cm
     ) -> None:
-        """set sample shape"""
+        """Set sample shape"""
         self.shape = shape
         self.width = width
         self.height = height
@@ -192,20 +191,19 @@ class Sample(object):
 
     @property
     def _mosaic_h(self) -> float:
-        """horizontal mosaic in radian, reserved for resolution calculation"""
+        """Horizontal mosaic in radian, reserved for resolution calculation"""
         return np.deg2rad(self.mosaic_h / 60)
 
     @property
     def _mosaic_v(self) -> float:
-        """vertical mosaic in radian, reserved for resolution calculation"""
+        """Vertical mosaic in radian, reserved for resolution calculation"""
         return np.deg2rad(self.mosaic_v / 60)
 
     def update_lattice_parameters(
         self,
         lattice_params: tuple[float, float, float, float, float, float] = (1, 1, 1, 90, 90, 90),
     ):
-        """update real and reciprocal space lattice parameters and vectors"""
-
+        """Update real and reciprocal space lattice parameters and vectors"""
         try:
             a, b, c, alpha, beta, gamma = lattice_params
         except ValueError:

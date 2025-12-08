@@ -5,7 +5,8 @@ np.set_printoptions(floatmode="fixed", precision=4)
 
 
 class ResoCurve(object):
-    """1D Gaussian curve
+    """
+    1D Gaussian curve
 
     Attributes:
         cen (float)
@@ -18,6 +19,7 @@ class ResoCurve(object):
     Methods:
         generate_curve
         generate_plot
+
     """
 
     def __init__(self) -> None:
@@ -33,7 +35,6 @@ class ResoCurve(object):
 
     def generate_curve(self, num_of_sigmas=3, points=100):
         """Generate points on the Gaussian curve"""
-
         sigma = self.fwhm / sig2fwhm
         cen = self.cen
         self.x = np.linspace(

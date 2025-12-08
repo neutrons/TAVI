@@ -101,7 +101,6 @@ class ScanData1D(object):
 
     def renorm(self, norm_col: Optional[np.ndarray] = None, norm_val: float = 1.0):
         """Renormalized to norm_val"""
-
         if norm_col is not None:
             norm_col = norm_col
         elif self.norm is not None:
@@ -114,7 +113,6 @@ class ScanData1D(object):
 
     def rebin_tol(self, rebin_params: tuple, weight_col: Optional[np.ndarray] = None):
         """Rebin with tolerance"""
-
         if weight_col is not None:
             norm_col = weight_col
         elif self.norm is not None:
@@ -150,7 +148,6 @@ class ScanData1D(object):
 
     def rebin_tol_renorm(self, rebin_params: tuple, norm_col: Optional[np.ndarray] = None, norm_val: float = 1.0):
         """Rebin with tolerance and renormalize"""
-
         if norm_col is not None:
             norm_col = norm_col
         elif self.norm is not None:
@@ -209,7 +206,6 @@ class ScanData1D(object):
 
     def rebin_grid_renorm(self, rebin_params: tuple, norm_col: Optional[np.ndarray] = None, norm_val: float = 1.0):
         """Rebin with a regular grid and renormalize"""
-
         if norm_col is not None:
             norm_col = norm_col
         elif self.norm is not None:
@@ -304,7 +300,6 @@ class ScanData2D(object):
 
     def rebin_grid(self, rebin_params: tuple):
         """Rebin with a regular grid"""
-
         rebin_x, rebin_y = rebin_params
         x_min, x_max, x_step = rebin_x
         x_min = np.min(self.x) if x_min is None else x_min

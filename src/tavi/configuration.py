@@ -1,12 +1,15 @@
-"""Module to load the the settings from SHOME/.packagename/configuration.ini file
+"""
+Module to load the the settings from SHOME/.packagename/configuration.ini file.
 
-Will fall back to a default"""
+Will fall back to a default.
+"""
 
 import logging
 import os
 import shutil
 from configparser import ConfigParser
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger("TAVI")
 
@@ -15,10 +18,10 @@ CONFIG_PATH_FILE = os.path.join(Path.home(), ".TAVI", "configuration.ini")
 
 
 class Configuration:
-    """Load and validate Configuration Data"""
+    """Load and validate Configuration Data."""
 
-    def __init__(self):
-        """initialization of configuration mechanism"""
+    def __init__(self) -> None:
+        """Initialize configuration mechanism."""
         # capture the current state
         self.valid = False
 
@@ -51,9 +54,12 @@ class Configuration:
         else:
             logger.error(f"Template configuration file: {self.template_file_path} is missing!")
 
-    def validate(self):
-        """validates that the fields exist at the config_file_path and writes any missing fields/data
-        using the template configuration file: configuration_template.ini as a guide"""
+    def validate(self) -> None:
+        """
+        Validate that the fields exist at the config_file_path and writes any missing fields/data.
+
+        Use the template configuration file: configuration_template.ini as a guide.
+        """
         template_config = ConfigParser(allow_no_value=True, comment_prefixes="/")
         template_config.read(self.template_file_path)
         for section in template_config.sections():
@@ -71,13 +77,13 @@ class Configuration:
             self.config.write(config_file)
         self.valid = True
 
-    def is_valid(self):
-        """returns the configuration state"""
+    def is_valid(self) -> None:
+        """Return the configuration state."""
         return self.valid
 
 
-def get_data(section, name=None):
-    """retrieves the configuration data for a variable with name"""
+def get_data(section: Any, name: str = None) -> None:
+    """Retrieve the configuration data for a variable with name."""
     # default file path location
     config_file_path = CONFIG_PATH_FILE
     if os.path.exists(config_file_path):

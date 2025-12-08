@@ -17,6 +17,7 @@ class ScanGroup(object):
     Methods:
         add_scan
         remove_scan
+
     """
 
     scan_group_number: int = 1
@@ -129,11 +130,10 @@ class ScanGroup(object):
     ) -> ScanData2D:
         """
         Note:
-            rebin_params_dict should be grid=(float |tuple[float,float,float],
-                                                float|tuple[float,float,float]) only
+        rebin_params_dict should be grid=(float |tuple[float,float,float],
+                                            float|tuple[float,float,float]) only
 
         """
-
         x_axis, y_axis, z_axis = axes
         title = "Combined scans: "
 
@@ -226,6 +226,7 @@ class ScanGroup(object):
 
         Raises:
             ValueError: If axes length is invalid or default axes are inconsistent.
+
         """
         if axes is not None:
             if len(axes) == 2:

@@ -71,10 +71,12 @@ class TAS(TASBase):
         ef: Optional[float] = None,
         en: float = 0.0,
     ) -> tuple[float, float]:
-        """Determine Ei and Ef for a given energy transfer en, based on whether Ei or Ef is fixed
+        """
+        Determine Ei and Ef for a given energy transfer en, based on whether Ei or Ef is fixed
 
         Note:
             Use self.fixed_ei and self.fixed_ef only if ei and ef are not given
+
         """
         if (ef is None) and (self.fixed_ef is not None):
             ef = self.fixed_ef
@@ -93,7 +95,8 @@ class TAS(TASBase):
         return (ei, ef)
 
     def get_two_theta(self, hkl: tuple[float, float, float], en: float = 0.0) -> float:
-        """find two theta angle for a given peak.
+        """
+        Find two theta angle for a given peak.
 
         Note:
             two theta is the angle between ki and kf
@@ -105,8 +108,8 @@ class TAS(TASBase):
 
         Returns:
             two_theta (float): two theta angle, in degrees. Raise ValueError if can't reach.
-        """
 
+        """
         ei, ef = self._get_ei_ef(en=en)
         try:
             two_theta_radians = two_theta_from_hkle(hkl, ei, ef, self.sample.b_mat)
@@ -117,7 +120,8 @@ class TAS(TASBase):
         return np.degrees(two_theta_radians) * self.goniometer._sense
 
     def get_psi(self, hkl: tuple[float, float, float], en: float = 0.0) -> float:
-        """find psi angle for a given peak
+        """
+        Find psi angle for a given peak
 
         Note:
             psi is the angle between ki and Q = ki - kf
@@ -128,8 +132,8 @@ class TAS(TASBase):
             en (float): energy transfer en = ei -ef, in emV
         Returns:
             psi (float): psi angle, in degrees. Raise ValueError if can't reach.
-        """
 
+        """
         ei, ef = self._get_ei_ef(en=en)
         try:
             psi_radians = psi_from_hkle(hkl, ei, ef, self.sample.b_mat)
@@ -161,7 +165,6 @@ class TAS(TASBase):
 
     def calculate_ub_matrix(self, peaks: tuple[Peak, ...], scattering_plane=None) -> Optional[UBConf]:
         """Find UB matrix from a list of observed peaks"""
-
         ei, ef = self._get_ei_ef()
 
         if isinstance(peaks, Peak):
@@ -245,7 +248,7 @@ class TAS(TASBase):
 
     @property
     def uv(self) -> Optional[tuple]:
-        """return u and v vector if UB matrix is known"""
+        """Return u and v vector if UB matrix is known"""
         if (ub_conf := self.sample.ub_conf) is not None:
             u, v = ub_matrix_to_uv(ub_conf._ub_mat)
             return (u, v)
@@ -257,7 +260,8 @@ class TAS(TASBase):
         hkl: tuple[float, float, float],
         en: float = 0.0,
     ) -> Optional[MotorAngles]:
-        """calculate motor positions for a given peak if UB matrix has been determined
+        """
+        Calculate motor positions for a given peak if UB matrix has been determined
 
         Args:
             peak (tuple): Miller indice (h, k, l) of a peak
@@ -270,8 +274,8 @@ class TAS(TASBase):
         Note"
             Convert UB matrix, plane_normal, in_plane_ref to Mantind/International Table
             converntion before performing the calculation
-        """
 
+        """
         if len(hkl) != 3:
             hkl_str = "({:.4g}, {:.4g}, {:.4g})".format(*hkl)
             raise ValueError("hkl =" + hkl + str + " should have the format (h,k,l).")
@@ -323,13 +327,15 @@ class TAS(TASBase):
         hkle: Union[tuple[float, float, float, float], list[tuple[float, float, float, float]]],
         axes: tuple = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "en"),
     ) -> Union[Optional[ResoEllipsoid], tuple[Optional[ResoEllipsoid], ...]]:
-        """Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
+        """
+        Calculated resolution ellipsoid at given (h,k,l,e) position for given projection
 
         Args:
             hkle: hkl are momentum transfer miller indices in reciprocal lattice, e is energy transfer in meV
             projection (tuple): three non-coplaner vectors. If projection is None, the calculation is done in local Q frame
         Return
             A ResoEllipdois instance or a list of ResoEllipdois instances
+
         """
         cn = CooperNathans(instrument=self)
         cn.validate_instrument_parameters()
