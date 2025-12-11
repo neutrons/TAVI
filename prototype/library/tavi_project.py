@@ -88,12 +88,12 @@ class TaviProject:
         ).load()
 
     # TO DO
-    def load_tavi() -> None:
+    def load_tavi(self) -> None:
         """Load tavi project."""
         pass
 
     # TO DO
-    def save_tavi() -> None:
+    def save_tavi(self) -> None:
         """Save tavi project."""
         pass
 
@@ -101,52 +101,53 @@ class TaviProject:
     def select_scans(
         self,
         filter_name: Optional[str] = None,
-        conditions: Optional[list[tuple[str, Operations, str | float]]] = None,
+        conditions: Optional[list[Operations]] = None,
         and_or: Optional[Logic] = None,
         category: Optional[str] = None,
         tol: float = 0.01,
     ) -> None:
-        """Select scans."""
-        filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or, tol=tol).filter_data()
-        match category:
-            case "view":
-                self.tavi_data.show_selected_data[filter_name] = filtered_data
-            case "model":
-                self.tavi_data.process_selected_data = filtered_data
-            case _:
-                self.tavi_data.show_selected_data[filter_name] = filtered_data
+        pass
+        # """Select scans."""
+        # filtered_data = Filter(self.tavi_data.scan_list, conditions=conditions, and_or=and_or, tol=tol).filter_data()
+        # match category:
+        #     case "view":
+        #         self.tavi_data.show_selected_data[filter_name] = filtered_data
+        #     case "model":
+        #         self.tavi_data.process_selected_data = filtered_data
+        #     case _:
+        #         self.tavi_data.show_selected_data[filter_name] = filtered_data
 
     # TO DO
-    def combine_data() -> None:
+    def combine_data(self) -> None:
         """Combine data."""
         pass
 
     # TO DO
-    def fit_data() -> None:
+    def fit_data(self) -> None:
         """Fit data."""
         pass
 
     # TO DO
-    def plot_data() -> None:
+    def plot_data(self) -> None:
         """Plot data."""
         pass
 
 
-if __name__ == "__main__":
-    current_directory = os.getcwd()
-    filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
-    # files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
-    TaviProj = TaviProject()
+# if __name__ == "__main__":
+#     current_directory = os.getcwd()
+#     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
+#     # files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
+#     TaviProj = TaviProject()
 
-    TaviProj.load_scans(filepath)
+#     TaviProj.load_scans(filepath)
 
-    filename = "CG4C_exp0424_scan0042.dat"
-    TaviProj.select_scans(
-        filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
-    )
+#     filename = "CG4C_exp0424_scan0042.dat"
+#     TaviProj.select_scans(
+#         filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
+#     )
 
-    TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
-    print(TaviProj.tavi_data.show_selected_data)
+#     TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
+#     print(TaviProj.tavi_data.show_selected_data)
 #   print(type(TaviProj.scans[filename].metadata.scan))
 #   print(TaviProj.scans[filename].ubconf)
 #   print(TaviProj.scans[filename].data.Pt)

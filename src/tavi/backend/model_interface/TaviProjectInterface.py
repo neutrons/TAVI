@@ -1,7 +1,7 @@
 """Tavi project interface."""
 
 
-class TaviProjectInterFace:
+class TaviProjectInterface:
     """Tavi project interface."""
 
     def print(self) -> None:

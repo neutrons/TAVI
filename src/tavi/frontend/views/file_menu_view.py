@@ -1,6 +1,6 @@
 """File menu view."""
 
-from typing import Any
+from typing import Any, Callable, Optional
 
 from qtpy.QtWidgets import QAction, QFileDialog, QMenu
 
@@ -35,7 +35,7 @@ class FileMenu(QMenu):
         """
         super().__init__(parent)
         self.load_folder_callback = None
-        self.exit_callback = None
+        self.exit_callback: Optional[Callable[[], None]] = None
 
         # ---- File Menu ----
         self.setTitle("File")
@@ -125,7 +125,7 @@ class FileMenu(QMenu):
 
     def load_folder(self, folder: str) -> None:
         """Pass loaded file through callback connections."""
-        self.load_folder_callback(folder)
+        self.load_folder_callback(folder)  # type: ignore
 
     def handle_load_folder(self) -> None:
         """
@@ -200,10 +200,10 @@ class FileMenu(QMenu):
         print("TODO: get taviproject and write to local disk")
 
     # Exit
-    def setup_callback_exit(self, callback: None) -> None:
+    def setup_callback_exit(self, callback: Callable[[], None]) -> None:
         """Set up callback connections."""
         self.exit_callback = callback
 
     def handle_exit(self) -> None:
         """Exit Tavi."""
-        self.exit_callback()
+        self.exit_callback()  # type: ignore

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from tavi.frontend.views.file_menu_view import FileMenu
 
 if TYPE_CHECKING:
-    from tavi.backend.model_interface import TaviProjectInterface
+    from tavi.backend.model_interface.TaviProjectInterface import TaviProjectInterface
 
 
 class FileMenuPresenter:

@@ -94,7 +94,7 @@ class LoadManager:
                     ).score()
         self.facility = max(facility_score, key=facility_score.get)
 
-    def load(self) -> Scan:
+    def load(self) -> dict[str, Scan, None]:
         """Load the either a folder or a single file or a list of files and returns the TaviProject class."""
         # if self.facility is None, call the ranking system
         if not self.facility:
@@ -102,7 +102,7 @@ class LoadManager:
         match self.facility:
             case "ORNL":
                 return LoadORNL(data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir).load()
-
+        return None
             # TO DO: extend to other facilities
             # case "ILL":
             # return load_ill.load(self.data_folder, self.data_files)

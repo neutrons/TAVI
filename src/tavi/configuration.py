@@ -9,7 +9,7 @@ import os
 import shutil
 from configparser import ConfigParser
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 logger = logging.getLogger("TAVI")
 
@@ -77,12 +77,12 @@ class Configuration:
             self.config.write(config_file)
         self.valid = True
 
-    def is_valid(self) -> None:
+    def is_valid(self) -> bool:
         """Return the configuration state."""
         return self.valid
 
 
-def get_data(section: Any, name: str = None) -> None:
+def get_data(section: Any, name: str = None) -> Union[str, ConfigParser, None]:  # type: ignore
     """Retrieve the configuration data for a variable with name."""
     # default file path location
     config_file_path = CONFIG_PATH_FILE
@@ -95,12 +95,12 @@ def get_data(section: Any, name: str = None) -> None:
                 value = config[section][name]
                 # in case of boolean string value cast it to bool
                 if value in ("True", "False"):
-                    return value == "True"
+                    return value == "True"  # type: ignore
                 # in case of None
                 if value == "None":
                     return None
                 return value
-            return config[section]
+            return config[section]  # type: ignore
         except KeyError as err:
             # requested section/field do not exist
             logger.error(str(err))
