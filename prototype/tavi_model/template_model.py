@@ -22,13 +22,11 @@ class TemplateModel(TemplateModelInterface):
         the list of loaded files.
     next_file : str
         The computed next filename (set after calling `get_next_file`).
+
     """
 
     def __init__(self):
-        """
-        Initialize the template model and bind to the TAVI project singleton.
-        """
-
+        """Initialize the template model and bind to the TAVI project singleton."""
         self.event_broker = EventBroker()
         self.tavi_project = TaviProject()
 
@@ -40,6 +38,7 @@ class TemplateModel(TemplateModelInterface):
         ----------
         event : Event
             The event instance to publish (e.g., a `template_data` event).
+
         """
         self.event_broker.publish(event)
 
@@ -58,6 +57,7 @@ class TemplateModel(TemplateModelInterface):
         -------------
         template_data
             With field `template_data=<new filename>`.
+
         """
         import threading
 

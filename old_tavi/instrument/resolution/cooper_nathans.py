@@ -6,10 +6,12 @@ np.set_printoptions(suppress=True)
 
 
 class CooperNathans(ResolutionCalculator):
-    """Cooper-Nathans method
+    """
+    Cooper-Nathans method
 
     Note:
         [pop75] Popovici, Acta Cryst. (1975). A31, 507
+
     """
 
     # 1 monochromator and 1 analyzer
@@ -56,7 +58,8 @@ class CooperNathans(ResolutionCalculator):
 
     @classmethod
     def mat_f(cls, monochromator, analyzer) -> np.ndarray:
-        """matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
+        """
+        Matrix F, divergence of monochromator and analyzer, [pop75] Appendix 1
         Note: No conversion between sigma and FWHM
         """
         i, j = cls.NUM_MONOS, cls.NUM_ANAS
@@ -69,10 +72,10 @@ class CooperNathans(ResolutionCalculator):
 
     @classmethod
     def mat_g(cls, collimators) -> np.ndarray:
-        """matrix G, divergence of monochromator and analyzer, [pop75] Appendix 1
+        """
+        Matrix G, divergence of monochromator and analyzer, [pop75] Appendix 1
         Note: No conversion between sigma and FWHM
         """
-
         (h_pre_mono, h_pre_sample, h_post_sample, h_post_ana) = collimators._horizontal_divergence
         (v_pre_mono, v_pre_sample, v_post_sample, v_post_ana) = collimators._vertical_divergence
 
@@ -91,7 +94,7 @@ class CooperNathans(ResolutionCalculator):
 
     @classmethod
     def calc_mat_a(cls, ki, kf, theta_m, theta_a):
-        """matrix A,Y=AU, transform from collimators angular divergence to  ki-kf frame"""
+        """Matrix A,Y=AU, transform from collimators angular divergence to  ki-kf frame"""
         mat_a = np.zeros((6, 2 * cls.NUM_COLLS))
         mat_a[0, cls.IDX_COLL0_H] = 0.5 * ki / np.tan(theta_m)
         mat_a[0, cls.IDX_COLL1_H] = -0.5 * ki / np.tan(theta_m)
@@ -106,7 +109,7 @@ class CooperNathans(ResolutionCalculator):
 
     @staticmethod
     def calc_mat_b(ki, kf, phi, two_theta):
-        """matrix B, X=BY, transform from ki-kf frame to momentum transfer q-frame"""
+        """Matrix B, X=BY, transform from ki-kf frame to momentum transfer q-frame"""
         mat_b = np.zeros((4, 6))
         mat_b[0:3, 0:3] = rotation_matrix_2d(phi)
         mat_b[0:3, 3:6] = rotation_matrix_2d(phi - two_theta) * (-1)
@@ -116,7 +119,7 @@ class CooperNathans(ResolutionCalculator):
 
     @classmethod
     def calc_mat_c(cls, theta_m, theta_a):
-        """matrix C, constrinat between mono/ana mosaic and collimator divergence"""
+        """Matrix C, constrinat between mono/ana mosaic and collimator divergence"""
         mat_c = np.zeros(((cls.NUM_MONOS + cls.NUM_ANAS) * 2, cls.NUM_COLLS * 2))
         mat_c[cls.IDX_MONO0_H, cls.IDX_COLL0_H] = 0.5
         mat_c[cls.IDX_MONO0_H, cls.IDX_COLL1_H] = 0.5
@@ -136,7 +139,6 @@ class CooperNathans(ResolutionCalculator):
 
     def calculate_at_hkle(self, hkl, ei, ef):
         """Calculate the resolution matrix and R0 factor in the local Q frame"""
-
         instrument = self.instrument
         # q_mod = np.linalg.norm(tas.sample.b_mat @ hkl) * 2 * np.pi
         q_norm = instrument.sample.get_q_norm(hkl)

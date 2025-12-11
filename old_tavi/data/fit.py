@@ -7,7 +7,8 @@ from tavi.data.scan_data import ScanData1D
 
 
 class Fit1D(object):
-    """Fit a 1D curve
+    """
+    Fit a 1D curve
 
     Attributes:
 
@@ -42,8 +43,7 @@ class Fit1D(object):
         nan_policy: Literal["raise", "propagate", "omit"] = "propagate",
         name="",
     ):
-        """initialize a fit model, mask based on fit_range if given"""
-
+        """Initialize a fit model, mask based on fit_range if given"""
         self.name = name
 
         self.x: np.ndarray = data.x
@@ -78,7 +78,7 @@ class Fit1D(object):
                 self.add_background(backgrounds)
 
     def set_range(self, fit_range: tuple[float, float]):
-        """set the range used for fitting"""
+        """Set the range used for fitting"""
         fit_min, fit_max = fit_range
         mask = np.bitwise_and(self.x >= fit_min, self.x <= fit_max)
         self.x = self.x[mask]
@@ -143,7 +143,6 @@ class Fit1D(object):
     @property
     def params(self) -> Parameters:
         """Get fitting parameters as a dictionary with the model prefix being the key"""
-
         if self.result is not None:
             params = self.result.params
         else:
@@ -153,10 +152,11 @@ class Fit1D(object):
         return self._parameters
 
     def guess(self) -> Parameters:
-        """Guess fitting parameters' values
+        """
+        Guess fitting parameters' values
         Return:
-            Parameters class in LMFIT"""
-
+            Parameters class in LMFIT
+        """
         pars = Parameters()
         for signal in self._signal_models:
             pars += signal.guess(self.y, x=self.x)
@@ -168,7 +168,6 @@ class Fit1D(object):
     @property
     def model(self):
         """Return the composite model of all signals and backgrounds"""
-
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 

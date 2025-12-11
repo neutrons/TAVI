@@ -61,6 +61,7 @@ class ResolutionCalculator:
 
         Returns:
             np.ndarray: Array of shape (N, 4) for (h, k, l, en) grid points
+
         """
         # validate length of grid and axes
         if len(grid) != 4:
@@ -101,15 +102,16 @@ class ResolutionCalculator:
         self,
         hkle: Union[tuple, list[tuple]],
     ) -> tuple[tuple[tuple[float, float, float], float, float], ...]:
-        """Generate a list containing tuple ((h, k, l), ei, ef)
+        """
+        Generate a list containing tuple ((h, k, l), ei, ef)
 
         Arguments:
             hkle (tuple | list(tuple)): (h,k,l, en)
 
         Return:
             hkleief_list (tuple): list of (((h, k, l), ei, ef), ...)
-        """
 
+        """
         hkle_list = [hkle] if not isinstance(hkle, list | np.ndarray) else hkle
 
         hkleief_list = []
@@ -121,7 +123,6 @@ class ResolutionCalculator:
 
     def validate_instrument_parameters(self):
         """Check if enough instrument parameters are provided for Cooper-Nathans method"""
-
         require_existance = ResolutionCalculator.require_existance
         require_positive = ResolutionCalculator.require_positive
         check_sense = ResolutionCalculator.check_sense

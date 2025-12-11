@@ -22,7 +22,8 @@ rad2deg = 180.0 / np.pi
 
 
 class MotorAngles(NamedTuple):
-    """Moter anlges
+    """
+    Moter anlges
 
     two_theta: s2 angle, in degree
     omega: s1 angle, in degree
@@ -33,7 +34,9 @@ class MotorAngles(NamedTuple):
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
-        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode"""
+        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
+
+    """
 
     two_theta: float
     omega: Optional[float] = None
@@ -80,7 +83,7 @@ class Peak(NamedTuple):
 # helper functions
 # --------------------------------------------------------------------------
 def en2q(en: float) -> float:
-    """convert energy en in meV to momontum transfer q in inverse Angstrom"""
+    """Convert energy en in meV to momontum transfer q in inverse Angstrom"""
     if en < 0:
         raise ValueError(f"Cannot convert negative energy en={en:.4g} to momentum transfer q.")
     q = np.sqrt(en / ksq2eng)
@@ -88,7 +91,7 @@ def en2q(en: float) -> float:
 
 
 def q2en(q: float) -> float:
-    """convert momontum transfer q in inverse Angstrom to energy en in mev"""
+    """Convert momontum transfer q in inverse Angstrom to energy en in mev"""
     if q < 0:
         raise ValueError(f"Converting negative momentum transfer q={q:.4g} to energy.")
     en = ksq2eng * q**2
@@ -96,10 +99,11 @@ def q2en(q: float) -> float:
 
 
 def get_angle_from_triangle(a: float, b: float, c: float) -> float:
-    """In a triangle with sides a,b and c, get angle between a and b in radian
+    """
+    In a triangle with sides a,b and c, get angle between a and b in radian
     Note:
-        return value in [0,pi]"""
-
+        return value in [0,pi]
+    """
     zero = 1e-6
     if (np.abs(a) < zero) or (np.abs(b) < zero):
         raise ValueError("Triangle cannot be closed.")
@@ -125,7 +129,8 @@ def get_angle_bragg(
     neutron_momentum: float,
     sample_d_spaceing: float,
 ):
-    """return angle based on Bragg's law, in radian
+    """
+    Return angle based on Bragg's law, in radian
     2d sin(theta) = lambda = 2 pi /q
     """
     asin = np.pi / (sample_d_spaceing * neutron_momentum)
@@ -135,7 +140,8 @@ def get_angle_bragg(
 
 
 def rotation_matrix_2d(phi):
-    """rotate the coordination system by angle of phi about z-axis
+    """
+    Rotate the coordination system by angle of phi about z-axis
 
     Args:
         phi (float): angle in radian
@@ -158,25 +164,26 @@ def rotation_matrix_2d(phi):
 
 
 def spice_to_mantid(vec):
-    """suffle the order from spice convention to mantid convention"""
+    """Suffle the order from spice convention to mantid convention"""
     return np.array([vec[0], vec[2], -vec[1]])
 
 
 def mantid_to_spice(vec):
-    """suffle the order from mantid convention to spice convention"""
+    """Suffle the order from mantid convention to spice convention"""
     return np.array([vec[0], -vec[2], vec[1]])
 
 
 def rot_x(nu):
-    """rotation matrix about y-axis by angle nu
+    """
+    Rotation matrix about y-axis by angle nu
 
     Args:
         nu (float): angle in degrees
 
     Note:
         Using Mantid convention, beam along z, y is up, x in plane
-    """
 
+    """
     angle = np.deg2rad(nu)
     c = np.cos(angle)
     s = np.sin(angle)
@@ -191,15 +198,16 @@ def rot_x(nu):
 
 
 def rot_y(omega):
-    """rotation matrix about y-axis by angle omega
+    """
+    Rotation matrix about y-axis by angle omega
 
     Args:
         omega (float): angle in degrees
 
     Note:
         Using Mantid convention, beam along z, y is up, x in plane
-    """
 
+    """
     angle = np.deg2rad(omega)
     c = np.cos(angle)
     s = np.sin(angle)
@@ -214,15 +222,16 @@ def rot_y(omega):
 
 
 def rot_z(mu):
-    """rotation matrix about z-axis by angle mu
+    """
+    Rotation matrix about z-axis by angle mu
 
     Args:
         mu (float): angle in degrees
 
     Note:
         Using Mantid convention, beam along z, y is up, x in plane
-    """
 
+    """
     angle = np.deg2rad(mu)
     c = np.cos(angle)
     s = np.sin(angle)

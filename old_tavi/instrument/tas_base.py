@@ -32,6 +32,7 @@ class TASBase(object):
 
     Methods:
         load_instrument_params_from_json(path_to_json)
+
     """
 
     def __init__(self) -> None:
@@ -76,7 +77,6 @@ class TASBase(object):
         path_to_json: str,
     ):
         """Load instrument configuration from a json file"""
-
         json_file = Path(path_to_json)
         if json_file.is_file():
             with open(json_file, "r", encoding="utf-8") as file:

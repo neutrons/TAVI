@@ -9,7 +9,8 @@ from tavi.data.scan_group import ScanGroup
 
 
 class TAVI(object):
-    """TAVI data file manager.
+    """
+    TAVI data file manager.
 
     TAVI_data contains four possible categories, including
     - data, a list of 1D scans, raws data.
@@ -63,26 +64,30 @@ class TAVI(object):
         self.data.update(TAVI.load_data(scan_dict))
 
     def load_spice_data_from_disk(self, path_to_spice_folder):
-        """Load hdf5 data from path_to_hdf5.
+        """
+        Load hdf5 data from path_to_hdf5.
 
         Args:
             path_to_spice_folder (str): path to spice folder
+
         """
         scan_dict = NexusEntry.from_spice(path_to_spice_folder)
         self.data.update(TAVI.load_data(scan_dict))
 
     # TODO
     def load_data_from_oncat(self, user_credentials, ipts_info):
-        """Load data from ONCat based on user_credentials and ipts_info.
+        """
+        Load data from ONCat based on user_credentials and ipts_info.
 
         Args:
             user_credentials (str): username and password.
             scipts_infoans (str): ipts number and exp number.
+
         """
         pass
 
     def get_exp_id(self) -> list[str]:
-        "return a list of exp id from a tavi file"
+        """Return a list of exp id from a tavi file"""
         exp_id_list = []
         with h5py.File(self.file_path, "r") as tavi_file:
             for exp_id in tavi_file["data"].keys():
@@ -91,7 +96,6 @@ class TAVI(object):
 
     def open_file(self, tavi_file_path):
         """Open an existing tavi file"""
-
         if not os.path.exists(tavi_file_path):
             raise ValueError(f"TAVI file does not exist at path {tavi_file_path}")
 
@@ -107,12 +111,13 @@ class TAVI(object):
         # TODO load processed_data fits, and plots
 
     def save(self, file_path: Optional[str] = None):
-        """Save current data to a hdf5 on disk at path_to_hdf5
+        """
+        Save current data to a hdf5 on disk at path_to_hdf5
 
         Args:
             path_to_hdf5 (str): path to hdf5 data file, ends with '.h5'
-        """
 
+        """
         if file_path is None:
             current_path = os.getcwd()
             self.file_path = current_path + "/tavi_temp.h5"
@@ -139,7 +144,8 @@ class TAVI(object):
             print(f"Cannot create tavi file at {self.file_path}")
 
     def get_scan(self, scan_num: Union[tuple[str, int], int]) -> Scan:
-        """Get the scan at location /data/exp_id/scanXXXX, return a Scan instance
+        """
+        Get the scan at location /data/exp_id/scanXXXX, return a Scan instance
 
         Arguments:
             scan_path (str): exp_id /scan_name. exp_id is in the format of
@@ -147,6 +153,7 @@ class TAVI(object):
                 more than one experiment is loaded as data
         Return:
             Scan: an instance of Scan class
+
         """
         if isinstance(scan_num, tuple):
             exp_id, scan_num = scan_num
@@ -163,7 +170,8 @@ class TAVI(object):
         scan_nums: Union[list[int], list[tuple[str, int]]],
         name: str = "",
     ) -> ScanGroup:
-        """Group scans for further processing
+        """
+        Group scans for further processing
 
         Arguments:
             scan_nums:
@@ -171,6 +179,7 @@ class TAVI(object):
 
         Returns:
             ScanGroup
+
         """
         first_exp_id = next(iter(self.data))
         scan_num_list = []

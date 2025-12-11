@@ -24,7 +24,8 @@ class LoadView(QWidget):
     """Main widget"""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the main widget
+        """
+        Constructor for the main widget
         Args:
             parent (QObject): Optional parent
 
@@ -48,21 +49,15 @@ class LoadView(QWidget):
         )
 
     def setup_callback_click_on_a_scan(self, callback: None) -> None:
-        """
-        Setup call back functions to handle when clicking on a scann.
-        """
+        """Setup call back functions to handle when clicking on a scann."""
         self.click_on_a_scan_callback = callback
 
     def pass_selected_file(self, filename: str) -> None:
-        """
-        Invoke the call back with positional input arg.
-        """
+        """Invoke the call back with positional input arg."""
         self.click_on_a_scan_callback(filename)
 
     def update_add_tree_data(self, event: scan_uuid) -> None:
-        """
-        invoke update_tree_signal to process data coming in from a different thread.
-        """
+        """Invoke update_tree_signal to process data coming in from a different thread."""
         self._bridge.update_tree_signal.emit(event)
 
 
@@ -85,6 +80,7 @@ class TreeViewWidget(QWidget):
     ----------
     parent : Optional[QObject], default=None
         Parent widget for proper Qt ownership.
+
     """
 
     clicked_file_signal = Signal(str)
@@ -114,9 +110,7 @@ class TreeViewWidget(QWidget):
         self.treeView.clicked.connect(self.select_file)
 
     def add_tree_data(self, list_of_files: List[str]):
-        """
-        Populate the tree view with a folder node and its associated files.
-        """
+        """Populate the tree view with a folder node and its associated files."""
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
             self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
@@ -158,6 +152,7 @@ class StandardItem(QStandardItem):
         Whether the item text should be bold.
     color : QColor, default=QColor(0, 0, 0)
         Text color to apply to the item.
+
     """
 
     def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):

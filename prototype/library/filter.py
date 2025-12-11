@@ -1,11 +1,16 @@
+"""Tavi filter."""
+
+from ast import Set
 from enum import Enum
 from typing import Optional
 from venv import logger
 
-from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
+from tavi.library.FileSystem.tavi_class_factory import Scan
 
 
 class Operations(Enum):
+    """Define filter operations."""
+
     CONTAINS = "contains"
     NOTCONTAIN = "notcontain"
     IS = "is"
@@ -19,22 +24,28 @@ class Operations(Enum):
 
 
 class Logic(Enum):
+    """Define filter logic."""
+
     AND = "and"
     OR = "OR"
 
 
 class Category(Enum):
+    """Define data category."""
+
     DATA = "data"
     METADATA = "metadata"
 
 
 class Filter:
     """
+    Filter tavi data based on keyword, conditions, and_or and tol.
+
     Arg:
-        scans: the class that holds the loaded scan data, meta data, ubconf etc. Defined in TaviProject
-        conditions: a string of filter conditions. keyword + operation + value.
-                    example: "title+contains+temp", "sample_temp + < + 100". If the conditions is: contains, notcontain,
-                    then we look in scans.metadata. If the conditions is: <, >, <=, >=, ==, !=, then we look in scans.data.
+    scans: the class that holds the loaded scan data, meta data, ubconf etc. Defined in TaviProject
+    conditions: a string of filter conditions. keyword + operation + value.
+                example: "title+contains+temp", "sample_temp + < + 100". If the conditions is: contains, notcontain,
+                then we look in scans.metadata. If the conditions is: <, >, <=, >=, ==, !=, then we look in scans.data.
     """
 
     def __init__(
@@ -43,17 +54,16 @@ class Filter:
         conditions: Optional[list[Operations]] = None,
         and_or: Optional[Logic] = None,
         tol: float = 0.01,  # this can be put into a TAVI config json file as filter equal tolerance
-    ):
+    ) -> None:
+        """Init filter."""
         self.scan_list = scan_list
         self.conditions = conditions
         self.and_or = and_or
         self.tol = tol
         self.output = []
 
-    def filter_data(self):
-        """
-        Decide where to look for data (data, meta data, ubconf) and perform and/or operation.
-        """
+    def filter_data(self) -> None:
+        """Decide where to look for data (data, meta data, ubconf) and perform and/or operation."""
         if self.conditions:
             for condition in self.conditions:
                 keyword, action, value = condition
@@ -70,10 +80,8 @@ class Filter:
                 case _:
                     logger.error("Logic operation not accepted!")
 
-    def _condition_factory(self, keyword, value, condition, category):
-        """
-        Abstract factory that returns the filtered results based on the keyword, value, condition and category.
-        """
+    def _condition_factory(self, keyword: str, value: float, condition: Operations, category: Category) -> Set:
+        """Abstract factory that returns the filtered results based on the keyword, value, condition and category."""
         tmp_output = set()
         if category == Category.METADATA:
             for filename, scan in self.scan_list.items():

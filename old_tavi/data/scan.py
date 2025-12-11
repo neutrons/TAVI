@@ -263,7 +263,8 @@ class Scan(object):
         norm_to: Optional[tuple[float, Literal["time", "monitor", "mcu"]]] = None,
         **rebin_params_dict: Union[float, tuple],
     ) -> Union[ScanData1D, ScanData2D]:
-        """Generate a ScanData1D or ScanData2D from a single scan to plot, with the options
+        """
+        Generate a ScanData1D or ScanData2D from a single scan to plot, with the options
         to normalize the y-axis and rebin x-axis.
 
         Args:
@@ -273,8 +274,8 @@ class Scan(object):
             rebin_type (str | None): "tol" or "grid"
             rebin_params (float | tuple(flot, float, float)): take as step size if a number is given,
                 take as (min, max, step) if a tuple of size 3 is given
-        """
 
+        """
         x_str, y_str = axes
         x_str = self.scan_info.def_x if x_str is None else x_str
         y_str = self.scan_info.def_y if y_str is None else y_str
@@ -346,7 +347,6 @@ class Scan(object):
         **rebin_params_dict: Union[float, tuple],
     ):
         """Plot a 1D curve generated from a single scan in a new window"""
-
         fig, ax = plt.subplots()
         plot1d = Plot1D()
 

@@ -11,6 +11,7 @@ class Detector(TASComponent):
 
     Note:
         Need to think about detector efficiency, saturation
+
     """
 
     def __init__(
@@ -26,7 +27,7 @@ class Detector(TASComponent):
 
     @property
     def _width(self):
-        """width in angstrom, with correction based on shape, for resolution calculation"""
+        """Width in angstrom, with correction based on shape, for resolution calculation"""
         return TASComponent._cm2angstrom_given_shape(self.width, self.shape, "Detector width")
 
     @property

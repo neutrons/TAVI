@@ -37,7 +37,8 @@ class ResoBar(object):
 
 
 class Plot1D(object):
-    """1D Plot class
+    """
+    1D Plot class
 
     Attributes:
         x (np.ndarray): x values
@@ -126,11 +127,13 @@ class Plot1D(object):
                     data.fmt.update({key: val[i]})
 
     def add_reso_bar(self, pos: Union[tuple, ModelResult], fwhm: float, **kwargs):
-        """add the resolution bar at a given position
+        """
+        Add the resolution bar at a given position
 
         Note:
             if pos is a tuple, put the reso bar at pos=(x,y)
             if pos is a ModelResult from lmfit, determine the position from fitting results
+
         """
         if isinstance(pos, ModelResult):
             x_pos = pos.params["s1_center"].value

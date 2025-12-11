@@ -44,7 +44,8 @@ def conv_constant(x, c, rez_params):
 
 
 class ConvFit1D(object):
-    """Fit a 1D curve
+    """
+    Fit a 1D curve
 
     Attributes:
 
@@ -58,8 +59,7 @@ class ConvFit1D(object):
         nan_policy: Literal["raise", "propagate", "omit"] = "propagate",
         name="",
     ):
-        """initialize a fit model, mask based on fit_range if given"""
-
+        """Initialize a fit model, mask based on fit_range if given"""
         self.name = name
         self.rez_params = rez_params
 
@@ -83,7 +83,7 @@ class ConvFit1D(object):
             self.set_range(fit_range)
 
     def set_range(self, fit_range: tuple[float, float]):
-        """set the range used for fitting"""
+        """Set the range used for fitting"""
         fit_min, fit_max = fit_range
         mask = np.bitwise_and(self.x >= fit_min, self.x <= fit_max)
         self.x = self.x[mask]
@@ -132,7 +132,6 @@ class ConvFit1D(object):
     @property
     def params(self) -> Parameters:
         """Get fitting parameters as a dictionary with the model prefix being the key"""
-
         if self.result is not None:
             params = self.result.params
         else:
@@ -142,10 +141,11 @@ class ConvFit1D(object):
         return self._parameters
 
     def guess(self) -> Parameters:
-        """Guess fitting parameters' values
+        """
+        Guess fitting parameters' values
         Return:
-            Parameters class in LMFIT"""
-
+            Parameters class in LMFIT
+        """
         pars = Parameters()
         for signal in self._signal_models_intrinsic:
             pars += signal.guess(self.y, x=self.x)
@@ -157,14 +157,12 @@ class ConvFit1D(object):
     @property
     def model(self):
         """Return the  composite model of all signals and backgrounds"""
-
         compposite_model = np.sum(self._signal_models + self._background_models)
         return compposite_model
 
     @property
     def model_intrinsic(self):
         """Return the  composite model of all signals and backgrounds"""
-
         compposite_model = np.sum(self._signal_models_intrinsic + self._background_models_instrinsic)
         return compposite_model
 

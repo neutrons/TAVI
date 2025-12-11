@@ -30,7 +30,7 @@ class Collimators(TASComponent):
 
     @property
     def horizontal_divergence(self) -> list:
-        """list of horizontal divergence in minitus of arc"""
+        """List of horizontal divergence in minitus of arc"""
         return [
             self.h_pre_mono,
             self.h_pre_sample,
@@ -40,7 +40,7 @@ class Collimators(TASComponent):
 
     @property
     def _horizontal_divergence(self) -> list:
-        """list of horizontal divergence in radian"""
+        """List of horizontal divergence in radian"""
         return [
             np.deg2rad(self.h_pre_mono / 60),
             np.deg2rad(self.h_pre_sample / 60),
@@ -50,7 +50,7 @@ class Collimators(TASComponent):
 
     @property
     def vertical_divergence(self) -> list:
-        """list of vertical divergence in minutes of arcs"""
+        """List of vertical divergence in minutes of arcs"""
         return [
             self.v_pre_mono,
             self.v_pre_sample,
@@ -60,7 +60,7 @@ class Collimators(TASComponent):
 
     @property
     def _vertical_divergence(self) -> list:
-        """list of vertical divergence in radian"""
+        """List of vertical divergence in radian"""
         return [
             np.deg2rad(self.v_pre_mono / 60),
             np.deg2rad(self.v_pre_sample / 60),

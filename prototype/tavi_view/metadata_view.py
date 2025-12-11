@@ -38,10 +38,12 @@ class MetaDataView(QWidget):
         Thread-safe bridge for routing metadata updates to the GUI.
     display_metadata_callback : Callable or None
         Placeholder for a presenter-provided callback (future use).
+
     """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the main widget
+        """
+        Constructor for the main widget
         Args:
             parent (QObject): Optional parent
 
@@ -73,6 +75,7 @@ class MetaDataView(QWidget):
         event : str
             The metadata value to display. Typically the filename or metadata
             summary associated with the currently selected scan.
+
         """
         self._bridge.set_metadata_signal.emit(event)
 
@@ -87,7 +90,8 @@ class MetaDataWidget(QWidget):
     """
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the metadata widget
+        """
+        Constructor for the metadata widget
 
         Args:
             parent (QObject): Optional parent
@@ -114,5 +118,6 @@ class MetaDataWidget(QWidget):
         ----------
         values : str
             Text to display in the filename field (e.g., the selected scan name).
+
         """
         self.filename_edit.setText(values)

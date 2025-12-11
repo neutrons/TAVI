@@ -10,13 +10,15 @@ def convert_spice_to_nexus(
     path_to_instrument_json: Optional[str] = None,
     path_to_sample_json: Optional[str] = None,
 ):
-    """convert datafiles in spice folder into nexus entries
+    """
+    Convert datafiles in spice folder into nexus entries
 
     Note:
         if path_to_nexus_folder if not provided, the nexus data entries
         will be created in the same parent folder as the SPICE data,
-        using the default folder name IPTSxxxxx_INSTRU_exp0000"""
+        using the default folder name IPTSxxxxx_INSTRU_exp0000
 
+    """
     scan_dict = NexusEntry.from_spice(
         path_to_spice_folder,
         path_to_instrument_json=path_to_instrument_json,

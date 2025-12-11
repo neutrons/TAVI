@@ -46,6 +46,7 @@ class TaviProject(TaviProjectInterface):
         Singleton instance of this class.
     _initiated : bool
         Tracks whether `__init__` has already been executed for the singleton.
+
     """
 
     _event_broker = EventBroker()
@@ -62,6 +63,7 @@ class TaviProject(TaviProjectInterface):
         -------
         TaviProject
             The single shared instance of the project.
+
         """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -84,15 +86,11 @@ class TaviProject(TaviProjectInterface):
             self.__class__._initiated = True
 
     def send(self, event: Event) -> None:
-        """
-        Generic send functions to publish events to EventBroker()
-        """
+        """Generic send functions to publish events to EventBroker()"""
         self._event_broker.publish(event)
 
     def set_selected_scan(self, filename: str) -> None:
-        """
-        Sets the selected filename in model and publish a "selected_uuid" event.
-        """
+        """Sets the selected filename in model and publish a "selected_uuid" event."""
         self.selected_scan = filename
         self.send(selected_uuid(selected_uuid=self.selected_scan))
         self.get_selected_metadata()
@@ -106,9 +104,7 @@ class TaviProject(TaviProjectInterface):
         self.send(meta_data(meta_data_dict={self.selected_scan: index}))
 
     def load_manager(self, filename: str) -> str:
-        """
-        dummy file to test python multithreading
-        """
+        """Dummy file to test python multithreading"""
         return filename
 
     def load(self, folder: str) -> None:

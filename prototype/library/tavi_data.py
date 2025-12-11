@@ -1,12 +1,17 @@
+"""Tavi data."""
+
 from dataclasses import field
 from typing import Any
 
 import numpy as np
-from tavi.tavi_library.FileSystem.tavi_class_factory import Scan
+
+from tavi.library.FileSystem.tavi_class_factory import Scan
 
 
 class TaviData:
     """
+    Manage all data and workflows for a complete TAVI project.
+
     A container class for managing a complete TAVI project, including
     raw TAS (triple-axis spectrometer) experimental data, processed data,
     filtering operations, fitting, and plotting management.
@@ -60,6 +65,7 @@ class TaviData:
 
         plot_data():
             (Placeholder) Generate plots of scan or processed data.
+
     """
 
     def __init__(
@@ -70,7 +76,8 @@ class TaviData:
         show_selected_data: dict = {},  # display
         fitptr: dict[str, Any] = field(default_factory=dict),
         plotptr: dict[str, Any] = field(default_factory=dict),
-    ):
+    ) -> None:
+        """Init tavi data attributes."""
         self.rawdataptr = rawdataptr
         self.combinedataptr = combinedataptr
         self.process_selected_data = process_selected_data

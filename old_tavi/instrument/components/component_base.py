@@ -13,6 +13,7 @@ class TASComponent(object):
         type (str): identify which component
     Methods:
         update(param, value): update a parameter
+
     """
 
     def __init__(
@@ -31,7 +32,7 @@ class TASComponent(object):
         param: str,
         value: Union[str, float, int],
     ) -> None:
-        """update a parameter if exist"""
+        """Update a parameter if exist"""
         if hasattr(self, param):
             setattr(self, param, value)
             print(f"Setting {self.component_name} parameter {param} to {value}")
@@ -79,9 +80,7 @@ class TASComponent(object):
         length_in_cm: Optional[float],
         param_name: str = "Length",
     ) -> Optional[float]:
-        """
-        Convert length from centimeter to angstrom.
-        """
+        """Convert length from centimeter to angstrom."""
         if length_in_cm is None:
             print(f"{param_name} is None.")
             return None

@@ -55,7 +55,6 @@ class Goniometer(TASComponent):
     @property
     def stacking_order(self) -> str:
         """Return motors staking order without the signs"""
-
         ax0, ax1, ax2, *_ = self.type.split(",")
         stacking_order = ""
         for ax in [ax0, ax1, ax2]:
@@ -93,7 +92,8 @@ class Goniometer(TASComponent):
                 raise ValueError(f"sense {self.sense} needs to be either '+' or '-'.")
 
     def r_mat(self, angles: MotorAngles) -> np.ndarray:
-        """Goniometer rotation matrix R
+        """
+        Goniometer rotation matrix R
 
         Args:
             angles (MotorAngle): two_theta, omega, sgl, sgu, chi, phi
@@ -104,6 +104,7 @@ class Goniometer(TASComponent):
             The Cartesian coordinate Z is along the incoming beam,
             X in plane, Y up, right handed. This is the convention used
             in Mantid/International Crystallography Table.
+
         """
         signs = self.motor_senses
         operating_mode = self.stacking_order + self.mode if self.mode is not None else self.stacking_order
@@ -140,7 +141,7 @@ class Goniometer(TASComponent):
         return r_mat
 
     def r_mat_inv(self, angles: MotorAngles) -> np.ndarray:
-        """inverse of rotation matrix, equivalent to transpose since R is unitary"""
+        """Inverse of rotation matrix, equivalent to transpose since R is unitary"""
         # return np.linalg.inv(self.r_mat(angles))
         return self.r_mat(angles).T
 
@@ -179,7 +180,8 @@ class Goniometer(TASComponent):
         r_mat: np.ndarray,
         two_theta: float,
     ) -> MotorAngles:
-        """Calculate goniometer angles from the R matrix
+        """
+        Calculate goniometer angles from the R matrix
 
         Note:
             In bisect mode, omega angle is half of two_theta for diffrction. But for inelastic scattering,
@@ -187,8 +189,8 @@ class Goniometer(TASComponent):
 
             range of np.arcsin is -pi/2 to pi/2
             range of np.arctan2 is -pi to pi
-        """
 
+        """
         signs = self.motor_senses
         operating_mode = self.stacking_order + self.mode if self.mode is not None else self.stacking_order
 
@@ -228,15 +230,14 @@ class Goniometer(TASComponent):
         motor_name: Literal["two_theta", "omega", "sgl", "sgu", "chi", "phi"],
         motor_range: tuple[Optional[float], Optional[float]] = (-180, 180),
     ):
-        "set goiometer motor limit"
+        """Set goiometer motor limit"""
         if motor_name in ("two_theta", "omega", "sgl", "sgu", "chi", "phi"):
             self.limits.update({motor_name: motor_range})
         else:
             raise ValueError(f"Unrecogonized motor name: {motor_name}.")
 
     def validate_motor_positions(self, angles: MotorAngles):
-        "check if all goiometer motors are within the limits"
-
+        """Check if all goiometer motors are within the limits"""
         for name, value in angles._asdict().items():
             if value is None:
                 continue

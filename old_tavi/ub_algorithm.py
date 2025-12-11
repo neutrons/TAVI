@@ -18,7 +18,8 @@ def spice_to_mantid(v):
 
 @dataclass
 class UBConf:
-    """Logs for UB matrix determination
+    """
+    Logs for UB matrix determination
 
     Attributes:
         ub_peaks (tuple of Peaks): peaks used to determine the UB matrix
@@ -33,6 +34,7 @@ class UBConf:
         Crystallography Table convention.
         When u_mat, ub_mat, plane_normal and in_plane_ref are requested, a conversion from
         Mantid is performed based on what convention is used
+
     """
 
     _ub_mat: np.ndarray
@@ -152,7 +154,6 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
         Using convention in Mantid/Internaltional Crystallography Table
 
     """
-
     ki = en2q(ei)
     kf = en2q(ef)
     theta_rad = np.radians(theta)
@@ -168,11 +169,13 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
 
 
 def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
-    """return norm of q for given (h,k,l)
+    """
+    Return norm of q for given (h,k,l)
 
     Note:
-        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
 
+    """
     b_hkl = np.matmul(b_mat, np.array(hkl))
     q_squared = np.matmul(b_hkl.T, b_hkl)
     q_norm = np.sqrt(q_squared) * 2 * np.pi
@@ -185,11 +188,13 @@ def two_theta_from_hkle(
     ef: float,
     b_mat: np.ndarray,
 ) -> float:
-    """Calculate the angle between ki and kf. .
+    """
+    Calculate the angle between ki and kf. .
 
     Note:
-        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
 
+    """
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
@@ -203,11 +208,13 @@ def psi_from_hkle(
     ef: float,
     b_mat: np.ndarray,
 ) -> float:
-    """Calculate the angle between ki and Q=ki-kf.
+    """
+    Calculate the angle between ki and Q=ki-kf.
 
     Note:
-        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1"""
+        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
 
+    """
     ki = en2q(ei)
     kf = en2q(ef)
     q_norm = q_norm_from_hkl(hkl, b_mat)
@@ -274,7 +281,8 @@ def r_matrix_with_minimal_tilt(
     two_theta: float,
     ub_conf: UBConf,
 ) -> np.ndarray:
-    """Calculate R matrix when the tilt from the scattering plane is minimal
+    """
+    Calculate R matrix when the tilt from the scattering plane is minimal
     Args:
         hkl: tuple of Miller indices
         ei: incident energy, in meV
@@ -284,7 +292,6 @@ def r_matrix_with_minimal_tilt(
     Raises:
         ValueError: if plane_normal is None, or if peak is perpendicular to the horizontal scattering plane
     """
-
     ub_mat = ub_conf._ub_mat
     plane_normal = ub_conf._plane_normal
     in_plane_ref = ub_conf._in_plane_ref
@@ -354,13 +361,14 @@ def plane_normal_from_one_peak(
 # UB matrix convsersion to u and v vectors
 # -----------------------------------------------------
 def ub_matrix_to_uv(ub_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Calculate u and v vector from UB matrix
+    """
+    Calculate u and v vector from UB matrix
 
     Note:
         u vector, in reciprocal lattice unit, along beam
         v vector, in reciprocal lattice unit,in the horizaontal scattering plane
-    """
 
+    """
     inv_ub_matrix = np.linalg.inv(ub_matrix)
     u = np.matmul(inv_ub_matrix, np.array([0, 0, 1]))
     v = np.matmul(inv_ub_matrix, np.array([1, 0, 0]))
@@ -371,7 +379,6 @@ def ub_matrix_to_lattice_params(
     ub_matrix: np.ndarray,
 ) -> tuple[float, float, float, float, float, float]:
     """Calculate lattice parameters from UB matrix"""
-
     g_star_mat = np.matmul(np.transpose(ub_matrix), ub_matrix)
     return lattice_params_from_g_star_mat(g_star_mat)
 
@@ -382,7 +389,6 @@ def uv_to_ub_matrix(
     lattice_params: tuple[float, float, float, float, float, float],
 ) -> np.ndarray:
     """Calculate UB matrix from u and v vector, and lattice parameters"""
-
     b_mat = b_mat_from_lattice(lattice_params)
     t1 = np.matmul(b_mat, u)
     t2_prime = np.matmul(b_mat, v)
@@ -431,10 +437,12 @@ def find_u_from_one_peak_and_scattering_plane(
     ei: float,
     ef: float,
 ):
-    """Calculate U matrix from one peak and a scattering plane defined by two vectors
+    """
+    Calculate U matrix from one peak and a scattering plane defined by two vectors
 
     Note:
         v1, v2= scatttering plane needs to be right handed, making v3 = v1 x v3 pointing up.
+
     """
     q_hkl1 = b_mat.dot(peak.hkl)
     v1, v2 = scattering_plane
@@ -479,7 +487,6 @@ def find_u_from_two_peaks(
     ef: float,
 ):
     """Calculate U matrix from two peaks, need to know B matrix"""
-
     peak1, peak2 = peaks
     q_hkl1 = np.dot(b_mat, np.array(peak1.hkl))
     q_hkl2p = np.dot(b_mat, np.array(peak2.hkl))
@@ -547,7 +554,6 @@ def find_ub_from_multiple_peaks(
     ef: float,
 ) -> Optional[np.ndarray]:
     """Find UB matrix from more than three observed peaks for a given goniomete"""
-
     num = len(peaks)
     qv_mat = np.zeros((3, 3))
     vv_mat = np.zeros((3, 3))

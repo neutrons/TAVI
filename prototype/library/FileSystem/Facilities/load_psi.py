@@ -1,3 +1,5 @@
+"""PSI data loader."""
+
 import logging
 import os
 from typing import Iterable, Optional
@@ -5,7 +7,7 @@ from typing import Iterable, Optional
 logger = logging.getLogger("TAVI")
 
 
-class LoadANSTO:
+class LoadPSI:
     """
     Loader for NIST triple-axis spectrometer data.
 
@@ -16,7 +18,7 @@ class LoadANSTO:
     parsed into structured dataclasses (`RawData`, `RawMetaData`, `UbConf`)
     and organized into a `TaviProject`.
 
-    args:
+    Args:
         data_folder (str | PathLike):
             Directory containing SPICE data files. Used if `data_files` is not provided.
         data_files (Iterable[str] | None):
@@ -35,6 +37,7 @@ class LoadANSTO:
         _load_files() -> TaviProject:
             Internal method implementing the actual parsing and data
             organization logic.
+
     """
 
     def __init__(
@@ -43,14 +46,16 @@ class LoadANSTO:
         data_files: Optional[Iterable[str]] = None,
         ub_dir: Optional[os.PathLike | str] = None,
     ) -> None:
+        """Init."""
         self.data_folder = data_folder
         self.data_files = data_files
         self.ub_dir = ub_dir
 
     def score(self) -> float:
+        """Score."""
         return 0
 
-    def load(self):
+    def load(self) -> None:
         """
         Load SPICE data files into a TaviProject.
 
@@ -67,12 +72,13 @@ class LoadANSTO:
 
         Returns:
             TaviProject: A project object containing all loaded scans, indexed by filename.
+
         """
         return self._load_files()
 
-    def _load_files(self):
+    def _load_files(self) -> None:
         """
-        Internal method to load SPICE data files into a TaviProject.
+        Load SPICE data files into a TaviProject.
 
         This function reads each SPICE data file from either the provided list
         of `data_files` or from the `data_folder` directory. For each file, it:
@@ -111,5 +117,6 @@ class LoadANSTO:
 
         Returns:
             TaviProject: A project object containing all scans indexed by filename.
+
         """
         pass

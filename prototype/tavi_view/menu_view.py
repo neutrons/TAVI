@@ -26,6 +26,7 @@ class MainMenuBar(QMenuBar):
         ----------
         parent : QWidget, optional
             Parent widget, typically the main window.
+
         """
         super().__init__(parent)
         self.load_folder_callback = None
@@ -63,6 +64,7 @@ class MainMenuBar(QMenuBar):
         ----------
         callback : Callable
             Function to be called to initialize a new TAVI project.
+
         """
         self.load_file_callback = callback
 
@@ -89,6 +91,7 @@ class MainMenuBar(QMenuBar):
         ----------
         callback : Callable
             Function called when the 'Load Project' action is triggered.
+
         """
         self.load_file_callback = callback
 
@@ -108,15 +111,11 @@ class MainMenuBar(QMenuBar):
 
     # Loading a folder of data
     def setup_callback_load_folder(self, callback) -> None:
-        """
-        Building callback connections for the load data - set by the presenter
-        """
+        """Building callback connections for the load data - set by the presenter"""
         self.load_folder_callback = callback
 
     def load_folder(self, folder) -> None:
-        """
-        Pass loaded file through callback connections
-        """
+        """Pass loaded file through callback connections"""
         self.load_folder_callback(folder)
 
     def handle_load_folder(self) -> None:
@@ -141,6 +140,7 @@ class MainMenuBar(QMenuBar):
         ----------
         callback : Callable
             Function that will receive a list of file paths selected by the user.
+
         """
         self.load_file_callback = callback
 
@@ -167,6 +167,7 @@ class MainMenuBar(QMenuBar):
         ----------
         callback : Callable
             Function invoked to serialize and store the project.
+
         """
         self.save_callback = callback
 
@@ -186,9 +187,7 @@ class MainMenuBar(QMenuBar):
 
     # Exit
     def handle_exit(self) -> None:
-        """
-        Exit Tavi
-        """
+        """Exit Tavi"""
         window = self.window()  # the top-level QMainWindow
         if window:
             window.close()
