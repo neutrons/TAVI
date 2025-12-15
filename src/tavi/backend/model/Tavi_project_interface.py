@@ -1,4 +1,5 @@
 """Tavi project interface."""
+
 import abc
 
 from tavi.multithreading.proxy import Proxy

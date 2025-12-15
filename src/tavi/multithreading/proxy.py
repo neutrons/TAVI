@@ -1,4 +1,5 @@
 """Proxy class for multithreading."""
+
 from concurrent.futures import ThreadPoolExecutor
 from typing import Type, TypeVar
 
@@ -10,6 +11,7 @@ T = TypeVar("T")
 
 def Proxy(_type: Type[T]):
     """Proxy class for multithreading"""
+
     def __init__(self, host: T):
         self.host = host
 

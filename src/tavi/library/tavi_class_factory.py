@@ -3,15 +3,20 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class RawData:
     """Declare dataclass for type hints."""
+
     pass
+
 
 @dataclass
 class RawMetaData:
     """Declare dataclass for type hints."""
+
     pass
+
 
 @dataclass
 class Scan:

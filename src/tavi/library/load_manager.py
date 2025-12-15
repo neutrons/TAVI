@@ -74,16 +74,16 @@ class LoadManager:
             case "ORNL":
                 return LoadORNL(data_folder=self.data_folder, data_files=self.data_files, ub_dir=self.ub_dir).load()
         return None
-            # TO DO: extend to other facilities
-            # case "ILL":
-            # return load_ill.load(self.data_folder, self.data_files)
-            # case "ANSTO":
-            # return load_ansto.load(self.data_folder, self.data_files)
-            # case "PSI":
-            # return load_psi.load(self.data_folder, self.data_files)
-            # case "NIST":
-            # return load_nist.load(self.data_folder, self.data_files)
-            # case "MLZ":
-            # return load_ill.load(self.data_folder, self.data_files)
-            # case "FRMII":
-            # return load_frmii.load(self.data_folder, self.data_files)
+        # TO DO: extend to other facilities
+        # case "ILL":
+        # return load_ill.load(self.data_folder, self.data_files)
+        # case "ANSTO":
+        # return load_ansto.load(self.data_folder, self.data_files)
+        # case "PSI":
+        # return load_psi.load(self.data_folder, self.data_files)
+        # case "NIST":
+        # return load_nist.load(self.data_folder, self.data_files)
+        # case "MLZ":
+        # return load_ill.load(self.data_folder, self.data_files)
+        # case "FRMII":
+        # return load_frmii.load(self.data_folder, self.data_files)
