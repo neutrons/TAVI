@@ -1,6 +1,7 @@
 """Singleton wrapper."""
+
 from functools import wraps
-from typing import List
+
 
 def Singleton(orig_cls) -> None:
     """Singleton wrapper function."""
