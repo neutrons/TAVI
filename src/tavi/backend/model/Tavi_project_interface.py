@@ -9,19 +9,28 @@ class TaviProjectInterface:
     """Tavi project interface."""
 
     @abc.abstractmethod
-    def set_selected_scan(self):
+    def set_selected_scan(self) -> None:
+        """Abstract method."""
         pass
 
     @abc.abstractmethod
-    def get_selected_metadata(self):
+    def get_selected_metadata(self) -> None:
+        """Abstract method."""
         pass
 
     @abc.abstractmethod
-    def load_manager(self):
+    def load_manger(self) -> None:
+        """Abstract method."""
         pass
 
     @abc.abstractmethod
-    def load(self):
+    def load(self) -> None:
+        """Abstract method."""
+        pass
+
+    @abc.abstractmethod
+    def print(self) -> None:
+        """Abstract method."""
         pass
 
 

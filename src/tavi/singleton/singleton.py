@@ -1,6 +1,8 @@
 """Singleton wrapper."""
 
+
 from functools import wraps
+from typing import Any
 
 
 def Singleton(orig_cls) -> None:
@@ -11,8 +13,8 @@ def Singleton(orig_cls) -> None:
     initialized = False
 
     @wraps(orig_cls.__init__)
-    def __init__(self, *args, **kwargs):
-        """Initialization."""
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the singleton."""
         nonlocal initialized
         if initialized:
             return
@@ -20,7 +22,7 @@ def Singleton(orig_cls) -> None:
         orig_init(self, *args, **kwargs)
 
     @wraps(orig_cls.__new__)
-    def __new__(cls, *args, **kwargs):  # noqa: ARG001
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:  # noqa: ARG001
         """Handle instance."""
         nonlocal instance
         if instance is None:

@@ -45,6 +45,10 @@ class TaviProject:
         """Init tavi data."""
         self.tavi_data = TaviData()
 
+    def print(self) -> None:
+        """Test a print function."""
+        print("a testing print function")
+
     # --------------------Load Manager-------------------------------------
     def load_scans(
         self,

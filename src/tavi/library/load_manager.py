@@ -6,10 +6,12 @@ from typing import Iterable, Optional
 
 from tavi.library.load_ornl import LoadORNL
 from tavi.library.tavi_class_factory import Scan
+from tavi.singleton.singleton import Singleton
 
 logger = logging.getLogger("TAVI")
 
 
+@Singleton
 class LoadManager:
     """
     TAVI file management system.
