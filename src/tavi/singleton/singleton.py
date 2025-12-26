@@ -1,6 +1,5 @@
 """Singleton wrapper."""
 
-
 from functools import wraps
 from typing import Any
 
