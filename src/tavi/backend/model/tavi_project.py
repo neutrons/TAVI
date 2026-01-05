@@ -5,8 +5,10 @@ from typing import Iterable, Optional
 
 from tavi.library.load_manager import LoadManager
 from tavi.library.tavi_data import TaviData
+from tavi.singleton.singleton import Singleton
 
 
+@Singleton
 class TaviProject:
     """
     Central container for managing a full TAVI project workflow.
@@ -43,11 +45,16 @@ class TaviProject:
 
     def __init__(self) -> None:
         """Init tavi data."""
-        self.tavi_data = TaviData()
+        self._tavi_data = TaviData()
 
-    def print(self) -> None:
+    def print(self, folder_dir) -> None:
         """Test a print function."""
         print("a testing print function")
+        print(folder_dir)
+
+    def get_tavi_data(self) -> TaviData:
+        """Return tavi data."""
+        return self._tavi_data
 
     # --------------------Load Manager-------------------------------------
     def load_scans(
@@ -86,9 +93,11 @@ class TaviProject:
                 The method updates the `scans` attribute in place.
 
         """
-        self.tavi_data.rawdataptr = LoadManager(
+        print("Loading.........")
+        self._tavi_data.rawdataptr = LoadManager(
             data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
         ).load()
+        print("Finished Loading.")
 
 
 # if __name__ == "__main__":

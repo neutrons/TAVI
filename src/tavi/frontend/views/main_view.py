@@ -8,6 +8,7 @@ from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMenuBar, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from tavi import __version__
+from tavi.frontend.views.load_view import LoadView
 from tavi.help.help_model import help_function
 
 logger = logging.getLogger("TAVI")
@@ -25,13 +26,14 @@ class MainWindow(QWidget):
         # initialize view
 
         #!!!!!!!!!!!!!!!!!!!!
-        # self.load_view = load_view
-        # self.load_view.setParent(self)
+
+        self.load_view = LoadView(self)
+        self.load_view.setParent(self)
         #!!!!!!!!!!!!!!!!!!!!
 
         ### Set the layout
         layout = QVBoxLayout()
-
+        layout.addWidget(self.load_view)
         # Help button
         help_button = QPushButton("Help")
         help_button.clicked.connect(self.handle_help)

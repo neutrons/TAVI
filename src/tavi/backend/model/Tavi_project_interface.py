@@ -5,8 +5,13 @@ import abc
 from tavi.multithreading.proxy import Proxy
 
 
-class TaviProjectInterface:
+class TaviProjectInterface(metaclass=abc.ABCMeta):
     """Tavi project interface."""
+
+    @abc.abstractmethod
+    def get_tavi_data(self) -> None:
+        """Abstract method to get tavi data."""
+        pass
 
     @abc.abstractmethod
     def set_selected_scan(self) -> None:
@@ -24,7 +29,7 @@ class TaviProjectInterface:
         pass
 
     @abc.abstractmethod
-    def load(self) -> None:
+    def load_scans(self) -> None:
         """Abstract method."""
         pass
 

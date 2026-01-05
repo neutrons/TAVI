@@ -53,9 +53,8 @@ class FileMenuPresenter:
             single folder.
 
         """
-        print(folder_dir)
-        print
-        self._model.print()
+        self._model.print(folder_dir)
+        self._model.load_scans(data_folder=folder_dir[0], facility="ORNL")
 
     def exit(self) -> None:
         """Exit in menu."""

@@ -12,7 +12,7 @@ class MainPresenter:
         """Init main views."""
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
-        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectInterface"])
+        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectProxy"])
         menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(menu_bar)
 

@@ -28,3 +28,7 @@ def Singleton(orig_cls) -> None:
             # this needs to work with object.__new__, which only has only the `cls` arg
             instance = orig_new(cls)  # , *args, **kwargs)
         return instance
+
+    orig_cls.__init__ = __init__  # type: ignore[method-assign]
+    orig_cls.__new__ = __new__  # type: ignore[method-assign]
+    return orig_cls
