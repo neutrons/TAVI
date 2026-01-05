@@ -1,4 +1,5 @@
 """Docstring for tavi.frontend.views.load_view."""
+
 from typing import List, Optional
 
 from qtpy.QtCore import QObject, Qt, Signal
@@ -8,7 +9,9 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from tavi.event_broker.event_type import scan_uuid
+
 
 class _UiBridge(QObject):
     """
