@@ -1,9 +1,9 @@
 """
 Docstring for tavi.frontend.presenters.load_presenter.
 """
+
 from __future__ import annotations
 
-import select
 from typing import TYPE_CHECKING
 
 from tavi.event_broker.event_broker import EventBroker

@@ -1,4 +1,5 @@
 """Widgets for the main window."""
+
 from typing import Optional
 
 from matplotlib.backends.backend_qtagg import FigureCanvas
@@ -9,11 +10,14 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+
 class AutoPlotWidget(QWidget):
     """Widget that displays the plot."""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
-        """Constructor for the plotting widget.
+        """
+        Constructor for the plotting widget.
 
         Args:
             parent (QObject): Optional parent
@@ -42,6 +46,6 @@ class AutoPlotWidget(QWidget):
         self.ax.clear()
         x, y = autoplot_data
         # update heatmap
-        self.ax.plot(x, y, '.')
+        self.ax.plot(x, y, ".")
 
         self.static_canvas.draw()

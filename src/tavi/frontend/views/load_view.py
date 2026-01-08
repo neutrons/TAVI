@@ -1,6 +1,5 @@
 """Docstring for tavi.frontend.views.load_view."""
 
-
 from typing import List, Optional
 
 from qtpy.QtCore import QObject, Qt, Signal
