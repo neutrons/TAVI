@@ -34,4 +34,3 @@ class AutoPlotPresenter:
     def update_autoplot_view(self, event: autoplot_data) -> None:
         """Update autoplot view."""
         self._view.update_plot(event.autoplot_data)
-
