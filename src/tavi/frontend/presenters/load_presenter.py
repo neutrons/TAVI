@@ -1,6 +1,4 @@
-"""
-Docstring for tavi.frontend.presenters.load_presenter.
-"""
+"""Docstring for tavi.frontend.presenters.load_presenter."""
 
 from __future__ import annotations
 
@@ -16,8 +14,7 @@ if TYPE_CHECKING:
 
 class LoadPresenter:
     """
-    Presenter responsible for coordinating interactions between the LoadView and
-    the TaviProjectInterface model during data-loading workflows in TAVI.
+    Presenter responsible for coordinating interactions.
 
     The "scan_uuid" event type is pre-registered here in EventBroker()to refresh
     the UI when scans are loaded.
@@ -43,7 +40,8 @@ class LoadPresenter:
 
     """
 
-    def __init__(self, view: LoadView, model: TaviProjectInterface):
+    def __init__(self, view: LoadView, model: TaviProjectInterface) -> None:
+        """Initialization."""
         super().__init__()
         """
         Initialize the presenter and register event handlers.
@@ -62,7 +60,9 @@ class LoadPresenter:
         self._view.setup_callback_click_on_a_scan(self.handle_click_on_a_scan)
 
     def update_treeview(self, event: scan_uuid) -> None:
+        """Update treeview."""
         self._view.update_add_tree_data(event.scan_uuid_list)
 
     def handle_click_on_a_scan(self, selected_file: str) -> None:
+        """Handle click on a scan."""
         self._model.set_selected_scan(selected_file)

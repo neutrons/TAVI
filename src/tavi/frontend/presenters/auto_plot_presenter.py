@@ -1,6 +1,4 @@
-"""
-Docstring for tavi.frontend.presenters.auto_plot_presenter.
-"""
+"""Docstring for tavi.frontend.presenters.auto_plot_presenter."""
 
 from __future__ import annotations
 
@@ -15,12 +13,10 @@ if TYPE_CHECKING:
 
 
 class AutoPlotPresenter:
-    """
-    Presenter for autoplot.
+    """Presenter for autoplot."""
 
-    """
-
-    def __init__(self, view: AutoPlotWidget, model: TaviProjectInterface):
+    def __init__(self, view: AutoPlotWidget, model: TaviProjectInterface) -> None:
+        """Initialization."""
         super().__init__()
         """
         Initialize the presenter and register event handlers.
@@ -36,4 +32,6 @@ class AutoPlotPresenter:
         self.event_broker.register(autoplot_data, self.update_autoplot_view)
 
     def update_autoplot_view(self, event: autoplot_data) -> None:
+        """Update autoplot view."""
         self._view.update_plot(event.autoplot_data)
+
