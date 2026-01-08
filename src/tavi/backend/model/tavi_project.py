@@ -1,8 +1,11 @@
 """Tavi Project."""
 
 import os
+import time
 from typing import Iterable, Optional
 
+from tavi.event_broker.event_broker import EventBroker
+from tavi.event_broker.event_type import Event, autoplot_data, scan_uuid
 from tavi.library.load_manager import LoadManager
 from tavi.library.tavi_data import TaviData
 from tavi.singleton.singleton import Singleton
@@ -46,6 +49,11 @@ class TaviProject:
     def __init__(self) -> None:
         """Init tavi data."""
         self._tavi_data = TaviData()
+        self._event_broker = EventBroker()
+
+    def send(self, event: Event) -> None:
+        """Generic send functions to publish events to EventBroker()."""
+        self._event_broker.publish(event)
 
     def print(self, folder_dir) -> None:
         """Test a print function."""
@@ -55,6 +63,20 @@ class TaviProject:
     def get_tavi_data(self) -> TaviData:
         """Return tavi data."""
         return self._tavi_data
+
+    def get_plot_data(self, scan_file) -> list[list[float], list[float]]:
+        """Get Pt, detector data to plot."""
+        x = scan_file.Pt
+        y = scan_file.detector
+        return [x, y]
+
+    def set_selected_scan(self, selected_file) -> None:
+        """Set selected file."""
+        scan_file = self.get_tavi_data().rawdataptr[selected_file].data
+        plot_data = self.get_plot_data(scan_file)
+        # send to event broker
+        print(plot_data)
+        self.send(autoplot_data(autoplot_data=plot_data))
 
     # --------------------Load Manager-------------------------------------
     def load_scans(
@@ -93,11 +115,15 @@ class TaviProject:
                 The method updates the `scans` attribute in place.
 
         """
-        print("Loading.........")
+        print("Loading started.........")
+        start_time = time.perf_counter()
         self._tavi_data.rawdataptr = LoadManager(
             data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
         ).load()
-        print("Finished Loading.")
+        end_time = time.perf_counter()
+        print(f"Loading finished. Took {end_time - start_time:.4f} seconds.")
+        scan_uuid_list = list(self.get_tavi_data().rawdataptr.keys())
+        self.send(scan_uuid(scan_uuid_list=scan_uuid_list))
 
 
 # if __name__ == "__main__":

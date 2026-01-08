@@ -72,7 +72,7 @@ markers = [
 line-length = 120
 
 [tool.ruff.lint]
-ignore = ["F841", "E741", "ARG001","ANN001", "ARG002","ARG004", "F821","N801", "N802", "N806","N807", "A002", "A001", "N803", "C901", "F841", "E501","D212", "D203", "ANN401"]
+ignore = ["F841","D401", "E741", "ARG001","ANN001", "ARG002","ARG004", "F821","N801", "N802", "N806","N807", "A002", "A001", "N803", "C901", "F841", "E501","D212", "D203", "ANN401"]
 select = ["A","ANN", "ARG", "ASYNC", "BLE", "C90", "E", "F", "I", "N", "UP032", "W", "D"]
 # Add additional 3rd party tool configuration here as needed
 

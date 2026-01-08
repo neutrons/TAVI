@@ -1,5 +1,6 @@
 """Docstring for tavi.frontend.views.load_view."""
 
+
 from typing import List, Optional
 
 from qtpy.QtCore import QObject, Qt, Signal
@@ -10,13 +11,12 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from tavi.event_broker.event_type import scan_uuid
-
 
 class _UiBridge(QObject):
     """
-    Thread-safe bridge to deliver updates on the GUI thread. Qt forbitds modifying
-    UI elements from a different thread. The data needs to be passed as a signal.
+    Thread-safe bridge to deliver updates on the GUI thread.
+
+    Qt forbitds modifying UI elements from a different thread. The data needs to be passed as a signal.
 
     """
 
@@ -24,11 +24,12 @@ class _UiBridge(QObject):
 
 
 class LoadView(QWidget):
-    """Main widget"""
+    """Main widget."""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
-        Constructor for the main widget
+        Constructor for the main widget.
+
         Args:
             parent (QObject): Optional parent
 
@@ -59,15 +60,14 @@ class LoadView(QWidget):
         """Invoke the call back with positional input arg."""
         self.click_on_a_scan_callback(filename)
 
-    def update_add_tree_data(self, event: scan_uuid) -> None:
+    def update_add_tree_data(self, event_list: list[str]) -> None:
         """Invoke update_tree_signal to process data coming in from a different thread."""
-        self._bridge.update_tree_signal.emit(event)
+        self._bridge.update_tree_signal.emit(event_list)
 
 
 class TreeViewWidget(QWidget):
     """
-    A widget that displays a hierarchical tree view of files or scans and emits a
-    signal when the user selects an item.
+    A widget that displays a hierarchical tree view.
 
     This widget is typically used to show experiment folders and their associated
     scan files. Items are populated with `add_tree_data()`, and the widget emits
@@ -87,11 +87,11 @@ class TreeViewWidget(QWidget):
     """
 
     clicked_file_signal = Signal(str)
+    highlighted_scan_changed = Signal(str)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
-        Initialize the tree view widget, configure UI components, and connect
-        selection signals.
+        Initialize the tree view widget.
 
         This method:
         - Creates a vertical layout.
@@ -112,7 +112,7 @@ class TreeViewWidget(QWidget):
 
         self.treeView.clicked.connect(self.select_file)
 
-    def add_tree_data(self, list_of_files: List[str]):
+    def add_tree_data(self, list_of_files: List[str]) -> None:
         """Populate the tree view with a folder node and its associated files."""
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
@@ -125,10 +125,9 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def select_file(self, val):
+    def select_file(self, val) -> None:
         """
-        Handle selection of a tree item and emit a signal if the item represents a
-        file rather than a folder.
+        Handle selection of a tree item and emit a signal if the item represents a file.
 
         Only child items (files) emit `clicked_file_signal`; the folder node itself
         does not produce a signal.
@@ -158,7 +157,7 @@ class StandardItem(QStandardItem):
 
     """
 
-    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):
+    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)) -> None:
         """
         Initialize a styled non-editable `QStandardItem`.
 

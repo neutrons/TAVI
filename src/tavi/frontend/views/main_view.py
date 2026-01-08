@@ -8,6 +8,7 @@ from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMenuBar, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from tavi import __version__
+from tavi.frontend.views.auto_plot_view import AutoPlotWidget
 from tavi.frontend.views.load_view import LoadView
 from tavi.help.help_model import help_function
 
@@ -25,22 +26,28 @@ class MainWindow(QWidget):
         ### Create widgets here ###
         # initialize view
 
-        #!!!!!!!!!!!!!!!!!!!!
-
+        # ------------UI Components---------------
+        # Treebox to display data
         self.load_view = LoadView(self)
         self.load_view.setParent(self)
-        #!!!!!!!!!!!!!!!!!!!!
+        # Plot window
+        self.auto_plot_view = AutoPlotWidget(self)
+        self.auto_plot_view.setParent(self)
+        # ----------------------------------------
 
-        ### Set the layout
+        # -----------Set the UI layout -----------
         layout = QVBoxLayout()
-        layout.addWidget(self.load_view)
+        ui_layout = QHBoxLayout()
+        ui_layout.addWidget(self.load_view)
+        ui_layout.addWidget(self.auto_plot_view)
+        # ----------------------------------------
         # Help button
         help_button = QPushButton("Help")
         help_button.clicked.connect(self.handle_help)
-
         # Set bottom interface layout
         hor_layout = QHBoxLayout()
         hor_layout.addWidget(help_button)
+        layout.addLayout(ui_layout)
         layout.addLayout(hor_layout)
 
         self.setLayout(layout)

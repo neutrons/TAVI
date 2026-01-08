@@ -31,6 +31,13 @@ class meta_data(Event):
 
 
 @dataclass
+class autoplot_data(Event):
+    """template data event."""
+
+    autoplot_data: list[list[float], list[float]]
+
+
+@dataclass
 class template_data(Event):
     """template data event."""
 
