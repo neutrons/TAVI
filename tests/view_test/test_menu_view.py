@@ -1,5 +1,5 @@
 import pytest
-from tavi.frontend.views.file_menu_view import FileMenu
+from tavi.frontend.view.file_menu_view import FileMenu
 
 
 def test_file_menu_action_labels(qtbot):
