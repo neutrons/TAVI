@@ -6,10 +6,10 @@ from typing import Any
 
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMenuBar, QMessageBox, QPushButton, QVBoxLayout, QWidget
-from tavi.frontend.views.auto_plot_view import AutoPlotWidget
-from tavi.frontend.views.load_view import LoadView
 
 from tavi import __version__
+from tavi.frontend.views.auto_plot_view import AutoPlotWidget
+from tavi.frontend.views.load_view import LoadView
 from tavi.help.help_model import help_function
 
 logger = logging.getLogger("TAVI")
