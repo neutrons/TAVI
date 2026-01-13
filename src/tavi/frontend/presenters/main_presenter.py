@@ -1,6 +1,8 @@
 """Main presenter for tavi."""
 
+from tavi.frontend.presenters.auto_plot_presenter import AutoPlotPresenter
 from tavi.frontend.presenters.file_menu_presenter import FileMenuPresenter
+from tavi.frontend.presenters.load_presenter import LoadPresenter
 from tavi.frontend.views.main_view import TaviView
 from tavi.frontend.views.menubar_view import MainMenuBar
 
@@ -12,9 +14,16 @@ class MainPresenter:
         """Init main views."""
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
-        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectInterface"])
+        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectProxy"])
         menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(menu_bar)
+
+        # connect view - presenter - model here
+        self.load_view = self._view.main_window.load_view
+        self.load_view_presenter = LoadPresenter(self.load_view, model_dict["TaviProjectProxy"])
+
+        self.autplot_view = self._view.main_window.auto_plot_view
+        self.auatoplot_presenter = AutoPlotPresenter(self.autplot_view, model_dict["TaviProjectProxy"])
 
     def exit(self) -> bool:
         """

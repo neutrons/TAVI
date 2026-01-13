@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from tavi.frontend.views.file_menu_view import FileMenu
 
 if TYPE_CHECKING:
-    from tavi.backend.model_interface.TaviProjectInterface import TaviProjectInterface
+    from tavi.backend.model.Tavi_project_interface import TaviProjectInterface
 
 
 class FileMenuPresenter:
@@ -53,7 +53,8 @@ class FileMenuPresenter:
             single folder.
 
         """
-        self._model.print()
+        self._model.print(folder_dir)
+        self._model.load_scans(data_folder=folder_dir[0], facility="ORNL")
 
     def exit(self) -> None:
         """Exit in menu."""

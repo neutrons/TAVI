@@ -1,0 +1,148 @@
+"""Tavi Project."""
+
+import os
+import time
+from typing import Iterable, Optional
+
+from tavi.event_broker.event_broker import EventBroker
+from tavi.event_broker.event_type import Event, autoplot_data, scan_uuid
+from tavi.library.load_manager import LoadManager
+from tavi.library.tavi_data import TaviData
+from tavi.singleton.singleton import Singleton
+
+
+@Singleton
+class TaviProject:
+    """
+    Central container for managing a full TAVI project workflow.
+
+    The `TaviProject` class provides a high-level interface for loading,
+    filtering, processing, and analyzing triple-axis spectrometer (TAS) data.
+    It acts as the core object for managing raw scans, metadata, selected data,
+    and later processing steps such as combining, fitting, and plotting.
+
+    Internally, `TaviProject` owns a `TaviData` object, which stores and
+    organizes all scan-related information (raw and processed).
+
+    Typical usage involves:
+        1. Loading raw scan files into the project with `load_scans`.
+        2. Selecting subsets of scans or points with `select_scans`.
+        3. Performing transformations such as combining or fitting.
+        4. Visualizing or exporting results.
+
+    Attributes:
+        tavi_data (TaviData):
+            The main data container that stores scan lists, processed data,
+            and user selections (for viewing or modeling).
+
+    Notes:
+        - The `load_scans` method uses a `LoadManager` backend for parsing
+          facility-specific file formats (e.g., ORNL, ILL, ISIS).
+        - Scan filtering is handled by the `Filter` class with logical
+          conditions and operations defined in `tavi_model.filter`.
+        - Future methods (`load_tavi`, `save_tavi`, `combine_data`,
+          `fit_data`, `plot_data`) will extend project persistence,
+          advanced analysis, and visualization.
+
+    """
+
+    def __init__(self) -> None:
+        """Init tavi data."""
+        self._tavi_data = TaviData()
+        self._event_broker = EventBroker()
+
+    def send(self, event: Event) -> None:
+        """Generic send functions to publish events to EventBroker()."""
+        self._event_broker.publish(event)
+
+    def print(self, folder_dir) -> None:
+        """Test a print function."""
+        print("a testing print function")
+        print(folder_dir)
+
+    def get_tavi_data(self) -> TaviData:
+        """Return tavi data."""
+        return self._tavi_data
+
+    def get_plot_data(self, scan_file) -> list[list[float], list[float]]:
+        """Get Pt, detector data to plot."""
+        x = scan_file.Pt
+        y = scan_file.detector
+        return [x, y]
+
+    def set_selected_scan(self, selected_file) -> None:
+        """Set selected file."""
+        scan_file = self.get_tavi_data().rawdataptr[selected_file].data
+        plot_data = self.get_plot_data(scan_file)
+        # send to event broker
+        print(plot_data)
+        self.send(autoplot_data(autoplot_data=plot_data))
+
+    # --------------------Load Manager-------------------------------------
+    def load_scans(
+        self,
+        data_folder: Optional[os.PathLike | str] = None,
+        data_files: Optional[os.PathLike | str | Iterable[os.PathLike | str]] = None,
+        ub_dir: Optional[os.PathLike] = None,
+        facility: Optional[str] = None,
+    ) -> None:
+        """
+        Load raw TAS (triple-axis spectrometer) scan files into the project.
+
+        This method uses the `LoadManager` to read one or more scan files
+        from the specified directory and populate the `scans` attribute with
+        `Scan` objects containing raw data, metadata, and UB matrix information.
+
+        Attributes:
+            data_folder (os.PathLike | str, optional):
+                Path to the directory containing the scan files.
+                If not provided, defaults to the current working directory.
+
+            data_files (os.PathLike | str | Iterable[os.PathLike | str], optional):
+                One or more scan file names to load from the given `data_folder`.
+                Can be a single filename, a `PathLike` object, or an iterable of file paths.
+
+            ub_dir (os.PathLike, optional):
+                Path to the directory containing UB matrix configuration files.
+                Used to associate orientation matrices with the scans if available.
+
+            facility (str, optional):
+                Identifier for the facility (e.g., "ORNL", "ILL", "ISIS") that
+                produced the data. Allows facility-specific loading behavior.
+
+        Returns:
+            None
+                The method updates the `scans` attribute in place.
+
+        """
+        print("Loading started.........")
+        start_time = time.perf_counter()
+        self._tavi_data.rawdataptr = LoadManager(
+            data_folder=data_folder, data_files=data_files, ub_dir=ub_dir, facility=facility
+        ).load()
+        end_time = time.perf_counter()
+        print(f"Loading finished. Took {end_time - start_time:.4f} seconds.")
+        scan_uuid_list = list(self.get_tavi_data().rawdataptr.keys())
+        self.send(scan_uuid(scan_uuid_list=scan_uuid_list))
+
+
+# if __name__ == "__main__":
+#     current_directory = os.getcwd()
+#     filepath = os.path.join(current_directory, "test_data", "exp424", "Datafiles")
+#     # files = ["CG4C_exp0424_scan0041.dat", "CG4C_exp0424_scan0042.dat"]
+#     TaviProj = TaviProject()
+
+#     TaviProj.load_scans(filepath)
+
+#     filename = "CG4C_exp0424_scan0042.dat"
+#     TaviProj.select_scans(
+#         filter_name="scan_contains_42", conditions=([["scan", Operations.CONTAINS, "42"]]), and_or=Logic.OR
+#     )
+
+#     TaviProj.select_scans(filter_name="filter2", conditions=([["scan", Operations.CONTAINS, "4"]]), and_or=Logic.OR)
+#     print(TaviProj.tavi_data.show_selected_data)
+#   print(type(TaviProj.scans[filename].metadata.scan))
+#   print(TaviProj.scans[filename].ubconf)
+#   print(TaviProj.scans[filename].data.Pt)
+#   print(TaviProj.scans[filename].error_message)
+#   print(TaviProj.scans[filename].metadata.time)
