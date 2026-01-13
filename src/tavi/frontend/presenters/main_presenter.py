@@ -1,8 +1,9 @@
 """Main presenter for tavi."""
 
 from tavi.frontend.presenters.auto_plot_presenter import AutoPlotPresenter
-from tavi.frontend.presenters.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenters.load_presenter import LoadPresenter
+
+from tavi.frontend.presenters.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.views.main_view import TaviView
 from tavi.frontend.views.menubar_view import MainMenuBar
 
