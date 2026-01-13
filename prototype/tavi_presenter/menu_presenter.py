@@ -1,24 +1,20 @@
-"""File menu presenter."""
-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
-
-from tavi.frontend.views.file_menu_view import FileMenu
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tavi.backend.model.Tavi_project_interface import TaviProjectInterface
+    from tavi.model_interface.tavi_project_interface import TaviProjectInterface
+    from tavi.tavi_view.menu_view import MainMenuBar
 
 
-class FileMenuPresenter:
+class MenuPresenter:
     """
-    Presenter responsible for mediating interactions.
-
-    Between the file menu bar(`FileMenuBar`) and the project model (`TaviProjectInterface`).
+    Presenter responsible for mediating interactions between the main menu bar
+    (`MainMenuBar`) and the project model (`TaviProjectInterface`).
 
     Parameters
     ----------
-    view : FileMenuBar
+    view : MainMenuBar
         The menu bar view that contains user-triggered actions (e.g., load folder,
         load files, new project, save, exit).
     model : TaviProjectInterface
@@ -27,16 +23,14 @@ class FileMenuPresenter:
 
     """
 
-    def __init__(self, exit_routine: Any, model: TaviProjectInterface) -> None:
-        """Init."""
+    def __init__(self, view: MainMenuBar, model: TaviProjectInterface):
+        """Initialize the menu presenter and register view-to-presenter callbacks."""
         super().__init__()
-        self._view = FileMenu()
-        self._exit_routine = exit_routine
+        self._view = view
         self._model = model
         self._view.setup_callback_load_folder(self.handle_load_folder)
-        self._view.setup_callback_exit(self.exit)
 
-    def handle_load_folder(self, folder_dir: list[str]) -> None:
+    def handle_load_folder(self, data_dir_or_files):
         """
         Handle folder-loading requests from the view.
 
@@ -47,15 +41,10 @@ class FileMenuPresenter:
 
         Parameters
         ----------
-        folder_dir : list[str]
+        data_dir_or_files : list[str]
             A list containing one or more filesystem paths. Only the first entry
             is used, as Qt's `QFileDialog` returns a list even when selecting a
             single folder.
 
         """
-        self._model.print(folder_dir)
-        self._model.load_scans(data_folder=folder_dir[0], facility="ORNL")
-
-    def exit(self) -> None:
-        """Exit in menu."""
-        self._exit_routine()
+        self._model.load(folder=data_dir_or_files[0])

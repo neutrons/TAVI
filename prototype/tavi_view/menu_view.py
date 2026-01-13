@@ -1,11 +1,7 @@
-"""File menu view."""
-
-from typing import Any, Callable, Optional
-
-from qtpy.QtWidgets import QAction, QFileDialog, QMenu
+from qtpy.QtWidgets import QAction, QApplication, QFileDialog, QMenuBar
 
 
-class FileMenu(QMenu):
+class MainMenuBar(QMenuBar):
     """
     Main application menu bar for TAVI, providing project and file-loading actions.
 
@@ -21,11 +17,10 @@ class FileMenu(QMenu):
     (registered via `setup_callback_*` methods) which are called in presenters.
     """
 
-    def __init__(self, parent: Any = None) -> None:
+    def __init__(self, parent=None):
         """
-        Initialize the main menu bar.
-
-        Create all file-related actions, and connect them to internal handlers.
+        Initialize the main menu bar, create all file-related actions, and connect
+        them to internal handlers.
 
         Parameters
         ----------
@@ -35,10 +30,10 @@ class FileMenu(QMenu):
         """
         super().__init__(parent)
         self.load_folder_callback = None
-        self.exit_callback: Optional[Callable[[], None]] = None
 
         # ---- File Menu ----
-        self.setTitle("File")
+        file_menu = self.addMenu("File")
+
         self.new_project_action = QAction("New Project", self)
         self.load_project_action = QAction("Load Project", self)
         self.load_file_action = QAction("Load File(s)", self)
@@ -46,12 +41,12 @@ class FileMenu(QMenu):
         self.save_action = QAction("Save Project", self)
         self.exit_action = QAction("Exit", self)
 
-        self.addAction(self.new_project_action)
-        self.addAction(self.load_project_action)
-        self.addAction(self.load_folder_action)
-        self.addAction(self.load_file_action)
-        self.addAction(self.save_action)
-        self.addAction(self.exit_action)
+        file_menu.addAction(self.new_project_action)
+        file_menu.addAction(self.load_project_action)
+        file_menu.addAction(self.load_folder_action)
+        file_menu.addAction(self.load_file_action)
+        file_menu.addAction(self.save_action)
+        file_menu.addAction(self.exit_action)
 
         self.new_project_action.triggered.connect(self.handle_new_project)
         self.new_project_action.triggered.connect(self.handle_load_project)
@@ -71,20 +66,18 @@ class FileMenu(QMenu):
             Function to be called to initialize a new TAVI project.
 
         """
-        self.new_project_callback = callback
+        self.load_file_callback = callback
 
     def new_project(self) -> None:
         """
         Create a new TAVI project.
-
         Placeholder logic.
         """
         print("TODO: creates a new taviproject")
 
     def handle_new_project(self) -> None:
         """
-        Handle the 'New Project' menu action.
-
+        Handler for the 'New Project' menu action.
         Placeholder logic
         """
         print("TODO: delete everything in taviproject")
@@ -100,37 +93,34 @@ class FileMenu(QMenu):
             Function called when the 'Load Project' action is triggered.
 
         """
-        self.load_project_callback = callback
+        self.load_file_callback = callback
 
     def load_project(self) -> None:
         """
         Load a TAVI project.
-
         Placeholder logic.
         """
         print("TODO: creates a new taviproject")
 
     def handle_load_project(self) -> None:
         """
-        Handle the 'Load Project' action.
-
+        Handler for the 'Load Project' action.
         Placeholder logic.
         """
         print("TODO: delete everything in taviproject")
 
     # Loading a folder of data
-    def setup_callback_load_folder(self, callback: Any) -> None:
-        """Build callback connections for the load data - set by the presenter."""
+    def setup_callback_load_folder(self, callback) -> None:
+        """Building callback connections for the load data - set by the presenter"""
         self.load_folder_callback = callback
 
-    def load_folder(self, folder: str) -> None:
-        """Pass loaded file through callback connections."""
-        self.load_folder_callback(folder)  # type: ignore
+    def load_folder(self, folder) -> None:
+        """Pass loaded file through callback connections"""
+        self.load_folder_callback(folder)
 
     def handle_load_folder(self) -> None:
         """
-        Open a system window and allow users to select a folder directory.
-
+        Opens a system window and allow users to select a folder directory.
         It executes the "load_folder" function.
         """
         dlg = QFileDialog(self, "Select a folder")
@@ -154,18 +144,16 @@ class FileMenu(QMenu):
         """
         self.load_file_callback = callback
 
-    def load_file(self, list_of_file: list[str]) -> None:
+    def load_file(self, list_of_file) -> None:
         """
         Load a list of files into the current TAVI project.
-
         Placeholder logic.
         """
         print("TODO: Loading a list of files")
 
     def handle_load_files(self) -> None:
         """
-        Handle the 'Load File(s)' action.
-
+        Handler for the 'Load File(s)' action.
         Placeholder logic.
         """
         print("TODO: get list of files and call self.load_file to load")
@@ -186,24 +174,22 @@ class FileMenu(QMenu):
     def save(self) -> None:
         """
         Save the current TAVI project.
-
         Placeholder logic.
         """
         print("TODO: save current taviproject")
 
     def handle_save(self) -> None:
         """
-        Handle the 'Save Project' action.
-
+        Handler for the 'Save Project' action.
         Placeholder logic.
         """
         print("TODO: get taviproject and write to local disk")
 
     # Exit
-    def setup_callback_exit(self, callback: Callable[[], None]) -> None:
-        """Set up callback connections."""
-        self.exit_callback = callback
-
     def handle_exit(self) -> None:
-        """Exit Tavi."""
-        self.exit_callback()  # type: ignore
+        """Exit Tavi"""
+        window = self.window()  # the top-level QMainWindow
+        if window:
+            window.close()
+        else:
+            QApplication.quit()  # fallback
