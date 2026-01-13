@@ -5,9 +5,11 @@ from typing import Any
 
 import numpy as np
 
-from tavi.library.FileSystem.tavi_class_factory import Scan
+from tavi.library.tavi_class_factory import Scan
+from tavi.singleton.singleton import Singleton
 
 
+@Singleton
 class TaviData:
     """
     Manage all data and workflows for a complete TAVI project.

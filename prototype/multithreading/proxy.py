@@ -1,22 +1,26 @@
+"""Proxy class for multithreading."""
+
 from concurrent.futures import ThreadPoolExecutor
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 
 # include this in a config file
-num_of_workers = 1
+num_of_workers = 2
 
 T = TypeVar("T")
 
 
-def Proxy(_type: Type[T]):
-    def __init__(self, host: T):
+def Proxy(_type: Type[T]) -> Any:
+    """Proxy class for multithreading."""
+
+    def __init__(self, host: T) -> None:
         self.host = host
 
     abstract_methods = getattr(_type, "__abstractmethods__", set())
 
     namespace = {"__init__": __init__}
 
-    def make_proxy_method(method_name: str):
-        def executeOnWorker(self, *args, **kwargs):
+    def make_proxy_method(method_name: str) -> Any:
+        def executeOnWorker(self, *args: Any, **kwargs: Any) -> Any:
             with ThreadPoolExecutor(max_workers=num_of_workers) as executor:
                 host_method = getattr(self.host, method_name)
                 fut = executor.submit(host_method, *args, **kwargs)
