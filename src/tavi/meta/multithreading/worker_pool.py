@@ -1,31 +1,35 @@
+"""Worker and Worker Pool."""
 
 import asyncio
 from threading import Thread
-from typing import Dict, List
+from typing import Any, Callable, Dict, List
 
-from tavi.meta.multithreading.signal import Signal
-from tavi.meta.decorators.Singleton import Singleton
 from tavi.library.data.ModelResponse import ModelResponse, ResponseCode
+from tavi.meta.decorators.Singleton import Singleton
+from tavi.meta.multithreading.signal import Signal
 
 # logger = taviLogger.getLogger(__name__)
 
 
 class Worker:
+    """Wrapper for threaded tasks that emits signals and handles errors."""
+
     target = None
     args = None
 
-    def __init__(self, target, *args, **kwargs):
+    def __init__(self, target: Callable, *args: Any, **kwargs: Any) -> None:
+        """Initialize worker and setup expected async signals."""
         super().__init__()
         self.target = target
         self.args = args
         self.kwargs = kwargs
         loop = asyncio.get_event_loop()
-        self.finished = Signal(loop) # None
-        self.success = Signal(loop) # bool
-        self.result = Signal(loop) # object
-        self.progress = Signal(loop) # int
+        self.finished = Signal(loop)  # None
+        self.success = Signal(loop)  # bool
+        self.result = Signal(loop)  # object
+        self.progress = Signal(loop)  # int
 
-    def run(self):
+    def run(self) -> None:
         """Long-running task."""
         results = None
         try:
@@ -53,26 +57,31 @@ class Worker:
 
 @Singleton
 class WorkerPool:
+    """Creates and manages threads to run Workers on."""
+
     max_threads = 8
     threads: Dict[Worker, Thread] = {}
     worker_queue: List[Worker] = []
-    
-    def __init__(self):
+
+    def __init__(self) -> None:
+        """Set up event loop so that Signals may work correctly."""
         import asyncio
 
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
-        
 
-    def create_worker(self, target, *args, **kwargs):
+    def create_worker(self, target: Callable, *args: Any, **kwargs: Any) -> Worker:
+        """Create a worker."""
         return Worker(target, *args, **kwargs)
 
-    def _dequeue_worker(self, worker):
+    def _dequeue_worker(self, worker: Worker) -> None:
+        """Dequeues worker and starts the next in queue if it exists."""
         self.threads.pop(worker)
         if len(self.worker_queue) > 0:
             self.submit_worker(self.worker_queue.pop())
 
-    def submit_worker(self, worker):
+    def submit_worker(self, worker: Worker) -> None:
+        """Queues or submits worker to thread."""
         if len(self.threads) >= self.max_threads:
             # add to queue
             self.worker_queue.append(worker)
@@ -82,6 +91,6 @@ class WorkerPool:
             self.threads[worker] = thread
 
             worker.finished.connect(lambda: self._dequeue_worker(worker))
-            
+
             # Start the thread
             thread.start()

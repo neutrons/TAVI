@@ -17,7 +17,7 @@ class MainMenuBar(QMenuBar):
     (registered via `setup_callback_*` methods) which are called in presenters.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """
         Initialize the main menu bar, create all file-related actions, and connect
         them to internal handlers.
@@ -78,7 +78,7 @@ class MainMenuBar(QMenuBar):
     def handle_new_project(self) -> None:
         """
         Handler for the 'New Project' menu action.
-        Placeholder logic
+        Placeholder logic.
         """
         print("TODO: delete everything in taviproject")
 
@@ -111,11 +111,11 @@ class MainMenuBar(QMenuBar):
 
     # Loading a folder of data
     def setup_callback_load_folder(self, callback) -> None:
-        """Building callback connections for the load data - set by the presenter"""
+        """Building callback connections for the load data - set by the presenter."""
         self.load_folder_callback = callback
 
     def load_folder(self, folder) -> None:
-        """Pass loaded file through callback connections"""
+        """Pass loaded file through callback connections."""
         self.load_folder_callback(folder)
 
     def handle_load_folder(self) -> None:
@@ -187,7 +187,7 @@ class MainMenuBar(QMenuBar):
 
     # Exit
     def handle_exit(self) -> None:
-        """Exit Tavi"""
+        """Exit Tavi."""
         window = self.window()  # the top-level QMainWindow
         if window:
             window.close()

@@ -1,4 +1,3 @@
-
 from enum import IntEnum
 from typing import Any, Optional
 
@@ -17,7 +16,6 @@ class ResponseCode(IntEnum):
 
     OK = 200
     ERROR = 500
-
 
 
 class ModelResponse(BaseModel):

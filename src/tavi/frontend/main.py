@@ -1,19 +1,17 @@
-
 import signal
 import sys
 import threading
 
 from qtpy.QtCore import QTimer
-from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QApplication, QHBoxLayout, QPushButton, QVBoxLayout, QWidget
 
-from tavi.backend.model.interface.TaviProjectInterface import TaviProjectInterface
-from tavi.configuration import Configuration
-from tavi.frontend.presenter.main_presenter import MainPresenter
-from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
+from tavi.backend.model.help_model import help_function
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
+from tavi.backend.model.interface.TaviProjectInterface import TaviProjectInterface
 from tavi.backend.model.interface.template_model_interface import TemplateModelProxy
 from tavi.backend.model.tavi_project_model import TaviProject
 from tavi.backend.model.template_model import TemplateModel
+from tavi.configuration import Configuration
 from tavi.frontend.presenter.load_presenter import LoadPresenter
 from tavi.frontend.presenter.menu_presenter import MenuPresenter
 from tavi.frontend.presenter.metadata_presenter import MetaDataPresenter
@@ -23,16 +21,14 @@ from tavi.frontend.view.menu_view import MainMenuBar
 from tavi.frontend.view.metadata_view import MetaDataView
 from tavi.frontend.view.template_view import TemplateView
 
-from tavi.backend.model.help_model import help_function
-
-
 """Main Qt window"""
 
-class MainWindow(QWidget):
-    """Main widget"""
 
-    def __init__(self, parent=None):
-        """Constructor"""
+class MainWindow(QWidget):
+    """Main widget."""
+
+    def __init__(self, parent=None) -> None:
+        """Constructor."""
         super().__init__(parent)
 
         print(f"main GUI running on {threading.current_thread().name}")
@@ -85,7 +81,7 @@ class MainWindow(QWidget):
         # register child widgets to make testing easier
         self.load_view = load_view
 
-    def handle_help(self):
+    def handle_help(self) -> None:
         help_function(context="tavi_View")
 
 
@@ -97,9 +93,7 @@ def _qapp():
     return _app
 
 
-
 def start(options=None):
-
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     app = _qapp()
@@ -115,7 +109,7 @@ def start(options=None):
 
         print(" ".join(msg))
         sys.exit(-1)
-        
+
     # TODO: Log a welcome message
     print("Welcome to TAVI!  Happy visualizing!")
     try:

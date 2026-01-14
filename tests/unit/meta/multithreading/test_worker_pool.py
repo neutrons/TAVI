@@ -7,11 +7,13 @@ import unittest
 # Minimal Signal test double
 # -------------------------
 
+
 class TestSignal:
     """
     Minimal replacement for Signal that synchronously
     executes connected callbacks.
     """
+
     def __init__(self, loop=None):
         self._callbacks = []
         self.emitted = False
@@ -31,8 +33,8 @@ class TestSignal:
 # TestCase
 # -------------------------
 
-class TestWorkerAndWorkerPool(unittest.TestCase):
 
+class TestWorkerAndWorkerPool(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """
@@ -174,4 +176,3 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
 
         self.assertEqual(len(pool.worker_queue), 0)
         self.assertEqual(len(pool.threads), 0)
-

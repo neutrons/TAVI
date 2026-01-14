@@ -7,6 +7,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from tavi.meta.event_broker.event_type import scan_uuid
 
 
@@ -21,13 +22,13 @@ class _UiBridge(QObject):
 
 
 class LoadView(QWidget):
-    """Main widget"""
+    """Main widget."""
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
         Constructor for the main widget
         Args:
-            parent (QObject): Optional parent
+            parent (QObject): Optional parent.
 
         """
         super().__init__(parent)
@@ -109,7 +110,7 @@ class TreeViewWidget(QWidget):
 
         self.treeView.clicked.connect(self.select_file)
 
-    def add_tree_data(self, list_of_files: List[str]):
+    def add_tree_data(self, list_of_files: List[str]) -> None:
         """Populate the tree view with a folder node and its associated files."""
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
@@ -122,7 +123,7 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def select_file(self, val):
+    def select_file(self, val) -> None:
         """
         Handle selection of a tree item and emit a signal if the item represents a
         file rather than a folder.
@@ -155,7 +156,7 @@ class StandardItem(QStandardItem):
 
     """
 
-    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)):
+    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)) -> None:
         """
         Initialize a styled non-editable `QStandardItem`.
 

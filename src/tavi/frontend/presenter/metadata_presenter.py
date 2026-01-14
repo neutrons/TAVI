@@ -31,7 +31,7 @@ class MetaDataPresenter:
 
     """
 
-    def __init__(self, view: MetaDataView, model: TaviProjectInterface):
+    def __init__(self, view: MetaDataView, model: TaviProjectInterface) -> None:
         """Initialize the metadata presenter and register for `meta_data` events."""
         super().__init__()
         self._view = view

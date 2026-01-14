@@ -8,6 +8,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from tavi.meta.event_broker.event_type import template_data
 
 
@@ -85,7 +86,7 @@ class TemplateWidget(QWidget):
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
-        Constructor for the template widget
+        Constructor for the template widget.
 
         Args:
             parent (QObject): Optional parent

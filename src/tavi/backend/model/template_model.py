@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from tavi.meta.event_broker.event_broker import EventBroker
-from tavi.meta.event_broker.event_type import Event, template_data
 from tavi.backend.model.interface.template_model_interface import TemplateModelInterface
 from tavi.backend.model.tavi_project_model import TaviProject
+from tavi.meta.event_broker.event_broker import EventBroker
+from tavi.meta.event_broker.event_type import Event, template_data
 
 
 class TemplateModel(TemplateModelInterface):
@@ -25,12 +25,12 @@ class TemplateModel(TemplateModelInterface):
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the template model and bind to the TAVI project singleton."""
         self.event_broker = EventBroker()
         self.tavi_project = TaviProject()
 
-    def send(self, event: Event):
+    def send(self, event: Event) -> None:
         """
         Publish an event through the model's internal event broker.
 
@@ -42,7 +42,7 @@ class TemplateModel(TemplateModelInterface):
         """
         self.event_broker.publish(event)
 
-    def get_next_file(self, current_selected_file):
+    def get_next_file(self, current_selected_file) -> None:
         """
         A prototypical implementation of a fake business logic that parse a file
         name and get next file name. Can be replaced with other functions.

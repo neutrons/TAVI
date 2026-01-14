@@ -10,14 +10,14 @@ class EventBroker:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         if not hasattr(self, "registry"):
             self.registry = defaultdict(list)
 
-    def register(self, event_type: Any, callable: Literal["event_type"]):
+    def register(self, event_type: Any, callable: Literal["event_type"]) -> None:
         self.registry[event_type].append(callable)
 
-    def publish(self, event: Any):
+    def publish(self, event: Any) -> None:
         event_type = type(event)
         if callable_list := self.registry.get(event_type):
             for callable in callable_list:

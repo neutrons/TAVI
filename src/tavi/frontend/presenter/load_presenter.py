@@ -39,7 +39,7 @@ class LoadPresenter:
 
     """
 
-    def __init__(self, view: LoadView, model: TaviProjectInterface):
+    def __init__(self, view: LoadView, model: TaviProjectInterface) -> None:
         super().__init__()
         """
         Initialize the presenter and register event handlers.

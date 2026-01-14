@@ -45,7 +45,7 @@ class MetaDataView(QWidget):
         """
         Constructor for the main widget
         Args:
-            parent (QObject): Optional parent
+            parent (QObject): Optional parent.
 
         """
         super().__init__(parent)
@@ -91,7 +91,7 @@ class MetaDataWidget(QWidget):
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
-        Constructor for the metadata widget
+        Constructor for the metadata widget.
 
         Args:
             parent (QObject): Optional parent

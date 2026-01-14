@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.meta.event_broker.event_broker import EventBroker
 from tavi.meta.event_broker.event_type import Event, meta_data, scan_uuid, selected_uuid
-from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 
 
 class TaviProject(TaviProjectInterface):
@@ -69,7 +69,7 @@ class TaviProject(TaviProjectInterface):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize the project state.
 
@@ -86,7 +86,7 @@ class TaviProject(TaviProjectInterface):
             self.__class__._initiated = True
 
     def send(self, event: Event) -> None:
-        """Generic send functions to publish events to EventBroker()"""
+        """Generic send functions to publish events to EventBroker()."""
         self._event_broker.publish(event)
 
     def set_selected_scan(self, filename: str) -> None:
@@ -104,7 +104,7 @@ class TaviProject(TaviProjectInterface):
         self.send(meta_data(meta_data_dict={self.selected_scan: index}))
 
     def load_manager(self, filename: str) -> str:
-        """Dummy file to test python multithreading"""
+        """Dummy file to test python multithreading."""
         return filename
 
     def load(self, folder: str) -> None:

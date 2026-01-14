@@ -23,14 +23,14 @@ class MenuPresenter:
 
     """
 
-    def __init__(self, view: MainMenuBar, model: TaviProjectInterface):
+    def __init__(self, view: MainMenuBar, model: TaviProjectInterface) -> None:
         """Initialize the menu presenter and register view-to-presenter callbacks."""
         super().__init__()
         self._view = view
         self._model = model
         self._view.setup_callback_load_folder(self.handle_load_folder)
 
-    def handle_load_folder(self, data_dir_or_files):
+    def handle_load_folder(self, data_dir_or_files) -> None:
         """
         Handle folder-loading requests from the view.
 

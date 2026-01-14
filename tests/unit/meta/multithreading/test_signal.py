@@ -82,9 +82,7 @@ class TestSignal(unittest.TestCase):
         self.loop.call_soon(sig.emit, 1)
         run_loop(self.loop)
 
-        self.loop.run_until_complete(
-            asyncio.wait_for(called.wait(), timeout=0.5)
-        )
+        self.loop.run_until_complete(asyncio.wait_for(called.wait(), timeout=0.5))
 
     def test_async_slot_from_worker_thread(self):
         sig = Signal(self.loop)
@@ -106,9 +104,7 @@ class TestSignal(unittest.TestCase):
 
         run_loop(self.loop)
 
-        self.loop.run_until_complete(
-            asyncio.wait_for(called.wait(), timeout=0.5)
-        )
+        self.loop.run_until_complete(asyncio.wait_for(called.wait(), timeout=0.5))
 
     def test_weakref_cleanup(self):
         sig = Signal(self.loop)
@@ -119,6 +115,7 @@ class TestSignal(unittest.TestCase):
         def make_slot():
             def slot():
                 called.append(1)
+
             return slot
 
         slot = make_slot()
@@ -169,7 +166,7 @@ class TestSignal(unittest.TestCase):
         sig.emit()
 
         self.assertEqual(called, ["ok"])
-        
+
     def test_queued_slot_executes_on_loop_thread(self):
         sig = Signal(self.loop)
         sig.bind_loop_thread()

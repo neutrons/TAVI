@@ -4,7 +4,7 @@ import os
 from typing import Iterable, Optional
 
 from tavi.library.FileSystem.load_manager import LoadManager
-from tavi.library.filter import Filter, Logic, Operations
+from tavi.library.filter import Logic, Operations
 from tavi.library.tavi_data import TaviData
 
 

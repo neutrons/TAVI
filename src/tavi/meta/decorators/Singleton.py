@@ -4,7 +4,7 @@ from typing import List
 _Singleton_instances: List[type] = []
 
 
-# NOTE: January, 31, 2025 - There may be a race condition between inherited classes of a signleton class
+# NOTE: January, 31, 2025 - There may be a race condition between inherited classes of a singleton class
 #       There was some Weirdness observed involving the testfile InstaEats.py where the inheriter of
 #       LocalDataService was just a LocalDataService object and not a WhateversInTheFridge object.
 #       Instantiating the WhateversInTheFridge earlier may have fixed the issue for now.
@@ -15,7 +15,7 @@ def Singleton(orig_cls):
     initialized = False
 
     @wraps(orig_cls.__init__)
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         nonlocal initialized
         if initialized:
             return
@@ -30,7 +30,7 @@ def Singleton(orig_cls):
             instance = orig_new(cls)  # , *args, **kwargs)
         return instance
 
-    def _reset_Singleton(*, fully_unwrap: bool = False):
+    def _reset_Singleton(*, fully_unwrap: bool = False) -> None:
         # Reset the Singleton:
         #
         #   * The `@Singleton` decorator is applied at time of import.
@@ -62,7 +62,7 @@ def Singleton(orig_cls):
     return orig_cls
 
 
-def reset_Singletons(*, fully_unwrap: bool = False):
+def reset_Singletons(*, fully_unwrap: bool = False) -> None:
     # Implementation notes:
     #
     #   * The `@Singleton` decorator is applied at time of import.
