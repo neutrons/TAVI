@@ -64,15 +64,15 @@ class WorkerPool:
         asyncio.set_event_loop(self.loop)
         
 
-    def createWorker(self, target, *args, **kwargs):
+    def create_worker(self, target, *args, **kwargs):
         return Worker(target, *args, **kwargs)
 
-    def _dequeueWorker(self, worker):
+    def _dequeue_worker(self, worker):
         self.threads.pop(worker)
         if len(self.worker_queue) > 0:
-            self.submitWorker(self.worker_queue.pop())
+            self.submit_worker(self.worker_queue.pop())
 
-    def submitWorker(self, worker):
+    def submit_worker(self, worker):
         if len(self.threads) >= self.max_threads:
             # add to queue
             self.worker_queue.append(worker)
@@ -81,7 +81,7 @@ class WorkerPool:
             thread = Thread(target=worker.run)
             self.threads[worker] = thread
 
-            worker.finished.connect(lambda: self._dequeueWorker(worker))
+            worker.finished.connect(lambda: self._dequeue_worker(worker))
             
             # Start the thread
             thread.start()

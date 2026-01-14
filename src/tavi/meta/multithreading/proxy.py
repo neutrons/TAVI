@@ -8,11 +8,10 @@ num_of_workers = 1
 
 T = TypeVar("T")
 
-worker_pool = WorkerPool()
-
 def Proxy(_type: Type[T]):
     def __init__(self, host: T):
         self.host = host
+        self.worker_pool = WorkerPool()
 
     abstract_methods = getattr(_type, "__abstractmethods__", set())
 
@@ -21,8 +20,8 @@ def Proxy(_type: Type[T]):
     def make_proxy_method(method_name: str):
         def executeOnWorker(self, *args, **kwargs):
             host_method = getattr(self.host, method_name)
-            worker = worker_pool.createWorker(host_method, *args, **kwargs)
-            worker_pool.submitWorker(worker)
+            worker = self.worker_pool.create_worker(host_method, *args, **kwargs)
+            self.worker_pool.submit_worker(worker)
             # TODO: move to debug logger
             print("sent to worker!")
             # Models do not return values.
