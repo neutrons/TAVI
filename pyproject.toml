@@ -17,10 +17,7 @@ repository = "https://github.com/neutrons/tavi"
 issues = "https://github.com/neutrons/tavi/issues"
 
 [build-system]
-requires = [
-  "hatchling",
-  "versioningit"
-]
+requires = ["hatchling", "versioningit"]
 build-backend = "hatchling.build"
 
 [project.gui-scripts]
@@ -58,41 +55,75 @@ dirty = "{version}"
 distance-dirty = "{next_version}.dev{distance}"
 
 [tool.pytest.ini_options]
-pythonpath = [
-  ".", "src", "scripts"
-]
+pythonpath = [".", "src", "scripts"]
 testpaths = ["tests"]
 python_files = ["test*.py"]
-norecursedirs = [".git", "tmp*", "_tmp*", "__pycache__", "*dataset*", "*data_set*"]
-markers = [
-    "mymarker: example markers goes here"
+norecursedirs = [
+  ".git",
+  "tmp*",
+  "_tmp*",
+  "__pycache__",
+  "*dataset*",
+  "*data_set*",
 ]
+markers = ["mymarker: example markers goes here"]
 
 [tool.ruff]
 line-length = 120
 
 [tool.ruff.lint]
-ignore = ["F841", "E741", "ARG001", "ARG002","ARG004", "F821","N801", "N802", "N806","N807", "A002", "A001", "N803", "C901", "F841", "E501","D212", "D203", "ANN401"]
-select = ["A","ANN", "ARG", "ASYNC", "BLE", "C90", "E", "F", "I", "N", "UP032", "W", "D"]
+ignore = [
+  "F841",
+  "E741",
+  "ARG001",
+  "ARG002",
+  "ARG004",
+  "F821",
+  "N801",
+  "N802",
+  "N806",
+  "N807",
+  "A002",
+  "A001",
+  "N803",
+  "C901",
+  "F841",
+  "E501",
+  "D212",
+  "D203",
+  "ANN401",
+]
+select = [
+  "A",
+  "ANN",
+  "ARG",
+  "ASYNC",
+  "BLE",
+  "C90",
+  "E",
+  "F",
+  "I",
+  "N",
+  "UP032",
+  "W",
+  "D",
+]
 # Add additional 3rd party tool configuration here as needed
 
 # ------------------ #
 # Pixi configuration #
 # ------------------ #
 [tool.pixi.workspace]
-preview = ["pixi-build"] # Need this to access pixi-build feature
+preview = ["pixi-build"]                                             # Need this to access pixi-build feature
 platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
-channels = [
-  "conda-forge",
-  "https://prefix.dev/pixi-build-backends",
-]
+channels = ["conda-forge", "https://prefix.dev/pixi-build-backends"]
 
 [tool.pixi.package]
 name = "tavi"
 version = "0.0.0" # placeholder, can be updated by task sync-version
 
 [tool.pixi.package.build]
-backend = { name = "pixi-build-python", version = "0.1.*" }
+backend = { name = "pixi-build-python", version = "0.4.*" }
 
 [tool.pixi.package.host-dependencies]
 hatchling = "*"
@@ -134,7 +165,12 @@ tavi = { path = ".", editable = true }
 
 [tool.pixi.environments]
 #environment definitions with feature dependencies
-default = { features = ["package", "developer","docs","test",], solve-group = "default" }
+default = { features = [
+  "package",
+  "developer",
+  "docs",
+  "test",
+], solve-group = "default" }
 
 [tool.pixi.feature.package.dependencies]
 #conda package
@@ -177,12 +213,12 @@ test = { description = "Run the test suite", cmd = "pytest" }
 # Packaging
 conda-build-command = { cmd = "pixi build", description = "Wrapper for building the conda package - used by `conda-build`" }
 conda-build = { description = "Build the conda package", depends-on = [
-    "sync-version",
-    "conda-build-command",
-    "reset-version",
+  "sync-version",
+  "conda-build-command",
+  "reset-version",
 ] }
 conda-publish = { cmd = "anaconda upload *.conda", description = "Publish the .conda package to anaconda.org", depends-on = [
-    "conda-build",
+  "conda-build",
 ] }
 # Misc
 audit-deps = { cmd = "pip-audit --local -s osv", description = "Audit the package dependencies for vulnerabilities" }
@@ -190,9 +226,9 @@ clean = { cmd = 'rm -rf .pytest_cache .ruff_cache **/*.egg-info **/dist **/__pyc
 clean-conda = { cmd = "rm -f *.conda", description = "Clean the local .conda build artifacts" }
 clean-docs = { cmd = "rm -rf docs/_build", description = "Clean up documentation build artifacts" }
 clean-all = { description = "Clean all artifacts", depends-on = [
-    "clean",
-    "clean-conda",
-    "clean-docs",
+  "clean",
+  "clean-conda",
+  "clean-docs",
 ] }
 sync-version = { cmd = 'version=$(python -m versioningit); toml set tool.pixi.package.version "$version" --toml-path pyproject.toml', description = "Sync pyproject.toml version with Git version" }
 reset-version = { cmd = "toml set tool.pixi.package.version \"0.0.0\" --toml-path pyproject.toml", description = "Reset the package version to 0.0.0" }
