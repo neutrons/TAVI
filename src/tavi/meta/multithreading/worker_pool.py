@@ -4,7 +4,7 @@ import asyncio
 from threading import Thread
 from typing import Any, Callable, Dict, List
 
-from tavi.library.data.ModelResponse import ModelResponse, ResponseCode
+from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.meta.decorators.Singleton import Singleton
 from tavi.meta.multithreading.signal import Signal
 
@@ -17,13 +17,12 @@ class Worker:
     target = None
     args = None
 
-    def __init__(self, target: Callable, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, loop: asyncio.AbstractEventLoop, target: Callable, *args: Any, **kwargs: Any) -> None:
         """Initialize worker and setup expected async signals."""
         super().__init__()
         self.target = target
         self.args = args
         self.kwargs = kwargs
-        loop = asyncio.get_event_loop()
         self.finished = Signal(loop)  # None
         self.success = Signal(loop)  # bool
         self.result = Signal(loop)  # object
@@ -65,14 +64,11 @@ class WorkerPool:
 
     def __init__(self) -> None:
         """Set up event loop so that Signals may work correctly."""
-        import asyncio
-
         self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
 
     def create_worker(self, target: Callable, *args: Any, **kwargs: Any) -> Worker:
         """Create a worker."""
-        return Worker(target, *args, **kwargs)
+        return Worker(self.loop, target, *args, **kwargs)
 
     def _dequeue_worker(self, worker: Worker) -> None:
         """Dequeues worker and starts the next in queue if it exists."""

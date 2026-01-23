@@ -9,17 +9,19 @@ from typing import Any, Callable
 
 
 class Signal:
-    """PyQt-like implementation of cross thread callback communication."""
+    """PyQt-like implementation of cross-thread callback communication."""
 
     def __init__(self, loop: asyncio.AbstractEventLoop) -> None:
         """Initialize signal with relevant event loop."""
         self._loop = loop
-        self._loop_thread_id = None
-        self._slots = []
+        self._loop_thread_id: int | None = None
+        self._slots: list[weakref.ReferenceType] = []
 
     def bind_loop_thread(self) -> None:
         """Must be called from inside the running event loop thread."""
         self._loop_thread_id = threading.get_ident()
+        if self._loop_thread_id is None:
+            raise RuntimeError("Signal.bind_loop_thread() was never called")
 
     def connect(self, slot: Callable) -> None:
         """Register a consumer to be emitted to later."""
@@ -30,7 +32,6 @@ class Signal:
 
     def emit(self, *args: Any, **kwargs: Any) -> None:
         """Send data to Signal consumers."""
-        # Determine connection type (Qt::AutoConnection semantics)
         is_loop_thread = threading.get_ident() == self._loop_thread_id
 
         for ref in list(self._slots):
@@ -39,37 +40,41 @@ class Signal:
                 self._slots.remove(ref)
                 continue
 
-            if is_loop_thread:
-                # Direct connection
-                self._invoke_direct(slot, *args, **kwargs)
+            if inspect.iscoroutinefunction(slot):
+                # ALWAYS schedule coroutine slots
+                self._schedule_coroutine(slot, *args, **kwargs)
             else:
-                # Queued connection
-                self._invoke_queued(slot, *args, **kwargs)
+                if is_loop_thread:
+                    self._invoke_direct(slot, *args, **kwargs)
+                else:
+                    self._invoke_queued(slot, *args, **kwargs)
 
     # --- internals ---
 
     def _invoke_direct(self, slot: Callable, *args: Any, **kwargs: Any) -> None:
         try:
-            if inspect.iscoroutinefunction(slot):
-                asyncio.create_task(slot(*args, **kwargs))
-            else:
-                slot(*args, **kwargs)
+            slot(*args, **kwargs)
         except Exception:
             logging.exception("Signal slot failed (direct)")
 
     def _invoke_queued(self, slot: Callable, *args: Any, **kwargs: Any) -> None:
-        if inspect.iscoroutinefunction(slot):
-            self._loop.call_soon_threadsafe(
-                asyncio.create_task,
-                slot(*args, **kwargs),
-            )
-        else:
-            self._loop.call_soon_threadsafe(
-                self._safe_call,
-                slot,
-                *args,
-                **kwargs,
-            )
+        self._loop.call_soon_threadsafe(
+            self._safe_call,
+            slot,
+            *args,
+            **kwargs,
+        )
+
+    def _schedule_coroutine(self, slot: Callable, *args: Any, **kwargs: Any) -> None:
+        coro = slot(*args, **kwargs)
+
+        def _create_task() -> None:
+            try:
+                asyncio.create_task(coro)
+            except Exception:
+                logging.exception("Signal coroutine slot failed")
+
+        self._loop.call_soon_threadsafe(_create_task)
 
     @staticmethod
     def _safe_call(slot: Callable, *args: Any, **kwargs: Any) -> None:

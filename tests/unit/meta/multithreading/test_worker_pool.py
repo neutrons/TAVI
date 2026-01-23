@@ -73,14 +73,14 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
     # -------------------------
 
     def test_worker_success_path(self):
-        Worker = self.worker_module.Worker
+        WorkerPool = self.worker_module.WorkerPool
         ResponseCode = self.worker_module.ResponseCode
         ModelResponse = self.worker_module.ModelResponse
 
         def target(a, b):
             return a + b
 
-        worker = Worker(target, 2, 3)
+        worker = WorkerPool().create_worker(target, 2, 3)
         worker.run()
 
         self.assertTrue(worker.result.emitted)
@@ -93,14 +93,14 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         self.assertEqual(result.data, 5)
 
     def test_worker_exception_path(self):
-        Worker = self.worker_module.Worker
+        WorkerPool = self.worker_module.WorkerPool
         ResponseCode = self.worker_module.ResponseCode
         ModelResponse = self.worker_module.ModelResponse
 
         def target():
             raise RuntimeError("failure")
 
-        worker = Worker(target)
+        worker = WorkerPool().create_worker(target)
         worker.run()
 
         self.assertTrue(worker.result.emitted)
