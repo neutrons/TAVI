@@ -1,21 +1,20 @@
+"""Singleton Module."""
+
 from functools import wraps
-from typing import List
+from typing import Any, List
 
 _Singleton_instances: List[type] = []
 
 
-# NOTE: January, 31, 2025 - There may be a race condition between inherited classes of a singleton class
-#       There was some Weirdness observed involving the testfile InstaEats.py where the inheriter of
-#       LocalDataService was just a LocalDataService object and not a WhateversInTheFridge object.
-#       Instantiating the WhateversInTheFridge earlier may have fixed the issue for now.
-def Singleton(orig_cls):
+def Singleton(orig_cls) -> Any:  # noqa:  ANN001
+    """Make an annotated class instantiate as a Singleton."""
     orig_new = orig_cls.__new__
     orig_init = orig_cls.__init__
     instance = None
     initialized = False
 
     @wraps(orig_cls.__init__)
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN001, ANN002, ANN003
         nonlocal initialized
         if initialized:
             return
@@ -23,7 +22,7 @@ def Singleton(orig_cls):
         orig_init(self, *args, **kwargs)
 
     @wraps(orig_cls.__new__)
-    def __new__(cls, *args, **kwargs):  # noqa: ARG001
+    def __new__(cls, *args, **kwargs) -> Any:  # noqa: ARG001, ANN001, ANN002, ANN003
         nonlocal instance
         if instance is None:
             # this needs to work with object.__new__, which only has only the `cls` arg
@@ -63,6 +62,7 @@ def Singleton(orig_cls):
 
 
 def reset_Singletons(*, fully_unwrap: bool = False) -> None:
+    """Reset all singleton objects."""
     # Implementation notes:
     #
     #   * The `@Singleton` decorator is applied at time of import.

@@ -5,7 +5,7 @@ from threading import Thread
 from typing import Any, Callable, Dict, List
 
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.meta.decorators.Singleton import Singleton
+from tavi.meta.decorators.singleton import Singleton
 from tavi.meta.multithreading.signal import Signal
 
 # logger = taviLogger.getLogger(__name__)
