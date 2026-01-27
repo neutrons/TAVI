@@ -17,7 +17,11 @@ class TestSignal:
     def __init__(self, loop=None):
         self._callbacks = []
         self.emitted = False
+        self.loopBound = False
         self.args = None
+
+    def bind_loop_thread(self):
+        self.loopBound = True
 
     def connect(self, callback):
         self._callbacks.append(callback)
@@ -78,11 +82,14 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         ModelResponse = self.worker_module.ModelResponse
 
         def target(a, b):
-            return a + b
+            return ModelResponse(code=ResponseCode.OK, data = a + b)
 
         worker = WorkerPool().create_worker(target, 2, 3)
         worker.run()
 
+        self.assertTrue(worker.result.loopBound)
+        self.assertTrue(worker.success.loopBound)
+        self.assertTrue(worker.finished.loopBound)
         self.assertTrue(worker.result.emitted)
         self.assertTrue(worker.success.emitted)
         self.assertTrue(worker.finished.emitted)
@@ -176,3 +183,26 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
 
         self.assertEqual(len(pool.worker_queue), 0)
         self.assertEqual(len(pool.threads), 0)
+
+    def test_workerpool_finished_signal(self):
+        WorkerPool = self.worker_module.WorkerPool
+        ResponseCode = self.worker_module.ResponseCode
+        ModelResponse = self.worker_module.ModelResponse
+
+        def target(a, b):
+            return ModelResponse(code=ResponseCode.OK, data = a + b)
+        
+        finishedCalled = False
+        def slot():
+            nonlocal finishedCalled
+            finishedCalled = True
+
+        worker = WorkerPool().create_worker(target, 2, 3)
+        worker.finished.connect(slot)
+        worker.run()
+
+        self.assertTrue(worker.result.emitted)
+        self.assertTrue(worker.success.emitted)
+        self.assertTrue(worker.finished.emitted)
+
+        assert finishedCalled

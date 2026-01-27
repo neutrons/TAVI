@@ -23,18 +23,25 @@ class Worker:
         self.target = target
         self.args = args
         self.kwargs = kwargs
-        self.finished = Signal(loop)  # None
-        self.success = Signal(loop)  # bool
-        self.result = Signal(loop)  # object
-        self.progress = Signal(loop)  # int
+        self.finished: Signal = Signal(loop)  # None
+        self.success: Signal = Signal(loop)  # bool
+        self.result: Signal = Signal(loop)  # object
+        # self.progress : Signal = Signal(loop)  # int
+
+    def bindSignals(self) -> None:
+        """Bind the signals for use."""
+        self.finished.bind_loop_thread()
+        self.success.bind_loop_thread()
+        self.result.bind_loop_thread()
+        # self.progress.bind_loop_thread()
 
     def run(self) -> None:
         """Long-running task."""
         results = None
+        self.bindSignals()
         try:
-            ret = self.target(*self.args, **self.kwargs)
-            results = ModelResponse(code=ResponseCode.OK, data=ret)
-            # results.code = 200 # set to 200 for testing
+            # Expects the return to be wrapped in a ModelResponse
+            results: ModelResponse = self.target(*self.args, **self.kwargs)
         except Exception as e:  # noqa: BLE001
             # logger.error(e)
             # if logger.isEnabledFor(logging.DEBUG):
@@ -47,7 +54,7 @@ class Worker:
 
         if isinstance(results, ModelResponse):
             self.result.emit(results)
-            self.success.emit(results.code > ResponseCode.OK)
+            self.success.emit(results.code < ResponseCode.OK)
             self.finished.emit()
         else:
             self.finished.emit()

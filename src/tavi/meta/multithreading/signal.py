@@ -20,8 +20,6 @@ class Signal:
     def bind_loop_thread(self) -> None:
         """Must be called from inside the running event loop thread."""
         self._loop_thread_id = threading.get_ident()
-        if self._loop_thread_id is None:
-            raise RuntimeError("Signal.bind_loop_thread() was never called")
 
     def connect(self, slot: Callable) -> None:
         """Register a consumer to be emitted to later."""
@@ -32,6 +30,9 @@ class Signal:
 
     def emit(self, *args: Any, **kwargs: Any) -> None:
         """Send data to Signal consumers."""
+        if self._loop_thread_id is None:
+            raise RuntimeError("Signal.bind_loop_thread() was never called.")
+
         is_loop_thread = threading.get_ident() == self._loop_thread_id
 
         for ref in list(self._slots):
