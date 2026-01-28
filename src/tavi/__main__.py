@@ -1,40 +1,37 @@
 """Entry point."""
 
-import argparse
 import sys
 
-from tavi import __version__ as tavi_version
-from tavi.frontend.main import start
+from qtpy.QtWidgets import QApplication
+
+from tavi.backend.model_interface.TaviProjectInterface import TaviProjectInterface
+from tavi.configuration import Configuration
+from tavi.frontend.presenters.main_presenter import MainPresenter
 
 
-def _print_text_splash() -> None:
-    # TODO
-    pass
+def execute() -> None:
+    """Entry point."""
+    app = QApplication(sys.argv)
+    config = Configuration()
 
+    if not config.is_valid():
+        msg = (
+            "Error with configuration settings!",
+            f"Check and update your file: {config.config_file_path}",
+            "with the latest settings found here:",
+            f"{config.template_file_path} and start the application again.",
+        )
 
-def _createArgparser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="TAVI", description="Triple Axis data Visualization Toolkit (TAVI) ", epilog="https://tavi.readthedocs.io/"
-    )
-    parser.add_argument("-v", "--version", action="version", version=tavi_version)
-    parser.add_argument(
-        "--headcheck",
-        action="store_true",
-        help="start the gui then shut it down after 5 seconds. This is used for testing",
-    )
-    return parser
+        print(" ".join(msg))
+        sys.exit(-1)
 
+    dict_of_model = {"TaviProjectInterface": TaviProjectInterface()}
 
-def main(args: list[str] = None) -> int:
-    """Setups up and runs the application."""
-    parser = _createArgparser()
-    options, _ = parser.parse_known_args(args)
+    presenter = MainPresenter(dict_of_model)
+    presenter._view.show()
 
-    # show the ascii splash screen
-    _print_text_splash()
-
-    return start(options)
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
+    execute()
