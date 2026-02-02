@@ -1,7 +1,7 @@
 """Model Response and its codes."""
 
 from enum import IntEnum
-from typing import Any, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -23,5 +23,5 @@ class ModelResponse(BaseModel):
     """The response of a model, including what level of success it had."""
 
     code: ResponseCode
+    # Optional warning message for the user
     message: Optional[str] = None
-    data: Optional[Any] = None

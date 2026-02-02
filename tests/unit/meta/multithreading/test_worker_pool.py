@@ -87,22 +87,11 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         worker = WorkerPool().create_worker(target, 2, 3)
         worker.run()
 
-        self.assertTrue(worker.result.loopBound)
-        self.assertTrue(worker.success.loopBound)
         self.assertTrue(worker.finished.loopBound)
-        self.assertTrue(worker.result.emitted)
-        self.assertTrue(worker.success.emitted)
         self.assertTrue(worker.finished.emitted)
-
-        result = worker.result.args[0]
-        self.assertIsInstance(result, ModelResponse)
-        self.assertEqual(result.code, ResponseCode.OK)
-        self.assertEqual(result.data, 5)
 
     def test_worker_exception_path(self):
         WorkerPool = self.worker_module.WorkerPool
-        ResponseCode = self.worker_module.ResponseCode
-        ModelResponse = self.worker_module.ModelResponse
 
         def target():
             raise RuntimeError("failure")
@@ -110,14 +99,7 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         worker = WorkerPool().create_worker(target)
         worker.run()
 
-        self.assertTrue(worker.result.emitted)
-        self.assertTrue(worker.success.emitted)
         self.assertTrue(worker.finished.emitted)
-
-        result = worker.result.args[0]
-        self.assertIsInstance(result, ModelResponse)
-        self.assertEqual(result.code, ResponseCode.ERROR)
-        self.assertIn("failure", result.message)
 
     # -------------------------
     # WorkerPool tests
@@ -201,8 +183,6 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         worker.finished.connect(slot)
         worker.run()
 
-        self.assertTrue(worker.result.emitted)
-        self.assertTrue(worker.success.emitted)
         self.assertTrue(worker.finished.emitted)
 
         assert finishedCalled

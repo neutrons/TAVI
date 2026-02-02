@@ -24,16 +24,10 @@ class Worker:
         self.args = args
         self.kwargs = kwargs
         self.finished: Signal = Signal(loop)  # None
-        self.success: Signal = Signal(loop)  # bool
-        self.result: Signal = Signal(loop)  # object
-        # self.progress : Signal = Signal(loop)  # int
 
     def bindSignals(self) -> None:
         """Bind the signals for use."""
         self.finished.bind_loop_thread()
-        self.success.bind_loop_thread()
-        self.result.bind_loop_thread()
-        # self.progress.bind_loop_thread()
 
     def run(self) -> None:
         """Long-running task."""
@@ -51,13 +45,8 @@ class Worker:
             #     traceback.print_exc()
 
             results = ModelResponse(code=ResponseCode.ERROR, message=str(e))
-
-        if isinstance(results, ModelResponse):
-            self.result.emit(results)
-            self.success.emit(results.code < ResponseCode.OK)
-            self.finished.emit()
-        else:
-            self.finished.emit()
+        self.finished.emit()
+        if not isinstance(results, ModelResponse):
             raise ValueError("Worker target must return a ModelResponse object.")
 
 
