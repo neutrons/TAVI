@@ -4,9 +4,9 @@ import sys
 
 from qtpy.QtWidgets import QApplication
 
-from tavi.backend.model_interface.TaviProjectInterface import TaviProjectInterface
+from tavi.backend.model.interface.TaviProjectInterface import TaviProjectInterface
 from tavi.configuration import Configuration
-from tavi.frontend.presenters.main_presenter import MainPresenter
+from tavi.frontend.presenter.main_presenter import MainPresenter
 
 
 def execute() -> None:
