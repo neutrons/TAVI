@@ -1,6 +1,7 @@
 """Main presenter for tavi."""
 
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
+from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 
@@ -12,9 +13,12 @@ class MainPresenter:
         """Init main views."""
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
-        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectInterface"])
+        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectProxy"])
         menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(menu_bar)
+
+        self.load_raw_scan_view = self._view.main_window.load_view
+        self.load_raw_scan_presenter = LoadRawScanPresenter(self.load_raw_scan_view, model_dict["TaviProjectProxy"])
 
     def exit(self) -> bool:
         """
