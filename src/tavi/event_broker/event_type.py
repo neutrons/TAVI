@@ -14,4 +14,3 @@ class RawScanLoadingEvent(Event):
     """loading raw data event."""
 
     raw_scan_uuid: list[str]
-    

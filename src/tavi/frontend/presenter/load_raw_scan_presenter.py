@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from ast import Load
 from typing import TYPE_CHECKING
 
 from tavi.event_broker.event_broker import EventBroker
@@ -24,7 +23,7 @@ class LoadRawScanPresenter:
         The model providing metadata updates.
     event_broker : EventBroker
         The event system used to subscribe to different loading data update events.
-    
+
     """
 
     def __init__(self, view: LoadView, model: TaviProjectInterface):
@@ -35,6 +34,6 @@ class LoadRawScanPresenter:
         self.event_broker = EventBroker()
         self.event_broker.register(RawScanLoadingEvent, self.update_treeview_data)
 
-    def update_treeview_data(self, event:RawScanLoadingEvent) -> None:
+    def update_treeview_data(self, event: RawScanLoadingEvent) -> None:
         # TODO: implement rules to display tavi data after backend story
         print("TODO: Implement rules to display loaded data after backend story.")

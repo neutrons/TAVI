@@ -5,6 +5,7 @@ from typing import Any, Literal
 
 from tavi.meta.decorators.singleton import Singleton
 
+
 @Singleton
 class EventBroker:
     """Event broker class."""

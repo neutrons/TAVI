@@ -10,10 +10,12 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+
 class LoadView(QWidget):
     """Main widget."""
 
     update_tree_signal = Signal(list)
+
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
         Constructor for the main widget.
