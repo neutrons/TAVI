@@ -18,7 +18,7 @@ class LoadView(QWidget):
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
-        Constructor for the main widget.
+        Construct the main treeview widget.
 
         Args:
             parent (QObject): Optional parent
@@ -114,7 +114,7 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def select_file(self, val) -> None:
+    def select_file(self, val: str) -> None:
         """
         Handle selection of a tree item and emit a signal if the item represents a file.
 
@@ -146,7 +146,9 @@ class StandardItem(QStandardItem):
 
     """
 
-    def __init__(self, txt="", font_size=12, set_bold=False, color=QColor(0, 0, 0)) -> None:
+    def __init__(
+        self, txt: str = "", font_size: int = 12, set_bold: bool = False, color: QColor = QColor(0, 0, 0)
+    ) -> None:
         """
         Initialize a styled non-editable `QStandardItem`.
 

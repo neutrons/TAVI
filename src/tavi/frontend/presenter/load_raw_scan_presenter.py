@@ -1,3 +1,5 @@
+"""Load raw scan presenter."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -12,7 +14,9 @@ if TYPE_CHECKING:
 
 class LoadRawScanPresenter:
     """
-    Presenter responsible for mediating dataloading-related updates between the
+    Presenter responsible for data loading.
+
+    Mediating dataloading-related updates between the
     model (`TaviProjectInterface`) and the load_raw_scan_view (`LoadView`).
 
     Attributes
@@ -26,7 +30,7 @@ class LoadRawScanPresenter:
 
     """
 
-    def __init__(self, view: LoadView, model: TaviProjectInterface):
+    def __init__(self, view: LoadView, model: TaviProjectInterface) -> None:
         """Initialize the metadata presenter and register for `meta_data` events."""
         super().__init__()
         self._view = view
@@ -35,5 +39,6 @@ class LoadRawScanPresenter:
         self.event_broker.register(RawScanLoadingEvent, self.update_treeview_data)
 
     def update_treeview_data(self, event: RawScanLoadingEvent) -> None:
+        """Update the treeview GUI after loading complete."""
         # TODO: implement rules to display tavi data after backend story
         print("TODO: Implement rules to display loaded data after backend story.")
