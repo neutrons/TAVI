@@ -102,7 +102,11 @@ class TreeViewWidget(QWidget):
         self.treeView.clicked.connect(self.select_file)
 
     def add_tree_data(self, list_of_files: List[str]) -> None:
-        """Populate the tree view with a folder node and its associated files."""
+        """
+        Populate the tree view with a folder node and its associated files.
+
+        The real structure should be discussed and scoped out based on how we want to create uuid for raw scans.
+        """
         if "exp" in list_of_files[0]:
             filename = list_of_files[0].split("_")
             self.experiment_folder = StandardItem(filename[1], 16, set_bold=True)
