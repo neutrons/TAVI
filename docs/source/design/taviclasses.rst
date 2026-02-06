@@ -16,52 +16,29 @@ every time there are new valid values received from the user (front end).
 .. mermaid::
 
  classDiagram
-    TaviModel "1" -->"1" CrosshairParameters
-    CrosshairParameters "1" -->"1" SingleCrystalParameters
+    TaviProject "1" -->"1" TaviData
+    TaviData "1" --> "1" Scan
 
-    class TaviModel{
-        +float incident_energy_ei
-        +float detector_tank_angle_s2
-        +float polarization_direction_angle_p
-        +enum 'PlotType' plot_type
-        +CrosshairParameters crosshair_parameters
-        +set_single_crystal_parameters(params: dict[str, float])
-        +get_single_crystal_parameters()
-        +set_crosshair(current_experiment_type: str, DeltaE: float = None, modQ: float = None)
-        +get_crosshair()
-        +get_ang_Q_beam()
-        +set_experiment_parameters(Ei: float, S2: float, alpha_p: float, plot_type: str)
-        +get_experiment_parameters()
-        +check_plot_update(deltaE)
-        +calculate_graph_data()
+    class TaviProject{
+        +TaviData tavi_data
+        +load_raw_scan_from_folder()
     }
 
 
-    class CrosshairParameters{
-        +float crosshair_delta_e
-        +float crosshair_mod_q
-        +experiment_type: str
-        +SingleCrystalParameters single_crystal_parameters
-        +set_crosshair(current_experiment_type: str, DeltaE: float = None, modQ: float = None)
-        +get_crosshair()
-        +get_experiment_type()
+    class TaviData{
+        +RawDataPtr rawdataptr:dict[str, Scan]
+        +CombineDataPtr combinedataptr:dict[str, np.array]
+        +process_selected_data:list[str]
+        +show_selected_data:list[str]
+        +FitPtr fitptr
+        +PlotPtr plotptr
     }
 
-    class SingleCrystalParameters{
-        +float lattice_a
-        +float lattice_b
-        +float lattice_c
-        +float lattice_alpha
-        +float lattice_beta
-        +float lattice_gamma
-        +float q_rlu_h
-        +float q_rlu_k
-        +float q_rlu_l
-        +set_single_crystal_parameters(params: dict[str, float])
-        +get_single_crystal_parameters()
-        +calculate_crosshair_mod_q()
+    class Scan{
+        +Data raw_data
+        +MetaData meta_data
+        +ErrorMessage error_message
     }
-
 
 Tavi View
 +++++++++++++++
@@ -70,99 +47,19 @@ Tavi View
 .. mermaid::
 
  classDiagram
-    TaviView "1" -->"1" ExperimentWidget
-    TaviView "1" -->"1" CrosshairWidget
-    TaviView "1" -->"1" SingleCrystalWidget
-    TaviView "1" -->"1" SelectorWidget
-    TaviView "1" -->"1" PlotWidget
+    TaviView "1" -->"1" MainWindow
 
     class TaviView{
-        +ExperimentWidget:experiment_widget
-        +SingleCrystalWidget:sc_widget
-        +CrosshairWidget:crosshair_widget
-        +SelectorWidget:selection_widget
-        +PlotWidget:plot_widget
+        +MainWindow:main_window
+        +install_menu_bar()
+        +closeEvent()
+        +force_close()
+        +exit_message_box()
 
     }
 
-    class PlotWidget{
-        +matplotlib.Figure: figure
-        +matplotlib.FigureCanvas: static_canvas
-        +matplotlib.NavigationToolbar: toolbar
-        +matplotlib.colorbar.Colorbar: heatmap
-        +float:eline_data
-        +float:qline_data
-        +matplotlib.lines.Line2D:eline
-        +matplotlib.lines.Line2D:qline
-        +update_plot_crosshair(crosshair_data: dict)
-        +update_crosshair(eline: float, qline: float)
-        +update_plot(q_min: list[float], q_max: list[float], energy_transfer: list[float], q2d: list[list[float]], e2d: list[list[float]], scharpf_angle: list[list[float]],plot_label: str)
-        +set_axes_meta_and_draw_plot()
-    }
-
-    class SelectorWidget{
-        +str:powder_label
-        +QRadioButton: powder_rb
-        +str:sc_label
-        +QRadioButton: sc_rb
-        +selector_init(selected_label: str)
-        +sc_toggle()
-        +get_selected_mode_label()
-    }
-
-    class ExperimentWidget{
-        +QLabel:incident_energy_ei_label
-        +QLineEdit:incident_energy_ei_edit
-        +QLabel:detector_tank_angle_s2_label
-        +QLineEdit:detector_tank_angle_s2_edit
-        +QLabel:polarization_direction_angle_p_label
-        +QLineEdit:polarization_direction_angle_p_edit
-        +QLabel:plot_type_label
-        +QComboBox:plot_type_combobox
-        +initializeCombo(options: list[str])
-        +validate_inputs(*_, **__)
-        +validate_all_inputs()
-        +set_values(values: dict[str, Union[float, str]])
-    }
-
-    class CrosshairWidget{
-        +QLabel:crosshair_delta_e_label
-        +QLineEdit:crosshair_delta_e_edit
-        +QLabel:crosshair_mod_q_label
-        +QLineEdit:crosshair_mod_q_edit
-        +QLabel:angle_q_z_label
-        +QLineEdit:angle_q_z_edit
-        +set_mod_q_enabled(state: bool)
-        +set_values(values: dict[str, float])
-        +validate_inputs(*_, **__)
-        +validation_status_all_inputs()
-        +validate_all_inputs()
-        +set_QZ_values(angle: float)
-    }
-
-    class SingleCrystalWidget{
-        +QLabel:lattice_a_label
-        +QLineEdit:lattice_a_edit
-        +QLabel:latticeb_label
-        +QLineEdit:lattice_b_edit
-        +QLabel:lattice_c_label
-        +QLineEdit:lattice_c_edit
-        +QLabel:lattice_alpha_label
-        +QLineEdit:lattice_alpha_edit
-        +QLabel:lattice_beta_label
-        +QLineEdit:lattice_beta_edit
-        +QLabel:lattice_gamma_label
-        +QLineEdit:lattice_gamma_edit
-        +QLabel:q_rlu_h_label
-        +QLineEdit:q_rlu_h_edit
-        +QLabel:q_rlu_k_label
-        +QLineEdit:q_rlu_k_edit
-        +QLabel:q_rlu_l_label
-        +QLineEdit:q_rlu_l_edit
-        +set_values(values: dict[str, float])
-        +validate_inputs(*_, **__)
-        +validate_angles()
-        +validate_all_inputs()
+    class MainWindow{
+        +LoadView: load_view
     }
 
 
