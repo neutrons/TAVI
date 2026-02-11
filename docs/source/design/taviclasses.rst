@@ -123,23 +123,15 @@ Any value processing and/or filtering to match the requirements and logic of the
             participant Model
 
             Note over View,Model:  TaviView Initialization
-            Presenter->>Model: A. Get Experiment parameters
-            Presenter->>View: Set Experiment parameters (experiment_widget.set_values)
-            Note left of View: Display Experiment parameters values
-            Note left of View: experiment_parameters_update is triggered
+            Note left of View: User clicks "File"->"Load Experiment Folder"
+            View->>View: Pop up a QDialog that allows user to view files and traverse system directories
+            View->>Presenter: Return a single string of folder directory path
+            Presenter->>Model: Pass experiment folder directory to load_raw_scan_from_folder(folder)
+            Note right of Model: load_raw_scan_from_folder(folder) perform loading
 
-            Presenter->>Model: B. Get SingleCrystal parameters
-            Note left of Presenter: Get the available plot types from the experiment_settings file
-            Presenter->>View: Set SingleCrystal parameters (singlecrystal_widget.set_parameters)
-            Note left of View: Display SingleCrystal parameters values
-            Note left of View: handle_field_values_update is triggered
-
-            Presenter->>Model: C. Get default experiment mode (Single Crystal)
-            Presenter->>View: Set experiment mode (selection_widget.selector_init)
-            Note left of View: Workflow continues for selecting experiment type = Single Crystal
-            Note left of View: handle_field_values_update is triggered
-
-#. This describes the sequence of events happening among M-V-P when user selects the "Single Crystal" mode : handle_switch_to_sc()
+            Model->>View: TO BE FILLED WITH BACKEND STORY
+            
+#. PLACEHOLDER MERMAID DIAGRAM
 
     * Valid Status:
 

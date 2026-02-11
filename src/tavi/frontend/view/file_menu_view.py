@@ -41,8 +41,8 @@ class FileMenu(QMenu):
         self.setTitle("File")
         self.new_project_action = QAction("New Project", self)
         self.load_project_action = QAction("Load Project", self)
-        self.load_file_action = QAction("Load File(s)", self)
-        self.load_folder_action = QAction("Load Folder", self)
+        self.load_file_action = QAction("Load Data File(s)", self)
+        self.load_folder_action = QAction("Load Experiment Folder", self)
         self.save_action = QAction("Save Project", self)
         self.exit_action = QAction("Exit", self)
 
