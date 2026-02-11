@@ -130,7 +130,7 @@ Any value processing and/or filtering to match the requirements and logic of the
             Note right of Model: load_raw_scan_from_folder(folder) perform loading
 
             Model->>View: TO BE FILLED WITH BACKEND STORY
-            
+
 #. PLACEHOLDER MERMAID DIAGRAM
 
     * Valid Status:
