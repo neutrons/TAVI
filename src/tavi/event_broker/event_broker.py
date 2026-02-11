@@ -1,4 +1,9 @@
-"""Event broker class."""
+"""
+Event broker class.
+
+Stub implementation, will be updated.
+
+"""
 
 from collections import defaultdict
 from typing import Any, Literal
