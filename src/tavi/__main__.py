@@ -5,7 +5,7 @@ import sys
 from qtpy.QtWidgets import QApplication
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
-from tavi.backend.model.tavi_project import TaviProject
+from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.configuration import Configuration
 from tavi.frontend.presenter.main_presenter import MainPresenter
 
@@ -26,7 +26,7 @@ def execute() -> None:
         print(" ".join(msg))
         sys.exit(-1)
 
-    tavi_project = TaviProject()
+    tavi_project = TaviProjectModel()
     dict_of_model = {"TaviProjectProxy": TaviProjectProxy(tavi_project)}
 
     presenter = MainPresenter(dict_of_model)

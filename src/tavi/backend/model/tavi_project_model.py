@@ -8,7 +8,7 @@ from tavi.meta.decorators.singleton import Singleton
 
 
 @Singleton
-class TaviProject(TaviProjectInterface):
+class TaviProjectModel(TaviProjectInterface):
     """Tavi project class."""
 
     def __init__(self) -> None:
