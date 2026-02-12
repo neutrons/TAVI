@@ -18,7 +18,7 @@ def test_file_menu_action_labels(qtbot):
 
     assert labels["new_project"] == "New Project"
     assert labels["load_project"] == "Load Project"
-    assert labels["load_file"] == "Load File(s)"
-    assert labels["load_folder"] == "Load Folder"
+    assert labels["load_file"] == "Load Data File(s)"
+    assert labels["load_folder"] == "Load Experiment Folder"
     assert labels["save"] == "Save Project"
     assert labels["exit"] == "Exit"

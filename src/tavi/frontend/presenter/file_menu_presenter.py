@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from tavi.frontend.view.file_menu_view import FileMenu
 
 if TYPE_CHECKING:
-    from tavi.backend.model.interface.TaviProjectInterface import TaviProjectInterface
+    from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 
 
 class FileMenuPresenter:
@@ -36,7 +36,7 @@ class FileMenuPresenter:
         self._view.setup_callback_load_folder(self.handle_load_folder)
         self._view.setup_callback_exit(self.exit)
 
-    def handle_load_folder(self, folder_dir: list[str]) -> None:
+    def handle_load_folder(self, folder: list[str]) -> None:
         """
         Handle folder-loading requests from the view.
 
@@ -47,13 +47,13 @@ class FileMenuPresenter:
 
         Parameters
         ----------
-        folder_dir : list[str]
+        folder : list[str]
             A list containing one or more filesystem paths. Only the first entry
             is used, as Qt's `QFileDialog` returns a list even when selecting a
             single folder.
 
         """
-        self._model.print()
+        self._model.load_raw_scan_from_folder(folder)
 
     def exit(self) -> None:
         """Exit in menu."""
