@@ -26,8 +26,8 @@ def execute() -> None:
         print(" ".join(msg))
         sys.exit(-1)
 
-    tavi_project = TaviProjectModel()
-    dict_of_model = {"TaviProjectProxy": TaviProjectProxy(tavi_project)}
+    tavi_project_model = TaviProjectModel()
+    dict_of_model = {"TaviProjectProxy": TaviProjectProxy(tavi_project_model)}
 
     presenter = MainPresenter(dict_of_model)
     presenter._view.show()
