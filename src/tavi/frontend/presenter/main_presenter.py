@@ -1,5 +1,6 @@
 """Main presenter for tavi."""
 
+from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.view.main_view import TaviView
@@ -19,6 +20,10 @@ class MainPresenter:
 
         self.load_raw_scan_view = self._view.main_window.load_view
         self.load_raw_scan_presenter = LoadRawScanPresenter(self.load_raw_scan_view, model_dict["TaviProjectProxy"])
+
+        self.error_presenter = ErrorPresenter()
+        self.error_view = self.error_presenter.view
+        # self.error_view.setParent(self._view)
 
     def exit(self) -> bool:
         """

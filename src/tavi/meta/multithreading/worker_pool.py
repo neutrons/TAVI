@@ -6,6 +6,9 @@ from typing import Any, Callable, Dict, List
 
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.meta.decorators.singleton import Singleton
+from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 from tavi.meta.multithreading.signal import Signal
 
 # logger = taviLogger.getLogger(__name__)
@@ -23,6 +26,7 @@ class Worker:
         self.target = target
         self.args = args
         self.kwargs = kwargs
+        self.event_broker = EventBroker()
         self.finished: Signal = Signal(loop)  # None
 
     def bindSignals(self) -> None:
@@ -45,6 +49,8 @@ class Worker:
             #     traceback.print_exc()
 
             results = ModelResponse(code=ResponseCode.ERROR, message=str(e))
+            self.event_broker.publish(ExceptionEvent(e=NonRecoverableError(str(e))))
+
         self.finished.emit()
         if not isinstance(results, ModelResponse):
             raise ValueError("Worker target must return a ModelResponse object.")

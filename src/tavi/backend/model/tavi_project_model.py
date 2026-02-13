@@ -23,6 +23,7 @@ class TaviProjectModel(TaviProjectInterface):
     def load_raw_scan_from_folder(self, folder: str) -> None:
         """Load a folder containing raw scans."""
         print("folder director received by model:", folder)
+        raise RuntimeError("test exception")
         # TO DO
         # Implement load raw scan from folder logic
         # raw_scan_loading_event = RawScanLoadingEvent(raw_scan_uuid = ...)
