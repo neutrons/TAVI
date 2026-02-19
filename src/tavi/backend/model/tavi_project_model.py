@@ -1,8 +1,9 @@
 """Tavi Project."""
 
-from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.event_broker.event_broker import EventBroker
 from tavi.event_broker.event_type import Event
+
+from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.meta.decorators.singleton import Singleton
 
