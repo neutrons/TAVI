@@ -13,7 +13,7 @@ class TaviMessageBox(QMessageBox):
         self.setText(message)
 
     @staticmethod
-    def critical(parent: QWidget, title: str, message: str) -> TaviMessageBox:
+    def critical(parent: QWidget, title: str, message: str) -> "TaviMessageBox":
         """Spawn a critical message box."""
         mb = TaviMessageBox(title, message, parent)
         mb.setIcon(QMessageBox.Icon.Critical)
