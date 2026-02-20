@@ -2,6 +2,8 @@ import time
 import threading
 import unittest
 
+from tavi.library.data.model_response import ModelResponse, ResponseCode
+
 
 # -------------------------
 # Minimal Signal test double
@@ -124,7 +126,7 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         def target():
             ran.set()
             time.sleep(0.05)
-            return "ok"
+            return ModelResponse(code=ResponseCode.OK)
 
         worker = pool.create_worker(target)
         pool.submit_worker(worker)
@@ -146,10 +148,10 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
 
         def slow_target():
             block.wait()
-            return "slow"
+            return ModelResponse(code=ResponseCode.OK)
 
         def fast_target():
-            return "fast"
+            return ModelResponse(code=ResponseCode.OK)
 
         w1 = pool.create_worker(slow_target)
         w2 = pool.create_worker(fast_target)

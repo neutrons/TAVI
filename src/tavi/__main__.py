@@ -4,10 +4,13 @@ import sys
 
 from qtpy.QtWidgets import QApplication
 
+from tavi.backend.model.application_model import ApplicationModel
+from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
 from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.configuration import Configuration
 from tavi.frontend.presenter.main_presenter import MainPresenter
+from tavi.library.storage.local_file_store import LocalFileStore
 
 
 def execute() -> None:
@@ -27,7 +30,14 @@ def execute() -> None:
         sys.exit(-1)
 
     tavi_project_model = TaviProjectModel()
-    dict_of_model = {"TaviProjectProxy": TaviProjectProxy(tavi_project_model)}
+
+    filestore = LocalFileStore()
+    application_model = ApplicationModel(filestore)
+
+    dict_of_model = {
+        "TaviProjectProxy": TaviProjectProxy(tavi_project_model),
+        ApplicationModelInterface.__name__: ApplicationModelProxy(application_model),
+    }
 
     presenter = MainPresenter(dict_of_model)
     presenter._view.show()

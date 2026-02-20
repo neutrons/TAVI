@@ -1,6 +1,7 @@
 """Worker and Worker Pool."""
 
 import asyncio
+import traceback
 from threading import Thread
 from typing import Any, Callable, Dict, List
 
@@ -20,10 +21,13 @@ class Worker:
     target = None
     args = None
 
-    def __init__(self, loop: asyncio.AbstractEventLoop, target: Callable, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self, loop: asyncio.AbstractEventLoop, target: Callable, call_stack: str, *args: Any, **kwargs: Any
+    ) -> None:
         """Initialize worker and setup expected async signals."""
         super().__init__()
         self.target = target
+        self.call_stack = call_stack
         self.args = args
         self.kwargs = kwargs
         self.event_broker = EventBroker()
@@ -41,15 +45,12 @@ class Worker:
             # Expects the return to be wrapped in a ModelResponse
             results: ModelResponse = self.target(*self.args, **self.kwargs)
         except Exception as e:  # noqa: BLE001
-            # logger.error(e)
-            # if logger.isEnabledFor(logging.DEBUG):
-            #     # print stacktrace
-            #     import traceback
+            import traceback
 
-            #     traceback.print_exc()
-
-            results = ModelResponse(code=ResponseCode.ERROR, message=str(e))
-            self.event_broker.publish(ExceptionEvent(e=NonRecoverableError(str(e))))
+            stack_trace = f"{self.call_stack} \n {traceback.format_exc()}"
+            error_message = str(e)
+            results = ModelResponse(code=ResponseCode.ERROR, message=error_message)
+            self.event_broker.publish(ExceptionEvent(e=NonRecoverableError(error_message, stack_trace)))
 
         self.finished.emit()
         if not isinstance(results, ModelResponse):
@@ -70,7 +71,8 @@ class WorkerPool:
 
     def create_worker(self, target: Callable, *args: Any, **kwargs: Any) -> Worker:
         """Create a worker."""
-        return Worker(self.loop, target, *args, **kwargs)
+        call_stack = "".join(traceback.format_stack())
+        return Worker(self.loop, target, call_stack, *args, **kwargs)
 
     def _dequeue_worker(self, worker: Worker) -> None:
         """Dequeues worker and starts the next in queue if it exists."""
