@@ -23,6 +23,8 @@ class RecoveryService:
 
     def register(self, ex_type: T, callable: Callable) -> None:
         """Register a handler for an exception type."""
+        if not issubclass(ex_type, TaviError):
+            raise RuntimeError(f"Only Exceptions of subtype {TaviError.__name__} can be registered.")
         self.exception_handlers[ex_type] = callable
 
     def handle_exception(self, event: ExceptionEvent) -> None:

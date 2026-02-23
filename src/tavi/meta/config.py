@@ -19,15 +19,15 @@ from tavi import __version__ as tavi_version
 from tavi.meta.decorators.singleton import Singleton
 from tavi.meta.time import isoFromTimestamp, timestamp
 
-app_name = "tavi"
+package_name = "tavi"
 
 
 class DeployEnvEnum(StrEnum):
     """Deployment environment enumeration."""
 
-    NEXT = f"{app_name}_next"
-    QA = f"{app_name}_qa"
-    PROD = f"{app_name}_prod"
+    NEXT = f"{package_name}_next"
+    QA = f"{package_name}_qa"
+    PROD = f"{package_name}_prod"
 
 
 def isTestEnv() -> bool:
@@ -44,7 +44,7 @@ def isTestEnv() -> bool:
 def _find_root_dir() -> str:
     """Find the root directory of the TAVI module."""
     try:
-        MODULE_ROOT = Path(sys.modules[app_name].__file__).parent
+        MODULE_ROOT = Path(sys.modules[package_name].__file__).parent
 
         # Using `"test" in env` here allows different versions of "[category]_test.yml" to be used for different
         #  test categories: e.g. unit tests use "test.yml" but integration tests use "integration_test.yml".
@@ -52,7 +52,7 @@ def _find_root_dir() -> str:
             # WARNING: there are now multiple "conftest.py" at various levels in the test hierarchy.
             MODULE_ROOT = MODULE_ROOT.parent.parent / "tests"
     except Exception as e:
-        raise RuntimeError(f"Unable to determine {app_name} module-root directory") from e
+        raise RuntimeError(f"Unable to determine {package_name} module-root directory") from e
 
     return str(MODULE_ROOT)
 
@@ -89,7 +89,7 @@ class _Resource:
 
     def _existsInPackage(self, sub_path: str) -> bool:
         """Check if a resource exists in the package."""
-        with resources.path(f"{app_name}.resources", sub_path) as path:
+        with resources.path(f"{package_name}.resources", sub_path) as path:
             return os.path.exists(path)
 
     def exists(self, sub_path: str) -> bool:
@@ -114,7 +114,7 @@ class _Resource:
     def open(self, sub_path: str, mode: str) -> IO[Any]:
         """Open a resource file."""
         if self._package_mode:
-            with resources.path(f"{app_name}.resources", sub_path) as path:
+            with resources.path(f"{package_name}.resources", sub_path) as path:
                 return open(path, mode)
         else:
             return open(self.getPath(sub_path), mode)
@@ -161,7 +161,7 @@ class _Config:
     def shouldSwapToUserYml(self) -> bool:
         """Check if the app should use a user config."""
         isExplicitEnv = "env" in os.environ
-        isUserYmlExists = (self._userHome() / f"{app_name}-user.yml").exists()
+        isUserYmlExists = (self._userHome() / f"{package_name}-user.yml").exists()
         return isUserYmlExists and not isExplicitEnv and not isTestEnv()
 
     def _fix_directory_properties(self) -> None:
@@ -179,7 +179,7 @@ class _Config:
             self._config["samples"]["home"] = expandhome(self._config["samples"]["home"])
 
     def configureForDeploy(self) -> None:
-        version = self.appVersion()
+        version = self.packageVersion()
         if "dev" in version:
             self.mergeAndExport(DeployEnvEnum.NEXT)
         elif "rc" in version:
@@ -263,29 +263,29 @@ class _Config:
         """Archive the user config for safe keeping."""
         # check if -user.yml exists
         userHome = self._userHome()
-        if (userHome / f"{app_name}-user.yml").exists():
+        if (userHome / f"{package_name}-user.yml").exists():
             version = self.getUserYmlVersionDisk()
 
             # generate human readable timestamp
             timestamp = self._timestamp()
 
             # archive the old -user.yml
-            archivePath = userHome / f"{app_name}-user-{version}-{timestamp}.yml.bak"
-            shutil.copy(str(userHome / f"{app_name}-user.yml"), str(archivePath))
+            archivePath = userHome / f"{package_name}-user-{version}-{timestamp}.yml.bak"
+            shutil.copy(str(userHome / f"{package_name}-user.yml"), str(archivePath))
 
     @staticmethod
     def _userHome() -> Path:
-        return Path.home() / f".{app_name}"
+        return Path.home() / f".{package_name}"
 
-    def appVersion(self) -> str | None:
+    def packageVersion(self) -> str | None:
         """Get the version of the application."""
         if tavi_version is None or tavi_version == "unknown" or tavi_version == "":
             label = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip()
             if bool(label) and not label == b"":
                 return label.decode("utf-8")
             raise ValueError(
-                f"The {app_name} Version is not set correctly. "
-                f"Please ensure that the {app_name} package is installed correctly."
+                f"The {package_name} Version is not set correctly. "
+                f"Please ensure that the {package_name} package is installed correctly."
             )
         return tavi_version
 
@@ -293,8 +293,8 @@ class _Config:
         """Get the associated app version the user config was generated with."""
         # check if -user.yml exists
         userHome = self._userHome()
-        if (userHome / f"{app_name}-user.yml").exists():
-            with open(str(userHome / f"s{app_name}-user.yml"), "r") as f:
+        if (userHome / f"{package_name}-user.yml").exists():
+            with open(str(userHome / f"{package_name}-user.yml"), "r") as f:
                 applicationYml = rYAML(typ="safe").load(f)
             version = applicationYml.get("application", {"version": None})["version"]
             return version
@@ -311,7 +311,7 @@ class _Config:
                 userHome.mkdir(parents=True, exist_ok=True)
 
             # check if -user.yml exists
-            if self.getUserYmlVersionDisk() != self.appVersion():
+            if self.getUserYmlVersionDisk() != self.packageVersion():
                 # if the version is not the same, then we need to archive the old one
                 if self.getUserYmlVersionDisk() is not None:
                     self._logger.warning(
@@ -326,13 +326,13 @@ class _Config:
             raise RuntimeError(
                 (
                     "Unable to swap to user configuration: "
-                    f"{userHome / f'{app_name}-user.yml'}"
+                    f"{userHome / f'{package_name}-user.yml'}"
                     "\nOriginal configuration maintained."
                 )
             ) from e
         else:
             # load the user yml file if the filesystem is ready
-            self.loadEnv(str(userHome / f"{app_name}-user.yml"))
+            self.loadEnv(str(userHome / f"{package_name}-user.yml"))
             # archive a backup of the current user yml
             self.archiveUserYml()
 
@@ -347,14 +347,14 @@ class _Config:
 
         if applicationYml.get("application") is None:
             applicationYml["application"] = {}
-        applicationYml["application"]["version"] = self.appVersion()
-        applicationYml["environment"] = f"{app_name}-user"
+        applicationYml["application"]["version"] = self.packageVersion()
+        applicationYml["environment"] = f"{package_name}-user"
 
         # convert the dict back to a yaml string
         applicationYmlStr = yaml.dump(applicationYml, default_flow_style=False)
 
         # write the application.yml to the user home as -user.yml
-        with open(userHome / f"{app_name}-user.yml", "w") as f:
+        with open(userHome / f"{package_name}-user.yml", "w") as f:
             f.write(applicationYmlStr)
 
     def getCurrentEnv(self) -> str:
