@@ -15,3 +15,4 @@ review and adhere to these guidelines when contributing to the project.
    taviclasses
    cfsignatures
    tavifields
+   recovery_service
