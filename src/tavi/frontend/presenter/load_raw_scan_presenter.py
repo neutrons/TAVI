@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tavi.event_broker.event_broker import EventBroker
-from tavi.event_broker.event_type import RawScanLoadingEvent
+from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import NewRawScanEvent
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
@@ -36,9 +36,9 @@ class LoadRawScanPresenter:
         self._view = view
         self._model = model
         self.event_broker = EventBroker()
-        self.event_broker.register(RawScanLoadingEvent, self.update_treeview_data)
+        self.event_broker.register(NewRawScanEvent, self.update_treeview_data)
 
-    def update_treeview_data(self, event: RawScanLoadingEvent) -> None:
+    def update_treeview_data(self, event: NewRawScanEvent) -> None:
         """Update the treeview GUI after loading complete."""
         # TODO: implement rules to display tavi data after backend story
         print("TODO: Implement rules to display loaded data after backend story.")
