@@ -24,7 +24,7 @@ class MainPresenter:
 
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view
-        # self.error_view.setParent(self._view)
+        self.error_view.setParent(self._view)
 
     def exit(self) -> bool:
         """
