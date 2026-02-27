@@ -128,6 +128,9 @@ def find_u_from_two_peaks(
     """
     Calculate U matrix from two peaks.
 
+    r_mat can be removed later when goniometer is implemented as it can be calculated from
+    peak.angles.
+
     Follow Eq.76-81 and Eq.83-88. We assume q_3 is perpendicular from the two peaks
     """
     peak1, peak2 = peaks
@@ -165,3 +168,31 @@ def find_u_from_two_peaks(
 
     u_mat = T_v @ T_c.T
     return u_mat
+
+
+def find_ub_from_three_peaks(peaks: tuple[Peak, Peak, Peak], r_mat: np.ndarray, ei: float, ef: float) -> np.ndarray:
+    """
+    Calculate U matrix from two peaks.
+
+    r_mat can be removed later when goniometer is implemented as it can be calculated from
+    peak.angles.
+
+    Follow Eq.83-90.
+    """
+    peak1, peak2, peak3 = peaks
+
+    # we directly use the three peaks as t1_c, t2_c and t3_c
+    V = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
+
+    q_lab_1 = q_lab(ei, ef, peak1.angles.two_theta)
+    q_lab_2 = q_lab(ei, ef, peak2.angles.two_theta)
+    q_lab_3 = q_lab(ei, ef, peak3.angles.two_theta)
+
+    r_mat_inv = np.linalg.inv(r_mat)
+    q1_v = r_mat_inv @ q_lab_1 / (2 * np.pi)
+    q2_v = r_mat_inv @ q_lab_2 / (2 * np.pi)
+    q3_v = r_mat_inv @ q_lab_3 / (2 * np.pi)
+    Q_v = np.array([q1_v, q2_v, q3_v]).T
+
+    ub_mat = Q_v @ np.linalg.inv(V)
+    return ub_mat
