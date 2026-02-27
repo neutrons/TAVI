@@ -10,8 +10,8 @@ index befac9e0..a4f5e17e 100644
 +++ b/src/tavi/library/algorithms/ub_algorithms.py
 @@ -1,16 +1,17 @@
  """
--Calculate UB matrix and related quantities. 
--Follows Andrei Savici's UB Matrix Formlism used in mantid at 
+-Calculate UB matrix and related quantities.
+-Follows Andrei Savici's UB Matrix Formlism used in mantid at
 +Calculate UB matrix and related quantities.
 +
 +Follows Andrei Savici's UB Matrix Formlism used in mantid at
@@ -23,15 +23,15 @@ index befac9e0..a4f5e17e 100644
 +
  import numpy as np
 -from tavi.library.utilities import SE2K
- 
+
 +from tavi.library.utilities import SE2K, Peak
- 
+
 -def q_lab(ei:float, ef:float, theta:float, phi:float) -> np.ndarray:
 +
 +def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
      """
      Return qlab matrix. Follow's mantid convention. Eq.8.
- 
+
 @@ -19,73 +20,127 @@ def q_lab(ei:float, ef:float, theta:float, phi:float) -> np.ndarray:
          ef: final energy, in meV.
          theta: angle between scattered beam and z axis, indegree.
@@ -66,29 +66,29 @@ index befac9e0..a4f5e17e 100644
      u = np.matmul(np.linalg.inv(ub_mat), np.array([0, 0, 1]))
      v = np.matmul(np.linalg.inv(ub_mat), np.array([1, 0, 0]))
      return (u, v)
- 
- 
+
+
 -def b_mat(lattice_params: tuple[float, float, float, float,float, float]) -> np.ndarray:
 +def b_mat(lattice_params: tuple[float, float, float, float, float, float]) -> np.ndarray:
      """Calculate b matrix from lattice parameters.Eq.52."""
      a, b, c, alpha, beta, gamma = lattice_params
      cos_alpha = np.cos(np.radians(alpha))
      sin_alpha = np.sin(np.radians(alpha))
--    
+-
 +
      cos_beta = np.cos(np.radians(beta))
      sin_beta = np.sin(np.radians(beta))
--    
+-
 +
      cos_gamma = np.cos(np.radians(gamma))
      sin_gamma = np.sin(np.radians(gamma))
--    
+-
 -    Vabg = np.sqrt(1-cos_alpha**2 - cos_beta**2 - cos_gamma**2 + 2*cos_alpha*cos_beta*cos_gamma)
--    
+-
 -    a_star = sin_alpha/(a*Vabg)
 -    b_star = sin_beta/(b*Vabg)
 -    c_star = sin_gamma/(c*Vabg)
--    
+-
 -    cos_alpha_star = (cos_beta*cos_gamma - cos_alpha)/(sin_beta*sin_gamma)
 -    cos_beta_star = (cos_gamma*cos_alpha - cos_beta)/(sin_gamma*sin_alpha)
 +
@@ -103,7 +103,7 @@ index befac9e0..a4f5e17e 100644
      sin_beta_star = np.sqrt(1 - cos_beta_star**2)
 -    cos_gamma_star = (cos_alpha*cos_beta - cos_gamma)/(sin_alpha*sin_beta)
 -    sin_gamma_star = np.sqrt(1-cos_gamma_star**2)
--    
+-
 +    cos_gamma_star = (cos_alpha * cos_beta - cos_gamma) / (sin_alpha * sin_beta)
 +    sin_gamma_star = np.sqrt(1 - cos_gamma_star**2)
 +
@@ -120,8 +120,8 @@ index befac9e0..a4f5e17e 100644
 +        ]
 +    )
      return B
- 
- 
+
+
 -def uv_to_ub(u:np.ndarray, v:np.ndarray,lattice_params: tuple[float, float, float, float,float, float]) ->np.ndarray:
 +def uv_to_ub(
 +    u: np.ndarray, v: np.ndarray, lattice_params: tuple[float, float, float, float, float, float]
@@ -151,7 +151,7 @@ index befac9e0..a4f5e17e 100644
 +    T_epsilon = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]).T
      u_mat = T_epsilon @ T_c.T
      return u_mat @ B
- 
+
 -#-----------Calculate UB Matrix----------------------------
 +
 +# -----------Calculate UB Matrix----------------------------
@@ -253,7 +253,7 @@ index b35a73f2..c87b0499 100644
 +        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
 +
 +    """
- 
+
 -def SE2K(e:float):
 -    """Convert energy E to momentum transfer k"""
 -    E2K=np.sqrt(2e-3 * e * m_n) * 1e-10 / hbar
