@@ -1,5 +1,6 @@
 """
 Calculate UB matrix and related quantities.
+
 Follows Andrei Savici's UB Matrix Formlism used in mantid at
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf.
 Equations listed in the comments refer to the document above.
@@ -33,7 +34,11 @@ def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
 
 
 def ub_to_uv(ub_mat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """If ubmatrix is given, return uv vector. Given in TAS and mantid case, u is along [0, 0, 1], v is along [1, 0, 0]"""
+    """
+    If ubmatrix is given, return uv vector.
+
+    Given in TAS and mantid case, u is along [0, 0, 1], v is along [1, 0, 0].
+    """
     u = np.matmul(np.linalg.inv(ub_mat), np.array([0, 0, 1]))
     v = np.matmul(np.linalg.inv(ub_mat), np.array([1, 0, 0]))
     return (u, v)
