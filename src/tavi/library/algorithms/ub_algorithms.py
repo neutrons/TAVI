@@ -1,12 +1,11 @@
 """
-Calculate UB matrix and related quantities.
-Follows Andrei Savici's UB Matrix Formlism used in mantid at
+Calculate UB matrix and related quantities. 
+Follows Andrei Savici's UB Matrix Formlism used in mantid at 
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf.
 Equations listed in the comments refer to the document above.
 """
 
 import numpy as np
-
 from tavi.library.utilities import SE2K
 
 
@@ -23,16 +22,13 @@ def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
     """
     ki = SE2K(ei)
     kf = SE2K(ef)
-    return np.array(
-        [
-            -kf * np.sin(np.radians(theta)) * np.cos(np.radians(phi)),
-            -kf * np.sin(np.radians(theta)) * np.sin(np.radians(phi)),
-            ki - kf * np.cos(np.radians(theta)),
-        ]
-    )
+    return np.array([
+        -kf*np.sin(np.radians(theta))*np.cos(np.radians(phi)),
+        -kf*np.sin(np.radians(theta))*np.sin(np.radians(phi)),
+        ki - kf*np.cos(np.radians(theta))
+    ])
 
-
-def ub_to_uv(ub_mat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def ub_to_uv(ub_mat:np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """If ubmatrix is given, return uv vector. Given in TAS and mantid case, u is along [0, 0, 1], v is along [1, 0, 0]"""
     u = np.matmul(np.linalg.inv(ub_mat), np.array([0, 0, 1]))
     v = np.matmul(np.linalg.inv(ub_mat), np.array([1, 0, 0]))
@@ -92,5 +88,4 @@ def uv_to_ub(
     u_mat = T_epsilon @ T_c.T
     return u_mat @ B
 
-
-# -----------Calculate UB Matrix----------------------------
+#-----------Calculate UB Matrix----------------------------
