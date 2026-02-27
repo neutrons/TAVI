@@ -49,3 +49,11 @@ def test_ub_to_uv(sample_info):
 def test_uv_to_ub(sample_info):
     _, ub_matrix, u, v,_,_, lattice_params = sample_info
     assert np.allclose(uv_to_ub(u,v,lattice_params), ub_matrix, atol=1e-4)
+
+def test_find_u_from_two_peaks(sample_info):
+    # implement after goniometer module to calculate r_mat
+    assert True
+
+def test_find_ub_from_three_peaks(sample_info):
+    # implement after goniometer module to calculate r_mat
+    assert True
