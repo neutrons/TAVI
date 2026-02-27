@@ -9,10 +9,9 @@ Equations listed in the comments refer to the document above.
 
 import numpy as np
 
-from tavi.library.utilities import SE2K
+from tavi.library.utilities import SE2K, Peak
 
 
-def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
 def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
     """
     Return qlab matrix. Follow's mantid convention. Eq.8.
@@ -92,17 +91,9 @@ def b_mat(lattice_params: tuple[float, float, float, float, float, float]) -> np
             [0, 0, 1.0 / c],
         ]
     )
-            [a_star, b_star * cos_gamma_star, c_star * cos_beta_star],
-            [0, b_star * sin_gamma_star, -c_star * sin_beta_star * cos_alpha],
-            [0, 0, 1.0 / c],
-        ]
-    )
     return B
 
 
-def uv_to_ub(
-    u: np.ndarray, v: np.ndarray, lattice_params: tuple[float, float, float, float, float, float]
-) -> np.ndarray:
 def uv_to_ub(
     u: np.ndarray, v: np.ndarray, lattice_params: tuple[float, float, float, float, float, float]
 ) -> np.ndarray:
