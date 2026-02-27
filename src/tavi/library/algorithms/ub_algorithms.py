@@ -6,7 +6,6 @@ https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementati
 Equations listed in the comments refer to the document above.
 """
 
-
 import numpy as np
 
 from tavi.library.utilities import SE2K, Peak
@@ -52,10 +51,8 @@ def b_mat(lattice_params: tuple[float, float, float, float, float, float]) -> np
     cos_alpha = np.cos(np.radians(alpha))
     sin_alpha = np.sin(np.radians(alpha))
 
-
     cos_beta = np.cos(np.radians(beta))
     sin_beta = np.sin(np.radians(beta))
-
 
     cos_gamma = np.cos(np.radians(gamma))
     sin_gamma = np.sin(np.radians(gamma))
