@@ -69,3 +69,21 @@ def get_angle_from_triangle(a: float, b: float, c: float) -> float:
     if arc_cos > 1 or arc_cos < -1:
         raise ValueError("Triangle cannot be closed.")
     return np.arccos(arc_cos)
+
+
+def rot_x(theta: float) -> np.ndarray:
+    """Rotation matrix for rotation about x axis by theta degree."""
+    t = np.radians(theta)
+    return np.array([[1, 0, 0], [0, np.cos(t), -np.sin(t)], [0, np.sin(t), np.cos(t)]])
+
+
+def rot_y(theta: float) -> np.ndarray:
+    """Rotation matrix for rotation about y axis by theta degree."""
+    t = np.radians(theta)
+    return np.array([[np.cos(t), 0, np.sin(t)], [0, 1, 0], [-np.sin(t), 0, np.cos(t)]])
+
+
+def rot_z(theta: float) -> np.ndarray:
+    """Rotation matrix for rotation about z axis by theta degree."""
+    t = np.radians(theta)
+    return np.array([[np.cos(t), -np.sin(t), 0], [np.sin(t), np.cos(t), 0], [0, 0, 1]])

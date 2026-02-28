@@ -1,8 +1,14 @@
+from random import sample
+
 import numpy as np
 import pytest
-from old_tavi import lattice_algorithm
-from tavi.library.algorithms.ub_algorithms import ub_to_uv, uv_to_ub, b_mat, plane_normal_from_two_peaks,q_norm_from_hkl,q_norm_from_hkl, r_matrix_with_minimal_tilt
-from tavi.library.utilities import Peak
+from tavi.library.algorithms.ub_algorithms import (find_u_from_two_peaks, 
+                                                   ub_to_uv, uv_to_ub, b_mat, 
+                                                   plane_normal_from_two_peaks,
+                                                   q_norm_from_hkl,q_norm_from_hkl, 
+                                                   r_matrix_with_minimal_tilt)
+from tavi.library.component.goniometer import Goniometer
+from tavi.library.utilities import MotorAngles, Peak
 
 @pytest.fixture
 def sample_info():
@@ -66,7 +72,6 @@ def test_r_matrix_with_minimal_tilt(sample_info):
     ef = 13.505137
 
     r_mat_cal = r_matrix_with_minimal_tilt(Peak(hkl=(0, 0, 2)), ef, ef, -51.530388, ub_mat, plane_normal, in_plane_ref)
-    print(r_mat_cal)
     assert np.allclose(
         np.array(
             [
@@ -76,12 +81,21 @@ def test_r_matrix_with_minimal_tilt(sample_info):
             ]
         ),
         r_mat_cal,
-        atol=1e-1,
+        atol=1e-3,
     )
 
-# def test_find_u_from_two_peaks(sample_info):
-#     # implement after goniometer module to calculate r_mat
-#     assert True
+def test_find_u_from_two_peaks(sample_info):
+    angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
+    peak1 = Peak((0,0,2), angles1)
+    angles2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
+    peak2 = Peak((0, 2, 0), angles2)
+    b_matrix, ub_matrix, *_, lattice_params = sample_info
+    
+    assert np.allclose(b_matrix, b_mat(lattice_params), atol = 1e-3)
+    
+    r_mat = Goniometer().r_mat
+    u_mat_cal = find_u_from_two_peaks((peak1, peak2), b_mat(lattice_params), r_mat, 13.505137, 13.505137)
+    assert np.allclose(u_mat_cal @ b_mat(lattice_params), ub_matrix, atol=1e-3)
 
 # def test_find_ub_from_three_peaks(sample_info):
 #     # implement after goniometer module to calculate r_mat

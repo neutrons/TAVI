@@ -8,10 +8,11 @@ Equations listed in the comments refer to the document above.
 
 import numpy as np
 
+from tavi.library.component.goniometer import Goniometer
 from tavi.library.utilities import SE2K, Peak
 
 
-def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
+def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     """
     Return qlab matrix. Follow's mantid convention. Eq.8.
 
@@ -196,7 +197,7 @@ def uv_to_ub(
 
 
 def find_u_from_two_peaks(
-    peaks: tuple[Peak, Peak], b_mat: np.ndarray, r_mat: np.ndarray, ei: float, ef: float
+    peaks: tuple[Peak, Peak], b_mat: np.ndarray, r_mat: Goniometer.r_mat, ei: float, ef: float
 ) -> np.ndarray:
     """
     Calculate U matrix from two peaks.
@@ -226,10 +227,8 @@ def find_u_from_two_peaks(
     q_lab_2 = q_lab(ei, ef, peak2.angles.two_theta)
 
     # In identical fashion as described above Eq.79
-    r_mat_inv = np.linalg.inv(r_mat)
-    # TODO implement r_mat from goniometer module
-    t1_v = r_mat_inv @ q_lab_1
-    t3_v = np.cross(r_mat_inv @ q_lab_1, r_mat_inv @ q_lab_2)
+    t1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1
+    t3_v = np.cross(np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1, np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2)
     t2_v = np.cross(t3_v, t1_v)
     T_v = np.array(
         [
@@ -261,10 +260,9 @@ def find_ub_from_three_peaks(peaks: tuple[Peak, Peak, Peak], r_mat: np.ndarray, 
     q_lab_2 = q_lab(ei, ef, peak2.angles.two_theta)
     q_lab_3 = q_lab(ei, ef, peak3.angles.two_theta)
 
-    r_mat_inv = np.linalg.inv(r_mat)
-    q1_v = r_mat_inv @ q_lab_1 / (2 * np.pi)
-    q2_v = r_mat_inv @ q_lab_2 / (2 * np.pi)
-    q3_v = r_mat_inv @ q_lab_3 / (2 * np.pi)
+    q1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi)
+    q2_v = np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2 / (2 * np.pi)
+    q3_v = np.linalg.inv(r_mat(peak3.angles)) @ q_lab_3 / (2 * np.pi)
     Q_v = np.array([q1_v, q2_v, q3_v]).T
 
     ub_mat = Q_v @ np.linalg.inv(V)
@@ -283,11 +281,11 @@ def find_ub_from_multiple_peaks(peaks: tuple[Peak, ...], r_mat: np.ndarray, ei: 
     n = len(peaks)
     Q_v = np.zeros((3, 3))
     VV = np.zeros((3, 3))
-    r_mat_inv = np.linalg.inv(r_mat)
+
     for i in range(n):
         hkl = peaks[i].hkl
         q_lab_i = q_lab(ei, ef, peaks[i].angles.two_theta)
-        q_v_i = r_mat_inv @ q_lab_i / (2 * np.pi)
+        q_v_i = np.linalg.inv(r_mat(peaks[i].angles)) @ q_lab_i / (2 * np.pi)
         for j in range(3):
             for k in range(3):
                 Q_v[j, k] += q_v_i[k] * hkl[j]
