@@ -1,7 +1,5 @@
 from typing import Literal, Optional
 
-import numpy as np
-from tavi.library.utilities import MotorAngles
 
 class Goniometer:
     """
@@ -25,6 +23,7 @@ class Goniometer:
         validate_motor_positions
 
     """
-    def __init__(self, type:str = "Y, -Z, X", sense: Optional[Literal["-", "+"]]= None):
+
+    def __init__(self, type: str = "Y, -Z, X", sense: Optional[Literal["-", "+"]] = None):
         self.type = type
         self.sense = sense
