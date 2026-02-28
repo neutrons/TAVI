@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 from old_tavi import lattice_algorithm
-from tavi.library.algorithms.ub_algorithms import ub_to_uv, uv_to_ub, b_mat
+from tavi.library.algorithms.ub_algorithms import ub_to_uv, uv_to_ub, b_mat, plane_normal_from_two_peaks
+from tavi.library.utilities import Peak
 
 @pytest.fixture
 def sample_info():
@@ -57,3 +58,12 @@ def test_find_u_from_two_peaks(sample_info):
 def test_find_ub_from_three_peaks(sample_info):
     # implement after goniometer module to calculate r_mat
     assert True
+
+def test_plane_normal_from_two_peaks(sample_info):
+    b_mat, ub_mat, *_, plane_normal, in_plane_ref,_ = sample_info
+
+    u_mat = ub_mat.dot(np.linalg.inv(b_mat))
+    peaks = (Peak(hkl=(0,0,2)), Peak(hkl=(0,2,0)))
+    plane_normal_cal, in_plane_ref_cal = plane_normal_from_two_peaks(u_mat, b_mat, peaks)
+    assert np.allclose(plane_normal_cal, plane_normal, atol=1e-3)
+    assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-3)

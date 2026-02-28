@@ -1,7 +1,7 @@
 """General utilities for tas related functions and classes."""
 
 from dataclasses import dataclass
-from typing import NamedTuple, Optional
+from typing import Optional
 
 import numpy as np
 from scipy.constants import hbar, m_n
@@ -13,8 +13,8 @@ def SE2K(e: float) -> float:
     return np.sqrt(e) * E2K
 
 
-@dataclass
-class Peak(NamedTuple):
+@dataclass(frozen=True)
+class Peak:
     """
     Description of a peak and motor angles.
 
@@ -25,11 +25,11 @@ class Peak(NamedTuple):
     """
 
     hkl: tuple[float, float, float]
-    angles: MotorAngles
+    angles: Optional[MotorAngles] = None
 
 
-@dataclass
-class MotorAngles(NamedTuple):
+@dataclass(frozen=True)
+class MotorAngles:
     """
     Moter anlges.
 

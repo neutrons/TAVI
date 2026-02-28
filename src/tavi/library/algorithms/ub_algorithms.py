@@ -119,7 +119,7 @@ def uv_to_ub(
     return u_mat @ B
 
 
-# -----------Calculate UB Matrix----------------------------
+# -----------Calculate UB Matrix-----------
 
 
 def find_u_from_two_peaks(
@@ -221,3 +221,23 @@ def find_ub_from_multiple_peaks(peaks: tuple[Peak, ...], r_mat: np.ndarray, ei: 
                 VV[j, k] += hkl[k] * hkl[j]
     ub_mat = Q_v.T @ np.linalg.inv(VV).T
     return ub_mat
+
+
+def plane_normal_from_two_peaks(
+    u_mat: np.ndarray, b_mat: np.ndarray, peaks: tuple[Peak, Peak]
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate plane_normal and in_plane reflection.
+
+    Both are vectors representing peaks in Q_lab.
+    """
+    peak1, peak2 = peaks
+    t1_c = b_mat @ peak1.hkl
+    t3_c = np.cross(b_mat @ peak1.hkl, b_mat @ peak2.hkl)
+
+    # Eq. 79(3) calculate t3_v from U and t3_c
+    plane_normal = u_mat @ t3_c / np.linalg.norm(t3_c)
+    # if y is pointing down, set it to point up
+    plane_normal = -plane_normal if plane_normal[1] < 0 else plane_normal
+    in_plane_ref = u_mat @ t1_c / np.linalg.norm(t1_c)
+    return (plane_normal, in_plane_ref)
