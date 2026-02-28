@@ -1,9 +1,12 @@
+"""Goniometer component."""
+
 from typing import Literal, Optional
 
 
 class Goniometer:
     """
-    Goniometer
+    Goniometer.
+
     For Huber table, use type Y,-Z,X or Y,Z,-X
     For Four-Cricle in bisect mode, use type ?Y,Z,Y,bisect
 
@@ -24,6 +27,7 @@ class Goniometer:
 
     """
 
-    def __init__(self, type: str = "Y, -Z, X", sense: Optional[Literal["-", "+"]] = None):
+    def __init__(self, type: str = "Y, -Z, X", sense: Optional[Literal["-", "+"]] = None) -> None:
+        """Init."""
         self.type = type
         self.sense = sense
