@@ -7,7 +7,6 @@ Equations listed in the comments refer to the document above.
 """
 
 import numpy as np
-from scipy import linalg
 
 from tavi.library.utilities import SE2K, Peak
 
@@ -34,6 +33,7 @@ def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
         ]
     )
 
+
 def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
     """
     Return norm of q for given (h,k,l)
@@ -42,11 +42,14 @@ def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
         Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
 
     """
-    q_norm = 2*np.pi* np.linalg.norm(b_mat @ np.array(hkl))
+    q_norm = 2 * np.pi * np.linalg.norm(b_mat @ np.array(hkl))
     return q_norm
 
+
 # -----------R matrix-----------
-def r_matrix_with_minimal_tilt(peak:Peak, ei:float, ef:float, two_theta:float, ub_mat, plane_normal, in_plane_ref) -> np.ndarray:
+def r_matrix_with_minimal_tilt(
+    peak: Peak, ei: float, ef: float, two_theta: float, ub_mat, plane_normal, in_plane_ref
+) -> np.ndarray:
     """
     Calculate R matrix when the tilt from the scattering plane is minimal.
 
@@ -58,6 +61,7 @@ def r_matrix_with_minimal_tilt(peak:Peak, ei:float, ef:float, two_theta:float, u
         ub_mat: UB matrix
         plane_normal: plane_normal
         in_plane_ref: in plane reflection.
+
     """
     ki = SE2K(ei)
     kf = SE2K(ef)
@@ -66,11 +70,11 @@ def r_matrix_with_minimal_tilt(peak:Peak, ei:float, ef:float, two_theta:float, u
     tt = np.deg2rad(two_theta)
     q_lab1 = np.array([-kf * np.sin(tt), 0, ki - kf * np.cos(tt)]) / q_norm
     q_lab2 = np.array([ki - kf * np.cos(tt), 0, kf * np.sin(tt)]) / q_norm
-    q_lab3 = np.array([0,1,0])
+    q_lab3 = np.array([0, 1, 0])
 
-    Q_lab = np.array([q_lab1,q_lab2,q_lab3]).T
+    Q_lab = np.array([q_lab1, q_lab2, q_lab3]).T
     tol = 1e-5
-    
+
     # Eq.106
     t1 = ub_mat @ np.array(peak.hkl)
     if np.abs(t1 @ plane_normal) < tol:
@@ -79,21 +83,22 @@ def r_matrix_with_minimal_tilt(peak:Peak, ei:float, ef:float, two_theta:float, u
         t2 = np.cross(t3, t1)
     elif np.linalg.norm(np.cross(plane_normal, t1)) < tol:
         # t1 parallel plane_normal, still need to set t1 in scattering plane
-        t2 = in_plane_ref # set t2 in plane
-        t3 = np.cross(t1, t2) # t3 along y
+        t2 = in_plane_ref  # set t2 in plane
+        t3 = np.cross(t1, t2)  # t3 along y
     else:
         # t1 not in plane, still need to set t1 in scattering plane
         t2 = np.cross(plane_normal, t1)
         t3 = np.cross(t1, t2)
-        
-    
-    T_mat = np.array([
-        t1/np.linalg.norm(t1),
-        t2/np.linalg.norm(t2),
-        t3/np.linalg.norm(t3),
-    ]).T
+
+    T_mat = np.array(
+        [
+            t1 / np.linalg.norm(t1),
+            t2 / np.linalg.norm(t2),
+            t3 / np.linalg.norm(t3),
+        ]
+    ).T
     r_mat = Q_lab @ np.linalg.inv(T_mat)
-    return r_mat   
+    return r_mat
 
 
 def ub_to_uv(ub_mat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

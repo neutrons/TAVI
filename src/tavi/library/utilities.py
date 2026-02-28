@@ -53,12 +53,14 @@ class MotorAngles:
     chi: Optional[float] = None
     phi: Optional[float] = None
 
+
 def get_angle_from_triangle(a: float, b: float, c: float) -> float:
     """
     In a triangle with sides a,b and c, get angle between a and b in radian.
 
     Note:
         return value in [0,pi]
+
     """
     zero = 1e-6
     if (np.abs(a) < zero) or (np.abs(b) < zero):
