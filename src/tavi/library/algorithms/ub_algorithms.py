@@ -34,9 +34,9 @@ def q_lab(ei: float, ef: float, theta: float, phi: float) -> np.ndarray:
     )
 
 
-def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
+def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray) -> np.ndarray:
     """
-    Return norm of q for given (h,k,l)
+    Return norm of q for given (h,k,l).
 
     Note:
         Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
@@ -48,7 +48,13 @@ def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray):
 
 # -----------R matrix-----------
 def r_matrix_with_minimal_tilt(
-    peak: Peak, ei: float, ef: float, two_theta: float, ub_mat, plane_normal, in_plane_ref
+    peak: Peak,
+    ei: float,
+    ef: float,
+    two_theta: float,
+    ub_mat: np.ndarray,
+    plane_normal: np.ndarray,
+    in_plane_ref: np.ndarray,
 ) -> np.ndarray:
     """
     Calculate R matrix when the tilt from the scattering plane is minimal.
