@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from old_tavi import lattice_algorithm
-from tavi.library.algorithms.ub_algorithms import ub_to_uv, uv_to_ub, b_mat, plane_normal_from_two_peaks
+from tavi.library.algorithms.ub_algorithms import ub_to_uv, uv_to_ub, b_mat, plane_normal_from_two_peaks,q_norm_from_hkl,q_norm_from_hkl, r_matrix_with_minimal_tilt
 from tavi.library.utilities import Peak
 
 @pytest.fixture
@@ -59,6 +59,25 @@ def test_plane_normal_from_two_peaks(sample_info):
     plane_normal_cal, in_plane_ref_cal = plane_normal_from_two_peaks(u_mat, b_mat, peaks)
     assert np.allclose(plane_normal_cal, plane_normal, atol=1e-3)
     assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-3)
+
+def test_r_matrix_with_minimal_tilt(sample_info):
+    b_mat, ub_mat, u,v, plane_normal, in_plane_ref,_ = sample_info
+
+    ef = 13.505137
+
+    r_mat_cal = r_matrix_with_minimal_tilt(Peak(hkl=(0, 0, 2)), ef, ef, -51.530388, ub_mat, plane_normal, in_plane_ref)
+    print(r_mat_cal)
+    assert np.allclose(
+        np.array(
+            [
+                [0.70438493, 0.03096807, -0.70914233],
+                [0.00000873, 0.99904746, 0.04363682],
+                [0.70981819, -0.03074331, 0.70371371],
+            ]
+        ),
+        r_mat_cal,
+        atol=1e-1,
+    )
 
 # def test_find_u_from_two_peaks(sample_info):
 #     # implement after goniometer module to calculate r_mat

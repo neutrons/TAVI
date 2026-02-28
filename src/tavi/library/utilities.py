@@ -4,13 +4,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
-from scipy.constants import hbar, m_n
+from scipy.constants import e, hbar, m_n
 
 
-def SE2K(e: float) -> float:
+def SE2K(E: float) -> float:
     """Convert energy E to momentum transfer k."""
     E2K = np.sqrt(2e-3 * e * m_n) * 1e-10 / hbar
-    return np.sqrt(e) * E2K
+    return np.sqrt(E) * E2K
 
 
 @dataclass(frozen=True)
@@ -52,3 +52,18 @@ class MotorAngles:
     sgu: Optional[float] = None
     chi: Optional[float] = None
     phi: Optional[float] = None
+
+def get_angle_from_triangle(a: float, b: float, c: float) -> float:
+    """
+    In a triangle with sides a,b and c, get angle between a and b in radian.
+
+    Note:
+        return value in [0,pi]
+    """
+    zero = 1e-6
+    if (np.abs(a) < zero) or (np.abs(b) < zero):
+        raise ValueError("Triangle cannot be closed.")
+    arc_cos = (a**2 + b**2 - c**2) / (2 * a * b)
+    if arc_cos > 1 or arc_cos < -1:
+        raise ValueError("Triangle cannot be closed.")
+    return np.arccos(arc_cos)
