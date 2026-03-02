@@ -3,6 +3,7 @@ from unittest import mock, TestCase
 
 import pytest
 
+from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.meta.multithreading.proxy import Proxy
 
 
@@ -17,6 +18,7 @@ class SampleAbstractClassImpl(SampleAbstractClass):
 
     def some_method(self):
         self.test_var()
+        return ModelResponse(code=ResponseCode.OK)
 
     def some_non_abstract_method(self):
         pass
@@ -48,6 +50,7 @@ class TestFileOperations(TestCase):
     def test_method_worker_delegation(self):
         with mock.patch.object(self.inst, "worker_pool", mock.Mock()) as mock_worker_pool:
             self.inst.some_method()
+            assert self.inst.worker_pool is mock_worker_pool
             assert mock_worker_pool.create_worker.called
             assert mock_worker_pool.submit_worker.called
 
