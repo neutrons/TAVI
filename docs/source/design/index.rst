@@ -16,3 +16,4 @@ review and adhere to these guidelines when contributing to the project.
    cfsignatures
    tavifields
    recovery_service
+   loader_registry
