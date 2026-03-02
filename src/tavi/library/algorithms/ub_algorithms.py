@@ -52,7 +52,7 @@ def r_matrix_with_minimal_tilt(
     peak: Peak,
     ei: float,
     ef: float,
-    sense: int,
+    sense: str,
     ub_mat: np.ndarray,
     plane_normal: np.ndarray,
     in_plane_ref: np.ndarray,
@@ -64,7 +64,7 @@ def r_matrix_with_minimal_tilt(
         peak: Peak
         ei: incident energy, in meV
         ef: final energy, in meV
-        sense: either 1 or -1, indicate if phi =0 or pi
+        sense: either + or -, indicate if phi =0 or pi
         ub_mat: UB matrix
         plane_normal: plane_normal
         in_plane_ref: in plane reflection.
@@ -77,7 +77,8 @@ def r_matrix_with_minimal_tilt(
     # Eq.112
     Q_squared = 4 * np.pi**2 * (np.array(peak.hkl).T @ ub_mat.T @ ub_mat @ peak.hkl)
     # Eq.113
-    two_theta = sense * np.arccos((ki**2 + kf**2 - Q_squared) / (2 * ki * kf))
+    analyzer_position = 1 if sense == "+" else -1
+    two_theta = analyzer_position * np.arccos((ki**2 + kf**2 - Q_squared) / (2 * ki * kf))
     # with minimal tilt, we are considering scenario described above Eq.114
     q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
     q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm

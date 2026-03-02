@@ -71,7 +71,7 @@ def test_r_matrix_with_minimal_tilt(sample_info):
 
     ef = 13.505137
 
-    r_mat_cal = r_matrix_with_minimal_tilt(Peak(hkl=(0, 0, 2)), ef, ef, -51.530388, ub_mat, plane_normal, in_plane_ref)
+    r_mat_cal = r_matrix_with_minimal_tilt(Peak(hkl=(0, 0, 2)), ef, ef, "-", ub_mat, plane_normal, in_plane_ref)
     assert np.allclose(
         np.array(
             [
