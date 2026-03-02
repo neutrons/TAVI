@@ -2,7 +2,7 @@
 Calculate UB matrix and related quantities.
 
 Follows Andrei Savici's UB Matrix Formlism used in mantid at
-https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf.
+https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf version:March 06, 2011.
 Equations listed in the comments refer to the document above.
 """
 
@@ -52,7 +52,7 @@ def r_matrix_with_minimal_tilt(
     peak: Peak,
     ei: float,
     ef: float,
-    two_theta: float,
+    sense: int,
     ub_mat: np.ndarray,
     plane_normal: np.ndarray,
     in_plane_ref: np.ndarray,
@@ -64,7 +64,7 @@ def r_matrix_with_minimal_tilt(
         peak: Peak
         ei: incident energy, in meV
         ef: final energy, in meV
-        two_theta: two_theta angle, in degrees
+        sense: either 1 or -1, indicate if phi =0 or pi
         ub_mat: UB matrix
         plane_normal: plane_normal
         in_plane_ref: in plane reflection.
@@ -73,10 +73,14 @@ def r_matrix_with_minimal_tilt(
     ki = SE2K(ei)
     kf = SE2K(ef)
     q_norm = q_norm_from_hkl(peak.hkl, ub_mat)
+
+    # Eq.112
+    Q_squared = 4 * np.pi**2 * (np.array(peak.hkl).T @ ub_mat.T @ ub_mat @ peak.hkl)
+    # Eq.113
+    two_theta = sense * np.arccos((ki**2 + kf**2 - Q_squared) / (2 * ki * kf))
     # with minimal tilt, we are considering scenario described above Eq.114
-    tt = np.deg2rad(two_theta)
-    q_lab1 = np.array([-kf * np.sin(tt), 0, ki - kf * np.cos(tt)]) / q_norm
-    q_lab2 = np.array([ki - kf * np.cos(tt), 0, kf * np.sin(tt)]) / q_norm
+    q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
+    q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm
     q_lab3 = np.array([0, 1, 0])
 
     Q_lab = np.array([q_lab1, q_lab2, q_lab3]).T
@@ -89,11 +93,14 @@ def r_matrix_with_minimal_tilt(
         t3 = plane_normal
         t2 = np.cross(t3, t1)
     elif np.linalg.norm(np.cross(plane_normal, t1)) < tol:
-        # t1 parallel plane_normal, still need to set t1 in scattering plane
+        # calculate R when t1 is along plane_normal. Easiest way to construct three perp
+        # axes are use t2 as in-plane axis. This already considers a 90 degree rotation
+        # to bring t1 in-plane.
         t2 = in_plane_ref  # set t2 in plane
         t3 = np.cross(t1, t2)  # t3 along y
     else:
-        # t1 not in plane, still need to set t1 in scattering plane
+        # t1 not in plane. np.cross(plane_normal, t1) already incorporate a minimal rotation along
+        # t2 to bring t1 in-plane
         t2 = np.cross(plane_normal, t1)
         t3 = np.cross(t1, t2)
 
