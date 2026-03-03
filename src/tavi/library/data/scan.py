@@ -1,6 +1,8 @@
 """Scan object."""
 
-from dataclasses import dataclass
+from typing import Tuple
+
+from pydantic.dataclasses import dataclass
 
 
 @dataclass
@@ -30,14 +32,15 @@ class Scan:
             (e.g., motor positions, detector counts, temperatures).
         metadata (RawMetaData): Descriptive information about the scan
             (e.g., experiment details, instrument settings, sample information).
-        error_message (tuple): Messages or warnings associated with the scan,
+        error_messages (tuple): Specific error messages or warnings associated with the scan,
             such as instrument errors or data quality issues.
         others (tuple): Miscellaneous or auxiliary information related to the scan
-            that does not fit into "data", "metadata"` or "error_message".
+            that does not fit into "data", "metadata"` or "error_message". Can be
+            numbers, strs, etc. No limit on what to store here.
 
     """
 
     data: RawData
     metadata: RawMetaData
-    error_message: tuple
-    others: tuple
+    error_messages: Tuple[str, ...]
+    others: Tuple
