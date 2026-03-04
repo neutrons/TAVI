@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 import numpy as np
 
-from tavi.library.utilities import MotorAngles, rot_x, rot_y, rot_z
+from tavi.library.experiment.utilities import MotorAngles, rot_x, rot_y, rot_z
 
 
 class Goniometer:

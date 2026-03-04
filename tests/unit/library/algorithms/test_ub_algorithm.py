@@ -8,7 +8,7 @@ from tavi.library.algorithms.ub_algorithms import (find_u_from_two_peaks,
                                                    q_norm_from_hkl,q_norm_from_hkl, 
                                                    r_matrix_with_minimal_tilt)
 from tavi.library.component.goniometer import Goniometer
-from tavi.library.utilities import MotorAngles, Peak
+from tavi.library.experiment.utilities import MotorAngles, Peak
 
 @pytest.fixture
 def sample_info():
