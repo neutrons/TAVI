@@ -8,14 +8,22 @@ Equations listed in the comments refer to the document above.
 
 import numpy as np
 
-from tavi.library.component.goniometer import Goniometer
-from tavi.library.geometry.sample import Sample
-from tavi.library.experiment.utilities import SE2K, Peak, q_norm_from_hkl
-from typing import Optional
 
 class OrientedLattice:
+    """Oritented lattice class."""
 
-    def __init__(self, a:float = 1,b:float = 1,c:float=1,alpha:float= 90, beta:float=90, gamma:float=90, u_mat:np.ndarray= np.eye(3), powder:bool=False):
+    def __init__(
+        self,
+        a: float = 1,
+        b: float = 1,
+        c: float = 1,
+        alpha: float = 90,
+        beta: float = 90,
+        gamma: float = 90,
+        u_mat: np.ndarray = np.eye(3),
+        powder: bool = False,
+    ) -> None:
+        """Initialize OrientedLattice class."""
         self._a = a
         self._b = b
         self._c = c
@@ -24,71 +32,94 @@ class OrientedLattice:
         self._beta = beta
         self._u_mat = u_mat
         self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, self._beta, self._gamma)
-    
+
     @property
-    def a(self):
+    def a(self) -> None:
+        """Get lattice parameters."""
         return self._a
+
     @a.setter
-    def a(self, value):
+    def a(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
         self._B = self.calculate_B(value, self._b, self._c, self._alpha, self._beta, self._gamma)
         self._a
 
     @property
-    def b(self):
+    def b(self) -> float:
+        """Get lattice parameters."""
         return self._b
+
     @b.setter
-    def b(self, value:float):
-        self._B = self.calculate_B(self._a,value, self._c, self._alpha, self._beta, self._gamma)
+    def b(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
+        self._B = self.calculate_B(self._a, value, self._c, self._alpha, self._beta, self._gamma)
         self._b
 
     @property
-    def c(self):
+    def c(self) -> float:
+        """Get lattice parameters."""
         return self._c
+
     @c.setter
-    def c(self, value:float):
+    def c(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
         self._B = self.calculate_B(self._a, self._b, value, self._alpha, self._beta, self._gamma)
         self._a
 
     @property
-    def alpha(self):
+    def alpha(self) -> float:
+        """Get lattice parameters."""
         return self._alpha
+
     @alpha.setter
-    def alpha(self, value:float):
+    def alpha(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
         self._B = self.calculate_B(self._a, self._b, self._c, value, self._beta, self._gamma)
         self._alpha
 
     @property
-    def beta(self):
+    def beta(self) -> float:
+        """Get lattice parameters."""
         return self._beta
+
     @beta.setter
-    def beta(self, value:float):
+    def beta(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
         self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, value, self._gamma)
         self._beta
 
     @property
-    def gamma(self):
+    def gamma(self) -> float:
+        """Get lattice parameters."""
         return self._gamma
+
     @gamma.setter
-    def gamma(self, value:float):
+    def gamma(self, value: float) -> None:
+        """Set lattice parameters and recalculate B matrix."""
         self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, self._beta, value)
         self._gamma
-    
+
     @property
-    def B(self):
+    def B(self) -> np.ndarray:
+        """Get B matrix."""
         return self._B
+
     @B.setter
-    def B(self, mat:np.ndarray):
+    def B(self, mat: np.ndarray) -> None:
+        """Set B matrix. Should also update lattice parameters."""
         self._B = mat
-        # TODO 
+        # TODO
         # implement refine lattice parameter algo
 
     @property
-    def U(self):
+    def U(self) -> np.ndarray:
+        """Get U matrix."""
         return self._u_mat
+
     @U.setter
     def U(self, uv: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
         """Compute UB matrix from u,v and lattice parameters. Eq.76-81."""
-        u,v = uv
+        u, v = uv
         t1_c = self._B @ u
         t3_c = np.cross(self._B @ u, self._B @ v)
         t2_c = np.cross(t3_c, t1_c)
@@ -112,17 +143,16 @@ class OrientedLattice:
         return u_mat @ self._B
 
     @property
-    def getUB(self):
+    def getUB(self) -> np.ndarray:
+        """Get UB matrix."""
         return self._u_mat @ self._B
-    
-    def overwrite_U(self, u_mat):
-        """Mannual overwrite U."""
+
+    def overwrite_U(self, u_mat: np.ndarray) -> None:
+        """Manual overwrite U."""
         self._u_mat = u_mat
 
-
-    def calculate_B(self, a:float, b:float, c:float, alpha:float, beta:float, gamma:float) -> np.ndarray:
+    def calculate_B(self, a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> np.ndarray:
         """Calculate b matrix from lattice parameters.Eq.52."""
-
         cos_alpha = np.cos(np.radians(alpha))
         sin_alpha = np.sin(np.radians(alpha))
 
@@ -156,7 +186,6 @@ class OrientedLattice:
         )
         return B
 
-        
     def get_uv(self) -> tuple[np.ndarray, np.ndarray]:
         """
         If ubmatrix is given, return uv vector.
@@ -166,4 +195,3 @@ class OrientedLattice:
         u = np.matmul(np.linalg.inv(self._u_mat), np.array([0, 0, 1]))
         v = np.matmul(np.linalg.inv(self._u_mat), np.array([1, 0, 0]))
         return (u, v)
-    

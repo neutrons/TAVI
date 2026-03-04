@@ -1,25 +1,25 @@
 """General utilities for tas related functions and classes."""
 
-from dataclasses import dataclass
-from typing import Optional
-
 import numpy as np
-from scipy.constants import e, hbar, m_n
-from tavi.library.experiment.peak import Peak
+
 from tavi.library.component.goniometer import Goniometer
-from tavi.library.geometry.sample import Sample
+from tavi.library.experiment.peak import Peak
 from tavi.library.experiment.utilities import SE2K, q_lab, q_norm_from_hkl
+from tavi.library.geometry.sample import Sample
 
 
 class TAS:
-    def __init__(self, instrument: str = None, goni: Goniometer = Goniometer(), sample: Sample = Sample()):
+    """Triple-axis class. Main function for tavi library."""
+
+    def __init__(self, instrument: str = None, goni: Goniometer = Goniometer(), sample: Sample = Sample()) -> None:
+        """Initialize triple axis."""
         self.instrument = instrument
         self.goni = goni
         self.sample = sample
 
-
     # -----------R matrix-----------
-    def r_matrix_with_minimal_tilt(self,
+    def r_matrix_with_minimal_tilt(
+        self,
         peak: Peak,
         ei: float,
         ef: float,
@@ -88,9 +88,8 @@ class TAS:
 
     # -----------Calculate UB Matrix-----------
 
-
-    def find_u_from_two_peaks(self,
-        peaks: tuple[Peak, Peak], b_mat: np.ndarray, r_mat: Goniometer.r_mat, ei: float, ef: float
+    def find_u_from_two_peaks(
+        self, peaks: tuple[Peak, Peak], b_mat: np.ndarray, r_mat: Goniometer.r_mat, ei: float, ef: float
     ) -> np.ndarray:
         """
         Calculate U matrix from two peaks.
@@ -134,8 +133,9 @@ class TAS:
         u_mat = T_v @ T_c.T
         return u_mat
 
-
-    def find_ub_from_three_peaks(self,peaks: tuple[Peak, Peak, Peak], r_mat: np.ndarray, ei: float, ef: float) -> np.ndarray:
+    def find_ub_from_three_peaks(
+        self, peaks: tuple[Peak, Peak, Peak], r_mat: np.ndarray, ei: float, ef: float
+    ) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -161,8 +161,9 @@ class TAS:
         ub_mat = Q_v @ np.linalg.inv(V)
         return ub_mat
 
-
-    def find_ub_from_multiple_peaks(self,peaks: tuple[Peak, ...], r_mat: np.ndarray, ei: float, ef: float) -> np.ndarray:
+    def find_ub_from_multiple_peaks(
+        self, peaks: tuple[Peak, ...], r_mat: np.ndarray, ei: float, ef: float
+    ) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -186,9 +187,8 @@ class TAS:
         ub_mat = Q_v.T @ np.linalg.inv(VV).T
         return ub_mat
 
-
-    def plane_normal_from_two_peaks(self,
-        u_mat: np.ndarray, b_mat: np.ndarray, peaks: tuple[Peak, Peak]
+    def plane_normal_from_two_peaks(
+        self, u_mat: np.ndarray, b_mat: np.ndarray, peaks: tuple[Peak, Peak]
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate plane_normal and in_plane reflection.
@@ -205,4 +205,3 @@ class TAS:
         plane_normal = -plane_normal if plane_normal[1] < 0 else plane_normal
         in_plane_ref = u_mat @ t1_c / np.linalg.norm(t1_c)
         return (plane_normal, in_plane_ref)
-

@@ -1,5 +1,9 @@
-from pydantic.dataclasses import dataclass
+"""Representing a Bragg peak."""
+
 from typing import Optional
+
+from pydantic.dataclasses import dataclass
+
 
 @dataclass(frozen=True)
 class Peak:
@@ -14,6 +18,7 @@ class Peak:
 
     hkl: tuple[float, float, float]
     angles: Optional[MotorAngles] = None
+
 
 @dataclass(frozen=True)
 class MotorAngles:

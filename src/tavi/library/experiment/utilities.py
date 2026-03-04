@@ -1,12 +1,10 @@
 """General utilities for tas related functions and classes."""
 
-from dataclasses import dataclass
-from typing import Optional
-
 import numpy as np
 from scipy.constants import e, hbar, m_n
-from tavi.library.experiment.peak import Peak
+
 from tavi.library.component.goniometer import Goniometer
+from tavi.library.experiment.peak import Peak
 
 
 def SE2K(E: float) -> float:
@@ -27,7 +25,6 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
 
 
     """
-    
     ki = SE2K(ei)
     kf = SE2K(ef)
     return np.array(
@@ -37,6 +34,7 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
             ki - kf * np.cos(np.radians(theta)),
         ]
     )
+
 
 def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray) -> np.ndarray:
     """
@@ -49,6 +47,7 @@ def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray) -> np.nd
     q_norm = 2 * np.pi * np.linalg.norm(b_mat @ np.array(hkl))
 
     return q_norm
+
 
 # -----------R matrix-----------
 def r_matrix_with_minimal_tilt(
@@ -117,6 +116,7 @@ def r_matrix_with_minimal_tilt(
     ).T
     r_mat = Q_lab @ np.linalg.inv(T_mat)
     return r_mat
+
 
 # -----------Calculate UB Matrix-----------
 
