@@ -7,4 +7,4 @@ from tavi.meta.exception.tavi_exception import TaviError
 class ExceptionEvent(Event):
     """Event to be emitted and handled by the recovery service."""
 
-    e: TaviError
+    error: TaviError

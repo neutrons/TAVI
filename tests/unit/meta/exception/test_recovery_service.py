@@ -47,10 +47,10 @@ class TestRecoveryService(TestCase):
             
         self.recovery_service.register(DummyError, handle)
         
-        self.recovery_service.handle_exception(ExceptionEvent(e=DummyError("message", "stack_trace")))
+        self.recovery_service.handle_exception(ExceptionEvent(error=DummyError("message", "stack_trace")))
         
         assert didHandle
         
     def test_default_handler(self):
         with pytest.raises(RuntimeError, match="FATAL: no handler for exception found"):
-            self.recovery_service.handle_exception(ExceptionEvent(e=DummyError("message", "stack_trace")))
+            self.recovery_service.handle_exception(ExceptionEvent(error=DummyError("message", "stack_trace")))

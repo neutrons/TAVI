@@ -51,7 +51,7 @@ class Worker:
             stack_trace = f"{self.call_stack} \n {traceback.format_exc()}"
             error_message = str(e)
             results = ModelResponse(code=ResponseCode.ERROR, message=error_message)
-            self.event_broker.publish(ExceptionEvent(e=NonRecoverableError(error_message, stack_trace)))
+            self.event_broker.publish(ExceptionEvent(error=NonRecoverableError(error_message, stack_trace)))
 
         self.finished.emit()
         if not isinstance(results, ModelResponse):

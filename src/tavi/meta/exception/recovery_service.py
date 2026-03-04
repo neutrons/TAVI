@@ -30,7 +30,7 @@ class RecoveryService:
 
     def handle_exception(self, event: ExceptionEvent) -> None:
         """Direct exception to the correct handler."""
-        ex: TaviError = event.e
+        ex: TaviError = event.error
         handler: Callable = self.exception_handlers.get(type(ex), self.default_handler)
         handler(ex)
 
