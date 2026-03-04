@@ -2,7 +2,8 @@
 
 from typing import Callable, TypeVar
 
-from tavi.meta.decorators.singleton import Singleton
+from neutrons_standard.decorators.singleton import Singleton
+
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.exception.tavi_exception import TaviError

@@ -3,7 +3,11 @@
 import os
 import pytest
 
-from tavi.meta.decorators.singleton import reset_Singletons
+import neutrons_standard
+
+neutrons_standard.init("tavi")
+
+from neutrons_standard.decorators.singleton import reset_Singletons
 
 
 if not os.environ.get("env"):

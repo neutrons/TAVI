@@ -5,8 +5,9 @@ import traceback
 from threading import Thread
 from typing import Any, Callable, Dict, List
 
+from neutrons_standard.decorators.singleton import Singleton
+
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.meta.decorators.singleton import Singleton
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError

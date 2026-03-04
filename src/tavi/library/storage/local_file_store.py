@@ -3,8 +3,9 @@
 import logging
 from pathlib import Path
 
+from neutrons_standard.config import Config
+
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
-from tavi.meta.config import Config
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ from typing import Any, Dict, Tuple
 
 import pytest
 
-from tavi.meta.config import Config
+from neutrons_standard.config import Config
 
 Node = namedtuple("Node", "dict key")
 

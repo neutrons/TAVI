@@ -2,11 +2,12 @@
 
 import logging
 
+from neutrons_standard.decorators.singleton import Singleton
+from neutrons_standard.time import isoFromTimestamp, timestamp
+
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
-from tavi.meta.decorators.singleton import Singleton
-from tavi.meta.time import isoFromTimestamp, timestamp
 
 logger = logging.getLogger(__name__)
 
