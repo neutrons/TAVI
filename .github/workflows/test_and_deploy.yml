@@ -94,7 +94,7 @@ jobs:
 
       - name: Install the package
         run: |
-          micromamba install --yes -c conda-forge neutrons conda-build conda-index
+          micromamba install --yes -c conda-forge conda-build conda-index
           python -m conda_index /tmp/local-channel
           micromamba install -c /tmp/local-channel -c conda-forge -c neutrons ${{ env.PKG_NAME }}
 
