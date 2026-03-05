@@ -31,7 +31,7 @@ class OrientedLattice:
     def a(self) -> None:
         """Get lattice parameters."""
         return self.get_lattice_parameters()[0]
-        
+
     @property
     def b(self) -> float:
         """Get lattice parameters."""
@@ -61,11 +61,12 @@ class OrientedLattice:
     def B(self) -> np.ndarray:
         """Get B matrix."""
         return self._B
+
     @B.setter
-    def B(self, mat:np.ndarray)->None:
+    def B(self, mat: np.ndarray) -> None:
         """Update B matrix."""
         self._B = mat
-    
+
     @property
     def U(self) -> np.ndarray:
         """Get U matrix."""
@@ -140,20 +141,20 @@ class OrientedLattice:
         )
         return B
 
-    def calculate_G(self)->np.ndarray:
-        G_star = self._B.T@self._B
+    def calculate_G(self) -> np.ndarray:
+        G_star = self._B.T @ self._B
         G = np.linalg.inv(G_star)
         return G
-    
-    def get_lattice_parameters(self)->tuple:
+
+    def get_lattice_parameters(self) -> tuple:
         G = self.calculate_G
-        a = np.sqrt(G[0,0])
-        b = np.sqrt(G[1,1])
-        c = np.sqrt(G[2,2])
-        alpha = np.radians(np.arccos(G[1,2]/(b*c)))
-        beta = np.radians(np.arccos(G[0,2]/(a*c)))
-        gamma = np.radians(np.arccos(G[0,1]/(a*b)))
-        return (a,b,c,alpha, beta, gamma)
+        a = np.sqrt(G[0, 0])
+        b = np.sqrt(G[1, 1])
+        c = np.sqrt(G[2, 2])
+        alpha = np.radians(np.arccos(G[1, 2] / (b * c)))
+        beta = np.radians(np.arccos(G[0, 2] / (a * c)))
+        gamma = np.radians(np.arccos(G[0, 1] / (a * b)))
+        return (a, b, c, alpha, beta, gamma)
 
     def get_uv(self) -> tuple[np.ndarray, np.ndarray]:
         """
