@@ -66,7 +66,6 @@ class OrientedLattice:
 
     @B.setter
     def B(self, mat: np.ndarray) -> None:
-    def B(self, mat: np.ndarray) -> None:
         """Update B matrix."""
         self._B = mat
 
