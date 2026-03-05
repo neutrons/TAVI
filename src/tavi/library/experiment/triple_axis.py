@@ -1,5 +1,7 @@
 """General utilities for tas related functions and classes."""
 
+from typing import Tuple
+
 import numpy as np
 
 from tavi.library.component.goniometer import Goniometer
@@ -11,8 +13,17 @@ from tavi.library.geometry.sample import Sample
 class TAS:
     """Triple-axis class. Main function for tavi library."""
 
-    def __init__(self, instrument: str = None, goni: Goniometer = Goniometer(), sample: Sample = Sample()) -> None:
-        """Initialize triple axis."""
+    def __init__(self, instrument: str, goni: Goniometer, sample: Sample) -> None:
+        """
+        Initialize triple axis.
+
+        Args:
+            instrument: instrument name. Currently placeholder but will be used to load instrument
+            configuration later.
+            goni: Goniometer.
+            sample: Sample, need to construct OrientedLattice first. See sample.py.
+
+        """
         self.instrument = instrument
         self.goni = goni
         self.sample = sample
@@ -24,7 +35,6 @@ class TAS:
         ei: float,
         ef: float,
         sense: str,
-        ub_mat: np.ndarray,
         plane_normal: np.ndarray,
         in_plane_ref: np.ndarray,
     ) -> np.ndarray:
@@ -43,6 +53,7 @@ class TAS:
         """
         ki = SE2K(ei)
         kf = SE2K(ef)
+        ub_mat = self.sample.ol.getUB()
         q_norm = q_norm_from_hkl(peak.hkl, ub_mat)
 
         # Eq.112
@@ -87,10 +98,52 @@ class TAS:
         return r_mat
 
     # -----------Calculate UB Matrix-----------
-
-    def find_u_from_two_peaks(
-        self, peaks: tuple[Peak, Peak], b_mat: np.ndarray, r_mat: Goniometer.r_mat, ei: float, ef: float
+    def find_u_from_one_peak_and_scattering_plane(
+        self,
+        peak: Peak,
+        scattering_plane: Tuple[tuple, tuple],
+        B: np.ndarray,
+        r_mat: Goniometer.r_mat,
+        ei: float,
+        ef: float,
     ) -> np.ndarray:
+        """Calculate U matrix from one peak and a scattering plane."""
+        t1_c = B @ peak.hkl
+        vector1, vector2 = scattering_plane
+
+        coeff1, coeff2 = vector1 @ peak.hkl, vector2 @ peak.hkl
+        # construct t2_c as orthogonal as possible from t1_c
+        if np.abs(coeff1) > np.abs(coeff2):  # vector1 is closer to t1_c, use vector2
+            t3_c = np.cross(B @ peak.hkl, B @ vector2 * np.sign(coeff1))  # the sign guarantee right-hand-rule
+        else:
+            t3_c = np.cross(B @ peak.hkl, B @ vector1 * np.sign(coeff2))
+        t2_c = np.cross(t3_c, t1_c)
+
+        T_c = np.array(
+            [
+                t1_c / np.linalg.norm(t1_c),
+                t2_c / np.linalg.norm(t2_c),
+                t3_c / np.linalg.norm(t3_c),
+            ]
+        ).T
+
+        q_lab1 = q_lab(ei, ef, peak.angles.two_theta)
+        t1_v = np.linalg.inv(r_mat(peak.angles)) @ q_lab1
+        # assume using the same rotation matrix, we can rotate to a mantid coordinate system.
+        t3_v = np.linalg.inv(r_mat(peak.angles)) @ np.array([0, 1, 0])
+        t2_v = np.cross(t3_v, t1_v)
+        T_v = np.array(
+            [
+                t1_v / np.linalg.norm(t1_v),
+                t2_v / np.linalg.norm(t2_v),
+                t3_v / np.linalg.norm(t3_v),
+            ]
+        ).T
+
+        u_mat = T_v @ T_c.T
+        return u_mat
+
+    def find_u_from_two_peaks(self, peaks: tuple[Peak, Peak], ei: float, ef: float) -> np.ndarray:
         """
         Calculate U matrix from two peaks.
 
@@ -100,7 +153,8 @@ class TAS:
         Follow Eq.76-81 and Eq.83-88. We assume q_3 is perpendicular from the two peaks
         """
         peak1, peak2 = peaks
-        B = b_mat
+        B = self.sample.ol.B
+        r_mat = self.goni.r_mat
 
         t1_c = B @ peak1.hkl
         t3_c = np.cross(B @ peak1.hkl, B @ peak2.hkl)
@@ -133,9 +187,7 @@ class TAS:
         u_mat = T_v @ T_c.T
         return u_mat
 
-    def find_ub_from_three_peaks(
-        self, peaks: tuple[Peak, Peak, Peak], r_mat: np.ndarray, ei: float, ef: float
-    ) -> np.ndarray:
+    def find_ub_from_three_peaks(self, peaks: tuple[Peak, Peak, Peak], ei: float, ef: float) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -146,6 +198,7 @@ class TAS:
         """
         peak1, peak2, peak3 = peaks
 
+        r_mat = self.goni.r_mat
         # we directly use the three peaks as t1_c, t2_c and t3_c
         V = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
 
@@ -161,9 +214,7 @@ class TAS:
         ub_mat = Q_v @ np.linalg.inv(V)
         return ub_mat
 
-    def find_ub_from_multiple_peaks(
-        self, peaks: tuple[Peak, ...], r_mat: np.ndarray, ei: float, ef: float
-    ) -> np.ndarray:
+    def find_ub_from_multiple_peaks(self, peaks: tuple[Peak, ...], ei: float, ef: float) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -175,6 +226,7 @@ class TAS:
         n = len(peaks)
         Q_v = np.zeros((3, 3))
         VV = np.zeros((3, 3))
+        r_mat = self.goni.r_mat
 
         for i in range(n):
             hkl = peaks[i].hkl
@@ -187,15 +239,15 @@ class TAS:
         ub_mat = Q_v.T @ np.linalg.inv(VV).T
         return ub_mat
 
-    def plane_normal_from_two_peaks(
-        self, u_mat: np.ndarray, b_mat: np.ndarray, peaks: tuple[Peak, Peak]
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def plane_normal_from_two_peaks(self, peaks: tuple[Peak, Peak]) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate plane_normal and in_plane reflection.
 
         Both are vectors representing peaks in Q_lab.
         """
         peak1, peak2 = peaks
+        u_mat = self.sample.ol.U
+        b_mat = self.sample.ol.B
         t1_c = b_mat @ peak1.hkl
         t3_c = np.cross(b_mat @ peak1.hkl, b_mat @ peak2.hkl)
 

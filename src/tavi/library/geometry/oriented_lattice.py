@@ -117,7 +117,11 @@ class OrientedLattice:
         return self._u_mat
 
     @U.setter
-    def U(self, uv: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
+    def U(self, value: np.ndarray) -> None:
+        """Set U matrix."""
+        self._u_mat = value
+
+    def get_ub_from_uv(self, uv: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
         """Compute UB matrix from u,v and lattice parameters. Eq.76-81."""
         u, v = uv
         t1_c = self._B @ u
@@ -139,10 +143,9 @@ class OrientedLattice:
             ]
         ).T
         T_epsilon = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]).T
-        u_mat = T_epsilon @ T_c.T
-        return u_mat @ self._B
+        self._u_mat = T_epsilon @ T_c.T
+        return self._u_mat @ self._B
 
-    @property
     def getUB(self) -> np.ndarray:
         """Get UB matrix."""
         return self._u_mat @ self._B
@@ -192,6 +195,6 @@ class OrientedLattice:
 
         Given in TAS and mantid case, u is along [0, 0, 1], v is along [1, 0, 0].
         """
-        u = np.matmul(np.linalg.inv(self._u_mat), np.array([0, 0, 1]))
-        v = np.matmul(np.linalg.inv(self._u_mat), np.array([1, 0, 0]))
+        u = np.matmul(np.linalg.inv(self._u_mat @ self._B), np.array([0, 0, 1]))
+        v = np.matmul(np.linalg.inv(self._u_mat @ self._B), np.array([1, 0, 0]))
         return (u, v)
