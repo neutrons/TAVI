@@ -15,7 +15,7 @@ class Sample:
     """
     Sample class.
 
-    Currently it only holds oriented lattice and mosaic. But can be expanded to 
+    Currently it only holds oriented lattice and mosaic. But can be expanded to
     include more sample related objects (calculate a*, b*, refine lattice parameters etc.)
 
     Args:

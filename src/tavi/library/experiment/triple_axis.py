@@ -11,9 +11,11 @@ from tavi.library.geometry.sample import Sample
 
 
 class TAS:
-    """Triple-axis class. Main function for tavi library.
-    
-    Next step is implement resolution calculation from tavi.library.resolution module."""
+    """
+    Triple-axis class. Main function for tavi library.
+
+    Next step is implement resolution calculation from tavi.library.resolution module.
+    """
 
     def __init__(self, instrument: str, goni: Goniometer, sample: Sample) -> None:
         """
