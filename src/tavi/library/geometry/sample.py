@@ -15,6 +15,9 @@ class Sample:
     """
     Sample class.
 
+    Currently it only holds oriented lattice and mosaic. But can be expanded to 
+    include more sample related objects (calculate a*, b*, refine lattice parameters etc.)
+
     Args:
         ol: Oriented lattice describing lattice parameters and UB matrix
         mosaic: optional horizontal and vertical mosaic
