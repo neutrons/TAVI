@@ -61,7 +61,11 @@ class Goniometer:
         """
         signs = self._get_motor_senses()
         # initial implementation of huber table YZX mode
-        r_mat = rot_y(angles.omega * signs[0]) @ rot_z(angles.sgl * signs[1]) @ rot_x(angles.sgu * signs[2])
+        r_mat = (
+            rot_y(angles.angles_dict["omega"] * signs[0])
+            @ rot_z(angles.angles_dict["sgl"] * signs[1])
+            @ rot_x(angles.angles_dict["sgu"] * signs[2])
+        )
         return r_mat
 
     def angles_from_r_mat(self, r_mat: np.ndarray) -> tuple[float, float, float]:
@@ -87,4 +91,5 @@ class Goniometer:
         # sgu rotate along x, sgu ~ epsilon
         sgu = np.arctan2(-r_mat[1, 2], r_mat[1, 1]) * signs[2]
 
-        return MotorAngles(omega=np.degrees(omega), sgl=np.degrees(sgl), sgu=np.degrees(sgu))
+        angles_dict = dict(omega=np.degrees(omega), sgl=np.degrees(sgl), sgu=np.degrees(sgu))
+        return MotorAngles(angles_dict)

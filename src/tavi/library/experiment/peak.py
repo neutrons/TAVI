@@ -1,5 +1,6 @@
 """Representing a Bragg peak."""
 
+from dataclasses import field
 from typing import Optional
 
 from pydantic.dataclasses import dataclass
@@ -25,6 +26,10 @@ class MotorAngles:
     """
     Moter anlges.
 
+    Using angles_dict to store motor angles as key,val pairs.
+
+    Recogonized keyword:
+
     two_theta: s2 angle, in degree
     omega: s1 angle, in degree
     sgl: sample goniometer lower, in degree
@@ -34,13 +39,8 @@ class MotorAngles:
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
-        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode
+        angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode.
 
     """
 
-    two_theta: float
-    omega: Optional[float] = None
-    sgl: Optional[float] = None
-    sgu: Optional[float] = None
-    chi: Optional[float] = None
-    phi: Optional[float] = None
+    angles_dict: Optional[dict] = field(default_factory=dict)

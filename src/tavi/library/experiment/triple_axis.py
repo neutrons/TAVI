@@ -131,7 +131,7 @@ class TAS:
             ]
         ).T
 
-        q_lab1 = q_lab(ei, ef, peak.angles.two_theta)
+        q_lab1 = q_lab(ei, ef, peak.angles.angles_dict["two_theta"])
         t1_v = np.linalg.inv(r_mat(peak.angles)) @ q_lab1
         # assume using the same rotation matrix, we can rotate to a mantid coordinate system.
         t3_v = np.linalg.inv(r_mat(peak.angles)) @ np.array([0, 1, 0])
@@ -173,8 +173,8 @@ class TAS:
         ).T
 
         # We need to create vectors t1_v, t2_v, t3_v
-        q_lab_1 = q_lab(ei, ef, peak1.angles.two_theta)
-        q_lab_2 = q_lab(ei, ef, peak2.angles.two_theta)
+        q_lab_1 = q_lab(ei, ef, peak1.angles.angles_dict["two_theta"])
+        q_lab_2 = q_lab(ei, ef, peak2.angles.angles_dict["two_theta"])
 
         # In identical fashion as described above Eq.79
         t1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1

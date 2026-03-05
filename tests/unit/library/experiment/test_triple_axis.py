@@ -74,9 +74,9 @@ def test_r_matrix_with_minimal_tilt(oriented_lattice):
 
 def test_find_u_from_two_peaks(oriented_lattice):
     b_mat,ub_matrix,*_, ol = oriented_lattice
-    angles1 = MotorAngles(two_theta=-51.530388, omega=-45.220125, sgl=-0.000500, sgu=-2.501000)
+    angles1 = MotorAngles(angles_dict={"two_theta": -51.530388, "omega": -45.220125, "sgl":-0.000500, "sgu": -2.501000})
     peak1 = Peak((0,0,2), angles1)
-    angles2 = MotorAngles(two_theta=-105.358735, omega=17.790125, sgl=-0.000500, sgu=-2.501000)
+    angles2 = MotorAngles(angles_dict={"two_theta":-105.358735, "omega":17.790125, "sgl":-0.000500, "sgu":-2.501000})
     peak2 = Peak((0, 2, 0), angles2)
     
     sa = Sample(ol)
