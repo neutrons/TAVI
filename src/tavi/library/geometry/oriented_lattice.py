@@ -32,7 +32,6 @@ class OrientedLattice:
         """Get lattice parameters."""
         return self.get_lattice_parameters()[0]
 
-
     @property
     def b(self) -> float:
         """Get lattice parameters."""
@@ -63,12 +62,10 @@ class OrientedLattice:
         """Get B matrix."""
         return self._B
 
-
     @B.setter
     def B(self, mat: np.ndarray) -> None:
         """Update B matrix."""
         self._B = mat
-
 
     @property
     def U(self) -> np.ndarray:
