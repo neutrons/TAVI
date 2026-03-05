@@ -24,93 +24,48 @@ class OrientedLattice:
         powder: bool = False,
     ) -> None:
         """Initialize OrientedLattice class."""
-        self._a = a
-        self._b = b
-        self._c = c
-        self._alpha = alpha
-        self._gamma = gamma
-        self._beta = beta
         self._u_mat = u_mat
-        self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, self._beta, self._gamma)
+        self._B = self.calculate_B(a, b, c, alpha, beta, gamma)
 
     @property
     def a(self) -> None:
         """Get lattice parameters."""
-        return self._a
-
-    @a.setter
-    def a(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(value, self._b, self._c, self._alpha, self._beta, self._gamma)
-        self._a
-
+        return self.get_lattice_parameters()[0]
+        
     @property
     def b(self) -> float:
         """Get lattice parameters."""
-        return self._b
-
-    @b.setter
-    def b(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(self._a, value, self._c, self._alpha, self._beta, self._gamma)
-        self._b
+        return self.get_lattice_parameters()[1]
 
     @property
     def c(self) -> float:
         """Get lattice parameters."""
-        return self._c
-
-    @c.setter
-    def c(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(self._a, self._b, value, self._alpha, self._beta, self._gamma)
-        self._a
+        return self.get_lattice_parameters()[2]
 
     @property
     def alpha(self) -> float:
         """Get lattice parameters."""
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(self._a, self._b, self._c, value, self._beta, self._gamma)
-        self._alpha
+        return self.get_lattice_parameters()[3]
 
     @property
     def beta(self) -> float:
         """Get lattice parameters."""
-        return self._beta
-
-    @beta.setter
-    def beta(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, value, self._gamma)
-        self._beta
+        return self.get_lattice_parameters()[4]
 
     @property
     def gamma(self) -> float:
         """Get lattice parameters."""
-        return self._gamma
-
-    @gamma.setter
-    def gamma(self, value: float) -> None:
-        """Set lattice parameters and recalculate B matrix."""
-        self._B = self.calculate_B(self._a, self._b, self._c, self._alpha, self._beta, value)
-        self._gamma
+        return self.get_lattice_parameters()[5]
 
     @property
     def B(self) -> np.ndarray:
         """Get B matrix."""
         return self._B
-
     @B.setter
-    def B(self, mat: np.ndarray) -> None:
-        """Set B matrix. Should also update lattice parameters."""
+    def B(self, mat:np.ndarray)->None:
+        """Update B matrix."""
         self._B = mat
-        # TODO
-        # implement refine lattice parameter algo
-
+    
     @property
     def U(self) -> np.ndarray:
         """Get U matrix."""
@@ -150,10 +105,6 @@ class OrientedLattice:
         """Get UB matrix."""
         return self._u_mat @ self._B
 
-    def overwrite_U(self, u_mat: np.ndarray) -> None:
-        """Manual overwrite U."""
-        self._u_mat = u_mat
-
     def calculate_B(self, a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> np.ndarray:
         """Calculate b matrix from lattice parameters.Eq.52."""
         cos_alpha = np.cos(np.radians(alpha))
@@ -188,6 +139,21 @@ class OrientedLattice:
             ]
         )
         return B
+
+    def calculate_G(self)->np.ndarray:
+        G_star = self._B.T@self._B
+        G = np.linalg.inv(G_star)
+        return G
+    
+    def get_lattice_parameters(self)->tuple:
+        G = self.calculate_G
+        a = np.sqrt(G[0,0])
+        b = np.sqrt(G[1,1])
+        c = np.sqrt(G[2,2])
+        alpha = np.radians(np.arccos(G[1,2]/(b*c)))
+        beta = np.radians(np.arccos(G[0,2]/(a*c)))
+        gamma = np.radians(np.arccos(G[0,1]/(a*b)))
+        return (a,b,c,alpha, beta, gamma)
 
     def get_uv(self) -> tuple[np.ndarray, np.ndarray]:
         """
