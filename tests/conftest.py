@@ -1,9 +1,17 @@
 
 
+import os
 import pytest
 
-from tavi.meta.decorators.singleton import reset_Singletons
+import neutrons_standard
 
+neutrons_standard.init("tavi")
+
+from neutrons_standard.decorators.singleton import reset_Singletons
+
+
+if not os.environ.get("env"):
+    os.environ["env"] = "test"
 
 @pytest.fixture(autouse=True)
 def _reset_Singletons(request):
@@ -22,3 +30,7 @@ def _reset_module_scope_Singletons(request):
     if not "integration" in request.keywords:
         reset_Singletons()
     yield
+
+
+
+from util.Config_helpers import Config_override_fixture

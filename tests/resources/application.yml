@@ -1,0 +1,10 @@
+
+env: default
+
+user:
+  application:
+      home: ~/.TAVI/
+
+test:
+  multi-substitution:
+    home: ~/${user.application.home}/test

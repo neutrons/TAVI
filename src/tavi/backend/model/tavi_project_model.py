@@ -1,11 +1,11 @@
 """Tavi Project."""
 
-from tavi.event_broker.event_broker import EventBroker
-from tavi.event_broker.event_type import Event
+from neutrons_standard.decorators.singleton import Singleton
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.meta.decorators.singleton import Singleton
+from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.event_interface import Event
 
 
 @Singleton
@@ -23,6 +23,7 @@ class TaviProjectModel(TaviProjectInterface):
     def load_raw_scan_from_folder(self, folder: str) -> None:
         """Load a folder containing raw scans."""
         print("folder director received by model:", folder)
+        raise RuntimeError("test exception")
         # TO DO
         # Implement load raw scan from folder logic
         # raw_scan_loading_event = RawScanLoadingEvent(raw_scan_uuid = ...)
