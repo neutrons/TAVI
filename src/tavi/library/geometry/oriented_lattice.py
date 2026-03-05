@@ -32,6 +32,7 @@ class OrientedLattice:
         """Get lattice parameters."""
         return self.get_lattice_parameters()[0]
 
+
     @property
     def b(self) -> float:
         """Get lattice parameters."""
@@ -62,10 +63,13 @@ class OrientedLattice:
         """Get B matrix."""
         return self._B
 
+
     @B.setter
+    def B(self, mat: np.ndarray) -> None:
     def B(self, mat: np.ndarray) -> None:
         """Update B matrix."""
         self._B = mat
+
 
     @property
     def U(self) -> np.ndarray:
@@ -141,13 +145,10 @@ class OrientedLattice:
         )
         return B
 
-    def calculate_G(self) -> np.ndarray:
+    def get_lattice_parameters(self) -> tuple:
+        """Calculate lattice parameters from B matrix."""
         G_star = self._B.T @ self._B
         G = np.linalg.inv(G_star)
-        return G
-
-    def get_lattice_parameters(self) -> tuple:
-        G = self.calculate_G
         a = np.sqrt(G[0, 0])
         b = np.sqrt(G[1, 1])
         c = np.sqrt(G[2, 2])
