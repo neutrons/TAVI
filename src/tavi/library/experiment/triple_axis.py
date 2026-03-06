@@ -134,7 +134,7 @@ class TAS:
         q_lab1 = q_lab(ei, ef, peak.angles.angles_dict["two_theta"])
         t1_v = np.linalg.inv(r_mat(peak.angles)) @ q_lab1
         # assume using the same rotation matrix, we can rotate to a mantid coordinate system.
-        t3_v = np.linalg.inv(r_mat(peak.angles)) @ np.array([0, 1, 0])
+        t3_v = np.linalg.inv(r_mat(peak.angles)) @ np.array([0, 1, 0]).T
         t2_v = np.cross(t3_v, t1_v)
         T_v = np.array(
             [
@@ -206,9 +206,9 @@ class TAS:
         # we directly use the three peaks as t1_c, t2_c and t3_c
         V = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
 
-        q_lab_1 = q_lab(ei, ef, peak1.angles.two_theta)
-        q_lab_2 = q_lab(ei, ef, peak2.angles.two_theta)
-        q_lab_3 = q_lab(ei, ef, peak3.angles.two_theta)
+        q_lab_1 = q_lab(ei, ef, peak1.angles.angles_dict["two_theta"])
+        q_lab_2 = q_lab(ei, ef, peak2.angles.angles_dict["two_theta"])
+        q_lab_3 = q_lab(ei, ef, peak3.angles.angles_dict["two_theta"])
 
         q1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi)
         q2_v = np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2 / (2 * np.pi)
@@ -234,7 +234,7 @@ class TAS:
 
         for i in range(n):
             hkl = peaks[i].hkl
-            q_lab_i = q_lab(ei, ef, peaks[i].angles.two_theta)
+            q_lab_i = q_lab(ei, ef, peaks[i].angles.angles_dict["two_theta"])
             q_v_i = np.linalg.inv(r_mat(peaks[i].angles)) @ q_lab_i / (2 * np.pi)
             for j in range(3):
                 for k in range(3):
