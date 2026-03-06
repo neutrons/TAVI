@@ -43,4 +43,4 @@ class Scan:
     data: Data
     metadata: MetaData
     error_messages: Tuple[str, ...]
-    provenance: Tuple[str,...]
+    provenance: Tuple[str, ...]

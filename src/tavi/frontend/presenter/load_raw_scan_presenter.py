@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import RawScanLoadingEvent
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
