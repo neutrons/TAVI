@@ -25,3 +25,4 @@ Contents
    gui
    installation
    design/index
+   guides/index

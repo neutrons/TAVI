@@ -2,13 +2,15 @@ import time
 import threading
 import unittest
 
+from tavi.library.data.model_response import ModelResponse, ResponseCode
+
 
 # -------------------------
 # Minimal Signal test double
 # -------------------------
 
 
-class TestSignal:
+class DummySignal:
     """
     Minimal replacement for Signal that synchronously
     executes connected callbacks.
@@ -49,7 +51,7 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         import tavi.meta.multithreading.signal
 
         cls._original_signal = tavi.meta.multithreading.signal.Signal
-        tavi.meta.multithreading.signal.Signal = TestSignal
+        tavi.meta.multithreading.signal.Signal = DummySignal
 
         cls.worker_module = importlib.import_module("tavi.meta.multithreading.worker_pool")  # adjust if needed
         importlib.reload(cls.worker_module)
@@ -124,7 +126,7 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         def target():
             ran.set()
             time.sleep(0.05)
-            return "ok"
+            return ModelResponse(code=ResponseCode.OK)
 
         worker = pool.create_worker(target)
         pool.submit_worker(worker)
@@ -146,10 +148,10 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
 
         def slow_target():
             block.wait()
-            return "slow"
+            return ModelResponse(code=ResponseCode.OK)
 
         def fast_target():
-            return "fast"
+            return ModelResponse(code=ResponseCode.OK)
 
         w1 = pool.create_worker(slow_target)
         w2 = pool.create_worker(fast_target)

@@ -7,3 +7,9 @@ class NewRawScanEvent(Event):
     """Indicates a new RawScan has been added to the Project."""
 
     uuid: str
+
+
+class RawScanLoadingEvent(Event):
+    """loading raw data event."""
+
+    raw_scan_uuid: list[str]

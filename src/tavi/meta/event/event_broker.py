@@ -2,7 +2,8 @@
 
 from typing import Callable, Type, TypeVar
 
-from tavi.meta.decorators.singleton import Singleton
+from neutrons_standard.decorators.singleton import Singleton
+
 from tavi.meta.event.event_interface import Event
 
 T = TypeVar("T", bound=Event)

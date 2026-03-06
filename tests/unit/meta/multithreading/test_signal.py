@@ -16,7 +16,7 @@ def run_loop(loop, duration=0.05):
     loop.run_forever()
 
 
-class TestSignal(unittest.TestCase):
+class DummySignal(unittest.TestCase):
     def setUp(self):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
