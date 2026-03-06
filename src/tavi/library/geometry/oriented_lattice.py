@@ -42,12 +42,12 @@ class OrientedLattice(BaseModel):
         self._UB = self._u_mat @ self._B
 
     @property
-    def a(self) -> None:
+    def a(self) -> float:
         """Get lattice parameters."""
         return self._a
 
     @a.setter
-    def a(self, value) -> float:
+    def a(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._a = value
         self.calculate_B()
@@ -55,12 +55,12 @@ class OrientedLattice(BaseModel):
         self._UB = self._u_mat @ self._B
 
     @property
-    def b(self) -> None:
+    def b(self) -> float:
         """Get lattice parameters."""
         return self._b
 
     @b.setter
-    def b(self, value) -> float:
+    def b(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._b = value
         self.calculate_B()
@@ -73,7 +73,7 @@ class OrientedLattice(BaseModel):
         return self._c
 
     @c.setter
-    def c(self, value) -> float:
+    def c(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._c = value
         self.calculate_B()
@@ -86,7 +86,7 @@ class OrientedLattice(BaseModel):
         return self._alpha
 
     @alpha.setter
-    def alpha(self, value) -> float:
+    def alpha(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._alpha = value
         self.calculate_B()
@@ -99,7 +99,7 @@ class OrientedLattice(BaseModel):
         return self._beta
 
     @beta.setter
-    def beta(self, value) -> float:
+    def beta(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._beta = value
         self.calculate_B()
@@ -112,7 +112,7 @@ class OrientedLattice(BaseModel):
         return self._gamma
 
     @gamma.setter
-    def gamma(self, value) -> float:
+    def gamma(self, value: float) -> None:
         """Return updated lattice parameters value."""
         self._gamma = value
         self.calculate_B()
@@ -169,7 +169,7 @@ class OrientedLattice(BaseModel):
         """Calculate a* from ub."""
         return self._UB @ np.ndarray([0, 1, 0]).T
 
-    def update_B_from_UB(self):
+    def update_B_from_UB(self) -> None:
         """Calculate B matri from G*. Also update lattice parameters."""
         G_star = self._UB.T @ self._UB
         a_star = np.sqrt(G_star[0, 0])
