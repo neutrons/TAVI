@@ -5,6 +5,7 @@ from typing import Optional
 
 from pydantic.dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class MotorAngles:
     """
@@ -29,6 +30,7 @@ class MotorAngles:
 
     angles_dict: Optional[dict] = field(default_factory=dict)
 
+
 @dataclass(frozen=True)
 class Peak:
     """
@@ -42,5 +44,3 @@ class Peak:
 
     hkl: tuple[float, float, float]
     angles: Optional[MotorAngles] = None
-
-
