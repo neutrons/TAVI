@@ -6,14 +6,14 @@ from pydantic.dataclasses import dataclass
 
 
 @dataclass
-class RawData:
+class Data:
     """Declare dataclass for type hints."""
 
     pass
 
 
 @dataclass
-class RawMetaData:
+class MetaData:
     """Declare dataclass for type hints."""
 
     pass
@@ -40,7 +40,7 @@ class Scan:
 
     """
 
-    data: RawData
-    metadata: RawMetaData
+    data: Data
+    metadata: MetaData
     error_messages: Tuple[str, ...]
-    others: Tuple
+    provenance: Tuple[str,...]
