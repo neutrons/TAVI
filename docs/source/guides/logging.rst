@@ -55,6 +55,51 @@ To adjust logging verbosity, modify the ``level`` in ``logging_config.json``:
 - ``ERROR``: Error messages only
 - ``CRITICAL``: Critical errors only
 
+Logging Guidelines
+------------------
+
+Choose the appropriate log level based on context:
+
+**DEBUG**
+    Internal implementation details, variable values, function entry/exit. Use during development and troubleshooting.
+
+    .. code-block:: python
+
+        logger.debug(f"Loading file: {filepath}")
+        logger.debug(f"Parsed {count} data points")
+
+**INFO**
+    General application flow and status. User-facing information that indicates normal operation.
+
+    .. code-block:: python
+
+        logger.info("Scan data loaded successfully")
+        logger.info("Processing completed in 2.5 seconds")
+
+**WARNING**
+    Unexpected but recoverable situations. Data validation issues, deprecated usage, unusual conditions.
+
+    .. code-block:: python
+
+        logger.warning("Missing optional metadata field")
+        logger.warning("Scan data appears incomplete")
+
+**ERROR**
+    Serious failures that prevent operations but don't crash the application.
+
+    .. code-block:: python
+
+        logger.error("Failed to load file: invalid format")
+        logger.error("Database connection lost")
+
+**CRITICAL**
+    Severe errors that may require application shutdown or manual intervention.
+
+    .. code-block:: python
+
+        logger.critical("Configuration file missing or corrupted")
+        logger.critical("Unable to initialize core service")
+
 Implementation Details
 ----------------------
 
