@@ -1,4 +1,8 @@
-"""Goniometer component."""
+"""
+Goniometer component.
+
+TODO: add 4 circle mode, express rotation with quaternion.
+"""
 
 from typing import Literal, Optional
 

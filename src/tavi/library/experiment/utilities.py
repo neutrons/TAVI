@@ -33,19 +33,6 @@ def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     )
 
 
-def q_norm_from_hkl(hkl: tuple[float, float, float], b_mat: np.ndarray) -> np.ndarray:
-    """
-    Return norm of q for given (h,k,l).
-
-    Note:
-        Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
-
-    """
-    q_norm = 2 * np.pi * np.linalg.norm(b_mat @ np.array(hkl))
-
-    return q_norm
-
-
 def get_angle_from_triangle(a: float, b: float, c: float) -> float:
     """
     In a triangle with sides a,b and c, get angle between a and b in radian.

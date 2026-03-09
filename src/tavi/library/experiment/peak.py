@@ -9,18 +9,10 @@ from pydantic.dataclasses import dataclass
 @dataclass(frozen=True)
 class MotorAngles:
     """
-    Moter anlges.
+    Motor anlges.
 
-    Using angles_dict to store motor angles as key,val pairs.
-
-    Recogonized keyword:
-
-    two_theta: s2 angle, in degree
-    omega: s1 angle, in degree
-    sgl: sample goniometer lower, in degree
-    sgu: sample goniometer upper, in degree
-    chi: chi angle for a four-circle goniometer, in degree
-    phi: phi angle for a four-circle goniometer, in degree
+    angles_dict: stores {name: (direction, angle)} for specific motor.
+                Direction follows mantid convention. i.e. {"sgl", ("+y", 30)}.
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
@@ -32,15 +24,19 @@ class MotorAngles:
 
 
 @dataclass(frozen=True)
-class Peak:
+class DataPoint:
     """
-    Description of a peak and motor angles.
+    Description of an experiment data point that contains hkl, ei, ef, motor angles.
 
     Phyical/virtual monitor positions
 
     hkl: miller indice (h,k,l)
+    ei: incident energy in meV
+    ef: scattered energy in meV
     angles:
     """
 
     hkl: tuple[float, float, float]
+    ei: float
+    ef: float
     angles: Optional[MotorAngles] = None

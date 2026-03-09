@@ -11,8 +11,6 @@ from typing import Tuple
 import numpy as np
 from pydantic import BaseModel
 
-from tavi.library.experiment.utilities import SE2K, get_angle_from_triangle, q_norm_from_hkl
-
 
 class OrientedLattice(BaseModel):
     """Oritented lattice class."""
@@ -51,7 +49,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._a = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -64,7 +61,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._b = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -77,7 +73,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._c = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -90,7 +85,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._alpha = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -103,7 +97,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._beta = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -116,7 +109,6 @@ class OrientedLattice(BaseModel):
         """Return updated lattice parameters value."""
         self._gamma = value
         self.calculate_B()
-        self.update_lattice_parameters_from_B()
         self._UB = self._u_mat @ self._B
 
     @property
@@ -157,17 +149,20 @@ class OrientedLattice(BaseModel):
     @property
     def a_star(self) -> np.ndarray:
         """Calculate a* from ub."""
-        return self._UB @ np.ndarray([1, 0, 0]).T
+        G_star = self._UB.T @ self._UB
+        return np.sqrt(G_star[0, 0])
 
     @property
     def b_star(self) -> np.ndarray:
         """Calculate a* from ub."""
-        return self._UB @ np.ndarray([0, 1, 0]).T
+        G_star = self._UB.T @ self._UB
+        return np.sqrt(G_star[1, 1])
 
     @property
     def c_star(self) -> np.ndarray:
         """Calculate a* from ub."""
-        return self._UB @ np.ndarray([0, 1, 0]).T
+        G_star = self._UB.T @ self._UB
+        return np.sqrt(G_star[2, 2])
 
     def update_B_from_UB(self) -> None:
         """Calculate B matri from G*. Also update lattice parameters."""
@@ -195,7 +190,7 @@ class OrientedLattice(BaseModel):
             ]
         )
 
-    def get_ub_from_uv(self, uv: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
+    def set_u_from_uv(self, uv: tuple[np.ndarray, np.ndarray]) -> None:
         """Compute UB matrix from u,v and lattice parameters. Eq.76-81."""
         u, v = uv
         t1_c = self._B @ u
@@ -218,11 +213,6 @@ class OrientedLattice(BaseModel):
         ).T
         T_epsilon = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]).T
         self._u_mat = T_epsilon @ T_c.T
-        return self._u_mat @ self._B
-
-    def getUB(self) -> np.ndarray:
-        """Get UB matrix."""
-        return self._u_mat @ self._B
 
     def calculate_B(self) -> None:
         """Calculate b matrix from lattice parameters.Eq.52."""
@@ -279,14 +269,6 @@ class OrientedLattice(BaseModel):
         v = np.linalg.inv(self._u_mat @ self._B) @ np.array([1, 0, 0]).T
         return (u, v)
 
-    def two_theta_from_hkl(self, hkl: Tuple[float, float, float], ei: float, ef: float) -> float:
-        """Compute two_theta from hkl."""
-        ki = SE2K(ei)
-        kf = SE2K(ef)
-        q_norm = q_norm_from_hkl(hkl, self._B)
-        two_theta = get_angle_from_triangle(ki, kf, q_norm)  # in radians
-        return np.degrees(two_theta)
-
     def calculate_d_star(self, hkl: Tuple[float, float, float]) -> float:
         """Calculate d* from hkl."""
         return np.abs(self._B @ np.array(hkl).T)
@@ -294,3 +276,21 @@ class OrientedLattice(BaseModel):
     def calculate_d(self, hkl: Tuple[float, float, float]) -> float:
         """Calculate d from hkl."""
         return 1 / self.calculate_d_star(hkl)
+
+    def get_angle_between_two_hkl(self, hkl1: Tuple[float, float, float], hkl2: Tuple[float, float, float]) -> float:
+        """Calculate the angle between two hkl positions. Good to have for moving from one peak to another."""
+        p1, p2 = np.array(hkl1), np.array(hkl2)
+        cos_angle = (p1 @ p2) / (np.linalg.norm(p1) * np.linalg.norm(p2))
+        return np.degrees(cos_angle)
+
+    def q_norm_from_hkl(self, hkl: tuple[float, float, float]) -> np.ndarray:
+        """
+        Return norm of q for given (h,k,l).
+
+        Note:
+            Either b_mat or ub_mat would work, since U^T.U=U^-1.U=1
+
+        """
+        q_norm = 2 * np.pi * np.linalg.norm(self._B @ np.array(hkl))
+
+        return q_norm
