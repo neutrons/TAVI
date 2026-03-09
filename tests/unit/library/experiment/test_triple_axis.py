@@ -7,7 +7,7 @@ from tavi.library.component.goniometer import Goniometer
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.experiment.triple_axis import TAS
-from tavi.library.experiment.peak import Peak, MotorAngles
+from tavi.library.experiment.peak import DataPoint, MotorAngles
 
 @pytest.fixture
 def oriented_lattice():
@@ -47,7 +47,7 @@ def test_plane_normal_from_two_peaks(oriented_lattice):
     sa = Sample(ol)
     tas = TAS(instrument="TAS", goni=Goniometer(),sample=sa)
 
-    peaks = (Peak(hkl=(0,0,2)), Peak(hkl=(0,2,0)))
+    peaks = (DataPoint(hkl=(0,0,2)), DataPoint(hkl=(0,2,0)))
     plane_normal_cal, in_plane_ref_cal = tas.plane_normal_from_two_peaks(peaks)
     assert np.allclose(plane_normal_cal, plane_normal, atol=1e-3)
     assert np.allclose(in_plane_ref_cal, in_plane_ref, atol=1e-3)
@@ -55,11 +55,10 @@ def test_plane_normal_from_two_peaks(oriented_lattice):
 def test_r_matrix_with_minimal_tilt(oriented_lattice):
     *_, plane_normal, in_plane_ref,_,ol = oriented_lattice
 
-    ef = 13.505137
     sa = Sample(ol)
     tas = TAS(instrument="TAS", goni=Goniometer(),sample=sa)
 
-    r_mat_cal = tas.r_matrix_with_minimal_tilt(Peak(hkl=(0, 0, 2)), ef, ef, "-", plane_normal, in_plane_ref)
+    r_mat_cal = tas.r_matrix_with_minimal_tilt(DataPoint(hkl=(0, 0, 2), ei = 13.505137, ef = 13.505137), "-", plane_normal, in_plane_ref)
     assert np.allclose(
         np.array(
             [
@@ -74,13 +73,14 @@ def test_r_matrix_with_minimal_tilt(oriented_lattice):
 
 def test_find_u_from_two_peaks(oriented_lattice):
     b_mat,ub_matrix,*_, ol = oriented_lattice
+    ei, ef = 13.505137, 13.505137
     angles1 = MotorAngles(angles_dict={"two_theta": -51.530388, "omega": -45.220125, "sgl":-0.000500, "sgu": -2.501000})
-    peak1 = Peak((0,0,2), angles1)
+    peak1 = DataPoint((0,0,2), ei = ei, ef = ef, angles = angles1)
     angles2 = MotorAngles(angles_dict={"two_theta":-105.358735, "omega":17.790125, "sgl":-0.000500, "sgu":-2.501000})
-    peak2 = Peak((0, 2, 0), angles2)
+    peak2 = DataPoint((0, 2, 0), ei = ei, ef = ef, angles = angles2)
     
     sa = Sample(ol)
     tas = TAS(instrument="TAS", goni=Goniometer(),sample=sa)
         
-    u_mat_cal = tas.find_u_from_two_peaks((peak1, peak2),13.505137, 13.505137)
+    u_mat_cal = tas.find_u_from_two_peaks((peak1, peak2))
     assert np.allclose(u_mat_cal @ tas.sample.ol.B, ub_matrix, atol=1e-3)

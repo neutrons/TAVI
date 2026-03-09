@@ -213,6 +213,7 @@ class OrientedLattice(BaseModel):
         ).T
         T_epsilon = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]).T
         self._u_mat = T_epsilon @ T_c.T
+        self._UB = self._u_mat @ self._B
 
     def calculate_B(self) -> None:
         """Calculate b matrix from lattice parameters.Eq.52."""

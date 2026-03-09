@@ -5,8 +5,8 @@ from typing import Tuple
 import numpy as np
 
 from tavi.library.component.goniometer import Goniometer
-from tavi.library.experiment.peak import Peak
-from tavi.library.experiment.utilities import SE2K, q_lab, q_norm_from_hkl
+from tavi.library.experiment.peak import DataPoint
+from tavi.library.experiment.utilities import SE2K, q_lab
 from tavi.library.geometry.sample import Sample
 
 
@@ -35,9 +35,7 @@ class TAS:
     # -----------R matrix-----------
     def r_matrix_with_minimal_tilt(
         self,
-        peak: Peak,
-        ei: float,
-        ef: float,
+        peak: DataPoint,
         sense: str,
         plane_normal: np.ndarray,
         in_plane_ref: np.ndarray,
@@ -55,10 +53,10 @@ class TAS:
             in_plane_ref: in plane reflection.
 
         """
-        ki = SE2K(ei)
-        kf = SE2K(ef)
-        ub_mat = self.sample.ol.getUB()
-        q_norm = q_norm_from_hkl(peak.hkl, ub_mat)
+        ki = SE2K(peak.ei)
+        kf = SE2K(peak.ef)
+        ub_mat = self.sample.ol.UB
+        q_norm = self.sample.ol.q_norm_from_hkl(peak.hkl)
 
         # Eq.112
         Q_squared = 4 * np.pi**2 * (np.array(peak.hkl).T @ ub_mat.T @ ub_mat @ peak.hkl)
@@ -104,7 +102,7 @@ class TAS:
     # -----------Calculate UB Matrix-----------
     def find_u_from_one_peak_and_scattering_plane(
         self,
-        peak: Peak,
+        peak: DataPoint,
         scattering_plane: Tuple[tuple, tuple],
         B: np.ndarray,
         r_mat: Goniometer.r_mat,
@@ -147,7 +145,7 @@ class TAS:
         u_mat = T_v @ T_c.T
         return u_mat
 
-    def find_u_from_two_peaks(self, peaks: tuple[Peak, Peak], ei: float, ef: float) -> np.ndarray:
+    def find_u_from_two_peaks(self, peaks: tuple[DataPoint, DataPoint]) -> np.ndarray:
         """
         Calculate U matrix from two peaks.
 
@@ -173,8 +171,8 @@ class TAS:
         ).T
 
         # We need to create vectors t1_v, t2_v, t3_v
-        q_lab_1 = q_lab(ei, ef, peak1.angles.angles_dict["two_theta"])
-        q_lab_2 = q_lab(ei, ef, peak2.angles.angles_dict["two_theta"])
+        q_lab_1 = q_lab(peak1.ei, peak1.ef, peak1.angles.angles_dict["two_theta"])
+        q_lab_2 = q_lab(peak1.ei, peak2.ef, peak2.angles.angles_dict["two_theta"])
 
         # In identical fashion as described above Eq.79
         t1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1
@@ -191,7 +189,7 @@ class TAS:
         u_mat = T_v @ T_c.T
         return u_mat
 
-    def find_ub_from_three_peaks(self, peaks: tuple[Peak, Peak, Peak], ei: float, ef: float) -> np.ndarray:
+    def find_ub_from_three_peaks(self, peaks: tuple[DataPoint, DataPoint, DataPoint]) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -206,9 +204,9 @@ class TAS:
         # we directly use the three peaks as t1_c, t2_c and t3_c
         V = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
 
-        q_lab_1 = q_lab(ei, ef, peak1.angles.angles_dict["two_theta"])
-        q_lab_2 = q_lab(ei, ef, peak2.angles.angles_dict["two_theta"])
-        q_lab_3 = q_lab(ei, ef, peak3.angles.angles_dict["two_theta"])
+        q_lab_1 = q_lab(peak1.ei, peak1.ef, peak1.angles.angles_dict["two_theta"])
+        q_lab_2 = q_lab(peak2.ei, peak2.ef, peak2.angles.angles_dict["two_theta"])
+        q_lab_3 = q_lab(peak3.ei, peak3.ef, peak3.angles.angles_dict["two_theta"])
 
         q1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi)
         q2_v = np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2 / (2 * np.pi)
@@ -218,7 +216,7 @@ class TAS:
         ub_mat = Q_v @ np.linalg.inv(V)
         return ub_mat
 
-    def find_ub_from_multiple_peaks(self, peaks: tuple[Peak, ...], ei: float, ef: float) -> np.ndarray:
+    def find_ub_from_multiple_peaks(self, peaks: tuple[DataPoint, ...]) -> np.ndarray:
         """
         Calculate U matrix from three peaks.
 
@@ -234,7 +232,7 @@ class TAS:
 
         for i in range(n):
             hkl = peaks[i].hkl
-            q_lab_i = q_lab(ei, ef, peaks[i].angles.angles_dict["two_theta"])
+            q_lab_i = q_lab(peaks[i].ei, peaks[i].ef, peaks[i].angles.angles_dict["two_theta"])
             q_v_i = np.linalg.inv(r_mat(peaks[i].angles)) @ q_lab_i / (2 * np.pi)
             for j in range(3):
                 for k in range(3):
@@ -243,7 +241,7 @@ class TAS:
         ub_mat = Q_v.T @ np.linalg.inv(VV).T
         return ub_mat
 
-    def plane_normal_from_two_peaks(self, peaks: tuple[Peak, Peak]) -> tuple[np.ndarray, np.ndarray]:
+    def plane_normal_from_two_peaks(self, peaks: tuple[DataPoint, DataPoint]) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate plane_normal and in_plane reflection.
 

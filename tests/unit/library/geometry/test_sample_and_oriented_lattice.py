@@ -48,7 +48,7 @@ def test_getUB(oriented_lattice):
     b_matrix, ub_matrix, *_, ol = oriented_lattice
     sa = Sample(ol)
     sa.ol.U = ub_matrix @ np.linalg.inv(b_matrix)
-    ub_mat_ol = sa.ol.getUB()
+    ub_mat_ol = sa.ol.UB
     assert np.allclose(ub_mat_ol, ub_matrix, atol=1e-4)
 
 def test_ub_to_uv(oriented_lattice):
@@ -60,8 +60,9 @@ def test_ub_to_uv(oriented_lattice):
     assert np.allclose(v_calc, v, atol=1e-2)
 
 def test_set_U_from_uv(oriented_lattice):
-    _, ub_matrix, u, v, *_, ol = oriented_lattice
+    b_matrix, ub_matrix, u, v, *_, ol = oriented_lattice
     
     sa = Sample(ol)
-    ub_ol = sa.ol.get_ub_from_uv((u,v))
+    sa.ol.set_u_from_uv((u,v))
+    ub_ol = sa.ol.UB
     assert np.allclose(ub_ol, ub_matrix, atol=1e-2)

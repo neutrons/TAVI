@@ -11,15 +11,16 @@ class MotorAngles:
     """
     Motor anlges.
 
-    angles_dict: stores {name: (direction, angle)} for specific motor.
+    angles_dict: currently only stores {name: value}. But in future it will 
+                stores {name: (direction, angle)} for specific motor.
                 Direction follows mantid convention. i.e. {"sgl", ("+y", 30)}.
+                This should be done in the same PR restructure goneiometer.
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,
         angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode.
 
     """
-
     angles_dict: Optional[dict] = field(default_factory=dict)
 
 
@@ -37,6 +38,6 @@ class DataPoint:
     """
 
     hkl: tuple[float, float, float]
-    ei: float
-    ef: float
+    ei: Optional[float] = None
+    ef: Optional[float] = None
     angles: Optional[MotorAngles] = None
