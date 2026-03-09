@@ -49,5 +49,9 @@ def execute() -> None:
 
 
 if __name__ == "__main__":
+    from tavi.meta.logging import init_logging  # noqa: E402
+
+    init_logging()
+
     logger.info("Welcome to TAVI!  Happy visualizing!")
     execute()

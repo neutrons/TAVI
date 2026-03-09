@@ -7,6 +7,10 @@ import neutrons_standard
 
 neutrons_standard.init("tavi")
 
+from tavi.meta.logging import init_logging  # noqa: E402
+
+init_logging()
+
 from neutrons_standard.decorators.singleton import reset_Singletons
 
 
