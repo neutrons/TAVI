@@ -11,7 +11,7 @@ class MotorAngles:
     """
     Motor anlges.
 
-    angles_dict: currently only stores {name: value}. But in future it will 
+    angles_dict: currently only stores {name: value}. But in future it will
                 stores {name: (direction, angle)} for specific motor.
                 Direction follows mantid convention. i.e. {"sgl", ("+y", 30)}.
                 This should be done in the same PR restructure goneiometer.
@@ -21,6 +21,7 @@ class MotorAngles:
         angles = (two_theta, omega, chi, phi) for a four-circle in the bisect mode.
 
     """
+
     angles_dict: Optional[dict] = field(default_factory=dict)
 
 
