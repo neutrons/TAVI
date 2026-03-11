@@ -54,7 +54,7 @@ distance = "{next_version}.dev{distance}"
 dirty = "{version}"
 distance-dirty = "{next_version}.dev{distance}"
 
-[tool.pytest.ini_options]
+[tool.pytest]
 pythonpath = [".", "src", "scripts"]
 testpaths = ["tests"]
 python_files = ["test*.py"]
@@ -67,6 +67,7 @@ norecursedirs = [
   "*data_set*",
 ]
 markers = ["mymarker: example markers goes here"]
+filterwarnings = ["ignore:.*pyside_type_init"]
 
 [tool.ruff]
 line-length = 120

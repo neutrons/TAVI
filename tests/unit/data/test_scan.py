@@ -1,69 +1,206 @@
+# tests/unit/data/test_scan.py
+
 import pytest
 from pydantic import ValidationError
 
-from tavi.library.data.scan import Scan, Data, MetaData
+from tavi.library.data.scan import (
+    Data,
+    MetaData,
+    TaviMetaData,
+    Provenance,
+    Scan,
+    RawScan,
+    ComboScan,
+)
 
 
-def test_scan_constructs_with_valid_types():
-    scan = Scan(
-        data=Data(),
-        metadata=MetaData(),
-        error_messages=(),
-        provenance=(),
+def make_tavimeta() -> TaviMetaData:
+    return TaviMetaData(
+        default_axis=("qh", "en"),
+        nomarlization=("monitor"),
     )
 
+
+def make_provenance() -> Provenance:
+    return Provenance(
+        raw_file="scan0001.dat",
+        contributing_scans={"scan-001": 1},
+    )
+
+
+def make_scan() -> Scan:
+    return Scan(
+        uuid="scan-001",
+        data=Data(),
+        metadata=MetaData(),
+        tavimeta=make_tavimeta(),
+        prov=make_provenance(),
+    )
+
+
+def make_raw_scan() -> RawScan:
+    return RawScan(
+        uuid="scan-001",
+        data=Data(),
+        metadata=MetaData(),
+        tavimeta=make_tavimeta(),
+        prov=make_provenance(),
+    )
+
+
+def make_combo_scan() -> ComboScan:
+    return ComboScan(
+        uuid="combo-001",
+        data=Data(),
+        metadata=MetaData(),
+        tavimeta=make_tavimeta(),
+        prov=make_provenance(),
+    )
+
+
+def test_scan_can_be_created():
+    scan = make_scan()
+
+    assert scan.uuid == "scan-001"
     assert isinstance(scan.data, Data)
     assert isinstance(scan.metadata, MetaData)
-    assert scan.error_messages == ()
-    assert scan.provenance == ()
+    assert isinstance(scan.tavimeta, TaviMetaData)
+    assert isinstance(scan.prov, Provenance)
 
 
-def test_scan_rejects_wrong_data_type():
+def test_raw_scan_can_be_created():
+    raw_scan = make_raw_scan()
+
+    assert raw_scan.uuid == "scan-001"
+    assert isinstance(raw_scan, RawScan)
+    assert isinstance(raw_scan, Scan)
+    assert raw_scan.tavimeta.default_axis == ("qh", "en")
+    assert raw_scan.tavimeta.nomarlization == "monitor"
+    assert raw_scan.prov.raw_file == "scan0001.dat"
+    assert raw_scan.prov.contributing_scans == {"scan-001": 1}
+
+
+def test_combo_scan_can_be_created():
+    combo_scan = make_combo_scan()
+
+    assert combo_scan.uuid == "combo-001"
+    assert isinstance(combo_scan, ComboScan)
+    assert isinstance(combo_scan, Scan)
+
+
+def test_raw_scan_uuid_is_read_only():
+    raw_scan = make_raw_scan()
+
     with pytest.raises(ValidationError):
-        Scan(
-            data="not-rawdata",  # wrong
-            metadata=MetaData(),
-            error_messages=(),
-            provenance=(),
+        raw_scan.uuid = "scan-002"
+
+
+def test_raw_scan_data_is_read_only():
+    raw_scan = make_raw_scan()
+
+    with pytest.raises(ValidationError):
+        raw_scan.data = Data()
+
+
+def test_raw_scan_metadata_is_read_only():
+    raw_scan = make_raw_scan()
+
+    with pytest.raises(ValidationError):
+        raw_scan.metadata = MetaData()
+
+
+def test_raw_scan_prov_is_read_only():
+    raw_scan = make_raw_scan()
+
+    with pytest.raises(ValidationError):
+        raw_scan.prov = Provenance(
+            raw_file="scan0002.dat",
+            contributing_scans={"scan-002": 1},
         )
 
 
-def test_scan_rejects_wrong_metadata_type():
-    with pytest.raises(ValidationError):
-        Scan(
-            data=Data(),
-            metadata=123,  # wrong
-            error_messages=(),
-            provenance=(),
-        )
+def test_raw_scan_tavimeta_is_writable():
+    raw_scan = make_raw_scan()
 
-
-def test_scan_rejects_non_tuple_error_messages():
-    with pytest.raises(ValidationError):
-        Scan(
-            data=Data(),
-            metadata=MetaData(),
-            error_messages="this is a str",  # wrong: expects tuple
-            provenance=(),
-        )
-
-
-def test_scan_rejects_non_tuple_others():
-    with pytest.raises(ValidationError):
-        Scan(
-            data=Data(),
-            metadata=MetaData(),
-            error_messages=(),
-            provenance={"not": "a tuple"},  # wrong: expects tuple
-        )
-
-
-def test_scan_coerces_list_to_tuple_if_allowed_by_pydantic():
-    scan = Scan(
-        data=Data(),
-        metadata=MetaData(),
-        error_messages=("a", "b"),
-        provenance=("raw",),
+    new_tavimeta = TaviMetaData(
+        default_axis=("h", "k"),
+        nomarlization="detector",
     )
-    assert scan.error_messages == ("a", "b")
-    assert scan.provenance == ("raw",)
+    raw_scan.tavimeta = new_tavimeta
+
+    assert raw_scan.tavimeta == new_tavimeta
+    assert raw_scan.tavimeta.default_axis == ("h", "k")
+    assert raw_scan.tavimeta.nomarlization == "detector"
+
+
+def test_combo_scan_allows_writing_all_fields():
+    combo_scan = make_combo_scan()
+
+    new_data = Data()
+    new_metadata = MetaData()
+    new_tavimeta = TaviMetaData(
+        default_axis=("h", "l"),
+        nomarlization="detector",
+    )
+    new_prov = Provenance(
+        raw_file="combo_scan.dat",
+        contributing_scans={"scan-001": 1, "scan-002": 2},
+    )
+
+    combo_scan.uuid = "combo-002"
+    combo_scan.data = new_data
+    combo_scan.metadata = new_metadata
+    combo_scan.tavimeta = new_tavimeta
+    combo_scan.prov = new_prov
+
+    assert combo_scan.uuid == "combo-002"
+    assert combo_scan.data is new_data
+    assert combo_scan.metadata is new_metadata
+    assert combo_scan.tavimeta == new_tavimeta
+    assert combo_scan.prov == new_prov
+
+
+def test_tavimetadata_rejects_invalid_default_axis():
+    with pytest.raises(ValidationError):
+        TaviMetaData(
+            default_axis=("qh", 1),
+            nomarlization="monitor",
+        )
+
+
+def test_tavimetadata_rejects_invalid_nomarlization():
+    with pytest.raises(ValidationError):
+        TaviMetaData(
+            default_axis=("qh", "en"),
+            nomarlization=("monitor", "bad"),
+        )
+
+
+def test_provenance_rejects_invalid_contributing_scans():
+    with pytest.raises(ValidationError):
+        Provenance(
+            raw_file="scan0001.dat",
+            contributing_scans={"scan-001": "bad"},
+        )
+
+
+def test_scan_rejects_invalid_tavimeta_type():
+    with pytest.raises(ValidationError):
+        Scan(
+            uuid="scan-001",
+            data=Data(),
+            metadata=MetaData(),
+            tavimeta=1,
+            prov=make_provenance(),
+        )
+
+
+def test_scan_rejects_invalid_provenance_type():
+    with pytest.raises(ValidationError):
+        Scan(
+            uuid="scan-001",
+            data=Data(),
+            metadata=MetaData(),
+            tavimeta=make_tavimeta(),
+            prov="not_provenance",
+        )

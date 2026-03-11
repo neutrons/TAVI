@@ -1,22 +1,61 @@
 """Scan object."""
 
-from typing import Tuple
+from typing import Dict, Optional, Tuple
 
+from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 
 
 @dataclass
 class Data:
-    """Declare dataclass for type hints."""
+    """
+    Multicolumn data from triple-axis scans.
+
+    Should contain {column_name: list[float,...]} implemented as attributes:values
+    """
 
     pass
 
 
 @dataclass
 class MetaData:
-    """Declare dataclass for type hints."""
+    """
+    Meta data associated with a triple-axis scan.
+
+    Should contain {name: metadata} and loader: loaderENUM. Each should be created as attributes during loading event.
+    """
 
     pass
+
+
+@dataclass
+class TaviMetaData:
+    """
+    Tavi specific meta data.
+
+    Args:
+        default_axis:Tuple[str, str]
+        nomarlization: Tuple[str, int] as (column_name, weight)
+
+    """
+
+    default_axis: Tuple[str, str]
+    nomarlization: Optional[str] = None
+
+
+@dataclass
+class Provenance:
+    """
+    History of the Scan class..
+
+    Args:
+        raw_file: path of the raw scan file.
+        contributing_scans: dict[uuid, weight]
+
+    """
+
+    raw_file: str
+    contributing_scans: Dict[str, int]
 
 
 @dataclass
@@ -28,19 +67,38 @@ class Scan:
     data and associated metadata.
 
     Attributes:
-        data (RawData): Numerical measurement arrays collected during the scan
+        uuid: a string representing a universally unique identifier.
+        data (Data): Numerical measurement arrays collected during the scan
             (e.g., motor positions, detector counts, temperatures).
-        metadata (RawMetaData): Descriptive information about the scan
+        metadata (MetaData): Descriptive information about the scan
             (e.g., experiment details, instrument settings, sample information).
-        error_messages (tuple): Specific error messages or warnings associated with the scan,
-            such as instrument errors or data quality issues.
-        others (tuple): Miscellaneous or auxiliary information related to the scan
-            that does not fit into "data", "metadata"` or "error_message". Can be
-            numbers, strs, etc. No limit on what to store here.
+        tavimeta: tavi specific MetaData. Always have both read/write permission.
+        prov (Provenance): History of the scan object.
 
     """
 
+    uuid: str
     data: Data
     metadata: MetaData
-    error_messages: Tuple[str, ...]
-    provenance: Tuple[str, ...]
+    tavimeta: TaviMetaData
+    prov: Provenance
+
+
+class RawScan(BaseModel, Scan):
+    """
+    Raw scan class.
+
+    Inherit from Scan but set uuid, data, metadata, prov as read-only. tavimeta is still writable.
+    """
+
+    uuid: str = Field(frozen=True)
+    data: Data = Field(frozen=True)
+    metadata: MetaData = Field(frozen=True)
+    tavimeta: TaviMetaData = Field(frozen=False)
+    prov: Provenance = Field(frozen=True)
+
+
+class ComboScan(BaseModel, Scan):
+    """Combined scan class. Same as Scan, all fields read/write-able."""
+
+    pass
