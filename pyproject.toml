@@ -54,7 +54,7 @@ distance = "{next_version}.dev{distance}"
 dirty = "{version}"
 distance-dirty = "{next_version}.dev{distance}"
 
-[tool.pytest]
+[tool.pytest.ini_options]
 pythonpath = [".", "src", "scripts"]
 testpaths = ["tests"]
 python_files = ["test*.py"]
