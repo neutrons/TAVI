@@ -4,7 +4,8 @@ import pytest
 from pydantic import ValidationError
 
 from tavi.library.data.scan import (
-    Data,
+    UUID,
+    ScanData,
     MetaData,
     TaviMetaData,
     Provenance,
@@ -27,21 +28,22 @@ def make_provenance() -> Provenance:
         contributing_scans={"scan-001": 1},
     )
 
+def make_uuid()->UUID:
+    return UUID(value = "scan-001")
 
 def make_scan() -> Scan:
     return Scan(
-        uuid="scan-001",
-        data=Data(),
+        uuid=make_uuid(),
+        data=ScanData(),
         metadata=MetaData(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
     )
 
-
 def make_raw_scan() -> RawScan:
     return RawScan(
-        uuid="scan-001",
-        data=Data(),
+        uuid=make_uuid(),
+        data=ScanData(),
         metadata=MetaData(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
@@ -50,8 +52,8 @@ def make_raw_scan() -> RawScan:
 
 def make_combo_scan() -> ComboScan:
     return ComboScan(
-        uuid="combo-001",
-        data=Data(),
+        uuid=UUID(value="combo-001"),
+        data=ScanData(),
         metadata=MetaData(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
@@ -61,8 +63,8 @@ def make_combo_scan() -> ComboScan:
 def test_scan_can_be_created():
     scan = make_scan()
 
-    assert scan.uuid == "scan-001"
-    assert isinstance(scan.data, Data)
+    assert scan.uuid.value == "scan-001"
+    assert isinstance(scan.data, ScanData)
     assert isinstance(scan.metadata, MetaData)
     assert isinstance(scan.tavimeta, TaviMetaData)
     assert isinstance(scan.prov, Provenance)
@@ -71,7 +73,7 @@ def test_scan_can_be_created():
 def test_raw_scan_can_be_created():
     raw_scan = make_raw_scan()
 
-    assert raw_scan.uuid == "scan-001"
+    assert raw_scan.uuid.value == "scan-001"
     assert isinstance(raw_scan, RawScan)
     assert isinstance(raw_scan, Scan)
     assert raw_scan.tavimeta.default_axis == ("qh", "en")
@@ -83,7 +85,7 @@ def test_raw_scan_can_be_created():
 def test_combo_scan_can_be_created():
     combo_scan = make_combo_scan()
 
-    assert combo_scan.uuid == "combo-001"
+    assert combo_scan.uuid.value == "combo-001"
     assert isinstance(combo_scan, ComboScan)
     assert isinstance(combo_scan, Scan)
 
@@ -92,14 +94,14 @@ def test_raw_scan_uuid_is_read_only():
     raw_scan = make_raw_scan()
 
     with pytest.raises(ValidationError):
-        raw_scan.uuid = "scan-002"
+        raw_scan.uuid = UUID(value ="scan-002")
 
 
 def test_raw_scan_data_is_read_only():
     raw_scan = make_raw_scan()
 
     with pytest.raises(ValidationError):
-        raw_scan.data = Data()
+        raw_scan.data = ScanData()
 
 
 def test_raw_scan_metadata_is_read_only():
@@ -136,7 +138,7 @@ def test_raw_scan_tavimeta_is_writable():
 def test_combo_scan_allows_writing_all_fields():
     combo_scan = make_combo_scan()
 
-    new_data = Data()
+    new_data = ScanData()
     new_metadata = MetaData()
     new_tavimeta = TaviMetaData(
         default_axis=("h", "l"),
@@ -188,7 +190,7 @@ def test_scan_rejects_invalid_tavimeta_type():
     with pytest.raises(ValidationError):
         Scan(
             uuid="scan-001",
-            data=Data(),
+            data=ScanData(),
             metadata=MetaData(),
             tavimeta=1,
             prov=make_provenance(),
@@ -199,7 +201,7 @@ def test_scan_rejects_invalid_provenance_type():
     with pytest.raises(ValidationError):
         Scan(
             uuid="scan-001",
-            data=Data(),
+            data=ScanData(),
             metadata=MetaData(),
             tavimeta=make_tavimeta(),
             prov="not_provenance",

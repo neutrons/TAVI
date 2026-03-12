@@ -1,31 +1,53 @@
 """Scan object."""
 
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 
 
-@dataclass
-class Data:
+class ScanData(BaseModel):
     """
     Multicolumn data from triple-axis scans.
 
-    Should contain {column_name: list[float,...]} implemented as attributes:values
+    Should contain {column_name: list[float,...]}.
     """
 
-    pass
+    data: Dict[str, list[float]] = Field(default_factory=dict)
+
+    def __getattr__(self, key: str) -> list[float]:
+        """Allow access as ScanData.h etc."""
+        if key in self.data:
+            return self.data[key]
+        raise AttributeError(
+            f"{self.__class__.__name__!s} has no attribute {key!r}. Valid columns are: {list(self.data.keys())}"
+        )
+
+    def __dir__(self) -> list[str]:
+        """Allow tab suggestion."""
+        return sorted(set(super().__dir__()) | set(self.data))
 
 
-@dataclass
-class MetaData:
+class MetaData(BaseModel):
     """
     Meta data associated with a triple-axis scan.
 
     Should contain {name: metadata} and loader: loaderENUM. Each should be created as attributes during loading event.
     """
 
-    pass
+    data: Dict[str, Any] = Field(default_factory=dict)
+
+    def __getattr__(self, key: str) -> Any:
+        """Allow access as ScanData.h etc."""
+        if key in self.data:
+            return self.data[key]
+        raise AttributeError(
+            f"{self.__class__.__name__!s} has no attribute {key!r}. Valid columns are: {list(self.data.keys())}"
+        )
+
+    def __dir__(self) -> list[str]:
+        """Allow tab suggestion."""
+        return sorted(set(super().__dir__()) | set(self.data))
 
 
 @dataclass
@@ -59,6 +81,13 @@ class Provenance:
 
 
 @dataclass
+class UUID:
+    """uuid class."""
+
+    value: str
+
+
+@dataclass
 class Scan:
     """
     Tavi scan data class.
@@ -77,8 +106,8 @@ class Scan:
 
     """
 
-    uuid: str
-    data: Data
+    uuid: UUID
+    data: ScanData
     metadata: MetaData
     tavimeta: TaviMetaData
     prov: Provenance
@@ -91,8 +120,8 @@ class RawScan(BaseModel, Scan):
     Inherit from Scan but set uuid, data, metadata, prov as read-only. tavimeta is still writable.
     """
 
-    uuid: str = Field(frozen=True)
-    data: Data = Field(frozen=True)
+    uuid: UUID = Field(frozen=True)
+    data: ScanData = Field(frozen=True)
     metadata: MetaData = Field(frozen=True)
     tavimeta: TaviMetaData = Field(frozen=False)
     prov: Provenance = Field(frozen=True)
