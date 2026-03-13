@@ -6,6 +6,17 @@ from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 
 
+@dataclass
+class UUID:
+    """uuid class."""
+
+    value: str
+
+    def __hash__(self) -> int:
+        """Generate hash."""
+        return hash(self.value)
+
+
 class ScanData(BaseModel):
     """
     Multicolumn data from triple-axis scans.
@@ -28,7 +39,7 @@ class ScanData(BaseModel):
         return sorted(set(super().__dir__()) | set(self.data))
 
 
-class MetaData(BaseModel):
+class ScanMetadata(BaseModel):
     """
     Meta data associated with a triple-axis scan.
 
@@ -51,7 +62,7 @@ class MetaData(BaseModel):
 
 
 @dataclass
-class TaviMetaData:
+class TaviMetadata:
     """
     Tavi specific meta data.
 
@@ -77,14 +88,7 @@ class Provenance:
     """
 
     raw_file: str
-    contributing_scans: Dict[str, int]
-
-
-@dataclass
-class UUID:
-    """uuid class."""
-
-    value: str
+    contributing_scans: Dict[UUID, int]
 
 
 @dataclass
@@ -108,8 +112,8 @@ class Scan:
 
     uuid: UUID
     data: ScanData
-    metadata: MetaData
-    tavimeta: TaviMetaData
+    metadata: ScanMetadata
+    tavimeta: TaviMetadata
     prov: Provenance
 
 
@@ -122,8 +126,8 @@ class RawScan(BaseModel, Scan):
 
     uuid: UUID = Field(frozen=True)
     data: ScanData = Field(frozen=True)
-    metadata: MetaData = Field(frozen=True)
-    tavimeta: TaviMetaData = Field(frozen=False)
+    metadata: ScanMetadata = Field(frozen=True)
+    tavimeta: TaviMetadata = Field(frozen=False)
     prov: Provenance = Field(frozen=True)
 
 

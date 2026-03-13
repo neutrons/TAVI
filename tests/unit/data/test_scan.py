@@ -6,8 +6,8 @@ from pydantic import ValidationError
 from tavi.library.data.scan import (
     UUID,
     ScanData,
-    MetaData,
-    TaviMetaData,
+    ScanMetadata,
+    TaviMetadata,
     Provenance,
     Scan,
     RawScan,
@@ -15,8 +15,8 @@ from tavi.library.data.scan import (
 )
 
 
-def make_tavimeta() -> TaviMetaData:
-    return TaviMetaData(
+def make_tavimeta() -> TaviMetadata:
+    return TaviMetadata(
         default_axis=("qh", "en"),
         nomarlization=("monitor"),
     )
@@ -25,7 +25,7 @@ def make_tavimeta() -> TaviMetaData:
 def make_provenance() -> Provenance:
     return Provenance(
         raw_file="scan0001.dat",
-        contributing_scans={"scan-001": 1},
+        contributing_scans={UUID(value="scan-001"): 1},
     )
 
 def make_uuid()->UUID:
@@ -35,7 +35,7 @@ def make_scan() -> Scan:
     return Scan(
         uuid=make_uuid(),
         data=ScanData(),
-        metadata=MetaData(),
+        metadata=ScanMetadata(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
     )
@@ -44,7 +44,7 @@ def make_raw_scan() -> RawScan:
     return RawScan(
         uuid=make_uuid(),
         data=ScanData(),
-        metadata=MetaData(),
+        metadata=ScanMetadata(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
     )
@@ -54,7 +54,7 @@ def make_combo_scan() -> ComboScan:
     return ComboScan(
         uuid=UUID(value="combo-001"),
         data=ScanData(),
-        metadata=MetaData(),
+        metadata=ScanMetadata(),
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
     )
@@ -65,8 +65,8 @@ def test_scan_can_be_created():
 
     assert scan.uuid.value == "scan-001"
     assert isinstance(scan.data, ScanData)
-    assert isinstance(scan.metadata, MetaData)
-    assert isinstance(scan.tavimeta, TaviMetaData)
+    assert isinstance(scan.metadata, ScanMetadata)
+    assert isinstance(scan.tavimeta, TaviMetadata)
     assert isinstance(scan.prov, Provenance)
 
 
@@ -79,7 +79,7 @@ def test_raw_scan_can_be_created():
     assert raw_scan.tavimeta.default_axis == ("qh", "en")
     assert raw_scan.tavimeta.nomarlization == "monitor"
     assert raw_scan.prov.raw_file == "scan0001.dat"
-    assert raw_scan.prov.contributing_scans == {"scan-001": 1}
+    assert raw_scan.prov.contributing_scans == {UUID(value="scan-001"): 1}
 
 
 def test_combo_scan_can_be_created():
@@ -108,7 +108,7 @@ def test_raw_scan_metadata_is_read_only():
     raw_scan = make_raw_scan()
 
     with pytest.raises(ValidationError):
-        raw_scan.metadata = MetaData()
+        raw_scan.metadata = ScanMetadata()
 
 
 def test_raw_scan_prov_is_read_only():
@@ -117,14 +117,14 @@ def test_raw_scan_prov_is_read_only():
     with pytest.raises(ValidationError):
         raw_scan.prov = Provenance(
             raw_file="scan0002.dat",
-            contributing_scans={"scan-002": 1},
+            contributing_scans={UUID(value="scan-001"): 1},
         )
 
 
 def test_raw_scan_tavimeta_is_writable():
     raw_scan = make_raw_scan()
 
-    new_tavimeta = TaviMetaData(
+    new_tavimeta = TaviMetadata(
         default_axis=("h", "k"),
         nomarlization="detector",
     )
@@ -139,14 +139,14 @@ def test_combo_scan_allows_writing_all_fields():
     combo_scan = make_combo_scan()
 
     new_data = ScanData()
-    new_metadata = MetaData()
-    new_tavimeta = TaviMetaData(
+    new_metadata = ScanMetadata()
+    new_tavimeta = TaviMetadata(
         default_axis=("h", "l"),
         nomarlization="detector",
     )
     new_prov = Provenance(
         raw_file="combo_scan.dat",
-        contributing_scans={"scan-001": 1, "scan-002": 2},
+        contributing_scans={UUID(value="scan-001"): 1, UUID(value="scan-002"): 2},
     )
 
     combo_scan.uuid = "combo-002"
@@ -164,7 +164,7 @@ def test_combo_scan_allows_writing_all_fields():
 
 def test_tavimetadata_rejects_invalid_default_axis():
     with pytest.raises(ValidationError):
-        TaviMetaData(
+        TaviMetadata(
             default_axis=("qh", 1),
             nomarlization="monitor",
         )
@@ -172,7 +172,7 @@ def test_tavimetadata_rejects_invalid_default_axis():
 
 def test_tavimetadata_rejects_invalid_nomarlization():
     with pytest.raises(ValidationError):
-        TaviMetaData(
+        TaviMetadata(
             default_axis=("qh", "en"),
             nomarlization=("monitor", "bad"),
         )
@@ -182,7 +182,7 @@ def test_provenance_rejects_invalid_contributing_scans():
     with pytest.raises(ValidationError):
         Provenance(
             raw_file="scan0001.dat",
-            contributing_scans={"scan-001": "bad"},
+            contributing_scans={UUID(value="scan-001"): "bad"},
         )
 
 
@@ -191,7 +191,7 @@ def test_scan_rejects_invalid_tavimeta_type():
         Scan(
             uuid="scan-001",
             data=ScanData(),
-            metadata=MetaData(),
+            metadata=ScanMetadata(),
             tavimeta=1,
             prov=make_provenance(),
         )
@@ -202,7 +202,7 @@ def test_scan_rejects_invalid_provenance_type():
         Scan(
             uuid="scan-001",
             data=ScanData(),
-            metadata=MetaData(),
+            metadata=ScanMetadata(),
             tavimeta=make_tavimeta(),
             prov="not_provenance",
         )

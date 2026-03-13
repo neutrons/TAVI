@@ -5,10 +5,9 @@ from unittest import mock, TestCase
 import pytest
 
 
-from tavi.library.data.scan.metadata import ScanMetadata
-from tavi.library.data.scan.scan import Scan
-from tavi.library.data.scan.ub import ScanUb
-from tavi.library.data.scan.values import ScanValues
+from tavi.library.data.scan import ScanMetadata
+from tavi.library.data.scan import Scan
+from tavi.library.data.scan import ScanData
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.library.storage.loader.interface.base import AbstractLoader
 from tavi.library.storage.loader.loader_registry import LoaderRegistry
@@ -28,17 +27,14 @@ class DummyLoader(AbstractLoader):
     
     def parse_metadata(path:str) -> ScanMetadata:
         pass
-
-    def parse_ub(path:str) -> ScanUb:
-        pass
     
-    def parse_scan_values(path:str) -> ScanValues:
+    def parse_scan_values(path:str) -> ScanData:
         pass
     
     def parse_external_metadata(path:str) -> dict[str, Any]:
         pass
     
-    def adapt_scan_data(meta: ScanMetadata, ub: ScanUb, values:ScanValues):
+    def adapt_scan_data(meta: ScanMetadata, values:ScanData):
         pass
 
 class SmartyLoader(DummyLoader):

@@ -3,10 +3,7 @@
 import abc
 from typing import Any
 
-from tavi.library.data.scan.metadata import ScanMetadata
-from tavi.library.data.scan.scan import Scan
-from tavi.library.data.scan.ub import ScanUb
-from tavi.library.data.scan.values import ScanValues
+from tavi.library.data.scan import Scan, ScanData, ScanMetadata
 
 
 class LoaderInterface(metaclass=abc.ABCMeta):
@@ -28,12 +25,7 @@ class LoaderInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def parse_ub(self, path: str) -> ScanUb:
-        """Parse UB data."""
-        pass
-
-    @abc.abstractmethod
-    def parse_scan_values(self, path: str) -> ScanValues:
+    def parse_scan_values(self, path: str) -> ScanData:
         """Parse scan values."""
         pass
 
@@ -43,6 +35,6 @@ class LoaderInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def adapt_scan_data(self, meta: ScanMetadata, ub: ScanUb, values: ScanValues) -> Scan:
+    def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
         """Adapt scan data."""
         pass
