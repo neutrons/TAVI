@@ -23,7 +23,7 @@ class DefaultLoader(AbstractLoader):
         """Get scan type (NONE for default loader)."""
         return RawScanType.NONE
 
-    def get_score(self, path: str) -> int:
+    def get_score(self, path: str) -> float:
         """Get score for scan."""
         return 0
 

@@ -1,5 +1,7 @@
 """Rule set for organizing classification rules."""
 
+import math
+
 from tavi.backend.classification.rule.interface.rule_interface import RuleInterface
 
 
@@ -20,6 +22,14 @@ class RuleSet:
 
         """
         self.rules[rule] = weight
+
+    def validate(self) -> None:
+        """Validate that weights total to 1.0."""
+        total_weight = 0
+        for rule in self.get_rules():
+            total_weight += self.get_weight(rule)
+        if not math.isclose(total_weight, 1):
+            raise ValueError("RuleSet incorrectly configured.  Weights should total to ~1")
 
     def get_rules(self) -> list[RuleInterface]:
         """

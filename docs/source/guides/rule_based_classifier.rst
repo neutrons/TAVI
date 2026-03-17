@@ -26,8 +26,8 @@ The RuleBasedClassifier is built on three core components:
 
     .. code-block:: python
 
-        def get_score(self, path: str, filestore: FileStoreInterface) -> int:
-            """Get the score for a file path."""
+        def get_score(self, path: str, filestore: FileStoreInterface) -> float:
+            """Get the score for a file path (between 0.0 and 1.0)."""
 
 **RuleSet**
     A collection of rules with associated weights. Each rule is registered with a weight that determines its influence on the final score.
@@ -78,7 +78,7 @@ To create a custom rule, inherit from ``RuleInterface`` and implement the ``get_
     class MyCustomRule(RuleInterface):
         """Custom rule that checks for specific file characteristics."""
 
-        def get_score(self, path: str, filestore: FileStoreInterface) -> int:
+        def get_score(self, path: str, filestore: FileStoreInterface) -> float:
             """
             Score a file based on custom criteria.
 
@@ -87,18 +87,18 @@ To create a custom rule, inherit from ``RuleInterface`` and implement the ``get_
                 filestore: The file store interface to access file properties.
 
             Returns:
-                The score (typically 0 or 1, though higher values are allowed).
+                The score as a float between 0.0 and 1.0.
 
             """
             # Example: Check if file has a specific extension
             if path.endswith('.txt'):
-                return 1
-            return 0
+                return 1.0
+            return 0.0
 
 Creating Custom Rule Sets
 --------------------------
 
-To create a custom rule set, inherit from ``RuleSet`` and register your rules:
+To create a custom rule set, inherit from ``RuleSet`` and register your rules. **Important: All weights must sum to 1.0.**
 
 .. code-block:: python
 
@@ -111,9 +111,11 @@ To create a custom rule set, inherit from ``RuleSet`` and register your rules:
         def __init__(self) -> None:
             """Initialize the custom rule set with registered rules."""
             super().__init__()
-            # Register rules with weights
-            self.register(MyCustomRule(), 2)      # Weight of 2
-            self.register(AnotherRule(), 1)       # Weight of 1
+            # Register rules with weights that total to 1.0
+            self.register(MyCustomRule(), 0.6)      # Weight of 0.6
+            self.register(AnotherRule(), 0.4)       # Weight of 0.4
+            # Validate that weights sum to 1.0
+            self.validate()
 
 Built-in Rule Sets
 -------------------
@@ -151,8 +153,8 @@ Example: ORNL SPICE Classification
 
     for filepath in files:
         score = classifier.get_score(filepath, rule_set)
-        if score > threshold:
-            print(f"{filepath} is likely an ORNL SPICE file (score: {score})")
+        if score > 0.5:  # Example threshold
+            print(f"{filepath} is likely an ORNL SPICE file (score: {score:.2f})")
 
 Implementation Details
 ----------------------
@@ -185,6 +187,6 @@ Best Practices
 
 1. **Rule Design**: Keep rules simple and focused on a single classification criterion
 2. **Weight Configuration**: Use weights to prioritize important rules over less critical ones
-3. **Score Interpretation**: Define thresholds for your use case (e.g., score > 3 means "likely a match")
+3. **Score Interpretation**: Define thresholds for your use case (e.g., score > 0.5 means "likely a match"). Since scores are between 0.0 and 1.0, consider what confidence level you require.
 4. **Testing**: Test your custom rules with representative file samples
 5. **Documentation**: Document the purpose and expected behavior of custom rules

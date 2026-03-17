@@ -14,3 +14,4 @@ Various guides for using, extending, and maintaining TAVI systems.
    recovery_service
    logging
    rule_based_classifier
+   loader_setup

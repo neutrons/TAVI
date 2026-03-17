@@ -16,7 +16,7 @@ class ORNLSpiceLoader(AbstractLoader):
     def __init__(self, filestore: FileStoreInterface) -> None:
         """Initialize ORNL Spice loader with classifier."""
         super().__init__(filestore)
-        self.classifier = RuleBasedClassifier()
+        self.classifier = RuleBasedClassifier(filestore)
         self.classification_rules = ORNLSpiceRuleSet()
 
     def load(self, path: str) -> Scan:
@@ -27,7 +27,7 @@ class ORNLSpiceLoader(AbstractLoader):
         """Get scan type (ORNLSpice)."""
         return RawScanType.ORNLSpice
 
-    def get_score(self, path: str) -> int:
+    def get_score(self, path: str) -> float:
         """Get score for scan."""
         return self.classifier.get_score(path, self.classification_rules)
 

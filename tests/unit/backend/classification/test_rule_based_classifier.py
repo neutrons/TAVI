@@ -94,7 +94,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
         # We expect at least 5 rules to pass: instrument name, dat format, hashtag
         self.assertGreaterEqual(
             score,
-            5,
+            1.0,
             "HB1A file should match at least 5 rules",
         )
 
@@ -138,7 +138,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
             weight = self.rule_set.get_weight(rule)
             self.assertEqual(
                 weight,
-                1,
+                .2,
                 f"Rule {rule.__class__.__name__} should have weight 1",
             )
 

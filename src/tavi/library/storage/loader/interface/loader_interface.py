@@ -21,7 +21,7 @@ class LoaderInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_score(self, path: str) -> int:
+    def get_score(self, path: str) -> float:
         """Get score for scan."""
         pass
 
