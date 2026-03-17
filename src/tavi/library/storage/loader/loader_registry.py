@@ -12,10 +12,10 @@ from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 class LoaderRegistry:
     """Registry for managing loaders."""
 
-    def __init__(self, filestore: Filestore) -> None:
+    def __init__(self) -> None:
         """Initialize registry with filestore."""
         self.registry: dict[str, AbstractLoader] = {}
-        self.set_filestore(filestore)
+        self.filestore = None
 
         self._register_loader(ORNLSpiceLoader(self.filestore))
         self._register_loader(DefaultLoader(self.filestore))

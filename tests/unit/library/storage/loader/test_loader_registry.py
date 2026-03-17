@@ -48,7 +48,7 @@ class SmartyLoader(DummyLoader):
 
 class TestFileOperations(TestCase):
     def setUp(self):
-        self.inst: LoaderRegistry = LoaderRegistry(None)
+        self.inst: LoaderRegistry = LoaderRegistry()
 
     def tearDown(self):
         pass

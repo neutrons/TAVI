@@ -15,7 +15,7 @@ class RawScanClassifier:
     def get_classification(self, file_path: str) -> RawScanType:
         """Get classification for a file by score from all loaders."""
         loaders: list[AbstractLoader] = self.loader_registry.get_loaders()
-        top_pick: tuple[RawScanType, int] = (RawScanType.NONE, 0)
+        top_pick: tuple[RawScanType, float] = (RawScanType.NONE, 0)
         for loader in loaders:
             score = loader.get_score(file_path)
             if top_pick[1] < score:
