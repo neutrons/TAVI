@@ -9,7 +9,8 @@ from .library import init as init_library  # noqa: E402
 try:
     init_library()
 except ModuleNotFoundError as e:
-    print("Unable to init submodule. Still valid for ci, proceeding.")
+    # Unable to init submodule. Still valid for ci, proceeding.
+    pass
 
 try:
     from ._version import __version__  # noqa: F401
