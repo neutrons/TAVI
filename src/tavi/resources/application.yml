@@ -3,3 +3,8 @@ env: default
 user:
   application:
       home: ~/.TAVI/
+
+library:
+  filestore:
+    raw:
+      size-limit: 1  # MB

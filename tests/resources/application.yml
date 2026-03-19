@@ -8,3 +8,10 @@ user:
 test:
   multi-substitution:
     home: ~/${user.application.home}/test
+
+
+library:
+  filestore:
+    raw:
+      size-limit: 1  # MB
+      
