@@ -50,7 +50,7 @@ Main Flow
         ProjectModel ->> EventBroker : emit RawScanListUpdateEvent
 
 
-Classificatiion Flow
+Classification Flow
 --------------------
 
 .. mermaid::
