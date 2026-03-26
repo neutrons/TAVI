@@ -1,6 +1,7 @@
 Workflow Diagram
 ================
 .. mermaid::
+
     block-beta
         columns 13
         space space space space space space space space X["Parse Extra Metadata"] space space  space space
@@ -31,4 +32,3 @@ Workflow Diagram
         W --> V
         W --> H
         X --> W
-```

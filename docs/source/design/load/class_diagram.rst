@@ -1,6 +1,7 @@
 Class Diagram
 =============
 .. mermaid::
+
     classDiagram
         class UUID {
             MD5Sum value

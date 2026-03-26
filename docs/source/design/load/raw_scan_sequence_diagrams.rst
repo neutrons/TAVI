@@ -5,6 +5,7 @@ Main Flow
 ---------
 
 .. mermaid::
+
     sequenceDiagram
         participant EventBroker
         participant ProjectModel
@@ -53,6 +54,7 @@ Classificatiion Flow
 --------------------
 
 .. mermaid::
+
     sequenceDiagram
         participant RawScanLoadController
         participant RawScanClassifier
@@ -92,6 +94,7 @@ Disk Access Flow
 ----------------
 
 .. mermaid::
+
     sequenceDiagram
         participant RawScanLoadController
         participant DiskServiceInterface
