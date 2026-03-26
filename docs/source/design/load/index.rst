@@ -12,5 +12,5 @@ of the features of Load data.
    :maxdepth: 1
 
    class_diagram
-   raw_scan_sequence_diagram
+   raw_scan_sequence_diagrams
    workflow_diagram
