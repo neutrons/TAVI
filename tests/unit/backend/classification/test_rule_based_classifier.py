@@ -22,6 +22,12 @@ class TestFileStore(FileStoreInterface):
         """
         self.base_path = base_path
 
+    def fetch_files_at(self, path: str) -> list[str]:
+        pass
+
+    def validate_file(self, file_path: str) -> bool:
+        pass
+
     def write_user_data_file(self, subpath: str, value: str) -> None:
         """Not implemented for testing."""
         pass
@@ -42,6 +48,9 @@ class TestFileStore(FileStoreInterface):
     def get_file_name(self, path: str) -> str:
         """Get file name from path."""
         return path.split("/")[-1]
+    
+    def get_file_size_mb(self, file_path: str) -> float:
+        pass
 
 
 class TestRuleBasedClassifier(unittest.TestCase):

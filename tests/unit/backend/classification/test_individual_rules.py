@@ -17,8 +17,13 @@ from tavi.library.storage.interface.file_store_interface import FileStoreInterfa
 class FakeFileStore(FileStoreInterface):
     """Fake implementation of FileStoreInterface for testing."""
 
-    def __init__(self) -> None:
-        """Initialize the fake file store."""
+    def __init__(self):
+        pass
+
+    def fetch_files_at(self, path: str) -> list[str]:
+        pass
+
+    def validate_file(self, file_path: str) -> bool:
         pass
 
     def write_user_data_file(self, subpath: str, value: str) -> None:
@@ -41,6 +46,9 @@ class FakeFileStore(FileStoreInterface):
     def get_file_name(self, path: str) -> str:
         """Get file name from path."""
         return path.split("/")[-1]
+    
+    def get_file_size_mb(self, file_path: str) -> float:
+        pass
 
 
 class TestInstrumentInFilenameRule(unittest.TestCase):
