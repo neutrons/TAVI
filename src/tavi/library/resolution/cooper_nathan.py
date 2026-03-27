@@ -52,3 +52,6 @@ class CooperNathans:
         mat_f[self.IDX_ANA["0V"], self.IDX_ANA["0V"]] = 1.0 / analyzer.mosaic_v **2
         return mat_f
 
+    def mat_a(self, ki, kf, theta_m, theta_a):
+        """Calculate Matrix A. 6 x 8 matrix, Y = AU. Transform collmiator's divergence to ki-kf."""
+        pass
