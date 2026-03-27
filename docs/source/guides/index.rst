@@ -12,3 +12,4 @@ Various guides for using, extending, and maintaining TAVI systems.
 
    event_broker
    recovery_service
+   logging
