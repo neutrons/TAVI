@@ -42,5 +42,5 @@ class LoaderInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
-        """Adapt scan data."""
+        """Instantiate RawScan object from parsed data."""
         pass
