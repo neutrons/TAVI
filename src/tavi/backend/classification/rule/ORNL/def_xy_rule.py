@@ -22,11 +22,9 @@ class DefXYRule(RuleInterface):
         except Exception:  # noqa: BLE001
             logger.debug("Failed to read text file.")
             return 0
+        defxy_count = 0
         for line in file_str.split("\n"):
-            for field_name in def_field_names.copy():
-                if len(def_field_names) == 0:
-                    return 1
+            for field_name in def_field_names:
                 if line.startswith(f"# {field_name} = "):
-                    def_field_names.remove(field_name)
-                    continue
-        return len(def_field_names) == 0
+                    defxy_count += 1
+        return defxy_count == len(def_field_names)

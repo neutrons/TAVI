@@ -1,6 +1,5 @@
 """Rule-based classifier for files."""
 
-from tavi.backend.classification.rule.interface.rule_interface import RuleInterface
 from tavi.backend.classification.rule_set.rule_set import RuleSet
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 
@@ -32,22 +31,8 @@ class RuleBasedClassifier:
         """
         score: int = 0
         for rule in rule_set.get_rules():
-            score += self._get_score_from_rule(path, rule) * rule_set.get_weight(rule)
+            score += rule.get_score(path, self.filestore) * rule_set.get_weight(rule)
         return score
-
-    def _get_score_from_rule(self, path: str, rule: RuleInterface) -> int:
-        """
-        Get the score from a single rule.
-
-        Args:
-            path: The file path to score.
-            rule: The rule to apply.
-
-        Returns:
-            The score from the rule.
-
-        """
-        return rule.get_score(path, self.filestore)
 
     def get_score(self, path: str, rule_set: RuleSet) -> int:
         """
