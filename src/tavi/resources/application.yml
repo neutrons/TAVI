@@ -8,3 +8,18 @@ library:
   filestore:
     raw:
       size-limit: 1  # MB
+ORNL:
+  spice:
+    file:
+      ext: dat
+    metadata:
+      field-name:
+        def:
+          - def_x
+          - def_y
+  instrument:
+    names:
+      - HB1A
+      - HB1
+      - HB3
+      - CG4C

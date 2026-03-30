@@ -1,6 +1,10 @@
 
 
 import os
+
+if not os.environ.get("env"):
+    os.environ["env"] = "test"
+
 import pytest
 
 import neutrons_standard
@@ -13,9 +17,6 @@ init_logging()
 
 from neutrons_standard.decorators.singleton import reset_Singletons
 
-
-if not os.environ.get("env"):
-    os.environ["env"] = "test"
 
 @pytest.fixture(autouse=True)
 def _reset_Singletons(request):
