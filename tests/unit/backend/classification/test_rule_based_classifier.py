@@ -13,15 +13,6 @@ from tavi.library.storage.interface.file_store_interface import FileStoreInterfa
 class TestFileStore(FileStoreInterface):
     """Test implementation of FileStoreInterface that reads from actual files."""
 
-    def __init__(self, base_path: str):
-        """Initialize with a base path to read files from.
-
-        Args:
-            base_path: The base path for file operations.
-
-        """
-        self.base_path = base_path
-
     def fetch_files_at(self, path: str) -> list[str]:
         pass
 
@@ -62,7 +53,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
         self.test_file_path = Resource.getPath(
             "inputs/rule_based_classifier/HB1A_exp0978_scan0001.dat"
         )
-        self.filestore = TestFileStore("")
+        self.filestore = TestFileStore()
         self.classifier = RuleBasedClassifier(self.filestore)
         self.rule_set = ORNLSpiceRuleSet()
 
