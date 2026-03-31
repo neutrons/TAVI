@@ -157,8 +157,6 @@ def test_load_files_without_quick_uses_lookup_per_file(controller):
 def test_load_files_quick_mode_uses_single_loader(controller):
     file_paths = ["a.dat", "b.dat"]
 
-    # NOTE: This test may fail due to bug in implementation:
-    # `file_path` is undefined in quick branch
     results = controller.load_files(file_paths=file_paths, quick=True)
 
     assert len(results) == 2
