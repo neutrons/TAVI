@@ -4,69 +4,90 @@ Class Diagram
 
     classDiagram
         class UUID {
-            MD5Sum value
+            String value
         }
         RawScanLoadControllerInterface : +load_raw_scans(String path)
         class RawScanLoadController {
             +FileStore filestore
             +LoaderRegistry loader_registry
             +RawScanClassifier raw_scan_classifier
-            +load_scan(String path, Loader loader=None)
-            +load_folder(String path, Loader loader=None, quick=Config[backend.load.quick])
-            +load_scans(List[String] paths, Loader loader=None, quick=Config[backend.load.quick])
+            -lookup_loader(String file_path) : AbstractLoader
+            +__init__(FileStoreInterface filestore)
+            +load_file(String file_path, LoaderInterface loader=None) : RawScan
+            +load_folder(String folder_path, Loader loader=None, quick=Config[library.storage.raw.classification.quick]) : List~RawScan~
+            +load_files(List[String] file_paths, LoaderInterface loader=None, quick=Config[library.storage.raw.classification.quick]) : List~RawScan~
         }
         class FileStoreInterface {
-            +fetch_files_at(String path)
-            -validate_file(Path path)
+            +fetch_files_at(String path) : list~String~
+            +validate_file(String file_path) : bool
+            +write_user_data_file(String file_subpath, String value)
+            +write_text_file(String file_path, String value)
+            +read_text_file(String file_path) : String
+            +get_file_ext(String file_path) : String
+            +get_file_size_mb(String file_path) : float
         }
         class LocalFileStore {
-            +fetch_files_at(String path)
-            -validate_file(Path path)
-            -read_file(Path path)
-            -get_file_ext(Path path)
-            -get_file_size_mb(Path path)
+            -is_real_file(Path file_path, bool throws=False) : bool
         }
         class RawScanClassifier{
             LoaderRegistry loader_registry
-            +classify(str path) : RawScanType
+            +get_classification(str file_path) : RawScanType
         }
         class RawScanType~StrEnum~{
             ORNLSpice
             UNKNOWN
         }
         class LoaderRegistry {
-            +getLoaders(FileStoreInterface filestore) : List~Loader~
-            +buildLoader(RawScanType type, FileStoreInterface filestore) : Loader
+            -register_loader(AbstractLoader loader)
+            -refresh_filestore()
+            +__init__()
+            +register(String key, AbstractLoader loader)
+            +set_filestore(FileStoreInterface filestore)
+            +get_loaders() : List~AbstractLoader~
+            +get_loader(String key) : AbstractLoader
         }
-        class Loader{
+        class LoaderInterface{
+            +load(String path) : Scan
+            +get_scan_type() : RawScanType
+            +get_score(String path): int
+            +parse_metadata(String path) : ScanMetadata
+            +parse_tavi_metadata(String path) : TaviMetadata
+            +parse_scan_values(String path) : ScanData
+            +parse_external_metadata(String path) : dict~string, Any~
+            +adapt_scan_data(ScanMetadata meta, ScanData values, TaviMetadata tavi_meta) : RawScan
+        }
+        class AbstractLoader{
+            FileStoreInterface filestore
             +__init__(FileStoreInterface filestore)
-            +load(str path) : Scan
-            +get_score(str path): int
-            +generate_uuid(str path) : UUID
+            +generate_uuid(str file_path) : UUID
         }
         class ORNLSpiceLoader{
-            +get_score(str path) : int
+            RuleBasedClassifier classifier
+            ORNLSpiceRuleSet classification_rules
         }
         class RuleBasedClassifier{
             RuleSet rule_set
-            +get_score(str path) : int
-            -get_score_from_rules(str path) : int
-            -get_score_from_rule(str path, Rule rule) : int
+            +get_score(str path, RuleSet rule_set) : int
+            -get_score_from_rules(str path, RuleSet rule_set) : int
+        }
+        class ORNLSpiceRuleSet{
         }
         class RuleSet{
-            List~Rule~ Rules
-            +get_rules():List~Rule~
-            +add_rule(Rule rule)
+            dict~RuleInterface, int~ rules
+            +register(RuleInterface rule, int weight)
+            +validate()
+            +get_rules():List~RuleInterface~
+            +get_weight(RuleInterface rule) : int
         }
         class RuleInterface{
             +get_score(str path, FileStoreInterface filestore) : int
         }
         class Scan {
-            ScanValues values
-            RawScanMetadata metadata
-            TaviMetadata: tavi_metadata
-            Provenance provenance
             UUID uuid
+            ScanData data
+            ScanMetadata metadata
+            TaviMetadata: tavimeta
+            Provenance prov
         }
         class RawScan {
         }
@@ -74,28 +95,18 @@ Class Diagram
             Str: raw_file_path
             Dict~UUID,int~ contributing_scans
         }
-        class RawScanMetadata{
+        class ScanMetadata{
             Dict~str, Any~ data
             LoaderEnum loader_name
         }
         class TaviMetadata{
             Tuple~str, str~ default_axis_cols
-            str normalization
+            String normalization = None
+            String friendly_name
+            String friendly_path
         }
-        class ScanValues {
+        class ScanData {
             Dict~str, list~ data
-        }
-        class Fit
-        class ProjectModel {
-            TaviData project
-            +load_raw_scans(List~String~ paths)
-            +load_raw_scan_folder(String path)
-        }
-        class TaviData {
-            Dict~UUID,RawScan~ raw_scans
-            Dict~UUID,ComboScan~ combo_scans
-            Dict~UUID,Fit~ fits
-            Dict~UUID,Plot~ plots
         }
 
         RawScanLoadControllerInterface <|-- RawScanLoadController
@@ -104,9 +115,9 @@ Class Diagram
         RawScanLoadController *-- RawScanClassifier
 
         RawScanClassifier *-- LoaderRegistry
-        Loader *-- FileStoreInterface
-        Loader <|-- ORNLSpiceLoader
-        LoaderRegistry o-- Loader
+        AbstractLoader *-- FileStoreInterface
+        AbstractLoader <|-- ORNLSpiceLoader
+        LoaderRegistry o-- AbstractLoader
 
         FileStoreInterface <|-- LocalFileStore
 
@@ -117,15 +128,27 @@ Class Diagram
 
         Scan <|-- RawScan
         Scan <|-- ComboScan
-        Scan *-- RawScanMetadata
-        Scan *-- ScanValues
+        Scan *-- ScanMetadata
+        Scan *-- ScanData
         Scan *-- Provenance
         Scan *-- UUID
         Scan *-- TaviMetadata
-        TaviData o-- Fit
-        TaviData o-- RawScan
-        TaviData o-- ComboScan
-        TaviData o-- Plot
-        TaviData o-- UUID
-        ProjectModel *-- TaviData
-        ProjectModel *-- RawScanLoadControllerInterface
+        .. TaviData o-- Fit
+        .. TaviData o-- RawScan
+        .. TaviData o-- ComboScan
+        .. TaviData o-- Plot
+        .. TaviData o-- UUID
+        .. ProjectModel *-- TaviData
+        .. ProjectModel *-- RawScanLoadControllerInterface
+
+        .. class ProjectModel {
+        ..     TaviData project
+        ..     +load_raw_scans(List~String~ paths)
+        ..     +load_raw_scan_folder(String path)
+        .. }
+        .. class TaviData {
+        ..     Dict~UUID,RawScan~ raw_scans
+        ..     Dict~UUID,ComboScan~ combo_scans
+        ..     Dict~UUID,Fit~ fits
+        ..     Dict~UUID,Plot~ plots
+        .. }

@@ -5,7 +5,7 @@ from typing import Any
 from tavi.backend.classification.rule_based_classifier import RuleBasedClassifier
 from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
 from tavi.library.data.enum.raw_scan_type import RawScanType
-from tavi.library.data.scan import Scan, ScanData, ScanMetadata
+from tavi.library.data.scan import RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
@@ -35,6 +35,10 @@ class ORNLSpiceLoader(AbstractLoader):
         """Parse metadata."""
         pass
 
+    def parse_tavi_metadata(self, path: str) -> TaviMetadata:
+        """Parse metadata."""
+        pass
+
     def parse_scan_values(self, path: str) -> ScanData:
         """Parse scan values."""
         pass
@@ -43,6 +47,6 @@ class ORNLSpiceLoader(AbstractLoader):
         """Parse external metadata."""
         pass
 
-    def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
+    def adapt_scan_data(self, meta: ScanMetadata, tavi_meta: TaviMetadata, values: ScanData) -> RawScan:
         """Adapt scan data."""
         pass

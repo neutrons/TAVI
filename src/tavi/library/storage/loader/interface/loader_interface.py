@@ -4,7 +4,7 @@ import abc
 from typing import Any
 
 from tavi.library.data.enum.raw_scan_type import RawScanType
-from tavi.library.data.scan import Scan, ScanData, ScanMetadata
+from tavi.library.data.scan import RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
 
 
 class LoaderInterface(metaclass=abc.ABCMeta):
@@ -31,6 +31,11 @@ class LoaderInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def parse_tavi_metadata(self, path: str) -> TaviMetadata:
+        """Parse metadata."""
+        pass
+
+    @abc.abstractmethod
     def parse_scan_values(self, path: str) -> ScanData:
         """Parse scan values."""
         pass
@@ -41,6 +46,6 @@ class LoaderInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
+    def adapt_scan_data(self, meta: ScanMetadata, tavi_meta: TaviMetadata, values: ScanData) -> RawScan:
         """Instantiate RawScan object from parsed data."""
         pass
