@@ -39,7 +39,7 @@ class RawScanLoadController:
     ) -> list[RawScan]:
         """Load RawScans from a list of files."""
         if quick and loader is None:
-            loader = self._lookup_loader(file_path=file_path)
+            loader = self._lookup_loader(file_path=file_paths[0])
         raw_scans: list[RawScan] = []
         for file_path in file_paths:
             raw_scans.append(self.load_file(file_path=file_path, loader=loader))
