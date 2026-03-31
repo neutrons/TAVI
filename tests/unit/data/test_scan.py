@@ -19,6 +19,8 @@ def make_tavimeta() -> TaviMetadata:
     return TaviMetadata(
         default_axis=("qh", "en"),
         nomarlization=("monitor"),
+        friendly_name="test_name",
+        friendly_path="/test_path",
     )
 
 
@@ -127,6 +129,8 @@ def test_raw_scan_tavimeta_is_writable():
     new_tavimeta = TaviMetadata(
         default_axis=("h", "k"),
         nomarlization="detector",
+        friendly_name="test_name",
+        friendly_path="/test_path",
     )
     raw_scan.tavimeta = new_tavimeta
 
@@ -143,6 +147,8 @@ def test_combo_scan_allows_writing_all_fields():
     new_tavimeta = TaviMetadata(
         default_axis=("h", "l"),
         nomarlization="detector",
+        friendly_name="test_name",
+        friendly_path="/test_path",
     )
     new_prov = Provenance(
         raw_file="combo_scan.dat",
