@@ -133,22 +133,24 @@ Class Diagram
         Scan *-- Provenance
         Scan *-- UUID
         Scan *-- TaviMetadata
-        .. TaviData o-- Fit
-        .. TaviData o-- RawScan
-        .. TaviData o-- ComboScan
-        .. TaviData o-- Plot
-        .. TaviData o-- UUID
-        .. ProjectModel *-- TaviData
-        .. ProjectModel *-- RawScanLoadControllerInterface
 
-        .. class ProjectModel {
-        ..     TaviData project
-        ..     +load_raw_scans(List~String~ paths)
-        ..     +load_raw_scan_folder(String path)
-        .. }
-        .. class TaviData {
-        ..     Dict~UUID,RawScan~ raw_scans
-        ..     Dict~UUID,ComboScan~ combo_scans
-        ..     Dict~UUID,Fit~ fits
-        ..     Dict~UUID,Plot~ plots
-        .. }
+
+.. TaviData o-- Fit
+.. TaviData o-- RawScan
+.. TaviData o-- ComboScan
+.. TaviData o-- Plot
+.. TaviData o-- UUID
+.. ProjectModel *-- TaviData
+.. ProjectModel *-- RawScanLoadControllerInterface
+
+.. class ProjectModel {
+..     TaviData project
+..     +load_raw_scans(List~String~ paths)
+..     +load_raw_scan_folder(String path)
+.. }
+.. class TaviData {
+..     Dict~UUID,RawScan~ raw_scans
+..     Dict~UUID,ComboScan~ combo_scans
+..     Dict~UUID,Fit~ fits
+..     Dict~UUID,Plot~ plots
+.. }
