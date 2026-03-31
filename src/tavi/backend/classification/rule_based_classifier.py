@@ -17,7 +17,7 @@ class RuleBasedClassifier:
         """
         self.filestore: FileStoreInterface = filestore
 
-    def _get_score_from_rules(self, path: str, rule_set: RuleSet) -> int:
+    def _get_score_from_rules(self, path: str, rule_set: RuleSet) -> float:
         """
         Get the cumulative score from all rules.
 
@@ -29,7 +29,7 @@ class RuleBasedClassifier:
             The cumulative score.
 
         """
-        score: int = 0
+        score: float = 0
         for rule in rule_set.get_rules():
             score += rule.get_score(path, self.filestore) * rule_set.get_weight(rule)
         return score

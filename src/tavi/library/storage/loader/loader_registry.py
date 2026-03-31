@@ -3,17 +3,25 @@
 from neutrons_standard.decorators.singleton import Singleton
 
 from tavi.library.storage.interface.filestore_interface import Filestore
+from tavi.library.storage.loader.default_loader import DefaultLoader
 from tavi.library.storage.loader.interface.base import AbstractLoader
+from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 
 
 @Singleton
 class LoaderRegistry:
     """Registry for managing loaders."""
 
-    def __init__(self, filestore: Filestore) -> None:
+    def __init__(self) -> None:
         """Initialize registry with filestore."""
         self.registry: dict[str, AbstractLoader] = {}
-        self.set_filestore(filestore)
+        self.filestore = None
+
+        self._register_loader(ORNLSpiceLoader(self.filestore))
+        self._register_loader(DefaultLoader(self.filestore))
+
+    def _register_loader(self, loader: AbstractLoader) -> None:
+        self.register(loader.get_scan_type(), loader)
 
     def register(self, key: str, loader: AbstractLoader) -> None:
         """Register a loader."""

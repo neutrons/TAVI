@@ -1,46 +1,44 @@
-"""Loader interface for scanning data."""
+"""Default loader for files without specialized loader."""
 
-import abc
 from typing import Any
 
 from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import Scan, ScanData, ScanMetadata
+from tavi.library.storage.interface.file_store_interface import FileStoreInterface
+from tavi.library.storage.loader.interface.base import AbstractLoader
 
 
-class LoaderInterface(metaclass=abc.ABCMeta):
-    """Abstract interface for loaders."""
+class DefaultLoader(AbstractLoader):
+    """Default loader that returns NONE scan type."""
 
-    @abc.abstractmethod
+    def __init__(self, filestore: FileStoreInterface) -> None:
+        """Initialize the default loader."""
+        super().__init__(filestore)
+
     def load(self, path: str) -> Scan:
         """Load scan data."""
-        pass
+        raise RuntimeError(f"No suitable loader found for file at: {path}")
 
-    @abc.abstractmethod
     def get_scan_type(self) -> RawScanType:
-        """Get the scan type identifier for this loader."""
-        pass
+        """Get scan type (NONE for default loader)."""
+        return RawScanType.NONE
 
-    @abc.abstractmethod
     def get_score(self, path: str) -> float:
         """Get score for scan."""
-        pass
+        return 0
 
-    @abc.abstractmethod
     def parse_metadata(self, path: str) -> ScanMetadata:
         """Parse metadata."""
         pass
 
-    @abc.abstractmethod
     def parse_scan_values(self, path: str) -> ScanData:
         """Parse scan values."""
         pass
 
-    @abc.abstractmethod
     def parse_external_metadata(self, path: str) -> dict[str, Any]:
         """Parse external metadata."""
         pass
 
-    @abc.abstractmethod
     def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
-        """Instantiate RawScan object from parsed data."""
+        """Adapt scan data."""
         pass

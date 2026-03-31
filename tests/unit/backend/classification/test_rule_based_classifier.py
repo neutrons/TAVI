@@ -13,15 +13,6 @@ from tavi.library.storage.interface.file_store_interface import FileStoreInterfa
 class TestFileStore(FileStoreInterface):
     """Test implementation of FileStoreInterface that reads from actual files."""
 
-    def __init__(self, base_path: str):
-        """Initialize with a base path to read files from.
-
-        Args:
-            base_path: The base path for file operations.
-
-        """
-        self.base_path = base_path
-
     def fetch_files_at(self, path: str) -> list[str]:
         pass
 
@@ -62,7 +53,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
         self.test_file_path = Resource.getPath(
             "inputs/rule_based_classifier/HB1A_exp0978_scan0001.dat"
         )
-        self.filestore = TestFileStore("")
+        self.filestore = TestFileStore()
         self.classifier = RuleBasedClassifier(self.filestore)
         self.rule_set = ORNLSpiceRuleSet()
 
@@ -94,7 +85,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
         # We expect at least 5 rules to pass: instrument name, dat format, hashtag
         self.assertGreaterEqual(
             score,
-            5,
+            1.0,
             "HB1A file should match at least 5 rules",
         )
 
@@ -138,7 +129,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
             weight = self.rule_set.get_weight(rule)
             self.assertEqual(
                 weight,
-                1,
+                .2,
                 f"Rule {rule.__class__.__name__} should have weight 1",
             )
 

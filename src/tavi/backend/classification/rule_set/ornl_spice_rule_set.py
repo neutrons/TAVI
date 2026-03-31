@@ -16,8 +16,10 @@ class ORNLSpiceRuleSet(RuleSet):
     def __init__(self) -> None:
         """Initialize the ORNL SPICE rule set with default rules."""
         super().__init__()
-        self.register(InstrumentInFilenameRule(), 1)
-        self.register(DefXYRule(), 1)
-        self.register(DatFormatRule(), 1)
-        self.register(HashtagCommentRule(), 1)
-        self.register(SpiceFileExtRule(), 1)
+        weight = 1.0 / 5
+        self.register(InstrumentInFilenameRule(), weight)
+        self.register(DefXYRule(), weight)
+        self.register(DatFormatRule(), weight)
+        self.register(HashtagCommentRule(), weight)
+        self.register(SpiceFileExtRule(), weight)
+        self.validate()
