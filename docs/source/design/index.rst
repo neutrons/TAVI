@@ -18,3 +18,4 @@ review and adhere to these guidelines when contributing to the project.
    recovery_service
    loader_registry
    filestore
+   raw_scan_load_controller
