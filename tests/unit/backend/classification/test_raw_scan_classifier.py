@@ -67,6 +67,10 @@ class MockLoader(AbstractLoader):
     def parse_metadata(self, path: str):
         """Not implemented for testing."""
         pass
+    
+    def parse_tavi_metadata(self, path: str) -> dict:
+        """Parse metadata."""
+        return {}
 
     def parse_scan_values(self, path: str):
         """Not implemented for testing."""

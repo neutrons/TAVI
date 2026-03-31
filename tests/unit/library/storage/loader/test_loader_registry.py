@@ -41,6 +41,10 @@ class DummyLoader(AbstractLoader):
     
     def adapt_scan_data(meta: ScanMetadata, values:ScanData):
         pass
+    
+    def parse_tavi_metadata(self, path: str) -> dict:
+        """Parse metadata."""
+        return {}
 
 class SmartyLoader(DummyLoader):
     pass

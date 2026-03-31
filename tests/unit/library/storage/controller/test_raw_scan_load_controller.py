@@ -64,6 +64,10 @@ class FakeLoader(LoaderInterface):
 
     def parse_metadata(self, file_path: str, filestore) -> dict:
         return {}
+    
+    def parse_tavi_metadata(self, path: str) -> dict:
+        """Parse metadata."""
+        return {}
 
     def parse_scan_values(self, file_path: str, filestore) -> dict:
         return {}
