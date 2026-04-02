@@ -66,3 +66,13 @@ def rot_z(theta: float) -> np.ndarray:
     """Rotation matrix for rotation about z axis by theta degree."""
     t = np.radians(theta)
     return np.array([[np.cos(t), -np.sin(t), 0], [np.sin(t), np.cos(t), 0], [0, 0, 1]])
+
+
+def rotation_matrix_2d(phi: float) -> np.ndarray:
+    """
+    Rotate the coordination system by angle of phi about z-axis instead of a vector.
+
+    Notice the negative sign from rot_z
+    """
+    phi = np.radians(phi)
+    return np.array([[np.cos(phi), np.sin(phi), 0], [-np.sin(phi), np.cos(phi), 0], [0, 0, 1]])
