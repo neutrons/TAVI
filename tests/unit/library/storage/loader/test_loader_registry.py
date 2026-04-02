@@ -5,6 +5,7 @@ from unittest import mock, TestCase
 import pytest
 
 
+from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import ScanMetadata
 from tavi.library.data.scan import Scan
 from tavi.library.data.scan import ScanData
@@ -20,6 +21,10 @@ class DummyLoader(AbstractLoader):
         super().__init__(filestore)
     
     def load(path:str) -> Scan:
+        pass
+    
+    def get_scan_type(self) -> RawScanType:
+        """Get the scan type identifier for this loader."""
         pass
     
     def get_score(path:str) -> int:
@@ -43,7 +48,7 @@ class SmartyLoader(DummyLoader):
 
 class TestFileOperations(TestCase):
     def setUp(self):
-        self.inst: LoaderRegistry = LoaderRegistry(None)
+        self.inst: LoaderRegistry = LoaderRegistry()
 
     def tearDown(self):
         pass

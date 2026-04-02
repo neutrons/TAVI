@@ -12,3 +12,6 @@ Various guides for using, extending, and maintaining TAVI systems.
 
    event_broker
    recovery_service
+   logging
+   rule_based_classifier
+   loader_setup

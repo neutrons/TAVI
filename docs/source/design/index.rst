@@ -17,3 +17,4 @@ review and adhere to these guidelines when contributing to the project.
    tavifields
    recovery_service
    loader_registry
+   filestore

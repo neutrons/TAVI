@@ -134,7 +134,7 @@ class TestWorkerAndWorkerPool(unittest.TestCase):
         self.assertEqual(len(pool.threads), 1)
 
         ran.wait(timeout=1)
-        time.sleep(0.05)
+        time.sleep(0.1)
 
         self.assertEqual(len(pool.threads), 0)
 
