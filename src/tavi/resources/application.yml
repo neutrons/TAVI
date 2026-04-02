@@ -5,6 +5,10 @@ user:
       home: ~/.TAVI/
 
 library:
+  storage:
+    raw:
+      classification:
+        quick: False
   filestore:
     raw:
       size-limit: 1  # MB

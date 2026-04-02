@@ -41,3 +41,9 @@ class LoaderRegistry:
         """Get all registered loaders."""
         self._refresh_filestore()
         return list(self.registry.values())
+
+    def get_loader(self, key: str) -> AbstractLoader:
+        """Get Loader for its registered key."""
+        if key not in self.registry:
+            raise RuntimeError(f"No loader for key: {key}")
+        return self.registry[key]
