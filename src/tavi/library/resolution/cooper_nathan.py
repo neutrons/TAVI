@@ -19,7 +19,7 @@ class CooperNathans:
     NUM_MONO = 1
     NUM_ANA = 1
     IDX_MONO = {"0H": 0, "0V": 1}
-    IDX_ANA_0_H = {"0H": 2, "0V": 3}
+    IDX_ANA = {"0H": 2, "0V": 3}
 
     # 4 soller slits collimators
     NUM_COLLS = 4
@@ -49,7 +49,7 @@ class CooperNathans:
 
         A 4 x 4 diagonal matrix considering divergence of monochromator and analyzer.
         """
-        mat_f = np.zerors((self.NUM_MONO + self.NUM_ANA) * 2, (self.NUM_MONO + self.NUM_ANA) * 2)
+        mat_f = np.zeros((self.NUM_MONO + self.NUM_ANA) * 2, (self.NUM_MONO + self.NUM_ANA) * 2)
         mat_f[self.IDX_MONO["0H"], self.IDX_MONO["0H"]] = 1.0 / monochromator.mosaic_h**2
         mat_f[self.IDX_MONO["0V"], self.IDX_MONO["0V"]] = 1.0 / monochromator.mosaic_v**2
         mat_f[self.IDX_ANA["0H"], self.IDX_ANA["0H"]] = 1.0 / analyzer.mosaic_h**2
