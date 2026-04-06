@@ -41,7 +41,7 @@ class FakeFileStore(FileStoreInterface):
 
     def get_file_ext(self, path: str) -> str:
         """Get file extension from path."""
-        return path.split(".")[-1]
+        return f".{path.split(".")[-1]}"
 
     def get_file_name(self, path: str) -> str:
         """Get file name from path."""
