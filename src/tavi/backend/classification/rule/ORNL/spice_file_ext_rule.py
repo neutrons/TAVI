@@ -18,5 +18,5 @@ class SpiceFileExtRule(RuleInterface):
         try:
             return int(filestore.get_file_ext(path) == Config["ORNL.spice.file.ext"])
         except Exception as e:  # noqa: BLE001
-            logger.info(e)
+            logger.debug(e)
             return 0

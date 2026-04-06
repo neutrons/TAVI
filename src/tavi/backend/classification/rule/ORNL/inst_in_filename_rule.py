@@ -18,5 +18,5 @@ class InstrumentInFilenameRule(RuleInterface):
         try:
             return int(filestore.get_file_name(path).upper().split("_")[0] in Config["ORNL.instrument.names"])
         except Exception as e:  # noqa: BLE001
-            logger.error(e)
+            logger.debug(e)
             return 0

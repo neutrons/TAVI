@@ -21,6 +21,7 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def load(self, path: str) -> Scan:
         """Load scan data."""
+        # TODO: Replace this stubb with a real load.
         uuid: UUID = self.generate_uuid(path)
         return RawScan(
             uuid=uuid,

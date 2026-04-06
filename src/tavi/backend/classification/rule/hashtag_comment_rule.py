@@ -16,7 +16,7 @@ class HashtagCommentRule(RuleInterface):
         try:
             file_str = filestore.read_text_file(path)
         except Exception as e:  # noqa: BLE001
-            logger.info(e)
+            logger.debug(e)
             return 0
         for line in file_str.split("\n"):
             if line and line[0] == "#":

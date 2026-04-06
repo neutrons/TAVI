@@ -43,7 +43,7 @@ class RuleBasedClassifier:
         score: float = 0
         for rule in rule_set.get_rules():
             rule_score = rule.get_score(path, self.filestore)
-            logger.info(f"Rule {rule.__class__} rated file {path} with a score of {rule_score}")
+            logger.debug(f"Rule {rule.__class__} rated file {path} with a score of {rule_score}")
             score += rule_score * rule_set.get_weight(rule)
         return score
 

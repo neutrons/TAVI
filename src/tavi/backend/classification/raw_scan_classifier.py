@@ -24,5 +24,5 @@ class RawScanClassifier:
             score = loader.get_score(file_path)
             if top_pick[1] < score:
                 top_pick = (loader.get_scan_type(), score)
-            logger.info(f"Loader {loader.get_scan_type()} rated file {file_path} with score: {score}.")
+            logger.debug(f"Loader {loader.get_scan_type()} rated file {file_path} with score: {score}.")
         return top_pick[0]
