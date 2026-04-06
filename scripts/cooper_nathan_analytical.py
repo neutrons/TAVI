@@ -1,5 +1,5 @@
 """Cooper-Nathans Method."""
-from sympy import Symbol, Matrix, tan, cos, sin, pprint
+from sympy import Symbol, Matrix, tan, cos, sin, pprint, pi
 import numpy as np
 from tavi.library.experiment.utilities import rotation_matrix_2d
 
@@ -140,23 +140,38 @@ if __name__ == "__main__":
     # print("B=")
     # pprint(cp.mat_b())
 
-    mat_cov = cp.calculate_at_hkle()
+    # mat_cov = cp.calculate_at_hkle()
     # 4 x 4
     #[x x 0 x]
     #[x x 0 x]
     #[0 0 x 0]
     #[x x 0 x]
+    # pprint(mat_cov[0,3])
 
     # import scipy.constants as co
     # ksq2E = (co.hbar / co.e) ** 2.0 * co.e / 2.0 / co.neutron_mass * 1e23    
     # print(co.hbar**2/co.m_n*1e23/co.e)
 
+    # psi = Symbol("psi")
+    # mat_lab_to_local = Matrix(
+    #         [
+    #             [sin(psi), 0, cos(psi)],
+    #             [cos(psi), 0, -sin(psi)],
+    #             [0, 1, 0],
+    #         ]
+    #     )
+    angle = pi/2
+    rotx = Matrix([[1, 0, 0], 
+                   [0, cos(angle), -sin(angle)], 
+                   [0, sin(angle), cos(angle)]])
+
+    pprint(rotx)
+
     psi = Symbol("psi")
-    mat_lab_to_local = Matrix(
-            [
-                [sin(psi), 0, cos(psi)],
-                [cos(psi), 0, -sin(psi)],
-                [0, 1, 0],
-            ]
-        )
-    pprint(mat_lab_to_local.T)
+    rotz = Matrix([[cos(pi/2-psi), -sin(pi/2-psi), 0], 
+                   [sin(pi/2-psi), cos(pi/2-psi), 0], 
+                   [0, 0, 1]])
+    # rotz = Matrix([[cos(psi-pi/2), -sin(psi-pi/2), 0], 
+    #                [sin(psi-pi/2), cos(psi-pi/2), 0], 
+    #                [0, 0, 1]])
+    pprint(rotz@rotx)
