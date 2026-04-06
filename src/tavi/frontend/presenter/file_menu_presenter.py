@@ -53,7 +53,7 @@ class FileMenuPresenter:
             single folder.
 
         """
-        self._model.load_raw_scan_from_folder(folder)
+        self._model.load_raw_scan_from_folder(folder[0])
 
     def exit(self) -> None:
         """Exit in menu."""

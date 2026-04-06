@@ -41,6 +41,10 @@ class LoadView(QWidget):
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
 
+    def add_raw_scan(self, name: str, path: str) -> None:
+        """Add a raw scan to the view."""
+        self.tree_widget.add_raw_scan(name, path)
+
     def setup_callback_click_on_a_scan(self, callback: None) -> None:
         """Setup call back functions to handle when clicking on a scann."""
         self.click_on_a_scan_callback = callback
@@ -52,6 +56,46 @@ class LoadView(QWidget):
     def update_add_tree_data(self, event_list: list[str]) -> None:
         """Invoke update_tree_signal to process data coming in from a different thread."""
         self._bridge.update_tree_signal.emit(event_list)
+
+
+class StandardItem(QStandardItem):
+    """
+    Convenience item class for populating Qt tree and list models with styled text.
+
+    This subclass of `QStandardItem` applies font size, bolding, color, and marks
+    the item as non-editable by default. It is used throughout the tree view for
+    folder and file entries.
+
+    Parameters
+    ----------
+    txt : str, default=""
+        Text to display in the item.
+    font_size : int, default=12
+        Point size for the item's font.
+    set_bold : bool, default=False
+        Whether the item text should be bold.
+    color : QColor, default=QColor(0, 0, 0)
+        Text color to apply to the item.
+
+    """
+
+    def __init__(
+        self, txt: str = "", font_size: int = 12, set_bold: bool = False, color: QColor = QColor(0, 0, 0)
+    ) -> None:
+        """
+        Initialize a styled non-editable `QStandardItem`.
+
+        This method constructs a font object, applies styling, and assigns the
+        formatted text to the underlying item.
+        """
+        super().__init__()
+        fnt = QFont("Open Sans", font_size)
+        fnt.setBold(set_bold)
+
+        self.setEditable(False)
+        self.setForeground(color)
+        self.setFont(fnt)
+        self.setText(txt)
 
 
 class TreeViewWidget(QWidget):
@@ -97,9 +141,41 @@ class TreeViewWidget(QWidget):
         self.treeModel = QStandardItemModel()
         self.rootNode = self.treeModel.invisibleRootItem()
 
+        self.path_map: dict[str, StandardItem] = {}
+
         layoutTreeView.addWidget(self.treeView)
 
         self.treeView.clicked.connect(self.select_file)
+
+    def _new_item(self, value: str) -> StandardItem:
+        """Initialize a StandardItem standardly."""
+        return StandardItem(value, 16, set_bold=True)
+
+    def add_raw_scan(self, name: str, path: str) -> None:
+        """Add an entry under the Raw root path."""
+        path = path.removeprefix("/")
+        self.add_item_at_path(name, f"/Raw/{path}")
+
+    def add_item_at_path(self, name: str, path: str) -> None:
+        """Add a new entry in the tree based on the path."""
+        path = path.removeprefix("/")
+        if path in self.path_map:
+            self.path_map[path].appendRow(name)
+            return
+
+        path_tokens = path.split("/")
+        sub_path = ""
+        last_valid_item = self.rootNode
+        for token in path_tokens:
+            sub_path = f"{sub_path}/{token}"
+            if sub_path not in self.path_map:
+                new_item = self._new_item(token)
+                last_valid_item.appendRow(new_item)
+                self.path_map[sub_path] = new_item
+            last_valid_item = self.path_map[sub_path]
+
+        self.path_map[f"/{path}"].appendRow(self._new_item(name))
+        self.treeView.setModel(self.treeModel)
 
     def add_tree_data(self, list_of_files: List[str]) -> None:
         """
@@ -127,43 +203,3 @@ class TreeViewWidget(QWidget):
         """
         if val.parent().isValid():
             self.clicked_file_signal.emit(val.data())
-
-
-class StandardItem(QStandardItem):
-    """
-    Convenience item class for populating Qt tree and list models with styled text.
-
-    This subclass of `QStandardItem` applies font size, bolding, color, and marks
-    the item as non-editable by default. It is used throughout the tree view for
-    folder and file entries.
-
-    Parameters
-    ----------
-    txt : str, default=""
-        Text to display in the item.
-    font_size : int, default=12
-        Point size for the item's font.
-    set_bold : bool, default=False
-        Whether the item text should be bold.
-    color : QColor, default=QColor(0, 0, 0)
-        Text color to apply to the item.
-
-    """
-
-    def __init__(
-        self, txt: str = "", font_size: int = 12, set_bold: bool = False, color: QColor = QColor(0, 0, 0)
-    ) -> None:
-        """
-        Initialize a styled non-editable `QStandardItem`.
-
-        This method constructs a font object, applies styling, and assigns the
-        formatted text to the underlying item.
-        """
-        super().__init__()
-        fnt = QFont("Open Sans", font_size)
-        fnt.setBold(set_bold)
-
-        self.setEditable(False)
-        self.setForeground(color)
-        self.setFont(fnt)
-        self.setText(txt)
