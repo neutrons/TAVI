@@ -70,7 +70,7 @@ Each event contains:
 Implementation detail:
 
 - Events are emitted *after* scans are stored
-- One event is emitted per scan (not batched) :contentReference[oaicite:0]{index=0}
+- One event is emitted per scan (not batched)
 
 Event Definition
 ----------------
@@ -146,7 +146,7 @@ Tree nodes are created incrementally:
 Key constraints:
 
 - Duplicate UUID insertion raises an error
-- Path structure is cached in ``path_map`` for O(1) lookup :contentReference[oaicite:1]{index=1}
+- Path structure is cached in ``path_map`` for O(1) lookup
 
 Example
 -------
