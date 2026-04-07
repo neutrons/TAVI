@@ -42,5 +42,5 @@ class LoadRawScanPresenter:
 
     def update_treeview_data(self, event: NewRawScanEvent) -> None:
         """Update the treeview GUI after loading complete."""
-        self._view.add_raw_scan(event.friendly_name, event.friendly_path)
+        self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
         self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)

@@ -10,6 +10,8 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from tavi.library.data.scan import UUID
+
 
 class LoadView(QWidget):
     """Main widget."""
@@ -41,9 +43,9 @@ class LoadView(QWidget):
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
 
-    def add_raw_scan(self, name: str, path: str) -> None:
+    def add_raw_scan(self, uuid: UUID, name: str, path: str) -> None:
         """Add a raw scan to the view."""
-        self.tree_widget.add_raw_scan(name, path)
+        self.tree_widget.add_raw_scan(uuid, name, path)
 
     def setup_callback_click_on_a_scan(self, callback: None) -> None:
         """Setup call back functions to handle when clicking on a scann."""
@@ -142,6 +144,7 @@ class TreeViewWidget(QWidget):
         self.rootNode = self.treeModel.invisibleRootItem()
 
         self.path_map: dict[str, StandardItem] = {}
+        self.uuid_map: dict[UUID, StandardItem] = {}
 
         layoutTreeView.addWidget(self.treeView)
 
@@ -151,19 +154,26 @@ class TreeViewWidget(QWidget):
         """Initialize a StandardItem standardly."""
         return StandardItem(value, 16, set_bold=True)
 
-    def add_raw_scan(self, name: str, path: str) -> None:
+    def add_raw_scan(self, uuid: UUID, name: str, path: str) -> None:
         """Add an entry under the Raw root path."""
         path = path.removeprefix("/")
-        self.add_item_at_path(name, f"/Raw/{path}")
+        self.add_item_at_path(uuid, name, f"/Raw/{path}")
 
-    def add_item_at_path(self, name: str, path: str) -> None:
+    def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
         """Add a new entry in the tree based on the path."""
+        if uuid in self.uuid_map:
+            raise RuntimeError("Attempting to add UUID object that already exists to Project View.")
+
         path = path.removeprefix("/")
+        path = path.removesuffix("/")
         if path in self.path_map:
             self.path_map[path].appendRow(name)
             return
 
+        # ignore empty string.
         path_tokens = path.split("/")
+        if "" in path_tokens:
+            path_tokens.remove("")
         sub_path = ""
         last_valid_item = self.rootNode
         for token in path_tokens:
@@ -174,7 +184,9 @@ class TreeViewWidget(QWidget):
                 self.path_map[sub_path] = new_item
             last_valid_item = self.path_map[sub_path]
 
-        self.path_map[f"/{path}"].appendRow(self._new_item(name))
+        new_item = self._new_item(name)
+        self.path_map[f"/{path}"].appendRow(new_item)
+        self.uuid_map[uuid] = new_item
         self.treeView.setModel(self.treeModel)
 
     def add_tree_data(self, list_of_files: List[str]) -> None:
