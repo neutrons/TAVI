@@ -2,6 +2,8 @@
 
 from typing import Any
 
+import numpy as np
+
 from tavi.backend.classification.rule_based_classifier import RuleBasedClassifier
 from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
 from tavi.library.data.enum.raw_scan_type import RawScanType
@@ -39,9 +41,28 @@ class ORNLSpiceLoader(AbstractLoader):
         """Parse metadata."""
         pass
 
-    def parse_scan_values(self, path: str) -> ScanData:
+    def parse_scan_values(self, file_path: str) -> ScanData:
         """Parse scan values."""
-        pass
+        with open(file_path, encoding="utf-8") as f:
+            all_content = f.readlines()
+        headers = [line.strip() for line in all_content if "#" in line]
+        index_col_name = headers.index("# col_headers =")
+        col_names = headers[index_col_name + 1].strip("#").split()
+        col_values = np.genfromtxt(file_path, comments="#")
+        data = dict()
+        for col_name in col_names:
+            # guard against invalid format
+            if col_name[0].isdigit():  # can't start with digit, replace with _
+                col_name = "_" + col_name
+            attr_name = (
+                col_name.replace("-", "_").replace(" ", "_").replace(".", "")
+            )  # replace "-", " ", with "_", remove any "."
+            try:
+                data[attr_name] = col_values[:, col_names.index(col_name)]
+            # sometimes data only have 1 entry, then we don't need to slice the data.
+            except IndexError:
+                data[attr_name] = np.array([col_values[col_names.index(col_name)]])
+        return ScanData(data)
 
     def parse_external_metadata(self, path: str) -> dict[str, Any]:
         """Parse external metadata."""
