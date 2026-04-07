@@ -20,3 +20,4 @@ review and adhere to these guidelines when contributing to the project.
    filestore
    raw_scan_load_controller
    load/index
+   frontend/index
