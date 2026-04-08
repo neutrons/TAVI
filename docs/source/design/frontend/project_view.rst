@@ -6,12 +6,12 @@ Overview
 
 The Project View is updated reactively when new raw scans are loaded into the
 project model. This interaction is mediated through an event-driven architecture
-centered on the ``NewRawScanEvent``.
+centered on the ``RawScanAppendEvent``.
 
 The flow is:
 
 1. Backend loads raw scans
-2. Model emits ``NewRawScanEvent``
+2. Model emits ``RawScanAppendEvent``
 3. Presenter listens and transforms the event
 4. View updates the Project Tree
 
@@ -43,13 +43,13 @@ Loading raw scans triggers the following sequence:
         ↓
     TaviProjectModel
         - stores scans in TaviData
-        - emits NewRawScanEvent per scan
+        - emits RawScanAppendEvent per scan
         ↓
     EventBroker
         ↓
     LoadRawScanPresenter.update_treeview_data
         ↓
-    LoadView.add_raw_scan
+    ProjectView.add_raw_scan
         ↓
     TreeViewWidget.add_raw_scan
 
@@ -59,7 +59,7 @@ Model Responsibilities
 The ``TaviProjectModel`` is responsible for:
 
 - Persisting scans in ``TaviData.raw_scans``
-- Emitting a ``NewRawScanEvent`` per scan
+- Emitting a ``RawScanAppendEvent`` per scan
 
 Each event contains:
 
@@ -75,11 +75,11 @@ Implementation detail:
 Event Definition
 ----------------
 
-``NewRawScanEvent`` is a typed model event:
+``RawScanAppendEvent`` is a typed model event:
 
 .. code-block:: python
 
-    class NewRawScanEvent(Event):
+    class RawScanAppendEvent(Event):
         uuid: UUID
         friendly_name: str
         friendly_path: str
@@ -91,7 +91,7 @@ Presenter Responsibilities
 
 The ``LoadRawScanPresenter``:
 
-- Registers with the ``EventBroker`` for ``NewRawScanEvent``
+- Registers with the ``EventBroker`` for ``RawScanAppendEvent``
 - Maintains a local ``inventory`` of loaded scans
 - Translates events into view updates
 
@@ -207,7 +207,7 @@ Summary
 -------
 
 The Project View does not directly depend on the loading mechanism. Instead, it
-subscribes to ``NewRawScanEvent`` and incrementally builds a hierarchical
+subscribes to ``RawScanAppendEvent`` and incrementally builds a hierarchical
 representation of scans under the ``/Raw`` namespace.
 
 This pattern cleanly separates:

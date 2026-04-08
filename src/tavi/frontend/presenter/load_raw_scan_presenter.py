@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING
 
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import NewRawScanEvent
+from tavi.meta.event.type.model_event import RawScanAppendEvent
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-    from tavi.frontend.view.load_raw_scan_view import LoadView
+    from tavi.frontend.view.project_view import ProjectView
 
 
 class LoadRawScanPresenter:
@@ -18,11 +18,11 @@ class LoadRawScanPresenter:
     Presenter responsible for data loading.
 
     Mediating dataloading-related updates between the
-    model (`TaviProjectInterface`) and the load_raw_scan_view (`LoadView`).
+    model (`TaviProjectInterface`) and the project_view (`ProjectView`).
 
     Attributes
     ----------
-    _view : LoadView
+    _view : ProjectView
         The load view associated with this presenter.
     _model : TaviProjectInterface
         The model providing metadata updates.
@@ -31,16 +31,16 @@ class LoadRawScanPresenter:
 
     """
 
-    def __init__(self, view: LoadView, model: TaviProjectInterface) -> None:
+    def __init__(self, view: ProjectView, model: TaviProjectInterface) -> None:
         """Initialize the metadata presenter and register for `meta_data` events."""
         super().__init__()
         self._view = view
         self._model = model
         self.event_broker = EventBroker()
-        self.event_broker.register(NewRawScanEvent, self.update_treeview_data)
+        self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
-    def update_treeview_data(self, event: NewRawScanEvent) -> None:
+    def update_treeview_data(self, event: RawScanAppendEvent) -> None:
         """Update the treeview GUI after loading complete."""
         self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
         self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)

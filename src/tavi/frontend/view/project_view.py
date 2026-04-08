@@ -13,7 +13,7 @@ from qtpy.QtWidgets import (
 from tavi.library.data.scan import UUID
 
 
-class LoadView(QWidget):
+class ProjectView(QWidget):
     """Main widget."""
 
     update_tree_signal = Signal(list)
@@ -150,6 +150,12 @@ class TreeViewWidget(QWidget):
 
         self.treeView.clicked.connect(self.select_file)
 
+        self._init_path("/Raw")
+        self._init_path("/Combined")
+        self._init_path("/Fits")
+        self._init_path("/Plots")
+        self.treeView.setModel(self.treeModel)
+
     def _new_item(self, value: str) -> StandardItem:
         """Initialize a StandardItem standardly."""
         return StandardItem(value, 16, set_bold=True)
@@ -159,15 +165,11 @@ class TreeViewWidget(QWidget):
         path = path.removeprefix("/")
         self.add_item_at_path(uuid, name, f"/Raw/{path}")
 
-    def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
-        """Add a new entry in the tree based on the path."""
-        if uuid in self.uuid_map:
-            raise RuntimeError("Attempting to add UUID object that already exists to Project View.")
-
+    def _init_path(self, path: str) -> None:
+        """Init path in tree if it doesn't exist."""
         path = path.removeprefix("/")
         path = path.removesuffix("/")
         if path in self.path_map:
-            self.path_map[path].appendRow(name)
             return
 
         # ignore empty string.
@@ -183,6 +185,19 @@ class TreeViewWidget(QWidget):
                 last_valid_item.appendRow(new_item)
                 self.path_map[sub_path] = new_item
             last_valid_item = self.path_map[sub_path]
+
+    def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
+        """Add a new entry in the tree based on the path."""
+        if uuid in self.uuid_map:
+            raise RuntimeError("Attempting to add UUID object that already exists to Project View.")
+
+        path = path.removeprefix("/")
+        path = path.removesuffix("/")
+        if path in self.path_map:
+            self.path_map[path].appendRow(name)
+            return
+
+        self._init_path(path)
 
         new_item = self._new_item(name)
         self.path_map[f"/{path}"].appendRow(new_item)

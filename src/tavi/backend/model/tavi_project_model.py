@@ -8,7 +8,7 @@ from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import NewRawScanEvent
+from tavi.meta.event.type.model_event import RawScanAppendEvent
 
 
 @Singleton
@@ -28,7 +28,7 @@ class TaviProjectModel(TaviProjectInterface):
         for scan in raw_scans:
             self.tavi_data.raw_scans[scan.uuid] = scan
             events.append(
-                NewRawScanEvent(
+                RawScanAppendEvent(
                     uuid=scan.uuid, friendly_name=scan.tavimeta.friendly_name, friendly_path=scan.tavimeta.friendly_path
                 )
             )

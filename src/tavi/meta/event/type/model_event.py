@@ -4,7 +4,7 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_interface import Event
 
 
-class NewRawScanEvent(Event):
+class RawScanAppendEvent(Event):
     """Indicates a new RawScan has been added to the Project."""
 
     uuid: UUID

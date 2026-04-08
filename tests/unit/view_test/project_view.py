@@ -3,7 +3,7 @@
 import pytest
 from qtpy.QtGui import QColor
 
-from tavi.frontend.view.load_raw_scan_view import LoadView, StandardItem, TreeViewWidget
+from tavi.frontend.view.project_view import ProjectView, StandardItem, TreeViewWidget
 from tavi.library.data.scan import UUID
 
 
@@ -86,7 +86,7 @@ def test_select_file_emits_only_for_child_item(qtbot):
 
 
 def test_load_view_pass_selected_file_calls_callback(qtbot):
-    view = LoadView()
+    view = ProjectView()
     qtbot.addWidget(view)
 
     called = {"filename": None}
@@ -101,7 +101,7 @@ def test_load_view_pass_selected_file_calls_callback(qtbot):
     assert called["filename"] == "my_scan_file"
 
 def test_add_item_at_path(qtbot):
-    view = LoadView()
+    view = ProjectView()
     qtbot.addWidget(view)
     
     view.add_raw_scan(UUID(value="1"), "item name", "/path")
