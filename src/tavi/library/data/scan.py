@@ -75,7 +75,7 @@ class TaviMetadata:
     default_axis: Tuple[str, str]
     friendly_name: str
     friendly_path: str
-    nomarlization: Optional[str] = None
+    nomarlization: Optional[Tuple[str, float]] = None
 
 
 @dataclass
