@@ -1,5 +1,7 @@
 """ORNL Spice format loader."""
 
+import logging
+import warnings
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -12,6 +14,8 @@ from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import UUID, Provenance, RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
+
+logger = logging.getLogger(__name__)
 
 
 class ORNLSpiceLoader(AbstractLoader):
@@ -30,6 +34,12 @@ class ORNLSpiceLoader(AbstractLoader):
         meta = self.parse_metadata(file_path)
         tavi_meta = self.parse_tavi_metadata(file_path)
         prov = self.create_provenance(file_path)
+
+        # get ubconf file name
+        ub_name = meta.ubconf
+        ubconf = self.parse_external_metadata(file_path, ub_name)
+        # add it to MetaData's data entry
+        meta.data.update(ubconf)
         return self.adapt_scan_data(uuid=uuid, values=values, meta=meta, tavi_meta=tavi_meta, prov=prov)
 
     def get_scan_type(self) -> RawScanType:
@@ -82,13 +92,13 @@ class ORNLSpiceLoader(AbstractLoader):
 
         if metadata.get("preset_type") == "countfile":  # HB1 in polarization mode
             countfile = []
-        for metadata_entry in metadata_list:
-            if metadata_entry.startswith("# countfile"):
-                _, val = metadata_entry.split("=")
-                countfile.append(val.strip())
-        metadata.update({"countfile": ", ".join(countfile)})
+            for metadata_entry in metadata_list:
+                if metadata_entry.startswith("# countfile"):
+                    _, val = metadata_entry.split("=")
+                    countfile.append(val.strip())
+            metadata.update({"countfile": ", ".join(countfile)})
         data = metadata | {"errors": error_messages} | {"others": others}
-        return ScanMetadata(data)
+        return ScanMetadata(data=data)
 
     def parse_tavi_metadata(self, file_path: str) -> TaviMetadata:
         """Parse metadata."""
@@ -154,7 +164,16 @@ class ORNLSpiceLoader(AbstractLoader):
         headers = [line.strip() for line in all_content if "#" in line]
         index_col_name = headers.index("# col_headers =")
         col_names = headers[index_col_name + 1].strip("#").split()
-        col_values = np.genfromtxt(file_path, comments="#")
+        try:
+            with warnings.catch_warnings():
+                # Treat all warnings as exceptions within this block
+                warnings.simplefilter("error")
+                col_values = np.genfromtxt(file_path, comments="#")
+        except Warning as e:
+            # exception happens when there is no valid measurements but all warnings.
+            # see HB1_exp0815_scan0001.dat file
+            logger.error(e)
+            col_values = []
         data = dict()
         for col_name in col_names:
             # guard against invalid format
@@ -163,12 +182,14 @@ class ORNLSpiceLoader(AbstractLoader):
             attr_name = (
                 col_name.replace("-", "_").replace(" ", "_").replace(".", "")
             )  # replace "-", " ", with "_", remove any "."
-            try:
+            if len(col_values) > 1:
                 data[attr_name] = col_values[:, col_names.index(col_name)]
             # sometimes data only have 1 entry, then we don't need to slice the data.
-            except IndexError:
+            elif len(col_values) == 1:
                 data[attr_name] = np.array([col_values[col_names.index(col_name)]])
-        return ScanData(data)
+            else:
+                data[attr_name] = []
+        return ScanData(data=data)
 
     def parse_external_metadata(self, file_path: str, ub_name: str) -> dict[str, Any]:
         """Parse corresponding file in ubconf as external metadata."""
@@ -219,10 +240,3 @@ class ORNLSpiceLoader(AbstractLoader):
         weight = 1
         raw_file = file_path
         return Provenance(raw_file=raw_file, contributing_scans={uuid, weight})
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-
-    path = Path("/home/qmc/Neutrons/TAVI/test_data/exp815/Datafile/HB1_exp0815_scan001.dat")
-    print(path.parent.parent.joinpath("UBConf"))
