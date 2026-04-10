@@ -18,7 +18,7 @@ from tavi.library.data.scan import (
 def make_tavimeta() -> TaviMetadata:
     return TaviMetadata(
         default_axis=("qh", "en"),
-        nomarlization=("monitor"),
+        nomarlization=("monitor", 1.0),
         friendly_name="test_name",
         friendly_path="/test_path",
     )
@@ -79,7 +79,7 @@ def test_raw_scan_can_be_created():
     assert isinstance(raw_scan, RawScan)
     assert isinstance(raw_scan, Scan)
     assert raw_scan.tavimeta.default_axis == ("qh", "en")
-    assert raw_scan.tavimeta.nomarlization == "monitor"
+    assert raw_scan.tavimeta.nomarlization == ("monitor", 1.0)
     assert raw_scan.prov.raw_file == "scan0001.dat"
     assert raw_scan.prov.contributing_scans == {UUID(value="scan-001"): 1}
 
@@ -128,7 +128,7 @@ def test_raw_scan_tavimeta_is_writable():
 
     new_tavimeta = TaviMetadata(
         default_axis=("h", "k"),
-        nomarlization="detector",
+        nomarlization=("detector", 1.0),
         friendly_name="test_name",
         friendly_path="/test_path",
     )
@@ -136,7 +136,7 @@ def test_raw_scan_tavimeta_is_writable():
 
     assert raw_scan.tavimeta == new_tavimeta
     assert raw_scan.tavimeta.default_axis == ("h", "k")
-    assert raw_scan.tavimeta.nomarlization == "detector"
+    assert raw_scan.tavimeta.nomarlization == ("detector", 1.0)
 
 
 def test_combo_scan_allows_writing_all_fields():
@@ -146,7 +146,7 @@ def test_combo_scan_allows_writing_all_fields():
     new_metadata = ScanMetadata()
     new_tavimeta = TaviMetadata(
         default_axis=("h", "l"),
-        nomarlization="detector",
+        nomarlization=("detector", 1.0),
         friendly_name="test_name",
         friendly_path="/test_path",
     )
@@ -172,7 +172,9 @@ def test_tavimetadata_rejects_invalid_default_axis():
     with pytest.raises(ValidationError):
         TaviMetadata(
             default_axis=("qh", 1),
-            nomarlization="monitor",
+            nomarlization=("monitor", 1.0),
+            friendly_name="test_name",
+            friendly_path="/test_path",
         )
 
 
@@ -181,6 +183,8 @@ def test_tavimetadata_rejects_invalid_nomarlization():
         TaviMetadata(
             default_axis=("qh", "en"),
             nomarlization=("monitor", "bad"),
+            friendly_name="test_name",
+            friendly_path="/test_path",
         )
 
 
