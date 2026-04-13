@@ -136,6 +136,7 @@ class FileMenu(QMenu):
         dlg = QFileDialog(self, "Select a folder")
         dlg.setFileMode(QFileDialog.Directory)
         dlg.setOption(QFileDialog.Option.ShowDirsOnly, False)
+        dlg.setOption(QFileDialog.Option.DontUseNativeDialog, True)
 
         if dlg.exec_():
             folder = dlg.selectedFiles()  # returns a list

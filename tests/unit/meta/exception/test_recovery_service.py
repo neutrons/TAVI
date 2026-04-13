@@ -11,7 +11,7 @@ from tavi.library.storage.local_file_store import LocalFileStore
 from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.exception.recovery_service import RecoveryService
 from tavi.meta.exception.tavi_exception import TaviError
-from tests.util.Config_helpers import Config_override
+from util.Config_helpers import Config_override
 
 
 class DummyError(TaviError):

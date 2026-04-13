@@ -8,7 +8,7 @@ from unittest import mock, TestCase
 
 
 from tavi.library.storage.local_file_store import LocalFileStore
-from tests.util.Config_helpers import Config_override
+from util.Config_helpers import Config_override
 from neutrons_standard.config import Config
 
 

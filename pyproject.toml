@@ -68,6 +68,8 @@ norecursedirs = [
 ]
 markers = ["mymarker: example markers goes here"]
 filterwarnings = ["ignore:.*pyside_type_init"]
+# The following will be overridden by the commandline option "-m integration"
+addopts = "-m 'not (integration)'"
 
 [tool.ruff]
 line-length = 120
@@ -216,6 +218,7 @@ build-docs = { cmd = 'sphinx-build -b html docs/source/ docs/_build/html', descr
 test-docs = { cmd = "sphinx-build -M doctest docs/source/ docs/_build/html", description = "Test building the documentation" }
 # Testing
 test = { description = "Run the test suite", cmd = "pytest" }
+integration-test = { description = "Run the test suite", cmd = "pytest -m integration" }
 # Packaging
 conda-build-command = { cmd = "pixi build", description = "Wrapper for building the conda package - used by `conda-build`" }
 conda-build = { description = "Build the conda package", depends-on = [
