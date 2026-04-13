@@ -1,8 +1,12 @@
 """Raw scan classifier for identifying scan file types."""
 
+import logging
+
 from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.storage.loader.interface.base import AbstractLoader
 from tavi.library.storage.loader.loader_registry import LoaderRegistry
+
+logger = logging.getLogger(__name__)
 
 
 class RawScanClassifier:
@@ -20,4 +24,5 @@ class RawScanClassifier:
             score = loader.get_score(file_path)
             if top_pick[1] < score:
                 top_pick = (loader.get_scan_type(), score)
+            logger.debug(f"Loader {loader.get_scan_type()} rated file {file_path} with score: {score}.")
         return top_pick[0]

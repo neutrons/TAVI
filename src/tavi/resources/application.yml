@@ -15,7 +15,7 @@ library:
 ORNL:
   spice:
     file:
-      ext: dat
+      ext: .dat
     metadata:
       field-name:
         def:

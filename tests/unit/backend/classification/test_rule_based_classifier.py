@@ -34,7 +34,7 @@ class TestFileStore(FileStoreInterface):
 
     def get_file_ext(self, path: str) -> str:
         """Get file extension from path."""
-        return path.split(".")[-1]
+        return f".{path.split(".")[-1]}"
 
     def get_file_name(self, path: str) -> str:
         """Get file name from path."""
@@ -92,7 +92,7 @@ class TestRuleBasedClassifier(unittest.TestCase):
     def test_file_extension_matching(self) -> None:
         """Test that file extension is correctly identified."""
         ext = self.filestore.get_file_ext(str(self.test_file_path))
-        self.assertEqual(ext, "dat", "HB1A file should have .dat extension")
+        self.assertEqual(ext, ".dat", "HB1A file should have .dat extension")
 
     def test_file_name_extraction(self) -> None:
         """Test that file name is correctly extracted."""
