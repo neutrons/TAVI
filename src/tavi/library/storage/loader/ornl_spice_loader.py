@@ -3,7 +3,6 @@
 import logging
 import warnings
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -194,7 +193,11 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def parse_external_metadata(self, file_path: str, ub_name: str) -> dict[str, Any]:
         """Parse corresponding file in ubconf as external metadata."""
-        ubconf_path = Path(file_path).parent.parent.joinpath("UBConf").joinpath(ub_name)
+        root_path = file_path
+        for _ in range(2):
+            root_path = self.filestore.get_parent(root_path)
+        ubconf_path = self.filestore.join_path(root_path, "UBConf")
+        ubconf_path = self.filestore.join_path(ubconf_path, ub_name)
         try:
             return self._parse_ubconf(ubconf_path=ubconf_path)
         except FileNotFoundError:
