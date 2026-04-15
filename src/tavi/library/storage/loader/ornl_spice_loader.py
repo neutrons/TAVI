@@ -179,10 +179,11 @@ class ORNLSpiceLoader(AbstractLoader):
             attr_name = (
                 col_name.replace("-", "_").replace(" ", "_").replace(".", "")
             )  # replace "-", " ", with "_", remove any "."
-            if len(col_values) > 1:
+            if col_values.ndim > 1:
+                print(len(col_values))
                 data[attr_name] = col_values[:, col_names.index(col_name)]
             # sometimes data only have 1 entry, then we don't need to slice the data.
-            elif len(col_values) == 1:
+            elif col_values.ndim == 1:
                 data[attr_name] = np.array([col_values[col_names.index(col_name)]])
             else:
                 data[attr_name] = []
