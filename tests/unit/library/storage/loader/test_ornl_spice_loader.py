@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 
-from tavi.library.storage.interface.file_store_interface import FileStoreInterface
+from tavi.library.storage.local_file_store import LocalFileStore
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 
 
@@ -18,7 +18,7 @@ def _exp815_datafile(name: str) -> str:
 
 
 def test_parse_metadata_extracts_core_fields_from_exp815() -> None:
-    loader = ORNLSpiceLoader(MagicMock(spec=FileStoreInterface))
+    loader = ORNLSpiceLoader(LocalFileStore())
 
     metadata = loader.parse_metadata(_exp815_datafile("HB1_exp0815_scan0003.dat"))
 
@@ -30,7 +30,7 @@ def test_parse_metadata_extracts_core_fields_from_exp815() -> None:
 
 
 def test_parse_scan_values_parses_numeric_columns() -> None:
-    loader = ORNLSpiceLoader(MagicMock(spec=FileStoreInterface))
+    loader = ORNLSpiceLoader(LocalFileStore())
 
     values = loader.parse_scan_values(_exp815_datafile("HB1_exp0815_scan0003.dat"))
 
@@ -41,7 +41,7 @@ def test_parse_scan_values_parses_numeric_columns() -> None:
 
 
 def test_parse_scan_values_handles_scan_with_no_measurements() -> None:
-    loader = ORNLSpiceLoader(MagicMock(spec=FileStoreInterface))
+    loader = ORNLSpiceLoader(LocalFileStore())
 
     values = loader.parse_scan_values(_exp815_datafile("HB1_exp0815_scan0001.dat"))
 
@@ -51,7 +51,7 @@ def test_parse_scan_values_handles_scan_with_no_measurements() -> None:
 
 
 def test_parse_external_metadata_reads_matching_ubconf_file() -> None:
-    loader = ORNLSpiceLoader(MagicMock(spec=FileStoreInterface))
+    loader = ORNLSpiceLoader(LocalFileStore())
     scan_file = _exp815_datafile("HB1_exp0815_scan0003.dat")
 
     metadata = loader.parse_metadata(scan_file)

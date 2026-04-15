@@ -26,10 +26,11 @@ class ORNLSpiceLoader(AbstractLoader):
         super().__init__(filestore)
         self.classifier = RuleBasedClassifier(filestore)
         self.classification_rules = ORNLSpiceRuleSet()
+        self.filestore = filestore
 
     def load(self, file_path: str) -> Scan:
         """Load scan data."""
-        uuid = UUID(file_path)
+        uuid = self.generate_uuid(file_path)
         values = self.parse_scan_values(file_path)
         meta = self.parse_metadata(file_path)
         tavi_meta = self.parse_tavi_metadata(file_path)
@@ -48,12 +49,12 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def get_score(self, file_path: str) -> float:
         """Get score for scan."""
-        return self.classifier.get_score(path, self.classification_rules)
+        return self.classifier.get_score(file_path, self.classification_rules)
 
     def parse_metadata(self, file_path: str) -> ScanMetadata:
         """Parse metadata."""
-        with open(file_path, encoding="utf-8") as f:
-            all_content = f.readlines()
+        f = self.filestore.read_text_file(file_path=file_path)
+        all_content = f.splitlines()
         headers = [line.strip() for line in all_content if "#" in line]
         index_col_name = headers.index("# col_headers =")
         col_names = headers[index_col_name + 1].strip("#").split()
@@ -112,8 +113,8 @@ class ORNLSpiceLoader(AbstractLoader):
         if "HB3" in file_path:
             instrument_name = "HB3"
 
-        with open(file_path, encoding="utf-8") as f:
-            all_content = f.readlines()
+        f = self.filestore.read_text_file(file_path=file_path)
+        all_content = f.splitlines()
         headers = [line.strip() for line in all_content if "#" in line]
         index_col_name = headers.index("# col_headers =")
         metadata_list = headers[:index_col_name]
@@ -145,7 +146,7 @@ class ORNLSpiceLoader(AbstractLoader):
                 preset_value = val
             if metadata_entry.startswith("# def_x"):
                 _, val = metadata_entry.split("=")
-                default_x = val
+                def_x = val
             if metadata_entry.startswith("# def_y"):
                 _, val = metadata_entry.split("=")
                 def_y = val
@@ -159,8 +160,8 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def parse_scan_values(self, file_path: str) -> ScanData:
         """Parse scan values."""
-        with open(file_path, encoding="utf-8") as f:
-            all_content = f.readlines()
+        f = self.filestore.read_text_file(file_path=file_path)
+        all_content = f.splitlines()
         headers = [line.strip() for line in all_content if "#" in line]
         index_col_name = headers.index("# col_headers =")
         col_names = headers[index_col_name + 1].strip("#").split()
@@ -194,39 +195,43 @@ class ORNLSpiceLoader(AbstractLoader):
     def parse_external_metadata(self, file_path: str, ub_name: str) -> dict[str, Any]:
         """Parse corresponding file in ubconf as external metadata."""
         ubconf_path = Path(file_path).parent.parent.joinpath("UBConf").joinpath(ub_name)
-        ubconf: dict[str, Any] = {}
         try:
-            with open(ubconf_path, "r", encoding="utf-8") as f:
-                all_content = f.readlines()
-            if all_content[0] == "[UBMode]\n":
-                for idx, line in enumerate(all_content):
-                    if line.strip() == "":
-                        continue  # skip if empty
-                    elif line.strip()[0] == "[":
-                        continue  # skiplines like "[xx]"
-                    key, val = line.strip().split("=")
-
-                    if key == "Mode":
-                        mode_name = all_content[idx - 1].strip()
-                        if mode_name == "[UBMode]":
-                            ubconf.update({"UBMode": int(val)})
-                        elif mode_name == "[AngleMode]":
-                            ubconf.update({"AngleMode": int(val)})
-                    elif "," in val:  # string of vector to array
-                        ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
-                    elif val == '""':  # no value
-                        pass
-                    else:  # float
-                        ubconf.update({key: float(val)})
-            else:  # xml junk from C#
-                tree = ET.parse(ubconf_path)
-                root = tree.getroot()
-                for matrix in root.findall("matrix"):
-                    ub_matrix = matrix.attrib["matrix"].split(" ")
-                ubconf.update({"UBMatrix": np.array([float(ub_matrix[i]) for i in range(9)])})
-            return ubconf
+            return self._parse_ubconf(ubconf_path=ubconf_path)
         except FileNotFoundError:
             return {}
+
+    def _parse_ubconf(self, ubconf_path: str) -> dict[str, Any]:
+        """Parse a .ini file in ubconf folder for ORNL TAS data."""
+        ubconf: dict[str, Any] = {}
+        f = self.filestore.read_text_file(file_path=ubconf_path)
+        all_content = f.splitlines()
+        if all_content[0] == "[UBMode]":
+            for idx, line in enumerate(all_content):
+                if line.strip() == "":
+                    continue  # skip if empty
+                elif line.strip()[0] == "[":
+                    continue  # skiplines like "[xx]"
+                key, val = line.strip().split("=")
+
+                if key == "Mode":
+                    mode_name = all_content[idx - 1].strip()
+                    if mode_name == "[UBMode]":
+                        ubconf.update({"UBMode": int(val)})
+                    elif mode_name == "[AngleMode]":
+                        ubconf.update({"AngleMode": int(val)})
+                elif "," in val:  # string of vector to array
+                    ubconf.update({key: np.array([float(v) for v in val.strip('"').split(",")])})
+                elif val == '""':  # no value
+                    pass
+                else:  # float
+                    ubconf.update({key: float(val)})
+        else:  # xml junk from C#
+            tree = ET.parse(ubconf_path)
+            root = tree.getroot()
+            for matrix in root.findall("matrix"):
+                ub_matrix = matrix.attrib["matrix"].split(" ")
+            ubconf.update({"UBMatrix": np.array([float(ub_matrix[i]) for i in range(9)])})
+        return ubconf
 
     def adapt_scan_data(
         self, uuid: UUID, values: ScanData, meta: ScanMetadata, tavi_meta: TaviMetadata, prov: Provenance
@@ -236,7 +241,7 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def create_provenance(self, file_path: str) -> Provenance:
         """Create provenance of the scan file."""
-        uuid = UUID(file_path)
+        uuid = self.generate_uuid(file_path)
         weight = 1
         raw_file = file_path
         return Provenance(raw_file=raw_file, contributing_scans={uuid, weight})

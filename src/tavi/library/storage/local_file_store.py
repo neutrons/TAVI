@@ -128,7 +128,7 @@ class LocalFileStore(FileStoreInterface):
         file_path: Path = Path(file_path)
         self._is_real_file(file_path, throws=True)
 
-        return file_path.read_text()
+        return file_path.read_text(encoding="utf-8")
 
     def get_file_ext(self, file_path: str) -> str:
         """
