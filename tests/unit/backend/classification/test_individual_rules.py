@@ -1,6 +1,7 @@
 """Unit tests for individual classification rules."""
 
 import unittest
+import unittest.mock
 
 from neutrons_standard.config import Resource
 
@@ -41,7 +42,7 @@ class FakeFileStore(FileStoreInterface):
 
     def get_file_ext(self, path: str) -> str:
         """Get file extension from path."""
-        return path.split(".")[-1]
+        return f".{path.split(".")[-1]}"
 
     def get_file_name(self, path: str) -> str:
         """Get file name from path."""
@@ -70,7 +71,17 @@ class TestInstrumentInFilenameRule(unittest.TestCase):
             1,
             "HB1A file should match instrument name rule",
         )
-
+    
+    def test_prints_debug(self) -> None:
+        with unittest.mock.patch("tavi.backend.classification.rule.ORNL.inst_in_filename_rule.logger") as mock_logger:
+            score = self.rule.get_score(None, None)
+            self.assertEqual(
+                score,
+                0,
+                "Bad input should score a 0.",
+            )
+            mock_logger.debug.assert_called()
+        
     def test_rule_returns_integer(self) -> None:
         """Test that rule returns an integer score."""
         score = self.rule.get_score(self.test_file_path, self.filestore)
@@ -96,6 +107,16 @@ class TestSpiceFileExtRule(unittest.TestCase):
             1,
             "File with .dat extension should match SPICE file extension rule",
         )
+        
+    def test_prints_debug(self) -> None:
+        with unittest.mock.patch("tavi.backend.classification.rule.ORNL.spice_file_ext_rule.logger") as mock_logger:
+            score = self.rule.get_score(None, None)
+            self.assertEqual(
+                score,
+                0,
+                "Bad input should score a 0.",
+            )
+            mock_logger.debug.assert_called()
 
     def test_rule_returns_integer(self) -> None:
         """Test that rule returns an integer score."""
@@ -172,6 +193,16 @@ class TestHashtagCommentRule(unittest.TestCase):
             1,
             "HB1A file should match hashtag comment rule",
         )
+
+    def test_prints_debug(self) -> None:
+        with unittest.mock.patch("tavi.backend.classification.rule.hashtag_comment_rule.logger") as mock_logger:
+            score = self.rule.get_score(None, None)
+            self.assertEqual(
+                score,
+                0,
+                "Bad input should score a 0.",
+            )
+            mock_logger.debug.assert_called()
 
     def test_rule_returns_integer(self) -> None:
         """Test that rule returns an integer score."""

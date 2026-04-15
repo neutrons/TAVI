@@ -60,7 +60,7 @@ Tavi View
     }
 
     class MainWindow{
-        -LoadView: load_view
+        -ProjectView: load_view
         -Placeholder for other view widgets:Other
     }
 
@@ -81,7 +81,7 @@ Tavi Presenter
         -TaviView:view
         +menu_bar()
         +install_menu_bar()
-        +load_raw_scan_presenter(load_raw_scan_view, model_dict["TaviProjectProxy"])
+        +load_raw_scan_presenter(project_view, model_dict["TaviProjectProxy"])
         +exit()
     }
 
@@ -104,7 +104,7 @@ Tavi Presenter
 
     class MainWindow{
         # from above
-        -LoadView: load_view
+        -ProjectView: load_view
         -Placeholder for other view widgets:Other
     }
 

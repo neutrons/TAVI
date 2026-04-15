@@ -9,7 +9,7 @@ from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMenuBar, QMessageBox, QPus
 
 from tavi import __version__
 from tavi.backend.model.help_model import help_function
-from tavi.frontend.view.load_raw_scan_view import LoadView
+from tavi.frontend.view.project_view import ProjectView
 
 logger = logging.getLogger("TAVI")
 
@@ -26,7 +26,7 @@ class MainWindow(QWidget):
         # initialize view
 
         #!!!!!!!!!!!!!!!!!!!!
-        self.load_view = LoadView()
+        self.load_view = ProjectView()
         self.load_view.setParent(self)
         #!!!!!!!!!!!!!!!!!!!!
 

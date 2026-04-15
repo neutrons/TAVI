@@ -1,9 +1,16 @@
 """Rule-based classifier for files."""
 
+import logging
+
+from neutrons_standard.decorators.singleton import Singleton
+
 from tavi.backend.classification.rule_set.rule_set import RuleSet
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 
+logger = logging.getLogger(__name__)
 
+
+@Singleton
 class RuleBasedClassifier:
     """Classifier that uses a set of rules to score files."""
 
@@ -16,6 +23,10 @@ class RuleBasedClassifier:
 
         """
         self.filestore: FileStoreInterface = filestore
+
+    def set_filestore(self, filestore: FileStoreInterface) -> None:
+        """Set the filestore."""
+        self.filestore = filestore
 
     def _get_score_from_rules(self, path: str, rule_set: RuleSet) -> float:
         """
@@ -31,7 +42,9 @@ class RuleBasedClassifier:
         """
         score: float = 0
         for rule in rule_set.get_rules():
-            score += rule.get_score(path, self.filestore) * rule_set.get_weight(rule)
+            rule_score = rule.get_score(path, self.filestore)
+            logger.debug(f"Rule {rule.__class__} rated file {path} with a score of {rule_score}")
+            score += rule_score * rule_set.get_weight(rule)
         return score
 
     def get_score(self, path: str, rule_set: RuleSet) -> int:

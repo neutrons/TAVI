@@ -1,5 +1,7 @@
 """Library Module."""
 
+from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
+
 
 def init() -> None:
     """Initialize the module's Singletons."""
@@ -10,3 +12,4 @@ def init() -> None:
 
     loader_registry = LoaderRegistry()
     loader_registry.set_filestore(filestore)
+    RawScanLoadController(filestore)

@@ -146,6 +146,13 @@ class LocalFileStore(FileStoreInterface):
 
         return file_path.suffix
 
+    def get_file_name(self, file_path: str) -> str:
+        """Get the name of a file at a given path."""
+        file_path: Path = Path(file_path)
+        self._is_real_file(file_path, throws=True)
+
+        return file_path.name
+
     def get_file_size_mb(self, file_path: str) -> float:
         """
         Get file size in megabytes.

@@ -99,3 +99,17 @@ class FileStoreInterface(metaclass=abc.ABCMeta):
 
         """
         pass
+
+    @abc.abstractmethod
+    def get_file_name(self, file_path: str) -> str:
+        """
+        Get file name.
+
+        Args:
+            file_path: The file path.
+
+        Returns:
+            File name.
+
+        """
+        pass
