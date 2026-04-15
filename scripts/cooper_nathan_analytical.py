@@ -1,5 +1,5 @@
 """Cooper-Nathans Method."""
-from sympy import Symbol, Matrix, tan, cos, sin, pprint, pi
+from sympy import Symbol, Matrix, tan, cos, sin, pprint, pi, det,sqrt
 import numpy as np
 from tavi.library.experiment.utilities import rotation_matrix_2d
 
@@ -125,15 +125,27 @@ class CooperNathans:
 
 if __name__ == "__main__":
     cp = CooperNathans()
-    # print("G=")
-    # pprint(cp.mat_g())
+    # print("det(G)=")
+    # detG = det(cp.mat_g())
 
-    # print("F=")  
-    # pprint(cp.mat_f())
+    # print("det(F)=")  
+    # detF = det(cp.mat_f())
 
-    # print("C=")
-    # pprint(cp.mat_c())
+    # print("det(H)=")
+    # detH = det(cp.mat_g() + cp.mat_c().T @ cp.mat_f() @ cp.mat_c())
 
+    # pprint((detG*detF))
+    # pprint(detH/detG/detF)
+    # mat_h = cp.mat_g() + cp.mat_c().T @ cp.mat_f() @ cp.mat_c()
+    # pprint(mat_h @ cp.mat_a().inv())
+    # print(mat_h.shape)
+    # print(mat_ab.shape)
+    # pprint(mat_ab.T @ mat_h @ mat_ab)
+    # print("det(C.T @ F @ C=")
+    # pprint(det(cp.mat_c()@cp.mat_c().T))
+
+    print("C=")
+    pprint(cp.mat_c())
     # print("A=")
     # pprint(cp.mat_a())
 
@@ -141,6 +153,7 @@ if __name__ == "__main__":
     # pprint(cp.mat_b())
 
     # mat_cov = cp.calculate_at_hkle()
+    # pprint(mat_cov.inv())
     # 4 x 4
     #[x x 0 x]
     #[x x 0 x]
@@ -152,26 +165,3 @@ if __name__ == "__main__":
     # ksq2E = (co.hbar / co.e) ** 2.0 * co.e / 2.0 / co.neutron_mass * 1e23    
     # print(co.hbar**2/co.m_n*1e23/co.e)
 
-    # psi = Symbol("psi")
-    # mat_lab_to_local = Matrix(
-    #         [
-    #             [sin(psi), 0, cos(psi)],
-    #             [cos(psi), 0, -sin(psi)],
-    #             [0, 1, 0],
-    #         ]
-    #     )
-    angle = pi/2
-    rotx = Matrix([[1, 0, 0], 
-                   [0, cos(angle), -sin(angle)], 
-                   [0, sin(angle), cos(angle)]])
-
-    pprint(rotx)
-
-    psi = Symbol("psi")
-    rotz = Matrix([[cos(pi/2-psi), -sin(pi/2-psi), 0], 
-                   [sin(pi/2-psi), cos(pi/2-psi), 0], 
-                   [0, 0, 1]])
-    # rotz = Matrix([[cos(psi-pi/2), -sin(psi-pi/2), 0], 
-    #                [sin(psi-pi/2), cos(psi-pi/2), 0], 
-    #                [0, 0, 1]])
-    pprint(rotz@rotx)
