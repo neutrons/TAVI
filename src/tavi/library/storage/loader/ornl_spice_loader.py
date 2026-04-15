@@ -11,7 +11,6 @@ from tavi.backend.classification.rule_based_classifier import RuleBasedClassifie
 from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
 from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import UUID, Provenance, RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
-from tavi.library.data.scan import UUID, Provenance, RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
