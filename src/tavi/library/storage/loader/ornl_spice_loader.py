@@ -121,22 +121,19 @@ class ORNLSpiceLoader(AbstractLoader):
         preset_channel = ""
         preset_value = 0.0
         def_x, def_y = "", ""
-        friendly_path = "IPTS"
+        friendly_path = "IPTS-"
         exp = "exp"
         s = "scan"
         for metadata_entry in metadata_list:
-            if metadata_entry.startswith("# scan"):
+            if metadata_entry.startswith("# scan "):
                 _, val = metadata_entry.split("=")
-                scan += val.zfill(4)
+                s += val.strip().zfill(4)
             if metadata_entry.startswith("# proposal"):
                 _, val = metadata_entry.split("=")
-                friendly_path += val
+                friendly_path += val.strip()
             if metadata_entry.startswith("# experiment_number"):
                 _, val = metadata_entry.split("=")
-                exp += val.zfill(4)
-            if metadata_entry.startswith("# proposal"):
-                _, val = metadata_entry.split("=")
-                friendly_path = val
+                exp += val.strip().zfill(4)
             if metadata_entry.startswith("# preset_channel"):
                 _, val = metadata_entry.split("=")
                 preset_channel = val
@@ -247,4 +244,4 @@ class ORNLSpiceLoader(AbstractLoader):
         uuid = self.generate_uuid(file_path)
         weight = 1
         raw_file = file_path
-        return Provenance(raw_file=raw_file, contributing_scans={uuid, weight})
+        return Provenance(raw_file=raw_file, contributing_scans={uuid: weight})
