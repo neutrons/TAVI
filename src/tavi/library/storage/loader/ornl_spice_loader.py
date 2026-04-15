@@ -26,7 +26,6 @@ class ORNLSpiceLoader(AbstractLoader):
         super().__init__(filestore)
         self.classifier = RuleBasedClassifier(filestore)
         self.classification_rules = ORNLSpiceRuleSet()
-        self.filestore = filestore
 
     def load(self, file_path: str) -> Scan:
         """Load scan data."""
@@ -49,6 +48,7 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def get_score(self, file_path: str) -> float:
         """Get score for scan."""
+        self.classifier.set_filestore(self.filestore)
         return self.classifier.get_score(file_path, self.classification_rules)
 
     def parse_metadata(self, file_path: str) -> ScanMetadata:
