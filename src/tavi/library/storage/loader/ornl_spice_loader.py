@@ -170,7 +170,7 @@ class ORNLSpiceLoader(AbstractLoader):
             # exception happens when there is no valid measurements but all warnings.
             # see HB1_exp0815_scan0001.dat file
             logger.error(e)
-            col_values = []
+            col_values = np.array(None)
         data = dict()
         for col_name in col_names:
             # guard against invalid format
