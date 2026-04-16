@@ -180,7 +180,6 @@ class ORNLSpiceLoader(AbstractLoader):
                 col_name.replace("-", "_").replace(" ", "_").replace(".", "")
             )  # replace "-", " ", with "_", remove any "."
             if col_values.ndim > 1:
-                print(len(col_values))
                 data[attr_name] = col_values[:, col_names.index(col_name)]
             # sometimes data only have 1 entry, then we don't need to slice the data.
             elif col_values.ndim == 1:
