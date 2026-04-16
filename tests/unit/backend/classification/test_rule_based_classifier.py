@@ -43,6 +43,12 @@ class TestFileStore(FileStoreInterface):
     def get_file_size_mb(self, file_path: str) -> float:
         pass
 
+    def get_parent(self, file_path: str) -> str:
+        pass
+
+    def join_path(self, root_path: str, target_path: str) -> str:
+        pass
+
 
 class TestRuleBasedClassifier(unittest.TestCase):
     """Test cases for RuleBasedClassifier using ORNLSpiceRuleSet."""

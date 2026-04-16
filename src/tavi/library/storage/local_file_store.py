@@ -170,10 +170,10 @@ class LocalFileStore(FileStoreInterface):
         # Convert bytes to mb.
         return file_path.stat().st_size / (1024 * 1024)
 
-    def get_parent(self, file_path: str) -> Path:
+    def get_parent(self, file_path: str) -> str:
         """Get the parent of current file path."""
-        return Path(file_path).parent
+        return str(Path(file_path).parent)
 
-    def join_path(self, root_path: str, target_path: str) -> Path:
+    def join_path(self, root_path: str, target_path: str) -> str:
         """Join two paths."""
-        return Path(root_path).joinpath(target_path)
+        return str(Path(root_path).joinpath(target_path))

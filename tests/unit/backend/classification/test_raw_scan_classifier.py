@@ -41,6 +41,12 @@ class MockFileStore(FileStoreInterface):
     
     def get_file_size_mb(self, file_path: str) -> float:
         pass
+    
+    def get_parent(self, file_path: str) -> str:
+        return "dummy"
+
+    def join_path(self, root_path: str, target_path: str) -> str:
+        return "dummy"
 
 
 class MockLoader(AbstractLoader):
