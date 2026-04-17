@@ -16,3 +16,9 @@ class RawScanLoadingEvent(Event):
     """loading raw data event."""
 
     raw_scan_uuid: list[str]
+
+
+class SyncRecentProjects(Event):
+    """Update list of recent projects."""
+
+    recent_projects: list[str]

@@ -6,6 +6,8 @@ from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
+from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.presenter_event import DownstreamReadyEvent
 
 
 class MainPresenter:
@@ -16,9 +18,12 @@ class MainPresenter:
         self.safe_exit = True
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
-        self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectProxy"])
-        self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
-        self._view.install_menu_bar(self.menu_bar)
+        self.file_menu_presenter = FileMenuPresenter(
+            self.exit,
+            model=model_dict["TaviProjectProxy"],
+        )
+        menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
+        self._view.install_menu_bar(menu_bar)
 
         self.project_view = self._view.main_window.load_view
         self.load_raw_scan_presenter = LoadRawScanPresenter(self.project_view, model_dict["TaviProjectProxy"])
@@ -26,6 +31,9 @@ class MainPresenter:
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view
         self.error_view.setParent(self._view)
+
+        self._event_broker = EventBroker()
+        self._event_broker.publish(DownstreamReadyEvent())
 
     def exit(self) -> bool:
         """
