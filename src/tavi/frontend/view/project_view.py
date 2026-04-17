@@ -186,6 +186,24 @@ class TreeViewWidget(QWidget):
                 self.path_map[sub_path] = new_item
             last_valid_item = self.path_map[sub_path]
 
+    def expand_path(self, path: str) -> None:
+        """Expand each item of the path."""
+        path = path.removeprefix("/")
+        path = path.removesuffix("/")
+
+        # ignore empty string.
+        path_tokens = path.split("/")
+        if "" in path_tokens:
+            path_tokens.remove("")
+
+        sub_path = ""
+        last_valid_item = self.rootNode
+        for token in path_tokens:
+            self.treeView.setExpanded(last_valid_item.index(), True)
+            sub_path = f"{sub_path}/{token}"
+            last_valid_item = self.path_map[sub_path]
+        self.treeView.setExpanded(last_valid_item.index(), True)
+
     def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
         """Add a new entry in the tree based on the path."""
         if uuid in self.uuid_map:
@@ -198,6 +216,7 @@ class TreeViewWidget(QWidget):
             return
 
         self._init_path(path)
+        self.expand_path(path)
 
         new_item = self._new_item(name)
         self.path_map[f"/{path}"].appendRow(new_item)
