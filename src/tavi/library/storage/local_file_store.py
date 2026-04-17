@@ -35,7 +35,7 @@ class LocalFileStore(FileStoreInterface):
             file_path_str = str(file_path.absolute())
             if self.validate_file(file_path_str):
                 file_paths.append(file_path_str)
-
+        file_paths.sort()
         return file_paths
 
     def _is_real_file(self, file_path: Path, throws: bool = False) -> bool:
