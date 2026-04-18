@@ -36,4 +36,4 @@ class TaviProjectModel(TaviProjectInterface):
         for event in events:
             self._event_broker.publish(event)
 
-        return ModelResponse(code=ResponseCode.OK, message="TODO: implement loading backend")
+        return ModelResponse(code=ResponseCode.OK)
