@@ -75,7 +75,7 @@ class TestLoadRawScans(IntegrationTest):
         def auto_accept():
             for w in QApplication.topLevelWidgets():
                 if isinstance(w, QFileDialog):
-                    w.selectFile(Resource.getPath("/inputs/integration/load"))   # simulate user choice
+                    w.selectFile(Resource.getPath("/inputs/integration/load/datafiles"))   # simulate user choice
                     w.accept()
                     self.test_summary.SUCCESS()
                     break
