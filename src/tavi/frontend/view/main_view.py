@@ -65,12 +65,15 @@ class TaviView(QMainWindow):
         logger.info(f"Tavi version: {__version__}")
 
         self.setWindowTitle(f"TAVI - {__version__}")
+
         self.main_window = MainWindow(self)
         self.setCentralWidget(self.main_window)
         self._force_closing = False
 
     def install_menu_bar(self, menu_bar: QMenuBar) -> None:
         """MainPresenter to attach the menu bar."""
+        # Embedded menu bar is more reliable than native mode on macOS/QtPy.
+        menu_bar.setNativeMenuBar(False)
         self.setMenuBar(menu_bar)
 
     def closeEvent(self, event: Any) -> None:
