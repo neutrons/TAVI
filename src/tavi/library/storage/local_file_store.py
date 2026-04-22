@@ -35,7 +35,7 @@ class LocalFileStore(FileStoreInterface):
             file_path_str = str(file_path.absolute())
             if self.validate_file(file_path_str):
                 file_paths.append(file_path_str)
-
+        file_paths.sort()
         return file_paths
 
     def _is_real_file(self, file_path: Path, throws: bool = False) -> bool:
@@ -128,7 +128,7 @@ class LocalFileStore(FileStoreInterface):
         file_path: Path = Path(file_path)
         self._is_real_file(file_path, throws=True)
 
-        return file_path.read_text()
+        return file_path.read_text(encoding="utf-8")
 
     def get_file_ext(self, file_path: str) -> str:
         """
@@ -146,6 +146,13 @@ class LocalFileStore(FileStoreInterface):
 
         return file_path.suffix
 
+    def get_file_name(self, file_path: str) -> str:
+        """Get the name of a file at a given path."""
+        file_path: Path = Path(file_path)
+        self._is_real_file(file_path, throws=True)
+
+        return file_path.name
+
     def get_file_size_mb(self, file_path: str) -> float:
         """
         Get file size in megabytes.
@@ -162,3 +169,11 @@ class LocalFileStore(FileStoreInterface):
 
         # Convert bytes to mb.
         return file_path.stat().st_size / (1024 * 1024)
+
+    def get_parent(self, file_path: str) -> str:
+        """Get the parent of current file path."""
+        return str(Path(file_path).parent)
+
+    def join_path(self, root_path: str, target_path: str) -> str:
+        """Join two paths."""
+        return str(Path(root_path).joinpath(target_path))

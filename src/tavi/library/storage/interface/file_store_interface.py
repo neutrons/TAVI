@@ -99,3 +99,47 @@ class FileStoreInterface(metaclass=abc.ABCMeta):
 
         """
         pass
+
+    @abc.abstractmethod
+    def get_file_name(self, file_path: str) -> str:
+        """
+        Get file name.
+
+        Args:
+            file_path: The file path.
+
+        Returns:
+            File name.
+
+        """
+        pass
+
+    @abc.abstractmethod
+    def get_parent(self, file_path: str) -> str:
+        """
+        Get the parent of current file path.
+
+        Args:
+            file_path: The file path.
+
+        Returns:
+            Parent of file_path.
+
+        """
+        pass
+
+    @abc.abstractmethod
+    def join_path(self, root_path: str, target_path: str) -> str:
+        """
+        Join two paths.
+
+        Args:
+            root_path: The original path.
+            target_path: path to be joined together
+
+        Returns:
+            Joined path.
+
+
+        """
+        pass

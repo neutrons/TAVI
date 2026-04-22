@@ -3,7 +3,8 @@
 import pytest
 from qtpy.QtGui import QColor
 
-from tavi.frontend.view.load_raw_scan_view import LoadView, StandardItem, TreeViewWidget
+from tavi.frontend.view.project_view import ProjectView, StandardItem, TreeViewWidget
+from tavi.library.data.scan import UUID
 
 
 def test_standard_item_styling():
@@ -85,7 +86,7 @@ def test_select_file_emits_only_for_child_item(qtbot):
 
 
 def test_load_view_pass_selected_file_calls_callback(qtbot):
-    view = LoadView()
+    view = ProjectView()
     qtbot.addWidget(view)
 
     called = {"filename": None}
@@ -98,3 +99,28 @@ def test_load_view_pass_selected_file_calls_callback(qtbot):
     # Simulate the TreeViewWidget signal flow:
     view.tree_widget.clicked_file_signal.emit("my_scan_file")
     assert called["filename"] == "my_scan_file"
+
+def test_add_item_at_path(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+    
+    view.add_raw_scan(UUID(value="1"), "item name", "/path")
+    
+    assert "/Raw/path" in view.tree_widget.path_map
+
+    # duplicate names are ok with distinct uuid
+    view.add_raw_scan(UUID(value="2"), "item name", "/path")
+    assert view.tree_widget.path_map["/Raw/path"].rowCount() == 2
+    
+    # pathless should just drop it in "/Raw"
+    view.add_raw_scan(UUID(value="3"), "root", "")
+    
+    assert "/Raw" in view.tree_widget.path_map
+    # 1 row for `/path` and 1 for `root`
+    assert view.tree_widget.path_map["/Raw"].rowCount() == 2
+    # These each pop a row.
+    assert view.tree_widget.path_map["/Raw"].takeRow(0)[0].text() == "path"
+    assert view.tree_widget.path_map["/Raw"].takeRow(0)[0].text() == "root"
+    
+    with pytest.raises(RuntimeError, match="Attempting to add UUID object that already exists"):
+        view.add_raw_scan(UUID(value="1"), "item name", "/path")

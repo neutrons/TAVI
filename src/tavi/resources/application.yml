@@ -5,13 +5,17 @@ user:
       home: ~/.TAVI/
 
 library:
+  storage:
+    raw:
+      classification:
+        quick: False
   filestore:
     raw:
       size-limit: 1  # MB
 ORNL:
   spice:
     file:
-      ext: dat
+      ext: .dat
     metadata:
       field-name:
         def:
