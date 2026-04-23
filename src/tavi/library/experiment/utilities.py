@@ -11,6 +11,7 @@ ksq2eng = 2.072124855
 # convert sigma to FWHM, FWHM = 2*sqrt(2*ln(2))*sigma
 sig2fwhm = 2.0 * np.sqrt(2.0 * np.log(2.0))
 
+
 def SE2K(E: float) -> float:
     """Convert energy E to momentum transfer k."""
     E2K = np.sqrt(2e-3 * e * m_n) * 1e-10 / hbar
