@@ -3,6 +3,13 @@
 import numpy as np
 from scipy.constants import e, hbar, m_n
 
+# import scipy.constants as co
+# ksq2E = (co.Planck / co.elementary_charge / 2.0 / np.pi) ** 2.0 * co.elementary_charge / 2.0 / co.neutron_mass * 1e23
+# calculated with scipy.constants using the formula above, it converts SI unit to angstrom, meV unit
+ksq2eng = 2.072124855
+
+# convert sigma to FWHM, FWHM = 2*sqrt(2*ln(2))*sigma
+sig2fwhm = 2.0 * np.sqrt(2.0 * np.log(2.0))
 
 def SE2K(E: float) -> float:
     """Convert energy E to momentum transfer k."""
