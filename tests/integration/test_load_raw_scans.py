@@ -5,7 +5,7 @@ from qtpy.QtCore import QPoint, Qt, QTimer
 from qtpy.QtWidgets import QFileDialog, QApplication, QMessageBox
 
 from neutrons_standard.test.integration.test_base import IntegrationTest
-from neutrons_standard.test.integration.test_summary import TestSummary
+from neutrons_standard.test.integration.test_summary import TestSummary as TS
 from neutrons_standard.config import Resource
 
 import pytest
@@ -29,7 +29,7 @@ class TestLoadRawScans(IntegrationTest):
     
     def test_load_ORNL_Spice(self, qtbot, qapp, monkeypatch):
         self.test_summary = (
-            TestSummary.builder()
+            TS.builder()
             .step("Open Folder Browser.")
             .step("Load Raw Scans into ProjectView")
             .build()
