@@ -1,6 +1,12 @@
 """Contain the entry point for the application."""
 
-import neutrons_standard
+# NOTE: WARNING, These MUST be imported before neutrons_standard due to an interaction between qtpy
+#       and ruamel.yaml that causes some parsing warnings.
+import qtpy.QtCore  # isort: skip
+import qtpy.QtWidgets  # isort: skip
+
+import neutrons_standard  # isort: skip
+
 
 neutrons_standard.init("tavi")
 

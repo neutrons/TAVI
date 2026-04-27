@@ -13,11 +13,12 @@ class MainPresenter:
 
     def __init__(self, model_dict: dict) -> None:
         """Init main views."""
+        self.safe_exit = True
         self._view = TaviView()
         self._view.exit_requested.connect(self.exit)
         self.file_menu_presenter = FileMenuPresenter(self.exit, model=model_dict["TaviProjectProxy"])
-        menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
-        self._view.install_menu_bar(menu_bar)
+        self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
+        self._view.install_menu_bar(self.menu_bar)
 
         self.project_view = self._view.main_window.load_view
         self.load_raw_scan_presenter = LoadRawScanPresenter(self.project_view, model_dict["TaviProjectProxy"])
@@ -32,7 +33,7 @@ class MainPresenter:
 
         Return True to allow exit.
         """
-        if True:  # replace with model dirty flag later
+        if self.safe_exit:  # replace with model dirty flag later
             message_box = self._view.exit_message_box()
             if not message_box:
                 return False
