@@ -1,4 +1,5 @@
 """Contains d-spacing of monochromator and analyzer crystal, in angstrom."""
+
 crystal_d = {
     "PG002": 3.35416,
     "Pg002": 3.35416,
