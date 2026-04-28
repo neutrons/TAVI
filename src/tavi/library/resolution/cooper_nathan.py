@@ -1,7 +1,6 @@
 """Cooper-Nathans Method."""
 
-from ast import Tuple
-from typing import Any
+from typing import Any, Tuple
 
 import numpy as np
 
@@ -60,9 +59,13 @@ class CooperNathans:
         return mat_f
 
     def mat_a(self, ki: float, kf: float, theta_m: float, theta_a: float) -> np.ndarray:
-        """Calculate Matrix A. 6 x 8 matrix, Y = AU. Transform collmiator's divergence to ki-kf."""
-        theta_m = np.radians(theta_m)
-        theta_a = np.radians(theta_a)
+        """
+        Calculate Matrix A. 6 x 8 matrix, Y = AU. Transform collmiator's divergence to ki-kf.
+        Args:
+            theta_m: in radians.
+            theta_a: in radians.
+        """
+
         mat_a = np.zeros((6, 2 * self.NUM_COLLS))
         mat_a[0, self.IDX_COLLS["0H"]] = 0.5 * ki / np.tan(theta_m)
         mat_a[0, self.IDX_COLLS["1H"]] = -0.5 * ki / np.tan(theta_m)
@@ -76,9 +79,12 @@ class CooperNathans:
         return mat_a
 
     def mat_b(self, ki: float, kf: float, phi: float, two_theta: float) -> np.ndarray:
-        """Calculate Matrix B. 4 x 6 matrix, X = BY. Transform from ki-kf to q-frame."""
-        phi = np.radians(phi)
-        two_theta = np.radians(two_theta)
+        """
+        Calculate Matrix B. 4 x 6 matrix, X = BY. Transform from ki-kf to q-frame.
+        Args:
+            phi: in radians.
+            two_theta: in radians.
+        """
         mat_b = np.zeros((4, 6))
         mat_b[0:3, 0:3] = rotation_matrix_2d(phi)
         mat_b[0:3, 3:6] = rotation_matrix_2d(phi - two_theta) * (-1)
@@ -87,9 +93,12 @@ class CooperNathans:
         return mat_b
 
     def mat_c(self, theta_m: float, theta_a: float) -> np.ndarray:
-        """Matrix C. 4 x 8 matrix. Constrinat between mono/ana mosaic and collimator divergence."""
-        theta_m = np.radians(theta_m)
-        theta_a = np.radians(theta_a)
+        """
+        Matrix C. 4 x 8 matrix. Constrinat between mono/ana mosaic and collimator divergence.
+        Args:
+            theta_m: in radians.
+            theta_a: in radians.
+        """
         mat_c = np.zeros(((self.NUM_MONO + self.NUM_ANA) * 2, self.NUM_COLLS * 2))
         mat_c[self.IDX_MONO["0H"], self.IDX_COLLS["0H"]] = 0.5
         mat_c[self.IDX_MONO["0H"], self.IDX_COLLS["1H"]] = 0.5
