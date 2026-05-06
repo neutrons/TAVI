@@ -96,6 +96,7 @@ class LocalFileStore(FileStoreInterface):
         file_subpath = file_subpath.removeprefix("/")
         user_data_home = Path(Config["user.application.home"]).expanduser()
         user_data_file = user_data_home / file_subpath
+        user_data_home.mkdir(parents=True, exist_ok=True)
         self.write_text_file(str(user_data_file), value)
 
     def read_user_data_file(self, file_subpath: str) -> str:
