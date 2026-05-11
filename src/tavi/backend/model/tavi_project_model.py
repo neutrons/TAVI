@@ -12,7 +12,7 @@ from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoad
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
-from tavi.meta.event.type.presenter_event import DownstreamReadyEvent
+from tavi.meta.event.type.presenter_event import DownstreamReadyEvent, FocusEvent, PlotRawScansEvent
 
 
 @Singleton
@@ -27,6 +27,7 @@ class TaviProjectModel(TaviProjectInterface):
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
+        self._event_broker.register(FocusEvent, self._handle_focus_event)
 
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
         """Load a folder containing raw scans."""
@@ -63,3 +64,16 @@ class TaviProjectModel(TaviProjectInterface):
         settings = yaml.load(raw_settings_yml)
         settings_dict = dict(settings)
         return settings_dict["TAVI"]["recent"]["projects"]
+
+    def _handle_focus_event(self, e: FocusEvent) -> None:
+        # this needs to consider both plot objects and scan objects.
+        # Filter based on which UUIDs are applicable
+        # Translate to plot update events
+        # Does this sync or merely append?
+        # NOTE: For now this just considers scans for proof of concept.
+        ids = e.ids
+        scans: list[RawScan] = []
+        for uuid in ids:
+            scans.append(self.tavi_data.raw_scans[uuid])
+
+        self._event_broker.publish(PlotRawScansEvent(scans=scans))
