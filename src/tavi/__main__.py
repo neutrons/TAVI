@@ -8,6 +8,7 @@ from qtpy.QtWidgets import QApplication
 from tavi.backend.model.application_model import ApplicationModel
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
+from tavi.backend.model.plot_model import PlotModel
 from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.configuration import Configuration
 from tavi.frontend.presenter.main_presenter import MainPresenter
@@ -34,6 +35,7 @@ def execute() -> None:
 
     filestore = LocalFileStore()
     tavi_project_model = TaviProjectModel(filestore)
+    _ = PlotModel(tavi_project_model.get_plots_handle())
 
     application_model = ApplicationModel(filestore)
 

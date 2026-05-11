@@ -148,7 +148,7 @@ class ORNLSpiceLoader(AbstractLoader):
                 def_y = val
         friendly_name = instrument_name + "_" + exp + "_" + s
         return TaviMetadata(
-            default_axis=(def_x, def_y),
+            default_axis=(def_x.strip(), def_y.strip()),
             friendly_name=friendly_name,
             friendly_path=friendly_path,
             normalization=(preset_channel, preset_value),

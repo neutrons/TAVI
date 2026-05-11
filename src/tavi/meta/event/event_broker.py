@@ -1,5 +1,6 @@
 """Event Broker Module."""
 
+import logging
 from typing import Callable, Type, TypeVar
 
 from neutrons_standard.decorators.singleton import Singleton
@@ -7,6 +8,9 @@ from neutrons_standard.decorators.singleton import Singleton
 from tavi.meta.event.event_interface import Event
 
 T = TypeVar("T", bound=Event)
+
+
+logger = logging.getLogger(__name__)
 
 
 @Singleton
@@ -17,7 +21,7 @@ class EventBroker:
         """Initialize the EventBroker."""
         self.registry: dict[Type[T], list[Callable]] = {}
         self.call_depth = 0
-        self.call_depth_max = 2
+        self.call_depth_max = 3
 
     def register(self, event_type: Type[T], callable: Callable) -> None:
         """Register a subscriber to receive published events."""
@@ -27,6 +31,7 @@ class EventBroker:
 
     def publish(self, event: Event) -> None:
         """Publish an event to subscribers."""
+        logger.debug(f"Publishing {type(event)}...")
         if self.call_depth >= self.call_depth_max:
             raise RuntimeError(f"Event recursive depth of {self.call_depth_max} has been exceeded.")
 
@@ -34,5 +39,6 @@ class EventBroker:
         if callable_list := self.registry.get(event_type):
             for callable in callable_list:
                 self.call_depth += 1
+                logger.debug(f"Calling {str(callable)}...")
                 callable(event.model_copy(deep=True))
                 self.call_depth -= 1

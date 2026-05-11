@@ -1,9 +1,11 @@
 """Scan object."""
 
 from typing import Any, Dict, Optional, Tuple
+from uuid import uuid4
 
 from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
+from pydantic.fields import FieldInfo
 
 
 @dataclass
@@ -15,6 +17,11 @@ class UUID:
     def __hash__(self) -> int:
         """Generate hash."""
         return hash(self.value)
+
+
+def UUIDFactory() -> FieldInfo:
+    """Return a Pydantic Field that generates a fresh UUID on instantiation."""
+    return Field(default_factory=lambda: UUID(value=str(uuid4())))
 
 
 class ScanData(BaseModel):
