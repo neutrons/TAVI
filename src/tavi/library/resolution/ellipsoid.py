@@ -26,6 +26,7 @@ class ResoEllipsoid:
         self.res_mat = res_mat
         self.r0 = r0
 
+        self.q = sample.ol.q_norm_from_hkl(self.hkl)
     def project_to_frame(self, r_mat: np.ndarray) -> np.ndarray:
         """
         Project the res_mat to a certain frame in hkle.
