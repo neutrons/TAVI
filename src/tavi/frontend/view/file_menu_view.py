@@ -31,6 +31,8 @@ class FileMenu(QMenu):
         ----------
         parent : QWidget, optional
             Parent widget, typically the main window.
+        recent_projects: str, optional
+            Paths to projects the user had previously opened.
 
         """
         super().__init__(parent)
@@ -41,6 +43,7 @@ class FileMenu(QMenu):
         self.setTitle("File")
         self.new_project_action = QAction("New Project", self)
         self.load_project_action = QAction("Load Project", self)
+        self.load_recent_project_menu = QMenu(self, title="Recent Projects")
         self.load_file_action = QAction("Load Data File(s)", self)
         self.load_folder_action = QAction("Load Experiment Folder", self)
         self.save_action = QAction("Save Project", self)
@@ -48,6 +51,7 @@ class FileMenu(QMenu):
 
         self.addAction(self.new_project_action)
         self.addAction(self.load_project_action)
+        self.addMenu(self.load_recent_project_menu)
         self.addAction(self.load_folder_action)
         self.addAction(self.load_file_action)
         self.addAction(self.save_action)
@@ -59,6 +63,12 @@ class FileMenu(QMenu):
         self.load_file_action.triggered.connect(self.handle_load_files)
         self.save_action.triggered.connect(self.handle_save)
         self.exit_action.triggered.connect(self.handle_exit)
+
+    def init_recent_projects(self, recent_projects: list[str]) -> None:
+        """Add recent project actions to submenu."""
+        for recent_project in recent_projects:
+            action = QAction(recent_project, self.load_recent_project_menu)
+            self.load_recent_project_menu.addAction(action)
 
     # TODO Loading a new taviproject
     def setup_callback_new_project(self, callback: None) -> None:

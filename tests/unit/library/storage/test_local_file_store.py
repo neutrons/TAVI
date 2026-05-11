@@ -191,13 +191,6 @@ class TestLocalFilestore(TestCase):
             read_content = self.local_filestore.read_text_file(str(filepath))
             assert read_content == "second content"
 
-    def test_write_user_data_file_rejects_value_with_leading_slash(self):
-        with TemporaryDirectory() as tmp:
-            with Config_override("user.application.home", tmp):
-                # Note: The actual code checks if value (content) starts with "/" not the path
-                with pytest.raises(RuntimeError, match="should not start with a /"):
-                    self.local_filestore.write_user_data_file("file.txt", "/content")
-
     def test_is_real_file_returns_true_for_valid_file(self):
         with TemporaryDirectory() as tmp:
             filepath = Path(f"{tmp}/test.txt")

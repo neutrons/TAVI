@@ -17,3 +17,4 @@ Various guides for using, extending, and maintaining TAVI systems.
    loader_setup
    ornl_spice_loader
    integration_testing
+   user_settings

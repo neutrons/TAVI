@@ -1,27 +1,34 @@
 """Tavi Project."""
 
+from neutrons_standard.config import Resource
 from neutrons_standard.decorators.singleton import Singleton
+from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
+from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import RawScanAppendEvent
+from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.presenter_event import DownstreamReadyEvent
 
 
 @Singleton
 class TaviProjectModel(TaviProjectInterface):
     """Tavi project class."""
 
-    def __init__(self) -> None:
+    def __init__(self, filestore: Filestore) -> None:
         """Init tavi data."""
+        self.filestore = filestore
         self.tavi_data: TaviData = TaviData(raw_scans={})
         self._event_broker: EventBroker = EventBroker()
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
 
-    def load_raw_scan_from_folder(self, folder: str) -> None:
+        self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
+
+    def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
         """Load a folder containing raw scans."""
         raw_scans: list[RawScan] = self.raw_scan_load_controller.load_folder(folder)
         events = []
@@ -37,3 +44,22 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(event)
 
         return ModelResponse(code=ResponseCode.OK)
+
+    def sync_on_ready(self, _: DownstreamReadyEvent) -> None:
+        """Sync with downstream when its ready."""
+        self.emit_sync_recent_projects()
+
+    def emit_sync_recent_projects(self) -> None:
+        """Notify consumers of latest recent projects."""
+        recent_projects = self._get_recent_projects()
+        e = SyncRecentProjects(recent_projects=recent_projects)
+        self._event_broker.publish(e)
+
+    def _get_recent_projects(self) -> list[str]:
+        # TODO: Demo purposes only. Remove this line when settings.yaml is actually used.
+        self.filestore.write_user_data_file("settings.yaml", Resource.read("default_settings.yml"))
+        raw_settings_yml = self.filestore.read_user_data_file("settings.yaml")
+        yaml = YAML()
+        settings = yaml.load(raw_settings_yml)
+        settings_dict = dict(settings)
+        return settings_dict["TAVI"]["recent"]["projects"]

@@ -32,9 +32,9 @@ def execute() -> None:
         print(" ".join(msg))
         sys.exit(-1)
 
-    tavi_project_model = TaviProjectModel()
-
     filestore = LocalFileStore()
+    tavi_project_model = TaviProjectModel(filestore)
+
     application_model = ApplicationModel(filestore)
 
     dict_of_model = {
