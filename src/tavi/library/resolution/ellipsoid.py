@@ -4,6 +4,7 @@ from typing import Any, Optional, Tuple
 
 import numpy as np
 
+from tavi.library.experiment.utilities import sig2fwhm
 from tavi.library.geometry.sample import Sample
 
 
@@ -47,11 +48,12 @@ class ResoEllipsoid:
                 [0, 1, 0],
             ]
         )
-
+        # hkle frame
         if self.axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"):
             conv_mat_4d = np.eye(4)
             conv_mat_4d[0:3, 0:3] = 2 * np.pi @ mat_lab_to_local @ r_mat @ ub
             res_mat_proj = conv_mat_4d.T @ self.res_mat @ conv_mat_4d
+
         else:  # if project to other frames, multiply further by matrix W
             w1, w2, w3 = np.array([item for item in self.axes if isinstance(item, tuple) and len(item) == 3])
             # Eq.71
@@ -96,6 +98,39 @@ class ResoEllipsoid:
         ortho_proj = quadric - proj_op  # projected quadric
         return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
 
-    def get_ellipse(self, axes: tuple[int, int] = (0, 1), PROJECTION: bool = False, ORIGIN: bool = True) -> Tuple:
+    def get_ellipse(
+        self, r_mat: np.ndarray, ellipse_axes: tuple[int, int] = (0, 1), PROJECTION: bool = False, ORIGIN: bool = True
+    ) -> np.ndarray:
         """Generate 2D resolution ellipse."""
-        pass
+        res_2d = r_mat
+        for idx in (3, 2, 1, 0):
+            if idx not in ellipse_axes:
+                # make an integral
+                if PROJECTION:
+                    res_2d = self.quadric_proj(res_2d, idx)
+                # make a slice/cut
+                else:
+                    res_2d = np.delete(np.delete(res_2d, idx, axis=0), idx, axis=1)
+        return res_2d
+
+    def coh_fwhm(self, r_mat: np.ndarray, axis: int = None) -> float:
+        """
+        Coherent FWHM.
+
+        Make a cut.
+        """
+        idx = int(axis)
+        return sig2fwhm / np.sqrt(r_mat[idx, idx])
+
+    def incoh_fwhm(self, r_mat: np.ndarray, axis: int = None) -> float:
+        """
+        Incoherent FWHM.
+
+        Integrate all 3 axes.
+        """
+        idx = int(axis)
+        res_mat = r_mat
+        for i in (3, 2, 1, 0):
+            if not i == idx:
+                res_mat = self.quadric_proj(res_mat, i)
+        return sig2fwhm / np.sqrt(np.abs(res_mat[0, 0]))
