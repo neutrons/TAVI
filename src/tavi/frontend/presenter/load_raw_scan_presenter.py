@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent
+from tavi.meta.event.type.presenter_event import FocusEvent
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
@@ -40,7 +41,19 @@ class LoadRawScanPresenter:
         self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
+        self._view.hookup_select_signal(self.handle_selection_event)
+        self.event_broker.register(FocusEvent, self.print_selected)
+
     def update_treeview_data(self, event: RawScanAppendEvent) -> None:
         """Update the treeview GUI after loading complete."""
         self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
         self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)
+
+    def handle_selection_event(self) -> None:
+        """Handle selection event by publishing focus event."""
+        idList: list[UUID] = self._view.get_selected_items()
+        self.event_broker.publish(FocusEvent(ids=idList))
+
+    def print_selected(self, e: FocusEvent) -> None:
+        """Test method."""
+        print(e.ids)

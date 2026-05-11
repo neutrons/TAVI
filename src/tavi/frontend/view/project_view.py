@@ -1,10 +1,13 @@
 """Docstring for tavi.frontend.views.load_view."""
 
-from typing import List, Optional
+from typing import Callable, List, Optional
 
-from qtpy.QtCore import QObject, Qt, Signal
+from qtpy.QtCore import QModelIndex, QObject, Qt, Signal
 from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
+    QAbstractItemView,
+    QMenu,
+    QStyle,
     QTreeView,
     QVBoxLayout,
     QWidget,
@@ -35,25 +38,23 @@ class ProjectView(QWidget):
         self.tree_widget = TreeViewWidget(self)
         layout.addWidget(self.tree_widget)
 
-        self.tree_widget.clicked_file_signal.connect(self.pass_selected_file)
-
         # handle thread safe operations from secondary thread
         self.update_tree_signal.connect(
             self.tree_widget.add_tree_data,
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
 
+    def hookup_select_signal(self, callback: Callable) -> None:
+        """Connect selection signal to callback."""
+        self.tree_widget.selected_signal.connect(callback)
+
+    def get_selected_items(self) -> list[UUID]:
+        """Get list of selected item UUIDs."""
+        return self.tree_widget.get_selected_items()
+
     def add_raw_scan(self, uuid: UUID, name: str, path: str) -> None:
         """Add a raw scan to the view."""
         self.tree_widget.add_raw_scan(uuid, name, path)
-
-    def setup_callback_click_on_a_scan(self, callback: None) -> None:
-        """Setup call back functions to handle when clicking on a scann."""
-        self.click_on_a_scan_callback = callback
-
-    def pass_selected_file(self, filename: str) -> None:
-        """Invoke the call back with positional input arg."""
-        self.click_on_a_scan_callback(filename)
 
     def update_add_tree_data(self, event_list: list[str]) -> None:
         """Invoke update_tree_signal to process data coming in from a different thread."""
@@ -121,7 +122,7 @@ class TreeViewWidget(QWidget):
 
     """
 
-    clicked_file_signal = Signal(str)
+    selected_signal = Signal()
     highlighted_scan_changed = Signal(str)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -136,9 +137,18 @@ class TreeViewWidget(QWidget):
         """
         super().__init__(parent)
 
+        style = self.style()
+
+        self.folder_closed_icon = style.standardIcon(QStyle.StandardPixmap.SP_DirClosedIcon)
+
+        self.folder_open_icon = style.standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
+
+        self.file_icon = style.standardIcon(QStyle.StandardPixmap.SP_FileIcon)
+
         layoutTreeView = QVBoxLayout()
         self.setLayout(layoutTreeView)
         self.treeView = QTreeView(self)
+        self.treeView.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.treeView.setHeaderHidden(True)
         self.treeModel = QStandardItemModel()
         self.rootNode = self.treeModel.invisibleRootItem()
@@ -148,22 +158,127 @@ class TreeViewWidget(QWidget):
 
         layoutTreeView.addWidget(self.treeView)
 
-        self.treeView.clicked.connect(self.select_file)
+        self.treeView.clicked.connect(self.select)
 
         self._init_path("/Raw")
         self._init_path("/Combined")
         self._init_path("/Fits")
         self._init_path("/Plots")
         self.treeView.setModel(self.treeModel)
+        self.treeView.expanded.connect(self.on_expanded)
+        self.treeView.collapsed.connect(self.on_collapsed)
+
+        # 1. Enable custom context menus
+        self.treeView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+
+        # 2. Connect the signal to your handler
+        self.treeView.customContextMenuRequested.connect(self.show_context_menu)
+
+    def show_context_menu(self, position: object) -> None:
+        """Display context menu at position."""
+        # Identify the item under the mouse
+        index = self.treeView.indexAt(position)
+
+        # 3. Create the menu
+        menu = QMenu()
+
+        if index.isValid() and index.parent().isValid():
+            # Add actions for valid items
+            delete_action = menu.addAction("Remove Item")
+
+        # Execute menu at the global cursor position
+        # Use viewport().mapToGlobal to translate local coordinates
+        action = menu.exec(self.treeView.viewport().mapToGlobal(position))
+
+        # Handle the selected action
+        if action:
+            if action is delete_action:
+                # recursively walk and purge rows/cache
+                self.remove_entry(index)
+
+    def _remove_index(self, index: QModelIndex) -> None:
+        item_data = self.treeModel.data(index, Qt.UserRole + 1)
+        if item_data:
+            uuid = item_data["id"]
+            self.uuid_map.pop(uuid)
+        self.treeModel.removeRow(index.row(), index.parent())
+
+    def remove_entry(self, index: QModelIndex) -> None:
+        """Recursively prints all children of a QModelIndex."""
+        if not index.isValid():
+            return
+
+        # Iterate through rows
+        for row in range(self.treeModel.rowCount(index)):
+            # Iterate through columns (usually 0 is sufficient for tree structures)
+            for col in range(self.treeModel.columnCount(index)):
+                child_index = self.treeModel.index(row, col, index)
+                if child_index.isValid():
+                    # Recursively walk the children of this child
+                    self.remove_entry(child_index)
+
+        self._remove_index(index)
+
+    def get_selected_items(self) -> list[UUID]:
+        """Get list of selected item UUIDs from tree view."""
+        indexes = self.treeView.selectedIndexes()
+        idList = set()
+        for index in indexes:
+            item_data = self.treeModel.data(index, Qt.UserRole + 1)
+            if item_data:
+                idList.add(item_data["id"])
+            # else:
+            #     # if its a folder, then select all children in the folder?
+            #     for c_index in self.get_selected_child_entries(index):
+            #         item_data = self.treeModel.data(c_index, Qt.UserRole + 1)
+            #         if item_data:
+            #             idList.add(item_data["id"])
+
+        return list(idList)
+
+    # NOTE: Add this back if we want selecting a folder to select all entries in a folder.
+    # def get_selected_child_entries(self, index: QModelIndex) -> None:
+    #     entries = []
+    #     # Iterate through rows
+    #     for row in range(self.treeModel.rowCount(index)):
+    #         # Iterate through columns (usually 0 is sufficient for tree structures)
+    #         for col in range(self.treeModel.columnCount(index)):
+    #             child_index = self.treeModel.index(row, col, index)
+    #             if child_index.isValid():
+    #                 # Recursively walk the children of this child
+    #                 entries.extend(self.get_selected_child_entries(child_index))
+    #     entries.append(index)
+    #     return entries
+
+    def on_expanded(self, index: object) -> None:
+        """Update icon when item is expanded."""
+        item = self.treeModel.itemFromIndex(index)
+        item.setIcon(self.folder_open_icon)
+
+    def on_collapsed(self, index: object) -> None:
+        """Update icon when item is collapsed."""
+        item = self.treeModel.itemFromIndex(index)
+        item.setIcon(self.folder_closed_icon)
 
     def _new_item(self, value: str) -> StandardItem:
         """Initialize a StandardItem standardly."""
         return StandardItem(value, 16, set_bold=True)
 
+    def _new_file(self, value: str, uuid: UUID) -> StandardItem:
+        item = self._new_item(f"*{value}")
+        item.setIcon(self.file_icon)
+        item.setData({"id": uuid}, Qt.UserRole + 1)
+        return item
+
+    def _new_folder(self, value: str) -> StandardItem:
+        item = self._new_item(value)
+        item.setIcon(self.folder_closed_icon)
+        return item
+
     def add_raw_scan(self, uuid: UUID, name: str, path: str) -> None:
         """Add an entry under the Raw root path."""
         path = path.removeprefix("/")
-        self.add_item_at_path(uuid, name, f"/Raw/{path}")
+        self.add_item_at_path(uuid, name, f"Raw/{path}")
 
     def _init_path(self, path: str) -> None:
         """Init path in tree if it doesn't exist."""
@@ -181,14 +296,13 @@ class TreeViewWidget(QWidget):
         for token in path_tokens:
             sub_path = f"{sub_path}/{token}"
             if sub_path not in self.path_map:
-                new_item = self._new_item(token)
+                new_item = self._new_folder(token)
                 last_valid_item.appendRow(new_item)
                 self.path_map[sub_path] = new_item
             last_valid_item = self.path_map[sub_path]
 
     def expand_path(self, path: str) -> None:
         """Expand each item of the path."""
-        path = path.removeprefix("/")
         path = path.removesuffix("/")
 
         # ignore empty string.
@@ -204,12 +318,29 @@ class TreeViewWidget(QWidget):
             last_valid_item = self.path_map[sub_path]
         self.treeView.setExpanded(last_valid_item.index(), True)
 
+    def dirty_path(self, path: str) -> None:
+        """Mark path as dirty for refresh."""
+        # ignore empty string.
+        path_tokens = path.split("/")
+        if "" in path_tokens:
+            path_tokens.remove("")
+
+        sub_path = ""
+        last_valid_item = self.rootNode
+        for token in path_tokens:
+            if not last_valid_item.text().startswith("*"):
+                last_valid_item.setText(f"*{last_valid_item.text()}")
+            sub_path = f"{sub_path}/{token}"
+            last_valid_item = self.path_map[sub_path]
+        if not last_valid_item.text().startswith("*"):
+            last_valid_item.setText(f"*{last_valid_item.text()}")
+        self.treeView.setExpanded(last_valid_item.index(), True)
+
     def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
         """Add a new entry in the tree based on the path."""
         if uuid in self.uuid_map:
             raise RuntimeError("Attempting to add UUID object that already exists to Project View.")
 
-        path = path.removeprefix("/")
         path = path.removesuffix("/")
         if path in self.path_map:
             self.path_map[path].appendRow(name)
@@ -217,8 +348,9 @@ class TreeViewWidget(QWidget):
 
         self._init_path(path)
         self.expand_path(path)
+        self.dirty_path(path)
 
-        new_item = self._new_item(name)
+        new_item = self._new_file(name, uuid)
         self.path_map[f"/{path}"].appendRow(new_item)
         self.uuid_map[uuid] = new_item
         self.treeView.setModel(self.treeModel)
@@ -240,12 +372,11 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def select_file(self, val: str) -> None:
+    def select(self, _: str) -> None:
         """
         Handle selection of a tree item and emit a signal if the item represents a file.
 
         Only child items (files) emit `clicked_file_signal`; the folder node itself
         does not produce a signal.
         """
-        if val.parent().isValid():
-            self.clicked_file_signal.emit(val.data())
+        self.selected_signal.emit()
