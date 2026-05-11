@@ -27,6 +27,9 @@ class FakeFileStore(FileStoreInterface):
 
     def write_user_data_file(self, subpath: str, value: str) -> None:
         pass
+    
+    def read_user_data_file(self, file_subpath):
+        return super().read_user_data_file(file_subpath)
 
     def write_text_file(self, path: str, value: str) -> None:
         pass

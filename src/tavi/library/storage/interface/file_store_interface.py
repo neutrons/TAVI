@@ -47,6 +47,17 @@ class FileStoreInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def read_user_data_file(self, file_subpath: str) -> str:
+        """
+        Read user data from a file.
+
+        Args:
+            file_subpath: The subpath to read from.
+
+        """
+        pass
+
+    @abc.abstractmethod
     def write_text_file(self, file_path: str, value: str) -> None:
         """
         Write text to file.

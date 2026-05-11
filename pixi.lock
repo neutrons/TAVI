@@ -10926,8 +10926,8 @@ packages:
   timestamp: 1733569565672
 - pypi: ./
   name: tavi
-  version: 0.4.0.dev32
-  sha256: bcb13e6eee9e2198c629c1e4e4fdec764ca6609df62ca00e41937536a2a9cc5a
+  version: 0.4.0.dev4
+  sha256: 27c103100cd38275049dae96507b64b19acc4e130b37f963aeaf91d4dff87485
   requires_python: '>=3.10'
 - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2022.3.0-h3155e25_2.conda
   sha256: abd9a489f059fba85c8ffa1abdaa4d515d6de6a3325238b8e81203b913cf65a9

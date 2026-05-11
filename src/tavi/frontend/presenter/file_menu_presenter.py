@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from tavi.frontend.view.file_menu_view import FileMenu
+from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import SyncRecentProjects
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
@@ -33,8 +35,16 @@ class FileMenuPresenter:
         self._view = FileMenu()
         self._exit_routine = exit_routine
         self._model = model
+        self._event_broker = EventBroker()
+
         self._view.setup_callback_load_folder(self.handle_load_folder)
         self._view.setup_callback_exit(self.exit)
+
+        self._event_broker.register(SyncRecentProjects, self.sync_recent_projects)
+
+    def sync_recent_projects(self, e: SyncRecentProjects) -> None:
+        """Sync recent events with model."""
+        self._view.init_recent_projects(e.recent_projects)
 
     def handle_load_folder(self, folder: list[str]) -> None:
         """
