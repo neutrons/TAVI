@@ -3,7 +3,6 @@
 from typing import Any
 
 from tavi.library.geometry.sample import Sample
-from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
 
 
