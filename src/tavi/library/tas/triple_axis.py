@@ -34,6 +34,8 @@ class TAS:
             configuration later.
             goni: Goniometer.
             sample: Sample, need to construct OrientedLattice first. See sample.py.
+            resolution: Resolution method to use for resolution calculations.
+            experiment: Experiment. Handles extracting peak center, ei, ef etc from exp data.
 
         """
         self.instrument = instrument
