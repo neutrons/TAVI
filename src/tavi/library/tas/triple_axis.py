@@ -1,16 +1,16 @@
 """General utilities for tas related functions and classes."""
 
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 import numpy as np
 
-from tavi.library.Instrument.instrument import Instrument
-from tavi.library.component.goniometer import Goniometer
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import SE2K, q_lab
 from tavi.library.geometry.sample import Sample
+from tavi.library.Instrument.instrument import Instrument
 from tavi.library.resolution.resolution import Resolution
+
 
 class TAS:
     """
@@ -19,7 +19,13 @@ class TAS:
     Next step is implement resolution calculation from tavi.library.resolution module.
     """
 
-    def __init__(self, instrument: Instrument, sample: Sample, resolution: Optional[Resolution]=None, experiment: Optional[Experiment] = None) -> None:
+    def __init__(
+        self,
+        instrument: Instrument,
+        sample: Sample,
+        resolution: Optional[Resolution] = None,
+        experiment: Optional[Experiment] = None,
+    ) -> None:
         """
         Initialize triple axis.
 
