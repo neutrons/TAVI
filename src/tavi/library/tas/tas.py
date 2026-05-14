@@ -1,3 +1,0 @@
-"""
-CLI interface for tavi.
-"""

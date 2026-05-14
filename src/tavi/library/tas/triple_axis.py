@@ -1,14 +1,16 @@
 """General utilities for tas related functions and classes."""
 
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 
+from tavi.library.Instrument.instrument import Instrument
 from tavi.library.component.goniometer import Goniometer
+from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import SE2K, q_lab
 from tavi.library.geometry.sample import Sample
-
+from tavi.library.resolution.resolution import Resolution
 
 class TAS:
     """
@@ -17,7 +19,7 @@ class TAS:
     Next step is implement resolution calculation from tavi.library.resolution module.
     """
 
-    def __init__(self, instrument: str, goni: Goniometer, sample: Sample) -> None:
+    def __init__(self, instrument: Instrument, sample: Sample, resolution: Optional[Resolution]=None, experiment: Optional[Experiment] = None) -> None:
         """
         Initialize triple axis.
 
@@ -29,8 +31,9 @@ class TAS:
 
         """
         self.instrument = instrument
-        self.goni = goni
+        self.experiment = experiment
         self.sample = sample
+        self.resolution = resolution
 
     # -----------R matrix-----------
     def r_matrix_with_minimal_tilt(
@@ -105,11 +108,11 @@ class TAS:
         peak: DataPoint,
         scattering_plane: Tuple[tuple, tuple],
         B: np.ndarray,
-        r_mat: Goniometer.r_mat,
         ei: float,
         ef: float,
     ) -> np.ndarray:
         """Calculate U matrix from one peak and a scattering plane."""
+        r_mat = self.instrument.goni.r_mat
         t1_c = B @ peak.hkl
         vector1, vector2 = scattering_plane
 
@@ -156,7 +159,7 @@ class TAS:
         """
         peak1, peak2 = peaks
         B = self.sample.ol.B
-        r_mat = self.goni.r_mat
+        r_mat = self.instrument.goni.r_mat
 
         t1_c = B @ peak1.hkl
         t3_c = np.cross(B @ peak1.hkl, B @ peak2.hkl)

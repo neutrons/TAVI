@@ -1,6 +1,6 @@
 """Cooper-Nathans Method."""
 
-from typing import Any, Tuple
+from typing import Tuple
 
 import numpy as np
 
@@ -9,6 +9,7 @@ from tavi.library.component.collimators import Collimators
 from tavi.library.component.monochromater import Monochromator
 from tavi.library.experiment.utilities import SE2K, ksq2eng, rotation_matrix_2d, sig2fwhm
 from tavi.library.geometry.sample import Sample
+from tavi.library.Instrument.instrument import Instrument
 
 
 class CooperNathans:
@@ -121,25 +122,24 @@ class CooperNathans:
         return mat_c
 
     def resolution_matrix(
-        self, instrument: Any, sample: Sample, hkl: Tuple[float, float, float], ei: float, ef: float
+        self, instrument: Instrument, sample: Sample, hkl: Tuple[float, float, float], ei: float, ef: float
     ) -> tuple[np.ndarray, float]:
         """Calculate resolution matrix and normalization factor based on Popvic 1975."""
         # To be implemented: instrument will contain information about collimators, monochromator, analyzer, angles etc.
 
-        q_norm = sample.ol.get_q_norm(hkl)
+        q_norm = sample.ol.q_norm_from_hkl(hkl)
         ki, kf = SE2K(ei), SE2K(ef)
-        motor_angles = instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
-
+        # motor_angles = instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
         # psi = <ki to q>, always has the oppositie sign of s2
-        psi = np.radians(instrument.get_psi(hkl, en=ei - ef))
-        two_theta = np.radians(motor_angles.two_theta)
-        theta_m = np.radians(instrument.get_theta_m(ei))
-        theta_a = np.radians(instrument.get_theta_a(ef))
+        psi = instrument.get_psi(hkl, sample, ei, ef)
+        two_theta = instrument.get_two_theta(hkl, sample, ei, ef)
+        theta_m = -instrument.monochromater.theta_m(ei)  # set sense
+        theta_a = -instrument.analyzer.theta_a(ef)  # set sense
 
         mat_a = self.mat_a(ki, kf, theta_m, theta_a)
         mat_b = self.mat_b(ki, kf, psi, two_theta)
         mat_c = self.mat_c(theta_m, theta_a)
-        mat_f = self.mat_f(instrument.monochromator, instrument.analyzer)
+        mat_f = self.mat_f(instrument.monochromater, instrument.analyzer)
         mat_g = self.mat_g(instrument.collimators)
 
         mat_h = mat_c.T @ mat_f @ mat_c + mat_g
@@ -147,8 +147,8 @@ class CooperNathans:
         mat_ba = mat_b @ mat_a
         mat_cov = mat_ba @ mat_h_inv @ mat_ba.T
 
-        mat_cov[1, 1] += q_norm**2 * instrument.sample._mosaic_h**2
-        mat_cov[2, 2] += q_norm**2 * instrument.sample._mosaic_v**2
+        mat_cov[1, 1] += q_norm**2 * sample.mosaic_h**2
+        mat_cov[2, 2] += q_norm**2 * sample.mosaic_v**2
         # times sig2fwhm^2 to convert from sigma to FWHM
         mat_reso = np.linalg.inv(mat_cov) * sig2fwhm**2
 

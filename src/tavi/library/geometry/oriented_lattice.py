@@ -140,7 +140,7 @@ class OrientedLattice(BaseModel):
         return self._UB
 
     @UB.setter
-    def UB(self, mat: np.ndarray) -> np.ndarray:
+    def UB(self, mat: np.ndarray) -> None:
         """Set UB, recalculate everything."""
         self._UB = mat
         self.update_B_from_UB()
@@ -178,14 +178,14 @@ class OrientedLattice(BaseModel):
         self._a = np.sqrt(G[0, 0])
         self._b = np.sqrt(G[1, 1])
         self._c = np.sqrt(G[2, 2])
-        self._alpha = np.radians(np.arccos(G[1, 2] / (self._b * self._c)))
-        self._beta = np.radians(np.arccos(G[0, 2] / (self._a * self._c)))
-        self._gamma = np.radians(np.arccos(G[0, 1] / (self._a * self._b)))
+        self._alpha = np.degrees(np.arccos(G[1, 2] / (self._b * self._c)))
+        self._beta = np.degrees(np.arccos(G[0, 2] / (self._a * self._c)))
+        self._gamma = np.degrees(np.arccos(G[0, 1] / (self._a * self._b)))
 
         self._B = np.array(
             [
                 [a_star, b_star * np.cos(gamma_star), c_star * np.cos(beta_star)],
-                [0, b_star * np.sin(gamma_star), -c_star * np.sin(beta_star) * np.cos(self._alpha)],
+                [0, b_star * np.sin(gamma_star), -c_star * np.sin(beta_star) * np.cos(np.radians(self._alpha))],
                 [0, 0, 1.0 / self._c],
             ]
         )
@@ -247,7 +247,6 @@ class OrientedLattice(BaseModel):
                 [0, 0, 1.0 / self._c],
             ]
         )
-        print(self._u_mat, self._B)
 
     def update_lattice_parameters_from_B(self) -> None:
         """Calculate lattice parameters from B matrix."""
@@ -256,9 +255,9 @@ class OrientedLattice(BaseModel):
         self._a = np.sqrt(G[0, 0])
         self._b = np.sqrt(G[1, 1])
         self._c = np.sqrt(G[2, 2])
-        self._alpha = np.radians(np.arccos(G[1, 2] / (self._b * self._c)))
-        self._beta = np.radians(np.arccos(G[0, 2] / (self._a * self._c)))
-        self._gamma = np.radians(np.arccos(G[0, 1] / (self._a * self._b)))
+        self._alpha = np.degrees(np.arccos(G[1, 2] / (self._b * self._c)))
+        self._beta = np.degrees(np.arccos(G[0, 2] / (self._a * self._c)))
+        self._gamma = np.degrees(np.arccos(G[0, 1] / (self._a * self._b)))
 
     def get_uv(self) -> tuple[np.ndarray, np.ndarray]:
         """
@@ -293,5 +292,4 @@ class OrientedLattice(BaseModel):
 
         """
         q_norm = 2 * np.pi * np.linalg.norm(self._B @ np.array(hkl))
-
         return q_norm

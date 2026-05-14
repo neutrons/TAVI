@@ -36,10 +36,10 @@ class Goniometer:
 
     """
 
-    def __init__(self, type: str = "Y, -Z, X", sense: Optional[Literal["-", "+"]] = None) -> None:
+    def __init__(self, type: str = "Y, -Z, X", s2_sense: Optional[Literal["-", "+"]] = None) -> None:
         """Init."""
         self.type = type
-        self.sense = sense
+        self.s2_sense = s2_sense
 
     def _get_motor_senses(self) -> tuple[int, int, int]:
         ax0, ax1, ax2, *__ = self.type.split(",")

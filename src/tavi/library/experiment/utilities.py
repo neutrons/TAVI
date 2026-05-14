@@ -82,5 +82,4 @@ def rotation_matrix_2d(phi: float) -> np.ndarray:
 
     Notice the negative sign from rot_z
     """
-    phi = np.radians(phi)
     return np.array([[np.cos(phi), np.sin(phi), 0], [-np.sin(phi), np.cos(phi), 0], [0, 0, 1]])
