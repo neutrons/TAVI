@@ -1,5 +1,7 @@
 """Monochromater."""
 
+from typing import Literal
+
 import numpy as np
 
 from tavi.library.component.crystal import crystal_d
@@ -9,12 +11,19 @@ from tavi.library.experiment.utilities import SE2K
 class Monochromator:
     """Monochromater that holds horizontal and vertical mosaic."""
 
-    def __init__(self, mosaic_h: float = 30.0, mosaic_v: float = 30.0, crystal: str = "PG002") -> None:
-        """Init."""
+    def __init__(
+        self, mosaic_h: float = 30.0, mosaic_v: float = 30.0, crystal: str = "PG002", sense: Literal["+", "-"] = "-"
+    ) -> None:
+        """
+        Init.
+
+        sense, + for counter-clockwise, - for clockwise.
+        """
         self._mosaic_h = mosaic_h
         self._mosaic_v = mosaic_v
         self.crystal = crystal
         self.d_spacing = crystal_d.get(crystal, 0)
+        self.sense = sense
 
     @property
     def mosaic_h(self) -> float:

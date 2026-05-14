@@ -133,8 +133,10 @@ class CooperNathans:
         # psi = <ki to q>, always has the oppositie sign of s2
         psi = instrument.get_psi(hkl, sample, ei, ef)
         two_theta = instrument.get_two_theta(hkl, sample, ei, ef)
-        theta_m = -instrument.monochromater.theta_m(ei)  # set sense
-        theta_a = -instrument.analyzer.theta_a(ef)  # set sense
+        theta_m = instrument.monochromater.theta_m(ei) * (
+            1 if instrument.monochromater.sense == "+" else -1
+        )  # set sense
+        theta_a = instrument.analyzer.theta_a(ef) * (1 if instrument.analyzer.sense == "+" else -1)  # set sense
 
         mat_a = self.mat_a(ki, kf, theta_m, theta_a)
         mat_b = self.mat_b(ki, kf, psi, two_theta)
