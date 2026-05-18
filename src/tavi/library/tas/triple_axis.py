@@ -1,6 +1,6 @@
 """General utilities for tas related functions and classes."""
 
-from typing import Optional, Tuple
+from typing import Literal, Optional, Tuple
 
 import numpy as np
 
@@ -9,7 +9,8 @@ from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import SE2K, q_lab
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.resolution.resolution import Resolution
+
+MODEL_CHOICES = Literal["Cooper-Nathans"]
 
 
 class TAS:
@@ -23,7 +24,6 @@ class TAS:
         self,
         instrument: Instrument,
         sample: Sample,
-        resolution: Optional[Resolution] = None,
         experiment: Optional[Experiment] = None,
     ) -> None:
         """
@@ -41,7 +41,20 @@ class TAS:
         self.instrument = instrument
         self.experiment = experiment
         self.sample = sample
-        self.resolution = resolution
+
+    # def get_resolution_at_hkle(
+    #     self, res_model: MODEL_CHOICES, hkle: Tuple, frame: Tuple
+    # ) -> Optional[Tuple[np.ndarray, float]]:
+    #     """Get resolution matrix and r0 at hkle for a specific sample, experiment."""
+    #     if res_model == "Cooper-Nathans":
+    #         resolution = Resolution(model=res_model)
+    #     else:
+    #         raiseExceptions("Model not defined.")
+    #     *hkl, e = hkl
+    #     ei, ef = self.instrument.get_ei_ef(e)
+
+    #     if not frame:
+    #         return resolution.model.resolution_matrix(self.instrument, self.sample, hkl, ei, ef)  # TO here
 
     # -----------R matrix-----------
     def r_matrix_with_minimal_tilt(
@@ -115,13 +128,12 @@ class TAS:
         self,
         peak: DataPoint,
         scattering_plane: Tuple[tuple, tuple],
-        B: np.ndarray,
         ei: float,
         ef: float,
     ) -> np.ndarray:
         """Calculate U matrix from one peak and a scattering plane."""
         r_mat = self.instrument.goni.r_mat
-        t1_c = B @ peak.hkl
+        t1_c = self.sample.ol.B @ peak.hkl
         vector1, vector2 = scattering_plane
 
         coeff1, coeff2 = vector1 @ peak.hkl, vector2 @ peak.hkl

@@ -283,7 +283,7 @@ class OrientedLattice(BaseModel):
         cos_angle = (p1 @ p2) / (np.linalg.norm(p1) * np.linalg.norm(p2))
         return np.degrees(cos_angle)
 
-    def q_norm_from_hkl(self, hkl: tuple[float, float, float]) -> np.ndarray:
+    def q_norm_from_hkl(self, hkl: tuple[float, float, float]) -> float:
         """
         Return norm of q for given (h,k,l).
 

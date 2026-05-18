@@ -41,6 +41,16 @@ class Analyzer:
         """Setter."""
         self._mosaic_v = val
 
+    @property
+    def sense(self) -> int:
+        """Get mono sense."""
+        return 1 if self._sense == "+" else -1
+
+    @sense.setter
+    def sense(self, val: str) -> None:
+        """Set sense."""
+        self._sense = val
+
     def theta_a(self, ei: float) -> float:
         """
         Calculate scattering angle based on Bragg's law.

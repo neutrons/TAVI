@@ -6,6 +6,7 @@ from tavi.library.component.analyzer import Analyzer
 from tavi.library.component.collimators import Collimators
 from tavi.library.component.goniometer import Goniometer
 from tavi.library.component.monochromater import Monochromator
+from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.resolution.cooper_nathan import CooperNathans
@@ -55,14 +56,14 @@ def component():
                          analyzer=ana, 
                          collimators=collimators,
                          goniometer=Goniometer(s2_sense = "+"))
-        return sample, collimators, mono, ana, ins
+        exp = Experiment()
+        return sample, ins, exp
 
 def test_local_q_frame(component):
-    sample, collimators, mono, ana, instrument = component
+    sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    ei, ef = 4.8, 4.8
-    cn = CooperNathans()
-    res = cn.resolution_matrix(instrument, sample, hkl, ei, ef)
+    res = Resolution("Cooper-Nathans", instrument,sample, experiment)
+    res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
             [9583.2881, -4671.0614, -0.0000, 986.5610],
@@ -71,5 +72,5 @@ def test_local_q_frame(component):
             [986.5610, -4129.1553, -0.0000, 864.3494],
         ]
     )
-    assert np.allclose(res[0], mat, atol=1e-2)
+    assert np.allclose(res_mat[0], mat, atol=1e-2)
 

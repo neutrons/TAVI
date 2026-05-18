@@ -1,13 +1,11 @@
 """Cooper-Nathans Method."""
 
-from typing import Tuple
-
 import numpy as np
 
 from tavi.library.component.analyzer import Analyzer
 from tavi.library.component.collimators import Collimators
 from tavi.library.component.monochromater import Monochromator
-from tavi.library.experiment.utilities import SE2K, ksq2eng, rotation_matrix_2d, sig2fwhm
+from tavi.library.experiment.utilities import ksq2eng, rotation_matrix_2d, sig2fwhm
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
 
@@ -122,21 +120,25 @@ class CooperNathans:
         return mat_c
 
     def resolution_matrix(
-        self, instrument: Instrument, sample: Sample, hkl: Tuple[float, float, float], ei: float, ef: float
+        self,
+        instrument: Instrument,
+        sample: Sample,
+        q_norm: float,
+        ki: float,
+        kf: float,
+        psi: float,
+        two_theta: float,
+        theta_m: float,
+        theta_a: float,
     ) -> tuple[np.ndarray, float]:
         """Calculate resolution matrix and normalization factor based on Popvic 1975."""
-        # To be implemented: instrument will contain information about collimators, monochromator, analyzer, angles etc.
-
-        q_norm = sample.ol.q_norm_from_hkl(hkl)
-        ki, kf = SE2K(ei), SE2K(ef)
-        # motor_angles = instrument.calculate_motor_angles(hkl=hkl, en=ei - ef)
         # psi = <ki to q>, always has the oppositie sign of s2
-        psi = instrument.get_psi(hkl, sample, ei, ef)
-        two_theta = instrument.get_two_theta(hkl, sample, ei, ef)
-        theta_m = instrument.monochromater.theta_m(ei) * (
-            1 if instrument.monochromater.sense == "+" else -1
-        )  # set sense
-        theta_a = instrument.analyzer.theta_a(ef) * (1 if instrument.analyzer.sense == "+" else -1)  # set sense
+        # psi = instrument.get_psi(hkl, sample, ei, ef)
+        # two_theta = instrument.get_two_theta(hkl, sample, ei, ef)
+        # theta_m = instrument.monochromater.theta_m(ei) * (
+        #     1 if instrument.monochromater.sense == "+" else -1
+        # )  # set sense
+        # theta_a = instrument.analyzer.theta_a(ef) * (1 if instrument.analyzer.sense == "+" else -1)  # set sense
 
         mat_a = self.mat_a(ki, kf, theta_m, theta_a)
         mat_b = self.mat_b(ki, kf, psi, two_theta)

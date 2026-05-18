@@ -39,7 +39,17 @@ class Goniometer:
     def __init__(self, type: str = "Y, -Z, X", s2_sense: Optional[Literal["-", "+"]] = None) -> None:
         """Init."""
         self.type = type
-        self.s2_sense = s2_sense
+        self._sense = s2_sense
+
+    @property
+    def sense(self) -> int:
+        """Get s2 sense of goniometer."""
+        return 1 if self._sense == "+" else -1
+
+    @sense.setter
+    def sense(self, val: str) -> None:
+        """Set sense."""
+        self._sense = val
 
     def _get_motor_senses(self) -> tuple[int, int, int]:
         ax0, ax1, ax2, *__ = self.type.split(",")

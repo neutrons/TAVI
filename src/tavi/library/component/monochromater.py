@@ -23,7 +23,7 @@ class Monochromator:
         self._mosaic_v = mosaic_v
         self.crystal = crystal
         self.d_spacing = crystal_d.get(crystal, 0)
-        self.sense = sense
+        self._sense = sense
 
     @property
     def mosaic_h(self) -> float:
@@ -44,6 +44,16 @@ class Monochromator:
     def mosaic_v(self, val: float) -> None:
         """Setter."""
         self._mosaic_v = val
+
+    @property
+    def sense(self) -> int:
+        """Get mono sense."""
+        return 1 if self._sense == "+" else -1
+
+    @sense.setter
+    def sense(self, val: str) -> None:
+        """Set sense."""
+        self._sense = val
 
     def theta_m(self, ei: float) -> float:
         """
