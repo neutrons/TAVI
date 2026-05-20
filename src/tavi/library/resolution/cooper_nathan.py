@@ -2,9 +2,8 @@
 
 import numpy as np
 
-from tavi.library.component.analyzer import Analyzer
 from tavi.library.component.collimators import Collimators
-from tavi.library.component.monochromater import Monochromator
+from tavi.library.component.crystal import Crystal
 from tavi.library.experiment.utilities import ksq2eng, rotation_matrix_2d, sig2fwhm
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
@@ -44,7 +43,7 @@ class CooperNathans:
 
         return mat_g
 
-    def mat_f(self, monochromator: Monochromator, analyzer: Analyzer) -> np.ndarray:
+    def mat_f(self, monochromator: Crystal, analyzer: Crystal) -> np.ndarray:
         """
         Matrix F.
 

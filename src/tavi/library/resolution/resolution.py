@@ -56,7 +56,7 @@ class Resolution:
             -self.instrument.goni.sense
         )  # negative sign ensures opposite sign of s2
         two_theta = self.experiment.get_two_theta(q_norm, ei, ef) * (self.instrument.goni.sense)
-        theta_m = self.instrument.monochromater.theta_m(ei) * (self.instrument.monochromater.sense)
-        theta_a = self.instrument.analyzer.theta_a(ef) * (self.instrument.analyzer.sense)  # set sense
+        theta_m = self.instrument.monochromater.theta(ei) * (self.instrument.monochromater.sense)
+        theta_a = self.instrument.analyzer.theta(ef) * (self.instrument.analyzer.sense)  # set sense
         res = self.model.resolution_matrix(self.instrument, self.sa, q_norm, ki, kf, psi, two_theta, theta_m, theta_a)
         return res

@@ -42,20 +42,6 @@ class TAS:
         self.experiment = experiment
         self.sample = sample
 
-    # def get_resolution_at_hkle(
-    #     self, res_model: MODEL_CHOICES, hkle: Tuple, frame: Tuple
-    # ) -> Optional[Tuple[np.ndarray, float]]:
-    #     """Get resolution matrix and r0 at hkle for a specific sample, experiment."""
-    #     if res_model == "Cooper-Nathans":
-    #         resolution = Resolution(model=res_model)
-    #     else:
-    #         raiseExceptions("Model not defined.")
-    #     *hkl, e = hkl
-    #     ei, ef = self.instrument.get_ei_ef(e)
-
-    #     if not frame:
-    #         return resolution.model.resolution_matrix(self.instrument, self.sample, hkl, ei, ef)  # TO here
-
     # -----------R matrix-----------
     def r_matrix_with_minimal_tilt(
         self,

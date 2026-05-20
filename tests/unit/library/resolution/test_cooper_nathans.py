@@ -2,14 +2,12 @@ import numpy as np
 import pytest
 
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.component.analyzer import Analyzer
 from tavi.library.component.collimators import Collimators
+from tavi.library.component.crystal import Crystal
 from tavi.library.component.goniometer import Goniometer
-from tavi.library.component.monochromater import Monochromator
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
-from tavi.library.resolution.cooper_nathan import CooperNathans
 from tavi.library.resolution.resolution import Resolution
 
 @pytest.fixture
@@ -42,12 +40,12 @@ def component():
         collimators.post_ana_v = 600
 
         # monochromator
-        mono = Monochromator()
+        mono = Crystal()
         mono.mosaic_h = 30
         mono.mosaic_v = 30
 
         # analyzer
-        ana = Analyzer()
+        ana = Crystal()
         ana.mosaic_h = 90
         ana.mosaic_v = 90
 
