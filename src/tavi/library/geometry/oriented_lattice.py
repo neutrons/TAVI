@@ -24,6 +24,8 @@ class OrientedLattice(BaseModel):
         beta: float = 90,
         gamma: float = 90,
         u_mat: np.ndarray = np.eye(3),
+        plane_normal: np.ndarray = np.array([0, 0, 0]),
+        in_plane_ref: np.ndarray = np.array([0, 0, 0]),
         powder: bool = False,
     ) -> None:
         """Initialize OrientedLattice class."""
@@ -38,6 +40,8 @@ class OrientedLattice(BaseModel):
         self._B = None
         self.calculate_B()
         self._UB = self._u_mat @ self._B
+        self._plane_normal = plane_normal
+        self._in_plane_ref = in_plane_ref
 
     @property
     def a(self) -> float:
@@ -163,6 +167,26 @@ class OrientedLattice(BaseModel):
         """Calculate a* from ub."""
         G_star = self._UB.T @ self._UB
         return np.sqrt(G_star[2, 2])
+
+    @property
+    def plane_normal(self) -> np.ndarray:
+        """Return plane normal vector."""
+        return self._plane_normal
+
+    @plane_normal.setter
+    def plane_normal(self, val: np.ndarray) -> None:
+        """Set plane normal vector."""
+        self._plane_normal = val
+
+    @property
+    def in_plane_ref(self) -> np.ndarray:
+        """Return plane normal vector."""
+        return self._in_plane_ref
+
+    @in_plane_ref.setter
+    def in_plane_ref(self, val: np.ndarray) -> None:
+        """Set plane normal vector."""
+        self._in_plane_ref = val
 
     def update_B_from_UB(self) -> None:
         """Calculate B matri from G*. Also update lattice parameters."""

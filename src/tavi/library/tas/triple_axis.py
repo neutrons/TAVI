@@ -6,7 +6,7 @@ import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
-from tavi.library.experiment.utilities import SE2K, q_lab
+from tavi.library.experiment.utilities import q_lab
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
 
@@ -41,73 +41,6 @@ class TAS:
         self.instrument = instrument
         self.experiment = experiment
         self.sample = sample
-
-    # -----------R matrix-----------
-    def r_matrix_with_minimal_tilt(
-        self,
-        peak: DataPoint,
-        sense: str,
-        plane_normal: np.ndarray,
-        in_plane_ref: np.ndarray,
-    ) -> np.ndarray:
-        """
-        Calculate R matrix when the tilt from the scattering plane is minimal.
-
-        Args:
-            peak: Peak
-            ei: incident energy, in meV
-            ef: final energy, in meV
-            sense: either + or -, indicate if phi =0 or pi
-            ub_mat: UB matrix
-            plane_normal: plane_normal
-            in_plane_ref: in plane reflection.
-
-        """
-        ki = SE2K(peak.ei)
-        kf = SE2K(peak.ef)
-        ub_mat = self.sample.ol.UB
-        q_norm = self.sample.ol.q_norm_from_hkl(peak.hkl)
-
-        # Eq.112
-        Q_squared = 4 * np.pi**2 * (np.array(peak.hkl).T @ ub_mat.T @ ub_mat @ peak.hkl)
-        # Eq.113
-        analyzer_position = 1 if sense == "+" else -1
-        two_theta = analyzer_position * np.arccos((ki**2 + kf**2 - Q_squared) / (2 * ki * kf))
-        # with minimal tilt, we are considering scenario described above Eq.114
-        q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
-        q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm
-        q_lab3 = np.array([0, 1, 0])
-
-        Q_lab = np.array([q_lab1, q_lab2, q_lab3]).T
-        tol = 1e-5
-
-        # Eq.106
-        t1 = ub_mat @ np.array(peak.hkl)
-        if np.abs(t1 @ plane_normal) < tol:
-            # t1 in plane
-            t3 = plane_normal
-            t2 = np.cross(t3, t1)
-        elif np.linalg.norm(np.cross(plane_normal, t1)) < tol:
-            # calculate R when t1 is along plane_normal. Easiest way to construct three perp
-            # axes are use t2 as in-plane axis. This already considers a 90 degree rotation
-            # to bring t1 in-plane.
-            t2 = in_plane_ref  # set t2 in plane
-            t3 = np.cross(t1, t2)  # t3 along y
-        else:
-            # t1 not in plane. np.cross(plane_normal, t1) already incorporate a minimal rotation along
-            # t2 to bring t1 in-plane
-            t2 = np.cross(plane_normal, t1)
-            t3 = np.cross(t1, t2)
-
-        T_mat = np.array(
-            [
-                t1 / np.linalg.norm(t1),
-                t2 / np.linalg.norm(t2),
-                t3 / np.linalg.norm(t3),
-            ]
-        ).T
-        r_mat = Q_lab @ np.linalg.inv(T_mat)
-        return r_mat
 
     # -----------Calculate UB Matrix-----------
     def find_u_from_one_peak_and_scattering_plane(

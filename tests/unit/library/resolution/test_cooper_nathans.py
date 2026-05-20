@@ -23,6 +23,8 @@ def component():
             [-0.201388, -0.193307, 0.007769],
             [-0.108415, 0.120600,-0.003178]
         ])
+        ol.in_plane_ref = np.array([-0.993257, 0.107299, -0.043892])
+        ol.plane_normal = np.array([-0.04032, 0.035237, 0.998565])
         sample = Sample(ol=ol)
 
         # Collimators
@@ -60,7 +62,7 @@ def component():
 def test_local_q_frame(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution("Cooper-Nathans", instrument,sample, experiment)
+    res = Resolution("Cooper-Nathans", instrument,sample, experiment, axes = None)
     res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
@@ -71,4 +73,36 @@ def test_local_q_frame(component):
         ]
     )
     assert np.allclose(res_mat[0], mat, atol=1e-2)
+
+def test_hkl_frame(component):
+    sample, instrument, experiment = component
+    hkl = (0, 0, 3)
+    res = Resolution("Cooper-Nathans", instrument,sample, experiment, axes = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"))
+    r_mat = res.r_matrix_with_minimal_tilt(hkl, 4.8, 4.8, sample.ol.plane_normal, sample.ol.in_plane_ref)
+    res_mat = res.get_resolution(hkl,4.8,4.8,r_mat)
+    mat = np.array(
+        [
+            [33305.0843, 33224.4963, -2651.8290, -5152.9962],
+            [33224.4963, 33305.2609, -2651.8526, -5153.0102],
+            [-2651.8290, -2651.8526, 1983.2037, 448.8024],
+            [-5152.9962, -5153.0102, 448.8024, 864.3494],
+        ]
+    )
+    assert np.allclose(res_mat[0], mat, atol=1e-2)
+
+def test_projection_any_frame(component):
+    sample, instrument, experiment = component
+    hkl = (0, 0, 3)
+    res = Resolution("Cooper-Nathans", instrument, sample, experiment, axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"))
+    r_mat = res.r_matrix_with_minimal_tilt(hkl, 4.8, 4.8, sample.ol.plane_normal, sample.ol.in_plane_ref)
+    res_mat = res.get_resolution(hkl,4.8,4.8,r_mat)
+    mat = np.array(
+        [
+            [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],
+            [-5.3037e03, 1.9832e03, 2.3558e-02, 4.4880e02],
+            [-1.7660e-01, 2.3558e-02, 1.6135e02, 1.4003e-02],
+            [-1.0306e04, 4.4880e02, 1.4003e-02, 8.6435e02],
+        ]
+    )
+    assert np.allclose(res_mat[0], mat, atol=1e-1)
 
