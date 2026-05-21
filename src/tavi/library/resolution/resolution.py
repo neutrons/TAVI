@@ -98,8 +98,6 @@ class Resolution:
         hkl: Tuple[float, float, float],
         ei: float,
         ef: float,
-        plane_normal: np.ndarray,
-        in_plane_ref: np.ndarray,
     ) -> np.ndarray:
         """
         Calculate R matrix when the tilt from the scattering plane is minimal.
@@ -108,14 +106,16 @@ class Resolution:
             hkl: Miller indices of the reflection.
             ei: incident energy, in meV.
             ef: final energy, in meV.
-            plane_normal: scattering plane normal.
-            in_plane_ref: in-plane reference reflection.
 
         """
         ki = SE2K(ei)
         kf = SE2K(ef)
         ub_mat = self.sample.ol.UB
         q_norm = self.sample.ol.q_norm_from_hkl(hkl)
+        plane_normal = self.sample.ol.plane_normal
+        in_plane_ref = self.sample.ol.in_plane_ref
+        if plane_normal is None or in_plane_ref is None:
+            raiseExceptions("plane_normal and in_plane_ref must be set.")
 
         # Eq.112
         Q_squared = 4 * np.pi**2 * (np.array(hkl).T @ ub_mat.T @ ub_mat @ hkl)
