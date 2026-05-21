@@ -117,9 +117,6 @@ class Resolution:
         if plane_normal is None or in_plane_ref is None:
             raiseExceptions("plane_normal and in_plane_ref must be set.")
 
-        # Eq.112
-        Q_squared = 4 * np.pi**2 * (np.array(hkl).T @ ub_mat.T @ ub_mat @ hkl)
-        # Eq.113
         two_theta = self.experiment.get_two_theta(q_norm, ei, ef) * (self.instrument.goni.sense)
         # with minimal tilt, we are considering scenario described above Eq.114
         q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
