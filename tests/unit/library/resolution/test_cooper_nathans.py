@@ -79,7 +79,7 @@ def test_hkl_frame(component):
     hkl = (0, 0, 3)
     res = Resolution("Cooper-Nathans", instrument,sample, experiment, axes = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"))
     r_mat = res.r_matrix_with_minimal_tilt(hkl, 4.8, 4.8)
-    res_mat = res.get_resolution(hkl,4.8,4.8,r_mat)
+    res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
             [33305.0843, 33224.4963, -2651.8290, -5152.9962],
@@ -94,8 +94,7 @@ def test_projection_any_frame(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
     res = Resolution("Cooper-Nathans", instrument, sample, experiment, axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"))
-    r_mat = res.r_matrix_with_minimal_tilt(hkl, 4.8, 4.8)
-    res_mat = res.get_resolution(hkl,4.8,4.8,r_mat)
+    res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
             [1.3306e05, -5.3037e03, -1.7660e-01, -1.0306e04],

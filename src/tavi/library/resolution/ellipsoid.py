@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 import numpy as np
 
-from tavi.library.experiment.utilities import sig2fwhm
+from tavi.library.experiment.utilities import quadric_proj, sig2fwhm
 
 
 class ResoEllipsoid:
@@ -20,6 +20,7 @@ class ResoEllipsoid:
         self.res_mat = res_mat
         self.r0 = r0
         self.axes = axes
+        self.angles = (90, 90, 90)
 
     def project_to_frame(self, r_mat: np.ndarray, psi: float, ub: np.ndarray) -> np.ndarray:
         """
@@ -54,23 +55,23 @@ class ResoEllipsoid:
 
         return res_mat_proj, self.r0
 
-    def coh_fwhm(self, r_mat: np.ndarray, axis: int = None) -> float:
+    def coh_fwhm(self, res_mat: np.ndarray, axis: int = None) -> float:
         """
         Coherent FWHM.
 
         Make a cut.
         """
         idx = int(axis)
-        return sig2fwhm / np.sqrt(r_mat[idx, idx])
+        return sig2fwhm / np.sqrt(res_mat[idx, idx])
 
-    def incoh_fwhm(self, r_mat: np.ndarray, axis: int = None) -> float:
+    def incoh_fwhm(self, res_mat: np.ndarray, axis: int = None) -> float:
         """
         Incoherent FWHM.
 
         Integrate all 3 axes.
         """
         idx = int(axis)
-        res_mat = r_mat
+        res_mat = res_mat
         for i in (3, 2, 1, 0):
             if not i == idx:
                 res_mat = quadric_proj(res_mat, i)
