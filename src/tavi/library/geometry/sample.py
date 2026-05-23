@@ -1,7 +1,7 @@
 """
 UnitCell class that defines lattice parameters, sample mosaic.
 
-Follows Andrei Savici's UB Matrix Formlism used in mantid at
+Follows Andrei Savici's UB Matrix Formalism used in mantid at
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf version:March 06, 2011.
 Equations listed in the comments refer to the document above.
 """

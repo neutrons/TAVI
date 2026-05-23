@@ -9,21 +9,22 @@ branch.
 Core Concepts
 -------------
 
-The stack is organised around four concerns:
+The stack is organised around five classes:
 
 - **Instrument** (``Instrument``)
   Container holding the spectrometer components (monochromator, analyzer,
-  collimators, goniometer) and the fixed-energy mode.
+  collimators, goniometer).
 
 - **Components** (``Crystal``, ``Collimators``, ``Goniometer``)
   Reusable hardware abstractions used by ``Instrument`` and consumed by the
   resolution calculation.
 
 - **Experiment** (``Experiment``)
-  Wraps a ``Scan`` and exposes the geometric quantities derived from the data
-  (two-theta, psi, peak indices).
+  Wraps a ``Scan``, tracks the fixed-energy mode (``FixedEnergyMode``), and
+  exposes the geometric quantities derived from the data (two-theta, psi,
+  peak indices).
 
-- **Resolution** (``Resolution``, ``CooperNathans``, ``ResoEllipsoid``)
+- **Resolution** (``Resolution``, ``CooperNathans``, ``ResolutionEllipsoid``)
   Computes the 4D resolution matrix and ``r0`` normalisation factor and
   projects them into user-selected frames.
 
@@ -42,15 +43,15 @@ Components by responsibility:
 - ``tavi.library.component.goniometer.Goniometer`` -- sample stage
 - ``tavi.library.experiment.experiment.Experiment`` -- scan-derived geometry
 - ``tavi.library.resolution.resolution.Resolution`` -- resolution manager
-- ``tavi.library.resolution.cooper_nathan.CooperNathans`` -- Cooper-Nathans model
-- ``tavi.library.resolution.ellipsoid.ResoEllipsoid`` -- 4D ellipsoid + projection
+- ``tavi.library.resolution.cooper_nathans.CooperNathans`` -- Cooper-Nathans model
+- ``tavi.library.resolution.ellipsoid.ResolutionEllipsoid`` -- 4D ellipsoid + projection
 - ``tavi.library.tas.triple_axis.TAS`` -- top-level entry point
 
 Instrument
 ----------
 
 ``Instrument`` aggregates the optical and mechanical components of the
-spectrometer and tracks which energy is held fixed during a scan.
+spectrometer.
 
 Constructor arguments:
 
@@ -58,18 +59,6 @@ Constructor arguments:
 - ``analyzer`` (``Crystal``) -- post-sample crystal
 - ``collimators`` (``Collimators``) -- four soller-slit divergences
 - ``goniometer`` (``Goniometer``) -- sample stage with scattering sense
-- ``mode`` (``"fix_ei"`` or ``"fix_ef"``) -- which energy is held fixed
-- ``ei_or_ef`` (``float``) -- the fixed energy value, in meV
-
-Methods:
-
-.. code-block:: python
-
-    def set_ei_or_ef(e: float) -> None
-        """Assign the fixed energy on the side selected by ``mode``."""
-
-    def get_ei_ef(e: float) -> tuple[float, float]
-        """Resolve the complementary energy from energy transfer ``e``."""
 
 Example:
 
@@ -85,8 +74,6 @@ Example:
         analyzer=Crystal(crystal="PG002", sense="-"),
         collimators=Collimators(pre_mono_h=40, pre_sample_h=100),
         goniometer=Goniometer(s2_sense="+"),
-        mode="fix_ef",
-        ei_or_ef=4.8,
     )
 
 Instrument parameter files (``hb1.json``, ``hb1a.json``, ``hb3.json``,
@@ -111,7 +98,8 @@ Constructor arguments:
 The supported crystals and their d-spacings (in angstrom) are listed in
 ``crystal_d`` at the top of ``crystal.py`` (``PG002``, ``PG004``, ``Cu111``,
 ``Cu220``, ``Ge111``, ``Ge220``, ``Ge311``, ``Ge331``, ``Be002``, ``Be110``,
-``Heusler``).
+``Heusler``). If the crystal is not listed here, a custom string can be set
+for crystal and specific d-spacing can be manually put in.
 
 Collimators
 ~~~~~~~~~~~
@@ -136,8 +124,19 @@ The goniometer carries the scattering sense (``+`` or ``-``) used to sign
 Experiment
 ----------
 
-``Experiment`` wraps an optional ``Scan`` and exposes the geometric quantities
-needed by the resolution machinery.
+``Experiment`` wraps an optional ``Scan``, records which energy is held fixed
+during the scan, and exposes the geometric quantities needed by the
+resolution machinery.
+
+Constructor arguments:
+
+- ``scan`` (``Scan``) -- optional scan payload
+- ``mode`` (``FixedEnergyMode``) -- ``FixedEnergyMode.FIX_Ei`` or
+  ``FixedEnergyMode.FIX_Ef``; defaults to ``FixedEnergyMode.FIX_Ef``
+- ``ei_or_ef`` (``float``) -- value of the fixed energy in meV
+
+``FixedEnergyMode`` is an ``Enum`` with exactly two members; only enum
+members are accepted (raw strings are not).
 
 Methods:
 
@@ -149,9 +148,40 @@ Methods:
     def get_psi(q_norm: float, ei: float, ef: float) -> float
         """Angle between ki and Q (sign opposite of s2)."""
 
+    def set_ei_or_ef(e: float) -> None
+        """Assign ``e`` to ``ei`` or ``ef`` based on ``mode``."""
+
+    def get_ei_ef(e: float) -> tuple[float, float]
+        """Return ``(ei, ef)`` given the complementary energy ``e``."""
+
 Both angles are derived from a triangle solve using ``ki = SE2K(ei)`` and
-``kf = SE2K(ef)``. Sign conventions are applied by the caller (``Resolution``)
-based on instrument/goniometer sense.
+``kf = SE2K(ef)``. The scattering triangle in k-space (``Q = ki - kf``) is::
+
+                    o   <- tip of ki (= tip of Q)
+                   /|
+                  / |
+              ki /  |
+                / ψ | Q
+               /    |
+              /     |
+             / 2θ   |
+            o-------o
+         origin    tip of kf
+                kf -->
+
+    2θ : scattering angle, between ki and kf (returned by get_two_theta)
+    ψ  : angle between ki and Q             (returned by get_psi)
+
+Sign conventions are applied by the caller (``Resolution``) based on
+instrument/goniometer sense.
+
+Example:
+
+.. code-block:: python
+
+    from tavi.library.experiment.experiment import Experiment, FixedEnergyMode
+
+    experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, ei_or_ef=4.8)
 
 Resolution
 ----------
@@ -178,9 +208,9 @@ Key methods:
         hkl: tuple[float, float, float],
         ei: float,
         ef: float,
-        r_mat: Optional[np.ndarray] = None,
+        rot_mat: Optional[np.ndarray] = None,
     ) -> tuple[np.ndarray, float]
-        """Resolution matrix + r0 at ``hkl``, optionally projected via ``r_mat``."""
+        """Resolution matrix + r0 at ``hkl``, optionally projected via ``rot_mat``."""
 
     def get_ellipse(
         res_mat: np.ndarray,
@@ -197,9 +227,9 @@ Key methods:
         """Rotation matrix bringing the scattering plane in with minimal tilt."""
 
 When ``axes`` is ``None``, ``get_resolution`` returns the raw matrix in the
-local Q frame. Otherwise it constructs a ``ResoEllipsoid`` and calls
+local Q frame. Otherwise it constructs a ``ResolutionEllipsoid`` and calls
 ``project_to_frame`` to produce the matrix in the requested axes; in that
-mode ``r_mat`` is required.
+mode ``rot_mat`` is required.
 
 CooperNathans
 ~~~~~~~~~~~~~
@@ -231,10 +261,10 @@ The main entry point is:
         theta_a: float,
     ) -> tuple[np.ndarray, float]
 
-ResoEllipsoid
-~~~~~~~~~~~~~
+ResolutionEllipsoid
+~~~~~~~~~~~~~~~~~~~
 
-``ResoEllipsoid`` wraps the 4D resolution matrix and the ``r0`` normalisation
+``ResolutionEllipsoid`` wraps the 4D resolution matrix and the ``r0`` normalisation
 along with the projection axes. ``project_to_frame(r_mat, psi, ub)`` rotates
 the matrix into the requested ``hkle`` frame; when the requested axes differ
 from the default ``((1,0,0),(0,1,0),(0,0,1),"e")``, the matrix is further
@@ -292,8 +322,8 @@ Projecting onto a User Frame
         experiment=experiment,
         axes=((1, 1, 0), (0, 0, 1), (1, -1, 0), "e"),
     )
-    r_mat = res.r_matrix_with_minimal_tilt(hkl=(0, 0, 3), ei=4.8, ef=4.8)
-    res_proj = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8, r_mat=r_mat)
+    rot_mat = res.r_matrix_with_minimal_tilt(hkl=(0, 0, 3), ei=4.8, ef=4.8)
+    res_proj = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8, rot_mat=r_mat)
 
 Reducing to a 2D Ellipse
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -314,7 +344,7 @@ Design Characteristics
 - **Model selection at runtime** -- ``Resolution`` dispatches on ``model``;
   Cooper-Nathans is currently the only implementation.
 - **Frame-agnostic core** -- resolution matrix is computed in local Q;
-  projection is a separable step via ``ResoEllipsoid``.
+  projection is a separable step via ``ResolutionEllipsoid``.
 - **Sign conventions centralised** -- ``Resolution`` applies the goniometer/
   monochromator/analyzer ``sense`` to angles before handing off to the model.
 

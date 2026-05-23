@@ -9,7 +9,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import SE2K, quadric_proj
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.resolution.ellipsoid import ResoEllipsoid
+from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 
 MODEL_CHOICES = Literal["Cooper-Nathans"]
 
@@ -41,7 +41,7 @@ class Resolution:
 
         """
         if model == "Cooper-Nathans":
-            from tavi.library.resolution.cooper_nathan import CooperNathans
+            from tavi.library.resolution.cooper_nathans import CooperNathans
 
             self.model = CooperNathans()
         else:
@@ -54,7 +54,7 @@ class Resolution:
         self.axes = axes
 
     def get_resolution(
-        self, hkl: Tuple[float, float, float], ei: float, ef: float, r_mat: Optional[np.ndarray] = None
+        self, hkl: Tuple[float, float, float], ei: float, ef: float, rot_mat: Optional[np.ndarray] = None
     ) -> Tuple[np.ndarray, float]:
         """Get resolution matrix and r0 from a selected model at hkl."""
         q_norm = self.sample.ol.q_norm_from_hkl(hkl)
@@ -71,10 +71,10 @@ class Resolution:
         if not self.axes:
             return res_q
         else:
-            res_ellipsoid = ResoEllipsoid(res_q[0], res_q[1], self.axes)
-            if r_mat is None:
+            res_ellipsoid = ResolutionEllipsoid(res_q[0], res_q[1], self.axes)
+            if rot_mat is None:
                 raiseExceptions("Rotation matrix must be set to project to frame.")
-            res_proj = res_ellipsoid.project_to_frame(r_mat, psi, self.sample.ol.UB)
+            res_proj = res_ellipsoid.project_to_frame(rot_mat, psi, self.sample.ol.UB)
             return res_proj
 
     def get_ellipse(

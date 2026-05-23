@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Collimators:
-    """Collimators that holds horizontal and vertical divergence for pre_mono, pre_sample, post_sample, post_ana."""
+    """Collimators that holds horizontal and vertical divergence for pre_mono, pre_sample, post_sample, post_ana in minute arc."""
 
     def __init__(
         self,

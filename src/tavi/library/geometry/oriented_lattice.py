@@ -1,7 +1,7 @@
 """
 Calculate UB matrix and related quantities.
 
-Follows Andrei Savici's UB Matrix Formlism used in mantid at
+Follows Andrei Savici's UB Matrix Formalism used in mantid at
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf version:March 06, 2011.
 Equations listed in the comments refer to the document above.
 """
@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 
 class OrientedLattice(BaseModel):
-    """Oritented lattice class."""
+    """Oriented lattice class."""
 
     def __init__(
         self,
@@ -189,7 +189,7 @@ class OrientedLattice(BaseModel):
         self._in_plane_ref = val
 
     def update_B_from_UB(self) -> None:
-        """Calculate B matri from G*. Also update lattice parameters."""
+        """Calculate B matrix from G*. Also update lattice parameters."""
         G_star = self._UB.T @ self._UB
         a_star = np.sqrt(G_star[0, 0])
         b_star = np.sqrt(G_star[1, 1])

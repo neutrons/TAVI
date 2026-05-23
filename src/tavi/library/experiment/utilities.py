@@ -20,12 +20,12 @@ def SE2K(E: float) -> float:
 
 def q_lab(ei: float, ef: float, theta: float, phi: float = 0) -> np.ndarray:
     """
-    Return qlab matrix. Follow's mantid convention. Eq.8.
+    Return qlab matrix. Follows mantid convention. Eq.8.
 
     Args:
         ei: incident energy, in meV.
         ef: final energy, in meV.
-        theta: angle between scattered beam and z axis, indegree.
+        theta: angle between scattered beam and z axis, in degree.
         phi: the angle between scattered beam's projection onto the (x,y) plane and x axis.
 
 
