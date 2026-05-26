@@ -9,7 +9,6 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import SE2K, get_angle_vec, quadric_proj
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 
 MODEL_CHOICES = Literal["Cooper-Nathans"]
 
