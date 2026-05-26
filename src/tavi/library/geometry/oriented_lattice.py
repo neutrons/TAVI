@@ -23,8 +23,8 @@ class OrientedLattice:
         beta: float = 90,
         gamma: float = 90,
         u_mat: np.ndarray = np.eye(3),
-        plane_normal: np.ndarray = np.array([0, 0, 0]),
-        in_plane_ref: np.ndarray = np.array([0, 0, 0]),
+        plane_normal: np.ndarray | None = None,
+        in_plane_ref: np.ndarray | None = None,
         powder: bool = False,
     ) -> None:
         """Initialize OrientedLattice class."""

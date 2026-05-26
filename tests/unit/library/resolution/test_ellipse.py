@@ -17,7 +17,7 @@ from tavi.library.geometry.sample import Sample
 from tavi.library.plot.plot_ellipse import Plot, grid_helper
 from tavi.library.resolution.resolution import Resolution
 
-# matplotlib.use("Agg")  # headless backend so image comparison is reproducible
+matplotlib.use("Agg")  # headless backend so image comparison is reproducible
 
 
 def _repo_root() -> Path:

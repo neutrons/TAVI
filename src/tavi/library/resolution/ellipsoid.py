@@ -55,24 +55,24 @@ class ResoEllipsoid:
 
         return res_mat_proj, self.r0
 
-    def coh_fwhm(self, res_mat: np.ndarray, axis: int = None) -> float:
+    def coh_fwhm(self, axis: int = None) -> float:
         """
         Coherent FWHM.
 
         Make a cut.
         """
         idx = int(axis)
-        return sig2fwhm / np.sqrt(res_mat[idx, idx])
+        return sig2fwhm / np.sqrt(self.res_mat[idx, idx])
 
-    def incoh_fwhm(self, res_mat: np.ndarray, axis: int = None) -> float:
+    def incoh_fwhm(self, axis: int = None) -> float:
         """
         Incoherent FWHM.
 
         Integrate all 3 axes.
         """
         idx = int(axis)
-        res_mat = res_mat
+        res_incoh = self.res_mat
         for i in (3, 2, 1, 0):
             if not i == idx:
-                res_mat = quadric_proj(res_mat, i)
-        return sig2fwhm / np.sqrt(np.abs(res_mat[0, 0]))
+                res_incoh = quadric_proj(res_incoh, i)
+        return sig2fwhm / np.sqrt(np.abs(res_incoh[0, 0]))

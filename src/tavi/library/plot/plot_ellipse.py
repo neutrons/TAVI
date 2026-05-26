@@ -1,16 +1,17 @@
 """Handle plotting a 2d ellipse resolution matrix."""
 
+from dataclasses import dataclass
 from typing import Optional
+
 import matplotlib.pyplot as plt
-from dataclasses import dataclass, field
+import numpy as np
 from matplotlib.patches import Ellipse
-from tavi.library.experiment.utilities import sig2fwhm
-from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
-from mpl_toolkits.axisartist.grid_finder import MaxNLocator
 from matplotlib.transforms import Affine2D
 from mpl_toolkits.axisartist import Axes
-from functools import partial
-import numpy as np
+from mpl_toolkits.axisartist.grid_finder import MaxNLocator
+from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
+
+from tavi.library.experiment.utilities import sig2fwhm
 
 # def tr(x, y, angle):
 #     x, y = np.asarray(x), np.asarray(y)
@@ -21,39 +22,46 @@ import numpy as np
 #     x, y = np.asarray(x), np.asarray(y)
 #     return x - y / np.tan(angle / 180 * np.pi), y
 
-def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)):
+
+def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)) -> GridHelperCurveLinear:
+    """Build a curve linear grid helper that skews axes by ``angle`` degrees."""
     # Forward: (x, y) -> (x + y/tan(angle), y)
     # Equivalent to a horizontal skew by (90 - angle) degrees in the Affine2D().skew_deg function,
     # which applies (x, y) -> (x + y*tran(angle), y) transformation.
     return GridHelperCurveLinear(
         Affine2D().skew_deg(90 - angle, 0),
-        grid_locator1=MaxNLocator(nbins=nbins[0], steps=[1,2,5]),
-        grid_locator2=MaxNLocator(nbins=nbins[1], steps=[1,2,5]),
+        grid_locator1=MaxNLocator(nbins=nbins[0], steps=[1, 2, 5]),
+        grid_locator2=MaxNLocator(nbins=nbins[1], steps=[1, 2, 5]),
     )
+
 
 @dataclass
 class EllipseEntry:
     """One ellipse to draw + the extent it occupies in data coords."""
+
     patch: Ellipse
     x_extent: float
     y_extent: float
     origin: tuple[float, float]
 
+
 class Plot:
     """Accumulate 2D resolution ellipses and render them on a skewed grid."""
-    def __init__(self, axes_angle:float) -> None:
+
+    def __init__(self, axes_angle: float) -> None:
+        """Initialize with the skew angle (degrees) between the two plot axes."""
         self.axes_angle = axes_angle
         self.entries: list[EllipseEntry] = []
-    
+
     @staticmethod
     def create_ellipse(
         mat: np.ndarray,
         origin: tuple[float, float] = (0.0, 0.0),
-        **kwargs,
+        **kwargs: object,
     ) -> EllipseEntry:
         """Build an Ellipse patch (with FWHM dimensions) and its extent."""
         eigvals, eigvecs = np.linalg.eigh(mat)
-        fwhm = sig2fwhm / np.sqrt(np.abs(eigvals)) # sig2fwhm is already "full" width, no need to * 2.
+        fwhm = sig2fwhm / np.sqrt(np.abs(eigvals))  # sig2fwhm is already "full" width, no need to * 2.
         angle_rad = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
         angle_deg = np.degrees(angle_rad)
 
@@ -66,21 +74,21 @@ class Plot:
             **patch_kwargs,
         )
 
-        x_extent = np.sqrt((fwhm[0]/2*np.cos(angle_rad))**2 + (fwhm[1]/2*np.sin(angle_rad))**2)
-        y_extent = np.sqrt((fwhm[0]/2*np.sin(angle_rad))**2 + (fwhm[1]/2*np.cos(angle_rad))**2)
+        x_extent = np.sqrt((fwhm[0] / 2 * np.cos(angle_rad)) ** 2 + (fwhm[1] / 2 * np.sin(angle_rad)) ** 2)
+        y_extent = np.sqrt((fwhm[0] / 2 * np.sin(angle_rad)) ** 2 + (fwhm[1] / 2 * np.cos(angle_rad)) ** 2)
         return EllipseEntry(patch=patch, x_extent=x_extent, y_extent=y_extent, origin=origin)
 
     def add_ellipse(
         self,
         mat: np.ndarray,
         origin: tuple[float, float] = (0.0, 0.0),
-        **kwargs,
+        **kwargs: object,
     ) -> EllipseEntry:
         """Create an ellipse and append it to the draw queue. Returns the entry."""
         entry = self.create_ellipse(mat, origin=origin, **kwargs)
         self.entries.append(entry)
         return entry
-    
+
     def plot(self, ax: Optional[Axes] = None, pad: float = 1.1, show: bool = True) -> Axes:
         """Draw every added ellipse on a skewed-grid axes."""
         if not self.entries:
@@ -89,7 +97,9 @@ class Plot:
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(
-                1, 1, 1,
+                1,
+                1,
+                1,
                 axes_class=Axes,
                 grid_helper=grid_helper(self.axes_angle),
             )
@@ -120,14 +130,14 @@ class Plot:
         if show:
             plt.show()
         return ax
-    
+
     # def create_ellipse(self, **kwargs):
     #     """Math for plotting an ellipse."""
     #     eigvals, eigvecs = np.linalg.eig(self.mat)
     #     fwhm = sig2fwhm / np.sqrt(np.abs(eigvals))
     #     ellipse_angle_rad = np.arctan2(eigvecs[1,0], eigvecs[0,0])
     #     ellipse_angle_deg = np.degrees(ellipse_angle_rad)
-        
+
     #     # Skewed grid
 
     #     g_helper = grid_helper(self.axes_angle)
@@ -138,13 +148,13 @@ class Plot:
     #     patch_kwargs = dict(fill = False, edgecolor = "C0", lw= 1.5)
     #     patch_kwargs.update(kwargs)
     #     ellipse = Ellipse(
-    #         xy = self.origin, 
-    #         width = fwhm[0], height=fwhm[1], 
+    #         xy = self.origin,
+    #         width = fwhm[0], height=fwhm[1],
     #         angle = ellipse_angle_deg, **patch_kwargs)
     #     shear = Affine2D().skew_deg(90 - self.axes_angle, 0)
     #     ellipse.set_transform(shear + ax.transData)
     #     ax.add_patch(ellipse)
-        
+
     #     x_extent = np.sqrt((fwhm[0]*np.cos(ellipse_angle_rad))**2 + (fwhm[1]*np.sin(ellipse_angle_rad))**2)
     #     y_extent = np.sqrt((fwhm[0]*np.sin(ellipse_angle_rad))**2 + (fwhm[1]*np.cos(ellipse_angle_rad))**2)
     #     pad = 0.6
@@ -152,4 +162,3 @@ class Plot:
     #     ax.set_xlim(x0 - pad*x_extent, x0 + pad*x_extent)
     #     ax.set_ylim(y0 - pad*y_extent, y0 + pad*y_extent)
     #     # ax.set_aspect("equal")
-

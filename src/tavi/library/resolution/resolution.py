@@ -150,6 +150,8 @@ class Resolution:
         q_norm = self.sample.ol.q_norm_from_hkl(hkl)
         plane_normal = self.sample.ol.plane_normal
         in_plane_ref = self.sample.ol.in_plane_ref
+        if not plane_normal or not in_plane_ref:
+            raise ValueError("Both plane_normal and in_plane_ref must be set.")
         if plane_normal is None or in_plane_ref is None:
             raiseExceptions("plane_normal and in_plane_ref must be set.")
 
