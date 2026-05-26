@@ -1,6 +1,5 @@
 """Resolution manager."""
 
-from logging import raiseExceptions
 from typing import Literal, Optional, Tuple
 
 import numpy as np
@@ -68,7 +67,7 @@ class Resolution:
         if not self.axes:
             return res_q
         else:
-            res_ellipsoid = ResoEllipsoid(res_q[0], res_q[1], self.axes)
+            res_ellipsoid = ResolutionEllipsoid(res_q[0], res_q[1], self.axes)
             r_mat = self.r_matrix_with_minimal_tilt(hkl, ei, ef)
             res_proj = res_ellipsoid.project_to_frame(r_mat, psi, self.sample.ol.UB)
             return res_proj
@@ -149,10 +148,8 @@ class Resolution:
         q_norm = self.sample.ol.q_norm_from_hkl(hkl)
         plane_normal = self.sample.ol.plane_normal
         in_plane_ref = self.sample.ol.in_plane_ref
-        if not plane_normal or not in_plane_ref:
-            raise ValueError("Both plane_normal and in_plane_ref must be set.")
         if plane_normal is None or in_plane_ref is None:
-            raiseExceptions("plane_normal and in_plane_ref must be set.")
+            raise ValueError("Both plane_normal and in_plane_ref must be set.")
 
         two_theta = self.experiment.get_two_theta(q_norm, ei, ef) * (self.instrument.goni.sense)
         # with minimal tilt, we are considering scenario described above Eq.114
