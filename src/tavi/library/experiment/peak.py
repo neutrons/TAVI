@@ -9,12 +9,12 @@ from pydantic.dataclasses import dataclass
 @dataclass(frozen=True)
 class MotorAngles:
     """
-    Motor anlges.
+    Motor angles.
 
     angles_dict: currently only stores {name: value}. But in future it will
                 stores {name: (direction, angle)} for specific motor.
                 Direction follows mantid convention. i.e. {"sgl", ("+y", 30)}.
-                This should be done in the same PR restructure goneiometer.
+                This should be done in the same PR restructure goniometer.
 
     Note:
         use angles = (two_theta, omega, sgl, sgu) for a Huber table,

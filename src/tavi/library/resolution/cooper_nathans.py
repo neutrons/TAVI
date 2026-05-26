@@ -58,7 +58,7 @@ class CooperNathans:
 
     def mat_a(self, ki: float, kf: float, theta_m: float, theta_a: float) -> np.ndarray:
         """
-        Calculate Matrix A. 6 x 8 matrix, Y = AU. Transform collmiator's divergence to ki-kf.
+        Calculate Matrix A. 6 x 8 matrix, Y = AU. Transform collimator's divergence to ki-kf.
 
         Args:
             ki: in meV.
@@ -99,7 +99,7 @@ class CooperNathans:
 
     def mat_c(self, theta_m: float, theta_a: float) -> np.ndarray:
         """
-        Matrix C. 4 x 8 matrix. Constrinat between mono/ana mosaic and collimator divergence.
+        Matrix C. 4 x 8 matrix. Constraint between mono/ana mosaic and collimator divergence.
 
         Args:
             theta_m: in radians.

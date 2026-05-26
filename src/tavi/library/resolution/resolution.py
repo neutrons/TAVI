@@ -9,7 +9,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import SE2K, get_angle_vec, quadric_proj
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.resolution.ellipsoid import ResoEllipsoid
+from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 
 MODEL_CHOICES = Literal["Cooper-Nathans"]
 
@@ -41,7 +41,7 @@ class Resolution:
 
         """
         if model == "Cooper-Nathans":
-            from tavi.library.resolution.cooper_nathan import CooperNathans
+            from tavi.library.resolution.cooper_nathans import CooperNathans
 
             self.model = CooperNathans()
         else:

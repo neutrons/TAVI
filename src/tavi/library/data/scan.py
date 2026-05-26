@@ -68,14 +68,14 @@ class TaviMetadata:
 
     Args:
         default_axis:Tuple[str, str]
-        nomarlization: Tuple[str, int] as (column_name, weight)
+        normalization: Tuple[str, int] as (column_name, weight)
 
     """
 
     default_axis: Tuple[str, str]
     friendly_name: str
     friendly_path: str
-    nomarlization: Optional[Tuple[str, float]] = None
+    normalization: Optional[Tuple[str, float]] = None
 
 
 @dataclass

@@ -7,7 +7,7 @@ import numpy as np
 from tavi.library.experiment.utilities import quadric_proj, sig2fwhm
 
 
-class ResoEllipsoid:
+class ResolutionEllipsoid:
     """4D ellipsoid and its projection."""
 
     def __init__(

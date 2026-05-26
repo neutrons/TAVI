@@ -19,6 +19,7 @@ crystal_d = {
     "Be002": 1.79160,
     "Be110": 1.14280,
     "Heusler": 3.435,  # Cu2MnAl(111)
+    "Si111": 3.135,
 }
 
 
@@ -26,13 +27,18 @@ class Crystal:
     """Analyzer that holds horizontal and vertical mosaic."""
 
     def __init__(
-        self, mosaic_h: float = 30.0, mosaic_v: float = 30.0, crystal: str = "PG002", sense: Literal["+", "-"] = "-"
+        self,
+        mosaic_h: float = 30.0,
+        mosaic_v: float = 30.0,
+        crystal: str = "PG002",
+        sense: Literal["+", "-"] = "-",
+        d_spacing: float = 0,
     ) -> None:
         """Init."""
         self._mosaic_h = mosaic_h
         self._mosaic_v = mosaic_v
         self.crystal = crystal
-        self.d_spacing = crystal_d.get(crystal, 0)
+        self.d_spacing = crystal_d.get(crystal, d_spacing)
         self.sense = sense
 
     @property
