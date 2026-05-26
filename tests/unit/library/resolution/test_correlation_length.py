@@ -9,7 +9,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
-from tavi.library.resolution.resolution import Resolution
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
 from tavi.library.experiment.utilities import spice_to_mantid, mantid_to_spice
 
 @pytest.fixture
@@ -66,7 +66,7 @@ def component():
 def test_hb1a_tas_mode_resolution(component):
         sample, instrument, experiment = component
         hkl = (2, 2, 0)
-        res = Resolution("Cooper-Nathans", instrument=instrument, sample = sample, experiment = experiment, axes = None)
+        res = Resolution(ResolutionModel.CooperNathans, instrument=instrument, sample = sample, experiment = experiment, axes = None)
         res_mat = res.get_resolution(hkl,14.4499, 14.4499)
         coh_fwhm = ResolutionEllipsoid(res_mat=res_mat[0], axes = None).coh_fwhm(1)
         print(sample.ol.get_uv())
@@ -75,7 +75,7 @@ def test_hb1a_tas_mode_resolution(component):
 def test_hb1a_tas_mode_resolution_110(component):
         sample, instrument, experiment = component
         hkl = (1, 1, 1)
-        res = Resolution("Cooper-Nathans", instrument=instrument, sample = sample, experiment = experiment, axes = None)
+        res = Resolution(ResolutionModel.CooperNathans, instrument=instrument, sample = sample, experiment = experiment, axes = None)
         res_mat = res.get_resolution(hkl,14.4499, 14.4499)
         coh_fwhm = ResolutionEllipsoid(res_mat=res_mat[0], axes = None).coh_fwhm(1)
         assert np.isclose(coh_fwhm, 0.01147, atol=1e-5)

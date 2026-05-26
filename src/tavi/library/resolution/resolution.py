@@ -1,15 +1,22 @@
 """Resolution manager."""
 
-from typing import Literal, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
+from zmq import Enum
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import SE2K, get_angle_vec, quadric_proj
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
+from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 
-MODEL_CHOICES = Literal["Cooper-Nathans"]
+
+class ResolutionModel(Enum):
+    """Enum for resolution models."""
+
+    CooperNathans = "Cooper-Nathans"
+    Popvic = "Popvic"
 
 
 class Resolution:
@@ -17,7 +24,7 @@ class Resolution:
 
     def __init__(
         self,
-        model: MODEL_CHOICES,
+        model: ResolutionModel,
         instrument: Instrument,
         sample: Sample,
         experiment: Experiment,
@@ -38,7 +45,7 @@ class Resolution:
             axes: Projection axes for the resolution ellipsoid; last entry is ``"e"`` for energy.
 
         """
-        if model == "Cooper-Nathans":
+        if model == ResolutionModel.CooperNathans:
             from tavi.library.resolution.cooper_nathans import CooperNathans
 
             self.model = CooperNathans()

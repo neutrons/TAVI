@@ -15,7 +15,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.plot.plot_ellipse import Plot, grid_helper
-from tavi.library.resolution.resolution import Resolution
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
 
 matplotlib.use("Agg")  # headless backend so image comparison is reproducible
 
@@ -75,7 +75,7 @@ def component():
 def test_ellipse_in_local_q(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution("Cooper-Nathans", instrument, sample, experiment, axes = None)
+    res = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment, axes = None)
     res_mat, r0 = res.get_resolution(hkl, 4.8, 4.8)
     res_2d, axes_angle = res.get_ellipse(res_mat, (0, 3), PROJECTION=False)
     mat_4d = np.array([
@@ -96,7 +96,7 @@ def test_ellipse_in_local_q(component):
 def test_plot(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res1 = Resolution("Cooper-Nathans", instrument, sample, experiment)
+    res1 = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment)
     res_4d1,_ = res1.get_resolution(hkl, 4.8, 4.8)
     res_2d_co1, axes_angle1 = res1.get_ellipse(res_4d1, ellipse_axes=(0,1), PROJECTION=False)
     res_2d_inc1, _ = res1.get_ellipse(res_4d1, ellipse_axes=(0,1), PROJECTION=True)
@@ -106,7 +106,7 @@ def test_plot(component):
     plot1.add_ellipse(res_2d_inc1, label = "Incohere", ls= "--")
 
 
-    res2 = Resolution("Cooper-Nathans", instrument, sample, experiment)
+    res2 = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment)
     res_4d2,_ = res2.get_resolution(hkl, 4.8, 4.8)
     res_2d_co2, axes_angle2 = res2.get_ellipse(res_mat=res_4d2, ellipse_axes=(0,3), PROJECTION=False)
     res_2d_inc2, _ = res2.get_ellipse(res_mat = res_4d2, ellipse_axes=(0,3), PROJECTION=True)

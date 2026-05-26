@@ -5,7 +5,7 @@ from tavi.library.component.goniometer import Goniometer
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
-from tavi.library.resolution.resolution import Resolution
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
 
 @pytest.fixture
 def oriented_lattice():
@@ -79,7 +79,7 @@ def oriented_lattice():
 
 def test_r_matrix_with_minimal_tilt(oriented_lattice):
     sample = Sample(ol=oriented_lattice)
-    res = Resolution("Cooper-Nathans", Instrument(goniometer=Goniometer(s2_sense="-")),sample, Experiment())
+    res = Resolution(ResolutionModel.CooperNathans, Instrument(goniometer=Goniometer(s2_sense="-")),sample, Experiment())
 
     r_mat_cal = res.r_matrix_with_minimal_tilt(hkl=(0, 0, 2), ei = 13.505137, ef = 13.505137)
     assert np.allclose(
