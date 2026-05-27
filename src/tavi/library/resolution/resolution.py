@@ -75,7 +75,7 @@ class Resolution:
             return res_q
         else:
             res_ellipsoid = ResolutionEllipsoid(res_q[0], res_q[1], self.axes)
-            r_mat = self.r_matrix_with_minimal_tilt(hkl, ei, ef) # self.goni.get_rotation(psi, hkl-angles) in tas class
+            r_mat = self.r_matrix_with_minimal_tilt(hkl, ei, ef)  # self.goni.get_rotation(psi, hkl-angles) in tas class
             res_proj = res_ellipsoid.project_to_frame(r_mat, psi, self.sample.ol.UB)
             return res_proj
 

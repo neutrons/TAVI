@@ -13,6 +13,7 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 
 from tavi.library.experiment.utilities import sig2fwhm
 
+
 def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)) -> GridHelperCurveLinear:
     """Build a curve linear grid helper that skews axes by ``angle`` degrees."""
     # Forward: (x, y) -> (x + y/tan(angle), y)

@@ -4,7 +4,6 @@ Goniometer component.
 TODO: add 4 circle mode, express rotation with quaternion.
 """
 
-from multiprocessing import Value
 from typing import Literal, Optional
 
 import numpy as np
