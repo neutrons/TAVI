@@ -1,12 +1,12 @@
 """
 UnitCell class that defines lattice parameters, sample mosaic.
 
-Follows Andrei Savici's UB Matrix Formlism used in mantid at
+Follows Andrei Savici's UB Matrix Formalism used in mantid at
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf version:March 06, 2011.
 Equations listed in the comments refer to the document above.
 """
 
-from typing import Optional
+import numpy as np
 
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 
@@ -24,11 +24,28 @@ class Sample:
 
     """
 
-    def __init__(
-        self,
-        ol: OrientedLattice,
-        mosaic: Optional[dict[str, float]] = None,
-    ) -> None:
+    def __init__(self, ol: OrientedLattice, mosaic_h: float = 30, mosaic_v: float = 30) -> None:
         """Initialize sample."""
         self.ol: OrientedLattice = ol
-        self.mosaic: Optional[dict[str, float]] = mosaic
+        self._mosaic_h = mosaic_h
+        self._mosaic_v = mosaic_v
+
+    @property
+    def mosaic_h(self) -> float:
+        """Getter."""
+        return np.radians(self._mosaic_h / 60)
+
+    @mosaic_h.setter
+    def mosaic_h(self, val: float) -> None:
+        """Setter."""
+        self._mosaic_h = val
+
+    @property
+    def mosaic_v(self) -> float:
+        """Getter."""
+        return np.radians(self._mosaic_v / 60)
+
+    @mosaic_v.setter
+    def mosaic_v(self, val: float) -> None:
+        """Setter."""
+        self._mosaic_v = val

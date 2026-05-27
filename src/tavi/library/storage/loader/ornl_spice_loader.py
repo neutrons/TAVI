@@ -165,7 +165,11 @@ class ORNLSpiceLoader(AbstractLoader):
             with warnings.catch_warnings():
                 # Treat all warnings as exceptions within this block
                 warnings.simplefilter("error")
-                col_values = np.genfromtxt(file_path, comments="#")
+                try:
+                    col_values = np.genfromtxt(file_path, comments="#")
+                except ValueError as e:
+                    logger.error(e)
+                    col_values = np.array(None)
         except Warning as e:
             # exception happens when there is no valid measurements but all warnings.
             # see HB1_exp0815_scan0001.dat file

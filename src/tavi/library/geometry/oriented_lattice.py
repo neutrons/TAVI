@@ -1,11 +1,12 @@
 """
 Calculate UB matrix and related quantities.
 
-Follows Andrei Savici's UB Matrix Formlism used in mantid at
+Follows Andrei Savici's UB Matrix Formalism used in mantid at
 https://github.com/mantidproject/documents/blob/main/Design/UBMatriximplementationnotes.pdf version:March 06, 2011.
 Equations listed in the comments refer to the document above.
 """
 
+from logging import raiseExceptions
 from typing import Tuple
 
 import numpy as np
@@ -13,7 +14,7 @@ from pydantic import BaseModel
 
 
 class OrientedLattice(BaseModel):
-    """Oritented lattice class."""
+    """Oriented lattice class."""
 
     def __init__(
         self,
@@ -24,6 +25,8 @@ class OrientedLattice(BaseModel):
         beta: float = 90,
         gamma: float = 90,
         u_mat: np.ndarray = np.eye(3),
+        plane_normal: np.ndarray = np.array([0, 0, 0]),
+        in_plane_ref: np.ndarray = np.array([0, 0, 0]),
         powder: bool = False,
     ) -> None:
         """Initialize OrientedLattice class."""
@@ -38,6 +41,8 @@ class OrientedLattice(BaseModel):
         self._B = None
         self.calculate_B()
         self._UB = self._u_mat @ self._B
+        self._plane_normal = plane_normal
+        self._in_plane_ref = in_plane_ref
 
     @property
     def a(self) -> float:
@@ -140,7 +145,7 @@ class OrientedLattice(BaseModel):
         return self._UB
 
     @UB.setter
-    def UB(self, mat: np.ndarray) -> np.ndarray:
+    def UB(self, mat: np.ndarray) -> None:
         """Set UB, recalculate everything."""
         self._UB = mat
         self.update_B_from_UB()
@@ -164,8 +169,28 @@ class OrientedLattice(BaseModel):
         G_star = self._UB.T @ self._UB
         return np.sqrt(G_star[2, 2])
 
+    @property
+    def plane_normal(self) -> np.ndarray:
+        """Return plane normal vector."""
+        return self._plane_normal
+
+    @plane_normal.setter
+    def plane_normal(self, val: np.ndarray) -> None:
+        """Set plane normal vector."""
+        self._plane_normal = val
+
+    @property
+    def in_plane_ref(self) -> np.ndarray:
+        """Return plane normal vector."""
+        return self._in_plane_ref
+
+    @in_plane_ref.setter
+    def in_plane_ref(self, val: np.ndarray) -> None:
+        """Set plane normal vector."""
+        self._in_plane_ref = val
+
     def update_B_from_UB(self) -> None:
-        """Calculate B matri from G*. Also update lattice parameters."""
+        """Calculate B matrix from G*. Also update lattice parameters."""
         G_star = self._UB.T @ self._UB
         a_star = np.sqrt(G_star[0, 0])
         b_star = np.sqrt(G_star[1, 1])
@@ -178,14 +203,14 @@ class OrientedLattice(BaseModel):
         self._a = np.sqrt(G[0, 0])
         self._b = np.sqrt(G[1, 1])
         self._c = np.sqrt(G[2, 2])
-        self._alpha = np.radians(np.arccos(G[1, 2] / (self._b * self._c)))
-        self._beta = np.radians(np.arccos(G[0, 2] / (self._a * self._c)))
-        self._gamma = np.radians(np.arccos(G[0, 1] / (self._a * self._b)))
+        self._alpha = np.degrees(np.arccos(G[1, 2] / (self._b * self._c)))
+        self._beta = np.degrees(np.arccos(G[0, 2] / (self._a * self._c)))
+        self._gamma = np.degrees(np.arccos(G[0, 1] / (self._a * self._b)))
 
         self._B = np.array(
             [
                 [a_star, b_star * np.cos(gamma_star), c_star * np.cos(beta_star)],
-                [0, b_star * np.sin(gamma_star), -c_star * np.sin(beta_star) * np.cos(self._alpha)],
+                [0, b_star * np.sin(gamma_star), -c_star * np.sin(beta_star) * np.cos(np.radians(self._alpha))],
                 [0, 0, 1.0 / self._c],
             ]
         )
@@ -247,7 +272,6 @@ class OrientedLattice(BaseModel):
                 [0, 0, 1.0 / self._c],
             ]
         )
-        print(self._u_mat, self._B)
 
     def update_lattice_parameters_from_B(self) -> None:
         """Calculate lattice parameters from B matrix."""
@@ -256,9 +280,9 @@ class OrientedLattice(BaseModel):
         self._a = np.sqrt(G[0, 0])
         self._b = np.sqrt(G[1, 1])
         self._c = np.sqrt(G[2, 2])
-        self._alpha = np.radians(np.arccos(G[1, 2] / (self._b * self._c)))
-        self._beta = np.radians(np.arccos(G[0, 2] / (self._a * self._c)))
-        self._gamma = np.radians(np.arccos(G[0, 1] / (self._a * self._b)))
+        self._alpha = np.degrees(np.arccos(G[1, 2] / (self._b * self._c)))
+        self._beta = np.degrees(np.arccos(G[0, 2] / (self._a * self._c)))
+        self._gamma = np.degrees(np.arccos(G[0, 1] / (self._a * self._b)))
 
     def get_uv(self) -> tuple[np.ndarray, np.ndarray]:
         """
@@ -284,7 +308,7 @@ class OrientedLattice(BaseModel):
         cos_angle = (p1 @ p2) / (np.linalg.norm(p1) * np.linalg.norm(p2))
         return np.degrees(cos_angle)
 
-    def q_norm_from_hkl(self, hkl: tuple[float, float, float]) -> np.ndarray:
+    def q_norm_from_hkl(self, hkl: tuple[float, float, float]) -> float:
         """
         Return norm of q for given (h,k,l).
 
@@ -293,5 +317,65 @@ class OrientedLattice(BaseModel):
 
         """
         q_norm = 2 * np.pi * np.linalg.norm(self._B @ np.array(hkl))
-
         return q_norm
+
+    def rot_matrix_with_minimal_tilt(
+        self,
+        hkl: Tuple[float, float, float],
+        ki: float,
+        kf: float,
+        two_theta: float,
+    ) -> np.ndarray:
+        """
+        Calculate R matrix when the tilt from the scattering plane is minimal.
+
+        Args:
+            hkl: Miller indices of the reflection.
+            ki: incident wavevector, in inverse Angstrom.
+            kf: final wavevector, in inverse Angstrom.
+            two_theta: scattering angle with instrument.goni.sense considered.
+
+        """
+        ub_mat = self.UB
+        q_norm = self.q_norm_from_hkl(hkl)
+        plane_normal = self.plane_normal
+        in_plane_ref = self.in_plane_ref
+        if plane_normal is None or in_plane_ref is None:
+            raiseExceptions("plane_normal and in_plane_ref must be set.")
+
+        # two_theta = self.experiment.get_two_theta(q_norm, ei, ef) * (self.instrument.goni.sense)
+        # with minimal tilt, we are considering scenario described above Eq.114
+        q_lab1 = np.array([-kf * np.sin(two_theta), 0, ki - kf * np.cos(two_theta)]) / q_norm
+        q_lab2 = np.array([ki - kf * np.cos(two_theta), 0, kf * np.sin(two_theta)]) / q_norm
+        q_lab3 = np.array([0, 1, 0])
+
+        Q_lab = np.array([q_lab1, q_lab2, q_lab3]).T
+        tol = 1e-5
+
+        # Eq.106
+        t1 = ub_mat @ np.array(hkl)
+        if np.abs(t1 @ plane_normal) < tol:
+            # t1 in plane
+            t3 = plane_normal
+            t2 = np.cross(t3, t1)
+        elif np.linalg.norm(np.cross(plane_normal, t1)) < tol:
+            # calculate R when t1 is along plane_normal. Easiest way to construct three perp
+            # axes are use t2 as in-plane axis. This already considers a 90 degree rotation
+            # to bring t1 in-plane.
+            t2 = in_plane_ref  # set t2 in plane
+            t3 = np.cross(t1, t2)  # t3 along y
+        else:
+            # t1 not in plane. np.cross(plane_normal, t1) already incorporate a minimal rotation along
+            # t2 to bring t1 in-plane
+            t2 = np.cross(plane_normal, t1)
+            t3 = np.cross(t1, t2)
+
+        T_mat = np.array(
+            [
+                t1 / np.linalg.norm(t1),
+                t2 / np.linalg.norm(t2),
+                t3 / np.linalg.norm(t3),
+            ]
+        ).T
+        rot_mat = Q_lab @ np.linalg.inv(T_mat)
+        return rot_mat

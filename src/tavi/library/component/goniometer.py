@@ -36,10 +36,20 @@ class Goniometer:
 
     """
 
-    def __init__(self, type: str = "Y, -Z, X", sense: Optional[Literal["-", "+"]] = None) -> None:
+    def __init__(self, type: str = "Y, -Z, X", s2_sense: Optional[Literal["-", "+"]] = None) -> None:
         """Init."""
         self.type = type
-        self.sense = sense
+        self._sense = s2_sense
+
+    @property
+    def sense(self) -> int:
+        """Get s2 sense of goniometer."""
+        return 1 if self._sense == "+" else -1
+
+    @sense.setter
+    def sense(self, val: str) -> None:
+        """Set sense."""
+        self._sense = val
 
     def _get_motor_senses(self) -> tuple[int, int, int]:
         ax0, ax1, ax2, *__ = self.type.split(",")
@@ -87,11 +97,11 @@ class Goniometer:
         signs = self._get_motor_senses()
         # for YZX mode, Eq.100-105. Notice they share a common denominator.
 
-        denomitor = np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)
+        denominator = np.sqrt(r_mat[0, 0] ** 2 + r_mat[2, 0] ** 2)
         # omega rotate along y, omega ~ omega
         omega = np.arctan2(-r_mat[2, 0], r_mat[0, 0]) * signs[0]
         # sgl rotate along z, sgl ~ mu
-        sgl = np.arctan2(r_mat[1, 0], denomitor) * signs[1]
+        sgl = np.arctan2(r_mat[1, 0], denominator) * signs[1]
         # sgu rotate along x, sgu ~ epsilon
         sgu = np.arctan2(-r_mat[1, 2], r_mat[1, 1]) * signs[2]
 

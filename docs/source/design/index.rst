@@ -19,5 +19,6 @@ review and adhere to these guidelines when contributing to the project.
    loader_registry
    filestore
    raw_scan_load_controller
+   tavi_library
    load/index
    frontend/index
