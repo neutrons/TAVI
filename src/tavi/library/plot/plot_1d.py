@@ -23,9 +23,10 @@ class Plot1D:
     """Plot 1D resolution and peak."""
 
     def __init__(self, scan: Scan, resolution: Optional[ResolutionBar] = None) -> None:
+        """Init 1D plot."""
         self.scan = scan
         self.resolution = resolution
 
-    def add_resolution_bar(self):
+    def add_resolution_bar(self) -> None:
         """Add a horizontal resolution bar to the plot."""
         pass
