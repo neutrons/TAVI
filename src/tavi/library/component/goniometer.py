@@ -4,6 +4,7 @@ Goniometer component.
 TODO: add 4 circle mode, express rotation with quaternion.
 """
 
+from multiprocessing import Value
 from typing import Literal, Optional
 
 import numpy as np
@@ -47,7 +48,7 @@ class Goniometer:
         return 1 if self._sense == "+" else -1
 
     @sense.setter
-    def sense(self, val: str) -> None:
+    def sense(self, val: Literal["+", "-"]) -> None:
         """Set sense."""
         self._sense = val
 
@@ -74,12 +75,22 @@ class Goniometer:
 
         """
         signs = self._get_motor_senses()
-        # initial implementation of huber table YZX mode
-        r_mat = (
-            rot_y(angles.angles_dict["omega"] * signs[0])
-            @ rot_z(angles.angles_dict["sgl"] * signs[1])
-            @ rot_x(angles.angles_dict["sgu"] * signs[2])
-        )
+        match self.type:
+            case "Y-ZY":
+                # initial implementation of huber table YZX mode
+                r_mat = (
+                    rot_y(angles.angles_dict["omega"] * signs[0])
+                    @ rot_z(angles.angles_dict["sgl"] * signs[1])
+                    @ rot_x(angles.angles_dict["sgu"] * signs[2])
+                )
+            case "YZYbisect":
+                r_mat = (
+                    rot_y(angles.angles_dict["omega"] * signs[0])
+                    @ rot_z(angles.angles_dict["chi"] * signs[1])
+                    @ rot_y(angles.angles_dict["phi"] * signs[2])
+                )
+            case _:
+                raise ValueError("Unknown mode.")
         return r_mat
 
     def angles_from_r_mat(self, r_mat: np.ndarray) -> tuple[float, float, float]:

@@ -13,16 +13,6 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 
 from tavi.library.experiment.utilities import sig2fwhm
 
-# def tr(x, y, angle):
-#     x, y = np.asarray(x), np.asarray(y)
-#     return x + y / np.tan(angle / 180 * np.pi), y
-
-
-# def inv_tr(x, y, angle):
-#     x, y = np.asarray(x), np.asarray(y)
-#     return x - y / np.tan(angle / 180 * np.pi), y
-
-
 def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)) -> GridHelperCurveLinear:
     """Build a curve linear grid helper that skews axes by ``angle`` degrees."""
     # Forward: (x, y) -> (x + y/tan(angle), y)
@@ -130,35 +120,3 @@ class Plot:
         if show:
             plt.show()
         return ax
-
-    # def create_ellipse(self, **kwargs):
-    #     """Math for plotting an ellipse."""
-    #     eigvals, eigvecs = np.linalg.eig(self.mat)
-    #     fwhm = sig2fwhm / np.sqrt(np.abs(eigvals))
-    #     ellipse_angle_rad = np.arctan2(eigvecs[1,0], eigvecs[0,0])
-    #     ellipse_angle_deg = np.degrees(ellipse_angle_rad)
-
-    #     # Skewed grid
-
-    #     g_helper = grid_helper(self.axes_angle)
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(1, 1, 1, axes_class=Axes, grid_helper=g_helper)
-    #     ax.grid(True)
-
-    #     patch_kwargs = dict(fill = False, edgecolor = "C0", lw= 1.5)
-    #     patch_kwargs.update(kwargs)
-    #     ellipse = Ellipse(
-    #         xy = self.origin,
-    #         width = fwhm[0], height=fwhm[1],
-    #         angle = ellipse_angle_deg, **patch_kwargs)
-    #     shear = Affine2D().skew_deg(90 - self.axes_angle, 0)
-    #     ellipse.set_transform(shear + ax.transData)
-    #     ax.add_patch(ellipse)
-
-    #     x_extent = np.sqrt((fwhm[0]*np.cos(ellipse_angle_rad))**2 + (fwhm[1]*np.sin(ellipse_angle_rad))**2)
-    #     y_extent = np.sqrt((fwhm[0]*np.sin(ellipse_angle_rad))**2 + (fwhm[1]*np.cos(ellipse_angle_rad))**2)
-    #     pad = 0.6
-    #     x0, y0 = self.origin
-    #     ax.set_xlim(x0 - pad*x_extent, x0 + pad*x_extent)
-    #     ax.set_ylim(y0 - pad*y_extent, y0 + pad*y_extent)
-    #     # ax.set_aspect("equal")
