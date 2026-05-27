@@ -75,7 +75,7 @@ class Goniometer:
         """
         signs = self._get_motor_senses()
         match self.type:
-            case "Y-ZY":
+            case "Y, -Z, X":
                 # initial implementation of huber table YZX mode
                 r_mat = (
                     rot_y(angles.angles_dict["omega"] * signs[0])
