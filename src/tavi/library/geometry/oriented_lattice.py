@@ -350,7 +350,7 @@ class OrientedLattice:
             ]
         )
         return (a_vec, b_vec, c_vec)
-    
+
     def rot_matrix_with_minimal_tilt(
         self,
         hkl: Tuple[float, float, float],
