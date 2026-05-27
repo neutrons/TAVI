@@ -76,6 +76,8 @@ class Crystal:
         Calculate scattering angle based on Bragg's law.
 
         2dsin(theta) = lambda = 2 pi / k, k is wavevector.
+
+        note: theta here is half of scattering angle and in radian.
         """
         kf = SE2K(ei)
         asin = np.pi / (self.d_spacing * kf)

@@ -124,14 +124,16 @@ jobs:
           mkdir -p /tmp/local-channel/linux-64
           cp *.conda /tmp/local-channel/linux-64
 
-      - name: Verify conda package
-        uses: neutrons/conda-actions/pkg-verify@main
+      - name: Setup micromamba
+        uses: mamba-org/setup-micromamba@v2
         with:
-          package-name: ${{ env.PKG_NAME }}
-          module-name: ${{ env.MODULE_NAME }}
-          local-channel: /tmp/local-channel
-          extra-channels: conda-forge neutrons
-          python-version: "3.11"
+          micromamba-version: latest
+
+      - name: Verify conda package
+        shell: bash -el {0}
+        run: |
+          micromamba create -y -n verify -c /tmp/local-channel/linux-64 -c conda-forge -c neutrons ${{ env.PKG_NAME }}
+          micromamba run -n verify python -c "import ${{ env.MODULE_NAME }}; print(${{ env.MODULE_NAME }}.__version__)"
 
       - name: Upload conda package as artifact
         uses: actions/upload-artifact@v7

@@ -57,7 +57,7 @@ Constructor arguments:
 
 - ``monochromator`` (``Crystal``) -- pre-sample crystal
 - ``analyzer`` (``Crystal``) -- post-sample crystal
-- ``collimators`` (``Collimators``) -- four soller-slit divergences
+- ``collimators`` (``Collimators``) -- four sets of horizontal and vertical divergences
 - ``goniometer`` (``Goniometer``) -- sample stage with scattering sense
 
 Example:
@@ -155,19 +155,11 @@ Methods:
         """Return ``(ei, ef)`` given the complementary energy ``e``."""
 
 Both angles are derived from a triangle solve using ``ki = SE2K(ei)`` and
-``kf = SE2K(ef)``. The scattering triangle in k-space (``Q = ki - kf``) is::
+``kf = SE2K(ef)``. The scattering triangle in k-space (``Q = ki - kf``) is:
 
-                    o   <- tip of ki (= tip of Q)
-                   /|
-                  / |
-              ki /  |
-                / ψ | Q
-               /    |
-              /     |
-             / 2θ   |
-            o-------o
-         origin    tip of kf
-                kf -->
+.. image:: ../images/scattering_triagnle.png
+   :alt: Scattering triangle in k-space
+   :align: center
 
     2θ : scattering angle, between ki and kf (returned by get_two_theta)
     ψ  : angle between ki and Q             (returned by get_psi)
