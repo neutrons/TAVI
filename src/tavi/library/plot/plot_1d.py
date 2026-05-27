@@ -1,3 +1,4 @@
+"""Plot1D."""
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
