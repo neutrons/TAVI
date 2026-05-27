@@ -107,9 +107,7 @@ class Resolution:
             v1 = np.sum([p1[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
             v2 = np.sum([p2[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
             v3 = np.sum([p3[i] * vec for (i, vec) in enumerate(reciprocal_vecs)], axis=0)
-
-            if np.dot(v1, np.cross(v2, v3)) < tol:
-                raise ValueError("Projection is left handed! Please use right-handed projection")
+            
             if np.abs(np.dot(v1, np.cross(v2, v3))) < tol:
                 raise ValueError("Projection vectors need to be non-coplanar.")
             self.angles = (get_angle_vec(v1, v2), get_angle_vec(v2, v3), get_angle_vec(v3, v1))
