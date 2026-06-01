@@ -6,7 +6,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import SE2K
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
-from tavi.library.resolution.resolution import Resolution
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
 
 @pytest.fixture
 def oriented_lattice():
@@ -78,15 +78,12 @@ def oriented_lattice():
 
     return ol
 
-def test_rot_matrix_with_minimal_tilt(oriented_lattice):
+def test_r_matrix_with_minimal_tilt(oriented_lattice):
     sample = Sample(ol=oriented_lattice)
-    res = Resolution("Cooper-Nathans", Instrument(goniometer=Goniometer(s2_sense="-")),sample, Experiment())
-    hkl = (0, 0, 2)
-    q_norm = sample.ol.q_norm_from_hkl(hkl = hkl)
-    two_theta = res.experiment.get_two_theta(q_norm=q_norm,ei = 13.505137, ef = 13.505137) * res.instrument.goni.sense
-    ki = SE2K(13.505137)
-    kf = SE2K(13.505137)
-    r_mat_cal = sample.ol.rot_matrix_with_minimal_tilt(hkl=hkl, ki = ki, kf = kf, two_theta=two_theta)
+    res = Resolution(ResolutionModel.CooperNathans, Instrument(goniometer=Goniometer(s2_sense="-")),sample, Experiment())
+    q_norm = sample.ol.q_norm_from_hkl((0, 0, 2))
+    two_theta = res.experiment.get_two_theta(q_norm=q_norm, ei = 13.505137, ef = 13.505137) * res.instrument.goni.sense
+    r_mat_cal = sample.ol.rot_matrix_with_minimal_tilt(hkl=(0, 0, 2), ki = SE2K(13.505137), kf = SE2K(13.505137), two_theta=two_theta)
     assert np.allclose(
         np.array(
             [

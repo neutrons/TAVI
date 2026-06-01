@@ -10,11 +10,10 @@ from logging import raiseExceptions
 from typing import Tuple
 
 import numpy as np
-from pydantic import BaseModel
 
 
-class OrientedLattice(BaseModel):
-    """Oriented lattice class."""
+class OrientedLattice:
+    """Oritented lattice class."""
 
     def __init__(
         self,
@@ -25,8 +24,8 @@ class OrientedLattice(BaseModel):
         beta: float = 90,
         gamma: float = 90,
         u_mat: np.ndarray = np.eye(3),
-        plane_normal: np.ndarray = np.array([0, 0, 0]),
-        in_plane_ref: np.ndarray = np.array([0, 0, 0]),
+        plane_normal: np.ndarray | None = None,
+        in_plane_ref: np.ndarray | None = None,
         powder: bool = False,
     ) -> None:
         """Initialize OrientedLattice class."""
@@ -195,9 +194,9 @@ class OrientedLattice(BaseModel):
         a_star = np.sqrt(G_star[0, 0])
         b_star = np.sqrt(G_star[1, 1])
         c_star = np.sqrt(G_star[2, 2])
-        alpha_star = np.arccos(G_star[1, 2] / (b_star * c_star))
-        beta_star = np.arccos(G_star[0, 2] / (a_star * c_star))
-        gamma_star = np.arccos(G_star[0, 1] / (a_star * b_star))
+        self.alpha_star = np.arccos(G_star[1, 2] / (b_star * c_star))
+        self.beta_star = np.arccos(G_star[0, 2] / (a_star * c_star))
+        self.gamma_star = np.arccos(G_star[0, 1] / (a_star * b_star))
 
         G = np.linalg.inv(G_star)
         self._a = np.sqrt(G[0, 0])
@@ -209,8 +208,12 @@ class OrientedLattice(BaseModel):
 
         self._B = np.array(
             [
-                [a_star, b_star * np.cos(gamma_star), c_star * np.cos(beta_star)],
-                [0, b_star * np.sin(gamma_star), -c_star * np.sin(beta_star) * np.cos(np.radians(self._alpha))],
+                [a_star, b_star * np.cos(self.gamma_star), c_star * np.cos(self.beta_star)],
+                [
+                    0,
+                    b_star * np.sin(self.gamma_star),
+                    -c_star * np.sin(self.beta_star) * np.cos(np.radians(self._alpha)),
+                ],
                 [0, 0, 1.0 / self._c],
             ]
         )
@@ -262,6 +265,10 @@ class OrientedLattice(BaseModel):
         sin_beta_star = np.sqrt(1 - cos_beta_star**2)
         cos_gamma_star = (cos_alpha * cos_beta - cos_gamma) / (sin_alpha * sin_beta)
         sin_gamma_star = np.sqrt(1 - cos_gamma_star**2)
+
+        self.alpha_star = np.arccos(cos_alpha_star)
+        self.beta_star = np.arccos(cos_beta_star)
+        self.gamma_star = np.arccos(cos_gamma_star)
 
         cos_gamma_star = (cos_alpha * cos_beta - cos_gamma) / (sin_alpha * sin_beta)
         sin_gamma_star = np.sqrt(1 - cos_gamma_star**2)
@@ -318,6 +325,31 @@ class OrientedLattice(BaseModel):
         """
         q_norm = 2 * np.pi * np.linalg.norm(self._B @ np.array(hkl))
         return q_norm
+
+    def reciprocal_vectors(self) -> tuple:
+        """Compute reciprocal lattice vector based on Eq.9-21."""
+        cos_alpha = np.cos(np.radians(self._alpha))
+        sin_alpha = np.sin(np.radians(self._alpha))
+
+        cos_beta = np.cos(np.radians(self._beta))
+        sin_beta = np.sin(np.radians(self._beta))
+
+        cos_gamma = np.cos(np.radians(self._gamma))
+        sin_gamma = np.sin(np.radians(self._gamma))
+
+        Vabg = np.sqrt(1 - cos_alpha**2 - cos_beta**2 - cos_gamma**2 + 2 * cos_alpha * cos_beta * cos_gamma)
+
+        a_vec = np.array([self._a, 0, 0])
+        b_vec = np.array([self._b * cos_gamma, self._b * sin_gamma, 0])
+
+        c_vec = np.array(
+            [
+                self._c * cos_beta,
+                self._c * (cos_alpha - cos_gamma * cos_beta) / sin_gamma,
+                self._c * Vabg / sin_gamma,
+            ]
+        )
+        return (a_vec, b_vec, c_vec)
 
     def rot_matrix_with_minimal_tilt(
         self,

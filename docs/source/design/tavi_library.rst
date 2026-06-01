@@ -329,6 +329,85 @@ Reducing to a 2D Ellipse
 deletion), while ``PROJECTION=True`` projects via the quadric-projection
 identity (``quadric_proj``).
 
+Plot Ellipse
+------------
+
+``tavi.library.plot.plot_ellipse`` provides two public objects for rendering
+2D resolution ellipses on a skewed (non-orthogonal) grid:
+
+- **``grid_helper(angle, nbins)``** -- builds a ``GridHelperCurveLinear`` that
+  skews the Matplotlib axes by ``angle`` degrees, so that non-orthogonal
+  reciprocal-space axes are drawn correctly.
+- **``Plot``** -- accumulates one or more ``EllipseEntry`` objects and renders
+  them together on a single axes.
+
+``EllipseEntry`` dataclass fields:
+
+- ``patch`` (``Ellipse``) -- the Matplotlib patch to draw
+- ``x_extent``, ``y_extent`` (``float``) -- half-widths of the bounding box
+  in data coordinates, used to auto-scale the axes limits
+- ``origin`` (``tuple[float, float]``) -- centre of the ellipse in data coordinates
+
+``Plot`` API
+~~~~~~~~~~~~
+
+.. code-block:: python
+
+    class Plot:
+        def __init__(self, axes_angle: float) -> None: ...
+        """
+        axes_angle: angle (degrees) between the two plot axes.
+        """
+
+        @staticmethod
+        def create_ellipse(
+            mat: np.ndarray,
+            origin: tuple[float, float] = (0.0, 0.0),
+            **kwargs,
+        ) -> EllipseEntry: ...
+        """
+        Compute the FWHM ellipse from a 2x2 resolution matrix.
+        Eigen-decomposition gives the semi-axes lengths and orientation angle.
+        sig2fwhm is applied so dimensions are full-width values.
+        """
+
+        def add_ellipse(
+            self,
+            mat: np.ndarray,
+            origin: tuple[float, float] = (0.0, 0.0),
+            **kwargs,
+        ) -> EllipseEntry: ...
+        """Convenience wrapper: create_ellipse + append to the draw queue."""
+
+        def plot(
+            self,
+            ax: Optional[Axes] = None,
+            pad: float = 1.1,
+            show: bool = True,
+        ) -> Axes: ...
+        """
+        Draw all queued ellipses.  Creates a new figure with a skewed grid
+        if ax is None.  Applies the shear transform so that patches are
+        rendered in the tilted coordinate system.  A legend is shown
+        automatically when any patch carries a visible label.
+        """
+
+Example
+~~~~~~~
+
+.. code-block:: python
+
+    from tavi.library.plot.plot_ellipse import Plot
+
+    # res_2d is a 2×2 slice/projection from res.get_ellipse(...)
+    p = Plot(axes_angle=60.0)          # 60° between the two axes
+    p.add_ellipse(res_2d, label="(0,0,3)")
+    p.add_ellipse(res_2d_proj, origin=(0.05, 0.0), linestyle="--", label="projected")
+    ax = p.plot(show=True)
+
+Multiple ellipses (e.g. along a scan) can be added with different ``origin``
+values before a single call to ``plot``.
+
 Design Characteristics
 ----------------------
 
