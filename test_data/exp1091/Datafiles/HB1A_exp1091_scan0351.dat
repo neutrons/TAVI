@@ -1,0 +1,35 @@
+# scan = 351
+# date = 5/30/2026
+# time = 9:31:16 PM
+# proposal = 38450
+# experiment = Investigate the magnetic order of KV2Se2O
+# experiment_number = 1091
+# command = scan h 0.85 1.15 0.005 k 0 l 0.5 preset mcu 30
+# builtin_command = scan h 0.85 1.15 0.005 k 0 l 0.5 preset mcu 30
+# users = Tong Chen, Wei Tian, Yi Luo, Zehao Wang
+# local_contact = Wei Tian
+# scan_title =  (0.999986 0.000018 0.500007) along H, T = 4.2051 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = KV2Se2O
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.967715,3.961883,7.321512,90.003970,90.006616,89.888382
+# ubmatrix = -0.244866,-0.047196,0.019494,-0.034654,-0.010332,-0.135172,0.048594,-0.247739,0.001914
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = UBmatrix_5K_2.dat
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 30.000000
+# def_x = h
+# def_y = detector
+# col_headers = 
+#   Pt.          h          k          l       time   detector    monitor        mcu         m2        chi        phi      omega     2theta        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          e         ei    coldtip     sample       temp
+      1     0.9915     0.0024     0.4924      0.000      0.000      0.000      0.000    41.5367   -10.8105   -23.5780   -17.7604   -35.8748     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7713    41.5279     0.0000    14.4503     4.2074    19.5224     4.000
+# Sum of Counts = 0
+# Center of Mass = NaN+/-NaN
+# Full Width Half-Maximum = NaN+/-NaN
+# 9:31:21 PM  5/30/2026   scan stopped!!

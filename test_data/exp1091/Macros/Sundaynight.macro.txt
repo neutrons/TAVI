@@ -1,0 +1,26 @@
+scantitle "path g-x, (1 0 0) --> (1 0.5 0), T = @(coldtip.position) K"
+scan h 1 k 0.025 0.5 0.025 l 0 preset mcu 10
+
+scantitle "path x-m, (1 0.5 0)-->(0.5 0.5 0), T = @(coldtip.position) K"
+scan h 0.975 0.5 0.025 k 0.5 l 0 preset mcu 10
+
+scantitle "path m-g, (0.5 0.5 0)-->(1 0 0), T = @(coldtip.position) K"
+scan h 0.525 1 0.025 k 0.475 0 0.025 l 0 preset mcu 10
+
+scantitle "path g-z, (1 0 0)-->(1 0 0.5), T = @(coldtip.position) K"
+scan h 1 k 0 l 0.025 0.5 0.025 preset mcu 10
+
+scantitle "path z-r, (1 0 0.5)-->(1 0.5 0.5), T = @(coldtip.position) K"
+scan h 1 k 0.025 0.5 0.025 l 0.5 preset mcu 10
+
+scantitle "path r-a, (1 0.5 0.5)-->(0.5 0.5 0.5), T = @(coldtip.position) K"
+scan h 0.975 0.5 0.025 k 0.5 l 0.5 preset mcu 10
+
+scantitle "path a-z, (0.5 0.5 0.5)-->(1 0 0.5), T = @(coldtip.position) K"
+scan h 0.525 1 0.025 k 0.475 0 0.025 l 0.5 preset mcu 10
+
+scantitle "path a-m, (0.5 0.5 0.5)-->(0.5 0.5 0), T = @(coldtip.position) K"
+scan h 0.5 k 0.5 l 0.475 0 0.025 preset mcu 10
+
+scantitle "path x-r, (1 0.5 0)->(1 0.5 0.5), , T = @(coldtip.position) K"
+scan h 1 k 0.5 l 0.025 0.5 0.025 preset mcu 10
