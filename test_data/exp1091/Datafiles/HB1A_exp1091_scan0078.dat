@@ -1,0 +1,38 @@
+# scan = 78
+# date = 5/29/2026
+# time = 6:30:27 PM
+# proposal = 38450
+# experiment = Investigate the magnetic order of KV2Se2O
+# experiment_number = 1091
+# command = th4th 3 -3 0.3
+# builtin_command = scan 2theta @(2theta)+3 @(2theta)+-3 0.300000 omega @(omega)+(3/2) @(omega)+(-3/2) 0.150000
+# users = Tong Chen, Wei Tian, Yi Luo, Zehao Wang
+# local_contact = Wei Tian
+# scan_title =  (-1.487811 -0.000005 -0.000093) th4th, T = 4.3126 K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = KV2Se2O
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.967715,3.961883,7.321512,90.003970,90.006616,89.888382
+# ubmatrix = -0.244866,-0.047196,0.019494,-0.034654,-0.010332,-0.135172,0.048594,-0.247739,0.001914
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = UBmatrix_5K_1.dat
+# preset_type = normal 
+# preset_channel = time
+# preset_value = 10.000000
+# def_x = 2theta
+# def_y = detector
+# col_headers = 
+#   Pt.     2theta      omega       time   detector    monitor        mcu         m2        chi        phi        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
+      1   -50.0029   -25.0057     10.000      8.000 181093.000     10.377    41.5367    11.1165   171.9465     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7712    41.5278    -1.4092    -0.0000    -0.0001     0.0000    14.4503     4.3142    20.0348     4.000
+      2   -50.3010   -25.1556     10.000     13.000 180641.000     10.352    41.5367    11.1165   171.9465     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7712    41.5278    -1.4170    -0.0000    -0.0002     0.0000    14.4503     4.3151    20.0347     4.000
+      3   -50.6061   -25.3050     10.000     13.000 181554.000     10.404    41.5367    11.1165   171.9465     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7712    41.5278    -1.4251    -0.0000    -0.0000     0.0000    14.4503     4.3133    20.0343     4.000
+      4   -50.9082   -25.4553     10.000      0.000      0.000      0.000    41.5367    11.1165   171.9465     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7712    41.5278    -1.4330    -0.0000     0.0000     0.0000    14.4503     4.3150    20.0342     4.000
+# Sum of Counts = 34
+# Center of Mass = -50.347515+/-12.211131
+# Full Width Half-Maximum = 0.466207+/-13.525919
+# 6:31:13 PM  5/29/2026   scan stopped!!

@@ -1,0 +1,2037 @@
+5/29/2026 2:15 PM        drive 2theta -38.0 omage 019
+5/29/2026 2:16 PM        drive 2theta -38.0 omaga -19
+5/29/2026 2:16 PM        drive 2theta -38
+5/29/2026 2:16 PM        drive omega -19
+5/29/2026 2:17 PM        driverel phi 90
+5/29/2026 2:17 PM        driverel phi -90
+5/29/2026 2:18 PM        driverel phi -90
+5/29/2026 2:18 PM        drive phi 84
+5/29/2026 2:19 PM        driverel phi -2
+5/29/2026 2:20 PM        scantitle "Aligning (002)"
+5/29/2026 2:21 PM        preset time 1
+5/29/2026 2:21 PM        scanrel phi 1 -1 0.1
+5/29/2026 2:23 PM        drive 2theta -18.7378 
+5/29/2026 2:23 PM        drive omega -9.36892
+5/29/2026 2:24 PM        driverel phi -90
+5/29/2026 2:24 PM        driverel phi -90
+5/29/2026 2:26 PM        drive 2theta -81.2587
+5/29/2026 2:27 PM        drive omega -40.6293
+5/29/2026 2:27 PM        scantitle "Aligning (004)"
+5/29/2026 2:28 PM        scanrel phi 1 -1 0.1
+5/29/2026 2:28 PM        driverel phi 180
+5/29/2026 2:29 PM        drive phi -98
+5/29/2026 2:29 PM        scanrel phi 3 -3 0.3
+5/29/2026 2:30 PM        drive slitb_lf 15
+5/29/2026 2:30 PM        drive slita_rt 15
+5/29/2026 2:31 PM        drive slita_bt 30
+5/29/2026 2:31 PM        drive slita_tp 30
+5/29/2026 2:31 PM        drive phi -98.2899
+5/29/2026 2:32 PM        scanrel chi 5 -5 1
+5/29/2026 2:33 PM        drive chi -1
+5/29/2026 2:33 PM        th4th 3 -3 0.3
+5/29/2026 2:37 PM        drive 2theta -52.5992
+5/29/2026 2:37 PM        drive omega -26.2996
+5/29/2026 2:37 PM        drive phi -56
+5/29/2026 2:38 PM        drive phi -50
+5/29/2026 2:38 PM        drive phi  -55
+5/29/2026 2:38 PM        drive phi -45
+5/29/2026 2:38 PM        drive phi -40
+5/29/2026 2:39 PM        drive chi 3
+5/29/2026 2:39 PM        drive phi -70
+5/29/2026 2:39 PM        drive chi -4
+5/29/2026 2:40 PM        drive phi -50
+5/29/2026 2:40 PM        drive phi -52
+5/29/2026 2:40 PM        drive phi -54
+5/29/2026 2:40 PM        scantitle "Aligning (102)"
+5/29/2026 2:40 PM        scanrel phi 3 -3 0.3
+5/29/2026 2:42 PM        drive phi -56
+5/29/2026 2:42 PM        scanrel phi 5 -5 0.5
+5/29/2026 2:43 PM        drive phi -55.999
+5/29/2026 2:43 PM        drive phi -56.3776
+5/29/2026 2:44 PM        scanrel chi 6 -6 1
+5/29/2026 2:45 PM        drive chi -8
+5/29/2026 2:45 PM        br 1 0 0
+5/29/2026 2:46 PM        br 2 0 0
+5/29/2026 2:48 PM        driverel phi -5
+5/29/2026 2:49 PM        br 2 0 0
+5/29/2026 2:51 PM        preset time 5
+5/29/2026 2:51 PM        scan slita_bt 0 30 2
+5/29/2026 2:54 PM        scan slita_tp 0 30 2
+5/29/2026 2:57 PM        scan slita_lf 0 15 1
+5/29/2026 2:59 PM        scan slita_rt 0 15 1
+5/29/2026 3:01 PM        scan slitb_bt 0 30 2
+5/29/2026 3:04 PM        scan slitb_tp 0 30 2
+5/29/2026 3:07 PM        scan slitb_lf 0 15 1
+5/29/2026 3:09 PM        scan slitb_rt 0 15 1
+5/29/2026 3:11 PM        br 0 0 4
+5/29/2026 3:11 PM        scan slita_lf 0 15 1
+5/29/2026 3:14 PM        scan slita_rt 0 15 1
+5/29/2026 3:16 PM        scan slitb_lf 0 15 1
+5/29/2026 3:18 PM        scan slitb_rt 0 15 1
+5/29/2026 3:41 PM        drive slita_bt 30 slita_tp 26 slita_lf 7 slita_rt 6
+5/29/2026 3:42 PM        drive slitb_bt 28 slitb_tp 22 slitb_lf 6 slitb_rt 6
+5/29/2026 3:47 PM        br 0 0 4
+5/29/2026 3:47 PM        preset time 3
+5/29/2026 3:47 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 3:47 PM        scanrel omega 3 -3 0.3
+5/29/2026 3:49 PM        com omega 
+5/29/2026 3:49 PM        scanrel chi 5 -5 1
+5/29/2026 3:50 PM        com chi
+5/29/2026 3:50 PM        th4th 3 -3 0.3 
+5/29/2026 3:53 PM        br 0 0 -4
+5/29/2026 3:54 PM        preset time 3
+5/29/2026 3:54 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 3:54 PM        scanrel omega 3 -3 0.3
+5/29/2026 3:55 PM        com omega 
+5/29/2026 3:55 PM        scanrel chi 5 -5 1
+5/29/2026 3:56 PM        com chi
+5/29/2026 3:57 PM        th4th 3 -3 0.3 
+5/29/2026 3:59 PM        br 2 0 0
+5/29/2026 4:00 PM        preset time 3
+5/29/2026 4:00 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:00 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:01 PM        com omega 
+5/29/2026 4:01 PM        scanrel chi 5 -5 1
+5/29/2026 4:02 PM        com chi
+5/29/2026 4:02 PM        th4th 2 -2 0.2 
+5/29/2026 4:05 PM        br -2 0 0
+5/29/2026 4:06 PM        preset time 3
+5/29/2026 4:06 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:06 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:07 PM        com omega 
+5/29/2026 4:07 PM        scanrel chi 5 -5 1
+5/29/2026 4:08 PM        com chi
+5/29/2026 4:08 PM        th4th 2 -2 0.2 
+5/29/2026 4:12 PM        lowerlimit chi -50.000000 phi -180.500000 omega -46.000000 2theta -90.000000 sgl -20.000000 sgu -20.000000 slitb_bt -75.000000 slitb_lf -26.000000 slitb_rt -26.000000 slitb_tp -75.000000 slita_bt -75.000000 slita_lf -75.000000 slita_rt -75.000000 slita_tp -75.000000 a1 -160.250000 a2 -40.250000 temp 0.000000 
+5/29/2026 4:12 PM        upperlimit chi 60.500000 phi 180.500000 omega 0.000000 2theta -2.000000 sgl 20.000000 sgu 20.000000 slitb_bt 75.000000 slitb_lf 26.000000 slitb_rt 26.000000 slitb_tp 75.000000 slita_bt 74.800000 slita_lf 74.800000 slita_rt 74.800000 slita_tp 74.800000 a1 159.900000 a2 120.100000 temp 450.000000 
+5/29/2026 4:13 PM        br 2 0 2
+5/29/2026 4:14 PM        preset time 3
+5/29/2026 4:14 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:14 PM        scanrel omega 2 -2 0.2
+5/29/2026 4:15 PM        br 1 0 1
+5/29/2026 4:16 PM        preset time 3
+5/29/2026 4:16 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:16 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:17 PM        com omega 
+5/29/2026 4:17 PM        scanrel chi 5 -5 1
+5/29/2026 4:18 PM        br 1 0 2
+5/29/2026 4:18 PM        preset time 3
+5/29/2026 4:18 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:18 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:20 PM        com omega 
+5/29/2026 4:20 PM        scanrel chi 5 -5 1
+5/29/2026 4:21 PM        com chi
+5/29/2026 4:21 PM        th4th 3 -3 0.3 
+5/29/2026 4:24 PM        br 1 0 -2
+5/29/2026 4:24 PM        preset time 3
+5/29/2026 4:24 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:24 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:26 PM        com omega 
+5/29/2026 4:26 PM        scanrel chi 5 -5 1
+5/29/2026 4:27 PM        com chi
+5/29/2026 4:27 PM        th4th 3 -3 0.3 
+5/29/2026 4:30 PM        br -1 0 -2
+5/29/2026 4:30 PM        preset time 3
+5/29/2026 4:30 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:30 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:32 PM        com omega 
+5/29/2026 4:32 PM        scanrel chi 5 -5 1
+5/29/2026 4:33 PM        com chi
+5/29/2026 4:33 PM        th4th 3 -3 0.3 
+5/29/2026 4:36 PM        br 1 1 0
+5/29/2026 4:37 PM        preset time 3
+5/29/2026 4:37 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:37 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:38 PM        com omega 
+5/29/2026 4:38 PM        scanrel chi 5 -5 1
+5/29/2026 4:39 PM        com chi
+5/29/2026 4:39 PM        th4th 3 -3 0.3 
+5/29/2026 4:42 PM        br -1 -1 0
+5/29/2026 4:43 PM        preset time 3
+5/29/2026 4:43 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:43 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:45 PM        com omega 
+5/29/2026 4:45 PM        scanrel chi 5 -5 1
+5/29/2026 4:46 PM        com chi
+5/29/2026 4:47 PM        th4th 3 -3 0.3 
+5/29/2026 4:50 PM        br 0 1 2
+5/29/2026 4:51 PM        preset time 3
+5/29/2026 4:51 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:51 PM        scanrel omega 3 -3 0.3
+5/29/2026 4:53 PM        com omega 
+5/29/2026 4:53 PM        scanrel chi 5 -5 1
+5/29/2026 4:54 PM        com chi
+5/29/2026 4:54 PM        th4th 3 -3 0.3 
+5/29/2026 4:58 PM        br 0 -1 -2
+5/29/2026 4:59 PM        preset time 1
+5/29/2026 4:59 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 4:59 PM        scanrel omega 3 -3 0.3
+5/29/2026 5:00 PM        com omega 
+5/29/2026 5:00 PM        scanrel chi 5 -5 1
+5/29/2026 5:01 PM        com chi
+5/29/2026 5:01 PM        th4th 3 -3 0.3 
+5/29/2026 5:07 PM        br 0 -1 1
+5/29/2026 5:07 PM        preset time 1
+5/29/2026 5:07 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 5:07 PM        scanrel omega 3 -3 0.3
+5/29/2026 5:08 PM        com omega 
+5/29/2026 5:08 PM        scanrel chi 5 -5 1
+5/29/2026 5:09 PM        com chi
+5/29/2026 5:09 PM        th4th 3 -3 0.3 
+5/29/2026 5:10 PM        br 1 -1 0
+5/29/2026 5:10 PM        preset time 1
+5/29/2026 5:10 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 5:10 PM        scanrel omega 3 -3 0.3
+5/29/2026 5:12 PM        br -1 1 0
+5/29/2026 5:14 PM        br -1 1 0
+5/29/2026 5:14 PM        preset time 1
+5/29/2026 5:14 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 5:14 PM        scanrel omega 3 -3 0.3
+5/29/2026 5:15 PM        com omega 
+5/29/2026 5:15 PM        scanrel chi 5 -5 1
+5/29/2026 5:16 PM        com chi
+5/29/2026 5:16 PM        th4th 3 -3 0.3 
+5/29/2026 5:17 PM        br 1 -1 0
+5/29/2026 5:17 PM        preset time 1
+5/29/2026 5:17 PM        scantitle "optize (@(h) @(k) @(l) ), T = @(coldtip.position) K"
+5/29/2026 5:18 PM        scanrel omega 3 -3 0.3
+5/29/2026 5:18 PM        com omega 
+5/29/2026 5:19 PM        scanrel chi 5 -5 1
+5/29/2026 5:19 PM        com chi
+5/29/2026 5:19 PM        th4th 3 -3 0.3 
+5/29/2026 5:24 PM        br 1 0 0.5
+5/29/2026 5:25 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:25 PM        preset time 10
+5/29/2026 5:25 PM        th4th 3 -3 0.3
+5/29/2026 5:31 PM        set_temp 5
+5/29/2026 5:31 PM        set_temp 4
+5/29/2026 5:35 PM        br 0.5 0.5 0
+5/29/2026 5:36 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:36 PM        preset time 10
+5/29/2026 5:36 PM        th4th 3 -3 0.3
+5/29/2026 5:42 PM        br 0.5 0 0
+5/29/2026 5:43 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:43 PM        preset time 10
+5/29/2026 5:43 PM        th4th 3 -3 0.3
+5/29/2026 5:47 PM        br 0 0.5 0
+5/29/2026 5:47 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:47 PM        preset time 10
+5/29/2026 5:47 PM        th4th 3 -3 0.3
+5/29/2026 5:52 PM        br 1.5 0 0
+5/29/2026 5:52 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:52 PM        preset time 10
+5/29/2026 5:52 PM        th4th 3 -3 0.3
+5/29/2026 5:57 PM        br 0 1.5 0
+5/29/2026 5:57 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 5:57 PM        preset time 10
+5/29/2026 5:57 PM        th4th 3 -3 0.3
+5/29/2026 6:01 PM        br 1 1.5 0
+5/29/2026 6:02 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:02 PM        preset time 10
+5/29/2026 6:02 PM        th4th 3 -3 0.3
+5/29/2026 6:09 PM        br 1.5 1 0
+5/29/2026 6:09 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:09 PM        preset time 10
+5/29/2026 6:09 PM        th4th 3 -3 0.3
+5/29/2026 6:14 PM        br 0 1.5 0
+5/29/2026 6:14 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:14 PM        preset time 10
+5/29/2026 6:14 PM        th4th 3 -3 0.3
+5/29/2026 6:19 PM        br -1.5 0 0
+5/29/2026 6:19 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:19 PM        preset time 10
+5/29/2026 6:20 PM        th4th 3 -3 0.3
+5/29/2026 6:25 PM        br 0 1.5 0
+5/29/2026 6:25 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:25 PM        preset time 10
+5/29/2026 6:25 PM        th4th 3 -3 0.3
+5/29/2026 6:30 PM        br 0 1.5 0
+5/29/2026 6:30 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:30 PM        preset time 10
+5/29/2026 6:30 PM        th4th 3 -3 0.3
+5/29/2026 6:31 PM        br 0 1.5 0
+5/29/2026 6:32 PM        br 0 -1.5 0
+5/29/2026 6:33 PM        br 2.5 0 0
+5/29/2026 6:33 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:33 PM        preset time 10
+5/29/2026 6:33 PM        th4th 3 -3 0.3
+5/29/2026 6:38 PM        br 1 0 0.5
+5/29/2026 6:39 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:39 PM        preset time 10
+5/29/2026 6:39 PM        th4th 3 -3 0.3
+5/29/2026 6:44 PM        br 1 0 1.5
+5/29/2026 6:44 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 6:44 PM        preset time 10
+5/29/2026 6:44 PM        th4th 3 -3 0.3
+5/29/2026 6:52 PM        br 1 0 1.5
+5/29/2026 6:53 PM        br 0 0 4
+5/29/2026 6:57 PM        preset mcu 1
+5/29/2026 6:57 PM        th4th 3 -3 0.3
+5/29/2026 7:06 PM        br -1.5 0 0
+5/29/2026 7:07 PM        br -1 0 0.5
+5/29/2026 7:09 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 7:09 PM        preset time 10
+5/29/2026 7:09 PM        th4th 3 -3 0.3
+5/29/2026 7:13 PM        br -1 0 1.5
+5/29/2026 7:13 PM        scantitle " (@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 7:13 PM        preset time 10
+5/29/2026 7:13 PM        th4th 3 -3 0.3
+5/29/2026 7:22 PM        br 1 0 0.5
+5/29/2026 7:23 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/29/2026 7:23 PM        scan h 0.7 1.3 0.025 k 0 l 0.5 preset mcu 30
+5/29/2026 7:37 PM        br 1 0 0.5
+5/29/2026 7:37 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/29/2026 7:37 PM        scan h 1 k 0 l 0.2 0.8 0.025 preset mcu 30
+5/29/2026 7:50 PM        br 1 0 1.5
+5/29/2026 7:50 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/29/2026 7:50 PM        scan h 0.7 1.3 0.025 k 0 l 1.5 preset mcu 30
+5/29/2026 8:04 PM        br 1 0 1.5
+5/29/2026 8:04 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/29/2026 8:04 PM        scan h 1 k 0 l 1.2 1.8 0.025 preset mcu 30
+5/29/2026 8:17 PM        br -1 -1 -1.5
+5/29/2026 8:18 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:18 PM        preset mcu 10
+5/29/2026 8:18 PM        th4th 3 -3 0.3
+5/29/2026 8:23 PM        br -1 -1 -0.5
+5/29/2026 8:23 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:23 PM        preset mcu 10
+5/29/2026 8:23 PM        th4th 3 -3 0.3
+5/29/2026 8:28 PM        br -1 -1 0.5
+5/29/2026 8:29 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:29 PM        preset mcu 10
+5/29/2026 8:29 PM        th4th 3 -3 0.3
+5/29/2026 8:34 PM        br -1 -1 1.5
+5/29/2026 8:34 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:34 PM        preset mcu 10
+5/29/2026 8:34 PM        th4th 3 -3 0.3
+5/29/2026 8:38 PM        br -1 0 -1.5
+5/29/2026 8:39 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:40 PM        preset mcu 10
+5/29/2026 8:40 PM        th4th 3 -3 0.3
+5/29/2026 8:44 PM        br -1 0 -0.5
+5/29/2026 8:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:44 PM        preset mcu 10
+5/29/2026 8:44 PM        th4th 3 -3 0.3
+5/29/2026 8:49 PM        br -1 0 0.5
+5/29/2026 8:50 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:50 PM        preset mcu 10
+5/29/2026 8:50 PM        th4th 3 -3 0.3
+5/29/2026 8:55 PM        br -1 0 1.5
+5/29/2026 8:55 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 8:55 PM        preset mcu 10
+5/29/2026 8:55 PM        th4th 3 -3 0.3
+5/29/2026 9:00 PM        br -1 1 -1.5
+5/29/2026 9:01 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:01 PM        preset mcu 10
+5/29/2026 9:01 PM        th4th 3 -3 0.3
+5/29/2026 9:06 PM        br -1 1 -0.5
+5/29/2026 9:06 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:06 PM        preset mcu 10
+5/29/2026 9:06 PM        th4th 3 -3 0.3
+5/29/2026 9:11 PM        br -1 1 0.5
+5/29/2026 9:12 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:12 PM        preset mcu 10
+5/29/2026 9:12 PM        th4th 3 -3 0.3
+5/29/2026 9:17 PM        br -1 1 1.5
+5/29/2026 9:17 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:17 PM        preset mcu 10
+5/29/2026 9:17 PM        th4th 3 -3 0.3
+5/29/2026 9:21 PM        br 0 -1 -1.5
+5/29/2026 9:23 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:23 PM        preset mcu 10
+5/29/2026 9:23 PM        th4th 3 -3 0.3
+5/29/2026 9:28 PM        br 0 0 -2.5
+5/29/2026 9:29 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:29 PM        preset mcu 10
+5/29/2026 9:29 PM        th4th 3 -3 0.3
+5/29/2026 9:33 PM        br 0 0 -1.5
+5/29/2026 9:33 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:33 PM        preset mcu 10
+5/29/2026 9:33 PM        th4th 3 -3 0.3
+5/29/2026 9:38 PM        br 0 0 -0.5
+5/29/2026 9:38 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:38 PM        preset mcu 10
+5/29/2026 9:38 PM        th4th 3 -3 0.3
+5/29/2026 9:43 PM        br 0 0 0.5
+5/29/2026 9:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:44 PM        preset mcu 10
+5/29/2026 9:44 PM        th4th 3 -3 0.3
+5/29/2026 9:49 PM        br 0 0 1.5
+5/29/2026 9:49 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:49 PM        preset mcu 10
+5/29/2026 9:49 PM        th4th 3 -3 0.3
+5/29/2026 9:54 PM        br 0 0 2.5
+5/29/2026 9:54 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:54 PM        preset mcu 10
+5/29/2026 9:54 PM        th4th 3 -3 0.3
+5/29/2026 9:59 PM        br 0 1 -1.5
+5/29/2026 9:59 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 9:59 PM        preset mcu 10
+5/29/2026 9:59 PM        th4th 3 -3 0.3
+5/29/2026 10:04 PM        br 0 1 1.5
+5/29/2026 10:05 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:05 PM        preset mcu 10
+5/29/2026 10:05 PM        th4th 3 -3 0.3
+5/29/2026 10:09 PM        br 1 -1 -1.5
+5/29/2026 10:11 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:11 PM        preset mcu 10
+5/29/2026 10:11 PM        th4th 3 -3 0.3
+5/29/2026 10:15 PM        br 1 -1 1.5
+5/29/2026 10:16 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:16 PM        preset mcu 10
+5/29/2026 10:16 PM        th4th 3 -3 0.3
+5/29/2026 10:20 PM        br 1 0 -1.5
+5/29/2026 10:21 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:21 PM        preset mcu 10
+5/29/2026 10:21 PM        th4th 3 -3 0.3
+5/29/2026 10:26 PM        br 1 0 -0.5
+5/29/2026 10:26 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:26 PM        preset mcu 10
+5/29/2026 10:26 PM        th4th 3 -3 0.3
+5/29/2026 10:31 PM        br 1 0 0.5
+5/29/2026 10:31 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:31 PM        preset mcu 10
+5/29/2026 10:31 PM        th4th 3 -3 0.3
+5/29/2026 10:36 PM        br 1 0 1.5
+5/29/2026 10:36 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:36 PM        preset mcu 10
+5/29/2026 10:36 PM        th4th 3 -3 0.3
+5/29/2026 10:40 PM        br 1 1 -1.5
+5/29/2026 10:41 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:41 PM        preset mcu 10
+5/29/2026 10:41 PM        th4th 3 -3 0.3
+5/29/2026 10:46 PM        br 1 1 -0.5
+5/29/2026 10:46 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:46 PM        preset mcu 10
+5/29/2026 10:46 PM        th4th 3 -3 0.3
+5/29/2026 10:51 PM        br 1 1 0.5
+5/29/2026 10:51 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:51 PM        preset mcu 10
+5/29/2026 10:51 PM        th4th 3 -3 0.3
+5/29/2026 10:55 PM        br 1 1 1.5
+5/29/2026 10:56 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 10:56 PM        preset mcu 10
+5/29/2026 10:56 PM        th4th 3 -3 0.3
+5/29/2026 11:00 PM        br -2 -1 0
+5/29/2026 11:01 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:01 PM        preset mcu 10
+5/29/2026 11:01 PM        th4th 3 -3 0.3
+5/29/2026 11:06 PM        br -2 0 -2
+5/29/2026 11:06 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:06 PM        preset mcu 10
+5/29/2026 11:06 PM        th4th 3 -3 0.3
+5/29/2026 11:11 PM        br -2 0 -1
+5/29/2026 11:11 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:11 PM        preset mcu 10
+5/29/2026 11:11 PM        th4th 3 -3 0.3
+5/29/2026 11:16 PM        br -2 0 0
+5/29/2026 11:16 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:16 PM        preset mcu 10
+5/29/2026 11:16 PM        th4th 3 -3 0.3
+5/29/2026 11:21 PM        br -2 0 1
+5/29/2026 11:22 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:22 PM        preset mcu 10
+5/29/2026 11:22 PM        th4th 3 -3 0.3
+5/29/2026 11:27 PM        br -2 0 2
+5/29/2026 11:27 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:27 PM        preset mcu 10
+5/29/2026 11:27 PM        th4th 3 -3 0.3
+5/29/2026 11:32 PM        br -2 1 0
+5/29/2026 11:33 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:33 PM        preset mcu 10
+5/29/2026 11:33 PM        th4th 3 -3 0.3
+5/29/2026 11:38 PM        br -1 -1 -3
+5/29/2026 11:39 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:39 PM        preset mcu 10
+5/29/2026 11:39 PM        th4th 3 -3 0.3
+5/29/2026 11:44 PM        br -1 -1 -2
+5/29/2026 11:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:44 PM        preset mcu 10
+5/29/2026 11:44 PM        th4th 3 -3 0.3
+5/29/2026 11:49 PM        br -1 -1 -1
+5/29/2026 11:49 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:49 PM        preset mcu 10
+5/29/2026 11:49 PM        th4th 3 -3 0.3
+5/29/2026 11:54 PM        br -1 -1 0
+5/29/2026 11:54 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/29/2026 11:54 PM        preset mcu 10
+5/29/2026 11:54 PM        th4th 3 -3 0.3
+5/29/2026 11:58 PM        br -1 -1 1
+5/30/2026 12:00 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:00 AM        preset mcu 10
+5/30/2026 12:00 AM        th4th 3 -3 0.3
+5/30/2026 12:05 AM        br -1 -1 2
+5/30/2026 12:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:05 AM        preset mcu 10
+5/30/2026 12:05 AM        th4th 3 -3 0.3
+5/30/2026 12:09 AM        br -1 -1 3
+5/30/2026 12:10 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:10 AM        preset mcu 10
+5/30/2026 12:10 AM        th4th 3 -3 0.3
+5/30/2026 12:15 AM        br -1 0 -3
+5/30/2026 12:16 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:16 AM        preset mcu 10
+5/30/2026 12:16 AM        th4th 3 -3 0.3
+5/30/2026 12:20 AM        br -1 0 -2
+5/30/2026 12:21 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:21 AM        preset mcu 10
+5/30/2026 12:21 AM        th4th 3 -3 0.3
+5/30/2026 12:25 AM        br -1 0 -1
+5/30/2026 12:26 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:26 AM        preset mcu 10
+5/30/2026 12:26 AM        th4th 3 -3 0.3
+5/30/2026 12:30 AM        br -1 0 0
+5/30/2026 12:31 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:31 AM        preset mcu 10
+5/30/2026 12:31 AM        th4th 3 -3 0.3
+5/30/2026 12:35 AM        br -1 0 1
+5/30/2026 12:37 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:37 AM        preset mcu 10
+5/30/2026 12:37 AM        th4th 3 -3 0.3
+5/30/2026 12:41 AM        br -1 0 2
+5/30/2026 12:42 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:42 AM        preset mcu 10
+5/30/2026 12:42 AM        th4th 3 -3 0.3
+5/30/2026 12:46 AM        br -1 0 3
+5/30/2026 12:47 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:47 AM        preset mcu 10
+5/30/2026 12:47 AM        th4th 3 -3 0.3
+5/30/2026 12:51 AM        br -1 1 -3
+5/30/2026 12:52 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:52 AM        preset mcu 10
+5/30/2026 12:52 AM        th4th 3 -3 0.3
+5/30/2026 12:57 AM        br -1 1 -2
+5/30/2026 12:57 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:57 AM        preset mcu 10
+5/30/2026 12:57 AM        th4th 3 -3 0.3
+5/30/2026 1:02 AM        br -1 1 -1
+5/30/2026 1:02 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:02 AM        preset mcu 10
+5/30/2026 1:02 AM        th4th 3 -3 0.3
+5/30/2026 1:07 AM        br -1 1 0
+5/30/2026 1:07 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:07 AM        preset mcu 10
+5/30/2026 1:07 AM        th4th 3 -3 0.3
+5/30/2026 1:12 AM        br -1 1 1
+5/30/2026 1:13 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:13 AM        preset mcu 10
+5/30/2026 1:13 AM        th4th 3 -3 0.3
+5/30/2026 1:18 AM        br -1 1 2
+5/30/2026 1:18 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:18 AM        preset mcu 10
+5/30/2026 1:18 AM        th4th 3 -3 0.3
+5/30/2026 1:23 AM        br -1 1 3
+5/30/2026 1:23 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:23 AM        preset mcu 10
+5/30/2026 1:23 AM        th4th 3 -3 0.3
+5/30/2026 1:28 AM        br 0 -1 -3
+5/30/2026 1:29 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:29 AM        preset mcu 10
+5/30/2026 1:29 AM        th4th 3 -3 0.3
+5/30/2026 1:34 AM        br 0 -1 -2
+5/30/2026 1:34 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:34 AM        preset mcu 10
+5/30/2026 1:34 AM        th4th 3 -3 0.3
+5/30/2026 1:39 AM        br 0 -1 2
+5/30/2026 1:39 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:40 AM        preset mcu 10
+5/30/2026 1:40 AM        th4th 3 -3 0.3
+5/30/2026 1:44 AM        br 0 -1 3
+5/30/2026 1:45 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:45 AM        preset mcu 10
+5/30/2026 1:45 AM        th4th 3 -3 0.3
+5/30/2026 1:49 AM        br 0 0 -4
+5/30/2026 1:50 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:50 AM        preset mcu 10
+5/30/2026 1:50 AM        th4th 3 -3 0.3
+5/30/2026 1:55 AM        br 0 0 -3
+5/30/2026 1:55 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:55 AM        preset mcu 10
+5/30/2026 1:55 AM        th4th 3 -3 0.3
+5/30/2026 2:00 AM        br 0 0 -2
+5/30/2026 2:00 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:00 AM        preset mcu 10
+5/30/2026 2:00 AM        th4th 3 -3 0.3
+5/30/2026 2:05 AM        br 0 0 -1
+5/30/2026 2:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:05 AM        preset mcu 10
+5/30/2026 2:05 AM        th4th 3 -3 0.3
+5/30/2026 2:10 AM        br 0 0 1
+5/30/2026 2:11 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:11 AM        preset mcu 10
+5/30/2026 2:11 AM        th4th 3 -3 0.3
+5/30/2026 2:16 AM        br 0 0 2
+5/30/2026 2:16 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:16 AM        preset mcu 10
+5/30/2026 2:16 AM        th4th 3 -3 0.3
+5/30/2026 2:21 AM        br 0 0 3
+5/30/2026 2:21 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:21 AM        preset mcu 10
+5/30/2026 2:21 AM        th4th 3 -3 0.3
+5/30/2026 2:26 AM        br 0 0 4
+5/30/2026 2:26 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:26 AM        preset mcu 10
+5/30/2026 2:26 AM        th4th 3 -3 0.3
+5/30/2026 2:31 AM        br 0 1 -3
+5/30/2026 2:32 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:32 AM        preset mcu 10
+5/30/2026 2:32 AM        th4th 3 -3 0.3
+5/30/2026 2:37 AM        br 0 1 -2
+5/30/2026 2:37 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:37 AM        preset mcu 10
+5/30/2026 2:37 AM        th4th 3 -3 0.3
+5/30/2026 2:42 AM        br 0 1 1
+5/30/2026 2:43 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:43 AM        preset mcu 10
+5/30/2026 2:43 AM        th4th 3 -3 0.3
+5/30/2026 2:47 AM        br 0 1 2
+5/30/2026 2:48 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:48 AM        preset mcu 10
+5/30/2026 2:48 AM        th4th 3 -3 0.3
+5/30/2026 2:52 AM        br 0 1 3
+5/30/2026 2:53 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:53 AM        preset mcu 10
+5/30/2026 2:53 AM        th4th 3 -3 0.3
+5/30/2026 2:58 AM        br 0 2 2
+5/30/2026 2:58 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:58 AM        preset mcu 10
+5/30/2026 2:58 AM        th4th 3 -3 0.3
+5/30/2026 3:03 AM        br 1 -1 -3
+5/30/2026 3:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:05 AM        preset mcu 10
+5/30/2026 3:05 AM        th4th 3 -3 0.3
+5/30/2026 3:09 AM        br 1 -1 -2
+5/30/2026 3:10 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:10 AM        preset mcu 10
+5/30/2026 3:10 AM        th4th 3 -3 0.3
+5/30/2026 3:14 AM        br 1 -1 2
+5/30/2026 3:15 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:15 AM        preset mcu 10
+5/30/2026 3:15 AM        th4th 3 -3 0.3
+5/30/2026 3:20 AM        br 1 -1 3
+5/30/2026 3:20 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:20 AM        preset mcu 10
+5/30/2026 3:20 AM        th4th 3 -3 0.3
+5/30/2026 3:25 AM        br 1 0 -3
+5/30/2026 3:25 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:25 AM        preset mcu 10
+5/30/2026 3:25 AM        th4th 3 -3 0.3
+5/30/2026 3:30 AM        br 1 0 -2
+5/30/2026 3:30 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:30 AM        preset mcu 10
+5/30/2026 3:30 AM        th4th 3 -3 0.3
+5/30/2026 3:35 AM        br 1 0 -1
+5/30/2026 3:36 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:36 AM        preset mcu 10
+5/30/2026 3:36 AM        th4th 3 -3 0.3
+5/30/2026 3:40 AM        br 1 0 0
+5/30/2026 3:40 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:40 AM        preset mcu 10
+5/30/2026 3:40 AM        th4th 3 -3 0.3
+5/30/2026 3:45 AM        br 1 0 1
+5/30/2026 3:45 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:45 AM        preset mcu 10
+5/30/2026 3:45 AM        th4th 3 -3 0.3
+5/30/2026 3:50 AM        br 1 0 2
+5/30/2026 3:50 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:50 AM        preset mcu 10
+5/30/2026 3:50 AM        th4th 3 -3 0.3
+5/30/2026 3:55 AM        br 1 0 3
+5/30/2026 3:55 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:55 AM        preset mcu 10
+5/30/2026 3:55 AM        th4th 3 -3 0.3
+5/30/2026 4:00 AM        br 1 1 -3
+5/30/2026 4:01 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:01 AM        preset mcu 10
+5/30/2026 4:01 AM        th4th 3 -3 0.3
+5/30/2026 4:05 AM        br 1 1 -2
+5/30/2026 4:06 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:06 AM        preset mcu 10
+5/30/2026 4:06 AM        th4th 3 -3 0.3
+5/30/2026 4:10 AM        br 1 1 -1
+5/30/2026 4:11 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:11 AM        preset mcu 10
+5/30/2026 4:11 AM        th4th 3 -3 0.3
+5/30/2026 4:15 AM        br 1 1 0
+5/30/2026 4:16 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:16 AM        preset mcu 10
+5/30/2026 4:16 AM        th4th 3 -3 0.3
+5/30/2026 4:20 AM        br 1 1 1
+5/30/2026 4:20 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:20 AM        preset mcu 10
+5/30/2026 4:20 AM        th4th 3 -3 0.3
+5/30/2026 4:25 AM        br 1 1 2
+5/30/2026 4:25 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:25 AM        preset mcu 10
+5/30/2026 4:25 AM        th4th 3 -3 0.3
+5/30/2026 4:30 AM        br 1 1 3
+5/30/2026 4:30 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:30 AM        preset mcu 10
+5/30/2026 4:30 AM        th4th 3 -3 0.3
+5/30/2026 4:35 AM        br 1 2 0
+5/30/2026 4:36 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:36 AM        preset mcu 10
+5/30/2026 4:36 AM        th4th 3 -3 0.3
+5/30/2026 4:41 AM        br 2 -1 0
+5/30/2026 4:42 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:42 AM        preset mcu 10
+5/30/2026 4:42 AM        th4th 3 -3 0.3
+5/30/2026 4:47 AM        br 2 0 -2
+5/30/2026 4:47 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:47 AM        preset mcu 10
+5/30/2026 4:48 AM        th4th 3 -3 0.3
+5/30/2026 4:52 AM        br 2 0 -1
+5/30/2026 4:53 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:53 AM        preset mcu 10
+5/30/2026 4:53 AM        th4th 3 -3 0.3
+5/30/2026 4:57 AM        br 2 0 0
+5/30/2026 4:57 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:57 AM        preset mcu 10
+5/30/2026 4:57 AM        th4th 3 -3 0.3
+5/30/2026 5:02 AM        br 2 0 1
+5/30/2026 5:02 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:02 AM        preset mcu 10
+5/30/2026 5:02 AM        th4th 3 -3 0.3
+5/30/2026 5:07 AM        br 2 0 2
+5/30/2026 5:07 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:07 AM        preset mcu 10
+5/30/2026 5:07 AM        th4th 3 -3 0.3
+5/30/2026 5:12 AM        br 2 1 0
+5/30/2026 5:13 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:13 AM        preset mcu 10
+5/30/2026 5:13 AM        th4th 3 -3 0.3
+5/30/2026 5:17 AM        br -1.5 -0.5 0
+5/30/2026 5:18 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:18 AM        preset mcu 10
+5/30/2026 5:18 AM        th4th 3 -3 0.3
+5/30/2026 5:23 AM        br -1.5 0.5 0
+5/30/2026 5:24 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:24 AM        preset mcu 10
+5/30/2026 5:24 AM        th4th 3 -3 0.3
+5/30/2026 5:28 AM        br -0.5 -0.5 -2
+5/30/2026 5:29 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:29 AM        preset mcu 10
+5/30/2026 5:29 AM        th4th 3 -3 0.3
+5/30/2026 5:34 AM        br -0.5 -0.5 -1
+5/30/2026 5:34 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:34 AM        preset mcu 10
+5/30/2026 5:34 AM        th4th 3 -3 0.3
+5/30/2026 5:39 AM        br -0.5 -0.5 0
+5/30/2026 5:39 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:39 AM        preset mcu 10
+5/30/2026 5:39 AM        th4th 3 -3 0.3
+5/30/2026 5:44 AM        br -0.5 -0.5 1
+5/30/2026 5:45 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:45 AM        preset mcu 10
+5/30/2026 5:45 AM        th4th 3 -3 0.3
+5/30/2026 5:50 AM        br -0.5 -0.5 2
+5/30/2026 5:50 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:50 AM        preset mcu 10
+5/30/2026 5:50 AM        th4th 3 -3 0.3
+5/30/2026 5:55 AM        br -0.5 0.5 -2
+5/30/2026 5:56 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:56 AM        preset mcu 10
+5/30/2026 5:56 AM        th4th 3 -3 0.3
+5/30/2026 6:01 AM        br -0.5 0.5 -1
+5/30/2026 6:01 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:01 AM        preset mcu 10
+5/30/2026 6:01 AM        th4th 3 -3 0.3
+5/30/2026 6:06 AM        br -0.5 0.5 0
+5/30/2026 6:06 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:06 AM        preset mcu 10
+5/30/2026 6:06 AM        th4th 3 -3 0.3
+5/30/2026 6:11 AM        br -0.5 0.5 1
+5/30/2026 6:12 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:12 AM        preset mcu 10
+5/30/2026 6:12 AM        th4th 3 -3 0.3
+5/30/2026 6:17 AM        br -0.5 0.5 2
+5/30/2026 6:17 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:17 AM        preset mcu 10
+5/30/2026 6:17 AM        th4th 3 -3 0.3
+5/30/2026 6:22 AM        br 0.5 -0.5 -2
+5/30/2026 6:23 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:23 AM        preset mcu 10
+5/30/2026 6:23 AM        th4th 3 -3 0.3
+5/30/2026 6:28 AM        br 0.5 -0.5 -1
+5/30/2026 6:28 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:28 AM        preset mcu 10
+5/30/2026 6:28 AM        th4th 3 -3 0.3
+5/30/2026 6:33 AM        br 0.5 -0.5 1
+5/30/2026 6:33 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:33 AM        preset mcu 10
+5/30/2026 6:33 AM        th4th 3 -3 0.3
+5/30/2026 6:38 AM        br 0.5 -0.5 2
+5/30/2026 6:38 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:38 AM        preset mcu 10
+5/30/2026 6:38 AM        th4th 3 -3 0.3
+5/30/2026 6:43 AM        br 0.5 0.5 -2
+5/30/2026 6:44 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:44 AM        preset mcu 10
+5/30/2026 6:44 AM        th4th 3 -3 0.3
+5/30/2026 6:49 AM        br 0.5 0.5 -1
+5/30/2026 6:49 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:49 AM        preset mcu 10
+5/30/2026 6:49 AM        th4th 3 -3 0.3
+5/30/2026 6:54 AM        br 0.5 0.5 0
+5/30/2026 6:54 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:54 AM        preset mcu 10
+5/30/2026 6:54 AM        th4th 3 -3 0.3
+5/30/2026 6:59 AM        br 0.5 0.5 1
+5/30/2026 6:59 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:59 AM        preset mcu 10
+5/30/2026 6:59 AM        th4th 3 -3 0.3
+5/30/2026 7:04 AM        br 0.5 0.5 2
+5/30/2026 7:04 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:04 AM        preset mcu 10
+5/30/2026 7:04 AM        th4th 3 -3 0.3
+5/30/2026 7:09 AM        br 1.5 -0.5 0
+5/30/2026 7:10 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:10 AM        preset mcu 10
+5/30/2026 7:10 AM        th4th 3 -3 0.3
+5/30/2026 7:14 AM        br 1.5 0.5 0
+5/30/2026 7:15 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:15 AM        preset mcu 10
+5/30/2026 7:15 AM        th4th 3 -3 0.3
+5/30/2026 7:20 AM        br -1.5 0 -1
+5/30/2026 7:21 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:21 AM        preset mcu 10
+5/30/2026 7:21 AM        th4th 3 -3 0.3
+5/30/2026 7:25 AM        br -1.5 0 0
+5/30/2026 7:25 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:25 AM        preset mcu 10
+5/30/2026 7:26 AM        th4th 3 -3 0.3
+5/30/2026 7:30 AM        br -1.5 0 1
+5/30/2026 7:32 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:32 AM        preset mcu 10
+5/30/2026 7:32 AM        th4th 3 -3 0.3
+5/30/2026 7:36 AM        br -0.5 -1 -2
+5/30/2026 7:38 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:38 AM        preset mcu 10
+5/30/2026 7:38 AM        th4th 3 -3 0.3
+5/30/2026 7:42 AM        br -0.5 -1 -1
+5/30/2026 7:43 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:43 AM        preset mcu 10
+5/30/2026 7:43 AM        th4th 3 -3 0.3
+5/30/2026 7:47 AM        br -0.5 -1 1
+5/30/2026 7:49 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:49 AM        preset mcu 10
+5/30/2026 7:49 AM        th4th 3 -3 0.3
+5/30/2026 7:53 AM        br -0.5 -1 2
+5/30/2026 7:54 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:54 AM        preset mcu 10
+5/30/2026 7:54 AM        th4th 3 -3 0.3
+5/30/2026 7:58 AM        br -0.5 0 -2
+5/30/2026 7:59 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:59 AM        preset mcu 10
+5/30/2026 7:59 AM        th4th 3 -3 0.3
+5/30/2026 8:04 AM        br -0.5 0 -1
+5/30/2026 8:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:05 AM        preset mcu 10
+5/30/2026 8:05 AM        th4th 3 -3 0.3
+5/30/2026 8:09 AM        br -0.5 0 0
+5/30/2026 8:10 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:10 AM        preset mcu 10
+5/30/2026 8:10 AM        th4th 3 -3 0.3
+5/30/2026 8:14 AM        br -0.5 0 1
+5/30/2026 8:16 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:16 AM        preset mcu 10
+5/30/2026 8:16 AM        th4th 3 -3 0.3
+5/30/2026 8:20 AM        br -0.5 0 2
+5/30/2026 8:21 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:21 AM        preset mcu 10
+5/30/2026 8:21 AM        th4th 3 -3 0.3
+5/30/2026 8:25 AM        br -0.5 1 -2
+5/30/2026 8:26 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:26 AM        preset mcu 10
+5/30/2026 8:26 AM        th4th 3 -3 0.3
+5/30/2026 8:31 AM        br -0.5 1 1
+5/30/2026 8:32 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:32 AM        preset mcu 10
+5/30/2026 8:32 AM        th4th 3 -3 0.3
+5/30/2026 8:37 AM        br -0.5 1 2
+5/30/2026 8:37 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:37 AM        preset mcu 10
+5/30/2026 8:37 AM        th4th 3 -3 0.3
+5/30/2026 8:42 AM        br 0.5 -1 -2
+5/30/2026 8:43 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:43 AM        preset mcu 10
+5/30/2026 8:43 AM        th4th 3 -3 0.3
+5/30/2026 8:48 AM        br 0.5 -1 2
+5/30/2026 8:49 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:49 AM        preset mcu 10
+5/30/2026 8:49 AM        th4th 3 -3 0.3
+5/30/2026 8:54 AM        br 0.5 0 -2
+5/30/2026 8:54 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 8:54 AM        preset mcu 10
+5/30/2026 8:54 AM        th4th 3 -3 0.3
+5/30/2026 8:59 AM        br 0.5 0 -1
+5/30/2026 8:59 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:00 AM        preset mcu 10
+5/30/2026 9:00 AM        th4th 3 -3 0.3
+5/30/2026 9:04 AM        br 0.5 0 0
+5/30/2026 9:04 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:04 AM        preset mcu 10
+5/30/2026 9:04 AM        th4th 3 -3 0.3
+5/30/2026 9:09 AM        br 0.5 0 1
+5/30/2026 9:10 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:10 AM        preset mcu 10
+5/30/2026 9:10 AM        th4th 3 -3 0.3
+5/30/2026 9:14 AM        br 0.5 0 2
+5/30/2026 9:15 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:15 AM        preset mcu 10
+5/30/2026 9:15 AM        th4th 3 -3 0.3
+5/30/2026 9:20 AM        br 0.5 1 -2
+5/30/2026 9:20 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:20 AM        preset mcu 10
+5/30/2026 9:20 AM        th4th 3 -3 0.3
+5/30/2026 9:25 AM        br 0.5 1 -1
+5/30/2026 9:25 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:25 AM        preset mcu 10
+5/30/2026 9:25 AM        th4th 3 -3 0.3
+5/30/2026 9:30 AM        br 0.5 1 0
+5/30/2026 9:31 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:31 AM        preset mcu 10
+5/30/2026 9:31 AM        th4th 3 -3 0.3
+5/30/2026 9:35 AM        br 0.5 1 1
+5/30/2026 9:36 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:36 AM        preset mcu 10
+5/30/2026 9:36 AM        th4th 3 -3 0.3
+5/30/2026 9:41 AM        br 0.5 1 2
+5/30/2026 9:41 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:41 AM        preset mcu 10
+5/30/2026 9:41 AM        th4th 3 -3 0.3
+5/30/2026 9:46 AM        br 1.5 0 -1
+5/30/2026 9:47 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:47 AM        preset mcu 10
+5/30/2026 9:47 AM        th4th 3 -3 0.3
+5/30/2026 9:51 AM        br 1.5 0 0
+5/30/2026 9:52 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:52 AM        preset mcu 10
+5/30/2026 9:52 AM        th4th 3 -3 0.3
+5/30/2026 9:57 AM        br 1.5 0 1
+5/30/2026 9:57 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 9:57 AM        preset mcu 10
+5/30/2026 9:57 AM        th4th 3 -3 0.3
+5/30/2026 10:02 AM        br -1 -0.5 -2
+5/30/2026 10:02 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:02 AM        preset mcu 10
+5/30/2026 10:02 AM        th4th 3 -3 0.3
+5/30/2026 10:07 AM        br -1 -0.5 -1
+5/30/2026 10:08 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:08 AM        preset mcu 10
+5/30/2026 10:08 AM        th4th 3 -3 0.3
+5/30/2026 10:13 AM        br -1 -0.5 0
+5/30/2026 10:13 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:13 AM        preset mcu 10
+5/30/2026 10:13 AM        th4th 3 -3 0.3
+5/30/2026 10:18 AM        br -1 -0.5 1
+5/30/2026 10:19 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:19 AM        preset mcu 10
+5/30/2026 10:19 AM        th4th 3 -3 0.3
+5/30/2026 10:24 AM        br -1 -0.5 2
+5/30/2026 10:25 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:25 AM        preset mcu 10
+5/30/2026 10:25 AM        th4th 3 -3 0.3
+5/30/2026 10:29 AM        br -1 0.5 -2
+5/30/2026 10:31 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:31 AM        preset mcu 10
+5/30/2026 10:31 AM        th4th 3 -3 0.3
+5/30/2026 10:35 AM        br -1 0.5 -1
+5/30/2026 10:35 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:35 AM        preset mcu 10
+5/30/2026 10:35 AM        th4th 3 -3 0.3
+5/30/2026 10:40 AM        br -1 0.5 0
+5/30/2026 10:40 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:40 AM        preset mcu 10
+5/30/2026 10:40 AM        th4th 3 -3 0.3
+5/30/2026 10:45 AM        br -1 0.5 1
+5/30/2026 10:47 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:47 AM        preset mcu 10
+5/30/2026 10:47 AM        th4th 3 -3 0.3
+5/30/2026 10:51 AM        br -1 0.5 2
+5/30/2026 10:52 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:52 AM        preset mcu 10
+5/30/2026 10:52 AM        th4th 3 -3 0.3
+5/30/2026 10:56 AM        br 0 -0.5 -2
+5/30/2026 10:57 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 10:57 AM        preset mcu 10
+5/30/2026 10:57 AM        th4th 3 -3 0.3
+5/30/2026 11:02 AM        br 0 -0.5 -1
+5/30/2026 11:02 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:02 AM        preset mcu 10
+5/30/2026 11:02 AM        th4th 3 -3 0.3
+5/30/2026 11:07 AM        br 0 -0.5 1
+5/30/2026 11:08 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:08 AM        preset mcu 10
+5/30/2026 11:08 AM        th4th 3 -3 0.3
+5/30/2026 11:13 AM        br 0 -0.5 2
+5/30/2026 11:13 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:13 AM        preset mcu 10
+5/30/2026 11:13 AM        th4th 3 -3 0.3
+5/30/2026 11:18 AM        br 0 0.5 -2
+5/30/2026 11:19 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:19 AM        preset mcu 10
+5/30/2026 11:19 AM        th4th 3 -3 0.3
+5/30/2026 11:24 AM        br 0 0.5 -1
+5/30/2026 11:24 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:24 AM        preset mcu 10
+5/30/2026 11:24 AM        th4th 3 -3 0.3
+5/30/2026 11:29 AM        br 0 0.5 1
+5/30/2026 11:30 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:30 AM        preset mcu 10
+5/30/2026 11:30 AM        th4th 3 -3 0.3
+5/30/2026 11:34 AM        br 0 0.5 2
+5/30/2026 11:35 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:35 AM        preset mcu 10
+5/30/2026 11:35 AM        th4th 3 -3 0.3
+5/30/2026 11:40 AM        br 1 -0.5 -2
+5/30/2026 11:40 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:40 AM        preset mcu 10
+5/30/2026 11:40 AM        th4th 3 -3 0.3
+5/30/2026 11:45 AM        br 1 -0.5 -1
+5/30/2026 11:45 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:45 AM        preset mcu 10
+5/30/2026 11:45 AM        th4th 3 -3 0.3
+5/30/2026 11:50 AM        br 1 -0.5 0
+5/30/2026 11:50 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:50 AM        preset mcu 10
+5/30/2026 11:50 AM        th4th 3 -3 0.3
+5/30/2026 11:55 AM        br 1 -0.5 1
+5/30/2026 11:55 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 11:55 AM        preset mcu 10
+5/30/2026 11:55 AM        th4th 3 -3 0.3
+5/30/2026 12:00 PM        br 1 -0.5 2
+5/30/2026 12:00 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:00 PM        preset mcu 10
+5/30/2026 12:00 PM        th4th 3 -3 0.3
+5/30/2026 12:05 PM        br 1 0.5 -2
+5/30/2026 12:06 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:06 PM        preset mcu 10
+5/30/2026 12:06 PM        th4th 3 -3 0.3
+5/30/2026 12:10 PM        br 1 0.5 -1
+5/30/2026 12:10 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:10 PM        preset mcu 10
+5/30/2026 12:10 PM        th4th 3 -3 0.3
+5/30/2026 12:15 PM        br 1 0.5 0
+5/30/2026 12:15 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:15 PM        preset mcu 10
+5/30/2026 12:15 PM        th4th 3 -3 0.3
+5/30/2026 12:20 PM        br 1 0.5 1
+5/30/2026 12:20 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:20 PM        preset mcu 10
+5/30/2026 12:20 PM        th4th 3 -3 0.3
+5/30/2026 12:25 PM        br 1 0.5 2
+5/30/2026 12:25 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:25 PM        preset mcu 10
+5/30/2026 12:25 PM        th4th 3 -3 0.3
+5/30/2026 12:30 PM        br -1.5 -0.5 -0.5
+5/30/2026 12:31 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:31 PM        preset mcu 10
+5/30/2026 12:31 PM        th4th 3 -3 0.3
+5/30/2026 12:35 PM        br -1.5 -0.5 0.5
+5/30/2026 12:37 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:37 PM        preset mcu 10
+5/30/2026 12:37 PM        th4th 3 -3 0.3
+5/30/2026 12:41 PM        br -1.5 0.5 -0.5
+5/30/2026 12:43 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:43 PM        preset mcu 10
+5/30/2026 12:43 PM        th4th 3 -3 0.3
+5/30/2026 12:48 PM        br -1.5 0.5 0.5
+5/30/2026 12:49 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:49 PM        preset mcu 10
+5/30/2026 12:49 PM        th4th 3 -3 0.3
+5/30/2026 12:54 PM        br -0.5 -0.5 -2.5
+5/30/2026 12:55 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 12:55 PM        preset mcu 10
+5/30/2026 12:55 PM        th4th 3 -3 0.3
+5/30/2026 1:00 PM        br -0.5 -0.5 -1.5
+5/30/2026 1:00 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:00 PM        preset mcu 10
+5/30/2026 1:00 PM        th4th 3 -3 0.3
+5/30/2026 1:05 PM        br -0.5 -0.5 -0.5
+5/30/2026 1:05 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:05 PM        preset mcu 10
+5/30/2026 1:05 PM        th4th 3 -3 0.3
+5/30/2026 1:10 PM        br -0.5 -0.5 0.5
+5/30/2026 1:11 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:11 PM        preset mcu 10
+5/30/2026 1:11 PM        th4th 3 -3 0.3
+5/30/2026 1:16 PM        br -0.5 -0.5 1.5
+5/30/2026 1:16 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:16 PM        preset mcu 10
+5/30/2026 1:16 PM        th4th 3 -3 0.3
+5/30/2026 1:21 PM        br -0.5 -0.5 2.5
+5/30/2026 1:21 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:21 PM        preset mcu 10
+5/30/2026 1:21 PM        th4th 3 -3 0.3
+5/30/2026 1:26 PM        br -0.5 0.5 -2.5
+5/30/2026 1:27 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:27 PM        preset mcu 10
+5/30/2026 1:27 PM        th4th 3 -3 0.3
+5/30/2026 1:32 PM        br -0.5 0.5 -1.5
+5/30/2026 1:32 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:32 PM        preset mcu 10
+5/30/2026 1:32 PM        th4th 3 -3 0.3
+5/30/2026 1:37 PM        br -0.5 0.5 -0.5
+5/30/2026 1:37 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:37 PM        preset mcu 10
+5/30/2026 1:37 PM        th4th 3 -3 0.3
+5/30/2026 1:42 PM        br -0.5 0.5 0.5
+5/30/2026 1:43 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:43 PM        preset mcu 10
+5/30/2026 1:43 PM        th4th 3 -3 0.3
+5/30/2026 1:48 PM        br -0.5 0.5 1.5
+5/30/2026 1:48 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:48 PM        preset mcu 10
+5/30/2026 1:48 PM        th4th 3 -3 0.3
+5/30/2026 1:53 PM        br -0.5 0.5 2.5
+5/30/2026 1:53 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:53 PM        preset mcu 10
+5/30/2026 1:53 PM        th4th 3 -3 0.3
+5/30/2026 1:58 PM        br 0.5 -0.5 -2.5
+5/30/2026 1:59 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 1:59 PM        preset mcu 10
+5/30/2026 1:59 PM        th4th 3 -3 0.3
+5/30/2026 2:03 PM        br 0.5 -0.5 -1.5
+5/30/2026 2:04 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:04 PM        preset mcu 10
+5/30/2026 2:04 PM        th4th 3 -3 0.3
+5/30/2026 2:08 PM        br 0.5 -0.5 1.5
+5/30/2026 2:09 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:09 PM        preset mcu 10
+5/30/2026 2:09 PM        th4th 3 -3 0.3
+5/30/2026 2:14 PM        br 0.5 -0.5 2.5
+5/30/2026 2:14 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:14 PM        preset mcu 10
+5/30/2026 2:14 PM        th4th 3 -3 0.3
+5/30/2026 2:19 PM        br 0.5 0.5 -2.5
+5/30/2026 2:19 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:19 PM        preset mcu 10
+5/30/2026 2:19 PM        th4th 3 -3 0.3
+5/30/2026 2:24 PM        br 0.5 0.5 -1.5
+5/30/2026 2:24 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:24 PM        preset mcu 10
+5/30/2026 2:25 PM        th4th 3 -3 0.3
+5/30/2026 2:29 PM        br 0.5 0.5 -0.5
+5/30/2026 2:29 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:29 PM        preset mcu 10
+5/30/2026 2:29 PM        th4th 3 -3 0.3
+5/30/2026 2:34 PM        br 0.5 0.5 0.5
+5/30/2026 2:34 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:34 PM        preset mcu 10
+5/30/2026 2:34 PM        th4th 3 -3 0.3
+5/30/2026 2:39 PM        br 0.5 0.5 1.5
+5/30/2026 2:39 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:39 PM        preset mcu 10
+5/30/2026 2:39 PM        th4th 3 -3 0.3
+5/30/2026 2:44 PM        br 0.5 0.5 2.5
+5/30/2026 2:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:44 PM        preset mcu 10
+5/30/2026 2:44 PM        th4th 3 -3 0.3
+5/30/2026 2:49 PM        br 0.5 1.5 -0.5
+5/30/2026 2:50 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:50 PM        preset mcu 10
+5/30/2026 2:50 PM        th4th 3 -3 0.3
+5/30/2026 2:54 PM        br 0.5 1.5 0.5
+5/30/2026 2:55 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 2:55 PM        preset mcu 10
+5/30/2026 2:55 PM        th4th 3 -3 0.3
+5/30/2026 2:59 PM        br 1.5 -0.5 -0.5
+5/30/2026 3:01 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:01 PM        preset mcu 10
+5/30/2026 3:01 PM        th4th 3 -3 0.3
+5/30/2026 3:05 PM        br 1.5 -0.5 0.5
+5/30/2026 3:06 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:06 PM        preset mcu 10
+5/30/2026 3:06 PM        th4th 3 -3 0.3
+5/30/2026 3:10 PM        br 1.5 0.5 -0.5
+5/30/2026 3:11 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:11 PM        preset mcu 10
+5/30/2026 3:11 PM        th4th 3 -3 0.3
+5/30/2026 3:16 PM        br 1.5 0.5 0.5
+5/30/2026 3:16 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:16 PM        preset mcu 10
+5/30/2026 3:16 PM        th4th 3 -3 0.3
+5/30/2026 3:20 PM        set_temp 130
+5/30/2026 3:20 PM        wait 600
+5/30/2026 3:30 PM        br 1.5 0 0
+5/30/2026 3:31 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:31 PM        preset mcu 10
+5/30/2026 3:31 PM        th4th 3 -3 0.3
+5/30/2026 3:35 PM        br 1 0 0
+5/30/2026 3:36 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:36 PM        preset mcu 10
+5/30/2026 3:36 PM        th4th 3 -3 0.3
+5/30/2026 3:40 PM        br 1 1 0.5
+5/30/2026 3:41 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:41 PM        preset mcu 10
+5/30/2026 3:41 PM        th4th 3 -3 0.3
+5/30/2026 3:46 PM        br 1 1 1
+5/30/2026 3:46 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:46 PM        preset mcu 10
+5/30/2026 3:46 PM        th4th 3 -3 0.3
+5/30/2026 3:51 PM        br 1 0 1.5
+5/30/2026 3:52 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:52 PM        preset mcu 10
+5/30/2026 3:52 PM        th4th 3 -3 0.3
+5/30/2026 3:56 PM        br 1 0 2
+5/30/2026 3:56 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 3:56 PM        preset mcu 10
+5/30/2026 3:56 PM        th4th 3 -3 0.3
+5/30/2026 4:05 PM        br 1 0 0.5
+5/30/2026 4:05 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:05 PM        preset mcu 10
+5/30/2026 4:05 PM        th4th 3 -3 0.3
+5/30/2026 4:10 PM        br -1 -0.5 -2
+5/30/2026 4:10 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 4:10 PM        preset mcu 10
+5/30/2026 4:10 PM        th4th 3 -3 0.3
+5/30/2026 4:18 PM        br 1 0 0
+5/30/2026 4:19 PM        scantitle "sit on (1 0 0) cooling to 4K"
+5/30/2026 4:19 PM        set_temp 4
+5/30/2026 4:19 PM        scan n 100 preset mcu 30
+5/30/2026 4:40 PM        scantitle "Searching for exact position of (1 1 0.5)"
+5/30/2026 4:43 PM        drive 2theta -50.2612 omega -25.1303
+5/30/2026 4:44 PM        drive chi 33.1070 phi -21.7395
+5/30/2026 4:47 PM        scanrel phi 3 -3 0.3
+5/30/2026 4:51 PM        scanrel phi 5 -5 0.5
+5/30/2026 4:52 PM        drive chi 33.1070 phi -21.7395
+5/30/2026 4:52 PM        drive 2theta -50.2612 omega -25.1303
+5/30/2026 4:52 PM        scanrel omega 3 -3 0.3
+5/30/2026 5:03 PM        br 1 0 1.5
+5/30/2026 5:04 PM        scantitle "sit on (1 0 1.5) warming up to 300K"
+5/30/2026 5:05 PM        br 1 0 0.5
+5/30/2026 5:05 PM        scantitle "sit on (1 0 0.5) warming up to 300K"
+5/30/2026 5:05 PM        set_temp 300
+5/30/2026 5:05 PM        scan n 200 preset mcu 100
+5/30/2026 5:07 PM        scan n 200 preset mcu 10
+5/30/2026 5:21 PM        br 1.5 0 0
+5/30/2026 5:21 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:21 PM        preset mcu 10
+5/30/2026 5:21 PM        th4th 3 -3 0.3
+5/30/2026 5:26 PM        br 1 0 0
+5/30/2026 5:26 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:26 PM        preset mcu 10
+5/30/2026 5:26 PM        th4th 3 -3 0.3
+5/30/2026 5:31 PM        br 1 1 0.5
+5/30/2026 5:32 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:32 PM        preset mcu 10
+5/30/2026 5:32 PM        th4th 3 -3 0.3
+5/30/2026 5:37 PM        br 1 1 1
+5/30/2026 5:37 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:37 PM        preset mcu 10
+5/30/2026 5:37 PM        th4th 3 -3 0.3
+5/30/2026 5:42 PM        br 1 0 0.5
+5/30/2026 5:43 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:43 PM        preset mcu 10
+5/30/2026 5:43 PM        th4th 3 -3 0.3
+5/30/2026 5:48 PM        br -1 -0.5 -2
+5/30/2026 5:49 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:49 PM        preset mcu 10
+5/30/2026 5:49 PM        th4th 3 -3 0.3
+5/30/2026 5:53 PM        br 1 0 1.5
+5/30/2026 5:54 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:54 PM        preset mcu 10
+5/30/2026 5:54 PM        th4th 3 -3 0.3
+5/30/2026 5:59 PM        br 1 0 2
+5/30/2026 5:59 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 5:59 PM        preset mcu 10
+5/30/2026 5:59 PM        th4th 3 -3 0.3
+5/30/2026 6:09 PM        br 1 0 0.5
+5/30/2026 6:16 PM        set_temp 400
+5/30/2026 6:16 PM        scan n 200 preset mcu 15
+5/30/2026 6:23 PM        br 1.5 0 0
+5/30/2026 6:23 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:23 PM        preset mcu 10
+5/30/2026 6:23 PM        th4th 3 -3 0.3
+5/30/2026 6:28 PM        br 1 0 0
+5/30/2026 6:28 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:28 PM        preset mcu 10
+5/30/2026 6:28 PM        th4th 3 -3 0.3
+5/30/2026 6:33 PM        br 1 1 0.5
+5/30/2026 6:34 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:34 PM        preset mcu 10
+5/30/2026 6:34 PM        th4th 3 -3 0.3
+5/30/2026 6:39 PM        br 1 1 1
+5/30/2026 6:39 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:39 PM        preset mcu 10
+5/30/2026 6:39 PM        th4th 3 -3 0.3
+5/30/2026 6:44 PM        br 1 0 0.5
+5/30/2026 6:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:44 PM        preset mcu 10
+5/30/2026 6:44 PM        th4th 3 -3 0.3
+5/30/2026 6:49 PM        br -1 -0.5 -2
+5/30/2026 6:50 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:50 PM        preset mcu 10
+5/30/2026 6:50 PM        th4th 3 -3 0.3
+5/30/2026 6:54 PM        br 1 0 1.5
+5/30/2026 6:55 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 6:55 PM        preset mcu 10
+5/30/2026 6:55 PM        th4th 3 -3 0.3
+5/30/2026 7:00 PM        br 1 0 2
+5/30/2026 7:00 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:00 PM        preset mcu 10
+5/30/2026 7:00 PM        th4th 3 -3 0.3
+5/30/2026 7:05 PM        set_temp 430
+5/30/2026 7:07 PM        br 1.5 0 0
+5/30/2026 7:07 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:07 PM        preset mcu 10
+5/30/2026 7:07 PM        th4th 3 -3 0.3
+5/30/2026 7:11 PM        br 1 0 0
+5/30/2026 7:12 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:12 PM        preset mcu 10
+5/30/2026 7:12 PM        th4th 3 -3 0.3
+5/30/2026 7:17 PM        br 1 1 0.5
+5/30/2026 7:17 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:17 PM        preset mcu 10
+5/30/2026 7:18 PM        th4th 3 -3 0.3
+5/30/2026 7:22 PM        br 1 1 1
+5/30/2026 7:22 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:22 PM        preset mcu 10
+5/30/2026 7:22 PM        th4th 3 -3 0.3
+5/30/2026 7:27 PM        br 1 0 0.5
+5/30/2026 7:28 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:28 PM        preset mcu 10
+5/30/2026 7:28 PM        th4th 3 -3 0.3
+5/30/2026 7:33 PM        br -1 -0.5 -2
+5/30/2026 7:33 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:34 PM        preset mcu 10
+5/30/2026 7:34 PM        th4th 3 -3 0.3
+5/30/2026 7:38 PM        br 1 0 1.5
+5/30/2026 7:39 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:39 PM        preset mcu 10
+5/30/2026 7:39 PM        th4th 3 -3 0.3
+5/30/2026 7:44 PM        br 1 0 2
+5/30/2026 7:44 PM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+5/30/2026 7:44 PM        preset mcu 10
+5/30/2026 7:44 PM        th4th 3 -3 0.3
+5/30/2026 7:48 PM        br 1.5 0 0
+5/30/2026 7:49 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 7:49 PM        preset mcu 10
+5/30/2026 7:49 PM        scanrel omega 5 -5 0.5
+5/30/2026 7:55 PM        drive 2theta -52.1073 omega -26.05553
+5/30/2026 7:56 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 7:56 PM        preset mcu 10
+5/30/2026 7:56 PM        scanrel omega 5 -5 0.5
+5/30/2026 8:01 PM        drive 2theta -50.1993 omega -25.0967
+5/30/2026 8:01 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 8:01 PM        preset mcu 10
+5/30/2026 8:01 PM        scanrel omega 5 -5 0.5
+5/30/2026 8:04 PM        drive 2theta -50.1993 omega -25.0967 chi 33.1088 phi -21.7395 
+5/30/2026 8:05 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 8:05 PM        preset mcu 10
+5/30/2026 8:05 PM        scanrel omega 5 -5 0.5
+5/30/2026 8:10 PM        drive 2theta -51.1073 omega -26.0533 chi -11.1167 phi -8.05355
+5/30/2026 8:12 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 8:12 PM        preset mcu 10
+5/30/2026 8:12 PM        scanrel omega 5 -5 0.5
+5/30/2026 8:17 PM        br 1 0 0.5
+5/30/2026 8:17 PM        br 1.4644 0 0
+5/30/2026 8:17 PM        scantitle "(@(h) @(k) @(l)) rocking, T = @(coldtip.position) K"
+5/30/2026 8:17 PM        preset mcu 10
+5/30/2026 8:17 PM        scanrel omega 5 -5 0.5
+5/30/2026 8:22 PM        br 1 0 0.5
+5/30/2026 8:22 PM        scantitle "sit at (1 0 0.5) cooling to 4K"
+5/30/2026 8:22 PM        set_temp 4
+5/30/2026 8:22 PM        scan n 1000 preset mcu 20
+5/30/2026 9:31 PM        br 1 0 0.5
+5/30/2026 9:31 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 9:31 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 preset mcu 30
+5/30/2026 9:31 PM        preset mcu 30
+5/30/2026 9:31 PM        br 1 0 0.5
+5/30/2026 9:31 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 9:31 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 preset mcu 30
+5/30/2026 10:04 PM        br 1 0 0.5
+5/30/2026 10:04 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/30/2026 10:04 PM        scan h 1 k 0 l 0.2 0.8 0.02 preset mcu 30
+5/30/2026 10:21 PM        br 1 0 1.5
+5/30/2026 10:21 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 10:22 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/30/2026 10:55 PM        br 1 0 1.5
+5/30/2026 10:55 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/30/2026 10:55 PM        scan h 1 k 0 l 1.2 1.8 0.02 preset mcu 30
+5/30/2026 11:12 PM        preset mcu 5
+5/30/2026 11:12 PM        br 1 0 0
+5/30/2026 11:12 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 11:12 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/30/2026 11:21 PM        br 0 0 1
+5/30/2026 11:22 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/30/2026 11:22 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/30/2026 11:27 PM        br 1 0 2
+5/30/2026 11:27 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 11:27 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/30/2026 11:36 PM        br 1 0 2
+5/30/2026 11:37 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/30/2026 11:37 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/30/2026 11:41 PM        set_temp 20
+5/30/2026 11:41 PM        wait 120
+5/30/2026 11:43 PM        preset mcu 10
+5/30/2026 11:43 PM        br 1 0 0.5
+5/30/2026 11:44 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/30/2026 11:44 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/30/2026 11:58 PM        br 1 0 0.5
+5/30/2026 11:58 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/30/2026 11:58 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 12:05 AM        br 1 0 1.5
+5/31/2026 12:06 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 12:06 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 12:39 AM        br 1 0 1.5
+5/31/2026 12:39 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 12:39 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 12:47 AM        preset mcu 5
+5/31/2026 12:47 AM        br 1 0 0
+5/31/2026 12:47 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 12:47 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 12:56 AM        br 0 0 1
+5/31/2026 12:56 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 12:56 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 1:01 AM        br 1 0 2
+5/31/2026 1:02 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:02 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 1:11 AM        br 1 0 2
+5/31/2026 1:11 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 1:11 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 1:16 AM        set_temp 50
+5/31/2026 1:16 AM        wait 120
+5/31/2026 1:18 AM        preset mcu 10
+5/31/2026 1:18 AM        br 1 0 0.5
+5/31/2026 1:19 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:19 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 1:33 AM        br 1 0 0.5
+5/31/2026 1:33 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 1:33 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 1:40 AM        br 1 0 1.5
+5/31/2026 1:40 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:40 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 2:14 AM        br 1 0 1.5
+5/31/2026 2:14 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:14 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 2:21 AM        preset mcu 5
+5/31/2026 2:21 AM        br 1 0 0
+5/31/2026 2:22 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:22 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 2:31 AM        br 0 0 1
+5/31/2026 2:31 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:31 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 2:36 AM        br 1 0 2
+5/31/2026 2:37 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:37 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 2:46 AM        br 1 0 2
+5/31/2026 2:46 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:46 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 2:51 AM        set_temp 95
+5/31/2026 2:51 AM        wait 120
+5/31/2026 2:53 AM        preset mcu 10
+5/31/2026 2:53 AM        br 1 0 0.5
+5/31/2026 2:54 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:54 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 3:08 AM        br 1 0 0.5
+5/31/2026 3:08 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 3:08 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 3:15 AM        br 1 0 1.5
+5/31/2026 3:16 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 3:16 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 3:49 AM        br 1 0 1.5
+5/31/2026 3:49 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 3:49 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 3:57 AM        preset mcu 5
+5/31/2026 3:57 AM        br 1 0 0
+5/31/2026 3:57 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 3:57 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 4:06 AM        br 0 0 1
+5/31/2026 4:07 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:07 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 4:12 AM        br 1 0 2
+5/31/2026 4:12 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 4:12 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 4:22 AM        br 1 0 2
+5/31/2026 4:22 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:22 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 4:27 AM        set_temp 100
+5/31/2026 4:27 AM        wait 120
+5/31/2026 4:29 AM        preset mcu 10
+5/31/2026 4:29 AM        br 1 0 0.5
+5/31/2026 4:30 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 4:30 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 4:44 AM        br 1 0 0.5
+5/31/2026 4:44 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:44 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 4:51 AM        br 1 0 1.5
+5/31/2026 4:52 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 4:52 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 5:26 AM        br 1 0 1.5
+5/31/2026 5:26 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:26 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 5:33 AM        preset mcu 5
+5/31/2026 5:33 AM        br 1 0 0
+5/31/2026 5:34 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 5:34 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 5:43 AM        br 0 0 1
+5/31/2026 5:43 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:43 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 5:48 AM        br 1 0 2
+5/31/2026 5:49 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 5:49 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 5:58 AM        br 1 0 2
+5/31/2026 5:59 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:59 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 6:04 AM        set_temp 105
+5/31/2026 6:04 AM        wait 120
+5/31/2026 6:06 AM        preset mcu 10
+5/31/2026 6:06 AM        br 1 0 0.5
+5/31/2026 6:06 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:06 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 6:21 AM        br 1 0 0.5
+5/31/2026 6:21 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 6:21 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 6:28 AM        br 1 0 1.5
+5/31/2026 6:28 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:28 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 7:02 AM        br 1 0 1.5
+5/31/2026 7:03 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:03 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 7:10 AM        preset mcu 5
+5/31/2026 7:10 AM        br 1 0 0
+5/31/2026 7:10 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 7:10 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 7:20 AM        br 0 0 1
+5/31/2026 7:20 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:20 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 7:25 AM        br 1 0 2
+5/31/2026 7:26 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 7:26 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 7:36 AM        br 1 0 2
+5/31/2026 7:36 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:36 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 7:41 AM        set_temp 110
+5/31/2026 7:41 AM        wait 120
+5/31/2026 7:43 AM        preset mcu 10
+5/31/2026 7:43 AM        br 1 0 0.5
+5/31/2026 7:43 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 7:43 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 7:58 AM        br 1 0 0.5
+5/31/2026 7:58 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:58 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 8:06 AM        br 1 0 1.5
+5/31/2026 8:06 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 8:06 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 preset mcu 30
+5/31/2026 8:40 AM        br 1 0 1.5
+5/31/2026 8:41 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 8:41 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 8:48 AM        preset mcu 5
+5/31/2026 8:48 AM        br 1 0 0
+5/31/2026 8:49 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 8:49 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 8:59 AM        br 0 0 1
+5/31/2026 8:59 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 8:59 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 9:04 AM        br 1 0 2
+5/31/2026 9:05 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:05 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 9:15 AM        br 1 0 2
+5/31/2026 9:15 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 9:15 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 9:20 AM        set_temp 150
+5/31/2026 9:20 AM        wait 120
+5/31/2026 9:22 AM        preset mcu 10
+5/31/2026 9:22 AM        br 1 0 0.5
+5/31/2026 9:23 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:23 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 9:38 AM        br 1 0 0.5
+5/31/2026 9:38 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 9:38 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 9:46 AM        br 1 0 1.5
+5/31/2026 9:46 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:46 AM        scan h 0.85 1.15 0.005 k 0 l 1.5
+5/31/2026 10:01 AM        br 1 0 1.5
+5/31/2026 10:01 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:01 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 10:09 AM        preset mcu 5
+5/31/2026 10:09 AM        br 1 0 0
+5/31/2026 10:09 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:09 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 10:20 AM        br 0 0 1
+5/31/2026 10:21 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:21 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 10:27 AM        br 1 0 2
+5/31/2026 10:29 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:29 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 10:39 AM        br 1 0 2
+5/31/2026 10:39 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:39 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 10:45 AM        set_temp 200
+5/31/2026 10:45 AM        wait 120
+5/31/2026 10:47 AM        preset mcu 10
+5/31/2026 10:47 AM        br 1 0 0.5
+5/31/2026 10:47 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:47 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 11:02 AM        br 1 0 0.5
+5/31/2026 11:02 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:02 AM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 11:10 AM        br 1 0 1.5
+5/31/2026 11:10 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 11:10 AM        scan h 0.85 1.15 0.005 k 0 l 1.5
+5/31/2026 11:25 AM        br 1 0 1.5
+5/31/2026 11:25 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:25 AM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 11:33 AM        preset mcu 5
+5/31/2026 11:33 AM        br 1 0 0
+5/31/2026 11:33 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 11:33 AM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 11:43 AM        br 0 0 1
+5/31/2026 11:43 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:43 AM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 11:48 AM        br 1 0 2
+5/31/2026 11:49 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 11:49 AM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 11:59 AM        br 1 0 2
+5/31/2026 11:59 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:59 AM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 12:05 PM        set_temp 240
+5/31/2026 12:05 PM        wait 120
+5/31/2026 12:07 PM        preset mcu 10
+5/31/2026 12:07 PM        br 1 0 0.5
+5/31/2026 12:07 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 12:07 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 12:22 PM        br 1 0 0.5
+5/31/2026 12:23 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 12:23 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 12:30 PM        br 1 0 1.5
+5/31/2026 12:30 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 12:31 PM        scan h 0.85 1.15 0.005 k 0 l 1.5
+5/31/2026 12:46 PM        br 1 0 1.5
+5/31/2026 12:46 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 12:46 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 12:53 PM        preset mcu 5
+5/31/2026 12:53 PM        br 1 0 0
+5/31/2026 12:54 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 12:54 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 1:04 PM        br 0 0 1
+5/31/2026 1:04 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 1:04 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 1:09 PM        br 1 0 2
+5/31/2026 1:10 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:10 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 1:20 PM        br 1 0 2
+5/31/2026 1:20 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 1:20 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 1:25 PM        set_temp 255
+5/31/2026 1:25 PM        wait 120
+5/31/2026 1:28 PM        preset mcu 10
+5/31/2026 1:28 PM        br 1 0 0.5
+5/31/2026 1:28 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:28 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 1:43 PM        br 1 0 0.5
+5/31/2026 1:44 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 1:44 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 1:51 PM        br 1 0 1.5
+5/31/2026 1:52 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 1:52 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+5/31/2026 2:07 PM        br 1 0 1.5
+5/31/2026 2:07 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:07 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 2:15 PM        preset mcu 5
+5/31/2026 2:15 PM        br 1 0 0
+5/31/2026 2:15 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:15 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 2:26 PM        br 0 0 1
+5/31/2026 2:26 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:26 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 2:31 PM        br 1 0 2
+5/31/2026 2:32 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:32 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 2:43 PM        br 1 0 2
+5/31/2026 2:43 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 2:43 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 2:48 PM        set_temp 260
+5/31/2026 2:48 PM        wait 120
+5/31/2026 2:50 PM        preset mcu 10
+5/31/2026 2:50 PM        br 1 0 0.5
+5/31/2026 2:51 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 2:51 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 3:07 PM        br 1 0 0.5
+5/31/2026 3:07 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 3:07 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 3:15 PM        br 1 0 1.5
+5/31/2026 3:15 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 3:15 PM        scan h 0.85 1.15 0.005 k 0 l 1.5
+5/31/2026 3:30 PM        br 1 0 1.5
+5/31/2026 3:30 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 3:30 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 3:38 PM        preset mcu 5
+5/31/2026 3:38 PM        br 1 0 0
+5/31/2026 3:38 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 3:38 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 3:49 PM        br 0 0 1
+5/31/2026 3:49 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 3:49 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 3:54 PM        br 1 0 2
+5/31/2026 3:55 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 3:55 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 4:06 PM        br 1 0 2
+5/31/2026 4:06 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:06 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 4:11 PM        set_temp 265
+5/31/2026 4:11 PM        wait 120
+5/31/2026 4:13 PM        preset mcu 10
+5/31/2026 4:13 PM        br 1 0 0.5
+5/31/2026 4:14 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 4:14 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 4:29 PM        br 1 0 0.5
+5/31/2026 4:29 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:29 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 4:37 PM        br 1 0 1.5
+5/31/2026 4:37 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 4:37 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+5/31/2026 4:53 PM        br 1 0 1.5
+5/31/2026 4:54 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 4:54 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 5:02 PM        preset mcu 5
+5/31/2026 5:02 PM        br 1 0 0
+5/31/2026 5:02 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 5:02 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 5:13 PM        br 0 0 1
+5/31/2026 5:13 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:13 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 5:18 PM        br 1 0 2
+5/31/2026 5:19 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 5:19 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 5:30 PM        br 1 0 2
+5/31/2026 5:30 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:30 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 5:35 PM        set_temp 280
+5/31/2026 5:35 PM        wait 120
+5/31/2026 5:37 PM        preset mcu 10
+5/31/2026 5:37 PM        br 1 0 0.5
+5/31/2026 5:38 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 5:38 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 5:55 PM        br 1 0 0.5
+5/31/2026 5:55 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 5:55 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 6:03 PM        br 1 0 1.5
+5/31/2026 6:03 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:03 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+5/31/2026 6:18 PM        br 1 0 1.5
+5/31/2026 6:19 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 6:19 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 6:26 PM        preset mcu 5
+5/31/2026 6:26 PM        br 1 0 0
+5/31/2026 6:27 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:27 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 6:37 PM        br 0 0 1
+5/31/2026 6:38 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 6:38 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 6:44 PM        br 1 0 2
+5/31/2026 6:44 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:44 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 6:46 PM        br 1 0 2
+5/31/2026 6:46 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 6:46 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 6:51 PM        set_temp 340
+5/31/2026 6:51 PM        wait 300
+5/31/2026 6:57 PM        preset mcu 10
+5/31/2026 6:57 PM        br 1 0 0.5
+5/31/2026 6:57 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 6:57 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 7:13 PM        br 1 0 0.5
+5/31/2026 7:14 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:14 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 7:22 PM        br 1 0 1.5
+5/31/2026 7:22 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 7:22 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+5/31/2026 7:37 PM        br 1 0 1.5
+5/31/2026 7:38 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:38 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 7:46 PM        preset mcu 5
+5/31/2026 7:46 PM        br 1 0 0
+5/31/2026 7:46 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 7:46 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 7:57 PM        br 0 0 1
+5/31/2026 7:57 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 7:57 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 8:02 PM        br 1 0 2
+5/31/2026 8:03 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 8:03 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 8:14 PM        br 1 0 2
+5/31/2026 8:14 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 8:14 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 8:20 PM        set_temp 400
+5/31/2026 8:20 PM        wait 300
+5/31/2026 8:25 PM        preset mcu 10
+5/31/2026 8:25 PM        br 1 0 0.5
+5/31/2026 8:25 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 8:25 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 8:41 PM        br 1 0 0.5
+5/31/2026 8:41 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 8:41 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 8:49 PM        br 1 0 1.5
+5/31/2026 8:49 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 8:49 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+5/31/2026 9:05 PM        br 1 0 1.5
+5/31/2026 9:05 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 9:05 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 9:13 PM        preset mcu 5
+5/31/2026 9:13 PM        br 1 0 0
+5/31/2026 9:13 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:13 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 9:24 PM        br 0 0 1
+5/31/2026 9:24 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 9:24 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 9:30 PM        br 1 0 2
+5/31/2026 9:30 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:30 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 9:41 PM        br 1 0 2
+5/31/2026 9:41 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 9:41 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 9:47 PM        set_temp 405
+5/31/2026 9:47 PM        wait 300
+5/31/2026 9:52 PM        preset mcu 10
+5/31/2026 9:52 PM        br 1 0 0.5
+5/31/2026 9:53 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 9:53 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 10:08 PM        br 1 0 0.5
+5/31/2026 10:09 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:09 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 10:17 PM        br 1 0 1.5
+5/31/2026 10:17 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:17 PM        scan h 0.85 1.15 0.005 k 0 l 1.5
+5/31/2026 10:32 PM        br 1 0 1.5
+5/31/2026 10:33 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:33 PM        scan h 1 k 0 l 1.2 1.8 0.02
+5/31/2026 10:41 PM        preset mcu 5
+5/31/2026 10:41 PM        br 1 0 0
+5/31/2026 10:41 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:41 PM        scan h 0.85 1.15 0.005 k 0 l 0
+5/31/2026 10:52 PM        br 0 0 1
+5/31/2026 10:52 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 10:52 PM        scan h 0 k 0 l 0.7 1.3 0.02
+5/31/2026 10:57 PM        br 1 0 2
+5/31/2026 10:58 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 10:58 PM        scan h 0.85 1.15 0.005 k 0 l 2
+5/31/2026 11:09 PM        br 1 0 2
+5/31/2026 11:09 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:09 PM        scan h 1 k 0 l 1.7 2.3 0.02
+5/31/2026 11:15 PM        set_temp 410
+5/31/2026 11:15 PM        wait 300
+5/31/2026 11:20 PM        preset mcu 10
+5/31/2026 11:20 PM        br 1 0 0.5
+5/31/2026 11:21 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 11:21 PM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+5/31/2026 11:37 PM        br 1 0 0.5
+5/31/2026 11:37 PM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+5/31/2026 11:37 PM        scan h 1 k 0 l 0.2 0.8 0.02
+5/31/2026 11:45 PM        br 1 0 1.5
+5/31/2026 11:45 PM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+5/31/2026 11:45 PM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+6/1/2026 12:01 AM        br 1 0 1.5
+6/1/2026 12:01 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 12:01 AM        scan h 1 k 0 l 1.2 1.8 0.02
+6/1/2026 12:09 AM        preset mcu 5
+6/1/2026 12:09 AM        br 1 0 0
+6/1/2026 12:10 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 12:10 AM        scan h 0.85 1.15 0.005 k 0 l 0
+6/1/2026 12:20 AM        br 0 0 1
+6/1/2026 12:21 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 12:21 AM        scan h 0 k 0 l 0.7 1.3 0.02
+6/1/2026 12:26 AM        br 1 0 2
+6/1/2026 12:27 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 12:27 AM        scan h 0.85 1.15 0.005 k 0 l 2
+6/1/2026 12:38 AM        br 1 0 2
+6/1/2026 12:38 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 12:38 AM        scan h 1 k 0 l 1.7 2.3 0.02
+6/1/2026 12:44 AM        set_temp 420
+6/1/2026 12:44 AM        wait 300
+6/1/2026 12:49 AM        preset mcu 10
+6/1/2026 12:49 AM        br 1 0 0.5
+6/1/2026 12:50 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 12:50 AM        scan h 0.85 1.15 0.005 k 0 l 0.5 
+6/1/2026 1:06 AM        br 1 0 0.5
+6/1/2026 1:06 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 1:06 AM        scan h 1 k 0 l 0.2 0.8 0.02
+6/1/2026 1:14 AM        br 1 0 1.5
+6/1/2026 1:14 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 1:14 AM        scan h 0.85 1.15 0.005 k 0 l 1.5 
+6/1/2026 1:30 AM        br 1 0 1.5
+6/1/2026 1:30 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 1:30 AM        scan h 1 k 0 l 1.2 1.8 0.02
+6/1/2026 1:39 AM        preset mcu 5
+6/1/2026 1:39 AM        br 1 0 0
+6/1/2026 1:39 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 1:39 AM        scan h 0.85 1.15 0.005 k 0 l 0
+6/1/2026 1:50 AM        br 0 0 1
+6/1/2026 1:50 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 1:50 AM        scan h 0 k 0 l 0.7 1.3 0.02
+6/1/2026 1:56 AM        br 1 0 2
+6/1/2026 1:56 AM        scantitle " (@(h) @(k) @(l)) along H, T = @(coldtip.position) K" 
+6/1/2026 1:56 AM        scan h 0.85 1.15 0.005 k 0 l 2
+6/1/2026 2:08 AM        br 1 0 2
+6/1/2026 2:08 AM        scantitle " (@(h) @(k) @(l)) along L, T = @(coldtip.position) K" 
+6/1/2026 2:08 AM        scan h 1 k 0 l 1.7 2.3 0.02
+6/1/2026 2:14 AM        set_temp 5
+6/1/2026 2:14 AM        wait 4200
+6/1/2026 3:24 AM        preset mcu 10
+6/1/2026 3:24 AM        br 1 0 0
+6/1/2026 3:24 AM        scantitle " (@(h) @(k) @(l)) g-x, T = @(coldtip.position) K" 
+6/1/2026 3:24 AM        scan h 1 k 0 0.5 0.025 l 0
+6/1/2026 3:30 AM        br 1 0.5 0
+6/1/2026 3:30 AM        scantitle " (@(h) @(k) @(l)) x-m, T = @(coldtip.position) K" 
+6/1/2026 3:30 AM        scan h 1 0.5 0.025 k 0.5 l 0
+6/1/2026 3:37 AM        br 0.5 0.5 0
+6/1/2026 3:37 AM        scantitle " (@(h) @(k) @(l)) m-g, T = @(coldtip.position) K" 
+6/1/2026 3:37 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0
+6/1/2026 3:43 AM        br 1 0 0
+6/1/2026 3:43 AM        scantitle " (@(h) @(k) @(l)) g-z, T = @(coldtip.position) K" 
+6/1/2026 3:43 AM        scan h 1 k 0 l 0 0.5 0.025
+6/1/2026 3:48 AM        br 1 0 0.5
+6/1/2026 3:49 AM        scantitle " (@(h) @(k) @(l)) z-r, T = @(coldtip.position) K" 
+6/1/2026 3:49 AM        scan h 1 k 0 0.5 0.025 l 0.5
+6/1/2026 3:54 AM        br 1 0.5 0.5
+6/1/2026 3:54 AM        scantitle " (@(h) @(k) @(l)) r-a, T = @(coldtip.position) K" 
+6/1/2026 3:54 AM        scan h 1 0.5 0.025 k 0.5 l 0.5
+6/1/2026 4:01 AM        br 0.5 0.5 0.5
+6/1/2026 4:01 AM        scantitle " (@(h) @(k) @(l)) a-z, T = @(coldtip.position) K" 
+6/1/2026 4:01 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0.5
+6/1/2026 4:07 AM        br 0.5 0.5 0.5
+6/1/2026 4:08 AM        scantitle " (@(h) @(k) @(l)) a-m, T = @(coldtip.position) K" 
+6/1/2026 4:08 AM        scan h 0.5 k 0.5 l 0.5 0 0.025
+6/1/2026 4:14 AM        br 1 0.5 0
+6/1/2026 4:15 AM        scantitle " (@(h) @(k) @(l)) x-r, T = @(coldtip.position) K" 
+6/1/2026 4:15 AM        scan h 1 k 0.5 l 0 0.5 0.025
+6/1/2026 4:20 AM        set_temp 130
+6/1/2026 4:20 AM        wait 1200
+6/1/2026 4:40 AM        preset mcu 10
+6/1/2026 4:40 AM        br 1 0 0
+6/1/2026 4:41 AM        scantitle " (@(h) @(k) @(l)) g-x, T = @(coldtip.position) K" 
+6/1/2026 4:41 AM        scan h 1 k 0 0.5 0.025 l 0
+6/1/2026 4:47 AM        br 1 0.5 0
+6/1/2026 4:47 AM        scantitle " (@(h) @(k) @(l)) x-m, T = @(coldtip.position) K" 
+6/1/2026 4:47 AM        scan h 1 0.5 0.025 k 0.5 l 0
+6/1/2026 4:53 AM        br 0.5 0.5 0
+6/1/2026 4:53 AM        scantitle " (@(h) @(k) @(l)) m-g, T = @(coldtip.position) K" 
+6/1/2026 4:53 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0
+6/1/2026 4:59 AM        br 1 0 0
+6/1/2026 4:59 AM        scantitle " (@(h) @(k) @(l)) g-z, T = @(coldtip.position) K" 
+6/1/2026 4:59 AM        scan h 1 k 0 l 0 0.5 0.025
+6/1/2026 5:05 AM        br 1 0 0.5
+6/1/2026 5:05 AM        scantitle " (@(h) @(k) @(l)) z-r, T = @(coldtip.position) K" 
+6/1/2026 5:05 AM        scan h 1 k 0 0.5 0.025 l 0.5
+6/1/2026 5:11 AM        br 1 0.5 0.5
+6/1/2026 5:11 AM        scantitle " (@(h) @(k) @(l)) r-a, T = @(coldtip.position) K" 
+6/1/2026 5:11 AM        scan h 1 0.5 0.025 k 0.5 l 0.5
+6/1/2026 5:18 AM        br 0.5 0.5 0.5
+6/1/2026 5:18 AM        scantitle " (@(h) @(k) @(l)) a-z, T = @(coldtip.position) K" 
+6/1/2026 5:18 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0.5
+6/1/2026 5:24 AM        br 0.5 0.5 0.5
+6/1/2026 5:25 AM        scantitle " (@(h) @(k) @(l)) a-m, T = @(coldtip.position) K" 
+6/1/2026 5:25 AM        scan h 0.5 k 0.5 l 0.5 0 0.025
+6/1/2026 5:31 AM        br 1 0.5 0
+6/1/2026 5:32 AM        scantitle " (@(h) @(k) @(l)) x-r, T = @(coldtip.position) K" 
+6/1/2026 5:32 AM        scan h 1 k 0.5 l 0 0.5 0.025
+6/1/2026 5:37 AM        set_temp 280
+6/1/2026 5:37 AM        wait 1200
+6/1/2026 5:57 AM        preset mcu 10
+6/1/2026 5:57 AM        br 1 0 0
+6/1/2026 5:58 AM        scantitle " (@(h) @(k) @(l)) g-x, T = @(coldtip.position) K" 
+6/1/2026 5:58 AM        scan h 1 k 0 0.5 0.025 l 0
+6/1/2026 6:04 AM        br 1 0.5 0
+6/1/2026 6:04 AM        scantitle " (@(h) @(k) @(l)) x-m, T = @(coldtip.position) K" 
+6/1/2026 6:04 AM        scan h 1 0.5 0.025 k 0.5 l 0
+6/1/2026 6:10 AM        br 0.5 0.5 0
+6/1/2026 6:10 AM        scantitle " (@(h) @(k) @(l)) m-g, T = @(coldtip.position) K" 
+6/1/2026 6:11 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0
+6/1/2026 6:16 AM        br 1 0 0
+6/1/2026 6:16 AM        scantitle " (@(h) @(k) @(l)) g-z, T = @(coldtip.position) K" 
+6/1/2026 6:16 AM        scan h 1 k 0 l 0 0.5 0.025
+6/1/2026 6:22 AM        br 1 0 0.5
+6/1/2026 6:22 AM        scantitle " (@(h) @(k) @(l)) z-r, T = @(coldtip.position) K" 
+6/1/2026 6:22 AM        scan h 1 k 0 0.5 0.025 l 0.5
+6/1/2026 6:28 AM        br 1 0.5 0.5
+6/1/2026 6:28 AM        scantitle " (@(h) @(k) @(l)) r-a, T = @(coldtip.position) K" 
+6/1/2026 6:28 AM        scan h 1 0.5 0.025 k 0.5 l 0.5
+6/1/2026 6:35 AM        br 0.5 0.5 0.5
+6/1/2026 6:35 AM        scantitle " (@(h) @(k) @(l)) a-z, T = @(coldtip.position) K" 
+6/1/2026 6:35 AM        scan h 0.5 1 0.025 k 0.5 0 0.025 l 0.5
+6/1/2026 6:42 AM        br 0.5 0.5 0.5
+6/1/2026 6:42 AM        scantitle " (@(h) @(k) @(l)) a-m, T = @(coldtip.position) K" 
+6/1/2026 6:42 AM        scan h 0.5 k 0.5 l 0.5 0 0.025
+6/1/2026 6:49 AM        br 1 0.5 0
+6/1/2026 6:49 AM        scantitle " (@(h) @(k) @(l)) x-r, T = @(coldtip.position) K" 
+6/1/2026 6:49 AM        scan h 1 k 0.5 l 0 0.5 0.025
+6/1/2026 6:55 AM        set_temp 130
+6/1/2026 6:55 AM        wait 1800
+6/1/2026 7:25 AM        br -1 -1 -1
+6/1/2026 7:26 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:26 AM        th4th 3 -3 0.3
+6/1/2026 7:31 AM        br -1 -1 0
+6/1/2026 7:32 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:32 AM        th4th 3 -3 0.3
+6/1/2026 7:37 AM        br -1 -1 1
+6/1/2026 7:39 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:39 AM        th4th 3 -3 0.3
+6/1/2026 7:44 AM        br -1 0 -2
+6/1/2026 7:46 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:46 AM        th4th 3 -3 0.3
+6/1/2026 7:51 AM        br -1 0 -1
+6/1/2026 7:52 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:52 AM        th4th 3 -3 0.3
+6/1/2026 7:57 AM        br -1 0 0
+6/1/2026 7:57 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 7:57 AM        th4th 3 -3 0.3
+6/1/2026 8:03 AM        br -1 0 1
+6/1/2026 8:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:05 AM        th4th 3 -3 0.3
+6/1/2026 8:10 AM        br -1 0 2
+6/1/2026 8:11 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:11 AM        th4th 3 -3 0.3
+6/1/2026 8:16 AM        br -1 1 -1
+6/1/2026 8:17 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:17 AM        th4th 3 -3 0.3
+6/1/2026 8:23 AM        br -1 1 0
+6/1/2026 8:23 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:23 AM        th4th 3 -3 0.3
+6/1/2026 8:29 AM        br -1 1 1
+6/1/2026 8:31 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:31 AM        th4th 3 -3 0.3
+6/1/2026 8:36 AM        br 0 -1 -2
+6/1/2026 8:38 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:38 AM        th4th 3 -3 0.3
+6/1/2026 8:44 AM        br 1 0.5 0
+6/1/2026 8:45 AM        scantitle " (@(h) @(k) @(l)) x-m, T = @(coldtip.position) K" 
+6/1/2026 8:45 AM        scan h 1 0.5 0.025 k 0.5 l 0
+6/1/2026 8:51 AM        br 0 -1 2
+6/1/2026 8:53 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:53 AM        th4th 3 -3 0.3
+6/1/2026 8:58 AM        br 0 0 -3
+6/1/2026 8:59 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 8:59 AM        th4th 3 -3 0.3
+6/1/2026 9:05 AM        br 0 0 -2
+6/1/2026 9:05 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:05 AM        th4th 3 -3 0.3
+6/1/2026 9:11 AM        br 0 0 -1
+6/1/2026 9:12 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:12 AM        th4th 3 -3 0.3
+6/1/2026 9:17 AM        br 0 0 1
+6/1/2026 9:18 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:18 AM        th4th 3 -3 0.3
+6/1/2026 9:23 AM        br 0 0 2
+6/1/2026 9:24 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:24 AM        th4th 3 -3 0.3
+6/1/2026 9:29 AM        br 0 0 3
+6/1/2026 9:30 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:30 AM        th4th 3 -3 0.3
+6/1/2026 9:35 AM        br 0 1 -2
+6/1/2026 9:36 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:36 AM        th4th 3 -3 0.3
+6/1/2026 9:42 AM        br 0 1 1
+6/1/2026 9:43 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:43 AM        th4th 3 -3 0.3
+6/1/2026 9:48 AM        br 0 1 2
+6/1/2026 9:49 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:49 AM        th4th 3 -3 0.3
+6/1/2026 9:54 AM        br 1 0 -2
+6/1/2026 9:55 AM        scantitle "(@(h) @(k) @(l)) th4th, T = @(coldtip.position) K"
+6/1/2026 9:55 AM        th4th 3 -3 0.3
+6/1/2026 9:56 AM        set_temp 350
+6/1/2026 9:56 AM        drive chi 0
+6/1/2026 9:57 AM        drive phi 0
+6/1/2026 9:57 AM        drive omega 0

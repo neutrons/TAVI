@@ -1,9 +1,10 @@
 """ORNL Spice format loader."""
 
 import logging
+import re
 import warnings
 import xml.etree.ElementTree as ET
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 
@@ -11,6 +12,11 @@ from tavi.backend.classification.rule_based_classifier import RuleBasedClassifie
 from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
 from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import UUID, Provenance, RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.tavi_data import TaviData
+from tavi.library.experiment.enum import FixedEnergyMode
+from tavi.library.experiment.peak import DataPoint, MotorAngles
+from tavi.library.experiment.utilities import SE2K, get_angle_from_triangle, get_side_from_triangle
+from tavi.library.fit.fit import Fit
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
@@ -176,7 +182,7 @@ class ORNLSpiceLoader(AbstractLoader):
             logger.error(e)
             col_values = np.array(None)
         data = dict()
-        for col_name in col_names:
+        for col_index, col_name in enumerate(col_names):
             # guard against invalid format
             if col_name[0].isdigit():  # can't start with digit, replace with _
                 col_name = "_" + col_name
@@ -184,10 +190,10 @@ class ORNLSpiceLoader(AbstractLoader):
                 col_name.replace("-", "_").replace(" ", "_").replace(".", "")
             )  # replace "-", " ", with "_", remove any "."
             if col_values.ndim > 1:
-                data[attr_name] = col_values[:, col_names.index(col_name)]
+                data[attr_name] = col_values[:, col_index]
             # sometimes data only have 1 entry, then we don't need to slice the data.
             elif col_values.ndim == 1:
-                data[attr_name] = np.array([col_values[col_names.index(col_name)]])
+                data[attr_name] = np.array([col_values[col_index]])
             else:
                 data[attr_name] = []
         return ScanData(data=data)
@@ -249,3 +255,201 @@ class ORNLSpiceLoader(AbstractLoader):
         weight = 1
         raw_file = file_path
         return Provenance(raw_file=raw_file, contributing_scans={uuid: weight})
+
+    def get_hkl_from_title(
+        self, tavi_data: TaviData, scan_num: int, IPTS: Optional[int] = None, exp_num: Optional[int] = None
+    ) -> np.ndarray:
+        """
+        Extract the (h, k, l) from a scan title, rounded to 2 decimals.
+
+        e.g. "scan_title =  (1.000019 -0.000008 0.499983) th4th, T = 4.3406 K"
+             -> array([ 1.  , -0.  ,  0.5 ])
+        """
+        scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
+        scan_title = scan.metadata.scan_title
+
+        m = re.search(r"\(([^)]+)\)", scan_title)
+        if m is None:
+            raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
+        hkl = np.array([float(v) for v in m.group(1).split()])
+        return np.round(hkl, 2)
+
+    def create_peaks(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
+        ei_or_ef: float = 0,
+    ) -> DataPoint:
+        """Create peak or peaks from scan numbers."""
+        hkl = self.get_hkl_from_title(tavi_data, scan_num, IPTS, exp_num)
+        motor_angles = self.get_motor_angles(tavi_data, scan_num, IPTS, exp_num)
+        scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
+        # Detect if this is an inelastic scan
+        if abs(max(scan.data.e) - min(scan.data.e)) > 0.1:
+            e_center = Fit().gaussian(scan.data.e, scan.data.detector).center
+        else:
+            e_center = np.mean(scan.data.e)
+        ei, ef = self.get_ei_ef(e_center, mode, ei_or_ef)
+        return DataPoint(hkl=hkl, ei=ei, ef=ef, angles=motor_angles)
+
+    def get_motor_angles(
+        self, tavi_data: TaviData, scan_num: int, IPTS: Optional[int] = None, exp_num: Optional[int] = None
+    ) -> np.ndarray:
+        """Generate Motor position from scan."""
+        scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
+        def_x, def_y = scan.metadata.def_x, scan.metadata.def_y
+        if def_x[0].isdigit():
+            def_x = "_" + def_x
+        if def_y[0].isdigit():
+            def_y = "_" + def_y
+        x, y = scan.data.data[def_x], scan.data.data[def_y]
+        two_theta, omega, chi, phi = 0, 0, 0, 0
+        fit = Fit()
+        match def_x:
+            case "_2theta":
+                two_theta = fit.gaussian(x, y, counting_errors=True).center
+                omega = fit.gaussian(scan.data.omega, y, counting_errors=True).center
+                chi = np.mean(scan.data.chi)
+                phi = np.mean(scan.data.phi)
+            case "omega":
+                two_theta = np.mean(scan.data._2theta)
+                omega = fit.gaussian(x, y, counting_errors=True)
+                chi = np.mean(scan.data.chi)
+                phi = np.mean(scan.data.phi)
+            case "chi":
+                two_theta = np.mean(scan.data._2theta)
+                omega = np.mean(scan.data.omega)
+                chi = fit.gaussian(x, y, counting_errors=True)
+                phi = np.mean(scan.data.phi)
+            case "phi":
+                two_theta = np.mean(scan.data._2theta)
+                omega = np.mean(scan.data.omega)
+                chi = np.mean(scan.data.phi)
+                phi = fit.gaussian(x, y, counting_errors=True)
+            case _:
+                raise ValueError("Not implemented yet.")
+        return MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi})
+
+    def get_delta_q(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
+        ei_or_ef: float = 0,
+    ) -> np.ndarray:
+        """Get delta q of a scan."""
+        scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
+        try:
+            qs = scan.data.q
+        except AttributeError:
+            es = scan.data.e
+            if mode == FixedEnergyMode.FIX_Ef:
+                ef = ei_or_ef
+                eis = [e + ef for e in es]
+                efs = [ef] * len(eis)
+            else:
+                ei = ei_or_ef
+                efs = [e - ei for e in es]
+                eis = [ei] * len(efs)
+            kis = np.array([SE2K(ei) for ei in eis])
+            kfs = np.array([SE2K(ef) for ef in efs])
+            two_thetas = scan.data.s2 if "s2" in dir(scan.data) else scan.data._2theta
+            qs = np.array(
+                [
+                    get_side_from_triangle(ki, kf, np.radians(two_theta))
+                    for ki, kf, two_theta in zip(kis, kfs, two_thetas)
+                ]
+            )
+
+        q_diff = np.max(qs) - np.min(qs)
+        mid_idx = (len(qs) - 1) // 2
+
+        if q_diff > 1.1e-4:  # q changing, must be a th2th scan
+            return qs - qs[mid_idx]
+        else:  # q not changing, must be a s1 scan
+            q_abs = np.mean(qs)
+
+            if "s1" in dir(scan.data):  # using "s1" by default
+                angles = scan.data.s1
+            elif "omega" in dir(scan.data):
+                angles = scan.data.omega
+            else:
+                raise AttributeError("No s1 or omega in data. Can't calculate delta q")
+            return np.radians(angles - angles[mid_idx]) * q_abs
+
+    def get_data_from_scan_number(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+    ) -> RawScan:
+        """
+        Get scan object from a scan number.
+
+        Args:
+            tavi_data: Container of loaded raw scans to search.
+            scan_num: Scan number to look up.
+            IPTS: Optional IPTS proposal number to disambiguate across experiments.
+            exp_num: Optional experiment number to disambiguate within an IPTS.
+
+        Returns:
+            The matching RawScan.
+
+        Raises:
+            ValueError: If zero or more than one scan matches.
+
+        """
+        scan_tag = "scan" + str(scan_num).zfill(4)
+        exp_tag = "exp" + str(exp_num).zfill(4) if exp_num is not None else None
+        ipts_tag = "IPTS-" + str(IPTS) if IPTS is not None else None
+
+        matches = []
+        for raw_scan in tavi_data.raw_scans.values():
+            name = raw_scan.tavimeta.friendly_name
+            path = raw_scan.tavimeta.friendly_path
+            if scan_tag not in name:
+                continue
+            if exp_tag is not None and exp_tag not in name:
+                continue
+            if ipts_tag is not None and ipts_tag not in path:
+                continue
+            matches.append(raw_scan)
+
+        if len(matches) == 0:
+            raise ValueError(f"No scan found with scan_num={scan_num}, IPTS={IPTS}, exp_num={exp_num}.")
+        if len(matches) > 1:
+            raise ValueError(
+                f"{len(matches)} scans match scan_num={scan_num}. Specify IPTS and/or exp_num to disambiguate."
+            )
+        return matches[0]
+
+    def get_two_theta(self, q_norm: float, ei: float, ef: float) -> float:
+        """Get two_theta, only q_norm is required."""
+        ki = SE2K(ei)
+        kf = SE2K(ef)
+        two_theta_rad = get_angle_from_triangle(ki, kf, q_norm)
+        return two_theta_rad
+
+    def get_psi(self, q_norm: float, ei: float, ef: float) -> float:
+        """Get psi. Angle between ki and Q."""
+        ki = SE2K(ei)
+        kf = SE2K(ef)
+        psi_rad = get_angle_from_triangle(ki, q_norm, kf)
+        return psi_rad
+
+    def get_ei_ef(self, e: float, mode: FixedEnergyMode, ei_or_ef: float) -> tuple[float, float]:
+        """Get (ei, ef) given the complementary energy."""
+        if mode is FixedEnergyMode.FIX_Ef:
+            ef = ei_or_ef
+            ei = e + ef
+            return ei, ef
+        else:
+            ei = ei_or_ef
+            ef = ei - e
+            return ei, ef

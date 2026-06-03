@@ -130,3 +130,10 @@ def spice_to_mantid(v: np.ndarray) -> np.ndarray:
     """Convert a vector from the SPICE frame to the Mantid frame."""
     t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
     return t.dot(v)
+
+
+def get_side_from_triangle(a: float, b: float, angle: float) -> float:
+    """In a triangle with sides a,b and angle between a and b, get the third side c."""
+    if (np.abs(a) < 1e-6) or (np.abs(b) < 1e-6):
+        raise ValueError("Triangle cannot be closed.")
+    return np.sqrt(a**2 + b**2 - 2 * a * b * np.cos(angle))

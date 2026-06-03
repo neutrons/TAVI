@@ -1,0 +1,36 @@
+# scan = 317
+# date = 5/30/2026
+# time = 5:05:35 PM
+# proposal = 38450
+# experiment = Investigate the magnetic order of KV2Se2O
+# experiment_number = 1091
+# command = scan n 200 preset mcu 100
+# builtin_command = scan n 200 preset mcu 100
+# users = Tong Chen, Wei Tian, Yi Luo, Zehao Wang
+# local_contact = Wei Tian
+# scan_title = sit on (1 0 0.5) warming up to 300K
+# monochromator = PG002
+# analyzer = Pg002
+# sense = +-+
+# collimation = 40-40-40-80
+# samplename = KV2Se2O
+# sampletype = crystal
+# samplemosaic = 30.000000
+# latticeconstants = 3.967715,3.961883,7.321512,90.003970,90.006616,89.888382
+# ubmatrix = -0.244866,-0.047196,0.019494,-0.034654,-0.010332,-0.135172,0.048594,-0.247739,0.001914
+# mode = 0
+# plane_normal = 0.000000,0.000000,0.000000
+# ubconf = UBmatrix_5K_2.dat
+# preset_type = normal 
+# preset_channel = mcu
+# preset_value = 100.000000
+# def_x = Pt.
+# def_y = detector
+# col_headers = 
+#   Pt.       time   detector    monitor        mcu         m2        chi        phi      omega     2theta        sgl        sgu   slitb_bt   slitb_lf   slitb_rt   slitb_tp   slita_bt   slita_lf   slita_rt   slita_tp         a1         a2          h          k          l          e         ei    coldtip     sample       temp
+      1     96.247   4199.000 1745061.000    100.000    41.5367   -10.9388   -23.5005   -18.1046   -36.2101     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7713    41.5279     1.0001    -0.0000     0.5000     0.0000    14.4503     8.1383    19.5056   300.000
+      2      0.000      0.000      0.000    100.000    41.5367   -10.9388   -23.5005   -18.1047   -36.2101     0.0409     0.0130    28.0000     6.0000     6.0000    22.0000    30.0000     7.0000     6.0000    26.0000    20.7712    41.5279     1.0001    -0.0000     0.5000     0.0000    14.4503   101.5000    33.6016   300.000
+# Sum of Counts = 4199
+# Center of Mass = 1.000000+/-0.021824
+# Full Width Half-Maximum = 0.000000+/-NaN
+# 5:07:15 PM  5/30/2026   scan stopped!!

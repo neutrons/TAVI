@@ -36,7 +36,7 @@ class EllipseEntry:
     origin: tuple[float, float]
 
 
-class Plot:
+class Plot:  # PlotResolution
     """Accumulate 2D resolution ellipses and render them on a skewed grid."""
 
     def __init__(self, axes_angle: float) -> None:

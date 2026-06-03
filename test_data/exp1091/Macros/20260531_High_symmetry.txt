@@ -1,0 +1,46 @@
+Shifted Brillouin zone by (1,0,0)
+g-x-m-g-z-r-a-z
+a-m
+x-r
+
+g: 1   0   0
+r: 1   0.5 0.5
+a: 0.5 0.5 0.5
+x: 1   0.5 0
+m: 0.5 0.5 0
+z: 1   0   0.5
+
+################
+set_temp ?
+################
+
+preset mcu 10
+br 1 0 0
+scantitle " (@(h) @(k) @(l)) g-x, T = @(coldtip.position) K" 
+scan h 1 k 0 0.5 0.025 l 0
+br 1 0.5 0
+scantitle " (@(h) @(k) @(l)) x-m, T = @(coldtip.position) K" 
+scan h 1 0.5 0.025 k 0.5 l 0
+br 0.5 0.5 0
+scantitle " (@(h) @(k) @(l)) m-g, T = @(coldtip.position) K" 
+scan h 0.5 1 0.025 k 0.5 0 0.025 l 0
+br 1 0 0
+scantitle " (@(h) @(k) @(l)) g-z, T = @(coldtip.position) K" 
+scan h 1 k 0 l 0 0.5 0.025
+br 1 0 0.5
+scantitle " (@(h) @(k) @(l)) z-r, T = @(coldtip.position) K" 
+scan h 1 k 0 0.5 0.025 l 0.5
+br 1 0.5 0.5
+scantitle " (@(h) @(k) @(l)) r-a, T = @(coldtip.position) K" 
+scan h 1 0.5 0.025 k 0.5 l 0.5
+br 0.5 0.5 0.5
+scantitle " (@(h) @(k) @(l)) a-z, T = @(coldtip.position) K" 
+scan h 0.5 1 0.025 k 0.5 0 0.025 l 0.5
+
+br 0.5 0.5 0.5
+scantitle " (@(h) @(k) @(l)) a-m, T = @(coldtip.position) K" 
+scan h 0.5 k 0.5 l 0.5 0 0.025
+
+br 1 0.5 0
+scantitle " (@(h) @(k) @(l)) x-r, T = @(coldtip.position) K" 
+scan h 1 k 0.5 l 0 0.5 0.025
