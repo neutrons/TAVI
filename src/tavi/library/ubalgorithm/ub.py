@@ -1,20 +1,23 @@
 """Calculating ub matrix related algorithms."""
 
-from tavi.library.Instrument.instrument import Instrument
-from tavi.library.geometry.sample import Sample
-from tavi.library.experiment.peak import DataPoint
-from tavi.library.component.goniometer import Goniometer
-from tavi.library.experiment.utilities import q_lab
 import numpy as np
+
+from tavi.library.experiment.peak import DataPoint
+from tavi.library.experiment.utilities import q_lab
+from tavi.library.geometry.sample import Sample
+from tavi.library.Instrument.instrument import Instrument
+
 
 class UBAlgorithm:
     """Calculate UB."""
-    def __init__(self,sample: Sample, instrument: Instrument) -> None:
+
+    def __init__(self, sample: Sample, instrument: Instrument) -> None:
         """Init ub algorithm."""
         self.sample = sample
         self.instrument = instrument
-    
+
         # -----------Calculate UB Matrix-----------
+
     def find_u_from_one_peak_and_scattering_plane(
         self,
         peak: DataPoint,
@@ -71,7 +74,6 @@ class UBAlgorithm:
         peak1, peak2 = peaks
         print(peaks)
         B = self.sample.ol.B
-        
 
         t1_c = B @ peak1.hkl
         t3_c = np.cross(B @ peak1.hkl, B @ peak2.hkl)
@@ -90,8 +92,11 @@ class UBAlgorithm:
         q_lab_2 = q_lab(peak1.ei, peak2.ef, peak2.angles.angles_dict["two_theta"])
 
         # In identical fashion as described above Eq.79
-        t1_v = np.linalg.inv(self.instrument.goni.r_mat(peak1.angles)) @ q_lab_1/(2*np.pi)
-        t3_v = np.cross(np.linalg.inv(self.instrument.goni.r_mat(peak1.angles)) @ q_lab_1/(2*np.pi), np.linalg.inv(self.instrument.goni.r_mat(peak2.angles)) @ q_lab_2/(2*np.pi))
+        t1_v = np.linalg.inv(self.instrument.goni.r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi)
+        t3_v = np.cross(
+            np.linalg.inv(self.instrument.goni.r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi),
+            np.linalg.inv(self.instrument.goni.r_mat(peak2.angles)) @ q_lab_2 / (2 * np.pi),
+        )
         t2_v = np.cross(t3_v, t1_v)
         T_v = np.array(
             [
@@ -173,4 +178,3 @@ class UBAlgorithm:
         plane_normal = -plane_normal if plane_normal[1] < 0 else plane_normal
         in_plane_ref = u_mat @ t1_c / np.linalg.norm(t1_c)
         return (plane_normal, in_plane_ref)
-
