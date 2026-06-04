@@ -72,7 +72,6 @@ class UBAlgorithm:
         Follow Eq.76-81 and Eq.83-88. We assume q_3 is perpendicular from the two peaks
         """
         peak1, peak2 = peaks
-        print(peaks)
         B = self.sample.ol.B
 
         t1_c = B @ peak1.hkl

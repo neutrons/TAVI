@@ -255,7 +255,9 @@ class ORNLSpiceLoader(AbstractLoader):
         weight = 1
         raw_file = file_path
         return Provenance(raw_file=raw_file, contributing_scans={uuid: weight})
-
+#----------------------------------------------------------------------------------------------
+#                                      ORNL specific
+#----------------------------------------------------------------------------------------------
     def get_hkl_from_title(
         self, tavi_data: TaviData, scan_num: int, IPTS: Optional[int] = None, exp_num: Optional[int] = None
     ) -> np.ndarray:
