@@ -120,7 +120,7 @@ class Goniometer:
 
     def verify_motor_angles(
         self,
-        q_vec:np.ndarray,
+        q_vec: np.ndarray,
         two_theta: float,
         psi: float,
     ) -> MotorAngles:
@@ -132,17 +132,17 @@ class Goniometer:
 
         The meaning of calculating chi, phi is as such:
 
-        q_vec is UB@hkl, which is a vector in random direction in mantid coordinate frame, when all goniometer are at 0. 
+        q_vec is UB@hkl, which is a vector in random direction in mantid coordinate frame, when all goniometer are at 0.
         The goal is to rotate q_vec to ki - kf vector direction.
 
         chi_rad is the angle needed to rotate q_vec into scattering plane.
 
         phi = arctan(q_vec[2], q_vec[0]). 0 is defined as along ki in veritas bisect mode.
-        
+
          In bisect mode, in-plane component is always measuring the goniometer in-plane
 
         component at 0 direction. so we need to rotate arctan(q_vec[2], q_vec[0]) to get to the 0 position.
-        
+
         """
         signs = self._get_motor_senses()
         match self.type:
@@ -157,7 +157,7 @@ class Goniometer:
                     ]
                 )
 
-                angles = MotorAngles(angles_dict={"two_theta": two_theta,"omega": omega, "chi": chi, "phi": phi})
+                angles = MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi})
             case _:
                 raise ValueError("Not implemented yet.")
 
