@@ -11,7 +11,7 @@ from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 import numpy as np
 
-from tavi.library.plot.plot_ellipse import Plot
+from tavi.library.plot.plot_ellipse import PlotResolution
 from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 from tavi.library.tas.triple_axis import TAS
 
@@ -298,6 +298,6 @@ def test_tas_ub(component, generate_peaks):
 
     # ellipse, axes_angle = tas.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0,1))
 
-    # plot = Plot(axes_angle=axes_angle)
+    # plot = PlotResolution(axes_angle=axes_angle)
     # plot.add_ellipse(mat = ellipse)
     # plot.plot()

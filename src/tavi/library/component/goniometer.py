@@ -127,7 +127,7 @@ class Goniometer:
         """
         Compute motor angles for a given Q vector, two_theta and psi.
 
-        In bisect mode, omega is half of 2theta, draw the scattering tirangle and it'll show it's 90 + psi,
+        In bisect mode, omega is half of 2theta, draw the scattering triangle and it'll show it's 90 + psi,
         psi is always opposite sign of self.s2_sense.
 
         The meaning of calculating chi, phi is as such:

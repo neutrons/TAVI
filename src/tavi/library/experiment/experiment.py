@@ -15,7 +15,6 @@ from tavi.library.experiment.peak import DataPoint
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 from tavi.library.storage.local_file_store import LocalFileStore
 
-
 class Experiment:
     """Experiment class."""
 

@@ -76,3 +76,4 @@ class ResolutionEllipsoid:
             if not i == idx:
                 res_incoh = quadric_proj(res_incoh, i)
         return sig2fwhm / np.sqrt(np.abs(res_incoh[0, 0]))
+    
