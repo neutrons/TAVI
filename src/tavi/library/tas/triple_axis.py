@@ -89,10 +89,12 @@ class TAS:
             model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
         )
 
-    def browse(self, scan_list: list[int], show_fits=True, with_reso_bar=False):
+    def browse(self, scan_list: list[int], show_fits: bool = True, with_reso_bar: bool = False) -> None:
         """
-        Browse scan with options to show resolution bar. If resolution bar is set,
-        show_fits must be true as reso bar's poitions are deteremined by fit center.
+        Browse scan with options to show resolution bar.
+
+        If resolution bar is set, show_fits must be true as reso bar's positions are
+        determined by fit center.
         """
         reso_bar = None
         if with_reso_bar:
@@ -117,7 +119,8 @@ class TAS:
 
         PlotResolution.plot_reso_ellipse(ellipses)
 
-    def reso_bar(self, scan_list: list[int]):
+    def reso_bar(self, scan_list: list[int]) -> list[float]:
+        """Compute the coherent FWHM resolution bar for each scan."""
         self.calculate_resolution()
         reso_bar = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
