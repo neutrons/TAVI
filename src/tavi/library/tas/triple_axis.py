@@ -89,7 +89,7 @@ class TAS:
             model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
         )
 
-    def browse(self, scan_list:list[int], show_fits = True, with_reso_bar = False):
+    def browse(self, scan_list: list[int], show_fits=True, with_reso_bar=False):
         """
         Browse scan with options to show resolution bar. If resolution bar is set,
         show_fits must be true as reso bar's poitions are deteremined by fit center.
@@ -98,7 +98,7 @@ class TAS:
         if with_reso_bar:
             reso_bar = self.reso_bar(scan_list)
         browse_scans(self.experiment, scan_list, show_fits, reso_bar)
-    
+
     def browse_resolution_ellipse(self, scan_list: list[int]) -> None:
         """Plot the resolution ellipse for each scan in a grid of subplots."""
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
@@ -117,8 +117,7 @@ class TAS:
 
         PlotResolution.plot_reso_ellipse(ellipses)
 
-
-    def reso_bar(self, scan_list:list[int]):
+    def reso_bar(self, scan_list: list[int]):
         self.calculate_resolution()
         reso_bar = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
@@ -127,6 +126,6 @@ class TAS:
             raise ValueError("Data format not implemented yet.")
         for peak in peaks:
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
-            coh = ResolutionEllipsoid(res_4d, axes = None).coh_fwhm(axis = 0)
+            coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=0)
             reso_bar.append(coh)
         return reso_bar
