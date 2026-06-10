@@ -73,12 +73,12 @@ class DataFileView(QWidget):
             checkbox.checkStateChanged.connect(flipChecks)
 
         top_split.addWidget(variable_table)
-        layout.addWidget(top_split)
+        layout.addWidget(top_split, 2)
 
         # Metadata
         meta_tabs = QTabWidget()
         meta_tabs.addTab(self._build_scan_info_tab(), "Scan Info")
-        layout.addWidget(meta_tabs)
+        layout.addWidget(meta_tabs, 1)
 
         # Buttons
         btn_layout = QHBoxLayout()
