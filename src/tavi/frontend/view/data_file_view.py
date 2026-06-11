@@ -8,7 +8,6 @@ from qtpy.QtWidgets import (
     QCheckBox,
     QHBoxLayout,
     QHeaderView,
-    QLabel,
     QPushButton,
     QSplitter,
     QTableWidget,
@@ -38,13 +37,6 @@ class DataFileView(QWidget):
         table.setAlternatingRowColors(True)
         table.setHorizontalHeaderLabels(["detector", "s1", "s2", "def_x", "def_y"])
         table.setCornerButtonEnabled(True)
-
-        button = table.findChild(QAbstractButton)
-        if button:
-            label = QLabel("Pt.", button)
-            label.setMinimumSize(button.width() / 2, button.height())
-            label.setStyleSheet("color: black")
-            label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         top_split.addWidget(table)
 
