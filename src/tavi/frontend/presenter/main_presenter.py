@@ -25,7 +25,7 @@ class MainPresenter:
         self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(self.menu_bar)
 
-        self.project_view = self._view.main_window.load_view
+        self.project_view = self._view.project_view
         self.load_raw_scan_presenter = LoadRawScanPresenter(self.project_view, model_dict["TaviProjectProxy"])
 
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])

@@ -4,11 +4,24 @@ import logging
 import threading
 from typing import Any
 
-from qtpy.QtCore import Signal
-from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QMenuBar, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from qtpy.QtCore import Qt, Signal
+from qtpy.QtWidgets import (
+    QHBoxLayout,
+    QMainWindow,
+    QMenuBar,
+    QMessageBox,
+    QPushButton,
+    QSplitter,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from tavi import __version__
 from tavi.backend.model.help_model import help_function
+from tavi.frontend.view.data_file_view import DataFileView
+from tavi.frontend.view.filter_view import FilterView
+from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.frontend.view.project_view import ProjectView
 
 logger = logging.getLogger("TAVI")
@@ -66,8 +79,9 @@ class TaviView(QMainWindow):
 
         self.setWindowTitle(f"TAVI - {__version__}")
 
-        self.main_window = MainWindow(self)
-        self.setCentralWidget(self.main_window)
+        # self.main_window = MainWindow(self)
+        # self.setCentralWidget(self.main_window)
+        self._build_ui()
         self._force_closing = False
 
     def install_menu_bar(self, menu_bar: QMenuBar) -> None:
@@ -106,3 +120,56 @@ class TaviView(QMainWindow):
         if reply == QMessageBox.No:
             return False  # do not exit
         return True
+
+    def _build_ui(self) -> None:
+        main_splitter = QSplitter(Qt.Orientation.Horizontal)
+
+        # LEFT PANEL (File Browser + Filters)
+        left_panel = self._build_left_panel()
+        main_splitter.addWidget(left_panel)
+
+        # CENTER PANEL (Plot area)
+        center_panel = self._build_center_panel()
+        main_splitter.addWidget(center_panel)
+
+        # RIGHT PANEL (Data + Variables + Metadata)
+        right_panel = self._build_right_panel()
+        main_splitter.addWidget(right_panel)
+
+        main_splitter.setSizes([300, 700, 400])
+        self.setCentralWidget(main_splitter)
+
+    # ---------------- LEFT PANEL ----------------
+    def _build_left_panel(self) -> QWidget:
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # File tree
+        self.project_view = ProjectView()
+        self.project_view.setParent(self)
+
+        layout.addWidget(self.project_view)
+
+        # Filter view
+        self.filter_view = FilterView()
+        layout.addWidget(self.filter_view)
+
+        return widget
+
+    # ---------------- CENTER PANEL ----------------
+    def _build_center_panel(self) -> QTabWidget:
+        tabs = QTabWidget()
+
+        self.plotter_view = Plot1DView()
+        tabs.addTab(self.plotter_view, "1D Plotter")
+
+        return tabs
+
+    # ---------------- RIGHT PANEL ----------------
+    def _build_right_panel(self) -> QTabWidget:
+        tabs = QTabWidget()
+
+        self.data_file_view = DataFileView()
+        tabs.addTab(self.data_file_view, "Data File")
+
+        return tabs
