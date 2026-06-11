@@ -19,7 +19,7 @@ def browse_scans(
     experiment: Experiment,
     scan_list: list[int],
     show_fits: bool = True,
-    reso_bars: Optional[list[float]] = None,
+    resolution_bars: Optional[list[float]] = None,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -28,17 +28,17 @@ def browse_scans(
         experiment: Experiment holding the loaded scans.
         scan_list: Scan numbers to plot, one subplot each.
         show_fits: If True, overlay a Gaussian fit on each scan.
-        reso_bars: Optional per-scan coherent FWHM (in q), aligned with
+        resolution_bars: Optional per-scan coherent FWHM (in q), aligned with
             scan_list. When given, the x-axis switches to del_q and a
             resolution bar is drawn on each subplot at the fitted peak's
             half-maximum. Requires show_fits=True.
 
     """
-    from tavi.library.fit.fit import Fit
+    from tavi.library.fit.fit import Fit, ModelName
 
-    show_reso_bar = reso_bars is not None
-    if show_reso_bar and not show_fits:
-        raise ValueError("reso_bars requires show_fits=True (the bar is placed using the fit).")
+    show_resolution_bar = resolution_bars is not None
+    if show_resolution_bar and not show_fits:
+        raise ValueError("resolution_bars requires show_fits=True (the bar is placed using the fit).")
 
     n = len(scan_list)
     ncols = min(3, n)
@@ -47,7 +47,9 @@ def browse_scans(
     axes_flat = axes.flatten()
 
     fit = Fit()
-    bars = reso_bars if show_reso_bar else [None] * n
+    fit_results = []
+    hkls = []
+    bars, res_mat_4d = resolution_bars if show_resolution_bar else [None] * n
     for ax, num, coh in zip(axes_flat, scan_list, bars):
         scan = experiment.get_data_from_scan_number(dict(scan_num=num))
         def_x, def_y = scan.metadata.def_x, scan.metadata.def_y
@@ -58,7 +60,7 @@ def browse_scans(
 
         # With a resolution bar, plot against del_q (the bar width is in q);
         # otherwise plot against the raw default-x motor.
-        if show_reso_bar:
+        if show_resolution_bar:
             x = experiment.get_delta_q(dict(scan_num=num))
             xlabel = f"del_q({def_x})"
         else:
@@ -69,11 +71,12 @@ def browse_scans(
         ax.errorbar(x, y, yerr=np.sqrt(y), fmt="o")
 
         if show_fits:
-            fit_result = fit.gaussian(x=x, y=y, counting_errors=True)
+            fit_result = fit.fit(x, y, [(ModelName.Gaussian, {"guess": True})])
+            fit_results.append(fit_result)
             x_fine = np.linspace(x.min(), x.max(), 300)
             ax.plot(x_fine, fit_result.raw.eval(x=x_fine), label=f"fit={fit_result.fwhm:.4g}")
 
-            if show_reso_bar:
+            if show_resolution_bar:
                 # Resolution bar: horizontal line of width = coherent FWHM (coh) in q,
                 # centered on the fitted peak, drawn at the peak's half-maximum height.
                 ax.errorbar(
@@ -86,8 +89,8 @@ def browse_scans(
                     label=f"reso={coh:.4g}",
                 )
             ax.legend(fontsize=8, loc="upper right")
-
-        ax.set_title(experiment.get_hkl(dict(scan_num=num)))
+        hkls.append(experiment.get_hkl(dict(scan_num=num)))
+        ax.set_title(f"{num}, {experiment.get_hkl(dict(scan_num=num))}")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(def_y)
 
@@ -97,6 +100,8 @@ def browse_scans(
 
     fig.tight_layout()
     plt.show()
+    if resolution_bars is not None:
+        return hkls, fit_results, res_mat_4d
 
 
 def grid_helper(angle: float, nbins: tuple[int, int] = (5, 5)) -> GridHelperCurveLinear:
@@ -208,7 +213,12 @@ class PlotResolution:
         return ax
 
     @classmethod
-    def plot_reso_ellipse(cls, ellipses: list[tuple]) -> None:
+    def plot_resolution_ellipse(
+        cls,
+        ellipses: list[tuple],
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+    ) -> None:
         """
         Lay out a grid of resolution ellipses, one subplot per peak.
 
@@ -218,19 +228,25 @@ class PlotResolution:
                 is the 2D resolution matrix to draw, ``axes_angle`` is the skew
                 angle (degrees) between the plot axes, and ``coh_para`` /
                 ``coh_perp`` are the coherent FWHMs shown in the title.
+            xlabel: Custom x-axis label applied to each subplot. Left unlabeled if None.
+            ylabel: Custom y-axis label applied to each subplot. Left unlabeled if None.
 
         """
         n = len(ellipses)
         ncols = min(3, n)
         nrows = int(np.ceil(n / ncols))
         fig = plt.figure(figsize=(4 * ncols, 4 * nrows))
-        for i, (peak, mat, angle, coh_para, coh_perp) in enumerate(ellipses, start=1):
+        for i, (idx, peak, mat, angle, coh_para, coh_perp) in enumerate(ellipses, start=1):
             ax = fig.add_subplot(nrows, ncols, i, axes_class=Axes, grid_helper=grid_helper(angle))
             ax.grid(True)
             h, k, l = peak.hkl
-            ax.set_title(f"({h:g} {k:g} {l:g}), fwhm_s1 = {coh_perp:.4f}, \n fwhm_th2th = {coh_para:.4f}")
+            ax.set_title(f"{idx}, ({h:g} {k:g} {l:g}), fwhm_s1 = {coh_perp:.4f}, \n fwhm_th2th = {coh_para:.4f}")
             p = cls(axes_angle=angle)
             p.add_ellipse(mat)
             p.plot(ax=ax, show=False)
+            if xlabel is not None:
+                ax.set_xlabel(xlabel)
+            if ylabel is not None:
+                ax.set_ylabel(ylabel)
         plt.tight_layout()
         plt.show()

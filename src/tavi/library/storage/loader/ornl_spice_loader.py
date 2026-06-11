@@ -1,5 +1,6 @@
 """ORNL Spice format loader."""
 
+import bisect
 import logging
 import re
 import warnings
@@ -16,7 +17,7 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint, MotorAngles
 from tavi.library.experiment.utilities import SE2K, get_angle_from_triangle, get_side_from_triangle
-from tavi.library.fit.fit import Fit
+from tavi.library.fit.fit import Fit, FitPackage, ModelName
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
@@ -259,25 +260,55 @@ class ORNLSpiceLoader(AbstractLoader):
     # ----------------------------------------------------------------------------------------------
     #                                      ORNL specific
     # ----------------------------------------------------------------------------------------------
-    def get_hkl_from_title(
-        self, tavi_data: TaviData, scan_num: int, IPTS: Optional[int] = None, exp_num: Optional[int] = None
+    #make static
+    def get_hkl(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+        use_title=True,
+        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> np.ndarray:
         """
-        Extract the (h, k, l) from a scan title, rounded to 2 decimals.
+        Extract the (h, k, l), user can define if they want to just get hkl from a scan title, rounded to 2 decimals. or use a fitting function to fit.
 
         e.g. "scan_title =  (1.000019 -0.000008 0.499983) th4th, T = 4.3406 K"
              -> array([ 1.  , -0.  ,  0.5 ])
         """
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
-        scan_title = scan.metadata.scan_title
+        if use_title:
+            scan_title = scan.metadata.scan_title
 
-        m = re.search(r"\(([^)]+)\)", scan_title)
-        if m is None:
-            raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
-        hkl = np.array([float(v) for v in m.group(1).split()])
+            m = re.search(r"\(([^)]+)\)", scan_title)
+            if m is None:
+                raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
+            hkl = np.array([float(v) for v in m.group(1).split()])
+        else:
+            tol = 1e3
+            # Using fitting to find hkl
+            fit = Fit(package=FitPackage.lmfit)
+            y = scan.data.def_y
+            if abs(max(scan.data.h) - min(scan.data.h)) > tol:
+                h_center  = self._fit_centers(fit, scan.data.h, y, model_dict)
+                k_center = np.mean(scan.data.k)
+                l_center = np.mean(scan.data.l)
+            elif abs(max(scan.data.k) - min(scan.data.k)) > tol:
+                h_center = np.mean(scan.data.h)
+                k_center  = self._fit_centers(fit, scan.data.k, y, model_dict)
+                l_center = np.mean(scan.data.l)
+            elif abs(max(scan.data.l) - min(scan.data.l)) > tol:
+                h_center = np.mean(scan.data.h)
+                k_center = np.mean(scan.data.k)
+                l_center  = self._fit_centers(fit, scan.data.l, y, model_dict)
+            else:
+                h_center = np.mean(scan.data.h)
+                k_center = np.mean(scan.data.k)
+                l_center  = np.mean(scan.data.l)
+            hkl = (h_center, k_center, l_center)
         return np.round(hkl, 2)
 
-    def create_peaks(
+    def get_peak_center(
         self,
         tavi_data: TaviData,
         scan_num: int,
@@ -285,23 +316,64 @@ class ORNLSpiceLoader(AbstractLoader):
         exp_num: Optional[int] = None,
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
         ei_or_ef: float = 0,
-    ) -> DataPoint:
-        """Create peak or peaks from scan numbers."""
-        hkl = self.get_hkl_from_title(tavi_data, scan_num, IPTS, exp_num)
-        motor_angles = self.get_motor_angles(tavi_data, scan_num, IPTS, exp_num)
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: list[tuple[ModelName, dict[str, Any]]]=[],
+        
+    ) -> list[DataPoint]:
+        """Create one DataPoint per fitted peak center in the scan."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
+        hkl = self.get_hkl(tavi_data, scan_num, IPTS, exp_num)
+        motor_angles_list = self.fit_motor_angles(
+            tavi_data, scan_num, model_dict, IPTS, exp_num, fit_package, model_dict
+        )
         # Detect if this is an inelastic scan
+        fit = Fit(package=fit_package)
+        y = scan.metadata.def_y
         if abs(max(scan.data.e) - min(scan.data.e)) > 0.1:
-            e_center = Fit().gaussian(scan.data.e, scan.data.detector).center
+            e_center = self._fit_centers(fit, scan.data.e, scan.data.data[y], model_dict)
+            if len(e_center) > 1:
+                eis, efs = [], []
+                for i in range(e_center):
+                    ei, ef = self.get_ei_ef(e_center[i], mode, ei_or_ef)
+                    eis.append(ei)
+                    efs.append(ef)
+            return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list for ei, ef in zip(eis, efs)]
+        
         else:
             e_center = np.mean(scan.data.e)
-        ei, ef = self.get_ei_ef(e_center, mode, ei_or_ef)
-        return DataPoint(hkl=hkl, ei=ei, ef=ef, angles=motor_angles)
+        ei, ef = self.get_ei_ef(e_center[0], mode, ei_or_ef)
+        return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list]
 
-    def get_motor_angles(
-        self, tavi_data: TaviData, scan_num: int, IPTS: Optional[int] = None, exp_num: Optional[int] = None
-    ) -> np.ndarray:
-        """Generate Motor position from scan."""
+    @staticmethod
+    def _fit_centers(
+        fit: Fit, x: np.ndarray, y: np.ndarray, model_dict: list[tuple[ModelName, dict[str, Any]]]
+    ) -> list[float]:
+        """
+        Fit (x, y) with model_dict and return every fitted center, sorted ascending.
+
+        Components without a "center" parameter (e.g. background models) are ignored.
+        """
+        result = fit.fit(x, y, model_dict)
+        centers = [comp.values["center"] for comp in result.components.values() if "center" in comp.values]
+        return sorted(centers)
+
+    def fit_motor_angles(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: list[tuple[ModelName, dict[str, Any]]]= [],
+    ) -> list[MotorAngles]:
+        """
+        Generate fitted motor positions, one MotorAngles per fitted peak center.
+
+        The scanned (default-x) motor is fit with model_dict; when it has a paired
+        motor (omega for a 2theta scan, s1 for an s2 scan) that motor is fit too and
+        centers are paired by sorted order. Motors that are not scanned use their
+        mean over the scan. A list with one entry per fitted center is returned.
+        """
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
         def_x, def_y = scan.metadata.def_x, scan.metadata.def_y
         if def_x[0].isdigit():
@@ -309,32 +381,107 @@ class ORNLSpiceLoader(AbstractLoader):
         if def_y[0].isdigit():
             def_y = "_" + def_y
         x, y = scan.data.data[def_x], scan.data.data[def_y]
-        two_theta, omega, chi, phi = 0, 0, 0, 0
-        fit = Fit()
+        fit = Fit(package=fit_package)
+
+        # fitted: motor -> per-peak centers; means: motor -> single value shared by all peaks.
+        fitted: dict[str, list[float]] = {}
+        means: dict[str, float] = {}
         match def_x:
             case "_2theta":
-                two_theta = fit.gaussian(x, y, counting_errors=True).center
-                omega = fit.gaussian(scan.data.omega, y, counting_errors=True).center
-                chi = np.mean(scan.data.chi)
-                phi = np.mean(scan.data.phi)
+                fitted["two_theta"] = self._fit_centers(fit, x, y, model_dict)
+                fitted["omega"] = self._fit_centers(fit, scan.data.omega, y, model_dict)
+                means["chi"] = np.mean(scan.data.chi)
+                means["phi"] = np.mean(scan.data.phi)
             case "omega":
-                two_theta = np.mean(scan.data._2theta)
-                omega = fit.gaussian(x, y, counting_errors=True)
-                chi = np.mean(scan.data.chi)
-                phi = np.mean(scan.data.phi)
+                means["two_theta"] = np.mean(scan.data._2theta)
+                fitted["omega"] = self._fit_centers(fit, x, y, model_dict)
+                means["chi"] = np.mean(scan.data.chi)
+                means["phi"] = np.mean(scan.data.phi)
             case "chi":
-                two_theta = np.mean(scan.data._2theta)
-                omega = np.mean(scan.data.omega)
-                chi = fit.gaussian(x, y, counting_errors=True)
-                phi = np.mean(scan.data.phi)
+                means["two_theta"] = np.mean(scan.data._2theta)
+                means["omega"] = np.mean(scan.data.omega)
+                fitted["chi"] = self._fit_centers(fit, x, y, model_dict)
+                means["phi"] = np.mean(scan.data.phi)
             case "phi":
-                two_theta = np.mean(scan.data._2theta)
-                omega = np.mean(scan.data.omega)
-                chi = np.mean(scan.data.phi)
-                phi = fit.gaussian(x, y, counting_errors=True)
+                means["two_theta"] = np.mean(scan.data._2theta)
+                means["omega"] = np.mean(scan.data.omega)
+                means["chi"] = np.mean(scan.data.chi)
+                fitted["phi"] = self._fit_centers(fit, x, y, model_dict)
+            case "s2":
+                fitted["s2"] = self._fit_centers(fit, x, y, model_dict)
+                fitted["s1"] = self._fit_centers(fit, scan.data.s1, y, model_dict)
+                means["sgl"] = np.mean(scan.data.sgl)
+                means["sgu"] = np.mean(scan.data.sgu)
+            case "s1":
+                means["s2"] = np.mean(scan.data.s2)
+                fitted["s1"] = self._fit_centers(fit, x, y, model_dict)
+                means["sgl"] = np.mean(scan.data.sgl)
+                means["sgu"] = np.mean(scan.data.sgu)
+            case "sgl":
+                means["s2"] = np.mean(scan.data.s2)
+                means["s1"] = np.mean(scan.data.s1)
+                fitted["sgl"] = self._fit_centers(fit, x, y, model_dict)
+                means["sgu"] = np.mean(scan.data.sgu)
+            case "sgu":
+                means["s2"] = np.mean(scan.data.s2)
+                means["s1"] = np.mean(scan.data.s1)
+                means["sgl"] = np.mean(scan.data.sgl)
+                fitted["sgu"] = self._fit_centers(fit, x, y, model_dict)
             case _:
                 raise ValueError("Not implemented yet.")
-        return MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi})
+
+        # All fitted motors share the same peak count; guard against a mismatch.
+        n_peaks = min(len(centers) for centers in fitted.values())
+        all_motors = ("two_theta", "omega", "chi", "phi", "s2", "s1", "sgl", "sgu")
+        angles_list = []
+        for i in range(n_peaks):
+            angles_dict = {motor: (fitted[motor][i] if motor in fitted else means.get(motor)) for motor in all_motors}
+            angles_list.append(MotorAngles(angles_dict=angles_dict))
+        return angles_list
+
+    def get_data_point(
+        self,
+        tavi_data: TaviData,
+        column_name: str,
+        center: float,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+    ):
+        scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
+        column_data = scan.data.data[column_name]
+
+        # binary search to get left or right index
+        idx_l = bisect.bisect_left(column_data, center)
+        idx_r = bisect.bisect_right(column_data, center)
+        # find if the center is closer to left or right
+        if abs(column_data[idx_l] - center) < abs(column_data[idx_r] - center):
+            idx = idx_l
+        else:
+            idx = idx_r
+
+        # now get ORNL specfici information to create a data point
+        h, k, l = scan.data.h[idx], scan.data.k[idx], scan.data.l[idx]
+        ei, ef = scan.data.ei[idx], scan.data.ef[idx]
+        if "s2" in scan.data.data:
+            s1 = scan.data.s1[idx]
+            s2 = scan.data.s2[idx]
+            sgl = scan.data.sgl[idx]
+            sgu = scan.data.sgu[idx]
+            return DataPoint((h, k, l), ei, ef, MotorAngles(angles_dict={"s2": s2, "s1": s1, "sgl": sgl, "sgu": sgu}))
+        elif "_2theta" in scan.data.data:
+            two_theta = scan.data._2theta[idx]
+            omega = scan.data.omega[idx]
+            chi = scan.data.chi[idx]
+            phi = scan.data.phi[idx]
+            return DataPoint(
+                (h, k, l),
+                ei,
+                ef,
+                MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi}),
+            )
+        else:
+            raise ValueError("Data not of ORNL type.")
 
     def get_delta_q(
         self,
@@ -456,3 +603,14 @@ class ORNLSpiceLoader(AbstractLoader):
             ei = ei_or_ef
             ef = ei - e
             return ei, ef
+
+    def load_hb1a_4c_ub(self, file_path: str) -> dict:
+        """C sharp ub specific to ORNL/HB1A in 4 circle mode."""
+        root = ET.parse(file_path).getroot()
+
+        cell = root.find("unitcell").attrib
+        a, b, c = float(cell["a"]), float(cell["b"]), float(cell["c"])
+        alpha, beta, gamma = float(cell["alpha"]), float(cell["beta"]), float(cell["gamma"])
+        wavelength = float(root.find("wavelength").attrib["lambda"])
+        ub = np.array([float(x) for x in root.find("matrix").attrib["matrix"].split()]).reshape(3, 3)
+        return dict(a=a, b=b, c=c, alpha=alpha, beta=beta, gamma=gamma, ub=ub, wavelength=wavelength)

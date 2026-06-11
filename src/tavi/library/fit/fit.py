@@ -8,105 +8,204 @@ import lmfit
 import numpy as np
 
 
-class FitModel(Enum):
+class FitPackage(Enum):
     """Supported fitting backends."""
 
     lmfit = "lmfit"
 
 
+class ModelName(Enum):
+    """Supported peak/background model shapes."""
+
+    Gaussian = "Gaussian"
+    Lorentzian = "Lorentzian"
+    Voigt = "Voigt"
+    Custom = "Custom defined model"
+    Linear = "linear model"
+
+# @dataclass
+# class FitData:
+#     """This will be in the GUI. It will have Provenance(origin of data, normalization, limit, column names). uuid, FitResult."""
+
+@dataclass
+class ComponentResult:
+    """
+    Fitted parameters for a single model component, identified by its prefix.
+
+    A composite fit is made of one or more components (e.g. ``g1_``, ``g2_``,
+    ``exp_``). Each component stores the bare parameter names (with the prefix
+    stripped) so callers can read e.g. ``component["center"]`` regardless of the
+    prefix used in the composite model.
+
+    Attributes:
+        prefix: The prefix lmfit assigned to this component ("" if none).
+        values: Bare parameter name -> fitted value (e.g. center, sigma, amplitude).
+        errors: Bare parameter name -> 1-sigma uncertainty, or None if not estimated.
+
+    """
+
+    prefix: str
+    values: dict[str, float]
+    errors: dict[str, Optional[float]]
+
+    def __getitem__(self, key: str) -> float:
+        """Return the fitted value of parameter ``key`` (without the prefix)."""
+        return self.values[key]
+
+
 @dataclass
 class FitResult:
     """
-    Backend-agnostic result of a peak fit.
+    Backend-agnostic result of a (possibly multi-component) peak fit.
 
-    Holds the common fitted parameters so callers do not depend on any
-    specific fitting library. The native backend result is kept in ``raw``
-    as an escape hatch for advanced use.
+    Holds one :class:`ComponentResult` per model component, keyed by prefix, so
+    callers do not depend on any specific fitting library. The native backend
+    result is kept in ``raw`` as an escape hatch for advanced use.
+
+    For a single-component fit, the common scalar parameters (``center``,
+    ``sigma``, ``amplitude``, ``fwhm``, ``height``) and their ``*_err``
+    counterparts can be read directly as attributes; they delegate to the only
+    component. With multiple components, read them via ``result[prefix]``.
 
     Attributes:
-        center: Fitted peak center.
-        sigma: Fitted standard deviation.
-        amplitude: Fitted integrated area.
-        fwhm: Full width at half maximum.
-        height: Peak height.
-        center_err / sigma_err / amplitude_err: 1-sigma uncertainties, or
-            None if they could not be estimated.
+        components: Prefix -> :class:`ComponentResult` for every model component.
         redchi: Reduced chi-square of the fit.
         best_fit: Model evaluated at the input x (same shape as the data).
         raw: The native backend result object.
+        fit_function: The (composite) model object used for the fit.
 
     """
 
-    center: float
-    sigma: float
-    amplitude: float
-    fwhm: float
-    height: float
-    center_err: Optional[float]
-    sigma_err: Optional[float]
-    amplitude_err: Optional[float]
-    redchi: float
+    components: dict[str, ComponentResult]
+    reduced_chi: float
     best_fit: np.ndarray
     raw: Any
+    fit_function: Any
+
+    def __getitem__(self, prefix: str) -> ComponentResult:
+        """Return the component fitted with the given ``prefix``."""
+        return self.components[prefix]
+
+    def __getattr__(self, name: str) -> Any:
+        """Delegate scalar parameter access to the sole component when unambiguous."""
+        components = self.__dict__.get("components", {})
+        if len(components) == 1:
+            (component,) = components.values()
+            if name.endswith("_err"):
+                base = name[:-4]
+                if base in component.errors:
+                    return component.errors[base]
+            elif name in component.values:
+                return component.values[name]
+        raise AttributeError(name)
 
 
 class Fit:
     """Provide a universal interface for tavi fit."""
 
-    def __init__(self, model: FitModel = FitModel.lmfit) -> None:
+    def __init__(self, package: FitPackage = FitPackage.lmfit) -> None:
         """Initialize with the fitting backend to use."""
-        self.model = model
+        self.package = package
 
-    def gaussian(
+    def fit(
         self,
         x: np.ndarray,
         y: np.ndarray,
-        weights: np.ndarray | None = None,
-        counting_errors: bool = False,
+        model_dict: list[tuple[ModelName, dict[str, Any]]],
     ) -> FitResult:
         """
-        Fit a single Gaussian to (x, y) data.
+        Fit a composite model built from one or more named sub-models.
+
+        Each sub-model may carry a ``prefix`` so its parameters are namespaced in
+        the composite fit (e.g. ``g1_center``, ``g2_center``, ``exp_decay``).
+        Currently only the lmfit backend is supported.
 
         Args:
             x: Independent variable values.
             y: Measured values to fit.
-            weights: Optional per-point weights (1/sigma). Higher means more
-                influence on the fit. Ignored if ``counting_errors`` is True.
-            counting_errors: If True, treat ``y`` as raw counts and derive
-                weights from Poisson statistics: sigma = sqrt(counts), so
-                weights = 1/sqrt(counts). Counts of 0 are clipped to 1 to
-                avoid division by zero.
+            model_dict: Sequence of ``(model_name, initial_params)`` pairs.
+                ``initial_params`` is a dict that may hold:
+                  - ``prefix``: parameter namespace for this component (default "").
+                  - ``guess``: if truthy, let the model guess initial parameters
+                    from the data instead of using explicit values.
+                  - ``center`` / ``sigma`` / ``amplitude``: initial values used
+                    when ``guess`` is not set.
 
         Returns:
-            A backend-agnostic :class:`FitResult` with the fitted Gaussian
-            parameters (center, sigma, amplitude, fwhm, height) and their
-            uncertainties.
+            A :class:`FitResult` with one :class:`ComponentResult` per component,
+            keyed by prefix.
 
         """
+        if self.package != FitPackage.lmfit:
+            raise ValueError(f"Package {self.package} not supported yet.")
+
         x = np.asarray(x, dtype=float)
         y = np.asarray(y, dtype=float)
 
-        if counting_errors:
-            weights = 1.0 / np.sqrt(np.clip(y, 1.0, None))
+        fit_function = None
+        params = lmfit.Parameters()
+        prefixes = []
+        for model_name, initial_params in model_dict:
+            prefix = initial_params.get("prefix", "")
+            prefixes.append(prefix)
+            model = self._build_model(model_name, prefix)
+            if initial_params.get("guess", False):
+                params.update(model.guess(y, x=x))
+            else:
+                params.update(
+                    model.make_params(
+                        center=initial_params["center"],
+                        sigma=initial_params["sigma"],
+                        amplitude=initial_params["amplitude"],
+                    )
+                )
+            fit_function = model if fit_function is None else fit_function + model
 
-        if self.model == FitModel.lmfit:
-            model = lmfit.models.GaussianModel()
-            params = model.guess(y, x=x)
-            result = model.fit(y, params, x=x, weights=weights)
+        if fit_function is None:
+            raise ValueError("model_dict is empty; provide at least one model.")
 
-            p = result.params
-            return FitResult(
-                center=p["center"].value,
-                sigma=p["sigma"].value,
-                amplitude=p["amplitude"].value,
-                fwhm=p["fwhm"].value,
-                height=p["height"].value,
-                center_err=p["center"].stderr,
-                sigma_err=p["sigma"].stderr,
-                amplitude_err=p["amplitude"].stderr,
-                redchi=result.redchi,
-                best_fit=result.best_fit,
-                raw=result,
-            )
+        result = fit_function.fit(y, params, x=x)
+        return self._build_fit_result(result, prefixes, fit_function)
 
-        raise ValueError(f"Model {self.model} not supported yet.")
+    @staticmethod
+    def _build_model(model_name: ModelName, prefix: str) -> lmfit.Model:
+        """Construct an lmfit model for the given model name and prefix."""
+        match model_name:
+            case ModelName.Gaussian:
+                return lmfit.models.GaussianModel(prefix=prefix)
+            case ModelName.Lorentzian:
+                return lmfit.models.LorentzianModel(prefix=prefix)
+            case ModelName.Voigt:
+                return lmfit.models.VoigtModel(prefix=prefix)
+            case ModelName.Linear:
+                return lmfit.models.LinearModel(prefix=prefix)
+            case ModelName.Custom:
+                raise ValueError("Need to think about how to parse a custom defined function in lmfit.")
+            case _:
+                raise ValueError("Model not recognized.")
+
+    @staticmethod
+    def _build_fit_result(result: Any, prefixes: list[str], fit_function: Any) -> FitResult:
+        """Group fitted parameters by prefix into a FitResult."""
+        components: dict[str, ComponentResult] = {}
+        for prefix in prefixes:
+            values: dict[str, float] = {}
+            errors: dict[str, Optional[float]] = {}
+            for name, par in result.params.items():
+                # Assign each parameter to its longest matching prefix so an
+                # empty-prefix component does not swallow prefixed parameters.
+                owners = [p for p in prefixes if name.startswith(p)]
+                if not owners or max(owners, key=len) != prefix:
+                    continue
+                base = name[len(prefix) :]
+                values[base] = par.value
+                errors[base] = par.stderr
+            components[prefix] = ComponentResult(prefix=prefix, values=values, errors=errors)
+
+        return FitResult(
+            components=components,
+            redchi=result.redchi,
+            best_fit=result.best_fit,
+            raw=result,
+            fit_function=fit_function,
+        )

@@ -1,7 +1,7 @@
 """General utilities for tas related functions and classes."""
 
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -36,6 +36,7 @@ class TAS:
         sample: Sample,
         experiment: Optional[Experiment] = None,
         ub_convention: UBConvention = UBConvention.Spice,
+        plugin: Any = None,
     ) -> None:
         """
         Initialize triple axis.
@@ -48,6 +49,7 @@ class TAS:
             resolution: Resolution method to use for resolution calculations.
             experiment: Experiment. Handles extracting peak center, ei, ef etc from exp data.
             ub_convention: Convention used to define the UB matrix. See UBConvention.
+            plugin: Optional instrument-specific plugin used for data reduction.
 
         """
         self.instrument = instrument
@@ -55,8 +57,14 @@ class TAS:
         self.sample = sample
         self.ub_convention = ub_convention
         self.ub_algorithm = UBAlgorithm(self.sample, self.instrument)
+        self.plugin = plugin
 
-    def ub(self, peaks: tuple[DataPoint, ...], scattering_plane: Optional[tuple[tuple, tuple]] = None) -> np.ndarray:
+    def ub(
+        self,
+        peaks: tuple[DataPoint, ...],
+        scattering_plane: Optional[tuple[tuple, tuple]] = None,
+        reset_ub: bool = False,
+    ) -> np.ndarray:
         """Calculate ub matrix from 1,2,3 or multiple peaks."""
         if len(peaks) == 1 and scattering_plane is None:
             raise ValueError("Scattering plane cannot be None with only 1 peak specified.")
@@ -78,7 +86,8 @@ class TAS:
                 ub = self.ub_algorithm.find_ub_from_three_peaks(peaks)
             case _:
                 ub = self.ub_algorithm.find_ub_from_multiple_peaks(peaks)
-        self.sample.ol.UB = ub
+        if reset_ub:
+            self.sample.ol.UB = ub
         return ub
 
     def calculate_resolution(
@@ -89,20 +98,34 @@ class TAS:
             model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
         )
 
-    def browse(self, scan_list: list[int], show_fits: bool = True, with_reso_bar: bool = False) -> None:
+    def browse(self, scan_list: list[int], show_fits: bool = True, with_resolution_bar: bool = False) -> None:
         """
         Browse scan with options to show resolution bar.
 
         If resolution bar is set, show_fits must be true as reso bar's positions are
         determined by fit center.
         """
-        reso_bar = None
-        if with_reso_bar:
-            reso_bar = self.reso_bar(scan_list)
-        browse_scans(self.experiment, scan_list, show_fits, reso_bar)
+        resolution_bar = None
+        if with_resolution_bar:
+            resolution_bar_4d = self.resolution_bar(scan_list)
+            # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
+            # intensity export.
+            return browse_scans(self.experiment, scan_list, show_fits, resolution_bar_4d)
+        else:
+            browse_scans(self.experiment, scan_list, show_fits, resolution_bar)
 
-    def browse_resolution_ellipse(self, scan_list: list[int]) -> None:
-        """Plot the resolution ellipse for each scan in a grid of subplots."""
+    def browse_resolution_ellipse(
+        self, scan_list: list[int], xlabel: Optional[str] = None, ylabel: Optional[str] = None
+    ) -> None:
+        """
+        Plot the resolution ellipse for each scan in a grid of subplots.
+
+        Args:
+            scan_list: Scan numbers to plot.
+            xlabel: Custom x-axis label for each subplot. Left unlabeled if None.
+            ylabel: Custom y-axis label for each subplot. Left unlabeled if None.
+
+        """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
             peaks = [self.experiment.create_peaks(dict(scan_num=i)) for i in scan_list]
         else:
@@ -110,25 +133,27 @@ class TAS:
 
         self.calculate_resolution()
         ellipses = []
-        for peak in peaks:
+        for idx, peak in zip(scan_list, peaks):
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
             ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
             coh_para = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=0)
             coh_perp = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=1)
-            ellipses.append((peak, ellipse, axes_angle, coh_para, coh_perp))
+            ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
 
-        PlotResolution.plot_reso_ellipse(ellipses)
+        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
 
-    def reso_bar(self, scan_list: list[int]) -> list[float]:
+    def resolution_bar(self, scan_list: list[int], ax: int = 0) -> tuple[list[float], list]:
         """Compute the coherent FWHM resolution bar for each scan."""
         self.calculate_resolution()
-        reso_bar = []
+        resolution_bar = []
+        res_4ds = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
             peaks = [self.experiment.create_peaks(dict(scan_num=i)) for i in scan_list]
         else:
             raise ValueError("Data format not implemented yet.")
         for peak in peaks:
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
-            coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=0)
-            reso_bar.append(coh)
-        return reso_bar
+            coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=ax)
+            resolution_bar.append(coh)
+            res_4ds.append((res_4d, r0))
+        return resolution_bar, res_4ds

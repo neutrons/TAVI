@@ -5,6 +5,7 @@ Handles experimental data intake, extracting peak center, width etc.
 """
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -12,8 +13,13 @@ from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint
+from tavi.library.experiment.utilities import spice_to_mantid
+from tavi.library.geometry.oriented_lattice import OrientedLattice
+from tavi.library.geometry.sample import Sample
+from tavi.library.storage.loader.interface.base import AbstractLoader
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 from tavi.library.storage.local_file_store import LocalFileStore
+from tavi.library.fit.fit import FitPackage, ModelName
 
 
 class Experiment:
@@ -23,7 +29,7 @@ class Experiment:
         self,
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
         ei_or_ef: float = 0,
-        loader: ORNLSpiceLoader = ORNLSpiceLoader(LocalFileStore()),
+        loader: AbstractLoader = ORNLSpiceLoader(LocalFileStore()),
     ) -> None:
         """Init."""
         self.tavi_data: TaviData = TaviData(raw_scans={})
@@ -52,51 +58,44 @@ class Experiment:
         e.g. "scan_title =  (1.000019 -0.000008 0.499983) th4th, T = 4.3406 K"
              -> array([ 1.  , -0.  ,  0.5 ])
         """
-        if isinstance(self.loader, ORNLSpiceLoader):
-            scan_num = scan_identifier["scan_num"]
-            IPTS = scan_identifier.get("IPTS", None)
-            exp_num = scan_identifier.get("exp_num", None)
-            return self.loader.get_hkl_from_title(self.tavi_data, scan_num, IPTS, exp_num)
-        else:
-            raise ValueError("Loader not implemented.")
-
-    def create_peaks(self, scan_identifier: dict) -> DataPoint:
-        """Create peak or peaks from scan numbers."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            scan_num = scan_identifier["scan_num"]
-            IPTS = scan_identifier.get("IPTS", None)
-            exp_num = scan_identifier.get("exp_num", None)
-            if self.mode is FixedEnergyMode.FIX_Ef:
-                ei_or_ef = self.ef
-            else:
-                ei_or_ef = self.ei
-            return self.loader.create_peaks(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
-        else:
-            raise ValueError("Loader not implemented.")
-
-    def get_motor_angles(self, scan_identifier: dict) -> np.ndarray:
-        """Generate Motor position from scan."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            scan_num = scan_identifier["scan_num"]
-            IPTS = scan_identifier.get("IPTS", None)
-            exp_num = scan_identifier.get("exp_num", None)
-            return self.loader.get_motor_angles(self.tavi_data, scan_num, IPTS, exp_num)
-        else:
-            raise ValueError("Loader not implemented.")
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                return self.loader.get_hkl_from_title(self.tavi_data, scan_num, IPTS, exp_num)
+            case _:
+                raise ValueError("Loader not implemented.")
+            
+    def get_peak_center(self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]) -> DataPoint:
+        """Find the center of the peak. It's used in refining UB matrix, which can be compared with SPICE results for validation."""
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                if self.mode is FixedEnergyMode.FIX_Ef:
+                    ei_or_ef = self.ef
+                else:
+                    ei_or_ef = self.ei
+                return self.loader.get_peak_center(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
+            case _:
+                raise ValueError("Loader not implemented.")
 
     def get_delta_q(self, scan_identifier: dict) -> np.ndarray:
         """Get delta q of a scan."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            scan_num = scan_identifier["scan_num"]
-            IPTS = scan_identifier.get("IPTS", None)
-            exp_num = scan_identifier.get("exp_num", None)
-            if self.mode is FixedEnergyMode.FIX_Ef:
-                ei_or_ef = self.ef
-            else:
-                ei_or_ef = self.ei
-            return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
-        else:
-            raise ValueError("Loader not implemented.")
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                if self.mode is FixedEnergyMode.FIX_Ef:
+                    ei_or_ef = self.ef
+                else:
+                    ei_or_ef = self.ei
+                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
+            case _:
+                raise ValueError("Loader not implemented.")
 
     def get_data_from_scan_number(self, scan_identifier: dict) -> RawScan:
         """
@@ -113,23 +112,30 @@ class Experiment:
             ValueError: If zero or more than one scan matches.
 
         """
-        if isinstance(self.loader, ORNLSpiceLoader):
-            scan_num = scan_identifier["scan_num"]
-            IPTS = scan_identifier.get("IPTS", None)
-            exp_num = scan_identifier.get("exp_num", None)
-            return self.loader.get_data_from_scan_number(self.tavi_data, scan_num, IPTS, exp_num)
-        else:
-            raise ValueError("Loader not implemented.")
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                return self.loader.get_data_from_scan_number(self.tavi_data, scan_num, IPTS, exp_num)
+            case _:
+                raise ValueError("Loader not implemented.")
 
     def get_two_theta(self, q_norm: float, ei: float, ef: float) -> float:
         """Get two_theta, only q_norm is required."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            return self.loader.get_two_theta(q_norm, ei, ef)
+        match self.loader:
+            case ORNLSpiceLoader():
+                return self.loader.get_two_theta(q_norm, ei, ef)
+            case _:
+                raise ValueError("Loader not implemented.")
 
     def get_psi(self, q_norm: float, ei: float, ef: float) -> float:
         """Get psi. Angle between ki and Q."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            return self.loader.get_psi(q_norm, ei, ef)
+        match self.loader:
+            case ORNLSpiceLoader():
+                return self.loader.get_psi(q_norm, ei, ef)
+            case _:
+                raise ValueError("Loader not implemented.")
 
     def set_ei_or_ef(self, e: float) -> None:
         """Set ei or ef based on mode."""
@@ -140,8 +146,26 @@ class Experiment:
 
     def get_ei_ef(self, e: float) -> tuple[float, float]:
         """Get (ei, ef) given the complementary energy."""
-        if isinstance(self.loader, ORNLSpiceLoader):
-            if self.mode is FixedEnergyMode.FIX_Ef:
-                return self.loader.get_ei_ef(e, self.mode, self.ef)
-            else:
-                return self.loader.get_ei_ef(e, self.mode, self.ei)
+        match self.loader:
+            case ORNLSpiceLoader():
+                if self.mode is FixedEnergyMode.FIX_Ef:
+                    return self.loader.get_ei_ef(e, self.mode, self.ef)
+                else:
+                    return self.loader.get_ei_ef(e, self.mode, self.ei)
+            case _:
+                raise ValueError("Loader not implemented.")
+
+    def create_sample(self, ub_path: str) -> Sample:
+        """Can create a sample from a specific ub file if exist."""
+        match self.loader:
+            case ORNLSpiceLoader():
+                ub = self.loader.load_hb1a_4c_ub(ub_path)
+                sample = Sample(
+                    OrientedLattice(
+                        a=ub["a"], b=ub["b"], c=ub["c"], alpha=ub["alpha"], beta=ub["beta"], gamma=ub["gamma"]
+                    )
+                )
+                sample.ol.UB = spice_to_mantid(ub["ub"])
+                return sample
+            case _:
+                raise ValueError("loader not implemented.")

@@ -122,13 +122,13 @@ def get_angle_vec(v1: np.ndarray, v2: np.ndarray) -> float:
 
 def mantid_to_spice(v: np.ndarray) -> np.ndarray:
     """Convert a vector from the Mantid frame to the SPICE frame."""
-    t = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
+    t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
     return t.dot(v)
 
 
 def spice_to_mantid(v: np.ndarray) -> np.ndarray:
     """Convert a vector from the SPICE frame to the Mantid frame."""
-    t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
+    t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
     return t.dot(v)
 
 
