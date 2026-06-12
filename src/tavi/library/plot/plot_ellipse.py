@@ -1,7 +1,7 @@
 """Handle plotting a 2d ellipse resolution matrix."""
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple, List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,12 +13,14 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import sig2fwhm
-
+from tavi.library.fit.fit import FitPackage
 
 def browse_scans(
     experiment: Experiment,
     scan_list: list[int],
     show_fits: bool = True,
+    fit_package: FitPackage = FitPackage.lmfit,
+    model_dict: List[Tuple] = [],
     resolution_bars: Optional[list[float]] = None,
 ) -> None:
     """
@@ -34,7 +36,7 @@ def browse_scans(
             half-maximum. Requires show_fits=True.
 
     """
-    from tavi.library.fit.fit import Fit, ModelName
+    from tavi.library.fit.fit import Fit, FitPackage, ModelName
 
     show_resolution_bar = resolution_bars is not None
     if show_resolution_bar and not show_fits:
@@ -46,7 +48,7 @@ def browse_scans(
     fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3 * nrows), squeeze=False)
     axes_flat = axes.flatten()
 
-    fit = Fit()
+    fit = Fit(package=fit_package)
     fit_results = []
     hkls = []
     bars, res_mat_4d = resolution_bars if show_resolution_bar else [None] * n
@@ -71,7 +73,7 @@ def browse_scans(
         ax.errorbar(x, y, yerr=np.sqrt(y), fmt="o")
 
         if show_fits:
-            fit_result = fit.fit(x, y, [(ModelName.Gaussian, {"guess": True})])
+            fit_result = fit.fit(x, y, model_dict)
             fit_results.append(fit_result)
             x_fine = np.linspace(x.min(), x.max(), 300)
             ax.plot(x_fine, fit_result.raw.eval(x=x_fine), label=f"fit={fit_result.fwhm:.4g}")

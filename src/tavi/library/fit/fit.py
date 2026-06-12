@@ -77,7 +77,7 @@ class FitResult:
     """
 
     components: dict[str, ComponentResult]
-    reduced_chi: float
+    redchi: float
     best_fit: np.ndarray
     raw: Any
     fit_function: Any

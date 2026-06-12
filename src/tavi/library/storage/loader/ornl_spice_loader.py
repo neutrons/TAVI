@@ -260,7 +260,7 @@ class ORNLSpiceLoader(AbstractLoader):
     # ----------------------------------------------------------------------------------------------
     #                                      ORNL specific
     # ----------------------------------------------------------------------------------------------
-    #make static
+    # make static
     def get_hkl(
         self,
         tavi_data: TaviData,
@@ -290,21 +290,21 @@ class ORNLSpiceLoader(AbstractLoader):
             fit = Fit(package=FitPackage.lmfit)
             y = scan.data.def_y
             if abs(max(scan.data.h) - min(scan.data.h)) > tol:
-                h_center  = self._fit_centers(fit, scan.data.h, y, model_dict)
+                h_center = self._fit_centers(fit, scan.data.h, y, model_dict)
                 k_center = np.mean(scan.data.k)
                 l_center = np.mean(scan.data.l)
             elif abs(max(scan.data.k) - min(scan.data.k)) > tol:
                 h_center = np.mean(scan.data.h)
-                k_center  = self._fit_centers(fit, scan.data.k, y, model_dict)
+                k_center = self._fit_centers(fit, scan.data.k, y, model_dict)
                 l_center = np.mean(scan.data.l)
             elif abs(max(scan.data.l) - min(scan.data.l)) > tol:
                 h_center = np.mean(scan.data.h)
                 k_center = np.mean(scan.data.k)
-                l_center  = self._fit_centers(fit, scan.data.l, y, model_dict)
+                l_center = self._fit_centers(fit, scan.data.l, y, model_dict)
             else:
                 h_center = np.mean(scan.data.h)
                 k_center = np.mean(scan.data.k)
-                l_center  = np.mean(scan.data.l)
+                l_center = np.mean(scan.data.l)
             hkl = (h_center, k_center, l_center)
         return np.round(hkl, 2)
 
@@ -317,31 +317,29 @@ class ORNLSpiceLoader(AbstractLoader):
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
         ei_or_ef: float = 0,
         fit_package: FitPackage = FitPackage.lmfit,
-        model_dict: list[tuple[ModelName, dict[str, Any]]]=[],
-        
+        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> list[DataPoint]:
         """Create one DataPoint per fitted peak center in the scan."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
         hkl = self.get_hkl(tavi_data, scan_num, IPTS, exp_num)
-        motor_angles_list = self.fit_motor_angles(
-            tavi_data, scan_num, model_dict, IPTS, exp_num, fit_package, model_dict
-        )
+        motor_angles_list = self.fit_motor_angles(tavi_data, scan_num, IPTS, exp_num, fit_package, model_dict)
         # Detect if this is an inelastic scan
         fit = Fit(package=fit_package)
         y = scan.metadata.def_y
         if abs(max(scan.data.e) - min(scan.data.e)) > 0.1:
             e_center = self._fit_centers(fit, scan.data.e, scan.data.data[y], model_dict)
-            if len(e_center) > 1:
-                eis, efs = [], []
-                for i in range(e_center):
-                    ei, ef = self.get_ei_ef(e_center[i], mode, ei_or_ef)
-                    eis.append(ei)
-                    efs.append(ef)
-            return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list for ei, ef in zip(eis, efs)]
-        
+            eis, efs = [], []
+            for i in range(len(e_center)):
+                ei, ef = self.get_ei_ef(e_center[i], mode, ei_or_ef)
+                eis.append(ei)
+                efs.append(ef)
+            # One DataPoint per peak, pairing each motor-angle peak with its energy peak.
+            return [
+                DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles, ei, ef in zip(motor_angles_list, eis, efs)
+            ]
         else:
             e_center = np.mean(scan.data.e)
-        ei, ef = self.get_ei_ef(e_center[0], mode, ei_or_ef)
+        ei, ef = self.get_ei_ef(e_center, mode, ei_or_ef)
         return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list]
 
     @staticmethod
@@ -364,7 +362,7 @@ class ORNLSpiceLoader(AbstractLoader):
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
         fit_package: FitPackage = FitPackage.lmfit,
-        model_dict: list[tuple[ModelName, dict[str, Any]]]= [],
+        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> list[MotorAngles]:
         """
         Generate fitted motor positions, one MotorAngles per fitted peak center.

@@ -1,12 +1,13 @@
 """General utilities for tas related functions and classes."""
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
+from tavi.library.fit.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
 from tavi.library.plot.plot_ellipse import PlotResolution, browse_scans
@@ -98,7 +99,7 @@ class TAS:
             model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
         )
 
-    def browse(self, scan_list: list[int], show_fits: bool = True, with_resolution_bar: bool = False) -> None:
+    def browse(self, scan_list: list[int], show_fits: bool = True, fit_package: FitPackage = FitPackage.lmfit, model_dict: List[Tuple] = [], with_resolution_bar: bool = False) -> None:
         """
         Browse scan with options to show resolution bar.
 
@@ -110,12 +111,12 @@ class TAS:
             resolution_bar_4d = self.resolution_bar(scan_list)
             # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
-            return browse_scans(self.experiment, scan_list, show_fits, resolution_bar_4d)
+            return browse_scans(self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d)
         else:
-            browse_scans(self.experiment, scan_list, show_fits, resolution_bar)
+            browse_scans(self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar)
 
     def browse_resolution_ellipse(
-        self, scan_list: list[int], xlabel: Optional[str] = None, ylabel: Optional[str] = None
+        self, scan_list: list[int], xlabel: Optional[str] = None, ylabel: Optional[str] = None, fit_package:FitPackage=FitPackage.lmfit, model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess = True))]
     ) -> None:
         """
         Plot the resolution ellipse for each scan in a grid of subplots.
@@ -127,7 +128,9 @@ class TAS:
 
         """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
-            peaks = [self.experiment.create_peaks(dict(scan_num=i)) for i in scan_list]
+            peaks = [dp 
+                    for i in scan_list 
+                    for dp in self.experiment.get_peak_center(dict(scan_num=i), fit_package=fit_package, model_dict = model_dict)]
         else:
             raise ValueError("Data format not implemented yet.")
 
@@ -148,7 +151,11 @@ class TAS:
         resolution_bar = []
         res_4ds = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
-            peaks = [self.experiment.create_peaks(dict(scan_num=i)) for i in scan_list]
+            peaks = [
+                    dp
+                    for i in scan_list
+                    for dp in self.experiment.get_peak_center({"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))])
+]
         else:
             raise ValueError("Data format not implemented yet.")
         for peak in peaks:

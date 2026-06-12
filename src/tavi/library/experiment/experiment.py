@@ -51,7 +51,7 @@ class Experiment:
         for file_path in sorted(Path(folder_path).glob("*.dat")):
             self.load_file(str(file_path))
 
-    def get_hkl(self, scan_identifier: dict) -> np.ndarray:
+    def get_hkl(self, scan_identifier: dict, use_title = True, model_dict: list[tuple[ModelName, dict[str, Any]]]= []) -> np.ndarray:
         """
         Extract the (h, k, l) from a scan title, rounded to 2 decimals.
 
@@ -63,7 +63,7 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                return self.loader.get_hkl_from_title(self.tavi_data, scan_num, IPTS, exp_num)
+                return self.loader.get_hkl(self.tavi_data, scan_num, IPTS, exp_num, use_title=True, model_dict = model_dict)
             case _:
                 raise ValueError("Loader not implemented.")
             
@@ -78,7 +78,8 @@ class Experiment:
                     ei_or_ef = self.ef
                 else:
                     ei_or_ef = self.ei
-                return self.loader.get_peak_center(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
+                return self.loader.get_peak_center(tavi_data=self.tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num, mode = self.mode, ei_or_ef=ei_or_ef,
+                                                   fit_package=fit_package, model_dict=model_dict)
             case _:
                 raise ValueError("Loader not implemented.")
 
