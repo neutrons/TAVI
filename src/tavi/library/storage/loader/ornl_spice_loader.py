@@ -267,7 +267,7 @@ class ORNLSpiceLoader(AbstractLoader):
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
-        use_title=True,
+        use_title: bool = True,
         model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> np.ndarray:
         """
@@ -445,7 +445,8 @@ class ORNLSpiceLoader(AbstractLoader):
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
-    ):
+    ) -> DataPoint:
+        """Create a DataPoint from the scan row whose column value is closest to center."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
         column_data = scan.data.data[column_name]
 

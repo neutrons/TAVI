@@ -23,9 +23,11 @@ class ModelName(Enum):
     Custom = "Custom defined model"
     Linear = "linear model"
 
+
 # @dataclass
 # class FitData:
 #     """This will be in the GUI. It will have Provenance(origin of data, normalization, limit, column names). uuid, FitResult."""
+
 
 @dataclass
 class ComponentResult:

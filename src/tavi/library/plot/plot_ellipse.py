@@ -1,7 +1,7 @@
 """Handle plotting a 2d ellipse resolution matrix."""
 
 from dataclasses import dataclass
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,6 +14,7 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import sig2fwhm
 from tavi.library.fit.fit import FitPackage
+
 
 def browse_scans(
     experiment: Experiment,
@@ -30,13 +31,15 @@ def browse_scans(
         experiment: Experiment holding the loaded scans.
         scan_list: Scan numbers to plot, one subplot each.
         show_fits: If True, overlay a Gaussian fit on each scan.
+        fit_package: Fitting backend used to fit each scan.
+        model_dict: Models passed to the fit for each scan.
         resolution_bars: Optional per-scan coherent FWHM (in q), aligned with
             scan_list. When given, the x-axis switches to del_q and a
             resolution bar is drawn on each subplot at the fitted peak's
             half-maximum. Requires show_fits=True.
 
     """
-    from tavi.library.fit.fit import Fit, FitPackage, ModelName
+    from tavi.library.fit.fit import Fit
 
     show_resolution_bar = resolution_bars is not None
     if show_resolution_bar and not show_fits:

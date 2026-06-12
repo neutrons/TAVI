@@ -14,12 +14,12 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import spice_to_mantid
+from tavi.library.fit.fit import FitPackage, ModelName
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.storage.loader.interface.base import AbstractLoader
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 from tavi.library.storage.local_file_store import LocalFileStore
-from tavi.library.fit.fit import FitPackage, ModelName
 
 
 class Experiment:
@@ -51,7 +51,9 @@ class Experiment:
         for file_path in sorted(Path(folder_path).glob("*.dat")):
             self.load_file(str(file_path))
 
-    def get_hkl(self, scan_identifier: dict, use_title = True, model_dict: list[tuple[ModelName, dict[str, Any]]]= []) -> np.ndarray:
+    def get_hkl(
+        self, scan_identifier: dict, use_title: bool = True, model_dict: list[tuple[ModelName, dict[str, Any]]] = []
+    ) -> np.ndarray:
         """
         Extract the (h, k, l) from a scan title, rounded to 2 decimals.
 
@@ -63,11 +65,15 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                return self.loader.get_hkl(self.tavi_data, scan_num, IPTS, exp_num, use_title=True, model_dict = model_dict)
+                return self.loader.get_hkl(
+                    self.tavi_data, scan_num, IPTS, exp_num, use_title=True, model_dict=model_dict
+                )
             case _:
                 raise ValueError("Loader not implemented.")
-            
-    def get_peak_center(self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]) -> DataPoint:
+
+    def get_peak_center(
+        self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]
+    ) -> DataPoint:
         """Find the center of the peak. It's used in refining UB matrix, which can be compared with SPICE results for validation."""
         match self.loader:
             case ORNLSpiceLoader():
@@ -78,8 +84,16 @@ class Experiment:
                     ei_or_ef = self.ef
                 else:
                     ei_or_ef = self.ei
-                return self.loader.get_peak_center(tavi_data=self.tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num, mode = self.mode, ei_or_ef=ei_or_ef,
-                                                   fit_package=fit_package, model_dict=model_dict)
+                return self.loader.get_peak_center(
+                    tavi_data=self.tavi_data,
+                    scan_num=scan_num,
+                    IPTS=IPTS,
+                    exp_num=exp_num,
+                    mode=self.mode,
+                    ei_or_ef=ei_or_ef,
+                    fit_package=fit_package,
+                    model_dict=model_dict,
+                )
             case _:
                 raise ValueError("Loader not implemented.")
 

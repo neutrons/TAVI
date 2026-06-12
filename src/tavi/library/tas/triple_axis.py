@@ -99,7 +99,14 @@ class TAS:
             model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
         )
 
-    def browse(self, scan_list: list[int], show_fits: bool = True, fit_package: FitPackage = FitPackage.lmfit, model_dict: List[Tuple] = [], with_resolution_bar: bool = False) -> None:
+    def browse(
+        self,
+        scan_list: list[int],
+        show_fits: bool = True,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: List[Tuple] = [],
+        with_resolution_bar: bool = False,
+    ) -> None:
         """
         Browse scan with options to show resolution bar.
 
@@ -116,7 +123,12 @@ class TAS:
             browse_scans(self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar)
 
     def browse_resolution_ellipse(
-        self, scan_list: list[int], xlabel: Optional[str] = None, ylabel: Optional[str] = None, fit_package:FitPackage=FitPackage.lmfit, model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess = True))]
+        self,
+        scan_list: list[int],
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
     ) -> None:
         """
         Plot the resolution ellipse for each scan in a grid of subplots.
@@ -125,12 +137,18 @@ class TAS:
             scan_list: Scan numbers to plot.
             xlabel: Custom x-axis label for each subplot. Left unlabeled if None.
             ylabel: Custom y-axis label for each subplot. Left unlabeled if None.
+            fit_package: Fitting backend used to locate each peak center.
+            model_dict: Models passed to the fit when locating peak centers.
 
         """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
-            peaks = [dp 
-                    for i in scan_list 
-                    for dp in self.experiment.get_peak_center(dict(scan_num=i), fit_package=fit_package, model_dict = model_dict)]
+            peaks = [
+                dp
+                for i in scan_list
+                for dp in self.experiment.get_peak_center(
+                    dict(scan_num=i), fit_package=fit_package, model_dict=model_dict
+                )
+            ]
         else:
             raise ValueError("Data format not implemented yet.")
 
@@ -152,10 +170,12 @@ class TAS:
         res_4ds = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
             peaks = [
-                    dp
-                    for i in scan_list
-                    for dp in self.experiment.get_peak_center({"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))])
-]
+                dp
+                for i in scan_list
+                for dp in self.experiment.get_peak_center(
+                    {"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))]
+                )
+            ]
         else:
             raise ValueError("Data format not implemented yet.")
         for peak in peaks:
