@@ -101,6 +101,34 @@ class FitResult:
                 return component.values[name]
         raise AttributeError(name)
 
+    @property
+    def peaks(self) -> list[ComponentResult]:
+        """
+        Return every peak-shaped component (those with a ``center``).
+
+        Background components (e.g. a linear term) have no ``center`` and are
+        excluded. Ordered as the components were supplied to the fit.
+        """
+        return [component for component in self.components.values() if "center" in component.values]
+
+    @property
+    def peak(self) -> ComponentResult:
+        """
+        Return the single peak-shaped component (the one with a ``center``).
+
+        Lets callers read peak parameters (``center``, ``fwhm``, ``height``)
+        regardless of how many background components (e.g. a linear term) are
+        present in the composite fit.
+
+        Raises:
+            ValueError: If there is not exactly one component with a ``center``.
+
+        """
+        peaks = self.peaks
+        if len(peaks) != 1:
+            raise ValueError(f"Expected exactly one peak component (with a 'center'), found {len(peaks)}.")
+        return peaks[0]
+
 
 class Fit:
     """Provide a universal interface for tavi fit."""
@@ -133,6 +161,12 @@ class Fit:
                   from the data instead of using explicit values.
                 - ``center`` / ``sigma`` / ``amplitude``: initial values used
                   when ``guess`` is not set.
+                - ``set``: optional ``{param_name: options}`` mapping applied on
+                  top of the initial values, where ``options`` is forwarded to
+                  :meth:`lmfit.Parameter.set`. Use it to fix a parameter
+                  (``vary=False``), bound it (``min=``/``max=``), or tie it to
+                  another (``expr=``). Names are bare (the prefix is added
+                  automatically), e.g. ``set={"center": dict(value=0.5, vary=False)}``.
 
         Returns:
             A :class:`FitResult` with one :class:`ComponentResult` per component,
@@ -155,13 +189,33 @@ class Fit:
             if initial_params.get("guess", False):
                 params.update(model.guess(y, x=x))
             else:
-                params.update(
-                    model.make_params(
-                        center=initial_params["center"],
-                        sigma=initial_params["sigma"],
-                        amplitude=initial_params["amplitude"],
+                if "center" in initial_params and "sigma" in initial_params and "amplitude" in initial_params:
+                    params.update(
+                        model.make_params(
+                            center=initial_params["center"],
+                            sigma=initial_params["sigma"],
+                            amplitude=initial_params["amplitude"],
+                        )
                     )
-                )
+                elif "slope" in initial_params and "intercept" in initial_params:
+                    params.update(
+                        model.make_params(
+                            slope=initial_params["slope"],
+                            intercept=initial_params["intercept"],
+                        )
+                    )
+                else:
+                    raise ValueError("Perhaps you are trying to set initial parameters for a function not supported?")
+
+            # Apply per-parameter hints (fix, bound, or tie) on top of the
+            # guessed/explicit initial values. Keys are bare parameter names
+            # (the prefix is added automatically).
+            for name, options in initial_params.get("set", {}).items():
+                param_name = f"{prefix}{name}"
+                if param_name not in params:
+                    raise ValueError(f"Cannot set unknown parameter {param_name!r}; available: {list(params)}.")
+                params[param_name].set(**options)
+
             fit_function = model if fit_function is None else fit_function + model
 
         if fit_function is None:

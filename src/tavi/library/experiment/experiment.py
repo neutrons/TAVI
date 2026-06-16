@@ -66,7 +66,7 @@ class Experiment:
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
                 return self.loader.get_hkl(
-                    self.tavi_data, scan_num, IPTS, exp_num, use_title=True, model_dict=model_dict
+                    self.tavi_data, scan_num, IPTS, exp_num, use_title=use_title, model_dict=model_dict
                 )
             case _:
                 raise ValueError("Loader not implemented.")

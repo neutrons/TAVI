@@ -284,11 +284,13 @@ class ORNLSpiceLoader(AbstractLoader):
             if m is None:
                 raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
             hkl = np.array([float(v) for v in m.group(1).split()])
+            return np.round(hkl, 2)
         else:
-            tol = 1e3
+            tol = 1e-3
             # Using fitting to find hkl
             fit = Fit(package=FitPackage.lmfit)
-            y = scan.data.def_y
+            def_y = scan.metadata.def_y
+            y = scan.data.data[def_y]
             if abs(max(scan.data.h) - min(scan.data.h)) > tol:
                 h_center = self._fit_centers(fit, scan.data.h, y, model_dict)
                 k_center = np.mean(scan.data.k)
@@ -306,7 +308,7 @@ class ORNLSpiceLoader(AbstractLoader):
                 k_center = np.mean(scan.data.k)
                 l_center = np.mean(scan.data.l)
             hkl = (h_center, k_center, l_center)
-        return np.round(hkl, 2)
+            return hkl
 
     def get_peak_center(
         self,

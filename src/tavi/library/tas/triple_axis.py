@@ -106,21 +106,33 @@ class TAS:
         fit_package: FitPackage = FitPackage.lmfit,
         model_dict: List[Tuple] = [],
         with_resolution_bar: bool = False,
+        show_components: bool = False,
+        def_x:str = None,
+        def_y:str = None,
+        xlim: float = None,
+        ylim: float = None,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
 
         If resolution bar is set, show_fits must be true as reso bar's positions are
-        determined by fit center.
+        determined by fit center. When show_components is set, each fitted component
+        (peak, linear background, ...) is also plotted separately. xlim and ylim
+        pad the axis limits symmetrically around the data range (e.g. 1.1 widens the
+        x-axis to 1.1x the data span about its midpoint).
         """
-        resolution_bar = None
+        resolution_bar_4d = None
         if with_resolution_bar:
             resolution_bar_4d = self.resolution_bar(scan_list)
             # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
-            return browse_scans(self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d)
+            return browse_scans(
+                self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d, show_components, def_x, def_y, xlim, ylim
+            )
         else:
-            browse_scans(self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar)
+            browse_scans(
+                self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d, show_components, def_x, def_y, xlim, ylim
+            )
 
     def browse_resolution_ellipse(
         self,
@@ -163,6 +175,7 @@ class TAS:
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
 
+# TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
     def resolution_bar(self, scan_list: list[int], ax: int = 0) -> tuple[list[float], list]:
         """Compute the coherent FWHM resolution bar for each scan."""
         self.calculate_resolution()

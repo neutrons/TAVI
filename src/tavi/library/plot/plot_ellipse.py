@@ -23,6 +23,11 @@ def browse_scans(
     fit_package: FitPackage = FitPackage.lmfit,
     model_dict: List[Tuple] = [],
     resolution_bars: Optional[list[float]] = None,
+    show_components: bool = False,
+    def_x: str = None,
+    def_y: str = None,
+    xlim: Optional[float] = None,
+    ylim: Optional[float] = None,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -37,6 +42,13 @@ def browse_scans(
             scan_list. When given, the x-axis switches to del_q and a
             resolution bar is drawn on each subplot at the fitted peak's
             half-maximum. Requires show_fits=True.
+        show_components: If True, also plot each fitted component (e.g. the peak
+            and the linear background) separately as dashed lines, in addition to
+            the composite fit. Requires show_fits=True.
+        xlim: Optional scale factor padding the x-axis symmetrically around the data
+            range (e.g. 1.1 widens the x-axis to 1.1x the data span about its midpoint).
+        ylim: Optional scale factor padding the y-axis symmetrically around the data
+            range (e.g. 1.2 widens the y-axis to 1.2x the data span about its midpoint).
 
     """
     from tavi.library.fit.fit import Fit
@@ -54,10 +66,14 @@ def browse_scans(
     fit = Fit(package=fit_package)
     fit_results = []
     hkls = []
-    bars, res_mat_4d = resolution_bars if show_resolution_bar else [None] * n
+    bars, res_mat_4d = resolution_bars if show_resolution_bar else ([0] * n,[0] * n)
     for ax, num, coh in zip(axes_flat, scan_list, bars):
         scan = experiment.get_data_from_scan_number(dict(scan_num=num))
-        def_x, def_y = scan.metadata.def_x, scan.metadata.def_y
+        if not def_x:
+            def_x = scan.metadata.def_x
+        if not def_y:
+            def_y = scan.metadata.def_y
+
         if def_x[0].isdigit():
             def_x = "_" + def_x
         if def_y[0].isdigit():
@@ -66,38 +82,55 @@ def browse_scans(
         # With a resolution bar, plot against del_q (the bar width is in q);
         # otherwise plot against the raw default-x motor.
         if show_resolution_bar:
-            x = experiment.get_delta_q(dict(scan_num=num))
+            x = np.asarray(experiment.get_delta_q(dict(scan_num=num)))
             xlabel = f"del_q({def_x})"
         else:
-            x = scan.data.data[def_x]
+            x = np.asarray(scan.data.data[def_x])
             xlabel = def_x
-        y = scan.data.data[def_y]
+        y = np.asarray(scan.data.data[def_y])
 
         ax.errorbar(x, y, yerr=np.sqrt(y), fmt="o")
 
         if show_fits:
             fit_result = fit.fit(x, y, model_dict)
             fit_results.append(fit_result)
+            peaks = fit_result.peaks
             x_fine = np.linspace(x.min(), x.max(), 300)
-            ax.plot(x_fine, fit_result.raw.eval(x=x_fine), label=f"fit={fit_result.fwhm:.4g}")
+            fwhm_label = ", ".join(f"{peak.values['fwhm']:.4g}" for peak in peaks)
+            ax.plot(x_fine, fit_result.raw.eval(x=x_fine), label=f"fit={fwhm_label}")
+
+            # Optionally overlay each component (peak, linear background, ...) separately.
+            if show_components and len(fit_result.components) > 1:
+                for prefix, y_comp in fit_result.raw.eval_components(x=x_fine).items():
+                    ax.plot(x_fine, y_comp, "--", lw=1, label=prefix.rstrip("_") or "component")
 
             if show_resolution_bar:
                 # Resolution bar: horizontal line of width = coherent FWHM (coh) in q,
-                # centered on the fitted peak, drawn at the peak's half-maximum height.
-                ax.errorbar(
-                    fit_result.center,
-                    fit_result.height / 2,
-                    xerr=coh / 2,
-                    color="red",
-                    capsize=4,
-                    lw=2,
-                    label=f"reso={coh:.4g}",
-                )
+                # centered on each fitted peak, drawn at that peak's half-maximum height.
+                for idx, peak in enumerate(peaks):
+                    ax.errorbar(
+                        peak.values["center"],
+                        peak.values["height"] / 2,
+                        xerr=coh / 2,
+                        color="red",
+                        capsize=4,
+                        lw=2,
+                        label=f"reso={coh:.4g}" if idx == 0 else None,
+                    )
             ax.legend(fontsize=8, loc="upper right")
         hkls.append(experiment.get_hkl(dict(scan_num=num)))
         ax.set_title(f"{num}, {experiment.get_hkl(dict(scan_num=num))}")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(def_y)
+
+        # Scale axis limits symmetrically around the data range, e.g. xlim=1.1 widens
+        # the x-axis to 1.1x the data span centered on its midpoint (same for ylim).
+        if xlim is not None:
+            x_mid, x_half = (x.max() + x.min()) / 2, (x.max() - x.min()) / 2
+            ax.set_xlim(x_mid - xlim * x_half, x_mid + xlim * x_half)
+        if ylim is not None:
+            y_mid, y_half = (y.max() + y.min()) / 2, (y.max() - y.min()) / 2
+            ax.set_ylim(y_mid - ylim * y_half, y_mid + ylim * y_half)
 
     # Hide any leftover empty axes in the grid.
     for ax in axes_flat[n:]:

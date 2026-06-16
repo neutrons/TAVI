@@ -55,8 +55,9 @@ class VERITAS:
                 # use mat[1, 1] for transverse scans, R0 factor is optional
                 lorentz_factor = r0 * np.sqrt(det) / np.sqrt(mat[1, 1]) / np.sqrt(2 * np.pi)
             # ====================================================
-            intensity = fit_result.amplitude / lorentz_factor
-            err = fit_result.amplitude_err / lorentz_factor
+            peak = fit_result.peak
+            intensity = peak.values["amplitude"] / lorentz_factor
+            err = peak.errors["amplitude"] / lorentz_factor
             export.append((hkl, intensity, err))
         if save_to_file:
             target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
