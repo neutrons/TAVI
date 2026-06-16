@@ -127,11 +127,12 @@ class Fit:
             y: Measured values to fit.
             model_dict: Sequence of ``(model_name, initial_params)`` pairs.
                 ``initial_params`` is a dict that may hold:
-                  - ``prefix``: parameter namespace for this component (default "").
-                  - ``guess``: if truthy, let the model guess initial parameters
-                    from the data instead of using explicit values.
-                  - ``center`` / ``sigma`` / ``amplitude``: initial values used
-                    when ``guess`` is not set.
+
+                - ``prefix``: parameter namespace for this component (default "").
+                - ``guess``: if truthy, let the model guess initial parameters
+                  from the data instead of using explicit values.
+                - ``center`` / ``sigma`` / ``amplitude``: initial values used
+                  when ``guess`` is not set.
 
         Returns:
             A :class:`FitResult` with one :class:`ComponentResult` per component,
