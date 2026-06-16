@@ -120,15 +120,21 @@ def get_angle_vec(v1: np.ndarray, v2: np.ndarray) -> float:
     return np.degrees(np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)))
 
 
-def mantid_to_spice(v: np.ndarray) -> np.ndarray:
+def mantid_to_spice(v: np.ndarray, version: str = "new") -> np.ndarray:
     """Convert a vector from the Mantid frame to the SPICE frame."""
-    t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
+    if version == "new":
+        t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
+    else:
+        t = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
     return t.dot(v)
 
 
-def spice_to_mantid(v: np.ndarray) -> np.ndarray:
+def spice_to_mantid(v: np.ndarray, version: str = "new") -> np.ndarray:
     """Convert a vector from the SPICE frame to the Mantid frame."""
-    t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
+    if version == "new":
+        t = np.array([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
+    else:
+        t = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
     return t.dot(v)
 
 

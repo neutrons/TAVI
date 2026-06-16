@@ -284,7 +284,7 @@ def test_tas_ub(component, generate_peaks):
     tas = TAS(instrument=instrument, sample = sample, experiment = experiment)
     ei = 14.4643
     ef = 14.4643
-    ub_spice = mantid_to_spice(tas.ub(peaks=(peaks[0], peaks[3])))
+    ub_spice = mantid_to_spice(tas.ub(peaks=(peaks[0], peaks[3])), version="old")
     assert np.allclose(ub_spice, np.array([
         [-0.00139387, -0.03772994,  0.15106212],
         [ 0.03124861,  0.14790957,  0.03723904],

@@ -10,6 +10,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.tas.triple_axis import TAS
+from tavi.library.fit.fit import FitPackage, ModelName
 
 @pytest.fixture
 def component():
@@ -89,7 +90,11 @@ def test_create_peaks(component):
     remove_list = [535, 537, 545, 548]
     for num in remove_list:
         scan_list.remove(num)
-    peaks = [tas.experiment.create_peaks({"scan_num":i}) for i in scan_list]
+    peaks = [
+        dp
+        for i in scan_list
+        for dp in tas.experiment.get_peak_center({"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))])
+    ]
     assert len(peaks) == 19
     assert peaks[0].ei == 14.503
     assert peaks[0].ef == 14.503
