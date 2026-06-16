@@ -45,6 +45,10 @@ def browse_scans(
         show_components: If True, also plot each fitted component (e.g. the peak
             and the linear background) separately as dashed lines, in addition to
             the composite fit. Requires show_fits=True.
+        def_x: Default x-axis motor/column name. Falls back to the scan metadata
+            default when not given.
+        def_y: Default y-axis detector/column name. Falls back to the scan metadata
+            default when not given.
         xlim: Optional scale factor padding the x-axis symmetrically around the data
             range (e.g. 1.1 widens the x-axis to 1.1x the data span about its midpoint).
         ylim: Optional scale factor padding the y-axis symmetrically around the data
@@ -66,7 +70,7 @@ def browse_scans(
     fit = Fit(package=fit_package)
     fit_results = []
     hkls = []
-    bars, res_mat_4d = resolution_bars if show_resolution_bar else ([0] * n,[0] * n)
+    bars, res_mat_4d = resolution_bars if show_resolution_bar else ([0] * n, [0] * n)
     for ax, num, coh in zip(axes_flat, scan_list, bars):
         scan = experiment.get_data_from_scan_number(dict(scan_num=num))
         if not def_x:

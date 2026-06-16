@@ -107,8 +107,8 @@ class TAS:
         model_dict: List[Tuple] = [],
         with_resolution_bar: bool = False,
         show_components: bool = False,
-        def_x:str = None,
-        def_y:str = None,
+        def_x: str = None,
+        def_y: str = None,
         xlim: float = None,
         ylim: float = None,
     ) -> None:
@@ -127,11 +127,31 @@ class TAS:
             # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
             return browse_scans(
-                self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d, show_components, def_x, def_y, xlim, ylim
+                self.experiment,
+                scan_list,
+                show_fits,
+                fit_package,
+                model_dict,
+                resolution_bar_4d,
+                show_components,
+                def_x,
+                def_y,
+                xlim,
+                ylim,
             )
         else:
             browse_scans(
-                self.experiment, scan_list, show_fits, fit_package, model_dict, resolution_bar_4d, show_components, def_x, def_y, xlim, ylim
+                self.experiment,
+                scan_list,
+                show_fits,
+                fit_package,
+                model_dict,
+                resolution_bar_4d,
+                show_components,
+                def_x,
+                def_y,
+                xlim,
+                ylim,
             )
 
     def browse_resolution_ellipse(
@@ -175,7 +195,7 @@ class TAS:
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
 
-# TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
+    # TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
     def resolution_bar(self, scan_list: list[int], ax: int = 0) -> tuple[list[float], list]:
         """Compute the coherent FWHM resolution bar for each scan."""
         self.calculate_resolution()
