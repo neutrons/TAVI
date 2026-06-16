@@ -109,17 +109,17 @@ class TAS:
         show_components: bool = False,
         def_x: str = None,
         def_y: str = None,
-        xlim: float = None,
-        ylim: float = None,
+        xlim: float | list[float] = None,
+        ylim: float | list[float] = None,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
 
         If resolution bar is set, show_fits must be true as reso bar's positions are
         determined by fit center. When show_components is set, each fitted component
-        (peak, linear background, ...) is also plotted separately. xlim and ylim
-        pad the axis limits symmetrically around the data range (e.g. 1.1 widens the
-        x-axis to 1.1x the data span about its midpoint).
+        (peak, linear background, ...) is also plotted separately. A scalar xlim/ylim
+        pads the axis symmetrically around the data range (e.g. 1.1 widens the x-axis
+        to 1.1x the data span about its midpoint); a [min, max] list sets it directly.
         """
         resolution_bar_4d = None
         if with_resolution_bar:

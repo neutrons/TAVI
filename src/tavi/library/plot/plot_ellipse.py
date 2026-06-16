@@ -26,8 +26,8 @@ def browse_scans(
     show_components: bool = False,
     def_x: str = None,
     def_y: str = None,
-    xlim: Optional[float] = None,
-    ylim: Optional[float] = None,
+    xlim: Optional[float | list[float]] = None,
+    ylim: Optional[float | list[float]] = None,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -49,10 +49,12 @@ def browse_scans(
             default when not given.
         def_y: Default y-axis detector/column name. Falls back to the scan metadata
             default when not given.
-        xlim: Optional scale factor padding the x-axis symmetrically around the data
-            range (e.g. 1.1 widens the x-axis to 1.1x the data span about its midpoint).
-        ylim: Optional scale factor padding the y-axis symmetrically around the data
-            range (e.g. 1.2 widens the y-axis to 1.2x the data span about its midpoint).
+        xlim: A scalar pads the x-axis symmetrically around the data range (e.g. 1.1
+            widens it to 1.1x the data span about its midpoint); a [min, max] list
+            sets the x range directly.
+        ylim: A scalar pads the y-axis symmetrically around the data range (e.g. 1.2
+            widens it to 1.2x the data span about its midpoint); a [min, max] list
+            sets the y range directly.
 
     """
     from tavi.library.fit.fit import Fit
@@ -127,14 +129,20 @@ def browse_scans(
         ax.set_xlabel(xlabel)
         ax.set_ylabel(def_y)
 
-        # Scale axis limits symmetrically around the data range, e.g. xlim=1.1 widens
-        # the x-axis to 1.1x the data span centered on its midpoint (same for ylim).
+        # A scalar scales the axis symmetrically around the data midpoint (e.g. 1.1
+        # widens to 1.1x the data span); a [min, max] sequence sets the range directly.
         if xlim is not None:
-            x_mid, x_half = (x.max() + x.min()) / 2, (x.max() - x.min()) / 2
-            ax.set_xlim(x_mid - xlim * x_half, x_mid + xlim * x_half)
+            if np.isscalar(xlim):
+                x_mid, x_half = (x.max() + x.min()) / 2, (x.max() - x.min()) / 2
+                ax.set_xlim(x_mid - xlim * x_half, x_mid + xlim * x_half)
+            else:
+                ax.set_xlim(xlim[0], xlim[1])
         if ylim is not None:
-            y_mid, y_half = (y.max() + y.min()) / 2, (y.max() - y.min()) / 2
-            ax.set_ylim(y_mid - ylim * y_half, y_mid + ylim * y_half)
+            if np.isscalar(ylim):
+                y_mid, y_half = (y.max() + y.min()) / 2, (y.max() - y.min()) / 2
+                ax.set_ylim(y_mid - ylim * y_half, y_mid + ylim * y_half)
+            else:
+                ax.set_ylim(ylim[0], ylim[1])
 
     # Hide any leftover empty axes in the grid.
     for ax in axes_flat[n:]:
