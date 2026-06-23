@@ -97,6 +97,26 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
+    def get_closest_to_center_data_point(
+        self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]
+    ) -> DataPoint:
+        """Get the motor angles closest to the center of fitted data."""
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                return self.loader.get_data_point_closest_to_center(
+                    tavi_data=self.tavi_data,
+                    scan_num=scan_num,
+                    IPTS=IPTS,
+                    exp_num=exp_num,
+                    fit_package=fit_package,
+                    model_dict=model_dict,
+                )
+            case _:
+                raise ValueError("Loader not implemented.")
+
     def get_delta_q(self, scan_identifier: dict) -> np.ndarray:
         """Get delta q of a scan."""
         match self.loader:

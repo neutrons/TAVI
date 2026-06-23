@@ -1,6 +1,5 @@
 """ORNL Spice format loader."""
 
-import bisect
 import logging
 import re
 import warnings
@@ -439,50 +438,68 @@ class ORNLSpiceLoader(AbstractLoader):
             angles_list.append(MotorAngles(angles_dict=angles_dict))
         return angles_list
 
-    def get_data_point(
+    def get_data_point_closest_to_center(
         self,
         tavi_data: TaviData,
-        column_name: str,
-        center: float,
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> DataPoint:
         """Create a DataPoint from the scan row whose column value is closest to center."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
-        column_data = scan.data.data[column_name]
+        # get default x, y data
+        def_x = scan.metadata.def_x
+        def_y = scan.metadata.def_y
+        if def_x[0].isdigit():
+            def_x = "_" + def_x
+        if def_y[0].isdigit():
+            def_y = "_" + def_y
+        x = np.asanyarray(scan.data.data[def_x])
+        y = np.asanyarray(scan.data.data[def_y])
+        fit = Fit(fit_package)
+        # there may be more than 1 centers depending on user chosen fit models
+        centers = self._fit_centers(fit, x, y, model_dict)
+        # find the index whose column value is closest to center
 
-        # binary search to get left or right index
-        idx_l = bisect.bisect_left(column_data, center)
-        idx_r = bisect.bisect_right(column_data, center)
-        # find if the center is closer to left or right
-        if abs(column_data[idx_l] - center) < abs(column_data[idx_r] - center):
-            idx = idx_l
-        else:
-            idx = idx_r
+        idx_list = [np.argmin(np.abs(x - center)) for center in centers]
 
         # now get ORNL specfici information to create a data point
-        h, k, l = scan.data.h[idx], scan.data.k[idx], scan.data.l[idx]
-        ei, ef = scan.data.ei[idx], scan.data.ef[idx]
-        if "s2" in scan.data.data:
-            s1 = scan.data.s1[idx]
-            s2 = scan.data.s2[idx]
-            sgl = scan.data.sgl[idx]
-            sgu = scan.data.sgu[idx]
-            return DataPoint((h, k, l), ei, ef, MotorAngles(angles_dict={"s2": s2, "s1": s1, "sgl": sgl, "sgu": sgu}))
-        elif "_2theta" in scan.data.data:
-            two_theta = scan.data._2theta[idx]
-            omega = scan.data.omega[idx]
-            chi = scan.data.chi[idx]
-            phi = scan.data.phi[idx]
-            return DataPoint(
-                (h, k, l),
-                ei,
-                ef,
-                MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi}),
-            )
-        else:
-            raise ValueError("Data not of ORNL type.")
+        data_point_list = []
+        for idx in idx_list:
+            h, k, l = scan.data.h[idx], scan.data.k[idx], scan.data.l[idx]
+            # Issue here
+            try:
+                ei = scan.data.ei[idx]
+                ef = ei - scan.data.e[idx]
+            except AttributeError:
+                ef = scan.data.ef[idx]
+                ei = ef - scan.data.e[idx]
+            if "s2" in scan.data.data:
+                s1 = scan.data.s1[idx]
+                s2 = scan.data.s2[idx]
+                sgl = scan.data.sgl[idx]
+                sgu = scan.data.sgu[idx]
+                return DataPoint(
+                    (h, k, l), ei, ef, MotorAngles(angles_dict={"s2": s2, "s1": s1, "sgl": sgl, "sgu": sgu})
+                )
+            elif "_2theta" in scan.data.data:
+                two_theta = scan.data._2theta[idx]
+                omega = scan.data.omega[idx]
+                chi = scan.data.chi[idx]
+                phi = scan.data.phi[idx]
+                data_point_list.append(
+                    DataPoint(
+                        (h, k, l),
+                        ei,
+                        ef,
+                        MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi}),
+                    )
+                )
+            else:
+                raise ValueError("Data not of ORNL type.")
+        return data_point_list
 
     def get_delta_q(
         self,

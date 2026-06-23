@@ -196,23 +196,28 @@ class TAS:
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
 
     # TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
-    def resolution_bar(self, scan_list: list[int], ax: int = 0) -> tuple[list[float], list]:
+    def resolution_bar(
+        self,
+        scan_list: list[int],
+        ax: int = 0,
+        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+    ) -> tuple[list[float], list]:
         """Compute the coherent FWHM resolution bar for each scan."""
         self.calculate_resolution()
         resolution_bar = []
         res_4ds = []
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
-            peaks = [
+            centers = [
                 dp
                 for i in scan_list
-                for dp in self.experiment.get_peak_center(
-                    {"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))]
+                for dp in self.experiment.get_closest_to_center_data_point(
+                    {"scan_num": i}, FitPackage.lmfit, model_dict
                 )
             ]
         else:
             raise ValueError("Data format not implemented yet.")
-        for peak in peaks:
-            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
+        for center in centers:
+            res_4d, r0 = self.resolution.get_resolution(hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=None)
             coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=ax)
             resolution_bar.append(coh)
             res_4ds.append((res_4d, r0))
