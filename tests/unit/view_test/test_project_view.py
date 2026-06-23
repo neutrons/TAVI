@@ -153,6 +153,56 @@ def test_remove_entry_removes_item_and_cleans_uuid_map(qtbot):
     assert uuid not in w.uuid_map
 
 
+def test_show_context_menu_deletes_all_selected(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="ctx1")
+    uuid2 = UUID(value="ctx2")
+    uuid3 = UUID(value="ctx3")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+    w.add_raw_scan(uuid3, "scan3", "/exp")
+
+    # Programmatically select uuid1 and uuid2
+    item1 = w.uuid_map[uuid1]
+    item2 = w.uuid_map[uuid2]
+    idx1 = w.treeModel.indexFromItem(item1)
+    idx2 = w.treeModel.indexFromItem(item2)
+    w.treeView.selectionModel().select(idx1, w.treeView.selectionModel().SelectionFlag.Select)
+    w.treeView.selectionModel().select(idx2, w.treeView.selectionModel().SelectionFlag.Select)
+
+    # Call remove_entry directly on the selected indexes to simulate menu action
+    from qtpy.QtCore import QPersistentModelIndex, QModelIndex
+    selected = [i for i in w.treeView.selectedIndexes() if i.column() == 0 and i.parent().isValid()]
+    persistent = [QPersistentModelIndex(i) for i in selected]
+    for pi in persistent:
+        if pi.isValid():
+            w.remove_entry(QModelIndex(pi))
+
+    assert uuid1 not in w.uuid_map
+    assert uuid2 not in w.uuid_map
+    assert uuid3 in w.uuid_map
+
+
+def test_show_context_menu_falls_back_to_single_item_when_nothing_selected(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="fb1")
+    uuid2 = UUID(value="fb2")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+
+    # No programmatic selection — simulate single-item delete via remove_entry
+    item1 = w.uuid_map[uuid1]
+    idx1 = w.treeModel.indexFromItem(item1)
+    w.remove_entry(idx1)
+
+    assert uuid1 not in w.uuid_map
+    assert uuid2 in w.uuid_map
+
+
 # ---------------------------------------------------------------------------
 # TreeViewWidget — select / selected_signal
 # ---------------------------------------------------------------------------

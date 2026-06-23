@@ -2,7 +2,7 @@
 
 from typing import Callable, List, Optional
 
-from qtpy.QtCore import QModelIndex, QObject, Qt, Signal
+from qtpy.QtCore import QModelIndex, QObject, QPersistentModelIndex, Qt, Signal
 from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
     QAbstractItemView,
@@ -176,25 +176,27 @@ class TreeViewWidget(QWidget):
 
     def show_context_menu(self, position: object) -> None:
         """Display context menu at position."""
-        # Identify the item under the mouse
         index = self.treeView.indexAt(position)
 
-        # 3. Create the menu
-        menu = QMenu()
+        # Collect selected leaf items (column 0, has a parent row)
+        selected = [i for i in self.treeView.selectedIndexes() if i.column() == 0 and i.parent().isValid()]
 
-        if index.isValid() and index.parent().isValid():
-            # Add actions for valid items
+        # Fall back to right-clicked item when nothing valid is selected
+        to_delete = selected if selected else ([index] if index.isValid() and index.parent().isValid() else [])
+
+        menu = QMenu()
+        delete_action = None
+        if to_delete:
             delete_action = menu.addAction("Remove Item")
 
-        # Execute menu at the global cursor position
-        # Use viewport().mapToGlobal to translate local coordinates
         action = menu.exec(self.treeView.viewport().mapToGlobal(position))
 
-        # Handle the selected action
-        if action:
-            if action is delete_action:
-                # recursively walk and purge rows/cache
-                self.remove_entry(index)
+        if action and action is delete_action:
+            # Convert to persistent indexes so earlier removals don't invalidate later ones
+            persistent = [QPersistentModelIndex(i) for i in to_delete]
+            for pi in persistent:
+                if pi.isValid():
+                    self.remove_entry(QModelIndex(pi))
 
     def _remove_index(self, index: QModelIndex) -> None:
         item_data = self.treeModel.data(index, Qt.UserRole + 1)
