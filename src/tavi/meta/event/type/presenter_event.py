@@ -9,6 +9,7 @@ class FocusEvent(Event):
 
     ids: list[UUID]
 
+
 class DownstreamReadyEvent(Event):
     """Notify upstream that consumers are ready at startup."""
 
