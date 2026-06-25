@@ -71,6 +71,7 @@ class TaviProjectModel(TaviProjectInterface):
         return settings_dict["TAVI"]["recent"]["projects"]
 
     def _handle_focus_event(self, e: FocusEvent) -> None:
+        """Route a ``FocusEvent`` to type-specific downstream events."""
         ids = e.ids
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []

@@ -9,7 +9,7 @@ class PlotterPresenter:
     """Mediates between plotter model events and the Plot1DView."""
 
     def __init__(self) -> None:
-        """Initialize the metadata presenter and register for `meta_data` events."""
+        """Create the view and subscribe to ``PlotFocusEvent``."""
         super().__init__()
         self.view = Plot1DView()
 
