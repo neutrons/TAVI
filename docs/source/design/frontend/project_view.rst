@@ -216,3 +216,104 @@ This pattern cleanly separates:
 - **Event propagation** (event broker)
 - **Presentation logic** (presenter)
 - **Rendering** (view)
+
+----
+
+Context Menu — Multi-Select Delete
+===================================
+
+Overview
+--------
+
+Right-clicking a scan node shows a context menu with a **Remove Item** action.
+When multiple items are selected, the action removes all of them. When nothing
+is selected, only the right-clicked item is removed.
+
+Behaviour
+---------
+
+.. code-block:: text
+
+    User selects one or more scan nodes (Ctrl+click / Shift+click)
+        ↓
+    User right-clicks any node
+        ↓
+    show_context_menu collects selected leaf indexes (column 0, has parent)
+        ↓
+    Falls back to right-clicked index if selection is empty
+        ↓
+    User clicks "Remove Item"
+        ↓
+    Each index converted to QPersistentModelIndex
+        ↓
+    remove_entry called per persistent index (invalid ones skipped)
+        ↓
+    uuid_map cleaned, tree rows removed
+
+Selection Mode
+--------------
+
+``TreeViewWidget`` uses ``ExtendedSelection``, so users can multi-select with
+``Ctrl+click`` or ``Shift+click`` before right-clicking.
+
+Implementation Detail — Persistent Indexes
+-------------------------------------------
+
+Qt ``QModelIndex`` values are invalidated when rows are removed from the model.
+Deleting item A shifts the row numbers of subsequent items, making previously
+captured indexes stale.
+
+To avoid this, every index is wrapped in a ``QPersistentModelIndex`` before the
+deletion loop:
+
+.. code-block:: python
+
+    persistent = [QPersistentModelIndex(i) for i in to_delete]
+    for pi in persistent:
+        if pi.isValid():
+            self.remove_entry(QModelIndex(pi))
+
+``QPersistentModelIndex`` is kept valid by Qt as the model mutates. Any index
+whose item was already deleted (e.g., a child whose parent was removed first)
+returns ``isValid() == False`` and is silently skipped.
+
+Recursive Delete
+----------------
+
+``remove_entry`` walks children depth-first before removing itself:
+
+.. code-block:: python
+
+    def remove_entry(self, index: QModelIndex) -> None:
+        for row in range(self.treeModel.rowCount(index)):
+            child = self.treeModel.index(row, 0, index)
+            self.remove_entry(child)
+        self._remove_index(index)
+
+``_remove_index`` removes the row from the model and purges the UUID from
+``uuid_map``.
+
+Selecting a Parent and Child
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If a user selects a parent folder and a child scan, the parent's
+``remove_entry`` call deletes all its children first. The child's persistent
+index then becomes invalid and is skipped — no double-free or error.
+
+Key Design Decisions
+--------------------
+
+Fallback to single-item delete
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Right-clicking an item that is not part of the current selection deletes only
+that item. This matches standard file-manager UX: a right-click that targets
+an unselected item acts on that item alone, leaving the existing selection
+unchanged.
+
+Visibility of the menu action
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The "Remove Item" action appears only when there is at least one deletable
+item (a leaf node that has a parent row). Right-clicking an empty area or a
+root folder shows an empty menu.
