@@ -112,11 +112,24 @@ def browse_scans(
 
             if show_resolution_bar:
                 # Resolution bar: horizontal line of width = coherent FWHM (coh) in q,
-                # centered on each fitted peak, drawn at that peak's half-maximum height.
+                # centered on each fitted peak and drawn at the peak's half-maximum.
+                # The half-maximum sits at the background plus half the peak height, so
+                # any linear (or other non-peak) background is added beneath the bar.
+                def is_background(key: str) -> bool:
+                    # eval_components keys a non-empty prefix by the prefix itself and an
+                    # empty-prefix component by its function name (e.g. "linear"). A
+                    # component is background when it has no fitted center.
+                    component = fit_result.components.get(key) or fit_result.components.get("")
+                    return component is not None and "center" not in component.values
+
                 for idx, peak in enumerate(peaks):
+                    center = peak.values["center"]
+                    components = fit_result.raw.eval_components(x=center)
+                    background = sum(float(value) for key, value in components.items() if is_background(key))
+                    bar_y = background + peak.values["height"] / 2
                     ax.errorbar(
-                        peak.values["center"],
-                        peak.values["height"] / 2,
+                        center,
+                        bar_y,
                         xerr=coh / 2,
                         color="red",
                         capsize=4,

@@ -111,6 +111,7 @@ class TAS:
         def_y: str = None,
         xlim: float | list[float] = None,
         ylim: float | list[float] = None,
+        projection_axis: int = 0,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
@@ -120,10 +121,31 @@ class TAS:
         (peak, linear background, ...) is also plotted separately. A scalar xlim/ylim
         pads the axis symmetrically around the data range (e.g. 1.1 widens the x-axis
         to 1.1x the data span about its midpoint); a [min, max] list sets it directly.
+
+        Args:
+            scan_list: Scan numbers to browse.
+            show_fits: Overlay the fitted curve on each scan. Must be True when
+                with_resolution_bar is set.
+            fit_package: Fitting backend used to fit each scan.
+            model_dict: Models passed to the fit (peak, background, ...).
+            with_resolution_bar: Overlay a resolution bar whose position is taken
+                from the fit center; returns fit results and the 4D resolution for
+                intensity export.
+            show_components: Plot each fitted component separately in addition to
+                the total fit.
+            def_x: Name of the motor/field to use for the x-axis. Defaults to the
+                scan's default if None.
+            def_y: Name of the detector/field to use for the y-axis. Defaults to the
+                scan's default if None.
+            xlim: x-axis limits. A scalar pads symmetrically about the data midpoint;
+                a [min, max] list sets the range directly.
+            ylim: y-axis limits, interpreted like xlim.
+            projection_axis: Axis along which the resolution bar is projected.
+
         """
         resolution_bar_4d = None
         if with_resolution_bar:
-            resolution_bar_4d = self.resolution_bar(scan_list)
+            resolution_bar_4d = self.resolution_bar(scan_list, ax=projection_axis)
             # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
             return browse_scans(

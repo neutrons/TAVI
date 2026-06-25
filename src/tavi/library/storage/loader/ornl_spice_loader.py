@@ -200,6 +200,10 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def parse_external_metadata(self, file_path: str, ub_name: str) -> dict[str, Any]:
         """Parse corresponding file in ubconf as external metadata."""
+        # ub_name is recorded by SPICE as a full Windows path (e.g.
+        # "C:\\SPICE\\User\\exp1046\\UBConf\\file.dat"); keep only the filename
+        # so it resolves against the local UBConf folder.
+        ub_name = ub_name.replace("\\", "/").rsplit("/", 1)[-1]
         root_path = file_path
         for _ in range(2):
             root_path = self.filestore.get_parent(root_path)
@@ -239,7 +243,7 @@ class ORNLSpiceLoader(AbstractLoader):
             tree = ET.parse(ubconf_path)
             root = tree.getroot()
             for matrix in root.findall("matrix"):
-                ub_matrix = matrix.attrib["matrix"].split(" ")
+                ub_matrix = matrix.attrib["matrix"].split()
             ubconf.update({"UBMatrix": np.array([float(ub_matrix[i]) for i in range(9)])})
         return ubconf
 
@@ -282,7 +286,7 @@ class ORNLSpiceLoader(AbstractLoader):
             m = re.search(r"\(([^)]+)\)", scan_title)
             if m is None:
                 raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
-            hkl = np.array([float(v) for v in m.group(1).split()])
+            hkl = np.array([float(v) for v in re.split(r"[,\s]+", m.group(1).strip())])
             return np.round(hkl, 2)
         else:
             tol = 1e-3
@@ -543,9 +547,9 @@ class ORNLSpiceLoader(AbstractLoader):
             q_abs = np.mean(qs)
 
             if "s1" in dir(scan.data):  # using "s1" by default
-                angles = scan.data.s1
+                angles = np.asanyarray(scan.data.s1)
             elif "omega" in dir(scan.data):
-                angles = scan.data.omega
+                angles = np.asanyarray(scan.data.omega)
             else:
                 raise AttributeError("No s1 or omega in data. Can't calculate delta q")
             return np.radians(angles - angles[mid_idx]) * q_abs
