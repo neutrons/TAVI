@@ -14,7 +14,7 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import spice_to_mantid
-from tavi.library.fit.fit import FitPackage, ModelName
+from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.storage.loader.interface.base import AbstractLoader
@@ -28,14 +28,14 @@ class Experiment:
     def __init__(
         self,
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        ei_or_ef: float = 0,
+        fixed_energy: float = 0,
         loader: AbstractLoader = ORNLSpiceLoader(LocalFileStore()),
     ) -> None:
         """Init."""
         self.tavi_data: TaviData = TaviData(raw_scans={})
         self.mode = mode
         self.loader = loader
-        self.set_ei_or_ef(ei_or_ef)
+        self.set_fixed_energy(fixed_energy)
 
     def load_file(self, file_path: str) -> None:
         """
@@ -81,16 +81,16 @@ class Experiment:
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
                 if self.mode is FixedEnergyMode.FIX_Ef:
-                    ei_or_ef = self.ef
+                    fixed_energy = self.ef
                 else:
-                    ei_or_ef = self.ei
+                    fixed_energy = self.ei
                 return self.loader.get_peak_center(
                     tavi_data=self.tavi_data,
                     scan_num=scan_num,
                     IPTS=IPTS,
                     exp_num=exp_num,
                     mode=self.mode,
-                    ei_or_ef=ei_or_ef,
+                    fixed_energy=fixed_energy,
                     fit_package=fit_package,
                     model_dict=model_dict,
                 )
@@ -125,10 +125,10 @@ class Experiment:
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
                 if self.mode is FixedEnergyMode.FIX_Ef:
-                    ei_or_ef = self.ef
+                    fixed_energy = self.ef
                 else:
-                    ei_or_ef = self.ei
-                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, ei_or_ef)
+                    fixed_energy = self.ei
+                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, fixed_energy)
             case _:
                 raise ValueError("Loader not implemented.")
 
@@ -172,7 +172,7 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
-    def set_ei_or_ef(self, e: float) -> None:
+    def set_fixed_energy(self, e: float) -> None:
         """Set ei or ef based on mode."""
         if self.mode is FixedEnergyMode.FIX_Ef:
             self.ef = e

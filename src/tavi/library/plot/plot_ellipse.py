@@ -13,7 +13,7 @@ from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinea
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.utilities import sig2fwhm
-from tavi.library.fit.fit import FitPackage
+from tavi.library.fit import FitPackage
 
 
 def browse_scans(
@@ -57,7 +57,7 @@ def browse_scans(
             sets the y range directly.
 
     """
-    from tavi.library.fit.fit import Fit
+    from tavi.library.fit import Fit
 
     show_resolution_bar = resolution_bars is not None
     if show_resolution_bar and not show_fits:

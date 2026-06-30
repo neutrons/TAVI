@@ -71,7 +71,7 @@ class FitResult:
 
     Attributes:
         components: Prefix -> :class:`ComponentResult` for every model component.
-        redchi: Reduced chi-square of the fit.
+        reduced_chi_squared: Reduced chi-square of the fit.
         best_fit: Model evaluated at the input x (same shape as the data).
         raw: The native backend result object.
         fit_function: The (composite) model object used for the fit.
@@ -79,7 +79,7 @@ class FitResult:
     """
 
     components: dict[str, ComponentResult]
-    redchi: float
+    reduced_chi_squared: float
     best_fit: np.ndarray
     raw: Any
     fit_function: Any
@@ -261,7 +261,7 @@ class Fit:
 
         return FitResult(
             components=components,
-            redchi=result.redchi,
+            reduced_chi_squared=result.redchi,
             best_fit=result.best_fit,
             raw=result,
             fit_function=fit_function,

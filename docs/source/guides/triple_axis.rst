@@ -66,7 +66,7 @@ Minimal Example
    from tavi.library.experiment.enum import FixedEnergyMode
    from tavi.library.tas.triple_axis import TAS
 
-   experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, ei_or_ef=14.503)
+   experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, fixed_energy=14.503)
    sample = experiment.create_sample("/path/to/UBConf/UBmatrix.dat")
    tas = TAS(Instrument(instrument_catalog=InstrumentCatalog.HB1A4C), sample, experiment)
 

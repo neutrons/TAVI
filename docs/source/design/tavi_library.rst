@@ -133,7 +133,7 @@ Constructor arguments:
 - ``scan`` (``Scan``) -- optional scan payload
 - ``mode`` (``FixedEnergyMode``) -- ``FixedEnergyMode.FIX_Ei`` or
   ``FixedEnergyMode.FIX_Ef``; defaults to ``FixedEnergyMode.FIX_Ef``
-- ``ei_or_ef`` (``float``) -- value of the fixed energy in meV
+- ``fixed_energy`` (``float``) -- value of the fixed energy in meV
 
 ``FixedEnergyMode`` is an ``Enum`` with exactly two members; only enum
 members are accepted (raw strings are not).
@@ -148,7 +148,7 @@ Methods:
     def get_psi(q_norm: float, ei: float, ef: float) -> float
         """Angle between ki and Q (sign opposite of s2)."""
 
-    def set_ei_or_ef(e: float) -> None
+    def set_fixed_energy(e: float) -> None
         """Assign ``e`` to ``ei`` or ``ef`` based on ``mode``."""
 
     def get_ei_ef(e: float) -> tuple[float, float]
@@ -173,7 +173,7 @@ Example:
 
     from tavi.library.experiment.experiment import Experiment, FixedEnergyMode
 
-    experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, ei_or_ef=4.8)
+    experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, fixed_energy=4.8)
 
 Resolution
 ----------

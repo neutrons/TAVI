@@ -16,7 +16,7 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint, MotorAngles
 from tavi.library.experiment.utilities import SE2K, get_angle_from_triangle, get_side_from_triangle
-from tavi.library.fit.fit import Fit, FitPackage, ModelName
+from tavi.library.fit import Fit, FitPackage, ModelName
 from tavi.library.storage.interface.file_store_interface import FileStoreInterface
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
@@ -320,7 +320,7 @@ class ORNLSpiceLoader(AbstractLoader):
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        ei_or_ef: float = 0,
+        fixed_energy: float = 0,
         fit_package: FitPackage = FitPackage.lmfit,
         model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
     ) -> list[DataPoint]:
@@ -335,7 +335,7 @@ class ORNLSpiceLoader(AbstractLoader):
             e_center = self._fit_centers(fit, scan.data.e, scan.data.data[y], model_dict)
             eis, efs = [], []
             for i in range(len(e_center)):
-                ei, ef = self.get_ei_ef(e_center[i], mode, ei_or_ef)
+                ei, ef = self.get_ei_ef(e_center[i], mode, fixed_energy)
                 eis.append(ei)
                 efs.append(ef)
             # One DataPoint per peak, pairing each motor-angle peak with its energy peak.
@@ -344,7 +344,7 @@ class ORNLSpiceLoader(AbstractLoader):
             ]
         else:
             e_center = np.mean(scan.data.e)
-        ei, ef = self.get_ei_ef(e_center, mode, ei_or_ef)
+        ei, ef = self.get_ei_ef(e_center, mode, fixed_energy)
         return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list]
 
     @staticmethod
@@ -512,7 +512,7 @@ class ORNLSpiceLoader(AbstractLoader):
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
         mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        ei_or_ef: float = 0,
+        fixed_energy: float = 0,
     ) -> np.ndarray:
         """Get delta q of a scan."""
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
@@ -521,11 +521,11 @@ class ORNLSpiceLoader(AbstractLoader):
         except AttributeError:
             es = scan.data.e
             if mode == FixedEnergyMode.FIX_Ef:
-                ef = ei_or_ef
+                ef = fixed_energy
                 eis = [e + ef for e in es]
                 efs = [ef] * len(eis)
             else:
-                ei = ei_or_ef
+                ei = fixed_energy
                 efs = [e - ei for e in es]
                 eis = [ei] * len(efs)
             kis = np.array([SE2K(ei) for ei in eis])
@@ -615,14 +615,14 @@ class ORNLSpiceLoader(AbstractLoader):
         psi_rad = get_angle_from_triangle(ki, q_norm, kf)
         return psi_rad
 
-    def get_ei_ef(self, e: float, mode: FixedEnergyMode, ei_or_ef: float) -> tuple[float, float]:
+    def get_ei_ef(self, e: float, mode: FixedEnergyMode, fixed_energy: float) -> tuple[float, float]:
         """Get (ei, ef) given the complementary energy."""
         if mode is FixedEnergyMode.FIX_Ef:
-            ef = ei_or_ef
+            ef = fixed_energy
             ei = e + ef
             return ei, ef
         else:
-            ei = ei_or_ef
+            ei = fixed_energy
             ef = ei - e
             return ei, ef
 

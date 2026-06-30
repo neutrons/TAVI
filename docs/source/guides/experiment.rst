@@ -70,7 +70,7 @@ Minimal Example
    from tavi.library.experiment.enum import FixedEnergyMode
    from tavi.library.fit.fit import FitPackage, ModelName
 
-   experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, ei_or_ef=14.503)
+   experiment = Experiment(mode=FixedEnergyMode.FIX_Ef, fixed_energy=14.503)
    experiment.load_folder("/path/to/exp1091/Datafiles")
 
    # One DataPoint per fitted peak; flatten across scans into a single list.

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from tavi.library.fit.fit import Fit, FitPackage, ModelName
+from tavi.library.fit import Fit, FitPackage, ModelName
 
 
 def _gaussian_data():

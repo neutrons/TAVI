@@ -10,7 +10,7 @@ from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
 from tavi.library.tas.triple_axis import TAS
-from tavi.library.fit.fit import FitPackage, ModelName
+from tavi.library.fit import FitPackage, ModelName
 
 @pytest.fixture
 def component():
@@ -55,7 +55,7 @@ def component():
                          collimators=collimators,
                          goniometer=Goniometer(type= "Y,Z,Y,bisect", s2_sense = "-"))
         exp = Experiment()
-        exp.set_ei_or_ef(14.503)
+        exp.set_fixed_energy(14.503)
         return sample, ins, exp
 
 def test_load_file():

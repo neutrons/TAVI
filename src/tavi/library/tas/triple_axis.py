@@ -7,7 +7,7 @@ import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
-from tavi.library.fit.fit import FitPackage, ModelName
+from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
 from tavi.library.plot.plot_ellipse import PlotResolution, browse_scans

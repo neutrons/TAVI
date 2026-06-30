@@ -84,7 +84,7 @@ Minimal Example
 
    # Single-component fits expose scalar parameters directly.
    print(result.center, result.center_err)
-   print(result.redchi)
+   print(result.reduced_chi_squared)
 
    # With multiple components, read each by its prefix instead:
    #   result["g1_"].values["center"]
