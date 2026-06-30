@@ -27,6 +27,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+old_tavi/
+scripts/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -56,6 +58,7 @@ test_data/
 # Translations
 *.mo
 *.pot
+*.ipynb
 
 # Django stuff:
 *.log

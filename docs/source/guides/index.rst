@@ -16,5 +16,9 @@ Various guides for using, extending, and maintaining TAVI systems.
    rule_based_classifier
    loader_setup
    ornl_spice_loader
+   experiment
+   fit
+   ub_algorithm
+   triple_axis
    integration_testing
    user_settings

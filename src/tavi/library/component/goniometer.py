@@ -82,7 +82,7 @@ class Goniometer:
                     @ rot_z(angles.angles_dict["sgl"] * signs[1])
                     @ rot_x(angles.angles_dict["sgu"] * signs[2])
                 )
-            case "YZYbisect":
+            case "Y,Z,Y,bisect":
                 r_mat = (
                     rot_y(angles.angles_dict["omega"] * signs[0])
                     @ rot_z(angles.angles_dict["chi"] * signs[1])
@@ -117,3 +117,48 @@ class Goniometer:
 
         angles_dict = dict(omega=np.degrees(omega), sgl=np.degrees(sgl), sgu=np.degrees(sgu))
         return MotorAngles(angles_dict)
+
+    def verify_motor_angles(
+        self,
+        q_vec: np.ndarray,
+        two_theta: float,
+        psi: float,
+    ) -> MotorAngles:
+        """
+        Compute motor angles for a given Q vector, two_theta and psi.
+
+        In bisect mode, omega is half of 2theta, draw the scattering triangle and it'll show it's 90 + psi,
+        psi is always opposite sign of self.s2_sense.
+
+        The meaning of calculating chi, phi is as such:
+
+        q_vec is UB@hkl, which is a vector in random direction in mantid coordinate frame, when all goniometer are at 0.
+        The goal is to rotate q_vec to ki - kf vector direction.
+
+        chi_rad is the angle needed to rotate q_vec into scattering plane.
+
+        phi = arctan(q_vec[2], q_vec[0]). 0 is defined as along ki in veritas bisect mode.
+
+         In bisect mode, in-plane component is always measuring the goniometer in-plane
+
+        component at 0 direction. so we need to rotate arctan(q_vec[2], q_vec[0]) to get to the 0 position.
+
+        """
+        signs = self._get_motor_senses()
+        match self.type:
+            case "Y,Z,Y,bisect":
+                omega = (self.sense * 90.0 + psi) * signs[0]
+                chi_rad = -np.arctan2(q_vec[1], np.sqrt(q_vec[0] ** 2 + q_vec[2] ** 2))
+                phi_rad = np.arctan2(q_vec[2], q_vec[0])
+                chi, phi = np.rad2deg(
+                    [
+                        signs[1] * chi_rad,
+                        signs[2] * phi_rad,
+                    ]
+                )
+
+                angles = MotorAngles(angles_dict={"two_theta": two_theta, "omega": omega, "chi": chi, "phi": phi})
+            case _:
+                raise ValueError("Not implemented yet.")
+
+        return angles

@@ -14,7 +14,7 @@ from tavi.library.component.goniometer import Goniometer
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.geometry.oriented_lattice import OrientedLattice
 from tavi.library.geometry.sample import Sample
-from tavi.library.plot.plot_ellipse import Plot, grid_helper
+from tavi.library.plot.plot_ellipse import PlotResolution, grid_helper
 from tavi.library.resolution.resolution import Resolution, ResolutionModel
 
 matplotlib.use("Agg")  # Comment this out to compare with Resolution_Ellipses.png
@@ -97,7 +97,7 @@ def test_plot(component):
     res_2d_co1, axes_angle1 = res1.get_ellipse(res_4d1, ellipse_axes=(0,1), PROJECTION=False)
     res_2d_inc1, _ = res1.get_ellipse(res_4d1, ellipse_axes=(0,1), PROJECTION=True)
     
-    plot1 = Plot(axes_angle1)
+    plot1 = PlotResolution(axes_angle1)
     plot1.add_ellipse(res_2d_co1, label = "Coherent")
     plot1.add_ellipse(res_2d_inc1, label = "Incohere", ls= "--")
 
@@ -107,7 +107,7 @@ def test_plot(component):
     res_2d_co2, axes_angle2 = res2.get_ellipse(res_mat=res_4d2, ellipse_axes=(0,3), PROJECTION=False)
     res_2d_inc2, _ = res2.get_ellipse(res_mat = res_4d2, ellipse_axes=(0,3), PROJECTION=True)
     
-    plot2 = Plot(axes_angle2)
+    plot2 = PlotResolution(axes_angle2)
     plot2.add_ellipse(res_2d_co2, label = "Coherent")
     plot2.add_ellipse(res_2d_inc2, label = "Incohere", ls= "--")
 

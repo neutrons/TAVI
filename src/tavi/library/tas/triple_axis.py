@@ -1,16 +1,27 @@
 """General utilities for tas related functions and classes."""
 
-from typing import Literal, Optional, Tuple
+from enum import Enum
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
-from tavi.library.experiment.utilities import q_lab
+from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
+from tavi.library.plot.plot_ellipse import PlotResolution, browse_scans
+from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
+from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
+from tavi.library.ubalgorithm.ub import UBAlgorithm
 
-MODEL_CHOICES = Literal["Cooper-Nathans"]
+
+class UBConvention(Enum):
+    """Convention used to define the UB matrix."""
+
+    Spice = "Spice convention."
+    Mantid = "Mantid convention."
 
 
 class TAS:
@@ -25,6 +36,8 @@ class TAS:
         instrument: Instrument,
         sample: Sample,
         experiment: Optional[Experiment] = None,
+        ub_convention: UBConvention = UBConvention.Spice,
+        plugin: Any = None,
     ) -> None:
         """
         Initialize triple axis.
@@ -36,168 +49,198 @@ class TAS:
             sample: Sample, need to construct OrientedLattice first. See sample.py.
             resolution: Resolution method to use for resolution calculations.
             experiment: Experiment. Handles extracting peak center, ei, ef etc from exp data.
+            ub_convention: Convention used to define the UB matrix. See UBConvention.
+            plugin: Optional instrument-specific plugin used for data reduction.
 
         """
         self.instrument = instrument
         self.experiment = experiment
         self.sample = sample
+        self.ub_convention = ub_convention
+        self.ub_algorithm = UBAlgorithm(self.sample, self.instrument)
+        self.plugin = plugin
 
-    # -----------Calculate UB Matrix-----------
-    def find_u_from_one_peak_and_scattering_plane(
+    def ub(
         self,
-        peak: DataPoint,
-        scattering_plane: Tuple[tuple, tuple],
-        ei: float,
-        ef: float,
+        peaks: tuple[DataPoint, ...],
+        scattering_plane: Optional[tuple[tuple, tuple]] = None,
+        reset_ub: bool = False,
     ) -> np.ndarray:
-        """Calculate U matrix from one peak and a scattering plane."""
-        r_mat = self.instrument.goni.r_mat
-        t1_c = self.sample.ol.B @ peak.hkl
-        vector1, vector2 = scattering_plane
+        """Calculate ub matrix from 1,2,3 or multiple peaks."""
+        if len(peaks) == 1 and scattering_plane is None:
+            raise ValueError("Scattering plane cannot be None with only 1 peak specified.")
 
-        coeff1, coeff2 = vector1 @ peak.hkl, vector2 @ peak.hkl
-        # construct t2_c as orthogonal as possible from t1_c
-        if np.abs(coeff1) > np.abs(coeff2):  # vector1 is closer to t1_c, use vector2
-            t3_c = np.cross(B @ peak.hkl, B @ vector2 * np.sign(coeff1))  # the sign guarantee right-hand-rule
+        match len(peaks):
+            case 1:
+                # call find u from one peak and scattering plane
+                peak = peaks[0]
+                u = self.ub_algorithm.find_u_from_one_peak_and_scattering_plane(
+                    peak=peak, scattering_plane=scattering_plane, ei=peak.ei, ef=peak.ef
+                )
+                ub = u @ self.sample.ol.B
+            case 2:
+                # call find u from 2 peaks
+                u = self.ub_algorithm.find_u_from_two_peaks(peaks)
+                ub = u @ self.sample.ol.B
+            case 3:
+                # call find ub from 3 peaks
+                ub = self.ub_algorithm.find_ub_from_three_peaks(peaks)
+            case _:
+                ub = self.ub_algorithm.find_ub_from_multiple_peaks(peaks)
+        if reset_ub:
+            self.sample.ol.UB = ub
+        return ub
+
+    def calculate_resolution(
+        self, model: ResolutionModel = ResolutionModel.CooperNathans, axes: Optional[tuple] = None
+    ) -> None:
+        """Utilize Resolution class."""
+        self.resolution = Resolution(
+            model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
+        )
+
+    def browse(
+        self,
+        scan_list: list[int],
+        show_fits: bool = True,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: List[Tuple] = [],
+        with_resolution_bar: bool = False,
+        show_components: bool = False,
+        def_x: str = None,
+        def_y: str = None,
+        xlim: float | list[float] = None,
+        ylim: float | list[float] = None,
+        projection_axis: int = 0,
+    ) -> None:
+        """
+        Browse scan with options to show resolution bar.
+
+        If resolution bar is set, show_fits must be true as reso bar's positions are
+        determined by fit center. When show_components is set, each fitted component
+        (peak, linear background, ...) is also plotted separately. A scalar xlim/ylim
+        pads the axis symmetrically around the data range (e.g. 1.1 widens the x-axis
+        to 1.1x the data span about its midpoint); a [min, max] list sets it directly.
+
+        Args:
+            scan_list: Scan numbers to browse.
+            show_fits: Overlay the fitted curve on each scan. Must be True when
+                with_resolution_bar is set.
+            fit_package: Fitting backend used to fit each scan.
+            model_dict: Models passed to the fit (peak, background, ...).
+            with_resolution_bar: Overlay a resolution bar whose position is taken
+                from the fit center; returns fit results and the 4D resolution for
+                intensity export.
+            show_components: Plot each fitted component separately in addition to
+                the total fit.
+            def_x: Name of the motor/field to use for the x-axis. Defaults to the
+                scan's default if None.
+            def_y: Name of the detector/field to use for the y-axis. Defaults to the
+                scan's default if None.
+            xlim: x-axis limits. A scalar pads symmetrically about the data midpoint;
+                a [min, max] list sets the range directly.
+            ylim: y-axis limits, interpreted like xlim.
+            projection_axis: Axis along which the resolution bar is projected.
+
+        """
+        resolution_bar_4d = None
+        if with_resolution_bar:
+            resolution_bar_4d = self.resolution_bar(scan_list, ax=projection_axis)
+            # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
+            # intensity export.
+            return browse_scans(
+                self.experiment,
+                scan_list,
+                show_fits,
+                fit_package,
+                model_dict,
+                resolution_bar_4d,
+                show_components,
+                def_x,
+                def_y,
+                xlim,
+                ylim,
+            )
         else:
-            t3_c = np.cross(B @ peak.hkl, B @ vector1 * np.sign(coeff2))
-        t2_c = np.cross(t3_c, t1_c)
+            browse_scans(
+                self.experiment,
+                scan_list,
+                show_fits,
+                fit_package,
+                model_dict,
+                resolution_bar_4d,
+                show_components,
+                def_x,
+                def_y,
+                xlim,
+                ylim,
+            )
 
-        T_c = np.array(
-            [
-                t1_c / np.linalg.norm(t1_c),
-                t2_c / np.linalg.norm(t2_c),
-                t3_c / np.linalg.norm(t3_c),
+    def browse_resolution_ellipse(
+        self,
+        scan_list: list[int],
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+        fit_package: FitPackage = FitPackage.lmfit,
+        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+    ) -> None:
+        """
+        Plot the resolution ellipse for each scan in a grid of subplots.
+
+        Args:
+            scan_list: Scan numbers to plot.
+            xlabel: Custom x-axis label for each subplot. Left unlabeled if None.
+            ylabel: Custom y-axis label for each subplot. Left unlabeled if None.
+            fit_package: Fitting backend used to locate each peak center.
+            model_dict: Models passed to the fit when locating peak centers.
+
+        """
+        if isinstance(self.experiment.loader, ORNLSpiceLoader):
+            peaks = [
+                dp
+                for i in scan_list
+                for dp in self.experiment.get_peak_center(
+                    dict(scan_num=i), fit_package=fit_package, model_dict=model_dict
+                )
             ]
-        ).T
+        else:
+            raise ValueError("Data format not implemented yet.")
 
-        q_lab1 = q_lab(ei, ef, peak.angles.angles_dict["two_theta"])
-        t1_v = np.linalg.inv(r_mat(peak.angles)) @ q_lab1
-        # assume using the same rotation matrix, we can rotate to a mantid coordinate system.
-        t3_v = np.linalg.inv(r_mat(peak.angles)) @ np.array([0, 1, 0]).T
-        t2_v = np.cross(t3_v, t1_v)
-        T_v = np.array(
-            [
-                t1_v / np.linalg.norm(t1_v),
-                t2_v / np.linalg.norm(t2_v),
-                t3_v / np.linalg.norm(t3_v),
+        self.calculate_resolution()
+        ellipses = []
+        for idx, peak in zip(scan_list, peaks):
+            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
+            ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
+            coh_para = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=0)
+            coh_perp = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=1)
+            ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
+
+        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
+
+    # TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
+    def resolution_bar(
+        self,
+        scan_list: list[int],
+        ax: int = 0,
+        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+    ) -> tuple[list[float], list]:
+        """Compute the coherent FWHM resolution bar for each scan."""
+        self.calculate_resolution()
+        resolution_bar = []
+        res_4ds = []
+        if isinstance(self.experiment.loader, ORNLSpiceLoader):
+            centers = [
+                dp
+                for i in scan_list
+                for dp in self.experiment.get_closest_to_center_data_point(
+                    {"scan_num": i}, FitPackage.lmfit, model_dict
+                )
             ]
-        ).T
-
-        u_mat = T_v @ T_c.T
-        return u_mat
-
-    def find_u_from_two_peaks(self, peaks: tuple[DataPoint, DataPoint]) -> np.ndarray:
-        """
-        Calculate U matrix from two peaks.
-
-        r_mat can be removed later when goniometer is implemented as it can be calculated from
-        peak.angles.
-
-        Follow Eq.76-81 and Eq.83-88. We assume q_3 is perpendicular from the two peaks
-        """
-        peak1, peak2 = peaks
-        B = self.sample.ol.B
-        r_mat = self.instrument.goni.r_mat
-
-        t1_c = B @ peak1.hkl
-        t3_c = np.cross(B @ peak1.hkl, B @ peak2.hkl)
-        t2_c = np.cross(t3_c, t1_c)
-
-        T_c = np.array(
-            [
-                t1_c / np.linalg.norm(t1_c),
-                t2_c / np.linalg.norm(t2_c),
-                t3_c / np.linalg.norm(t3_c),
-            ]
-        ).T
-
-        # We need to create vectors t1_v, t2_v, t3_v
-        q_lab_1 = q_lab(peak1.ei, peak1.ef, peak1.angles.angles_dict["two_theta"])
-        q_lab_2 = q_lab(peak1.ei, peak2.ef, peak2.angles.angles_dict["two_theta"])
-
-        # In identical fashion as described above Eq.79
-        t1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1
-        t3_v = np.cross(np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1, np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2)
-        t2_v = np.cross(t3_v, t1_v)
-        T_v = np.array(
-            [
-                t1_v / np.linalg.norm(t1_v),
-                t2_v / np.linalg.norm(t2_v),
-                t3_v / np.linalg.norm(t3_v),
-            ]
-        ).T
-
-        u_mat = T_v @ T_c.T
-        return u_mat
-
-    def find_ub_from_three_peaks(self, peaks: tuple[DataPoint, DataPoint, DataPoint]) -> np.ndarray:
-        """
-        Calculate U matrix from three peaks.
-
-        r_mat can be removed later when goniometer is implemented as it can be calculated from
-        peak.angles.
-
-        Follow Eq.83-90.
-        """
-        peak1, peak2, peak3 = peaks
-
-        r_mat = self.goni.r_mat
-        # we directly use the three peaks as t1_c, t2_c and t3_c
-        V = np.array([peak1.hkl, peak2.hkl, peak3.hkl]).T
-
-        q_lab_1 = q_lab(peak1.ei, peak1.ef, peak1.angles.angles_dict["two_theta"])
-        q_lab_2 = q_lab(peak2.ei, peak2.ef, peak2.angles.angles_dict["two_theta"])
-        q_lab_3 = q_lab(peak3.ei, peak3.ef, peak3.angles.angles_dict["two_theta"])
-
-        q1_v = np.linalg.inv(r_mat(peak1.angles)) @ q_lab_1 / (2 * np.pi)
-        q2_v = np.linalg.inv(r_mat(peak2.angles)) @ q_lab_2 / (2 * np.pi)
-        q3_v = np.linalg.inv(r_mat(peak3.angles)) @ q_lab_3 / (2 * np.pi)
-        Q_v = np.array([q1_v, q2_v, q3_v]).T
-
-        ub_mat = Q_v @ np.linalg.inv(V)
-        return ub_mat
-
-    def find_ub_from_multiple_peaks(self, peaks: tuple[DataPoint, ...]) -> np.ndarray:
-        """
-        Calculate U matrix from three peaks.
-
-        r_mat can be removed later when goniometer is implemented as it can be calculated from
-        peak.angles.
-
-        Follow Eq.89-98.
-        """
-        n = len(peaks)
-        Q_v = np.zeros((3, 3))
-        VV = np.zeros((3, 3))
-        r_mat = self.goni.r_mat
-
-        for i in range(n):
-            hkl = peaks[i].hkl
-            q_lab_i = q_lab(peaks[i].ei, peaks[i].ef, peaks[i].angles.angles_dict["two_theta"])
-            q_v_i = np.linalg.inv(r_mat(peaks[i].angles)) @ q_lab_i / (2 * np.pi)
-            for j in range(3):
-                for k in range(3):
-                    Q_v[j, k] += q_v_i[k] * hkl[j]
-                    VV[j, k] += hkl[k] * hkl[j]
-        ub_mat = Q_v.T @ np.linalg.inv(VV).T
-        return ub_mat
-
-    def plane_normal_from_two_peaks(self, peaks: tuple[DataPoint, DataPoint]) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Calculate plane_normal and in_plane reflection.
-
-        Both are vectors representing peaks in Q_lab.
-        """
-        peak1, peak2 = peaks
-        u_mat = self.sample.ol.U
-        b_mat = self.sample.ol.B
-        t1_c = b_mat @ peak1.hkl
-        t3_c = np.cross(b_mat @ peak1.hkl, b_mat @ peak2.hkl)
-
-        # Eq. 79(3) calculate t3_v from U and t3_c
-        plane_normal = u_mat @ t3_c / np.linalg.norm(t3_c)
-        # if y is pointing down, set it to point up
-        plane_normal = -plane_normal if plane_normal[1] < 0 else plane_normal
-        in_plane_ref = u_mat @ t1_c / np.linalg.norm(t1_c)
-        return (plane_normal, in_plane_ref)
+        else:
+            raise ValueError("Data format not implemented yet.")
+        for center in centers:
+            res_4d, r0 = self.resolution.get_resolution(hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=None)
+            coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=ax)
+            resolution_bar.append(coh)
+            res_4ds.append((res_4d, r0))
+        return resolution_bar, res_4ds
