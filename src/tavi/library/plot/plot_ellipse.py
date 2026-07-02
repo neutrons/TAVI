@@ -251,20 +251,17 @@ class PlotResolution:
 
         shear = Affine2D().skew_deg(90 - self.axes_angle, 0)
 
-        x_min, x_max = np.inf, -np.inf
-        y_min, y_max = np.inf, -np.inf
+        lo, hi = np.inf, -np.inf
 
         for entry in self.entries:
             entry.patch.set_transform(shear + ax.transData)
             ax.add_patch(entry.patch)
             x0, y0 = entry.origin
-            x_min = min(x_min, x0 - pad * entry.x_extent)
-            x_max = max(x_max, x0 + pad * entry.x_extent)
-            y_min = min(y_min, y0 - pad * entry.y_extent)
-            y_max = max(y_max, y0 + pad * entry.y_extent)
+            lo = min(lo, x0 - pad * entry.x_extent, y0 - pad * entry.y_extent)
+            hi = max(hi, x0 + pad * entry.x_extent, y0 + pad * entry.y_extent)
 
-        ax.set_xlim(x_min, x_max)
-        ax.set_ylim(y_min, y_max)
+        ax.set_xlim(lo, hi)
+        ax.set_ylim(lo, hi)
 
         # Show legend if any patch has a non-private label
         if any(e.patch.get_label() and not e.patch.get_label().startswith("_") for e in self.entries):
