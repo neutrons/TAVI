@@ -54,10 +54,18 @@ class VERITAS:
             if ax == "s1":
                 # use mat[1, 1] for transverse scans, R0 factor is optional
                 lorentz_factor = r0 * np.sqrt(det) / np.sqrt(mat[1, 1]) / np.sqrt(2 * np.pi)
+            elif ax == "th2th":
+                lorentz_factor = r0 * np.sqrt(det) / np.sqrt(mat[0, 0]) / np.sqrt(2 * np.pi)
+            else:
+                raise ValueError("axis not defined. Only supporting export s1 and the2th scans currently.")
             # ====================================================
-            peak = fit_result.peak
-            intensity = peak.values["amplitude"] / lorentz_factor
-            err = peak.errors["amplitude"] / lorentz_factor
+            # Sum the amplitudes of all peak components; combine their
+            # amplitude errors in quadrature (assuming independent peaks).
+            peaks = fit_result.peaks
+            amplitude = sum(peak.values["amplitude"] for peak in peaks)
+            amplitude_err = np.sqrt(sum(peak.errors["amplitude"] ** 2 for peak in peaks))
+            intensity = amplitude / lorentz_factor
+            err = amplitude_err / lorentz_factor
             export.append((hkl, intensity, err))
         if save_to_file:
             target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
