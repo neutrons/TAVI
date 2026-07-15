@@ -33,7 +33,7 @@ class PlotModel(PlotModelInterface):
         plot = Plot(
             x=x,
             y=y,
-            err=np.zeros_like(y),
+            err=np.sqrt(y) / 2,
             scan_name=name,
             normalized_by=norm,
             x_name=x_name,

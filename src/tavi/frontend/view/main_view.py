@@ -19,9 +19,9 @@ from qtpy.QtWidgets import (
 
 from tavi import __version__
 from tavi.backend.model.help_model import help_function
-from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.data_file_view import DataFileView
 from tavi.frontend.view.filter_view import FilterView
+from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.frontend.view.project_view import ProjectView
 
 logger = logging.getLogger("TAVI")
@@ -160,8 +160,8 @@ class TaviView(QMainWindow):
     def _build_center_panel(self) -> QTabWidget:
         tabs = QTabWidget()
 
-        self.plotter_presenter = PlotterPresenter()
-        self.plotter_view = self.plotter_presenter.view
+        # self.plotter_presenter = PlotterPresenter()
+        self.plotter_view = Plot1DView()
         tabs.addTab(self.plotter_view, "1D Plotter")
 
         return tabs

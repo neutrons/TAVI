@@ -88,14 +88,14 @@ class TestPlotModel(unittest.TestCase):
 
         assert received[0].plots[0].normalized_by is None
 
-    def test_plot_err_is_zeros(self):
+    def test_plot_err_is_sqrt_y_over_two(self):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        scan = make_raw_scan(x_vals=[1.0, 2.0, 3.0])
+        scan = make_raw_scan(x_vals=[1.0, 2.0, 3.0], y_vals=[1.0, 2.0, 3.0])
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        np.testing.assert_array_equal(received[0].plots[0].err, [0.0, 0.0, 0.0])
+        np.testing.assert_array_equal(received[0].plots[0].err, np.sqrt([1.0, 2.0, 3.0]) / 2)
 
     def test_only_first_scan_processed(self):
         """PlotModel only handles scans[0] from the event."""

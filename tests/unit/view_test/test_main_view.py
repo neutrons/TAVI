@@ -6,8 +6,8 @@ import pytest
 from qtpy.QtWidgets import QMenuBar, QMessageBox, QSplitter, QTabWidget
 
 from tavi import __version__
-from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.main_view import MainWindow, TaviView
+from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.frontend.view.project_view import ProjectView
 
 
@@ -87,16 +87,10 @@ def test_tavi_view_has_project_view(qtbot):
     assert isinstance(view.project_view, ProjectView)
 
 
-def test_tavi_view_has_plotter_presenter(qtbot):
+def test_tavi_view_has_plotter_view(qtbot):
     view = TaviView()
     qtbot.addWidget(view)
-    assert isinstance(view.plotter_presenter, PlotterPresenter)
-
-
-def test_tavi_view_plotter_view_is_presenter_view(qtbot):
-    view = TaviView()
-    qtbot.addWidget(view)
-    assert view.plotter_view is view.plotter_presenter.view
+    assert isinstance(view.plotter_view, Plot1DView)
 
 
 # ---------------------------------------------------------------------------

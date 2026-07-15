@@ -1,9 +1,11 @@
 """Main presenter for tavi."""
 
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
+from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
+from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
@@ -27,6 +29,9 @@ class MainPresenter:
 
         self.project_view = self._view.project_view
         self.load_raw_scan_presenter = LoadRawScanPresenter(self.project_view, model_dict["TaviProjectProxy"])
+
+        self.plot_view = self._view.plotter_view
+        self.plotter_presenter = PlotterPresenter(self.plot_view, model_dict[PlotModelInterface.__name__])
 
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view

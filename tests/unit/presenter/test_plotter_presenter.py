@@ -34,8 +34,9 @@ def make_plot(uuid_val="plot-001", x=None, y=None):
 
 @pytest.fixture
 def presenter(qtbot):
-    p = PlotterPresenter()
-    qtbot.addWidget(p.view)
+    view = Plot1DView()
+    qtbot.addWidget(view)
+    p = PlotterPresenter(view, MagicMock())
     return p
 
 
@@ -45,7 +46,7 @@ def presenter(qtbot):
 
 
 def test_init_view_is_plot1d_view(presenter):
-    assert isinstance(presenter.view, Plot1DView)
+    assert isinstance(presenter._view, Plot1DView)
 
 
 def test_init_registers_plot_focus_event(presenter):
@@ -59,72 +60,72 @@ def test_init_registers_plot_focus_event(presenter):
 
 
 def test_handle_plot_focus_clears_plot(presenter):
-    presenter.view.clear_plot = MagicMock()
-    presenter.view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[make_plot()]))
 
-    presenter.view.clear_plot.assert_called_once()
+    presenter._view.clear_plot.assert_called_once()
 
 
 def test_handle_plot_focus_appends_each_plot(presenter):
     plots = [make_plot(f"plot-{i:03d}") for i in range(3)]
-    presenter.view.clear_plot = MagicMock()
-    presenter.view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=plots))
 
-    assert presenter.view.append_plot.call_count == 3
+    assert presenter._view.append_plot.call_count == 3
 
 
 def test_handle_plot_focus_passes_correct_x(presenter):
     x = np.array([10.0, 20.0, 30.0])
     plot = make_plot(x=x, y=np.array([1.0, 2.0, 3.0]))
-    presenter.view.append_plot = MagicMock()
-    presenter.view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[plot]))
 
-    npt.assert_array_equal(presenter.view.append_plot.call_args.args[0], x)
+    npt.assert_array_equal(presenter._view.append_plot.call_args.args[0], x)
 
 
 def test_handle_plot_focus_passes_correct_y(presenter):
     y = np.array([7.0, 8.0, 9.0])
     plot = make_plot(y=y)
-    presenter.view.append_plot = MagicMock()
-    presenter.view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[plot]))
 
-    npt.assert_array_equal(presenter.view.append_plot.call_args.args[1], y)
+    npt.assert_array_equal(presenter._view.append_plot.call_args.args[1], y)
 
 
 def test_handle_plot_focus_passes_scan_name(presenter):
     plot = make_plot()
     plot = plot.model_copy(update={"scan_name": "my_special_scan"})
-    presenter.view.append_plot = MagicMock()
-    presenter.view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[plot]))
 
-    assert presenter.view.append_plot.call_args.args[3] == "my_special_scan"
+    assert presenter._view.append_plot.call_args.args[3] == "my_special_scan"
 
 
 def test_handle_plot_focus_empty_plots_clears_and_no_append(presenter):
-    presenter.view.clear_plot = MagicMock()
-    presenter.view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[]))
 
-    presenter.view.clear_plot.assert_called_once()
-    presenter.view.append_plot.assert_not_called()
+    presenter._view.clear_plot.assert_called_once()
+    presenter._view.append_plot.assert_not_called()
 
 
 def test_handle_plot_focus_via_event_broker(presenter):
-    presenter.view.clear_plot = MagicMock()
-    presenter.view.append_plot = MagicMock()
+    presenter._view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
 
     EventBroker().publish(PlotFocusEvent(plots=[make_plot()]))
 
-    presenter.view.clear_plot.assert_called_once()
-    presenter.view.append_plot.assert_called_once()
+    presenter._view.clear_plot.assert_called_once()
+    presenter._view.append_plot.assert_called_once()
