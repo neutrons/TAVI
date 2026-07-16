@@ -2,19 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
+from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
+from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent
 from tavi.meta.event.type.presenter_event import FocusEvent
 
-if TYPE_CHECKING:
-    from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-    from tavi.frontend.view.project_view import ProjectView
 
-
-class LoadRawScanPresenter:
+class LoadRawScanPresenter(AbstractPresenter):
     """
     Presenter responsible for data loading.
 
@@ -32,10 +29,9 @@ class LoadRawScanPresenter:
 
     """
 
-    def __init__(self, view: ProjectView, model: TaviProjectInterface) -> None:
+    def __init__(self, model: TaviProjectInterface) -> None:
         """Initialize the metadata presenter and register for `meta_data` events."""
         super().__init__()
-        self._view = view
         self._model = model
         self.event_broker = EventBroker()
         self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
@@ -43,6 +39,10 @@ class LoadRawScanPresenter:
 
         self._view.hookup_select_signal(self.handle_selection_event)
         self.event_broker.register(FocusEvent, self.print_selected)
+
+    def init_view(self) -> None:
+        """Create the project tree view."""
+        self._view = ProjectView()
 
     def update_treeview_data(self, event: RawScanAppendEvent) -> None:
         """Update the treeview GUI after loading complete."""

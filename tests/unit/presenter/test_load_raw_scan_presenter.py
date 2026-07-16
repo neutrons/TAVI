@@ -1,6 +1,6 @@
 """Tests for tavi.frontend.presenter.load_raw_scan_presenter."""
 
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
@@ -15,7 +15,8 @@ def _make_presenter():
     """Build a LoadRawScanPresenter with mock view and model."""
     view = MagicMock()
     model = MagicMock()
-    presenter = LoadRawScanPresenter(view, model)
+    with patch.object(LoadRawScanPresenter, 'init_view', lambda self: setattr(self, '_view', view)):
+        presenter = LoadRawScanPresenter(model)
     return presenter, view, model
 
 

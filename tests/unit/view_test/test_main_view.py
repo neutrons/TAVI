@@ -6,9 +6,25 @@ import pytest
 from qtpy.QtWidgets import QMenuBar, QMessageBox, QSplitter, QTabWidget
 
 from tavi import __version__
+from tavi.frontend.view.data_file_view import DataFileView
+from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.main_view import MainWindow, TaviView
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.frontend.view.project_view import ProjectView
+
+
+@pytest.fixture()
+def built_view(qtbot):
+    """TaviView with build_ui() called using real sub-views."""
+    view = TaviView()
+    qtbot.addWidget(view)
+    view.build_ui(
+        project_view=ProjectView(),
+        plot_view=Plot1DView(),
+        data_file_view=DataFileView(),
+        filter_view=FilterView(),
+    )
+    return view
 
 
 # ---------------------------------------------------------------------------
@@ -64,16 +80,12 @@ def test_tavi_view_force_closing_false_by_default(qtbot):
     assert view._force_closing is False
 
 
-def test_tavi_view_central_widget_is_splitter(qtbot):
-    view = TaviView()
-    qtbot.addWidget(view)
-    assert isinstance(view.centralWidget(), QSplitter)
+def test_tavi_view_central_widget_is_splitter(built_view):
+    assert isinstance(built_view.centralWidget(), QSplitter)
 
 
-def test_tavi_view_splitter_has_three_panels(qtbot):
-    view = TaviView()
-    qtbot.addWidget(view)
-    assert view.centralWidget().count() == 3
+def test_tavi_view_splitter_has_three_panels(built_view):
+    assert built_view.centralWidget().count() == 3
 
 
 # ---------------------------------------------------------------------------
@@ -81,16 +93,12 @@ def test_tavi_view_splitter_has_three_panels(qtbot):
 # ---------------------------------------------------------------------------
 
 
-def test_tavi_view_has_project_view(qtbot):
-    view = TaviView()
-    qtbot.addWidget(view)
-    assert isinstance(view.project_view, ProjectView)
+def test_tavi_view_has_project_view(built_view):
+    assert isinstance(built_view.project_view, ProjectView)
 
 
-def test_tavi_view_has_plotter_view(qtbot):
-    view = TaviView()
-    qtbot.addWidget(view)
-    assert isinstance(view.plotter_view, Plot1DView)
+def test_tavi_view_has_plotter_view(built_view):
+    assert isinstance(built_view.plotter_view, Plot1DView)
 
 
 # ---------------------------------------------------------------------------

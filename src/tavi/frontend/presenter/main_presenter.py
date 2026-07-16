@@ -6,6 +6,8 @@ from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
+from tavi.frontend.view.data_file_view import DataFileView
+from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
@@ -27,15 +29,21 @@ class MainPresenter:
         self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(self.menu_bar)
 
-        self.project_view = self._view.project_view
-        self.load_raw_scan_presenter = LoadRawScanPresenter(self.project_view, model_dict["TaviProjectProxy"])
+        self.load_raw_scan_presenter = LoadRawScanPresenter(model_dict["TaviProjectProxy"])
+        self.project_view = self.load_raw_scan_presenter.view()
 
-        self.plot_view = self._view.plotter_view
-        self.plotter_presenter = PlotterPresenter(self.plot_view, model_dict[PlotModelInterface.__name__])
+        self.plotter_presenter = PlotterPresenter(model_dict[PlotModelInterface.__name__])
 
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
-        self.error_view = self.error_presenter.view
+        self.error_view = self.error_presenter.view()
         self.error_view.setParent(self._view)
+
+        self._view.build_ui(
+            project_view=self.load_raw_scan_presenter.view(),
+            plot_view=self.plotter_presenter.view(),
+            data_file_view=DataFileView(),
+            filter_view=FilterView(),
+        )
 
         self._event_broker = EventBroker()
         self._event_broker.publish(DownstreamReadyEvent())

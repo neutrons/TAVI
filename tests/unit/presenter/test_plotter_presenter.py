@@ -34,9 +34,8 @@ def make_plot(uuid_val="plot-001", x=None, y=None):
 
 @pytest.fixture
 def presenter(qtbot):
-    view = Plot1DView()
-    qtbot.addWidget(view)
-    p = PlotterPresenter(view, MagicMock())
+    p = PlotterPresenter(MagicMock())
+    qtbot.addWidget(p._view)
     return p
 
 
