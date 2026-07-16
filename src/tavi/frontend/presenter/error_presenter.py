@@ -17,7 +17,6 @@ class ErrorPresenter(AbstractPresenter):
         self.application_model: ApplicationModelInterface = application_model
 
         self.recovery_service.register(NonRecoverableError, self.handle_nonrecoverable_exception)
-        self._view = ErrorView()
 
     def init_view(self) -> None:
         """Create the error view."""
