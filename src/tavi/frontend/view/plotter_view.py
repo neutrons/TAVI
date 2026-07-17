@@ -2,6 +2,7 @@
 
 from typing import Any
 
+import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -82,13 +83,37 @@ class Plot1DView(QWidget):
 
         # canvas
         fig = Figure(figsize=(5, 4), dpi=100)
-        canvas = FigureCanvas(fig)
-        canvas.axes = fig.add_subplot(111)
-        canvas.axes.plot([0, 1, 2, 3], [10, 1, 20, 3])
-        toolbar = NavigationToolbar(canvas, self)
+        self.canvas = FigureCanvas(fig)
+        self.canvas.axes = fig.add_subplot(111)
+        toolbar = NavigationToolbar(self.canvas, self)
 
-        layout.addWidget(canvas)
+        layout.addWidget(self.canvas)
         layout.addWidget(toolbar)
+
+    def append_plot(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        err: np.ndarray,
+        scan_name: str,
+        normalized_by: str,
+        x_name: str,
+        y_name: str,
+        error_name: str,
+    ) -> None:
+        """Append a scan to the plot."""
+        ax = self.canvas.axes
+        label = f"{scan_name}"
+        ax.errorbar(x, y, yerr=err, label=label, fmt="o-", capsize=3)
+        ax.set_xlabel(x_name)
+        ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
+        ax.legend()
+        self.canvas.draw()
+
+    def clear_plot(self) -> None:
+        """Clear all data from the plot."""
+        self.canvas.axes.cla()
+        self.canvas.draw()
 
     def on_radio_toggled(self) -> None:
         """Identify which button was clicked."""

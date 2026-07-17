@@ -6,13 +6,14 @@ from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
+from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
-from tavi.meta.event.type.presenter_event import DownstreamReadyEvent
+from tavi.meta.event.type.presenter_event import DownstreamReadyEvent, FocusEvent, PlotFocusEvent, RawScanFocusEvent
 
 
 @Singleton
@@ -22,11 +23,16 @@ class TaviProjectModel(TaviProjectInterface):
     def __init__(self, filestore: Filestore) -> None:
         """Init tavi data."""
         self.filestore = filestore
-        self.tavi_data: TaviData = TaviData(raw_scans={})
+        self.tavi_data: TaviData = TaviData(raw_scans={}, plots={})
         self._event_broker: EventBroker = EventBroker()
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
+        self._event_broker.register(FocusEvent, self._handle_focus_event)
+
+    def get_plots_handle(self) -> dict:
+        """Return reference to the plots dict."""
+        return self.tavi_data.plots
 
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
         """Load a folder containing raw scans."""
@@ -63,3 +69,20 @@ class TaviProjectModel(TaviProjectInterface):
         settings = yaml.load(raw_settings_yml)
         settings_dict = dict(settings)
         return settings_dict["TAVI"]["recent"]["projects"]
+
+    def _handle_focus_event(self, e: FocusEvent) -> None:
+        """Route a ``FocusEvent`` to type-specific downstream events."""
+        ids = e.ids
+        raw_scans: list[RawScan] = []
+        plots: list[Plot] = []
+        for uuid in ids:
+            inst = self.tavi_data.fetch_by_uuid(uuid)
+            if isinstance(inst, RawScan):
+                raw_scans.append(inst)
+            if isinstance(inst, Plot):
+                plots.append(inst)
+
+        if raw_scans:
+            self._event_broker.publish(RawScanFocusEvent(scans=raw_scans))
+        if plots:
+            self._event_broker.publish(PlotFocusEvent(plots=plots))

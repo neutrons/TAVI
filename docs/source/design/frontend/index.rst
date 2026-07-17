@@ -12,3 +12,4 @@ of the features of Frontend.
    :maxdepth: 1
 
    project_view
+   visualization_flow
