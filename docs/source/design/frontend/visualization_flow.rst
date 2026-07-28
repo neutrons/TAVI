@@ -54,7 +54,7 @@ RawScan Selection — Full Chain
         participant PlotterPresenter
         participant Plot1DView
 
-        User ->> TreeViewWidget: clicks scan node
+        User ->> TreeViewWidget: selects scan node (click or arrow keys)
         TreeViewWidget ->> LoadRawScanPresenter: selection signal (Qt)
         LoadRawScanPresenter ->> LoadRawScanPresenter: collect selected identifiers
         LoadRawScanPresenter ->> EventBroker: publish focus event
@@ -99,7 +99,7 @@ before publishing, for the same reason ``PlotModel`` does on the other path.
         participant PlotterPresenter
         participant Plot1DView
 
-        User ->> TreeViewWidget: clicks plot node
+        User ->> TreeViewWidget: selects plot node (click or arrow keys)
         TreeViewWidget ->> LoadRawScanPresenter: selection signal (Qt)
         LoadRawScanPresenter ->> EventBroker: publish focus event
 

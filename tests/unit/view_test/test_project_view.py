@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from qtpy.QtCore import Qt
 from qtpy.QtGui import QColor
 
 from tavi.frontend.view.project_view import ProjectView, StandardItem, TreeViewWidget
@@ -214,6 +215,39 @@ def test_select_emits_selected_signal(qtbot):
 
     with qtbot.waitSignal(w.selected_signal, timeout=1000):
         w.select(None)
+
+
+def test_keyboard_navigation_emits_selected_signal(qtbot):
+    """Up/Down arrow navigation (not just mouse clicks) must trigger selected_signal."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="kbd1")
+    uuid2 = UUID(value="kbd2")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+
+    first_index = w.treeModel.indexFromItem(w.uuid_map[uuid1])
+    w.treeView.setCurrentIndex(first_index)
+    w.treeView.setFocus()
+
+    with qtbot.waitSignal(w.selected_signal, timeout=1000):
+        qtbot.keyClick(w.treeView, Qt.Key_Down)
+
+    assert uuid2 in w.get_selected_items()
+
+
+def test_mouse_click_still_emits_selected_signal(qtbot):
+    """Selecting via mouse (setCurrentIndex, as a click would) must still trigger selected_signal."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="click1")
+    w.add_raw_scan(uuid, "scan", "/exp")
+    index = w.treeModel.indexFromItem(w.uuid_map[uuid])
+
+    with qtbot.waitSignal(w.selected_signal, timeout=1000):
+        w.treeView.setCurrentIndex(index)
 
 
 # ---------------------------------------------------------------------------
