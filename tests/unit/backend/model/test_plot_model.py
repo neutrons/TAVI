@@ -1,10 +1,8 @@
-import numpy as np
 import pytest
 import unittest
 from unittest import mock
 
 from tavi.backend.model.plot_model import PlotModel
-from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
@@ -47,6 +45,7 @@ class TestPlotModel(unittest.TestCase):
 
         self.broker.register(PlotFocusEvent, received_events.append)
         scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         assert len(received_events) == 1
@@ -57,6 +56,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(PlotFocusEvent, received.append)
 
         scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         assert len(received[0].plots[0].series) == 1
@@ -67,6 +67,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(PlotFocusEvent, received.append)
 
         scan = make_raw_scan(x_col="qh")
+        self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         series = received[0].plots[0].series[0]
@@ -78,6 +79,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(PlotFocusEvent, received.append)
 
         scan = make_raw_scan(norm=("detector", 1.0))
+        self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         assert received[0].plots[0].series[0].normalized_by == "detector"
@@ -87,6 +89,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(PlotFocusEvent, received.append)
 
         scan = make_raw_scan(norm=None)
+        self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         assert received[0].plots[0].series[0].normalized_by is None
@@ -99,42 +102,20 @@ class TestPlotModel(unittest.TestCase):
         scan1 = make_raw_scan(x_col="qh", x_vals=[1.0])
         scan2 = make_raw_scan(x_col="qh", x_vals=[99.0])
         # scan2 has different friendly_name setup — both have "test_scan"
+        self.raw_scans[scan1.uuid] = scan1
         self.broker.publish(RawScanFocusEvent(scans=[scan1, scan2]))
 
         assert len(received[0].plots) == 1
 
-    def test_resolve_series_returns_named_columns(self):
-        scan = make_raw_scan(x_col="qh", x_vals=[10.0, 20.0, 30.0], y_col="en", y_vals=[1.0, 2.0, 3.0])
+    def test_plot_focus_event_carries_the_referenced_scan(self):
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
-        series = PlotSeries(
-            source_scan_uuid=scan.uuid,
-            scan_name="test_scan",
-            normalized_by=None,
-            x_name="qh",
-            y_name="en",
-            error_name="error",
-        )
+        self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        x, y, err = self.model.resolve_series(series)
-
-        np.testing.assert_array_equal(x, [10.0, 20.0, 30.0])
-        np.testing.assert_array_equal(y, [1.0, 2.0, 3.0])
-
-    def test_resolve_series_err_is_sqrt_abs_y_over_two(self):
-        scan = make_raw_scan(x_vals=[1.0, 2.0, 3.0], y_vals=[1.0, 2.0, 3.0])
-        self.raw_scans[scan.uuid] = scan
-        series = PlotSeries(
-            source_scan_uuid=scan.uuid,
-            scan_name="test_scan",
-            normalized_by=None,
-            x_name="qh",
-            y_name="en",
-            error_name="error",
-        )
-
-        _, _, err = self.model.resolve_series(series)
-
-        np.testing.assert_array_equal(err, np.sqrt(np.abs([1.0, 2.0, 3.0])) / 2)
+        assert received[0].scans[scan.uuid].uuid == scan.uuid
 
     def test_update_fields_updates_axis_names_on_series(self):
         scan = make_raw_scan(x_col="qh", y_col="en")

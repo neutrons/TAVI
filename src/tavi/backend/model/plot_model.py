@@ -2,11 +2,10 @@
 
 from typing import Optional
 
-import numpy as np
-
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
+from tavi.library.data.plot_resolution import scans_for_plots
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
@@ -42,15 +41,7 @@ class PlotModel(PlotModelInterface):
         )
         plot = Plot(series=[series])
         self._last_plot = plot
-        self._event_broker.publish(PlotFocusEvent(plots=[plot]))
-
-    def resolve_series(self, series: PlotSeries) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Look up the referenced scan and pull the x/y/err arrays named by this series."""
-        scan = self._raw_scans[series.source_scan_uuid]
-        x = np.array(scan.data.data[series.x_name])
-        y = np.array(scan.data.data[series.y_name])
-        err = np.sqrt(np.abs(y)) / 2
-        return x, y, err
+        self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
 
     def update_fields(self, fields: dict) -> ModelResponse:
         """Update axis columns on every series of the currently-focused plot using the plotter's control fields."""
@@ -74,5 +65,5 @@ class PlotModel(PlotModelInterface):
 
         plot = self._last_plot.model_copy(update={"series": updated_series})
         self._last_plot = plot
-        self._event_broker.publish(PlotFocusEvent(plots=[plot]))
+        self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
         return ModelResponse(code=ResponseCode.OK)

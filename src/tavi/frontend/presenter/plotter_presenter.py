@@ -3,12 +3,13 @@
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.plot_resolution import resolve_series
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
 
 
 class PlotterPresenter(AbstractPresenter):
-    """Mediates between plotter model events and the Plot1DView."""
+    """Mediates between plotter model events and the Plot1DView. Holds no scan/plot data of its own."""
 
     def __init__(self, model: PlotModelInterface) -> None:
         """Create the view and subscribe to ``PlotFocusEvent``."""
@@ -34,21 +35,11 @@ class PlotterPresenter(AbstractPresenter):
         self._model.update_fields(fields)
 
     def handle_plot_focus(self, e: PlotFocusEvent) -> None:
-        """Resolve each plot's series into renderable arrays and forward to the view (thread-safe from a worker thread)."""
-        resolved = []
-        for plot in e.plots:
-            for series in plot.series:
-                x, y, err = self._model.resolve_series(series)
-                resolved.append(
-                    {
-                        "x": x,
-                        "y": y,
-                        "err": err,
-                        "scan_name": series.scan_name,
-                        "normalized_by": series.normalized_by,
-                        "x_name": series.x_name,
-                        "y_name": series.y_name,
-                        "error_name": series.error_name,
-                    }
-                )
+        """
+        Resolve each series against the event's own scan snapshot and forward to the view.
+
+        ``e.scans`` is a deep-copied snapshot carried by the event itself (see
+        ``PlotFocusEvent``) — this never reaches into any model's live storage.
+        """
+        resolved = [(*resolve_series(series, e.scans), series) for plot in e.plots for series in plot.series]
         self._view.render_plots_signal.emit(resolved)

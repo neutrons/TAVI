@@ -7,6 +7,7 @@ from ruamel.yaml import YAML
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
+from tavi.library.data.plot_resolution import scans_for_plots
 from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
@@ -89,4 +90,5 @@ class TaviProjectModel(TaviProjectInterface):
         if raw_scans:
             self._event_broker.publish(RawScanFocusEvent(scans=raw_scans))
         if plots:
-            self._event_broker.publish(PlotFocusEvent(plots=plots))
+            scans = scans_for_plots(plots, self.tavi_data.raw_scans)
+            self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans))

@@ -171,18 +171,11 @@ class Plot1DView(QWidget):
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
-        for item in resolved:
+        for x, y, err, series in resolved:
             self.append_plot(
-                item["x"],
-                item["y"],
-                item["err"],
-                item["scan_name"],
-                item["normalized_by"],
-                item["x_name"],
-                item["y_name"],
-                item["error_name"],
+                x, y, err, series.scan_name, series.normalized_by, series.x_name, series.y_name, series.error_name
             )
-            self.sync_axis_fields(item["x_name"], item["y_name"])
+            self.sync_axis_fields(series.x_name, series.y_name)
 
     def sync_axis_fields(self, x_name: str, y_name: str) -> None:
         """Reflect the actually-plotted x/y column names in the axis fields."""

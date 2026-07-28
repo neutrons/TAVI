@@ -259,6 +259,8 @@ def test_handle_focus_event_raw_scan_does_not_publish_plot_event(model):
 
 def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
@@ -269,8 +271,23 @@ def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     assert received[0].plots[0].uuid == plot.uuid
 
 
+def test_handle_focus_event_plot_publishes_scans_referenced_by_its_series(model):
+    plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(PlotFocusEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[plot.uuid]))
+
+    assert received[0].scans[plot.series[0].source_scan_uuid].uuid == scan.uuid
+
+
 def test_handle_focus_event_plot_does_not_publish_raw_scan_event(model):
     plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
     model.tavi_data.plots[plot.uuid] = plot
 
     raw_received = []

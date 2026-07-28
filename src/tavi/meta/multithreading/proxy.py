@@ -18,9 +18,6 @@ def Proxy(_type: Type[T]) -> type:
         self.worker_pool = WorkerPool()
 
     abstract_methods = getattr(_type, "__abstractmethods__", set())
-    # Methods that are pure, side-effect-free reads of already-loaded data may opt out of the
-    # async worker-thread dispatch above by listing their name here, on the interface class.
-    sync_methods = getattr(_type, "_proxy_sync_methods", frozenset())
 
     namespace = {"__init__": __init__}
 
@@ -39,15 +36,8 @@ def Proxy(_type: Type[T]) -> type:
         executeOnWorker.__name__ = method_name
         return executeOnWorker
 
-    def make_sync_proxy_method(method_name: str) -> Callable:
-        def callDirectly(self: T, *args: Any, **kwargs: Any) -> Any:
-            return getattr(self.host, method_name)(*args, **kwargs)
-
-        callDirectly.__name__ = method_name
-        return callDirectly
-
     for name in abstract_methods:
-        namespace[name] = make_sync_proxy_method(name) if name in sync_methods else make_proxy_method(name)
+        namespace[name] = make_proxy_method(name)
 
     ProxyClass = type(f"Proxy{_type.__name__}", (_type,), namespace)
     return ProxyClass
