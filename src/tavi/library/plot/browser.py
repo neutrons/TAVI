@@ -1,18 +1,13 @@
-
 """Data browser."""
 
-from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.axisartist import Axes
-from mpl_toolkits.axisartist.grid_finder import MaxNLocator
-from mpl_toolkits.axisartist.grid_helper_curvelinear import GridHelperCurveLinear
 
 from tavi.library.experiment.experiment import Experiment
-from tavi.library.experiment.utilities import sig2fwhm
 from tavi.library.fit import FitPackage
+
 
 def browse_scans(
     experiment: Experiment,
@@ -132,6 +127,7 @@ def browse_scans(
                     # component is background when it has no fitted center.
                     component = fit_result.components.get(key) or fit_result.components.get("")
                     return component is not None and "center" not in component.values
+
                 coh_list = np.atleast_1d(coh)
                 if show_component_labels:
                     sep = "\n" if len(coh) > 1 else ", "
