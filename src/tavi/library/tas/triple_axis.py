@@ -10,7 +10,8 @@ from tavi.library.experiment.peak import DataPoint
 from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
-from tavi.library.plot.plot_ellipse import PlotResolution, browse_scans
+from tavi.library.plot.browser import browse_scans
+from tavi.library.plot.plot_ellipse import PlotResolution
 from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
 from tavi.library.resolution.resolution import Resolution, ResolutionModel
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
@@ -91,26 +92,19 @@ class TAS:
             self.sample.ol.UB = ub
         return ub
 
-    def calculate_resolution(
-        self, model: ResolutionModel = ResolutionModel.CooperNathans, axes: Optional[tuple] = None
-    ) -> None:
-        """Utilize Resolution class."""
-        self.resolution = Resolution(
-            model=model, instrument=self.instrument, sample=self.sample, experiment=self.experiment, axes=axes
-        )
-
     def browse(
         self,
         scan_list: list[int],
         show_fits: bool = True,
         fit_package: FitPackage = FitPackage.lmfit,
         model_dict: List[Tuple] = [],
-        with_resolution_bar: bool = False,
+        show_resolution_bar: bool = False,
         show_components: bool = False,
         def_x: str = None,
         def_y: str = None,
         xlim: float | list[float] = None,
         ylim: float | list[float] = None,
+        resolution_frame: str | tuple = "local",
         projection_axis: int = 0,
     ) -> None:
         """
@@ -128,7 +122,7 @@ class TAS:
                 with_resolution_bar is set.
             fit_package: Fitting backend used to fit each scan.
             model_dict: Models passed to the fit (peak, background, ...).
-            with_resolution_bar: Overlay a resolution bar whose position is taken
+            show_resolution_bar: Overlay a resolution bar whose position is taken
                 from the fit center; returns fit results and the 4D resolution for
                 intensity export.
             show_components: Plot each fitted component separately in addition to
@@ -140,41 +134,104 @@ class TAS:
             xlim: x-axis limits. A scalar pads symmetrically about the data midpoint;
                 a [min, max] list sets the range directly.
             ylim: y-axis limits, interpreted like xlim.
+            resolution_frame: Frame in which the resolution bar is computed.
             projection_axis: Axis along which the resolution bar is projected.
 
         """
         resolution_bar_4d = None
-        if with_resolution_bar:
-            resolution_bar_4d = self.resolution_bar(scan_list, ax=projection_axis)
+        if show_resolution_bar:
             # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
-            return browse_scans(
-                self.experiment,
-                scan_list,
-                show_fits,
-                fit_package,
-                model_dict,
-                resolution_bar_4d,
-                show_components,
-                def_x,
-                def_y,
-                xlim,
-                ylim,
+            resolution_bar_4d = self.resolution_bar(
+                scan_list, resolution_frame=resolution_frame, projection_axis=projection_axis, model_dict=model_dict
             )
+        return browse_scans(
+            self.experiment,
+            scan_list,
+            show_fits,
+            fit_package,
+            model_dict,
+            resolution_bar_4d,
+            show_components,
+            def_x,
+            def_y,
+            xlim,
+            ylim,
+        )
+
+    def resolution_bar(
+        self,
+        scan_list: list[int],
+        resolution_model: ResolutionModel = ResolutionModel.CooperNathans,
+        resolution_frame: str | Tuple = "local",
+        projection_axis: int = 0,
+        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+    ) -> tuple[list[float], list]:
+        """Compute the coherent FWHM resolution bar for each scan."""
+        # This step just get the center data point, has nothing to do with calculations.
+        if isinstance(self.experiment.loader, ORNLSpiceLoader):
+            # Group the data points from one scan i into a tuple, so centers is aligned
+            # one-entry-per-scan rather than flattened across all scans.
+            centers = [
+                tuple(self.experiment.get_closest_to_center_data_point({"scan_num": i}, FitPackage.lmfit, model_dict))
+                for i in scan_list
+            ]
         else:
-            browse_scans(
-                self.experiment,
-                scan_list,
-                show_fits,
-                fit_package,
-                model_dict,
-                resolution_bar_4d,
-                show_components,
-                def_x,
-                def_y,
-                xlim,
-                ylim,
-            )
+            raise ValueError("Data format not implemented yet.")
+        resolution_bar = []
+        incoh_bar = []  # leave it here to allow plotting incoh resolution bar in the future
+        res_4ds = []
+
+        # check what kind of projection_axes we are using. We supply two options:
+        # 1. if it's 0 or 1, this implies user is requesting resolution bar in local Q frame.
+        # This projection_axes goes through ellipsoid.py->ResolutionEllipsoid->coh/incoh_fwhm.
+        # 2. if it's a tuple ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e") or ((1, 1, 0), (1, -1, 0), (0, 0, 1), "e"),
+        # this implies user is requesting resolution in hkle frame.
+        self.resolution = Resolution(
+            model=resolution_model,
+            instrument=self.instrument,
+            sample=self.sample,
+            experiment=self.experiment,
+            resolution_frame=resolution_frame,
+        )
+        if resolution_frame == "local":
+            for center_group in centers:
+                cohs, res_group = [], []
+                for center in center_group:
+                    res_4d, r0 = self.resolution.get_resolution(
+                        hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=None
+                    )
+                    coh = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis)
+                    cohs.append(coh)
+                    res_group.append((res_4d, r0))
+                resolution_bar.append(tuple(cohs))
+                res_4ds.append(tuple(res_group))
+        elif isinstance(resolution_frame, tuple):
+            for center_group in centers:
+                cohs, incohs, res_group = [], [], []
+                for center in center_group:
+                    # We need to calculate rotation matrix now. Two ways to do this, from goniometer.r_mat
+                    # or from oriented_lattice.rot_matrix_with_minimal_tilt.
+                    try:
+                        rot_mat = self.instrument.goni.r_mat(center.angles)
+                    except Exception as err:
+                        rot_mat = None
+                        raise ValueError("Rotation matrix can not be calculated") from err
+                    res_4d, r0 = self.resolution.get_resolution(
+                        hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=rot_mat
+                    )
+                    resolution_ellipsoid = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame)
+                    cohs.append(resolution_ellipsoid.coh_fwhm(projection_axis))
+                    incohs.append(resolution_ellipsoid.incoh_fwhm(projection_axis))
+                    res_group.append((res_4d, r0))
+                resolution_bar.append(tuple(cohs))
+                incoh_bar.append(tuple(incohs))
+                res_4ds.append(tuple(res_group))
+            # printing for now. Later it will be massaged into visualization.
+            print("incoherent FWHM = ", incoh_bar)
+        else:
+            raise ValueError("Resolution frame is not defined properly.")
+        return resolution_bar, res_4ds  # , incoh_bar
 
     def browse_resolution_ellipse(
         self,
@@ -211,36 +268,8 @@ class TAS:
         for idx, peak in zip(scan_list, peaks):
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
             ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
-            coh_para = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=0)
-            coh_perp = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=1)
+            coh_para = ResolutionEllipsoid(res_4d, projection_axes=None).coh_fwhm(axis=0)
+            coh_perp = ResolutionEllipsoid(res_4d, projection_axes=None).coh_fwhm(axis=1)
             ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
-
-    # TODO: implement model_dict instead of just guessing, implement projection, axes parameters.
-    def resolution_bar(
-        self,
-        scan_list: list[int],
-        ax: int = 0,
-        model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
-    ) -> tuple[list[float], list]:
-        """Compute the coherent FWHM resolution bar for each scan."""
-        self.calculate_resolution()
-        resolution_bar = []
-        res_4ds = []
-        if isinstance(self.experiment.loader, ORNLSpiceLoader):
-            centers = [
-                dp
-                for i in scan_list
-                for dp in self.experiment.get_closest_to_center_data_point(
-                    {"scan_num": i}, FitPackage.lmfit, model_dict
-                )
-            ]
-        else:
-            raise ValueError("Data format not implemented yet.")
-        for center in centers:
-            res_4d, r0 = self.resolution.get_resolution(hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=None)
-            coh = ResolutionEllipsoid(res_4d, axes=None).coh_fwhm(axis=ax)
-            resolution_bar.append(coh)
-            res_4ds.append((res_4d, r0))
-        return resolution_bar, res_4ds

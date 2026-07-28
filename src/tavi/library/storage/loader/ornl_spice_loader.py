@@ -347,19 +347,6 @@ class ORNLSpiceLoader(AbstractLoader):
         ei, ef = self.get_ei_ef(e_center, mode, fixed_energy)
         return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list]
 
-    @staticmethod
-    def _fit_centers(
-        fit: Fit, x: np.ndarray, y: np.ndarray, model_dict: list[tuple[ModelName, dict[str, Any]]]
-    ) -> list[float]:
-        """
-        Fit (x, y) with model_dict and return every fitted center, sorted ascending.
-
-        Components without a "center" parameter (e.g. background models) are ignored.
-        """
-        result = fit.fit(x, y, model_dict)
-        centers = [comp.values["center"] for comp in result.components.values() if "center" in comp.values]
-        return sorted(centers)
-
     def fit_motor_angles(
         self,
         tavi_data: TaviData,
@@ -442,6 +429,19 @@ class ORNLSpiceLoader(AbstractLoader):
             angles_list.append(MotorAngles(angles_dict=angles_dict))
         return angles_list
 
+    @staticmethod
+    def _fit_centers(
+        fit: Fit, x: np.ndarray, y: np.ndarray, model_dict: list[tuple[ModelName, dict[str, Any]]]
+    ) -> list[float]:
+        """
+        Fit (x, y) with model_dict and return every fitted center, sorted ascending.
+
+        Components without a "center" parameter (e.g. background models) are ignored.
+        """
+        result = fit.fit(x, y, model_dict)
+        centers = [comp.values["center"] for comp in result.components.values() if "center" in comp.values]
+        return sorted(centers)
+
     def get_data_point_closest_to_center(
         self,
         tavi_data: TaviData,
@@ -450,7 +450,9 @@ class ORNLSpiceLoader(AbstractLoader):
         exp_num: Optional[int] = None,
         fit_package: FitPackage = FitPackage.lmfit,
         model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
-    ) -> DataPoint:
+        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
+        fixed_energy: float = 0,
+    ) -> list:
         """Create a DataPoint from the scan row whose column value is closest to center."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
         # get default x, y data
@@ -460,15 +462,17 @@ class ORNLSpiceLoader(AbstractLoader):
             def_x = "_" + def_x
         if def_y[0].isdigit():
             def_y = "_" + def_y
-        x = np.asanyarray(scan.data.data[def_x])
+
+        if def_x in ["s1", "s2", "omega"]:
+            x = self.get_delta_q(tavi_data, scan_num, IPTS, exp_num, mode, fixed_energy)
+        else:
+            x = np.asarray(scan.data.data[def_x])
         y = np.asanyarray(scan.data.data[def_y])
         fit = Fit(fit_package)
         # there may be more than 1 centers depending on user chosen fit models
         centers = self._fit_centers(fit, x, y, model_dict)
         # find the index whose column value is closest to center
-
         idx_list = [np.argmin(np.abs(x - center)) for center in centers]
-
         # now get ORNL specfici information to create a data point
         data_point_list = []
         for idx in idx_list:
@@ -485,8 +489,13 @@ class ORNLSpiceLoader(AbstractLoader):
                 s2 = scan.data.s2[idx]
                 sgl = scan.data.sgl[idx]
                 sgu = scan.data.sgu[idx]
-                return DataPoint(
-                    (h, k, l), ei, ef, MotorAngles(angles_dict={"s2": s2, "s1": s1, "sgl": sgl, "sgu": sgu})
+                data_point_list.append(
+                    DataPoint(
+                        (h, k, l),
+                        ei,
+                        ef,
+                        MotorAngles(angles_dict={"two_theta": s2, "omega": s1, "sgl": sgl, "sgu": sgu}),
+                    )
                 )
             elif "_2theta" in scan.data.data:
                 two_theta = scan.data._2theta[idx]

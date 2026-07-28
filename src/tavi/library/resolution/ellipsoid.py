@@ -14,12 +14,12 @@ class ResolutionEllipsoid:
         self,
         res_mat: Optional[np.ndarray] = None,
         r0: Optional[float] = None,
-        axes: Optional[Tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"),
+        resolution_frame: str | Optional[Tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"),
     ) -> None:
         """Init."""
         self.res_mat = res_mat
         self.r0 = r0
-        self.axes = axes
+        self.axes = resolution_frame
         self.angles = (90, 90, 90)
 
     def project_to_frame(self, r_mat: np.ndarray, psi: float, ub: np.ndarray) -> np.ndarray:
@@ -55,22 +55,22 @@ class ResolutionEllipsoid:
 
         return res_mat_proj, self.r0
 
-    def coh_fwhm(self, axis: int = None) -> float:
+    def coh_fwhm(self, projection_axis: int = None) -> float:
         """
         Coherent FWHM.
 
         Make a cut.
         """
-        idx = int(axis)
+        idx = int(projection_axis)
         return sig2fwhm / np.sqrt(self.res_mat[idx, idx])
 
-    def incoh_fwhm(self, axis: int = None) -> float:
+    def incoh_fwhm(self, projection_axis: int = None) -> float:
         """
         Incoherent FWHM.
 
         Integrate all 3 axes.
         """
-        idx = int(axis)
+        idx = int(projection_axis)
         res_incoh = self.res_mat
         for i in (3, 2, 1, 0):
             if not i == idx:
