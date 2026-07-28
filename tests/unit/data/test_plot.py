@@ -15,6 +15,7 @@ def make_plot(**kwargs) -> Plot:
         x_name="qh",
         y_name="en",
         error_name="error",
+        source_scan_uuid=UUID(value="scan-001"),
     )
     defaults.update(kwargs)
     return Plot(**defaults)

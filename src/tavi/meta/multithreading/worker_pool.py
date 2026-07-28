@@ -2,7 +2,7 @@
 
 import asyncio
 import traceback
-from threading import Thread
+from threading import Lock, Thread
 from typing import Any, Callable, Dict, List
 
 from neutrons_standard.decorators.singleton import Singleton
@@ -69,6 +69,7 @@ class WorkerPool:
     def __init__(self) -> None:
         """Set up event loop so that Signals may work correctly."""
         self.loop = asyncio.new_event_loop()
+        self._lock = Lock()
 
     def create_worker(self, target: Callable, *args: Any, **kwargs: Any) -> Worker:
         """Create a worker."""
@@ -77,21 +78,31 @@ class WorkerPool:
 
     def _dequeue_worker(self, worker: Worker) -> None:
         """Dequeues worker and starts the next in queue if it exists."""
-        self.threads.pop(worker)
-        if len(self.worker_queue) > 0:
-            self.submit_worker(self.worker_queue.pop())
+        next_worker = None
+        with self._lock:
+            self.threads.pop(worker, None)
+            if len(self.worker_queue) > 0:
+                next_worker = self.worker_queue.pop()
+        # submit outside the lock: submit_worker acquires it too, and starting
+        # a thread doesn't need to hold it.
+        if next_worker is not None:
+            self.submit_worker(next_worker)
 
     def submit_worker(self, worker: Worker) -> None:
         """Queues or submits worker to thread."""
-        if len(self.threads) >= self.max_threads:
-            # add to queue
-            self.worker_queue.append(worker)
-        else:
+        with self._lock:
+            if len(self.threads) >= self.max_threads:
+                # add to queue
+                self.worker_queue.append(worker)
+                return
             # spawn thread and delegate
             thread = Thread(target=worker.run)
             self.threads[worker] = thread
+            # Signal.connect() only keeps a weak reference to non-method callables, so a
+            # bare lambda here would be garbage-collected before finished.emit() fires.
+            # Anchor it on the worker, which we're already keeping alive via self.threads.
+            worker._on_finished = lambda: self._dequeue_worker(worker)
+            worker.finished.connect(worker._on_finished)
 
-            worker.finished.connect(lambda: self._dequeue_worker(worker))
-
-            # Start the thread
-            thread.start()
+        # Start the thread outside the lock.
+        thread.start()

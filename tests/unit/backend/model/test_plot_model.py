@@ -32,7 +32,8 @@ def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monit
 class TestPlotModel(unittest.TestCase):
     def setUp(self):
         self.broker = EventBroker()
-        self.model = PlotModel(plots=[])
+        self.raw_scans = {}
+        self.model = PlotModel(plots=[], raw_scans=self.raw_scans)
 
     def tearDown(self):
         pass

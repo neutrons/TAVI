@@ -48,6 +48,7 @@ def make_plot(uuid_val="plot-001"):
         x_name="qh",
         y_name="en",
         error_name="err",
+        source_scan_uuid=UUID(value="scan-001"),
     )
 
 

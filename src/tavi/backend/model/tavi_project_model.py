@@ -34,6 +34,10 @@ class TaviProjectModel(TaviProjectInterface):
         """Return reference to the plots dict."""
         return self.tavi_data.plots
 
+    def get_raw_scans_handle(self) -> dict:
+        """Return reference to the raw_scans dict."""
+        return self.tavi_data.raw_scans
+
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
         """Load a folder containing raw scans."""
         raw_scans: list[RawScan] = self.raw_scan_load_controller.load_folder(folder)

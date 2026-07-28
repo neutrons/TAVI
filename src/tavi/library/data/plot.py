@@ -20,5 +20,7 @@ class Plot(BaseModel):
     x_name: str
     y_name: str
     error_name: str
+    source_scan_uuid: UUID
+    """uuid of the immutable RawScan this plot derived from. Regenerate a new Plot from it instead of mutating this one."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
