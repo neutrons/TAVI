@@ -38,6 +38,22 @@ def test_rb3_not_checked_by_default(view):
     assert not view.rb3.isChecked()
 
 
+def test_rebin_radio_buttons_disabled(view):
+    """Rebin feature is paused; controls stay visible but non-interactive."""
+    assert not view.rb1.isEnabled()
+    assert not view.rb2.isEnabled()
+    assert not view.rb3.isEnabled()
+
+
+def test_rebin_edits_disabled(view):
+    assert not view.tol_start_edit.isEnabled()
+    assert not view.tol_stop_edit.isEnabled()
+    assert not view.tol_step_edit.isEnabled()
+    assert not view.eq_start_edit.isEnabled()
+    assert not view.eq_stop_edit.isEnabled()
+    assert not view.eq_step_edit.isEnabled()
+
+
 # ---------------------------------------------------------------------------
 # append_plot
 # ---------------------------------------------------------------------------

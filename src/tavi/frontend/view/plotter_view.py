@@ -73,6 +73,20 @@ class Plot1DView(QWidget):
         self.rb2.toggled.connect(self.on_radio_toggled)
         self.rb3.toggled.connect(self.on_radio_toggled)
 
+        # Rebin feature is paused pending a decision on how to handle it with multi-series plots.
+        for widget in (
+            self.rb1,
+            self.rb2,
+            self.rb3,
+            self.tol_start_edit,
+            self.tol_stop_edit,
+            self.tol_step_edit,
+            self.eq_start_edit,
+            self.eq_stop_edit,
+            self.eq_step_edit,
+        ):
+            widget.setEnabled(False)
+
         self.y_axis_edit = QLineEdit("detector")
         self.x_axis_edit = QLineEdit("s2")
         self.preset_type_combo = QComboBox(currentText="normal")
@@ -154,14 +168,21 @@ class Plot1DView(QWidget):
         self.canvas.axes.cla()
         self.canvas.draw()
 
-    def _render_plots(self, plots: list) -> None:
+    def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
-        for plot in plots:
+        for item in resolved:
             self.append_plot(
-                plot.x, plot.y, plot.err, plot.scan_name, plot.normalized_by, plot.x_name, plot.y_name, plot.error_name
+                item["x"],
+                item["y"],
+                item["err"],
+                item["scan_name"],
+                item["normalized_by"],
+                item["x_name"],
+                item["y_name"],
+                item["error_name"],
             )
-            self.sync_axis_fields(plot.x_name, plot.y_name)
+            self.sync_axis_fields(item["x_name"], item["y_name"])
 
     def sync_axis_fields(self, x_name: str, y_name: str) -> None:
         """Reflect the actually-plotted x/y column names in the axis fields."""

@@ -34,5 +34,21 @@ class PlotterPresenter(AbstractPresenter):
         self._model.update_fields(fields)
 
     def handle_plot_focus(self, e: PlotFocusEvent) -> None:
-        """Forward the focused plots to the view via a Qt signal (thread-safe from a worker thread)."""
-        self._view.render_plots_signal.emit(e.plots)
+        """Resolve each plot's series into renderable arrays and forward to the view (thread-safe from a worker thread)."""
+        resolved = []
+        for plot in e.plots:
+            for series in plot.series:
+                x, y, err = self._model.resolve_series(series)
+                resolved.append(
+                    {
+                        "x": x,
+                        "y": y,
+                        "err": err,
+                        "scan_name": series.scan_name,
+                        "normalized_by": series.normalized_by,
+                        "x_name": series.x_name,
+                        "y_name": series.y_name,
+                        "error_name": series.error_name,
+                    }
+                )
+        self._view.render_plots_signal.emit(resolved)

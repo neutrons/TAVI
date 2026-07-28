@@ -2,12 +2,11 @@
 
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
 
 from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.plot import Plot
+from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
@@ -40,15 +39,16 @@ def make_raw_scan(uuid_val="scan-001"):
 def make_plot(uuid_val="plot-001"):
     return Plot(
         uuid=UUID(value=uuid_val),
-        x=np.array([1.0, 2.0]),
-        y=np.array([3.0, 4.0]),
-        err=np.array([0.0, 0.0]),
-        scan_name="test_plot",
-        normalized_by="monitor",
-        x_name="qh",
-        y_name="en",
-        error_name="err",
-        source_scan_uuid=UUID(value="scan-001"),
+        series=[
+            PlotSeries(
+                source_scan_uuid=UUID(value="scan-001"),
+                scan_name="test_plot",
+                normalized_by="monitor",
+                x_name="qh",
+                y_name="en",
+                error_name="err",
+            )
+        ],
     )
 
 

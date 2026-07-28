@@ -4,19 +4,19 @@ import unittest
 from unittest import mock
 
 from tavi.backend.model.plot_model import PlotModel
-from tavi.library.data.plot import Plot
+from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
 
 
-def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monitor", 1.0)) -> RawScan:
+def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monitor", 1.0), uuid_val="scan-001") -> RawScan:
     if x_vals is None:
         x_vals = [1.0, 2.0, 3.0]
     if y_vals is None:
         y_vals = [1.0, 2.0, 3.0]
     return RawScan(
-        uuid=UUID(value="scan-001"),
+        uuid=UUID(value=uuid_val),
         data=ScanData(data={x_col: x_vals, y_col: y_vals}),
         metadata=ScanMetadata(),
         tavimeta=TaviMetadata(
@@ -25,7 +25,7 @@ def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monit
             friendly_name="test_scan",
             friendly_path="/test_path",
         ),
-        prov=Provenance(raw_file="scan0001.dat", contributing_scans={UUID(value="scan-001"): 1}),
+        prov=Provenance(raw_file="scan0001.dat", contributing_scans={UUID(value=uuid_val): 1}),
     )
 
 
@@ -52,24 +52,26 @@ class TestPlotModel(unittest.TestCase):
         assert len(received_events) == 1
         assert isinstance(received_events[0], PlotFocusEvent)
 
-    def test_plot_contains_correct_scan_name(self):
+    def test_plot_has_single_series_with_correct_scan_name(self):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
         scan = make_raw_scan()
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        assert received[0].plots[0].scan_name == "test_scan"
+        assert len(received[0].plots[0].series) == 1
+        assert received[0].plots[0].series[0].scan_name == "test_scan"
 
-    def test_plot_contains_correct_x_data(self):
+    def test_plot_series_points_at_source_scan(self):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        scan = make_raw_scan(x_col="qh", x_vals=[10.0, 20.0, 30.0])
+        scan = make_raw_scan(x_col="qh")
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        np.testing.assert_array_equal(received[0].plots[0].x, [10.0, 20.0, 30.0])
-        assert received[0].plots[0].x_name == "qh"
+        series = received[0].plots[0].series[0]
+        assert series.source_scan_uuid == scan.uuid
+        assert series.x_name == "qh"
 
     def test_plot_normalized_by_set_from_tavimeta(self):
         received: list[PlotFocusEvent] = []
@@ -78,7 +80,7 @@ class TestPlotModel(unittest.TestCase):
         scan = make_raw_scan(norm=("detector", 1.0))
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        assert received[0].plots[0].normalized_by == "detector"
+        assert received[0].plots[0].series[0].normalized_by == "detector"
 
     def test_plot_normalized_by_none_when_no_normalization(self):
         received: list[PlotFocusEvent] = []
@@ -87,16 +89,7 @@ class TestPlotModel(unittest.TestCase):
         scan = make_raw_scan(norm=None)
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        assert received[0].plots[0].normalized_by is None
-
-    def test_plot_err_is_sqrt_y_over_two(self):
-        received: list[PlotFocusEvent] = []
-        self.broker.register(PlotFocusEvent, received.append)
-
-        scan = make_raw_scan(x_vals=[1.0, 2.0, 3.0], y_vals=[1.0, 2.0, 3.0])
-        self.broker.publish(RawScanFocusEvent(scans=[scan]))
-
-        np.testing.assert_array_equal(received[0].plots[0].err, np.sqrt([1.0, 2.0, 3.0]) / 2)
+        assert received[0].plots[0].series[0].normalized_by is None
 
     def test_only_first_scan_processed(self):
         """PlotModel only handles scans[0] from the event."""
@@ -109,3 +102,72 @@ class TestPlotModel(unittest.TestCase):
         self.broker.publish(RawScanFocusEvent(scans=[scan1, scan2]))
 
         assert len(received[0].plots) == 1
+
+    def test_resolve_series_returns_named_columns(self):
+        scan = make_raw_scan(x_col="qh", x_vals=[10.0, 20.0, 30.0], y_col="en", y_vals=[1.0, 2.0, 3.0])
+        self.raw_scans[scan.uuid] = scan
+        series = PlotSeries(
+            source_scan_uuid=scan.uuid,
+            scan_name="test_scan",
+            normalized_by=None,
+            x_name="qh",
+            y_name="en",
+            error_name="error",
+        )
+
+        x, y, err = self.model.resolve_series(series)
+
+        np.testing.assert_array_equal(x, [10.0, 20.0, 30.0])
+        np.testing.assert_array_equal(y, [1.0, 2.0, 3.0])
+
+    def test_resolve_series_err_is_sqrt_abs_y_over_two(self):
+        scan = make_raw_scan(x_vals=[1.0, 2.0, 3.0], y_vals=[1.0, 2.0, 3.0])
+        self.raw_scans[scan.uuid] = scan
+        series = PlotSeries(
+            source_scan_uuid=scan.uuid,
+            scan_name="test_scan",
+            normalized_by=None,
+            x_name="qh",
+            y_name="en",
+            error_name="error",
+        )
+
+        _, _, err = self.model.resolve_series(series)
+
+        np.testing.assert_array_equal(err, np.sqrt(np.abs([1.0, 2.0, 3.0])) / 2)
+
+    def test_update_fields_updates_axis_names_on_series(self):
+        scan = make_raw_scan(x_col="qh", y_col="en")
+        self.raw_scans[scan.uuid] = scan
+        self.broker.register(RawScanFocusEvent, self.model._handle_raw_scan_focus_event)
+        self.broker.publish(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        response = self.model.update_fields(
+            {"x_axis": "en", "y_axis": "qh", "preset_channel": ""}
+        )
+
+        assert response.code.name == "OK"
+        series = received[0].plots[0].series[0]
+        assert series.x_name == "en"
+        assert series.y_name == "qh"
+
+    def test_update_fields_no_focused_plot_is_noop(self):
+        response = self.model.update_fields({"x_axis": "", "y_axis": "", "preset_channel": ""})
+
+        assert response.code.name == "OK"
+
+    def test_update_fields_unknown_column_is_noop(self):
+        scan = make_raw_scan(x_col="qh", y_col="en")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        response = self.model.update_fields({"x_axis": "nonexistent", "y_axis": "en", "preset_channel": ""})
+
+        assert response.code.name == "OK"
+        assert len(received) == 0
