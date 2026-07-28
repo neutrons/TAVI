@@ -57,13 +57,14 @@ than a named list of these pointers.
             +str y_name
             +str error_name
         }
-        class RawScan {
+        class Scan {
+            <<RawScan today; ComboScan/ProcessedScan later>>
             +UUID uuid
             +ScanData data
             +TaviMetadata tavimeta
         }
         Plot "1" --> "1..*" PlotSeries : series
-        PlotSeries "1" --> "1" RawScan : source_scan_uuid
+        PlotSeries "1" --> "1" Scan : source_scan_uuid
 
 Why this matters:
 
@@ -83,36 +84,69 @@ Resolving a Series to Arrays
 -----------------------------
 
 Something still has to turn a ``PlotSeries`` into actual numbers before
-matplotlib can draw them. That responsibility belongs to ``PlotModel``,
-which holds the live handle to the raw-scan store:
+matplotlib can draw them, but that must not become an excuse to hand the
+presenter or view a live handle into a model's storage. Presenters are pure
+orchestration and views are pure rendering — neither may own or reach into
+state. So resolution is split across the event boundary instead of being a
+method call across it:
+
+``tavi.library.data.plot_resolution`` holds two plain, stateless functions:
 
 .. code-block:: python
 
-    class PlotModel(PlotModelInterface):
-        def resolve_series(self, series: PlotSeries) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-            """Look up the referenced scan and pull the x/y/err arrays named by this series."""
-            scan = self._raw_scans[series.source_scan_uuid]
-            x = np.array(scan.data.data[series.x_name])
-            y = np.array(scan.data.data[series.y_name])
-            err = np.sqrt(np.abs(y)) / 2
-            return x, y, err
+    def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Look up the scan this series points at and pull the x/y/err arrays named by it."""
+        scan = scans[series.source_scan_uuid]
+        x = np.array(scan.data.data[series.x_name])
+        y = np.array(scan.data.data[series.y_name])
+        err = np.sqrt(np.abs(y)) / 2
+        return x, y, err
 
-``PlotterPresenter.handle_plot_focus`` calls ``resolve_series`` once per
-``PlotSeries`` in the focused ``Plot`` and hands the resulting arrays to the
-view. The view never sees a scan or a ``PlotSeries`` directly — only the
-resolved arrays and display strings (``scan_name``, ``x_name``, ``y_name``,
-``normalized_by``, ``error_name``).
+
+    def scans_for_plots(plots: list[Plot], scans: dict[UUID, Scan]) -> dict[UUID, Scan]:
+        """Return the minimal {uuid: Scan} slice of `scans` referenced by any series in `plots`."""
+        return {series.source_scan_uuid: scans[series.source_scan_uuid]
+                for plot in plots for series in plot.series}
+
+Whichever model actually owns scan storage — ``PlotModel`` (raw-scan-focus,
+``update_fields``) or ``TaviProjectModel`` (re-focusing a previously saved
+``Plot``) — calls ``scans_for_plots`` right before publishing, and attaches
+the result to ``PlotFocusEvent.scans``:
+
+.. code-block:: python
+
+    self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
+
+``EventBroker.publish`` deep-copies every event before delivering it (this
+is not special-cased for ``scans`` — every event field already gets this),
+so what the presenter receives is an independent snapshot, not a live
+reference into ``self._raw_scans``.
+
+``PlotterPresenter.handle_plot_focus`` then calls ``resolve_series`` once
+per ``PlotSeries`` across ``e.plots``, reading only ``e.scans`` — never a
+model, never a stored handle:
+
+.. code-block:: python
+
+    def handle_plot_focus(self, e: PlotFocusEvent) -> None:
+        resolved = [(*resolve_series(series, e.scans), series) for plot in e.plots for series in plot.series]
+        self._view.render_plots_signal.emit(resolved)
+
+The view never sees a scan, a live model, or a ``PlotSeries`` from storage —
+only the resolved arrays and the ``PlotSeries`` snapshot carrying the
+display strings (``scan_name``, ``x_name``, ``y_name``, ``normalized_by``,
+``error_name``) for that one render pass.
 
 .. note::
 
-   ``resolve_series`` is a pure, side-effect-free read of already-loaded
-   data, so it is registered in ``PlotModelInterface._proxy_sync_methods``
-   and called directly rather than dispatched to a worker thread. Every
-   other model method (``update_fields``, ``load_raw_scan_from_folder``, ...)
-   is a *command*: it runs asynchronously and reports back only through
-   events. Do not add a new proxied model method that needs a return value
-   without adding it to ``_proxy_sync_methods`` — see
-   ``tavi.meta.multithreading.proxy.Proxy``.
+   It is tempting to instead give the presenter a direct ``raw_scans``
+   handle (mirroring how ``PlotModel`` is constructed with one), or to let
+   the presenter call a model method synchronously for the resolved arrays.
+   Both were tried and rejected: a handle makes the presenter a co-owner of
+   model state, and a synchronous call-back defeats the async
+   proxy/worker/event design (see ``tavi.meta.multithreading.proxy.Proxy``)
+   that every other model method relies on. The event itself must already
+   carry everything the presenter/view need.
 
 Example: A Single Raw Scan
 ----------------------------
@@ -144,7 +178,7 @@ Focusing one ``RawScan`` produces a ``Plot`` with exactly one ``PlotSeries``:
     )
     plot = Plot(series=[series])
 
-    x, y, err = plot_model.resolve_series(plot.series[0])
+    x, y, err = resolve_series(plot.series[0], {scan.uuid: scan})
     assert list(x) == [1.0, 2.0, 3.0]
 
 Example: Multiple Scans on One Plot
@@ -179,10 +213,14 @@ different ``source_scan_uuid``. Nothing about ``Plot`` changes:
     assert len(plot.series) == 2
     assert plot.series[0].source_scan_uuid != plot.series[1].source_scan_uuid
 
-    # PlotterPresenter resolves + appends each series independently, so both
-    # end up as separate error-bar containers on the same axes.
+    # The publishing model attaches both referenced scans to the event...
+    scans = scans_for_plots([plot], {scan_1.uuid: scan_1, scan_2.uuid: scan_2})
+
+    # ...and PlotterPresenter resolves + appends each series independently
+    # against that snapshot, so both end up as separate error-bar containers
+    # on the same axes.
     for series in plot.series:
-        x, y, err = plot_model.resolve_series(series)
+        x, y, err = resolve_series(series, scans)
         view.append_plot(x, y, err, series.scan_name, series.normalized_by,
                           series.x_name, series.y_name, series.error_name)
 
@@ -207,9 +245,9 @@ field already anticipates exactly this — a derived scan mapping back to one
 or more contributing source uuids). ``ProcessedScan`` would sit in the same
 role ``RawScan`` does today: immutable once produced, stored in a
 scan-lookup dict keyed by uuid, and resolvable by ``resolve_series`` without
-any change to that method — ``resolve_series`` only needs "a scan with a
-``.data.data[column_name]``", and does not care whether that scan is raw or
-processed.
+any change to that function — ``resolve_series``/``PlotFocusEvent.scans``
+are already typed as ``Scan``, not ``RawScan``, precisely so a
+``ProcessedScan`` slots in without touching either.
 
 .. mermaid::
 
@@ -246,7 +284,7 @@ Sketch of the intended flow, once implemented:
     rebinned_series = series.model_copy(update={"source_scan_uuid": processed.uuid})
     assert rebinned_series.source_scan_uuid == processed.uuid
 
-    x, y, err = plot_model.resolve_series(rebinned_series)  # reads from `processed`, not `raw_scan`
+    x, y, err = resolve_series(rebinned_series, {processed.uuid: processed})  # reads `processed`, not `raw_scan`
 
 Under this design, "undo rebin" is just repointing the ``PlotSeries`` back
 at the original ``source_scan_uuid`` — no data needs to be restored, because
@@ -260,8 +298,21 @@ Plot is a view, scans are the data
 
 ``Plot``/``PlotSeries`` belong to the presentation/composition layer;
 ``RawScan`` (and, eventually, ``ProcessedScan``) belong to the data layer.
-Resolution from one to the other happens exactly once, in ``PlotModel``,
-right before rendering.
+Turning one into the other is a pure function (``resolve_series``), never a
+stateful lookup a presenter or view performs on its own.
+
+Presenters and views hold no state — the event does
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Only the models that own scan storage (``PlotModel``, ``TaviProjectModel``)
+ever read ``raw_scans``. Whichever one publishes ``PlotFocusEvent`` attaches
+exactly the scans its plots' series reference (``scans_for_plots``) to
+``PlotFocusEvent.scans``. ``PlotterPresenter`` and ``Plot1DView`` resolve
+against that per-event snapshot and nothing else — no live handle, no
+synchronous call back into a model. This is the same reason
+``RawScanFocusEvent`` already carries full ``RawScan`` objects rather than
+uuids for the presenter to look up: the event is the only channel through
+which rendering-layer code is allowed to see data.
 
 Series list, not a single pointer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
