@@ -8,6 +8,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as Navigation
 from matplotlib.figure import Figure
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import (
+    QButtonGroup,
     QComboBox,
     QFormLayout,
     QGridLayout,
@@ -48,6 +49,13 @@ class Plot1DView(QWidget):
         self.rb1.toggle()
         self.rb2 = QRadioButton("Rebin X-Axis with Tolerance")
         self.rb3 = QRadioButton("Rebin X-Axis with Equal Step Size")
+        self._rebin_radio_group = QButtonGroup(self)
+        for rb in (self.rb1, self.rb2, self.rb3):
+            self._rebin_radio_group.addButton(rb)
+        self._rebin_mode_by_radio = {
+            self.rb2: RebinMode.TOLERANCE,
+            self.rb3: RebinMode.EQUAL_STEP,
+        }
 
         # 2. Add to layout
         rebin_grid.addWidget(self.rb1, 0, 0)
@@ -207,12 +215,7 @@ class Plot1DView(QWidget):
 
     def get_plot_fields(self) -> PlotFields:
         """Return current values of all plot control fields."""
-        if self.rb2.isChecked():
-            rebin_mode = RebinMode.TOLERANCE
-        elif self.rb3.isChecked():
-            rebin_mode = RebinMode.EQUAL_STEP
-        else:
-            rebin_mode = RebinMode.NONE
+        rebin_mode = self._rebin_mode_by_radio.get(self._rebin_radio_group.checkedButton(), RebinMode.NONE)
         return PlotFields(
             y_axis=self.y_axis_edit.text(),
             x_axis=self.x_axis_edit.text(),
