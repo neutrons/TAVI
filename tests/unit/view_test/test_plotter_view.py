@@ -1,5 +1,7 @@
 """Tests for Plot1DView."""
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
@@ -177,3 +179,211 @@ def test_toggling_rb1_prints_no_rebin(view, capsys):
     view.rb1.setChecked(True)
     captured = capsys.readouterr()
     assert "No Rebin" in captured.out
+
+
+# ---------------------------------------------------------------------------
+# default field values
+# ---------------------------------------------------------------------------
+
+
+def test_default_axis_field_values(view):
+    assert view.y_axis_edit.text() == "detector"
+    assert view.x_axis_edit.text() == "s2"
+
+
+def test_default_preset_field_values(view):
+    # preset combos have no items at construction, so the `currentText="..."`
+    # constructor kwarg is silently ignored by Qt; only the value edit sticks.
+    assert view.preset_type_combo.currentText() == ""
+    assert view.preset_channel_combo.currentText() == ""
+    assert view.preset_value_edit.text() == "1"
+
+
+def test_default_rebin_field_values(view):
+    assert view.tol_start_edit.text() == "0"
+    assert view.tol_stop_edit.text() == "2"
+    assert view.tol_step_edit.text() == "0.02"
+    assert view.eq_start_edit.text() == "0"
+    assert view.eq_stop_edit.text() == "2"
+    assert view.eq_step_edit.text() == "0.02"
+
+
+# ---------------------------------------------------------------------------
+# sync_axis_fields
+# ---------------------------------------------------------------------------
+
+
+def test_sync_axis_fields_updates_edits(view):
+    view.sync_axis_fields("qh", "en")
+    assert view.x_axis_edit.text() == "qh"
+    assert view.y_axis_edit.text() == "en"
+
+
+# ---------------------------------------------------------------------------
+# _render_plots / render_plots_signal
+# ---------------------------------------------------------------------------
+
+
+def _series(scan_name="scan1", normalized_by="monitor", x_name="qh", y_name="en", error_name="err"):
+    return SimpleNamespace(
+        scan_name=scan_name,
+        normalized_by=normalized_by,
+        x_name=x_name,
+        y_name=y_name,
+        error_name=error_name,
+    )
+
+
+def test_render_plots_clears_then_plots_each_series(view):
+    view.append_plot(
+        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+    )
+    resolved = [
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(scan_name="a")),
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(scan_name="b")),
+    ]
+    view._render_plots(resolved)
+    labels = [c.get_label() for c in view.canvas.axes.containers]
+    assert len(view.canvas.axes.containers) == 2
+    assert any("a" in lbl for lbl in labels)
+    assert any("b" in lbl for lbl in labels)
+    assert "old" not in labels
+
+
+def test_render_plots_syncs_axis_fields_to_last_series(view):
+    resolved = [
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qh", y_name="en")),
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qk", y_name="ei")),
+    ]
+    view._render_plots(resolved)
+    assert view.x_axis_edit.text() == "qk"
+    assert view.y_axis_edit.text() == "ei"
+
+
+def test_render_plots_signal_emits_to_render_plots(view, qtbot):
+    resolved = [
+        (np.array([1.0]), np.array([2.0]), np.array([0.0]), _series(scan_name="via_signal")),
+    ]
+    with qtbot.waitSignal(view.render_plots_signal, timeout=1000):
+        view.render_plots_signal.emit(resolved)
+    labels = [c.get_label() for c in view.canvas.axes.containers]
+    assert any("via_signal" in lbl for lbl in labels)
+
+
+def test_render_plots_empty_list_only_clears(view):
+    view.append_plot(
+        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+    )
+    view._render_plots([])
+    assert len(view.canvas.axes.containers) == 0
+
+
+# ---------------------------------------------------------------------------
+# get_plot_fields
+# ---------------------------------------------------------------------------
+
+
+def test_get_plot_fields_default_rebin_mode_is_none(view):
+    fields = view.get_plot_fields()
+    assert fields["rebin_mode"] == "none"
+
+
+def test_get_plot_fields_rebin_mode_tolerance(view):
+    view.rb2.setChecked(True)
+    fields = view.get_plot_fields()
+    assert fields["rebin_mode"] == "tolerance"
+
+
+def test_get_plot_fields_rebin_mode_equal_step(view):
+    view.rb3.setChecked(True)
+    fields = view.get_plot_fields()
+    assert fields["rebin_mode"] == "equal_step"
+
+
+def test_get_plot_fields_contains_all_expected_keys(view):
+    fields = view.get_plot_fields()
+    assert set(fields) == {
+        "y_axis", "x_axis", "rebin_mode",
+        "rebin_tolerance_start", "rebin_tolerance_stop", "rebin_tolerance_step",
+        "rebin_equal_start", "rebin_equal_stop", "rebin_equal_step",
+        "preset_type", "preset_channel", "preset_value",
+    }
+
+
+def test_get_plot_fields_reflects_edited_values(view):
+    view.y_axis_edit.setText("en")
+    view.x_axis_edit.setText("qh")
+    view.preset_value_edit.setText("42")
+    fields = view.get_plot_fields()
+    assert fields["y_axis"] == "en"
+    assert fields["x_axis"] == "qh"
+    assert fields["preset_value"] == "42"
+
+
+# ---------------------------------------------------------------------------
+# reset_controls_to_defaults
+# ---------------------------------------------------------------------------
+
+
+def test_reset_controls_to_defaults_restores_values(view):
+    view.rb2.setChecked(True)
+    view.tol_start_edit.setText("9")
+    view.eq_step_edit.setText("9")
+    view.preset_type_combo.setCurrentText("special")
+    view.preset_channel_combo.setCurrentText("other")
+    view.preset_value_edit.setText("7")
+
+    view.reset_controls_to_defaults()
+
+    assert view.rb1.isChecked()
+    assert view.tol_start_edit.text() == "0"
+    assert view.eq_step_edit.text() == "0.02"
+    # combos have no items, so setCurrentText() on them is a no-op both here
+    # and when "special"/"other" were set above; text stays empty throughout.
+    assert view.preset_type_combo.currentText() == ""
+    assert view.preset_channel_combo.currentText() == ""
+    assert view.preset_value_edit.text() == "1"
+
+
+def test_reset_controls_to_defaults_does_not_emit_fields_focus_changed(view, qtbot):
+    view.rb2.setChecked(True)
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.reset_controls_to_defaults()
+    assert received == []
+
+
+# ---------------------------------------------------------------------------
+# hookup_fields_changed_signal / fields_focus_changed wiring
+# ---------------------------------------------------------------------------
+
+
+def test_hookup_fields_changed_signal_invokes_callback(view, qtbot):
+    calls = []
+    view.hookup_fields_changed_signal(lambda: calls.append(True))
+    view.fields_focus_changed.emit()
+    assert calls == [True]
+
+
+def test_editing_finished_on_axis_edit_emits_fields_focus_changed(view, qtbot):
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.y_axis_edit.editingFinished.emit()
+
+
+def test_preset_combo_index_change_emits_fields_focus_changed(view, qtbot):
+    view.preset_type_combo.addItem("other")
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.preset_type_combo.setCurrentIndex(1)
+
+
+def test_checking_radio_button_emits_fields_focus_changed(view, qtbot):
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.rb2.setChecked(True)
+
+
+def test_unchecking_radio_button_does_not_emit_fields_focus_changed(view, qtbot):
+    view.rb2.setChecked(True)
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.rb2.setChecked(False)
+    assert received == []
