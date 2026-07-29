@@ -52,39 +52,47 @@ class PlotModel(PlotModelInterface):
         if self._last_plot is None:
             return ModelResponse(code=ResponseCode.OK)
 
-        updated_series = []
-        for series in self._last_plot.series:
-            scan = self._raw_scans[series.source_scan_uuid]
-
-            x_name = fields.x_axis.strip()
-            y_name = fields.y_axis.strip()
-            if x_name not in scan.data.data or y_name not in scan.data.data:
-                return ModelResponse(code=ResponseCode.OK)
-
-            if fields.preset_type == PresetType.NORMALIZE:
-                norm_channel = fields.preset_channel.strip()
-                if norm_channel not in scan.data.data:
-                    return ModelResponse(code=ResponseCode.OK)
-                try:
-                    norm_value = float(fields.preset_value.strip())
-                except ValueError:
-                    return ModelResponse(code=ResponseCode.OK)
-            else:
-                norm_channel = None
-                norm_value = None
-
-            updated_series.append(
-                series.model_copy(
-                    update={
-                        "x_name": x_name,
-                        "y_name": y_name,
-                        "normalized_by": norm_channel,
-                        "normalized_by_value": norm_value,
-                    }
-                )
+        updated_plot = self._apply_fields_to_plot(self._last_plot, fields)
+        if updated_plot is not None:
+            self._last_plot = updated_plot
+            self._event_broker.publish(
+                PlotFocusEvent(plots=[updated_plot], scans=scans_for_plots([updated_plot], self._raw_scans))
             )
 
-        plot = self._last_plot.model_copy(update={"series": updated_series})
-        self._last_plot = plot
-        self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
         return ModelResponse(code=ResponseCode.OK)
+
+    def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields) -> Optional[Plot]:
+        """Return a copy of ``plot`` with every series updated per ``fields``, or None if any series rejects them."""
+        updated_series = []
+        for series in plot.series:
+            scan = self._raw_scans[series.source_scan_uuid]
+            series_update = self._resolve_series_update(scan, fields)
+            if series_update is None:
+                return None
+            updated_series.append(series.model_copy(update=series_update))
+
+        return plot.model_copy(update={"series": updated_series})
+
+    def _resolve_series_update(self, scan: RawScan, fields: PlotFields) -> Optional[dict]:
+        """Build the ``model_copy()`` update dict for one series against its source scan, or None if invalid."""
+        x_name = fields.x_axis.strip()
+        y_name = fields.y_axis.strip()
+        if x_name not in scan.data.data or y_name not in scan.data.data:
+            return None
+
+        norm_channel, norm_value = None, None
+        if fields.preset_type == PresetType.NORMALIZE:
+            norm_channel = fields.preset_channel.strip()
+            if norm_channel not in scan.data.data:
+                return None
+            try:
+                norm_value = float(fields.preset_value.strip())
+            except ValueError:
+                return None
+
+        return {
+            "x_name": x_name,
+            "y_name": y_name,
+            "normalized_by": norm_channel,
+            "normalized_by_value": norm_value,
+        }
