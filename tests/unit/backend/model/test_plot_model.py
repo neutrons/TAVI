@@ -3,9 +3,26 @@ import unittest
 from unittest import mock
 
 from tavi.backend.model.plot_model import PlotModel
+from tavi.library.data.plot import PlotFields
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+
+
+def make_plot_fields(**overrides) -> PlotFields:
+    defaults = dict(
+        y_axis="",
+        x_axis="",
+        rebin_mode="none",
+        rebin_start="0",
+        rebin_stop="2",
+        rebin_step="0.02",
+        preset_type="normal",
+        preset_channel="",
+        preset_value="1",
+    )
+    defaults.update(overrides)
+    return PlotFields(**defaults)
 
 
 def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monitor", 1.0), uuid_val="scan-001") -> RawScan:
@@ -126,9 +143,7 @@ class TestPlotModel(unittest.TestCase):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        response = self.model.update_fields(
-            {"x_axis": "en", "y_axis": "qh", "preset_channel": ""}
-        )
+        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"))
 
         assert response.code.name == "OK"
         series = received[0].plots[0].series[0]
@@ -136,7 +151,7 @@ class TestPlotModel(unittest.TestCase):
         assert series.y_name == "qh"
 
     def test_update_fields_no_focused_plot_is_noop(self):
-        response = self.model.update_fields({"x_axis": "", "y_axis": "", "preset_channel": ""})
+        response = self.model.update_fields(make_plot_fields())
 
         assert response.code.name == "OK"
 
@@ -148,7 +163,7 @@ class TestPlotModel(unittest.TestCase):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        response = self.model.update_fields({"x_axis": "nonexistent", "y_axis": "en", "preset_channel": ""})
+        response = self.model.update_fields(make_plot_fields(x_axis="nonexistent", y_axis="en"))
 
         assert response.code.name == "OK"
         assert len(received) == 0

@@ -4,7 +4,7 @@ from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.plot import Plot, PlotSeries
+from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.plot_resolution import scans_for_plots
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
@@ -43,7 +43,7 @@ class PlotModel(PlotModelInterface):
         self._last_plot = plot
         self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
 
-    def update_fields(self, fields: dict) -> ModelResponse:
+    def update_fields(self, fields: PlotFields) -> ModelResponse:
         """Update axis columns on every series of the currently-focused plot using the plotter's control fields."""
         if self._last_plot is None:
             return ModelResponse(code=ResponseCode.OK)
@@ -52,12 +52,12 @@ class PlotModel(PlotModelInterface):
         for series in self._last_plot.series:
             scan = self._raw_scans[series.source_scan_uuid]
 
-            x_name = fields["x_axis"].strip() or scan.tavimeta.default_axis[0]
-            y_name = fields["y_axis"].strip() or scan.tavimeta.default_axis[1]
+            x_name = fields.x_axis.strip()
+            y_name = fields.y_axis.strip()
             if x_name not in scan.data.data or y_name not in scan.data.data:
                 return ModelResponse(code=ResponseCode.OK)
 
-            norm = fields["preset_channel"].strip() or (
+            norm = fields.preset_channel.strip() or (
                 scan.tavimeta.normalization[0] if scan.tavimeta.normalization else None
             )
 

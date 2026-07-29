@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.scan import UUID, UUIDFactory
 
 
@@ -28,3 +29,17 @@ class Plot(BaseModel):
     series: list[PlotSeries]
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class PlotFields(BaseModel):
+    """Snapshot of the plotter view's control fields, as passed from the presenter to the model."""
+
+    y_axis: str
+    x_axis: str
+    rebin_mode: RebinMode
+    rebin_start: str
+    rebin_stop: str
+    rebin_step: str
+    preset_type: str
+    preset_channel: str
+    preset_value: str

@@ -20,6 +20,9 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from tavi.library.data.enum.rebin_mode import RebinMode
+from tavi.library.data.plot import PlotFields
+
 
 class Plot1DView(QWidget):
     """1D Plotter panel widget."""
@@ -48,25 +51,20 @@ class Plot1DView(QWidget):
 
         # 2. Add to layout
         rebin_grid.addWidget(self.rb1, 0, 0)
+        rebin_grid.addWidget(self.rb2, 1, 0)
+        rebin_grid.addWidget(self.rb3, 2, 0)
         rebin_grid.addWidget(QLabel("Start"), 0, 1)
         rebin_grid.addWidget(QLabel("Stop"), 0, 2)
         rebin_grid.addWidget(QLabel("Step"), 0, 3)
 
-        self.tol_start_edit = QLineEdit("0")
-        self.tol_stop_edit = QLineEdit("2")
-        self.tol_step_edit = QLineEdit("0.02")
-        rebin_grid.addWidget(self.rb2, 1, 0)
-        rebin_grid.addWidget(self.tol_start_edit, 1, 1)
-        rebin_grid.addWidget(self.tol_stop_edit, 1, 2)
-        rebin_grid.addWidget(self.tol_step_edit, 1, 3)
-
-        self.eq_start_edit = QLineEdit("0")
-        self.eq_stop_edit = QLineEdit("2")
-        self.eq_step_edit = QLineEdit("0.02")
-        rebin_grid.addWidget(self.rb3, 2, 0)
-        rebin_grid.addWidget(self.eq_start_edit, 2, 1)
-        rebin_grid.addWidget(self.eq_stop_edit, 2, 2)
-        rebin_grid.addWidget(self.eq_step_edit, 2, 3)
+        # Modes are mutually exclusive (radio group), so tolerance and equal-step
+        # share a single set of range fields rather than each having their own.
+        self.rebin_start_edit = QLineEdit("0")
+        self.rebin_stop_edit = QLineEdit("2")
+        self.rebin_step_edit = QLineEdit("0.02")
+        rebin_grid.addWidget(self.rebin_start_edit, 1, 1, 2, 1)
+        rebin_grid.addWidget(self.rebin_stop_edit, 1, 2, 2, 1)
+        rebin_grid.addWidget(self.rebin_step_edit, 1, 3, 2, 1)
 
         # 3. Connect toggled signal to the handler
         self.rb1.toggled.connect(self.on_radio_toggled)
@@ -78,12 +76,9 @@ class Plot1DView(QWidget):
             self.rb1,
             self.rb2,
             self.rb3,
-            self.tol_start_edit,
-            self.tol_stop_edit,
-            self.tol_step_edit,
-            self.eq_start_edit,
-            self.eq_stop_edit,
-            self.eq_step_edit,
+            self.rebin_start_edit,
+            self.rebin_stop_edit,
+            self.rebin_step_edit,
         ):
             widget.setEnabled(False)
 
@@ -105,12 +100,9 @@ class Plot1DView(QWidget):
         for edit in (
             self.y_axis_edit,
             self.x_axis_edit,
-            self.tol_start_edit,
-            self.tol_stop_edit,
-            self.tol_step_edit,
-            self.eq_start_edit,
-            self.eq_stop_edit,
-            self.eq_step_edit,
+            self.rebin_start_edit,
+            self.rebin_stop_edit,
+            self.rebin_step_edit,
             self.preset_value_edit,
         ):
             edit.editingFinished.connect(self.fields_focus_changed.emit)
@@ -188,12 +180,9 @@ class Plot1DView(QWidget):
             self.rb1,
             self.rb2,
             self.rb3,
-            self.tol_start_edit,
-            self.tol_stop_edit,
-            self.tol_step_edit,
-            self.eq_start_edit,
-            self.eq_stop_edit,
-            self.eq_step_edit,
+            self.rebin_start_edit,
+            self.rebin_stop_edit,
+            self.rebin_step_edit,
             self.preset_type_combo,
             self.preset_channel_combo,
             self.preset_value_edit,
@@ -202,12 +191,9 @@ class Plot1DView(QWidget):
             widget.blockSignals(True)
         try:
             self.rb1.setChecked(True)
-            self.tol_start_edit.setText("0")
-            self.tol_stop_edit.setText("2")
-            self.tol_step_edit.setText("0.02")
-            self.eq_start_edit.setText("0")
-            self.eq_stop_edit.setText("2")
-            self.eq_step_edit.setText("0.02")
+            self.rebin_start_edit.setText("0")
+            self.rebin_stop_edit.setText("2")
+            self.rebin_step_edit.setText("0.02")
             self.preset_type_combo.setCurrentText("normal")
             self.preset_channel_combo.setCurrentText("MCU")
             self.preset_value_edit.setText("1")
@@ -219,28 +205,25 @@ class Plot1DView(QWidget):
         """Connect field focus-change signal to callback."""
         self.fields_focus_changed.connect(callback)
 
-    def get_plot_fields(self) -> dict:
+    def get_plot_fields(self) -> PlotFields:
         """Return current values of all plot control fields."""
         if self.rb2.isChecked():
-            rebin_mode = "tolerance"
+            rebin_mode = RebinMode.TOLERANCE
         elif self.rb3.isChecked():
-            rebin_mode = "equal_step"
+            rebin_mode = RebinMode.EQUAL_STEP
         else:
-            rebin_mode = "none"
-        return {
-            "y_axis": self.y_axis_edit.text(),
-            "x_axis": self.x_axis_edit.text(),
-            "rebin_mode": rebin_mode,
-            "rebin_tolerance_start": self.tol_start_edit.text(),
-            "rebin_tolerance_stop": self.tol_stop_edit.text(),
-            "rebin_tolerance_step": self.tol_step_edit.text(),
-            "rebin_equal_start": self.eq_start_edit.text(),
-            "rebin_equal_stop": self.eq_stop_edit.text(),
-            "rebin_equal_step": self.eq_step_edit.text(),
-            "preset_type": self.preset_type_combo.currentText(),
-            "preset_channel": self.preset_channel_combo.currentText(),
-            "preset_value": self.preset_value_edit.text(),
-        }
+            rebin_mode = RebinMode.NONE
+        return PlotFields(
+            y_axis=self.y_axis_edit.text(),
+            x_axis=self.x_axis_edit.text(),
+            rebin_mode=rebin_mode,
+            rebin_start=self.rebin_start_edit.text(),
+            rebin_stop=self.rebin_stop_edit.text(),
+            rebin_step=self.rebin_step_edit.text(),
+            preset_type=self.preset_type_combo.currentText(),
+            preset_channel=self.preset_channel_combo.currentText(),
+            preset_value=self.preset_value_edit.text(),
+        )
 
     def on_radio_toggled(self) -> None:
         """Identify which button was clicked."""

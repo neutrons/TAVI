@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.plot import PlotFields
 
 
 @pytest.fixture
@@ -48,12 +49,9 @@ def test_rebin_radio_buttons_disabled(view):
 
 
 def test_rebin_edits_disabled(view):
-    assert not view.tol_start_edit.isEnabled()
-    assert not view.tol_stop_edit.isEnabled()
-    assert not view.tol_step_edit.isEnabled()
-    assert not view.eq_start_edit.isEnabled()
-    assert not view.eq_stop_edit.isEnabled()
-    assert not view.eq_step_edit.isEnabled()
+    assert not view.rebin_start_edit.isEnabled()
+    assert not view.rebin_stop_edit.isEnabled()
+    assert not view.rebin_step_edit.isEnabled()
 
 
 # ---------------------------------------------------------------------------
@@ -200,12 +198,9 @@ def test_default_preset_field_values(view):
 
 
 def test_default_rebin_field_values(view):
-    assert view.tol_start_edit.text() == "0"
-    assert view.tol_stop_edit.text() == "2"
-    assert view.tol_step_edit.text() == "0.02"
-    assert view.eq_start_edit.text() == "0"
-    assert view.eq_stop_edit.text() == "2"
-    assert view.eq_step_edit.text() == "0.02"
+    assert view.rebin_start_edit.text() == "0"
+    assert view.rebin_stop_edit.text() == "2"
+    assert view.rebin_step_edit.text() == "0.02"
 
 
 # ---------------------------------------------------------------------------
@@ -283,29 +278,31 @@ def test_render_plots_empty_list_only_clears(view):
 # ---------------------------------------------------------------------------
 
 
+def test_get_plot_fields_returns_plot_fields_instance(view):
+    assert isinstance(view.get_plot_fields(), PlotFields)
+
+
 def test_get_plot_fields_default_rebin_mode_is_none(view):
     fields = view.get_plot_fields()
-    assert fields["rebin_mode"] == "none"
+    assert fields.rebin_mode == "none"
 
 
 def test_get_plot_fields_rebin_mode_tolerance(view):
     view.rb2.setChecked(True)
     fields = view.get_plot_fields()
-    assert fields["rebin_mode"] == "tolerance"
+    assert fields.rebin_mode == "tolerance"
 
 
 def test_get_plot_fields_rebin_mode_equal_step(view):
     view.rb3.setChecked(True)
     fields = view.get_plot_fields()
-    assert fields["rebin_mode"] == "equal_step"
+    assert fields.rebin_mode == "equal_step"
 
 
 def test_get_plot_fields_contains_all_expected_keys(view):
-    fields = view.get_plot_fields()
-    assert set(fields) == {
+    assert set(PlotFields.model_fields) == {
         "y_axis", "x_axis", "rebin_mode",
-        "rebin_tolerance_start", "rebin_tolerance_stop", "rebin_tolerance_step",
-        "rebin_equal_start", "rebin_equal_stop", "rebin_equal_step",
+        "rebin_start", "rebin_stop", "rebin_step",
         "preset_type", "preset_channel", "preset_value",
     }
 
@@ -315,9 +312,9 @@ def test_get_plot_fields_reflects_edited_values(view):
     view.x_axis_edit.setText("qh")
     view.preset_value_edit.setText("42")
     fields = view.get_plot_fields()
-    assert fields["y_axis"] == "en"
-    assert fields["x_axis"] == "qh"
-    assert fields["preset_value"] == "42"
+    assert fields.y_axis == "en"
+    assert fields.x_axis == "qh"
+    assert fields.preset_value == "42"
 
 
 # ---------------------------------------------------------------------------
@@ -327,8 +324,8 @@ def test_get_plot_fields_reflects_edited_values(view):
 
 def test_reset_controls_to_defaults_restores_values(view):
     view.rb2.setChecked(True)
-    view.tol_start_edit.setText("9")
-    view.eq_step_edit.setText("9")
+    view.rebin_start_edit.setText("9")
+    view.rebin_step_edit.setText("9")
     view.preset_type_combo.setCurrentText("special")
     view.preset_channel_combo.setCurrentText("other")
     view.preset_value_edit.setText("7")
@@ -336,8 +333,8 @@ def test_reset_controls_to_defaults_restores_values(view):
     view.reset_controls_to_defaults()
 
     assert view.rb1.isChecked()
-    assert view.tol_start_edit.text() == "0"
-    assert view.eq_step_edit.text() == "0.02"
+    assert view.rebin_start_edit.text() == "0"
+    assert view.rebin_step_edit.text() == "0.02"
     # combos have no items, so setCurrentText() on them is a no-op both here
     # and when "special"/"other" were set above; text stays empty throughout.
     assert view.preset_type_combo.currentText() == ""
