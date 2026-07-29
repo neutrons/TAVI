@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.scan import UUID, UUIDFactory
 
@@ -15,11 +16,12 @@ class PlotSeries(BaseModel):
     """uuid of the scan (e.g. RawScan) this series is derived from."""
     scan_name: str
     normalized_by: Optional[str]
+    normalized_by_value: Optional[float] = None
     x_name: str
     y_name: str
     error_name: str
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    model_config = ConfigDict(arbitrary_types_allowed=True, str_strip_whitespace=True)
 
 
 class Plot(BaseModel):
@@ -40,6 +42,6 @@ class PlotFields(BaseModel):
     rebin_start: str
     rebin_stop: str
     rebin_step: str
-    preset_type: str
+    preset_type: PresetType
     preset_channel: str
     preset_value: str

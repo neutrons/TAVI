@@ -1,6 +1,6 @@
 """1D Plotter view widget."""
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
@@ -21,6 +21,7 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.plot import PlotFields
 
@@ -92,8 +93,9 @@ class Plot1DView(QWidget):
 
         self.y_axis_edit = QLineEdit("detector")
         self.x_axis_edit = QLineEdit("s2")
-        self.preset_type_combo = QComboBox(currentText="normal")
-        self.preset_channel_combo = QComboBox(currentText="MCU")
+        self.preset_type_combo = QComboBox()
+        self.preset_type_combo.addItems([mode.value for mode in PresetType])
+        self.preset_channel_combo = QComboBox()
         self.preset_value_edit = QLineEdit("1")
 
         controls = QFormLayout()
@@ -182,6 +184,17 @@ class Plot1DView(QWidget):
         self.x_axis_edit.setText(x_name)
         self.y_axis_edit.setText(y_name)
 
+    def set_preset_channel_options(self, columns: list[str], default: Optional[str] = None) -> None:
+        """Repopulate the preset-channel dropdown with a newly-focused scan's column names."""
+        self.preset_channel_combo.blockSignals(True)
+        try:
+            self.preset_channel_combo.clear()
+            self.preset_channel_combo.addItems(columns)
+            if default is not None and default in columns:
+                self.preset_channel_combo.setCurrentText(default)
+        finally:
+            self.preset_channel_combo.blockSignals(False)
+
     def reset_controls_to_defaults(self) -> None:
         """Reset rebin and preset controls back to their initial defaults for a newly-focused scan."""
         widgets = (
@@ -192,7 +205,6 @@ class Plot1DView(QWidget):
             self.rebin_stop_edit,
             self.rebin_step_edit,
             self.preset_type_combo,
-            self.preset_channel_combo,
             self.preset_value_edit,
         )
         for widget in widgets:
@@ -202,8 +214,7 @@ class Plot1DView(QWidget):
             self.rebin_start_edit.setText("0")
             self.rebin_stop_edit.setText("2")
             self.rebin_step_edit.setText("0.02")
-            self.preset_type_combo.setCurrentText("normal")
-            self.preset_channel_combo.setCurrentText("MCU")
+            self.preset_type_combo.setCurrentText(PresetType.NONE.value)
             self.preset_value_edit.setText("1")
         finally:
             for widget in widgets:
@@ -223,7 +234,7 @@ class Plot1DView(QWidget):
             rebin_start=self.rebin_start_edit.text(),
             rebin_stop=self.rebin_stop_edit.text(),
             rebin_step=self.rebin_step_edit.text(),
-            preset_type=self.preset_type_combo.currentText(),
+            preset_type=PresetType(self.preset_type_combo.currentText()),
             preset_channel=self.preset_channel_combo.currentText(),
             preset_value=self.preset_value_edit.text(),
         )

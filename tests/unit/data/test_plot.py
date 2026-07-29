@@ -56,6 +56,18 @@ def test_plot_series_normalized_by_can_be_none():
     assert plot.series[0].normalized_by is None
 
 
+def test_plot_series_normalized_by_value_defaults_to_none():
+    plot = make_plot()
+
+    assert plot.series[0].normalized_by_value is None
+
+
+def test_plot_series_normalized_by_value_can_be_set():
+    plot = make_plot(normalized_by_value=2.5)
+
+    assert plot.series[0].normalized_by_value == 2.5
+
+
 def test_plot_supports_multiple_series():
     series_a = make_series(source_scan_uuid=UUID(value="scan-001"), scan_name="scan_a")
     series_b = make_series(source_scan_uuid=UUID(value="scan-002"), scan_name="scan_b")

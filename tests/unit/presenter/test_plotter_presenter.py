@@ -11,7 +11,7 @@ from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import PlotFocusEvent
+from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
 
 
 def make_scan(uuid_val="scan-001", x_col="qh", x_vals=None, y_col="en", y_vals=None) -> RawScan:
@@ -32,7 +32,7 @@ def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name=
     return PlotSeries(
         source_scan_uuid=UUID(value=uuid_val),
         scan_name=scan_name,
-        normalized_by="monitor",
+        normalized_by=None,
         x_name=x_name,
         y_name=y_name,
         error_name="err",
@@ -180,3 +180,59 @@ def test_handle_plot_focus_never_touches_model(presenter):
     presenter.handle_plot_focus(make_event())
 
     assert not presenter._model.method_calls
+
+
+# ---------------------------------------------------------------------------
+# handle_raw_scan_focus
+# ---------------------------------------------------------------------------
+
+
+def test_handle_raw_scan_focus_resets_controls(presenter):
+    presenter._view.reset_controls_to_defaults = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[make_scan()]))
+
+    presenter._view.reset_controls_to_defaults.assert_called_once()
+
+
+def test_handle_raw_scan_focus_populates_preset_channel_options_from_scan_columns(presenter):
+    scan = make_scan(x_col="qh", y_col="en")
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    args = presenter._view.set_preset_channel_options.call_args.args
+    assert set(args[0]) == {"qh", "en"}
+
+
+def test_handle_raw_scan_focus_no_scan_selected_still_resets_controls(presenter):
+    """An empty scan list (nothing selected) must not raise — only reset, no channel population."""
+    presenter._view.reset_controls_to_defaults = MagicMock()
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
+
+    presenter._view.reset_controls_to_defaults.assert_called_once()
+    presenter._view.set_preset_channel_options.assert_not_called()
+
+
+def test_handle_raw_scan_focus_passes_normalization_channel_as_default(presenter):
+    scan = make_scan(x_col="qh", y_col="en")
+    scan.tavimeta.normalization = ("monitor", 1.0)
+    scan.data.data["monitor"] = [1.0, 1.0, 1.0]
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    args = presenter._view.set_preset_channel_options.call_args.args
+    assert args[1] == "monitor"
+
+
+def test_handle_raw_scan_focus_default_is_none_when_scan_has_no_normalization(presenter):
+    scan = make_scan()
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    args = presenter._view.set_preset_channel_options.call_args.args
+    assert args[1] is None

@@ -3,6 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
+from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.plot_resolution import scans_for_plots
@@ -27,14 +28,17 @@ class PlotModel(PlotModelInterface):
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
         # needs to create a new plot when a raw scan is focussed.
+        if not e.scans:
+            return
         scan: RawScan = e.scans[0]
-        norm = scan.tavimeta.normalization[0] if scan.tavimeta.normalization else None
+        norm_channel, norm_value = scan.tavimeta.normalization if scan.tavimeta.normalization else (None, None)
         x_name = scan.tavimeta.default_axis[0]
         y_name = scan.tavimeta.default_axis[1]
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
             scan_name=scan.tavimeta.friendly_name,
-            normalized_by=norm,
+            normalized_by=norm_channel,
+            normalized_by_value=norm_value,
             x_name=x_name,
             y_name=y_name,
             error_name="error",
@@ -57,11 +61,28 @@ class PlotModel(PlotModelInterface):
             if x_name not in scan.data.data or y_name not in scan.data.data:
                 return ModelResponse(code=ResponseCode.OK)
 
-            norm = fields.preset_channel.strip() or (
-                scan.tavimeta.normalization[0] if scan.tavimeta.normalization else None
-            )
+            if fields.preset_type == PresetType.NORMALIZE:
+                norm_channel = fields.preset_channel.strip()
+                if norm_channel not in scan.data.data:
+                    return ModelResponse(code=ResponseCode.OK)
+                try:
+                    norm_value = float(fields.preset_value.strip())
+                except ValueError:
+                    return ModelResponse(code=ResponseCode.OK)
+            else:
+                norm_channel = None
+                norm_value = None
 
-            updated_series.append(series.model_copy(update={"x_name": x_name, "y_name": y_name, "normalized_by": norm}))
+            updated_series.append(
+                series.model_copy(
+                    update={
+                        "x_name": x_name,
+                        "y_name": y_name,
+                        "normalized_by": norm_channel,
+                        "normalized_by_value": norm_value,
+                    }
+                )
+            )
 
         plot = self._last_plot.model_copy(update={"series": updated_series})
         self._last_plot = plot

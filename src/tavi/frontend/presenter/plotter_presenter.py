@@ -25,9 +25,14 @@ class PlotterPresenter(AbstractPresenter):
         """Create the 1D plot view."""
         self._view = Plot1DView()
 
-    def handle_raw_scan_focus(self, _: RawScanFocusEvent) -> None:
+    def handle_raw_scan_focus(self, e: RawScanFocusEvent) -> None:
         """Reset plotter controls to defaults whenever a new scan is focused."""
         self._view.reset_controls_to_defaults()
+        if not e.scans:
+            return
+        scan = e.scans[0]
+        default_channel = scan.tavimeta.normalization[0] if scan.tavimeta.normalization else None
+        self._view.set_preset_channel_options(list(scan.data.data.keys()), default_channel)
 
     def handle_fields_changed(self) -> None:
         """Pull current control field values from the view and dispatch to the model."""

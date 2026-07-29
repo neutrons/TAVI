@@ -190,11 +190,15 @@ def test_default_axis_field_values(view):
 
 
 def test_default_preset_field_values(view):
-    # preset combos have no items at construction, so the `currentText="..."`
-    # constructor kwarg is silently ignored by Qt; only the value edit sticks.
-    assert view.preset_type_combo.currentText() == ""
+    assert view.preset_type_combo.currentText() == "none"
+    # preset_channel is populated per-scan by the presenter; empty until then.
     assert view.preset_channel_combo.currentText() == ""
     assert view.preset_value_edit.text() == "1"
+
+
+def test_preset_type_combo_has_none_and_normalize_options(view):
+    items = [view.preset_type_combo.itemText(i) for i in range(view.preset_type_combo.count())]
+    assert items == ["none", "normalize"]
 
 
 def test_default_rebin_field_values(view):
@@ -212,6 +216,41 @@ def test_sync_axis_fields_updates_edits(view):
     view.sync_axis_fields("qh", "en")
     assert view.x_axis_edit.text() == "qh"
     assert view.y_axis_edit.text() == "en"
+
+
+# ---------------------------------------------------------------------------
+# set_preset_channel_options
+# ---------------------------------------------------------------------------
+
+
+def test_set_preset_channel_options_populates_combo(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"])
+    items = [view.preset_channel_combo.itemText(i) for i in range(view.preset_channel_combo.count())]
+    assert items == ["qh", "en", "monitor"]
+
+
+def test_set_preset_channel_options_selects_default_when_present(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"], default="monitor")
+    assert view.preset_channel_combo.currentText() == "monitor"
+
+
+def test_set_preset_channel_options_ignores_default_not_in_columns(view):
+    view.set_preset_channel_options(["qh", "en"], default="monitor")
+    assert view.preset_channel_combo.currentText() != "monitor"
+
+
+def test_set_preset_channel_options_replaces_previous_items(view):
+    view.set_preset_channel_options(["qh", "en"])
+    view.set_preset_channel_options(["s1", "s2"])
+    items = [view.preset_channel_combo.itemText(i) for i in range(view.preset_channel_combo.count())]
+    assert items == ["s1", "s2"]
+
+
+def test_set_preset_channel_options_does_not_emit_fields_focus_changed(view, qtbot):
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.set_preset_channel_options(["qh", "en"], default="en")
+    assert received == []
 
 
 # ---------------------------------------------------------------------------
@@ -335,9 +374,9 @@ def test_reset_controls_to_defaults_restores_values(view):
     assert view.rb1.isChecked()
     assert view.rebin_start_edit.text() == "0"
     assert view.rebin_step_edit.text() == "0.02"
-    # combos have no items, so setCurrentText() on them is a no-op both here
-    # and when "special"/"other" were set above; text stays empty throughout.
-    assert view.preset_type_combo.currentText() == ""
+    assert view.preset_type_combo.currentText() == "none"
+    # preset_channel has no items in this test (no scan focused), so
+    # setCurrentText("other") above was a no-op; text stays empty.
     assert view.preset_channel_combo.currentText() == ""
     assert view.preset_value_edit.text() == "1"
 
