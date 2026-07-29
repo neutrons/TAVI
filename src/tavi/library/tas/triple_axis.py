@@ -119,7 +119,7 @@ class TAS:
         Args:
             scan_list: Scan numbers to browse.
             show_fits: Overlay the fitted curve on each scan. Must be True when
-                with_resolution_bar is set.
+                show_resolution_bar is set.
             fit_package: Fitting backend used to fit each scan.
             model_dict: Models passed to the fit (peak, background, ...).
             show_resolution_bar: Overlay a resolution bar whose position is taken
@@ -135,12 +135,16 @@ class TAS:
                 a [min, max] list sets the range directly.
             ylim: y-axis limits, interpreted like xlim.
             resolution_frame: Frame in which the resolution bar is computed.
-            projection_axis: Axis along which the resolution bar is projected.
+                ``"local"`` for the local Q frame, or a 4-tuple of projection
+                vectors plus ``"e"`` for an hkle frame, e.g.
+                ``((1, 0, 0), (0, 1, 0), (0, 0, 1), "e")``.
+            projection_axis: Axis of resolution_frame the FWHM is taken along.
+                0/1/2 for the momentum axes, 3 for energy.
 
         """
         resolution_bar_4d = None
         if show_resolution_bar:
-            # if with_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
+            # if show_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
             resolution_bar_4d = self.resolution_bar(
                 scan_list, resolution_frame=resolution_frame, projection_axis=projection_axis, model_dict=model_dict
@@ -167,7 +171,25 @@ class TAS:
         projection_axis: int = 0,
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
     ) -> tuple[list[float], list]:
-        """Compute the coherent FWHM resolution bar for each scan."""
+        """
+        Compute the coherent FWHM resolution bar for each scan.
+
+        Args:
+            scan_list: Scan numbers to compute the resolution for.
+            resolution_model: Resolution model, default Cooper-Nathans.
+            resolution_frame: ``"local"`` for the local Q frame, or a 4-tuple of
+                projection vectors plus ``"e"`` for an hkle frame, e.g.
+                ``((1, 0, 0), (0, 1, 0), (0, 0, 1), "e")``.
+            projection_axis: Axis of resolution_frame the FWHM is taken along.
+                0/1/2 for the momentum axes, 3 for energy.
+            model_dict: Models used to fit each scan when locating peak centers.
+
+        Returns:
+            ``(resolution_bar, res_4ds)``. Both are lists with one entry per
+            scan, each entry a tuple with one item per fitted peak in that scan:
+            the coherent FWHM, and the ``(res_mat, r0)`` pair respectively.
+
+        """
         # This step just get the center data point, has nothing to do with calculations.
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
             # Group the data points from one scan i into a tuple, so centers is aligned

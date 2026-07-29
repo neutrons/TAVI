@@ -119,7 +119,25 @@ Goniometer
 ~~~~~~~~~~
 
 The goniometer carries the scattering sense (``+`` or ``-``) used to sign
-``two_theta`` and ``psi`` in geometric calculations.
+``two_theta`` and ``psi`` in geometric calculations, and a ``type`` string
+naming the stacking order of its rotation axes.
+
+``r_mat(angles)`` turns a ``MotorAngles`` into the sample rotation matrix
+:math:`R` needed to project resolution into an ``hkle`` frame. It dispatches on
+``type``, which must match one of the implemented cases *exactly* -- the strings
+contain no spaces:
+
+- ``"Y,-Z,X"`` -- Huber table. Consumes ``omega``, ``sgl``, ``sgu`` as
+  :math:`R_y(\omega) R_z(sgl) R_x(sgu)`.
+- ``"Y,Z,Y,bisect"`` -- four-circle in bisect mode. Consumes ``omega``, ``chi``,
+  ``phi``.
+
+Any other value raises ``ValueError("Unknown mode.")``. The instrument parameter
+files (``hb1.json``, ``hb1a_tas.json``, ``hb3.json``, ``cg4c.json``) all declare
+``"type": "Y,-Z,X"``, so a mismatched string here silently disables ``hkle``
+resolution for every HFIR instrument. The Cartesian convention is Mantid's:
+:math:`Z` along the incoming beam, :math:`Y` up, :math:`X` in plane,
+right-handed.
 
 Experiment
 ----------
@@ -190,7 +208,9 @@ Constructor arguments:
 - ``sample`` (``Sample``)
 - ``experiment`` (``Experiment``)
 - ``scan_idx``, ``pt_idx`` (``int``) -- scan/point indices
-- ``axes`` (``tuple``) -- projection axes; last entry is ``"e"`` for energy
+- ``resolution_frame`` (``str | tuple``) -- ``"local"`` for the local :math:`Q`
+  frame, or a 4-tuple of projection axes whose last entry is ``"e"`` for energy.
+  Stored on the instance as ``self.axes``. See :ref:`resolution_frame`.
 
 Key methods:
 
@@ -208,20 +228,36 @@ Key methods:
         res_mat: np.ndarray,
         ellipse_axes: tuple[int, int] = (0, 1),
         PROJECTION: bool = False,
-    ) -> np.ndarray
-        """Reduce a 4D resolution matrix to a 2D ellipse by slice or projection."""
+        ORIGIN: bool = True,
+    ) -> tuple[np.ndarray, float]
+        """2D ellipse by slice or projection, plus the angle between its axes."""
 
-    def r_matrix_with_minimal_tilt(
-        hkl: tuple[float, float, float],
-        ei: float,
-        ef: float,
+    def get_projection(
+        res_mat: np.ndarray,
+        projection_axes: tuple,
+        PROJECTION: bool = False,
     ) -> np.ndarray
-        """Rotation matrix bringing the scattering plane in with minimal tilt."""
+        """Reduce a 4D matrix to any subset of axes, keeping ``projection_axes``."""
 
-When ``axes`` is ``None``, ``get_resolution`` returns the raw matrix in the
-local Q frame. Otherwise it constructs a ``ResolutionEllipsoid`` and calls
-``project_to_frame`` to produce the matrix in the requested axes; in that
-mode ``rot_mat`` is required.
+    def get_axes_angles() -> tuple[float, float, float]
+        """Angles between the basis vectors of the current frame."""
+
+``get_resolution`` always returns a ``(res_mat, r0)`` pair. When
+``resolution_frame`` is ``"local"`` (or falsy) that is the raw matrix in the
+local Q frame and ``rot_mat`` is ignored. Otherwise it constructs a
+``ResolutionEllipsoid`` and calls ``project_to_frame``; ``rot_mat`` may be
+supplied by the caller -- ``TAS.resolution_bar`` passes
+``Goniometer.r_mat(angles)`` -- and is otherwise derived from
+``sample.ol.rot_matrix_with_minimal_tilt``, which requires ``UB``,
+``plane_normal`` and ``in_plane_ref`` to be set.
+
+``get_axes_angles`` returns ``(90, 90, 90)`` for the local frame, the reciprocal
+angles :math:`(\gamma^*, \alpha^*, \beta^*)` for the plain HKL frame, and the
+angles between the user's projection vectors otherwise. Coplanar projection
+vectors raise ``ValueError``.
+
+``get_projection`` generalises ``get_ellipse`` to an arbitrary set of retained
+axes; pass ``projection_axes`` as a tuple of indices to keep.
 
 CooperNathans
 ~~~~~~~~~~~~~
@@ -256,12 +292,20 @@ The main entry point is:
 ResolutionEllipsoid
 ~~~~~~~~~~~~~~~~~~~
 
-``ResolutionEllipsoid`` wraps the 4D resolution matrix and the ``r0`` normalisation
-along with the projection axes. ``project_to_frame(r_mat, psi, ub)`` rotates
-the matrix into the requested ``hkle`` frame; when the requested axes differ
-from the default ``((1,0,0),(0,1,0),(0,0,1),"e")``, the matrix is further
-transformed by the user-supplied basis ``W`` and the rows/columns are
-permuted to place the ``"e"`` axis at the requested position.
+``ResolutionEllipsoid`` wraps the 4D resolution matrix and the ``r0``
+normalisation along with the frame, taken as ``resolution_frame`` and stored as
+``self.axes``. ``project_to_frame(r_mat, psi, ub)`` rotates the matrix into the
+requested ``hkle`` frame and returns ``(res_mat_proj, r0)``. For the default
+``((1,0,0),(0,1,0),(0,0,1),"e")`` the conversion is
+:math:`2\pi\,R_{lab \leftarrow local} R\, UB`; for any other 4-tuple it is
+further multiplied by the user basis :math:`W = [w_1\ w_2\ w_3]`. The axis order
+is the tuple order -- there is no separate permutation step, so listing the
+vectors in a different order is how an axis is moved.
+
+Widths are extracted with ``coh_fwhm(projection_axis)`` (a cut, straight off the
+diagonal) and ``incoh_fwhm(projection_axis)`` (an integral, the other three axes
+removed via ``quadric_proj`` first). Both index the frame the ellipsoid was
+constructed with. See :ref:`projection_axis`.
 
 TAS
 ---
@@ -294,11 +338,11 @@ Resolution at a Single Point
     from tavi.library.resolution.resolution import Resolution
 
     res = Resolution(
-        model="Cooper-Nathans",
+        model=ResolutionModel.CooperNathans,
         instrument=instrument,
         sample=sample,
         experiment=experiment,
-        axes=None,
+        resolution_frame="local",
     )
     res_mat, r0 = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8)
 
@@ -308,14 +352,18 @@ Projecting onto a User Frame
 .. code-block:: python
 
     res = Resolution(
-        model="Cooper-Nathans",
+        model=ResolutionModel.CooperNathans,
         instrument=instrument,
         sample=sample,
         experiment=experiment,
-        axes=((1, 1, 0), (0, 0, 1), (1, -1, 0), "e"),
+        resolution_frame=((1, 1, 0), (0, 0, 1), (1, -1, 0), "e"),
     )
-    rot_mat = res.r_matrix_with_minimal_tilt(hkl=(0, 0, 3), ei=4.8, ef=4.8)
-    res_proj = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8, rot_mat=r_mat)
+    # Explicit rotation matrix from the measured motor angles...
+    rot_mat = instrument.goni.r_mat(data_point.angles)
+    res_proj, r0 = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8, rot_mat=rot_mat)
+
+    # ...or leave it to the minimal-tilt derivation from UB.
+    res_proj, r0 = res.get_resolution(hkl=(0, 0, 3), ei=4.8, ef=4.8)
 
 Reducing to a 2D Ellipse
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -329,8 +377,21 @@ Reducing to a 2D Ellipse
 deletion), while ``PROJECTION=True`` projects via the quadric-projection
 identity (``quadric_proj``).
 
+Plotting
+--------
+
+Plotting is split across two modules:
+
+- ``tavi.library.plot.browser`` -- ``browse_scans``, the grid-of-scans browser
+  with fits, per-component curves and resolution bars. Documented in
+  :ref:`scan_browser`.
+- ``tavi.library.plot.plot_ellipse`` -- resolution-ellipse rendering only.
+
+The split keeps ``plot_ellipse`` free of the ``Experiment``/``Fit`` imports the
+browser needs, so the ellipse plotting stays a leaf module.
+
 Plot Ellipse
-------------
+~~~~~~~~~~~~
 
 ``tavi.library.plot.plot_ellipse`` provides two public objects for rendering
 2D resolution ellipses on a skewed (non-orthogonal) grid:
@@ -338,8 +399,9 @@ Plot Ellipse
 - **``grid_helper(angle, nbins)``** -- builds a ``GridHelperCurveLinear`` that
   skews the Matplotlib axes by ``angle`` degrees, so that non-orthogonal
   reciprocal-space axes are drawn correctly.
-- **``Plot``** -- accumulates one or more ``EllipseEntry`` objects and renders
-  them together on a single axes.
+- **``PlotResolution``** -- accumulates one or more ``EllipseEntry`` objects and
+  renders them together on a single axes. ``plot_resolution_ellipse`` is the
+  batch helper used by ``TAS.browse_resolution_ellipse``.
 
 ``EllipseEntry`` dataclass fields:
 
@@ -348,12 +410,12 @@ Plot Ellipse
   in data coordinates, used to auto-scale the axes limits
 - ``origin`` (``tuple[float, float]``) -- centre of the ellipse in data coordinates
 
-``Plot`` API
-~~~~~~~~~~~~
+``PlotResolution`` API
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    class Plot:
+    class PlotResolution:
         def __init__(self, axes_angle: float) -> None: ...
         """
         axes_angle: angle (degrees) between the two plot axes.
@@ -397,10 +459,10 @@ Example
 
 .. code-block:: python
 
-    from tavi.library.plot.plot_ellipse import Plot
+    from tavi.library.plot.plot_ellipse import PlotResolution
 
     # res_2d is a 2×2 slice/projection from res.get_ellipse(...)
-    p = Plot(axes_angle=60.0)          # 60° between the two axes
+    p = PlotResolution(axes_angle=60.0)          # 60° between the two axes
     p.add_ellipse(res_2d, label="(0,0,3)")
     p.add_ellipse(res_2d_proj, origin=(0.05, 0.0), linestyle="--", label="projected")
     ax = p.plot(show=True)
