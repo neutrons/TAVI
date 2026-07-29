@@ -263,13 +263,19 @@ class TAS:
         else:
             raise ValueError("Data format not implemented yet.")
 
-        self.calculate_resolution()
+        self.resolution = Resolution(
+            model=ResolutionModel.CooperNathans,
+            instrument=self.instrument,
+            sample=self.sample,
+            experiment=self.experiment,
+            resolution_frame="local",
+        )
         ellipses = []
         for idx, peak in zip(scan_list, peaks):
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
             ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
-            coh_para = ResolutionEllipsoid(res_4d, projection_axes=None).coh_fwhm(axis=0)
-            coh_perp = ResolutionEllipsoid(res_4d, projection_axes=None).coh_fwhm(axis=1)
+            coh_para = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=0)
+            coh_perp = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=1)
             ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)

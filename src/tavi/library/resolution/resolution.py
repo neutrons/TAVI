@@ -91,7 +91,7 @@ class Resolution:
         """Compute the angles between the basis of axes."""
         tol = 1e-8
         self.angles = (90, 90, 90)
-        if self.axes is None:
+        if not self.axes or self.axes == "local":
             return self.angles
         elif self.axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"):  # HKL
             alpha_star, beta_star, gamma_star = (

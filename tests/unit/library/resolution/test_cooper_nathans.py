@@ -62,7 +62,7 @@ def component():
 def test_local_q_frame(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution(ResolutionModel.CooperNathans, instrument,sample, experiment, axes = None)
+    res = Resolution(ResolutionModel.CooperNathans, instrument,sample, experiment, resolution_frame = "local")
     res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
@@ -77,7 +77,7 @@ def test_local_q_frame(component):
 def test_hkl_frame(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution(ResolutionModel.CooperNathans, instrument,sample, experiment, axes = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"))
+    res = Resolution(ResolutionModel.CooperNathans, instrument,sample, experiment, resolution_frame = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"))
     res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
@@ -92,7 +92,7 @@ def test_hkl_frame(component):
 def test_projection_any_frame(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment, axes = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"))
+    res = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment, resolution_frame = ((1, 1, 0), (0, 0, 1), (1, -1, 0), "en"))
     res_mat = res.get_resolution(hkl,4.8,4.8)
     mat = np.array(
         [
