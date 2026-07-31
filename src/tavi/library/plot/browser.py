@@ -177,3 +177,4 @@ def browse_scans(
     plt.show()
     if resolution_bars is not None:
         return hkls, fit_results, res_mat_4d
+    return None, None, None, None
