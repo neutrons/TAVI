@@ -90,7 +90,7 @@ orchestration and views are pure rendering — neither may own or reach into
 state. So resolution is split across the event boundary instead of being a
 method call across it:
 
-``tavi.library.data.plot_resolution`` holds two plain, stateless functions:
+``tavi.backend.model.plot_resolver`` holds two plain, stateless functions:
 
 .. code-block:: python
 
@@ -99,7 +99,12 @@ method call across it:
         scan = scans[series.source_scan_uuid]
         x = np.array(scan.data.data[series.x_name])
         y = np.array(scan.data.data[series.y_name])
-        err = np.sqrt(np.abs(y)) / 2
+        err = np.sqrt(np.abs(y))
+        if series.normalized_by is not None:
+            channel_data = np.array(scan.data.data[series.normalized_by])
+            weight = series.normalized_by_value if series.normalized_by_value is not None else 1.0
+            err = weight * (y / channel_data) * np.sqrt(y / np.sqrt(y) + channel_data / np.sqrt(channel_data))
+            y = y * weight / channel_data
         return x, y, err
 
 

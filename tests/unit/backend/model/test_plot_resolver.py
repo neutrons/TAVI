@@ -1,7 +1,7 @@
 import numpy.testing as npt
 
+from tavi.backend.model.plot_resolver import resolve_series, scans_for_plots
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.plot_resolution import resolve_series, scans_for_plots
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 
 
@@ -39,13 +39,13 @@ def test_resolve_series_returns_raw_x_and_y():
     npt.assert_array_equal(y, [4.0, 9.0, 16.0])
 
 
-def test_resolve_series_error_is_sqrt_abs_y_over_two():
+def test_resolve_series_error_is_sqrt_abs_y():
     scan = make_scan()
     series = make_series()
 
     _, y, err = resolve_series(series, {scan.uuid: scan})
 
-    npt.assert_allclose(err, [1.0, 1.5, 2.0])
+    npt.assert_allclose(err, [2.0, 3.0, 4.0])
 
 
 def test_resolve_series_unnormalized_when_normalized_by_is_none():
@@ -84,13 +84,13 @@ def test_resolve_series_defaults_normalized_by_value_to_one_when_none():
     npt.assert_allclose(y, [4.0 / 2.0, 9.0 / 3.0, 16.0 / 4.0])
 
 
-def test_resolve_series_normalizes_err_the_same_way_as_y():
+def test_resolve_series_propagates_err_through_normalization():
     scan = make_scan(data={"qh": [1.0, 2.0, 3.0], "en": [4.0, 9.0, 16.0], "monitor": [2.0, 3.0, 4.0]})
     series = make_series(normalized_by="monitor", normalized_by_value=1.0)
 
     _, _, err = resolve_series(series, {scan.uuid: scan})
 
-    npt.assert_allclose(err, [1.0 / 2.0, 1.5 / 3.0, 2.0 / 4.0])
+    npt.assert_allclose(err, [3.695518130045147, 6.525983241483225, 9.797958971132712])
 
 
 def test_scans_for_plots_returns_only_referenced_scans():

@@ -19,13 +19,14 @@ def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndar
     scan = scans[series.source_scan_uuid]
     x = np.array(scan.data.data[series.x_name])
     y = np.array(scan.data.data[series.y_name])
-    err = np.sqrt(np.abs(y)) / 2
+    err = np.sqrt(np.abs(y))
     if series.normalized_by is not None:
-        # TODO: have the CIs verify this normalization formula is correct.
         channel_data = np.array(scan.data.data[series.normalized_by])
         weight = series.normalized_by_value if series.normalized_by_value is not None else 1.0
+        # Error propagation for the ratio y/channel_data, computed against the
+        # pre-normalization y before it is overwritten below.
+        err = weight * (y / channel_data) * np.sqrt(y / np.sqrt(y) + channel_data / np.sqrt(channel_data))
         y = y * weight / channel_data
-        err = err * weight / channel_data
     return x, y, err
 
 

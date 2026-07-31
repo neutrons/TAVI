@@ -6,7 +6,7 @@ from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
-from tavi.library.data.plot_resolution import scans_for_plots
+from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent

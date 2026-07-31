@@ -3,7 +3,7 @@
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
-from tavi.library.data.plot_resolution import resolve_series
+from tavi.backend.model.plot_resolver import resolve_series
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
 
