@@ -20,5 +20,7 @@ Various guides for using, extending, and maintaining TAVI systems.
    fit
    ub_algorithm
    triple_axis
+   resolution
+   scan_browser
    integration_testing
    user_settings

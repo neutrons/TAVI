@@ -106,6 +106,7 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
+                fixed_energy = self.ef if self.mode is FixedEnergyMode.FIX_Ef else self.ei
                 return self.loader.get_data_point_closest_to_center(
                     tavi_data=self.tavi_data,
                     scan_num=scan_num,
@@ -113,6 +114,8 @@ class Experiment:
                     exp_num=exp_num,
                     fit_package=fit_package,
                     model_dict=model_dict,
+                    mode=self.mode,
+                    fixed_energy=fixed_energy,
                 )
             case _:
                 raise ValueError("Loader not implemented.")
@@ -124,10 +127,7 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                if self.mode is FixedEnergyMode.FIX_Ef:
-                    fixed_energy = self.ef
-                else:
-                    fixed_energy = self.ei
+                fixed_energy = self.ef if self.mode is FixedEnergyMode.FIX_Ef else self.ei
                 return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, fixed_energy)
             case _:
                 raise ValueError("Loader not implemented.")

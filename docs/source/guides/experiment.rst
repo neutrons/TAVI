@@ -50,10 +50,24 @@ Method Notes
   center. Inelastic scans may yield more than one ``DataPoint``.
 * Takes a ``FitPackage`` and a ``model_dict`` (see :ref:`fit_package`).
 
+``get_closest_to_center_data_point``
+------------------------------------
+
+* Like ``get_peak_center``, but returns the *measured* data point nearest each
+  fitted centre rather than the fitted centre itself, so the motor angles are
+  real ones the goniometer can turn into a rotation matrix. Used by
+  :ref:`TAS.resolution_bar <triple_axis>`.
+* The experiment's ``mode`` and its corresponding fixed energy are forwarded to
+  the loader, so each returned ``DataPoint`` carries a consistent
+  :math:`(E_i, E_f)` pair.
+
 ``get_hkl`` / ``get_delta_q`` / ``get_two_theta`` / ``get_psi``
 ---------------------------------------------------------------
 
 * Derive reciprocal-space and angular quantities for a located scan.
+* ``get_delta_q`` also supplies the abscissa used by the
+  :ref:`scan browser <scan_browser>` whenever a resolution bar is drawn against
+  an angular motor.
 
 ``create_sample``
 -----------------

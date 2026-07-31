@@ -30,7 +30,7 @@ class Resolution:
         experiment: Experiment,
         scan_idx: Optional[int] = 0,
         pt_idx: Optional[int] = 0,
-        axes: Optional[Tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"),
+        resolution_frame: Optional[Tuple] = ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"),
     ) -> None:
         """
         Init components.
@@ -42,7 +42,7 @@ class Resolution:
             experiment: Experiment context providing scan geometry.
             scan_idx: Scan index within the experiment.
             pt_idx: Point index within the scan.
-            axes: Projection axes for the resolution ellipsoid; last entry is ``"e"`` for energy.
+            resolution_frame: Projection axes for the resolution ellipsoid; last entry is ``"e"`` for energy.
 
         """
         if model == ResolutionModel.CooperNathans:
@@ -56,7 +56,7 @@ class Resolution:
         self.experiment = experiment
         self.scan_idx = scan_idx
         self.pt_idx = pt_idx
-        self.axes = axes
+        self.axes = resolution_frame
 
     def get_resolution(
         self, hkl: Tuple[float, float, float], ei: float, ef: float, rot_mat: Optional[np.ndarray] = None
@@ -70,13 +70,13 @@ class Resolution:
         two_theta = self.experiment.get_two_theta(q_norm, ei, ef) * (self.instrument.goni.sense)
         theta_m = self.instrument.monochromater.theta(ei) * (self.instrument.monochromater.sense)
         theta_a = self.instrument.analyzer.theta(ef) * (self.instrument.analyzer.sense)  # set sense
-        res_q = self.model.resolution_matrix(
+        res_q, r0 = self.model.resolution_matrix(
             self.instrument, self.sample, q_norm, ki, kf, psi, two_theta, theta_m, theta_a
         )
-        if not self.axes:
-            return res_q
+        if not self.axes or self.axes == "local":
+            return res_q, r0
         else:
-            res_ellipsoid = ResolutionEllipsoid(res_q[0], res_q[1], self.axes)
+            res_ellipsoid = ResolutionEllipsoid(res_q, r0, self.axes)
             if rot_mat is None:
                 try:
                     rot_mat = self.sample.ol.rot_matrix_with_minimal_tilt(hkl=hkl, ki=ki, kf=kf, two_theta=two_theta)
@@ -84,14 +84,14 @@ class Resolution:
                     raise ValueError(
                         "Check ub matrix, plane_normal and in_plane_refelction in sample.orientedlattice."
                     ) from err
-            res_proj = res_ellipsoid.project_to_frame(rot_mat, psi, self.sample.ol.UB)
-            return res_proj
+            res_proj, r0 = res_ellipsoid.project_to_frame(rot_mat, psi, self.sample.ol.UB)
+            return res_proj, r0
 
     def get_axes_angles(self) -> Tuple[float, float, float]:
         """Compute the angles between the basis of axes."""
         tol = 1e-8
         self.angles = (90, 90, 90)
-        if self.axes is None:
+        if not self.axes or self.axes == "local":
             return self.angles
         elif self.axes == ((1, 0, 0), (0, 1, 0), (0, 0, 1), "e"):  # HKL
             alpha_star, beta_star, gamma_star = (
@@ -139,3 +139,17 @@ class Resolution:
             case _:
                 axes_angle = 90.0
         return res_2d, axes_angle
+
+    def get_projection(self, res_mat: np.ndarray, projection_axes: int | tuple, PROJECTION: bool = False) -> np.ndarray:
+        """Project down to selected axis(axes)."""
+        res_mat_proj = res_mat
+        for idx in (3, 2, 1, 0):
+            # if idx not selected, handle it
+            if idx not in projection_axes:
+                # make an integral
+                if PROJECTION:
+                    res_mat_proj = quadric_proj(res_mat_proj, idx)
+                # make a slice/cut
+                else:
+                    res_mat_proj = np.delete(np.delete(res_mat_proj, idx, axis=0), idx, axis=1)
+        return res_mat_proj

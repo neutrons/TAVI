@@ -80,6 +80,25 @@ Method Notes
 * Supports INI-like UB files and legacy XML UB content.
 * Returns a plain dictionary that can be merged into scan metadata.
 
+``get_data_point_closest_to_center``
+------------------------------------
+
+* Fits the scan with ``model_dict`` and returns a ``list[DataPoint]`` -- one per
+  fitted centre -- for the measured row nearest each centre. Multi-peak models
+  therefore yield several data points from a single scan.
+* Takes ``mode`` (``FixedEnergyMode``) and ``fixed_energy`` so :math:`E_i` and
+  :math:`E_f` can be reconstructed per point. ``Experiment`` supplies both from
+  its own mode.
+* When the default x column is an angle (``s1``, ``s2``, ``omega``) the fit runs
+  against :math:`\Delta q` from ``get_delta_q`` instead of the raw motor, so the
+  centre is located in the same units the resolution bar is drawn in. Other
+  default-x columns are fit against their own values.
+* The ``MotorAngles`` attached to each ``DataPoint`` uses the goniometer's key
+  names -- ``two_theta`` and ``omega`` rather than the SPICE column names ``s2``
+  and ``s1``, plus ``sgl`` and ``sgu`` -- so ``Goniometer.r_mat`` can consume
+  them directly when projecting resolution into an ``hkle`` frame. See
+  :ref:`resolution_rotation_matrix`.
+
 
 Minimal Example
 ===============

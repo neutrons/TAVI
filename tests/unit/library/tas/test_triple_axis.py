@@ -13,6 +13,7 @@ import numpy as np
 
 from tavi.library.plot.plot_ellipse import PlotResolution
 from tavi.library.resolution.ellipsoid import ResolutionEllipsoid
+from tavi.library.resolution.resolution import Resolution, ResolutionModel
 from tavi.library.tas.triple_axis import TAS
 
 @pytest.fixture
@@ -290,11 +291,17 @@ def test_tas_ub(component, generate_peaks):
         [ 0.03124861,  0.14790957,  0.03723904],
         [-0.15250851,  0.03065114,  0.00624953]]))
     
-    tas.calculate_resolution()
-    res_4d, r0 = tas.resolution.get_resolution(hkl = (-2, -3, 0), ei=ei, ef=ef,rot_mat=None)
-    ellipsoid = ResolutionEllipsoid(res_mat=res_4d, r0 = r0, axes = None)
+    resolution = Resolution(
+        model=ResolutionModel.CooperNathans,
+        instrument=instrument,
+        sample=sample,
+        experiment=experiment,
+        resolution_frame="local",
+    )
+    res_4d, r0 = resolution.get_resolution(hkl = (-2, -3, 0), ei=ei, ef=ef,rot_mat=None)
+    ellipsoid = ResolutionEllipsoid(res_mat=res_4d, r0 = r0, resolution_frame = "local")
 
-    assert np.isclose(ellipsoid.coh_fwhm(axis=1), 0.021729, atol = 1e-6)
+    assert np.isclose(ellipsoid.coh_fwhm(projection_axis=1), 0.021729, atol = 1e-6)
 
     # ellipse, axes_angle = tas.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0,1))
 

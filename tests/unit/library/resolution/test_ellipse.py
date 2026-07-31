@@ -71,7 +71,7 @@ def component():
 def test_ellipse_in_local_q(component):
     sample, instrument, experiment = component
     hkl = (0, 0, 3)
-    res = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment, axes = None)
+    res = Resolution(ResolutionModel.CooperNathans, instrument, sample, experiment, resolution_frame = "local")
     res_mat, r0 = res.get_resolution(hkl, 4.8, 4.8)
     res_2d, axes_angle = res.get_ellipse(res_mat, (0, 3), PROJECTION=False)
     mat_4d = np.array([
