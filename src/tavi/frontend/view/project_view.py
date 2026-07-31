@@ -107,13 +107,13 @@ class TreeViewWidget(QWidget):
 
     This widget is typically used to show experiment folders and their associated
     scan files. Items are populated with `add_tree_data()`, and the widget emits
-    `clicked_file_signal` whenever a user selects a child item (i.e., a file).
+    `selected_signal` whenever the tree's selection changes, by mouse, keyboard, or
+    programmatically.
 
     Signals
     -------
-    clicked_file_signal : Signal(str)
-        Emitted when a file (child item) is clicked. The signal carries the file
-        name or identifier associated with the selected tree item.
+    selected_signal : Signal()
+        Emitted whenever the tree's current selection changes.
 
     Parameters
     ----------
@@ -133,7 +133,7 @@ class TreeViewWidget(QWidget):
         - Creates a vertical layout.
         - Initializes a `QTreeView` with a hidden header.
         - Creates a `QStandardItemModel` with an invisible root node.
-        - Connects the view's clicked index signal to `select_file()`.
+        - Connects the view's selectionChanged signal to `select()`.
         """
         super().__init__(parent)
 
@@ -158,13 +158,15 @@ class TreeViewWidget(QWidget):
 
         layoutTreeView.addWidget(self.treeView)
 
-        self.treeView.clicked.connect(self.select)
-
         self._init_path("/Raw")
         self._init_path("/Combined")
         self._init_path("/Fits")
         self._init_path("/Plots")
         self.treeView.setModel(self.treeModel)
+        # selectionChanged (unlike `clicked`) fires for keyboard (Up/Down) navigation too,
+        # not just mouse clicks. Same model instance is reused across later setModel() calls
+        # (see add_item_at_path/add_tree_data), so this selection model stays valid.
+        self.treeView.selectionModel().selectionChanged.connect(self._on_selection_changed)
         self.treeView.expanded.connect(self.on_expanded)
         self.treeView.collapsed.connect(self.on_collapsed)
 
@@ -374,11 +376,10 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def select(self, _: str) -> None:
-        """
-        Handle selection of a tree item and emit a signal if the item represents a file.
+    def _on_selection_changed(self, selected: object, deselected: object) -> None:
+        """Adapt QItemSelectionModel.selectionChanged's (selected, deselected) signature to select()."""
+        self.select(None)
 
-        Only child items (files) emit `clicked_file_signal`; the folder node itself
-        does not produce a signal.
-        """
+    def select(self, _: object) -> None:
+        """Emit ``selected_signal`` in response to a selection change (mouse, keyboard, or programmatic)."""
         self.selected_signal.emit()

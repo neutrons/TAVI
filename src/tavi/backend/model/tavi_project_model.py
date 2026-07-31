@@ -5,6 +5,7 @@ from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
+from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
@@ -33,6 +34,10 @@ class TaviProjectModel(TaviProjectInterface):
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
         return self.tavi_data.plots
+
+    def get_raw_scans_handle(self) -> dict:
+        """Return reference to the raw_scans dict."""
+        return self.tavi_data.raw_scans
 
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
         """Load a folder containing raw scans."""
@@ -85,4 +90,5 @@ class TaviProjectModel(TaviProjectInterface):
         if raw_scans:
             self._event_broker.publish(RawScanFocusEvent(scans=raw_scans))
         if plots:
-            self._event_broker.publish(PlotFocusEvent(plots=plots))
+            scans = scans_for_plots(plots, self.tavi_data.raw_scans)
+            self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans))

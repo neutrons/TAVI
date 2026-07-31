@@ -2,12 +2,11 @@
 
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
 
 from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.plot import Plot
+from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
@@ -40,14 +39,16 @@ def make_raw_scan(uuid_val="scan-001"):
 def make_plot(uuid_val="plot-001"):
     return Plot(
         uuid=UUID(value=uuid_val),
-        x=np.array([1.0, 2.0]),
-        y=np.array([3.0, 4.0]),
-        err=np.array([0.0, 0.0]),
-        scan_name="test_plot",
-        normalized_by="monitor",
-        x_name="qh",
-        y_name="en",
-        error_name="err",
+        series=[
+            PlotSeries(
+                source_scan_uuid=UUID(value="scan-001"),
+                scan_name="test_plot",
+                normalized_by="monitor",
+                x_name="qh",
+                y_name="en",
+                error_name="err",
+            )
+        ],
     )
 
 
@@ -258,6 +259,8 @@ def test_handle_focus_event_raw_scan_does_not_publish_plot_event(model):
 
 def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
@@ -268,8 +271,23 @@ def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     assert received[0].plots[0].uuid == plot.uuid
 
 
+def test_handle_focus_event_plot_publishes_scans_referenced_by_its_series(model):
+    plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(PlotFocusEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[plot.uuid]))
+
+    assert received[0].scans[plot.series[0].source_scan_uuid].uuid == scan.uuid
+
+
 def test_handle_focus_event_plot_does_not_publish_raw_scan_event(model):
     plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
     model.tavi_data.plots[plot.uuid] = plot
 
     raw_received = []

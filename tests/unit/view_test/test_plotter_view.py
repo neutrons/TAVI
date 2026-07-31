@@ -1,9 +1,12 @@
 """Tests for Plot1DView."""
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.plot import PlotFields
 
 
 @pytest.fixture
@@ -36,6 +39,19 @@ def test_rb2_not_checked_by_default(view):
 
 def test_rb3_not_checked_by_default(view):
     assert not view.rb3.isChecked()
+
+
+def test_rebin_radio_buttons_disabled(view):
+    """Rebin feature is paused; controls stay visible but non-interactive."""
+    assert not view.rb1.isEnabled()
+    assert not view.rb2.isEnabled()
+    assert not view.rb3.isEnabled()
+
+
+def test_rebin_edits_disabled(view):
+    assert not view.rebin_start_edit.isEnabled()
+    assert not view.rebin_stop_edit.isEnabled()
+    assert not view.rebin_step_edit.isEnabled()
 
 
 # ---------------------------------------------------------------------------
@@ -161,3 +177,249 @@ def test_toggling_rb1_prints_no_rebin(view, capsys):
     view.rb1.setChecked(True)
     captured = capsys.readouterr()
     assert "No Rebin" in captured.out
+
+
+# ---------------------------------------------------------------------------
+# default field values
+# ---------------------------------------------------------------------------
+
+
+def test_default_axis_field_values(view):
+    assert view.y_axis_edit.text() == "detector"
+    assert view.x_axis_edit.text() == "s2"
+
+
+def test_default_preset_field_values(view):
+    assert view.preset_type_combo.currentText() == "none"
+    # preset_channel is populated per-scan by the presenter; empty until then.
+    assert view.preset_channel_combo.currentText() == ""
+    assert view.preset_value_edit.text() == "1"
+
+
+def test_preset_type_combo_has_none_and_normalize_options(view):
+    items = [view.preset_type_combo.itemText(i) for i in range(view.preset_type_combo.count())]
+    assert items == ["none", "normalize"]
+
+
+def test_default_rebin_field_values(view):
+    assert view.rebin_start_edit.text() == "0"
+    assert view.rebin_stop_edit.text() == "2"
+    assert view.rebin_step_edit.text() == "0.02"
+
+
+# ---------------------------------------------------------------------------
+# sync_axis_fields
+# ---------------------------------------------------------------------------
+
+
+def test_sync_axis_fields_updates_edits(view):
+    view.sync_axis_fields("qh", "en")
+    assert view.x_axis_edit.text() == "qh"
+    assert view.y_axis_edit.text() == "en"
+
+
+# ---------------------------------------------------------------------------
+# set_preset_channel_options
+# ---------------------------------------------------------------------------
+
+
+def test_set_preset_channel_options_populates_combo(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"])
+    items = [view.preset_channel_combo.itemText(i) for i in range(view.preset_channel_combo.count())]
+    assert items == ["qh", "en", "monitor"]
+
+
+def test_set_preset_channel_options_selects_default_when_present(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"], default="monitor")
+    assert view.preset_channel_combo.currentText() == "monitor"
+
+
+def test_set_preset_channel_options_ignores_default_not_in_columns(view):
+    view.set_preset_channel_options(["qh", "en"], default="monitor")
+    assert view.preset_channel_combo.currentText() != "monitor"
+
+
+def test_set_preset_channel_options_replaces_previous_items(view):
+    view.set_preset_channel_options(["qh", "en"])
+    view.set_preset_channel_options(["s1", "s2"])
+    items = [view.preset_channel_combo.itemText(i) for i in range(view.preset_channel_combo.count())]
+    assert items == ["s1", "s2"]
+
+
+def test_set_preset_channel_options_does_not_emit_fields_focus_changed(view, qtbot):
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.set_preset_channel_options(["qh", "en"], default="en")
+    assert received == []
+
+
+# ---------------------------------------------------------------------------
+# _render_plots / render_plots_signal
+# ---------------------------------------------------------------------------
+
+
+def _series(scan_name="scan1", normalized_by="monitor", x_name="qh", y_name="en", error_name="err"):
+    return SimpleNamespace(
+        scan_name=scan_name,
+        normalized_by=normalized_by,
+        x_name=x_name,
+        y_name=y_name,
+        error_name=error_name,
+    )
+
+
+def test_render_plots_clears_then_plots_each_series(view):
+    view.append_plot(
+        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+    )
+    resolved = [
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(scan_name="a")),
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(scan_name="b")),
+    ]
+    view._render_plots(resolved)
+    labels = [c.get_label() for c in view.canvas.axes.containers]
+    assert len(view.canvas.axes.containers) == 2
+    assert any("a" in lbl for lbl in labels)
+    assert any("b" in lbl for lbl in labels)
+    assert "old" not in labels
+
+
+def test_render_plots_syncs_axis_fields_to_last_series(view):
+    resolved = [
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qh", y_name="en")),
+        (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qk", y_name="ei")),
+    ]
+    view._render_plots(resolved)
+    assert view.x_axis_edit.text() == "qk"
+    assert view.y_axis_edit.text() == "ei"
+
+
+def test_render_plots_signal_emits_to_render_plots(view, qtbot):
+    resolved = [
+        (np.array([1.0]), np.array([2.0]), np.array([0.0]), _series(scan_name="via_signal")),
+    ]
+    with qtbot.waitSignal(view.render_plots_signal, timeout=1000):
+        view.render_plots_signal.emit(resolved)
+    labels = [c.get_label() for c in view.canvas.axes.containers]
+    assert any("via_signal" in lbl for lbl in labels)
+
+
+def test_render_plots_empty_list_only_clears(view):
+    view.append_plot(
+        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+    )
+    view._render_plots([])
+    assert len(view.canvas.axes.containers) == 0
+
+
+# ---------------------------------------------------------------------------
+# get_plot_fields
+# ---------------------------------------------------------------------------
+
+
+def test_get_plot_fields_returns_plot_fields_instance(view):
+    assert isinstance(view.get_plot_fields(), PlotFields)
+
+
+def test_get_plot_fields_default_rebin_mode_is_none(view):
+    fields = view.get_plot_fields()
+    assert fields.rebin_mode == "none"
+
+
+def test_get_plot_fields_rebin_mode_tolerance(view):
+    view.rb2.setChecked(True)
+    fields = view.get_plot_fields()
+    assert fields.rebin_mode == "tolerance"
+
+
+def test_get_plot_fields_rebin_mode_equal_step(view):
+    view.rb3.setChecked(True)
+    fields = view.get_plot_fields()
+    assert fields.rebin_mode == "equal_step"
+
+
+def test_get_plot_fields_contains_all_expected_keys(view):
+    assert set(PlotFields.model_fields) == {
+        "y_axis", "x_axis", "rebin_mode",
+        "rebin_start", "rebin_stop", "rebin_step",
+        "preset_type", "preset_channel", "preset_value",
+    }
+
+
+def test_get_plot_fields_reflects_edited_values(view):
+    view.y_axis_edit.setText("en")
+    view.x_axis_edit.setText("qh")
+    view.preset_value_edit.setText("42")
+    fields = view.get_plot_fields()
+    assert fields.y_axis == "en"
+    assert fields.x_axis == "qh"
+    assert fields.preset_value == "42"
+
+
+# ---------------------------------------------------------------------------
+# reset_controls_to_defaults
+# ---------------------------------------------------------------------------
+
+
+def test_reset_controls_to_defaults_restores_values(view):
+    view.rb2.setChecked(True)
+    view.rebin_start_edit.setText("9")
+    view.rebin_step_edit.setText("9")
+    view.preset_type_combo.setCurrentText("special")
+    view.preset_channel_combo.setCurrentText("other")
+    view.preset_value_edit.setText("7")
+
+    view.reset_controls_to_defaults()
+
+    assert view.rb1.isChecked()
+    assert view.rebin_start_edit.text() == "0"
+    assert view.rebin_step_edit.text() == "0.02"
+    assert view.preset_type_combo.currentText() == "none"
+    # preset_channel has no items in this test (no scan focused), so
+    # setCurrentText("other") above was a no-op; text stays empty.
+    assert view.preset_channel_combo.currentText() == ""
+    assert view.preset_value_edit.text() == "1"
+
+
+def test_reset_controls_to_defaults_does_not_emit_fields_focus_changed(view, qtbot):
+    view.rb2.setChecked(True)
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.reset_controls_to_defaults()
+    assert received == []
+
+
+# ---------------------------------------------------------------------------
+# hookup_fields_changed_signal / fields_focus_changed wiring
+# ---------------------------------------------------------------------------
+
+
+def test_hookup_fields_changed_signal_invokes_callback(view, qtbot):
+    calls = []
+    view.hookup_fields_changed_signal(lambda: calls.append(True))
+    view.fields_focus_changed.emit()
+    assert calls == [True]
+
+
+def test_editing_finished_on_axis_edit_emits_fields_focus_changed(view, qtbot):
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.y_axis_edit.editingFinished.emit()
+
+
+def test_preset_combo_index_change_emits_fields_focus_changed(view, qtbot):
+    view.preset_type_combo.addItem("other")
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.preset_type_combo.setCurrentIndex(1)
+
+
+def test_checking_radio_button_emits_fields_focus_changed(view, qtbot):
+    with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
+        view.rb2.setChecked(True)
+
+
+def test_unchecking_radio_button_does_not_emit_fields_focus_changed(view, qtbot):
+    view.rb2.setChecked(True)
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.rb2.setChecked(False)
+    assert received == []

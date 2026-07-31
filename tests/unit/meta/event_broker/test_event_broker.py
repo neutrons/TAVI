@@ -58,6 +58,31 @@ class TestEventBroker(unittest.TestCase):
         with pytest.raises(RuntimeError, match=f"Event recursive depth of {self.event_broker.call_depth_max} has been exceeded."):
             self.event_broker.publish(DummyEvent())
 
+    def test_call_depth_does_not_leak_when_subscriber_raises(self):
+        """A subscriber exception must not permanently inflate call_depth (it's a Singleton with no reset)."""
+
+        def raises(_):
+            raise ValueError("boom")
+
+        self.event_broker.register(DummyEvent, raises)
+
+        with pytest.raises(ValueError, match="boom"):
+            self.event_broker.publish(DummyEvent())
+
+        assert self.event_broker.call_depth == 0
+
+        # A subsequent, unrelated publish must still work rather than immediately
+        # hitting the recursion-depth ceiling from the earlier leaked call_depth.
+        method_called = False
+
+        def dummy_method(_):
+            nonlocal method_called
+            method_called = True
+
+        self.event_broker.register(SmartyEvent, dummy_method)
+        self.event_broker.publish(SmartyEvent())
+        assert method_called
+
     def test_multiple_subscribers(self):
         e = DummyEvent()
         

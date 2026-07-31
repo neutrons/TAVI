@@ -39,6 +39,8 @@ class EventBroker:
         if callable_list := self.registry.get(event_type):
             for callable in callable_list:
                 self.call_depth += 1
-                logger.debug(f"Calling {str(callable)}...")
-                callable(event.model_copy(deep=True))
-                self.call_depth -= 1
+                try:
+                    logger.debug(f"Calling {str(callable)}...")
+                    callable(event.model_copy(deep=True))
+                finally:
+                    self.call_depth -= 1
