@@ -14,3 +14,4 @@ of the features of Frontend.
    project_view
    visualization_flow
    plot_data_model
+   data_file_view

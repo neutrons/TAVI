@@ -44,7 +44,7 @@ class ORNLSpiceLoader(AbstractLoader):
         ub_name = meta.ubconf
         ubconf = self.parse_external_metadata(file_path, ub_name)
         # add it to MetaData's data entry
-        meta.data.update(ubconf)
+        meta.data["ORNL Metadata"].update(ubconf)
         return self.adapt_scan_data(uuid=uuid, values=values, meta=meta, tavi_meta=tavi_meta, prov=prov)
 
     def get_scan_type(self) -> RawScanType:
@@ -103,8 +103,12 @@ class ORNLSpiceLoader(AbstractLoader):
                     _, val = metadata_entry.split("=")
                     countfile.append(val.strip())
             metadata.update({"countfile": ", ".join(countfile)})
-        data = metadata | {"errors": error_messages} | {"others": others}
-        return ScanMetadata(data=data)
+
+        metadata.update({"errors": error_messages, "others": others})
+        data = {"ORNL Metadata": metadata}
+        categories = {"ORNL Metadata": "ORNL Metadata"}
+
+        return ScanMetadata(data=data, categories=categories)
 
     def parse_tavi_metadata(self, file_path: str) -> TaviMetadata:
         """Parse metadata."""

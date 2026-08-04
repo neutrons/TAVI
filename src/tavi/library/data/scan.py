@@ -51,21 +51,39 @@ class ScanMetadata(BaseModel):
     Meta data associated with a triple-axis scan.
 
     Should contain {name: metadata} and loader: loaderENUM. Each should be created as attributes during loading event.
+
+    ``categories`` maps a front end display name to the key in ``data`` holding that category's fields, e.g.
+    {"ORNL Metadata": "ORNL Metadata"}. It decouples how the frontend groups/labels metadata from how the
+    loader organizes ``data``, while still allowing flat ``.`` access to fields nested under a category.
     """
 
     data: Dict[str, Any] = Field(default_factory=dict)
+    categories: Dict[str, str] = Field(default_factory=dict)
 
     def __getattr__(self, key: str) -> Any:
-        """Allow access as ScanData.h etc."""
+        """Allow access as ScanData.h etc, searching top-level data first, then each category's fields."""
         if key in self.data:
             return self.data[key]
+        for data_key in self.categories.values():
+            category = self.data.get(data_key)
+            if isinstance(category, dict) and key in category:
+                return category[key]
         raise AttributeError(
             f"{self.__class__.__name__!s} has no attribute {key!r}. Valid columns are: {list(self.data.keys())}"
         )
 
     def __dir__(self) -> list[str]:
         """Allow tab suggestion."""
-        return sorted(set(super().__dir__()) | set(self.data))
+        keys = set(self.data)
+        for data_key in self.categories.values():
+            category = self.data.get(data_key)
+            if isinstance(category, dict):
+                keys |= set(category)
+        return sorted(set(super().__dir__()) | keys)
+
+    def by_category(self) -> Dict[str, Any]:
+        """Return data grouped by front end category display name, for display purposes."""
+        return {display_name: self.data.get(data_key, {}) for display_name, data_key in self.categories.items()}
 
 
 @dataclass
