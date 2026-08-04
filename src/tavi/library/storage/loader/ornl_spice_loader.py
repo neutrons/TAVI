@@ -44,7 +44,7 @@ class ORNLSpiceLoader(AbstractLoader):
         ub_name = meta.ubconf
         ubconf = self.parse_external_metadata(file_path, ub_name)
         # add it to MetaData's data entry
-        meta.data["ORNL Metadata"].update(ubconf)
+        meta.data.update(ubconf)
         return self.adapt_scan_data(uuid=uuid, values=values, meta=meta, tavi_meta=tavi_meta, prov=prov)
 
     def get_scan_type(self) -> RawScanType:
