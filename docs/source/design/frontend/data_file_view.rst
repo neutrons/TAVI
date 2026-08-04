@@ -71,39 +71,42 @@ view-ready shape:
 .. code-block:: python
 
     class ScanMetadata(BaseModel):
-        data: Dict[str, Any]        # however the loader wants to organize fields
-        categories: Dict[str, str]  # display name -> key in `data` for that category
+        data: Dict[str, Any]              # flat {field_name: value}
+        categories: Dict[str, List[str]]  # display name -> list of `data` keys in that category
 
     def by_category(self) -> Dict[str, Any]:
-        return {display_name: self.data.get(data_key, {}) for display_name, data_key in self.categories.items()}
+        return {
+            display_name: {key: self.data[key] for key in keys if key in self.data}
+            for display_name, keys in self.categories.items()
+        }
 
-``categories`` maps a front-end display name to the key in ``data`` holding
-that category's fields. This is what decouples display grouping from storage
-layout: a loader is free to organize ``data`` however it likes (flat, nested
-by instrument section, etc.) and simply declares which top-level keys should
-become tabs, and what they're called.
+``data`` stays a flat ``{field_name: value}`` mapping — it is never nested by
+category. ``categories`` only records, for each display name, which ``data``
+keys should be grouped together for display. This is what decouples display
+grouping from storage layout: a loader keeps a single flat dict of fields and
+separately declares how those fields should be grouped into tabs.
 
-Example — ``ORNLSpiceLoader.parse_metadata`` groups everything under a single
-``"ORNL Metadata"`` category:
+Example — ``ORNLSpiceLoader.parse_metadata`` groups every field it parsed
+under a single ``"ORNL Metadata"`` category:
 
 .. code-block:: python
 
-    data = {"ORNL Metadata": metadata}
-    categories = {"ORNL Metadata": "ORNL Metadata"}
+    data = metadata | {"errors": error_messages} | {"others": others}
+    categories = {"ORNL Metadata": data.keys()}
     return ScanMetadata(data=data, categories=categories)
 
 ``scan.metadata.by_category()`` then returns
-``{"ORNL Metadata": {...the flat metadata dict...}}``, which
+``{"ORNL Metadata": {...same flat dict, keyed by name...}}``, which
 ``DataFileView.populate_metadata`` renders as a single tab.
 
 Flat Attribute Access Still Works
 ----------------------------------
 
-``ScanMetadata.__getattr__`` supports ``.``-delimited access (e.g.
-``scan.metadata.def_x``) regardless of how fields are grouped into
-categories: it checks top-level ``data`` first, then searches inside each
-category's dict. Callers that just need a single field (loader internals,
-plotting code) never need to know which category a field lives under.
+Because ``data`` is never nested, ``ScanMetadata.__getattr__`` needs no
+knowledge of ``categories`` at all — ``.``-delimited access (e.g.
+``scan.metadata.def_x``) is a plain top-level lookup in ``data``. Callers
+that just need a single field (loader internals, plotting code) never need to
+know which category, if any, a field is grouped under for display.
 
 Key Design Decisions
 ---------------------

@@ -16,8 +16,8 @@ def make_scan(uuid_val="scan-001", data=None, metadata=None) -> RawScan:
         data = {"qh": [1.0, 2.0], "en": [3.0, 4.0]}
     if metadata is None:
         metadata = ScanMetadata(
-            data={"ORNL Metadata": {"scan": "1"}},
-            categories={"ORNL Metadata": "ORNL Metadata"},
+            data={"scan": "1"},
+            categories={"ORNL Metadata": ["scan"]},
         )
     return RawScan(
         uuid=UUID(value=uuid_val),
@@ -75,8 +75,8 @@ def test_handle_raw_scan_focus_populates_variables_with_column_names(presenter):
 
 def test_handle_raw_scan_focus_populates_metadata_by_category(presenter):
     metadata = ScanMetadata(
-        data={"ORNL Metadata": {"scan": "1", "proposal": "9865"}},
-        categories={"ORNL Metadata": "ORNL Metadata"},
+        data={"scan": "1", "proposal": "9865"},
+        categories={"ORNL Metadata": ["scan", "proposal"]},
     )
     scan = make_scan(metadata=metadata)
     presenter._view.populate_metadata = MagicMock()

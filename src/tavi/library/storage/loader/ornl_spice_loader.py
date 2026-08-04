@@ -104,9 +104,9 @@ class ORNLSpiceLoader(AbstractLoader):
                     countfile.append(val.strip())
             metadata.update({"countfile": ", ".join(countfile)})
 
-        metadata.update({"errors": error_messages, "others": others})
-        data = {"ORNL Metadata": metadata}
-        categories = {"ORNL Metadata": "ORNL Metadata"}
+        data = metadata | {"errors": error_messages} | {"others": others}
+
+        categories = {"ORNL Metadata": data.keys()}
 
         return ScanMetadata(data=data, categories=categories)
 
