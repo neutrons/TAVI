@@ -47,7 +47,7 @@ method = "git"
 default-tag = "4.0.0"
 
 [tool.versioningit.next-version]
-method = "smallest"
+method = "minor"
 
 [tool.versioningit.format]
 distance = "{next_version}.dev{distance}"
