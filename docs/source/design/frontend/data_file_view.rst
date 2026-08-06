@@ -4,11 +4,14 @@ Data File View
 Overview
 --------
 
-``DataFileView`` is the panel that shows the raw scan currently focused by the
-user: its column data, a checklist of columns, and its metadata. It is driven
-entirely by ``DataFilePresenter``, which subscribes to ``RawScanFocusEvent``
-and forwards the focused scan's contents to the view. The view holds no scan
-data of its own between events.
+``DataFileView`` is the panel that shows whichever scan is currently focused
+by the user: its column data, a checklist of columns, and its metadata. The
+view itself is agnostic to scan type — ``populate_columns``,
+``populate_variables``, and ``populate_metadata`` take plain dicts/lists, not
+a ``Scan`` object. It is driven entirely by ``DataFilePresenter``, which
+today subscribes to ``RawScanFocusEvent`` (the only focus event currently
+wired up) and forwards the focused scan's contents to the view. The view
+holds no scan data of its own between events.
 
 Architecture
 ------------
@@ -37,7 +40,7 @@ Data Flow
     DataFileView.populate_metadata(scan.metadata.by_category())
 
 Only the first scan in the event is displayed — the panel shows one scan at a
-time.
+time, regardless of scan type.
 
 Data Table and Variable Checklist
 ----------------------------------
