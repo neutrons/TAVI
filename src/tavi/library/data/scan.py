@@ -1,6 +1,6 @@
 """Scan object."""
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -51,9 +51,15 @@ class ScanMetadata(BaseModel):
     Meta data associated with a triple-axis scan.
 
     Should contain {name: metadata} and loader: loaderENUM. Each should be created as attributes during loading event.
+
+    ``data`` stays a flat {field_name: value} mapping. ``categories`` maps a front end display name to the list
+    of ``data`` keys that belong under it, e.g. {"ORNL Metadata": ["scan", "proposal", ...]}. This decouples how
+    the frontend groups/labels metadata for display from the (flat) storage layout, without disturbing the
+    single-level ``.`` access to fields.
     """
 
     data: Dict[str, Any] = Field(default_factory=dict)
+    categories: Dict[str, List[str]] = Field(default_factory=dict)
 
     def __getattr__(self, key: str) -> Any:
         """Allow access as ScanData.h etc."""
@@ -66,6 +72,13 @@ class ScanMetadata(BaseModel):
     def __dir__(self) -> list[str]:
         """Allow tab suggestion."""
         return sorted(set(super().__dir__()) | set(self.data))
+
+    def by_category(self) -> Dict[str, Any]:
+        """Return data grouped by front end category display name, for display purposes."""
+        return {
+            display_name: {key: self.data[key] for key in keys if key in self.data}
+            for display_name, keys in self.categories.items()
+        }
 
 
 @dataclass

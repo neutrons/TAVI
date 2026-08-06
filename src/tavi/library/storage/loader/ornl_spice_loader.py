@@ -103,8 +103,12 @@ class ORNLSpiceLoader(AbstractLoader):
                     _, val = metadata_entry.split("=")
                     countfile.append(val.strip())
             metadata.update({"countfile": ", ".join(countfile)})
+
         data = metadata | {"errors": error_messages} | {"others": others}
-        return ScanMetadata(data=data)
+
+        categories = {"ORNL Metadata": data.keys()}
+
+        return ScanMetadata(data=data, categories=categories)
 
     def parse_tavi_metadata(self, file_path: str) -> TaviMetadata:
         """Parse metadata."""
