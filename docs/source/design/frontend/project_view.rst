@@ -219,6 +219,90 @@ This pattern cleanly separates:
 
 ----
 
+Project View ↔ Plot Integration
+================================
+
+Overview
+--------
+
+Plots are added to the Project View the same way raw scans are: reactively,
+through a typed event. The event here is ``PlotAppendEvent``, published by
+``TaviProjectModel`` once a plot has been saved (see
+:doc:`visualization_flow`'s "Add Plot" section for how a plot gets saved in
+the first place).
+
+The flow is:
+
+1. ``PlotterPresenter`` publishes ``SavePlotEvent`` with the plot to save
+2. ``TaviProjectModel`` stores it in ``TaviData.plots`` and emits
+   ``PlotAppendEvent``
+3. ``LoadRawScanPresenter`` listens and forwards to the view
+4. View updates the Project Tree
+
+Data Flow
+---------
+
+.. code-block:: text
+
+    PlotterPresenter.handle_plot_clicked
+        ↓ (SavePlotEvent)
+    EventBroker
+        ↓
+    TaviProjectModel._handle_save_plot_event
+        - stores plot in TaviData.plots
+        - emits PlotAppendEvent
+        ↓
+    EventBroker
+        ↓
+    LoadRawScanPresenter.update_plot_treeview_data
+        ↓
+    ProjectView.add_plot
+        ↓
+    TreeViewWidget.add_plot
+
+Event Definition
+----------------
+
+``PlotAppendEvent`` mirrors ``RawScanAppendEvent`` field-for-field:
+
+.. code-block:: python
+
+    class PlotAppendEvent(Event):
+        uuid: UUID
+        friendly_name: str
+        friendly_path: str
+
+``friendly_path`` is always ``""`` today — plots have no folder/grouping
+requirement yet. ``friendly_name`` is derived by ``TaviProjectModel`` from
+the plot's own series (each line's run name, joined with ``_``, plus a
+``_Plot`` suffix), not supplied by the caller.
+
+Presenter Responsibilities
+---------------------------
+
+``LoadRawScanPresenter`` registers a second handler alongside
+``update_treeview_data``:
+
+.. code-block:: python
+
+    self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
+
+    def update_plot_treeview_data(self, event: PlotAppendEvent) -> None:
+        self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
+
+Unlike ``update_treeview_data``, this does **not** touch ``self.inventory`` —
+that tracking is raw-scan-specific.
+
+View Responsibilities
+----------------------
+
+``ProjectView.add_plot`` delegates to ``TreeViewWidget.add_plot``, which
+inserts the entry under the ``Plots`` tree root the same way ``add_raw_scan``
+inserts under ``Raw`` — same ``path_map``/``uuid_map`` machinery, same
+duplicate-uuid guard.
+
+----
+
 Context Menu — Multi-Select Delete
 ===================================
 

@@ -56,6 +56,10 @@ class ProjectView(QWidget):
         """Add a raw scan to the view."""
         self.tree_widget.add_raw_scan(uuid, name, path)
 
+    def add_plot(self, uuid: UUID, name: str, path: str) -> None:
+        """Add a plot to the view."""
+        self.tree_widget.add_plot(uuid, name, path)
+
     def update_add_tree_data(self, event_list: list[str]) -> None:
         """Invoke update_tree_signal to process data coming in from a different thread."""
         self._bridge.update_tree_signal.emit(event_list)
@@ -283,6 +287,11 @@ class TreeViewWidget(QWidget):
         """Add an entry under the Raw root path."""
         path = path.removeprefix("/")
         self.add_item_at_path(uuid, name, f"Raw/{path}")
+
+    def add_plot(self, uuid: UUID, name: str, path: str) -> None:
+        """Add an entry under the Plots root path."""
+        path = path.removeprefix("/")
+        self.add_item_at_path(uuid, name, f"Plots/{path}")
 
     def _init_path(self, path: str) -> None:
         """Init path in tree if it doesn't exist."""

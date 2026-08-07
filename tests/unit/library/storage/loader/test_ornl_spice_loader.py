@@ -50,6 +50,15 @@ def test_parse_scan_values_handles_scan_with_no_measurements() -> None:
     assert values.detector == []
 
 
+def test_parse_tavi_metadata_normalization_channel_is_stripped_of_whitespace() -> None:
+    """``# preset_channel = time`` must yield the bare column name "time", not " time"."""
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    tavi_meta = loader.parse_tavi_metadata(_exp815_datafile("HB1_exp0815_scan0003.dat"))
+
+    assert tavi_meta.normalization == ("time", 10.0)
+
+
 def test_parse_external_metadata_reads_matching_ubconf_file() -> None:
     loader = ORNLSpiceLoader(LocalFileStore())
     scan_file = _exp815_datafile("HB1_exp0815_scan0003.dat")

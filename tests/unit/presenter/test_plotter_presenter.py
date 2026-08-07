@@ -11,7 +11,7 @@ from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent, SavePlotEvent
 
 
 def make_scan(uuid_val="scan-001", x_col="qh", x_vals=None, y_col="en", y_vals=None) -> RawScan:
@@ -182,6 +182,22 @@ def test_handle_plot_focus_never_touches_model(presenter):
     assert not presenter._model.method_calls
 
 
+def test_handle_plot_focus_sets_current_plot_to_first_plot(presenter):
+    plot = make_plot("plot-xyz")
+
+    presenter.handle_plot_focus(make_event(plots=[plot]))
+
+    assert presenter._current_plot is plot
+
+
+def test_handle_plot_focus_empty_plots_clears_current_plot(presenter):
+    presenter._current_plot = make_plot()
+
+    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
+
+    assert presenter._current_plot is None
+
+
 # ---------------------------------------------------------------------------
 # handle_raw_scan_focus
 # ---------------------------------------------------------------------------
@@ -236,3 +252,106 @@ def test_handle_raw_scan_focus_default_is_none_when_scan_has_no_normalization(pr
 
     args = presenter._view.set_preset_channel_options.call_args.args
     assert args[1] is None
+
+
+def test_handle_raw_scan_focus_syncs_preset_type_to_normalize_when_scan_has_normalization(presenter):
+    """A scan with a configured normalization channel must show preset type NORMALIZE, not the reset default."""
+    scan = make_scan(x_col="qh", y_col="en")
+    scan.tavimeta.normalization = ("monitor", 1.0)
+    scan.data.data["monitor"] = [1.0, 1.0, 1.0]
+    presenter._view.sync_preset_fields = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    presenter._view.sync_preset_fields.assert_called_once_with("monitor", 1.0)
+
+
+def test_handle_raw_scan_focus_syncs_preset_type_to_none_when_scan_has_no_normalization(presenter):
+    scan = make_scan()
+    presenter._view.sync_preset_fields = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    presenter._view.sync_preset_fields.assert_called_once_with(None, None)
+
+
+def test_handle_raw_scan_focus_no_scan_selected_does_not_sync_preset_fields(presenter):
+    presenter._view.sync_preset_fields = MagicMock()
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
+
+    presenter._view.sync_preset_fields.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# handle_plot_clicked
+# ---------------------------------------------------------------------------
+
+
+def test_handle_plot_clicked_noop_when_no_current_plot(presenter):
+    broker = EventBroker()
+    received = []
+    broker.register(SavePlotEvent, received.append)
+
+    presenter.handle_plot_clicked()
+
+    assert received == []
+
+
+def test_handle_plot_clicked_publishes_save_plot_event(presenter):
+    presenter._current_plot = make_plot("plot-original")
+    broker = EventBroker()
+    received = []
+    broker.register(SavePlotEvent, received.append)
+
+    presenter.handle_plot_clicked()
+
+    assert len(received) == 1
+    assert isinstance(received[0].plot, Plot)
+
+
+def test_handle_plot_clicked_saved_plot_gets_a_fresh_uuid(presenter):
+    original = make_plot("plot-original")
+    presenter._current_plot = original
+    broker = EventBroker()
+    received = []
+    broker.register(SavePlotEvent, received.append)
+
+    presenter.handle_plot_clicked()
+
+    assert received[0].plot.uuid != original.uuid
+
+
+def test_handle_plot_clicked_preserves_series_data(presenter):
+    original = make_plot("plot-original", series=[make_series("scan-001", "my_run")])
+    presenter._current_plot = original
+    broker = EventBroker()
+    received = []
+    broker.register(SavePlotEvent, received.append)
+
+    presenter.handle_plot_clicked()
+
+    assert received[0].plot.series[0].scan_name == "my_run"
+
+
+def test_handle_plot_clicked_does_not_mutate_current_plot(presenter):
+    """Clicking again (e.g. on an already-saved plot) must not reuse or mutate the original object."""
+    original = make_plot("plot-original")
+    presenter._current_plot = original
+
+    presenter.handle_plot_clicked()
+
+    assert presenter._current_plot is original
+    assert presenter._current_plot.uuid == UUID(value="plot-original")
+
+
+def test_handle_plot_clicked_two_clicks_produce_different_uuids(presenter):
+    presenter._current_plot = make_plot("plot-original")
+    broker = EventBroker()
+    received = []
+    broker.register(SavePlotEvent, received.append)
+
+    presenter.handle_plot_clicked()
+    presenter.handle_plot_clicked()
+
+    assert received[0].plot.uuid != received[1].plot.uuid

@@ -146,10 +146,10 @@ class ORNLSpiceLoader(AbstractLoader):
                 exp += val.strip().zfill(4)
             if metadata_entry.startswith("# preset_channel"):
                 _, val = metadata_entry.split("=")
-                preset_channel = val
+                preset_channel = val.strip()
             if metadata_entry.startswith("# preset_value"):
                 _, val = metadata_entry.split("=")
-                preset_value = val
+                preset_value = val.strip()
             if metadata_entry.startswith("# def_x"):
                 _, val = metadata_entry.split("=")
                 def_x = val

@@ -12,6 +12,14 @@ class RawScanAppendEvent(Event):
     friendly_path: str
 
 
+class PlotAppendEvent(Event):
+    """Indicates a new Plot has been added to the Project."""
+
+    uuid: UUID
+    friendly_name: str
+    friendly_path: str
+
+
 class RawScanLoadingEvent(Event):
     """loading raw data event."""
 

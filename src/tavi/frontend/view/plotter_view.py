@@ -31,6 +31,7 @@ class Plot1DView(QWidget):
 
     fields_focus_changed = Signal()
     render_plots_signal = Signal(list)
+    plot_clicked = Signal()
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -124,11 +125,13 @@ class Plot1DView(QWidget):
             rb.toggled.connect(lambda checked: self.fields_focus_changed.emit() if checked else None)
 
         plot_controls = QHBoxLayout()  # remove `self` here too — that was incorrectly setting parent
-        combo = QComboBox()
-        combo.addItem("plot_1")
-        plot_controls.addWidget(combo)
+        self.current_plot_combo = QComboBox()
+        self.current_plot_combo.addItem("plot_1")
+        plot_controls.addWidget(self.current_plot_combo)
         plot_controls.addStretch(1)
-        plot_controls.addWidget(QPushButton("Plot"))
+        self.plot_button = QPushButton("Add Plot")
+        self.plot_button.clicked.connect(self.plot_clicked.emit)
+        plot_controls.addWidget(self.plot_button)
         plot_controls.addWidget(QPushButton("Overplot"))
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
@@ -178,11 +181,28 @@ class Plot1DView(QWidget):
                 x, y, err, series.scan_name, series.normalized_by, series.x_name, series.y_name, series.error_name
             )
             self.sync_axis_fields(series.x_name, series.y_name)
+            self.sync_preset_fields(series.normalized_by, series.normalized_by_value)
 
     def sync_axis_fields(self, x_name: str, y_name: str) -> None:
         """Reflect the actually-plotted x/y column names in the axis fields."""
         self.x_axis_edit.setText(x_name)
         self.y_axis_edit.setText(y_name)
+
+    def sync_preset_fields(self, normalized_by: Optional[str], normalized_by_value: Optional[float]) -> None:
+        """Reflect the plotted series' normalization settings in the preset controls."""
+        widgets = (self.preset_type_combo, self.preset_channel_combo, self.preset_value_edit)
+        for widget in widgets:
+            widget.blockSignals(True)
+        try:
+            preset_type = PresetType.NORMALIZE if normalized_by else PresetType.NONE
+            self.preset_type_combo.setCurrentText(preset_type.value)
+            if normalized_by:
+                self.preset_channel_combo.setCurrentText(normalized_by)
+            if normalized_by_value is not None:
+                self.preset_value_edit.setText(str(normalized_by_value))
+        finally:
+            for widget in widgets:
+                widget.blockSignals(False)
 
     def set_preset_channel_options(self, columns: list[str], default: Optional[str] = None) -> None:
         """Repopulate the preset-channel dropdown with a newly-focused scan's column names."""
@@ -223,6 +243,10 @@ class Plot1DView(QWidget):
     def hookup_fields_changed_signal(self, callback: Callable) -> None:
         """Connect field focus-change signal to callback."""
         self.fields_focus_changed.connect(callback)
+
+    def hookup_plot_clicked_signal(self, callback: Callable) -> None:
+        """Connect the Add Plot button's click signal to callback."""
+        self.plot_clicked.connect(callback)
 
     def get_plot_fields(self) -> PlotFields:
         """Return current values of all plot control fields."""
