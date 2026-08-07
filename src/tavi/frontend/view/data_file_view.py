@@ -36,6 +36,7 @@ class DataFileView(QWidget):
         self.data_table = QTableWidget(0, 0)
         self.data_table.setAlternatingRowColors(True)
         self.data_table.setCornerButtonEnabled(True)
+        self.data_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
 
         top_split.addWidget(self.data_table)
 
@@ -46,6 +47,7 @@ class DataFileView(QWidget):
         self.variable_table.setHorizontalHeaderLabels(["Variables"])
         self.variable_table.setCornerButtonEnabled(True)
         self.variable_table.verticalHeader().setMinimumWidth(20)
+        self.variable_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
 
         button = self.variable_table.findChild(QAbstractButton)
         if button:
@@ -59,6 +61,8 @@ class DataFileView(QWidget):
             checkbox.checkStateChanged.connect(flipChecks)
 
         self.variable_table.itemChanged.connect(self._on_variable_check_changed)
+        self.variable_table.verticalHeader().setSectionsMovable(True)
+        self.variable_table.verticalHeader().sectionMoved.connect(self._on_variable_row_moved)
 
         top_split.addWidget(self.variable_table)
         layout.addWidget(top_split, 2)
@@ -70,8 +74,12 @@ class DataFileView(QWidget):
 
         # Buttons
         btn_layout = QHBoxLayout()
-        btn_layout.addWidget(QPushButton("Restore Metadata From File"))
-        btn_layout.addWidget(QPushButton("Save Modified Metadata To File"))
+        self.restore_metadata_button = QPushButton("Restore Metadata From File")
+        self.restore_metadata_button.setEnabled(False)
+        self.save_metadata_button = QPushButton("Save Modified Metadata To File")
+        self.save_metadata_button.setEnabled(False)
+        btn_layout.addWidget(self.restore_metadata_button)
+        btn_layout.addWidget(self.save_metadata_button)
         layout.addLayout(btn_layout)
 
     def populate_columns(self, data: dict[str, list[float]]) -> None:
@@ -104,6 +112,19 @@ class DataFileView(QWidget):
             if header_item is not None and header_item.text() == item.text():
                 self.data_table.setColumnHidden(col, not visible)
                 break
+
+    def _on_variable_row_moved(self, logical_index: int, old_visual_index: int, new_visual_index: int) -> None:
+        """
+        Mirror a dragged variable row onto the matching data table column.
+
+        ``variable_table`` rows and ``data_table`` columns are always populated together
+        from the same ordered name list, so a row's logical index is always the same
+        column's logical index — the stable identity used to find it regardless of
+        either header's current visual order.
+        """
+        data_header = self.data_table.horizontalHeader()
+        current_visual = data_header.visualIndex(logical_index)
+        data_header.moveSection(current_visual, new_visual_index)
 
     def populate_metadata(self, metadata: dict[str, Any]) -> None:
         """Rebuild the metadata tab widget: one tab per top-level key, one table row per k/v pair."""

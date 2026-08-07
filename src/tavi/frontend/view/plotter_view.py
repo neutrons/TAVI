@@ -132,7 +132,9 @@ class Plot1DView(QWidget):
         self.plot_button = QPushButton("Add Plot")
         self.plot_button.clicked.connect(self.plot_clicked.emit)
         plot_controls.addWidget(self.plot_button)
-        plot_controls.addWidget(QPushButton("Overplot"))
+        self.overplot_button = QPushButton("Overplot")
+        self.overplot_button.setEnabled(False)
+        plot_controls.addWidget(self.overplot_button)
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 

@@ -2,6 +2,7 @@
 
 import pytest
 from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QHeaderView
 
 from tavi.frontend.view.data_file_view import DataFileView
 
@@ -77,6 +78,77 @@ def test_populate_variables_replaces_previous_contents(view):
 
     assert view.variable_table.rowCount() == 1
     assert view.variable_table.item(0, 0).text() == "detector"
+
+
+# ---------------------------------------------------------------------------
+# dragging a variable row reorders the matching data column
+# ---------------------------------------------------------------------------
+
+
+def _visual_order(header, count):
+    return [header.logicalIndex(visual) for visual in range(count)]
+
+
+def test_variable_table_rows_are_movable(view):
+    assert view.variable_table.verticalHeader().sectionsMovable()
+
+
+def test_variable_table_rows_are_not_resizable(view):
+    assert view.variable_table.verticalHeader().sectionResizeMode(0) == QHeaderView.ResizeMode.Fixed
+
+
+def test_data_table_rows_are_not_resizable(view):
+    assert view.data_table.verticalHeader().sectionResizeMode(0) == QHeaderView.ResizeMode.Fixed
+
+
+# ---------------------------------------------------------------------------
+# metadata buttons — disabled for now
+# ---------------------------------------------------------------------------
+
+
+def test_restore_metadata_button_disabled(view):
+    assert not view.restore_metadata_button.isEnabled()
+
+
+def test_save_metadata_button_disabled(view):
+    assert not view.save_metadata_button.isEnabled()
+
+
+def test_dragging_variable_row_to_end_reorders_matching_data_column(view):
+    view.populate_columns({"qh": [1.0], "en": [2.0], "detector": [3.0]})
+    view.populate_variables(["qh", "en", "detector"])
+
+    view.variable_table.verticalHeader().moveSection(0, 2)  # drag "qh" row to the end
+
+    data_header = view.data_table.horizontalHeader()
+    assert _visual_order(data_header, 3) == [1, 2, 0]
+
+
+def test_dragging_variable_row_matches_variable_table_own_visual_order(view):
+    view.populate_columns({"qh": [1.0], "en": [2.0], "detector": [3.0]})
+    view.populate_variables(["qh", "en", "detector"])
+
+    view.variable_table.verticalHeader().moveSection(2, 0)  # drag "detector" row to the front
+
+    var_header = view.variable_table.verticalHeader()
+    data_header = view.data_table.horizontalHeader()
+    assert _visual_order(data_header, 3) == _visual_order(var_header, 3)
+
+
+def test_dragging_variable_row_preserves_hide_by_name_after_reorder(view):
+    """Column visibility is keyed by header text (logical), so it must survive a visual reorder."""
+    view.populate_columns({"qh": [1.0], "en": [2.0]})
+    view.populate_variables(["qh", "en"])
+
+    view.variable_table.verticalHeader().moveSection(0, 1)  # "qh" row now displayed after "en"
+    view.variable_table.item(0, 0).setCheckState(Qt.CheckState.Unchecked)
+
+    qh_logical = next(
+        i
+        for i in range(view.data_table.columnCount())
+        if view.data_table.horizontalHeaderItem(i).text() == "qh"
+    )
+    assert view.data_table.isColumnHidden(qh_logical) is True
 
 
 # ---------------------------------------------------------------------------

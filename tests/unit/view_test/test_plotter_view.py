@@ -516,3 +516,7 @@ def test_hookup_plot_clicked_signal_invokes_callback(view):
 def test_clicking_plot_button_emits_plot_clicked(view, qtbot):
     with qtbot.waitSignal(view.plot_clicked, timeout=1000):
         qtbot.mouseClick(view.plot_button, Qt.LeftButton)
+
+
+def test_overplot_button_disabled(view):
+    assert not view.overplot_button.isEnabled()
