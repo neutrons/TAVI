@@ -25,7 +25,7 @@ def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndar
         weight = series.normalized_by_value if series.normalized_by_value is not None else 1.0
         # Error propagation for the ratio y/channel_data, computed against the
         # pre-normalization y before it is overwritten below.
-        err = weight * (y / channel_data) * np.sqrt(y / np.sqrt(y) + channel_data / np.sqrt(channel_data))
+        err = weight * (err / channel_data)
         y = y * weight / channel_data
     return x, y, err
 
