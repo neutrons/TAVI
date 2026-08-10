@@ -232,7 +232,8 @@ def test_handle_raw_scan_focus_no_scan_selected_still_resets_controls(presenter)
     presenter._view.set_preset_channel_options.assert_not_called()
 
 
-def test_handle_raw_scan_focus_passes_normalization_channel_as_default(presenter):
+def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_has_normalization(presenter):
+    """A raw scan must default to unnormalized (preset type NONE), regardless of any file-declared normalization."""
     scan = make_scan(x_col="qh", y_col="en")
     scan.tavimeta.normalization = ("monitor", 1.0)
     scan.data.data["monitor"] = [1.0, 1.0, 1.0]
@@ -240,22 +241,13 @@ def test_handle_raw_scan_focus_passes_normalization_channel_as_default(presenter
 
     presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
 
-    args = presenter._view.set_preset_channel_options.call_args.args
-    assert args[1] == "monitor"
+    args, kwargs = presenter._view.set_preset_channel_options.call_args
+    default = args[1] if len(args) > 1 else kwargs.get("default")
+    assert default is None
 
 
-def test_handle_raw_scan_focus_default_is_none_when_scan_has_no_normalization(presenter):
-    scan = make_scan()
-    presenter._view.set_preset_channel_options = MagicMock()
-
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
-
-    args = presenter._view.set_preset_channel_options.call_args.args
-    assert args[1] is None
-
-
-def test_handle_raw_scan_focus_syncs_preset_type_to_normalize_when_scan_has_normalization(presenter):
-    """A scan with a configured normalization channel must show preset type NORMALIZE, not the reset default."""
+def test_handle_raw_scan_focus_leaves_preset_type_at_reset_default_of_none(presenter):
+    """reset_controls_to_defaults already sets preset type to NONE; the handler must not sync it away from that."""
     scan = make_scan(x_col="qh", y_col="en")
     scan.tavimeta.normalization = ("monitor", 1.0)
     scan.data.data["monitor"] = [1.0, 1.0, 1.0]
@@ -263,16 +255,7 @@ def test_handle_raw_scan_focus_syncs_preset_type_to_normalize_when_scan_has_norm
 
     presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
 
-    presenter._view.sync_preset_fields.assert_called_once_with("monitor", 1.0)
-
-
-def test_handle_raw_scan_focus_syncs_preset_type_to_none_when_scan_has_no_normalization(presenter):
-    scan = make_scan()
-    presenter._view.sync_preset_fields = MagicMock()
-
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
-
-    presenter._view.sync_preset_fields.assert_called_once_with(None, None)
+    presenter._view.sync_preset_fields.assert_not_called()
 
 
 def test_handle_raw_scan_focus_no_scan_selected_does_not_sync_preset_fields(presenter):

@@ -101,7 +101,7 @@ class TestPlotModel(unittest.TestCase):
         assert series.source_scan_uuid == scan.uuid
         assert series.x_name == "qh"
 
-    def test_plot_normalized_by_set_from_tavimeta(self):
+    def test_plot_normalized_by_not_applied_by_default_even_when_tavimeta_has_normalization(self):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
@@ -109,7 +109,7 @@ class TestPlotModel(unittest.TestCase):
         self.raw_scans[scan.uuid] = scan
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
-        assert received[0].plots[0].series[0].normalized_by == "detector"
+        assert received[0].plots[0].series[0].normalized_by is None
 
     def test_plot_normalized_by_none_when_no_normalization(self):
         received: list[PlotFocusEvent] = []
@@ -178,7 +178,7 @@ class TestPlotModel(unittest.TestCase):
         assert response.code.name == "OK"
         assert len(received) == 0
 
-    def test_raw_scan_focus_sets_normalized_by_value_from_tavimeta(self):
+    def test_raw_scan_focus_normalized_by_value_not_applied_by_default(self):
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
@@ -187,8 +187,8 @@ class TestPlotModel(unittest.TestCase):
         self.broker.publish(RawScanFocusEvent(scans=[scan]))
 
         series = received[0].plots[0].series[0]
-        assert series.normalized_by == "monitor"
-        assert series.normalized_by_value == 2.5
+        assert series.normalized_by is None
+        assert series.normalized_by_value is None
 
     def test_raw_scan_focus_normalized_by_value_none_when_no_normalization(self):
         received: list[PlotFocusEvent] = []

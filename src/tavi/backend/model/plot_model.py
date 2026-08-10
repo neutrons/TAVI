@@ -31,14 +31,13 @@ class PlotModel(PlotModelInterface):
         if not e.scans:
             return
         scan: RawScan = e.scans[0]
-        norm_channel, norm_value = scan.tavimeta.normalization if scan.tavimeta.normalization else (None, None)
         x_name = scan.tavimeta.default_axis[0]
         y_name = scan.tavimeta.default_axis[1]
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
             scan_name=scan.tavimeta.friendly_name,
-            normalized_by=norm_channel,
-            normalized_by_value=norm_value,
+            normalized_by=None,
+            normalized_by_value=None,
             x_name=x_name,
             y_name=y_name,
             error_name="error",

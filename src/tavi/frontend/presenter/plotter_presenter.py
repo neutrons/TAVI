@@ -38,9 +38,7 @@ class PlotterPresenter(AbstractPresenter):
         if not e.scans:
             return
         scan = e.scans[0]
-        norm_channel, norm_value = scan.tavimeta.normalization if scan.tavimeta.normalization else (None, None)
-        self._view.set_preset_channel_options(list(scan.data.data.keys()), norm_channel)
-        self._view.sync_preset_fields(norm_channel, norm_value)
+        self._view.set_preset_channel_options(list(scan.data.data.keys()))
 
     def handle_fields_changed(self) -> None:
         """Pull current control field values from the view and dispatch to the model."""
