@@ -18,6 +18,7 @@ def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndar
     """Look up the scan this series points at and pull the x/y/err arrays named by it."""
     scan = scans[series.source_scan_uuid]
     x_name = "_" + series.x_name if series.x_name[0].isdigit() else series.x_name
+    x_name.replace("-", "_").replace(" ", "_").replace(".", "")
     x = np.array(scan.data.data[x_name])
     y = np.array(scan.data.data[series.y_name])
     err = np.sqrt(np.abs(y))
