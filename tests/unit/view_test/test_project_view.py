@@ -49,6 +49,33 @@ def test_treeview_initializes_root_folders(qtbot):
 
 
 # ---------------------------------------------------------------------------
+# TreeViewWidget — add_plot
+# ---------------------------------------------------------------------------
+
+
+def test_add_plot_reuses_the_preexisting_plots_root(qtbot):
+    """add_plot must fill the pre-created "/Plots" root, not spawn a sibling "/Plot" folder."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    plots_root = w.path_map["/Plots"]
+
+    w.add_plot(UUID(value="plot1"), "run1_Plot", "")
+
+    assert "/Plot" not in w.path_map
+    assert plots_root.rowCount() == 1
+
+
+def test_add_plot_creates_uuid_entry(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="plot2")
+    w.add_plot(uuid, "run2_Plot", "")
+
+    assert uuid in w.uuid_map
+
+
+# ---------------------------------------------------------------------------
 # TreeViewWidget — add_raw_scan / add_item_at_path
 # ---------------------------------------------------------------------------
 
@@ -292,6 +319,16 @@ def test_project_view_add_raw_scan_delegates(qtbot):
 
     uuid = UUID(value="pv1")
     view.add_raw_scan(uuid, "scan", "/exp")
+
+    assert uuid in view.tree_widget.uuid_map
+
+
+def test_project_view_add_plot_delegates(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+
+    uuid = UUID(value="pv-plot1")
+    view.add_plot(uuid, "run1_Plot", "")
 
     assert uuid in view.tree_widget.uuid_map
 

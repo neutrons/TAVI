@@ -85,12 +85,13 @@ def test_resolve_series_defaults_normalized_by_value_to_one_when_none():
 
 
 def test_resolve_series_propagates_err_through_normalization():
-    scan = make_scan(data={"qh": [1.0, 2.0, 3.0], "en": [4.0, 9.0, 16.0], "monitor": [2.0, 3.0, 4.0]})
-    series = make_series(normalized_by="monitor", normalized_by_value=1.0)
+    scan = make_scan(data={"qh": [1.0, 2.0, 3.0], "en": [4.0, 9.0, 16.0], "monitor": [2.0, 6.0, 8.0]})
+    series = make_series(normalized_by="monitor", normalized_by_value=10.0)
 
     _, _, err = resolve_series(series, {scan.uuid: scan})
 
-    npt.assert_allclose(err, [3.695518130045147, 6.525983241483225, 9.797958971132712])
+    # The counting error is scaled the same way y is: sqrt(|y|) * weight / monitor.
+    npt.assert_allclose(err, [10.0 * 2.0 / 2.0, 10.0 * 3.0 / 6.0, 10.0 * 4.0 / 8.0])
 
 
 def test_scans_for_plots_returns_only_referenced_scans():

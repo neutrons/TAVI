@@ -2,11 +2,11 @@
 
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
+from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
-from tavi.frontend.view.data_file_view import DataFileView
 from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
@@ -34,6 +34,8 @@ class MainPresenter:
 
         self.plotter_presenter = PlotterPresenter(model_dict[PlotModelInterface.__name__])
 
+        self.data_file_presenter = DataFilePresenter()
+
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view()
         self.error_view.setParent(self._view)
@@ -41,7 +43,7 @@ class MainPresenter:
         self._view.build_ui(
             project_view=self.load_raw_scan_presenter.view(),
             plot_view=self.plotter_presenter.view(),
-            data_file_view=DataFileView(),
+            data_file_view=self.data_file_presenter.view(),
             filter_view=FilterView(),
         )
 

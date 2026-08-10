@@ -73,6 +73,10 @@ Method Notes
 
 * Collects key/value header fields before ``# col_headers =``.
 * Captures terminal status entries (for example scan completed/stopped).
+* Groups all fields under a single ``"ORNL Metadata"`` category (see
+  :doc:`../design/frontend/data_file_view`) so ``.``-delimited access
+  (``scan.metadata.ubconf``) keeps working, while the metadata widget renders
+  them under one ``"ORNL Metadata"`` tab.
 
 ``parse_external_metadata``
 ---------------------------

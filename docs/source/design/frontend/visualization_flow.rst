@@ -117,6 +117,61 @@ before publishing, for the same reason ``PlotModel`` does on the other path.
         Plot1DView ->> Plot1DView: redraw canvas
 
 
+Add Plot — Saving a New Plot Entry
+------------------------------------
+
+Clicking **Add Plot** on the plotter panel runs the reverse direction of the
+chains above: instead of a selection producing a rendered plot, the
+*currently rendered* plot is captured and persisted as a new, independent
+entry in the project.
+
+.. mermaid::
+
+    sequenceDiagram
+        participant User
+        participant Plot1DView
+        participant PlotterPresenter
+        participant EventBroker
+        participant TaviProjectModel
+        participant LoadRawScanPresenter
+        participant ProjectView
+
+        User ->> Plot1DView: clicks "Add Plot"
+        Plot1DView ->> PlotterPresenter: plot_clicked signal
+        PlotterPresenter ->> PlotterPresenter: deep-copy _current_plot under a fresh uuid
+        PlotterPresenter ->> EventBroker: publish SavePlotEvent(plot)
+
+        EventBroker ->> TaviProjectModel: handle save-plot event
+        TaviProjectModel ->> TaviProjectModel: store plot in TaviData.plots
+        TaviProjectModel ->> TaviProjectModel: friendly_name = "_".join(series.scan_name) + "_Plot"
+        TaviProjectModel ->> EventBroker: publish PlotAppendEvent(uuid, friendly_name, friendly_path="")
+
+        EventBroker ->> LoadRawScanPresenter: handle plot append event
+        LoadRawScanPresenter ->> ProjectView: add_plot(uuid, friendly_name, friendly_path)
+
+The new plot is then selectable like any other — its own future
+``FocusEvent`` will resolve it through the "Plot Selection" chain above.
+
+Why a fresh uuid on every click
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``_current_plot`` may already be a *saved* plot (the user re-selected an
+existing ``Plots`` tree entry, then clicked **Add Plot** again).
+``TaviProjectModel.tavi_data.plots`` is keyed by uuid, and ``ProjectView``
+raises if a uuid is inserted twice — reusing the uuid would silently
+overwrite the original entry (model) or crash the tree (view) on the second
+click. Deep-copying under a new uuid before publishing means every click
+produces an independent entry, regardless of whether the source plot was
+ephemeral (fresh off a raw-scan selection) or already saved.
+
+``friendly_path`` is always empty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Saved plots have no folder/grouping requirement yet, so
+``TaviProjectModel`` always publishes ``friendly_path=""``. ``ProjectView``
+still places every plot under the ``Plots`` tree root regardless.
+
+
 Key Design Decisions
 --------------------
 
@@ -152,6 +207,27 @@ Clear-before-append semantics
 The plotter presenter always clears the canvas before appending.  Every plot
 focus event represents a *replacement*, not an *addition*.  Overplot behaviour
 (accumulating multiple series on the same axes) requires a separate code path.
+
+Preset controls always mirror the focused entity
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Both focus paths call the view's ``sync_preset_fields(normalized_by,
+normalized_by_value)`` so the preset type/channel/value controls reflect
+what is actually plotted:
+
+- **RawScan focus** — ``PlotterPresenter.handle_raw_scan_focus`` derives
+  ``normalized_by``/``normalized_by_value`` from
+  ``scan.tavimeta.normalization`` and syncs them alongside repopulating the
+  channel dropdown.
+- **Plot focus** — ``PlotterPresenter.handle_plot_focus`` (via
+  ``Plot1DView._render_plots``) syncs from the resolved series'
+  ``normalized_by``/``normalized_by_value``.
+
+Previously, ``handle_raw_scan_focus`` reset the preset type to ``NONE``
+unconditionally and never re-derived it, so a scan configured with a
+normalization channel showed type ``NONE`` on selection but ``NORMALIZE``
+once a plot was generated from it — the two paths must derive preset state
+identically, or the controls desync depending on which path last ran.
 
 Mixed selection limitation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

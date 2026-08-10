@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.plot import PlotFields
@@ -254,14 +255,63 @@ def test_set_preset_channel_options_does_not_emit_fields_focus_changed(view, qtb
 
 
 # ---------------------------------------------------------------------------
+# sync_preset_fields
+# ---------------------------------------------------------------------------
+
+
+def test_sync_preset_fields_normalize_sets_type_channel_and_value(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"])
+
+    view.sync_preset_fields("monitor", 2.0)
+
+    assert view.preset_type_combo.currentText() == "normalize"
+    assert view.preset_channel_combo.currentText() == "monitor"
+    assert view.preset_value_edit.text() == "2.0"
+
+
+def test_sync_preset_fields_none_sets_type_to_none(view):
+    view.sync_preset_fields(None, None)
+    assert view.preset_type_combo.currentText() == "none"
+
+
+def test_sync_preset_fields_none_leaves_value_edit_untouched(view):
+    view.preset_value_edit.setText("42")
+    view.sync_preset_fields(None, None)
+    assert view.preset_value_edit.text() == "42"
+
+
+def test_sync_preset_fields_channel_not_in_options_is_a_silent_noop_on_channel_combo(view):
+    """Matches QComboBox semantics: a non-editable combo ignores setCurrentText for unknown text."""
+    view.set_preset_channel_options(["qh", "en"])
+    view.sync_preset_fields("monitor", 1.0)
+    assert view.preset_channel_combo.currentText() != "monitor"
+
+
+def test_sync_preset_fields_does_not_emit_fields_focus_changed(view, qtbot):
+    view.set_preset_channel_options(["monitor"])
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+    view.sync_preset_fields("monitor", 1.0)
+    assert received == []
+
+
+# ---------------------------------------------------------------------------
 # _render_plots / render_plots_signal
 # ---------------------------------------------------------------------------
 
 
-def _series(scan_name="scan1", normalized_by="monitor", x_name="qh", y_name="en", error_name="err"):
+def _series(
+    scan_name="scan1",
+    normalized_by="monitor",
+    normalized_by_value=1.0,
+    x_name="qh",
+    y_name="en",
+    error_name="err",
+):
     return SimpleNamespace(
         scan_name=scan_name,
         normalized_by=normalized_by,
+        normalized_by_value=normalized_by_value,
         x_name=x_name,
         y_name=y_name,
         error_name=error_name,
@@ -292,6 +342,28 @@ def test_render_plots_syncs_axis_fields_to_last_series(view):
     view._render_plots(resolved)
     assert view.x_axis_edit.text() == "qk"
     assert view.y_axis_edit.text() == "ei"
+
+
+def test_render_plots_syncs_preset_fields_to_last_series(view):
+    view.set_preset_channel_options(["monitor", "time"])
+    resolved = [
+        (
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
+            _series(normalized_by="monitor", normalized_by_value=2.0),
+        ),
+        (
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
+            _series(normalized_by="time", normalized_by_value=5.0),
+        ),
+    ]
+    view._render_plots(resolved)
+    assert view.preset_type_combo.currentText() == "normalize"
+    assert view.preset_channel_combo.currentText() == "time"
+    assert view.preset_value_edit.text() == "5.0"
 
 
 def test_render_plots_signal_emits_to_render_plots(view, qtbot):
@@ -423,3 +495,28 @@ def test_unchecking_radio_button_does_not_emit_fields_focus_changed(view, qtbot)
     view.fields_focus_changed.connect(lambda: received.append(True))
     view.rb2.setChecked(False)
     assert received == []
+
+
+# ---------------------------------------------------------------------------
+# Add Plot button / plot_clicked signal
+# ---------------------------------------------------------------------------
+
+
+def test_plot_button_label_is_add_plot(view):
+    assert view.plot_button.text() == "Add Plot"
+
+
+def test_hookup_plot_clicked_signal_invokes_callback(view):
+    calls = []
+    view.hookup_plot_clicked_signal(lambda: calls.append(True))
+    view.plot_clicked.emit()
+    assert calls == [True]
+
+
+def test_clicking_plot_button_emits_plot_clicked(view, qtbot):
+    with qtbot.waitSignal(view.plot_clicked, timeout=1000):
+        qtbot.mouseClick(view.plot_button, Qt.LeftButton)
+
+
+def test_overplot_button_disabled(view):
+    assert not view.overplot_button.isEnabled()

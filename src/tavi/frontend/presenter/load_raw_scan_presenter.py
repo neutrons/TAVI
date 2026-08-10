@@ -7,7 +7,7 @@ from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import RawScanAppendEvent
+from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent
 from tavi.meta.event.type.presenter_event import FocusEvent
 
 
@@ -35,6 +35,7 @@ class LoadRawScanPresenter(AbstractPresenter):
         self._model = model
         self.event_broker = EventBroker()
         self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
+        self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
         self._view.hookup_select_signal(self.handle_selection_event)
@@ -48,6 +49,10 @@ class LoadRawScanPresenter(AbstractPresenter):
         """Update the treeview GUI after loading complete."""
         self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
         self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)
+
+    def update_plot_treeview_data(self, event: PlotAppendEvent) -> None:
+        """Update the treeview GUI after a plot is added."""
+        self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
 
     def handle_selection_event(self) -> None:
         """Handle selection event by publishing focus event."""

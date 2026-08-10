@@ -23,6 +23,12 @@ class RawScanFocusEvent(Event):
     scans: list[RawScan]
 
 
+class SavePlotEvent(Event):
+    """Request to save a plot into the project's data store."""
+
+    plot: Plot
+
+
 class PlotFocusEvent(Event):
     """
     Event to render a list of plots.
