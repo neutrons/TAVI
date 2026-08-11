@@ -19,7 +19,6 @@ class MainPresenter:
 
     def __init__(self, model_dict: dict) -> None:
         """Init main views."""
-
         # disabling pop-up box when exiting until we implement save project
         self.safe_exit = False
         self._view = TaviView()
