@@ -164,7 +164,7 @@ class Plot1DView(QWidget):
         """Append a scan to the plot."""
         ax = self.canvas.axes
         label = f"{scan_name}"
-        ax.errorbar(x, y, yerr=err, label=label, fmt="o-", capsize=3)
+        ax.errorbar(x, y, yerr=err, label=label, fmt="o", capsize=3)
         ax.set_xlabel(x_name)
         ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
         ax.legend()
