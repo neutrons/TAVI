@@ -65,6 +65,8 @@ class DataFileView(QWidget):
         self.variable_table.verticalHeader().sectionMoved.connect(self._on_variable_row_moved)
 
         top_split.addWidget(self.variable_table)
+        top_split.setStretchFactor(0, 2)
+        top_split.setStretchFactor(1, 1)
         layout.addWidget(top_split, 2)
 
         # Metadata
