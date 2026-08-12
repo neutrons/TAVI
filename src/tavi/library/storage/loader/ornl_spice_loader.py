@@ -23,6 +23,15 @@ from tavi.library.storage.loader.interface.base import AbstractLoader
 logger = logging.getLogger(__name__)
 
 
+def _normalize_col_name(col_name: str) -> str:
+    """Apply the same sanitization used for column keys, so lookups by name always match."""
+    if not col_name:
+        return col_name
+    if col_name[0].isdigit():  # can't start with digit, replace with _
+        col_name = "_" + col_name
+    return col_name.replace("-", "_").replace(" ", "_").replace(".", "")  # replace "-", " ", with "_", remove "."
+
+
 class ORNLSpiceLoader(AbstractLoader):
     """Loader for ORNL Spice format scan files."""
 
@@ -158,7 +167,7 @@ class ORNLSpiceLoader(AbstractLoader):
                 def_y = val
         friendly_name = instrument_name + "_" + exp + "_" + s
         return TaviMetadata(
-            default_axis=(def_x.strip(), def_y.strip()),
+            default_axis=(_normalize_col_name(def_x.strip()), _normalize_col_name(def_y.strip())),
             friendly_name=friendly_name,
             friendly_path=friendly_path,
             normalization=(preset_channel, preset_value),
@@ -187,12 +196,7 @@ class ORNLSpiceLoader(AbstractLoader):
             col_values = np.array(None)
         data = dict()
         for col_index, col_name in enumerate(col_names):
-            # guard against invalid format
-            if col_name[0].isdigit():  # can't start with digit, replace with _
-                col_name = "_" + col_name
-            attr_name = (
-                col_name.replace("-", "_").replace(" ", "_").replace(".", "")
-            )  # replace "-", " ", with "_", remove any "."
+            attr_name = _normalize_col_name(col_name)
             if col_values.ndim > 1:
                 data[attr_name] = col_values[:, col_index]
             # sometimes data only have 1 entry, then we don't need to slice the data.
