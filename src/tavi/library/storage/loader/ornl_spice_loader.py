@@ -314,7 +314,12 @@ class ORNLSpiceLoader(AbstractLoader):
                 h_center = np.mean(scan.data.h)
                 k_center = np.mean(scan.data.k)
                 l_center = np.mean(scan.data.l)
-            hkl = (h_center, k_center, l_center)
+            hkl = []
+            for center in (h_center, k_center, l_center):
+                # A fitted axis can yield several centers, so keep them nested:
+                # a two-peak l scan gives [0.0, 0.0, [6.1, 6.2]], a single peak stays flat.
+                centers = [round(float(c), 2) for c in np.atleast_1d(center)]
+                hkl.append(centers if len(centers) > 1 else centers[0])
             return hkl
 
     def get_peak_center(

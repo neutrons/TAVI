@@ -7,6 +7,7 @@ import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.fit import FitPackage
+from tavi.library.fit.fit import ModelName
 
 
 def browse_scans(
@@ -149,8 +150,16 @@ def browse_scans(
                         label=reso_label if idx == 0 else None,
                     )
             ax.legend(fontsize=8, loc="upper right")
-        hkls.append(experiment.get_hkl(dict(scan_num=num)))
-        ax.set_title(f"{num}, {experiment.get_hkl(dict(scan_num=num))}")
+
+        # if we can't parse title for nominal hkl position then we use a Gaussian to try to find the center of the peak.
+        try:
+            hkl = experiment.get_hkl(dict(scan_num=num), use_title=True)
+        except ValueError:
+            hkl = experiment.get_hkl(
+                dict(scan_num=num), use_title=False, model_dict=[(ModelName.Gaussian, dict(guess=True))]
+            )
+        hkls.append(hkl)
+        ax.set_title(f"{num}, {hkl}")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(def_y)
 
