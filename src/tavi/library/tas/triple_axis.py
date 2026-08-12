@@ -218,16 +218,19 @@ class TAS:
         )
         if resolution_frame == "local":
             for center_group in centers:
-                cohs, res_group = [], []
+                cohs, incohs, res_group = [], [], []
                 for center in center_group:
                     res_4d, r0 = self.resolution.get_resolution(
                         hkl=center.hkl, ei=center.ei, ef=center.ef, rot_mat=None
                     )
-                    coh = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis)
-                    cohs.append(coh)
+                    resolution_ellipsoid = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame)
+                    cohs.append(resolution_ellipsoid.coh_fwhm(projection_axis))
+                    incohs.append(resolution_ellipsoid.incoh_fwhm(projection_axis))
                     res_group.append((res_4d, r0))
                 resolution_bar.append(tuple(cohs))
+                incoh_bar.append(tuple(incohs))
                 res_4ds.append(tuple(res_group))
+            print("incoherent FWHM = ", incoh_bar)
         elif isinstance(resolution_frame, tuple):
             for center_group in centers:
                 cohs, incohs, res_group = [], [], []
@@ -276,9 +279,9 @@ class TAS:
         """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
             peaks = [
-                dp
+                (i, dp)
                 for i in scan_list
-                for dp in self.experiment.get_peak_center(
+                for dp in self.experiment.get_closest_to_center_data_point(
                     dict(scan_num=i), fit_package=fit_package, model_dict=model_dict
                 )
             ]
@@ -293,7 +296,7 @@ class TAS:
             resolution_frame="local",
         )
         ellipses = []
-        for idx, peak in zip(scan_list, peaks):
+        for idx, peak in peaks:
             res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
             ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
             coh_para = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=0)

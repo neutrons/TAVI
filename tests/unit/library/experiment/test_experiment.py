@@ -55,7 +55,6 @@ def component():
                          collimators=collimators,
                          goniometer=Goniometer(type= "Y,Z,Y,bisect", s2_sense = "-"))
         exp = Experiment()
-        exp.set_fixed_energy(14.503)
         return sample, ins, exp
 
 def test_load_file():
@@ -93,9 +92,13 @@ def test_create_peaks(component):
     peaks = [
         dp
         for i in scan_list
-        for dp in tas.experiment.get_peak_center({"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))])
+        for dp in tas.experiment.get_closest_to_center_data_point({"scan_num": i}, FitPackage.lmfit, [(ModelName.Gaussian, dict(guess=True))])
     ]
     assert len(peaks) == 19
-    assert peaks[0].ei == 14.503
-    assert peaks[0].ef == 14.503
-    assert np.allclose(peaks[0].hkl,(-1.0, -1.0, -1.0))
+    # ei/ef now come from the scan's own columns rather than a hand-set fixed
+    # energy; exp1091 is elastic, so ef == ei == the ei column value.
+    assert peaks[0].ei == 14.4503
+    assert peaks[0].ef == 14.4503
+    # hkl is the nearest measured row, not an interpolated fit center, so it
+    # lands near the nominal (-1 -1 -1) rather than exactly on it.
+    assert np.allclose(peaks[0].hkl, (-1.0, -1.0, -1.0), atol=1e-3)

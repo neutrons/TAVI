@@ -67,7 +67,6 @@ def browse_scans(
     fit_results = []
     hkls = []
     bars, res_mat_4d = resolution_bars if show_resolution_bar else ([0] * n, [0] * n)
-    print(bars)
     for ax, num, coh in zip(axes_flat, scan_list, bars):
         scan = experiment.get_data_from_scan_number(dict(scan_num=num))
         if not def_x:
