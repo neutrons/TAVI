@@ -13,7 +13,7 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
     DownstreamReadyEvent,
     FocusEvent,

@@ -10,8 +10,8 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent, SavePlotEvent
 from tavi.meta.event.type.model_event import PlotAppendEvent
+from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent, SavePlotEvent
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
 
@@ -29,7 +29,6 @@ class PlotModel(PlotModelInterface):
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
-
 
     def _handle_save_plot_event(self, e: SavePlotEvent) -> None:
         """Record a presenter-submitted plot in ``tavi_data`` and announce it."""
