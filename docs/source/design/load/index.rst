@@ -1,4 +1,4 @@
-.. _design__guidelines:
+.. _design__load:
 
 ++++++++++++++++++++++
 Load Architecture

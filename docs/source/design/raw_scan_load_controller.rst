@@ -22,17 +22,36 @@ The controller coordinates three main concerns:
   concrete loader implementations.
 - **Batch orchestration**: Provides optimized loading for multiple files or folders.
 
+Both ``LoaderRegistry`` and ``RawScanClassifier`` are constructed with no
+arguments — they are singletons resolved at ``__init__`` time. ``Config`` and
+``Singleton`` come from ``neutrons_standard``:
+
+.. code-block:: python
+
+    from neutrons_standard.config import Config
+    from neutrons_standard.decorators.singleton import Singleton
+
+    @Singleton
+    class RawScanLoadController:
+        def __init__(self, filestore: FileStoreInterface) -> None:
+            self.filestore = filestore
+            self.loader_registry = LoaderRegistry()
+            self.classifier = RawScanClassifier()
+
 Private Methods
 ---------------
 
 .. method:: _lookup_loader(file_path: str) -> AbstractLoader
 
-   Resolve the appropriate loader for a given file path.
+   Resolve the appropriate loader for a given file path. Classifies the file with
+   ``RawScanClassifier.get_classification`` and looks the resulting
+   ``RawScanType`` up in the registry.
 
    :param file_path: Path to the input file.
    :type file_path: str
    :returns: Loader instance corresponding to the file classification.
    :rtype: AbstractLoader
+   :raises RuntimeError: If no loader is registered for the classification.
 
 Public Methods
 --------------

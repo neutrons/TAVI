@@ -36,6 +36,11 @@ extensions = [
     "sphinxcontrib.mermaid",
 ]
 
+# MathJax has no \AA macro (unlike LaTeX), so define it for the Angstrom unit.
+mathjax3_config = {
+    "tex": {"macros": {"AA": r"{\mathring{\mathrm{A}}}"}},
+}
+
 master_doc = "index"
 source_suffix = [".rst", ".md"]
 

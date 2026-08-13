@@ -4,17 +4,46 @@ Logging
 Overview
 --------
 
-TAVI uses Python's standard ``logging`` module configured via JSON. Logging is automatically initialized when the application starts via ``tavi.meta.logging.init_logging()``.
+TAVI uses Python's standard ``logging`` module configured via JSON, through
+``tavi.meta.logging.init_logging()``.
+
+Where init_logging() is called
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is **not** called from ``tavi/__init__.py`` and **not** called by the
+``tavi`` console-script entry point (``tavi.__main__:execute``). The two call
+sites are:
+
+- ``tavi/__main__.py``, but only under ``if __name__ == "__main__"`` — i.e. when
+  the app is started with ``python -m tavi`` (which is what ``pixi run tavi``
+  does).
+- ``tests/conftest.py``, so the test suite always has it configured.
+
+Launching via the installed ``tavi`` script therefore leaves logging
+unconfigured, and records fall back to Python's default handler-of-last-resort
+(WARNING and above, no hostname, to stderr). Call ``init_logging()`` explicitly
+if you need configured logging from an embedding process or a notebook:
+
+.. code-block:: python
+
+    from tavi.meta.logging import init_logging
+
+    init_logging()
 
 Configuration
 -------------
 
-The logging configuration is defined in ``tavi/resources/logging_config.json`` and includes:
+The logging configuration is read with ``neutrons_standard.config.Resource`` from
+``src/tavi/resources/logging_config.json`` and includes:
 
-- **Formatters**: Define output format with hostname, timestamp, level, logger name, and message
-- **Handlers**: Console handler streams to stdout at INFO level
-- **Filters**: Custom hostname filter adds system hostname to all log records
-- **Root Logger**: Configured at INFO level with propagation enabled
+- **Formatters**: ``standard`` (hostname, timestamp, level, logger name, message)
+  and ``simple`` (level and message only; defined but not currently attached to
+  a handler)
+- **Handlers**: a single ``console`` handler streaming to ``sys.stdout`` at INFO
+- **Filters**: ``hostname_filter`` is injected into the config dict at runtime by
+  ``init_logging`` rather than being declared in the JSON, because it needs the
+  ``HostnameFilter`` class object
+- **Root Logger**: ``""`` configured at INFO with ``propagate: true``
 
 Log Format
 ~~~~~~~~~~
@@ -103,6 +132,11 @@ Choose the appropriate log level based on context:
 Implementation Details
 ----------------------
 
-- Initialization: ``init_logging()`` is called automatically in ``tavi/__init__.py``
-- Hostname Filter: Custom filter adds ``hostname`` attribute to each log record
-- Configuration Source: ``tavi.meta.logging.HostnameFilter`` and ``logging_config.json``
+- Initialization: see `Where init_logging() is called`_ — it is not automatic for
+  every entry point
+- Hostname Filter: ``HostnameFilter`` is defined *inside* ``init_logging()`` and
+  adds a ``hostname`` attribute (the short hostname, everything before the first
+  dot) to each record. The ``standard`` formatter's ``%(hostname)s`` depends on
+  it, so that formatter only works on handlers carrying the filter
+- Configuration Source: ``src/tavi/resources/logging_config.json``, loaded via
+  ``Resource.read`` and applied with ``logging.config.dictConfig``

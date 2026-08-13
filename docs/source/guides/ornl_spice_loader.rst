@@ -49,14 +49,23 @@ the sibling ``UBConf`` directory.
 Typical Loading Flow
 ====================
 
-``ORNLSpiceLoader.load(path)`` performs these steps:
+``ORNLSpiceLoader.load(file_path)`` performs these steps:
 
-1. Parse numeric scan arrays via ``parse_scan_values``.
-2. Parse header metadata via ``parse_metadata``.
-3. Parse TAVI metadata via ``parse_tavi_metadata``.
-4. Build provenance via ``create_provenance``.
-5. Resolve and parse external UB metadata via ``parse_external_metadata``.
-6. Merge external UB data into metadata and return a ``RawScan``.
+1. Generate the scan's uuid via ``generate_uuid`` (MD5 of the file's text).
+2. Parse numeric scan arrays via ``parse_scan_values``.
+3. Parse header metadata via ``parse_metadata``.
+4. Parse TAVI metadata via ``parse_tavi_metadata``.
+5. Build provenance via ``create_provenance``.
+6. Read the ``ubconf`` field out of the parsed metadata and resolve it with
+   ``parse_external_metadata(file_path, ub_name)``.
+7. Merge the external UB data into ``meta.data`` and return a ``RawScan`` via
+   ``adapt_scan_data``.
+
+Note that this loader's ``parse_external_metadata`` takes a second argument
+(``ub_name``) and its ``adapt_scan_data`` takes ``uuid``, ``values``, ``meta``,
+``tavi_meta`` and ``prov`` — both are wider than the corresponding
+``LoaderInterface`` signatures. ``load()`` is the only caller, so the registry
+never sees the difference.
 
 
 Method Notes

@@ -16,11 +16,14 @@ Integration tests in TAVI are located in ``tests/integration/`` and serve to:
 - Ensure configuration and initialization work correctly in a realistic environment
 - Catch issues that unit tests cannot detect
 
-Integration tests are marked with the ``@pytest.mark.integration`` decorator and can be run separately from unit tests using:
+Integration tests carry the ``integration`` pytest marker, which they inherit by
+subclassing ``IntegrationTest`` — an explicit ``@pytest.mark.integration``
+decorator is not needed. ``pyproject.toml`` sets ``addopts = "-m 'not
+(integration)'"``, so a plain ``pytest`` run skips them. Run them with:
 
 .. code-block:: bash
 
-    pixi run integration-test
+    pixi run integration-test   # pytest -m integration
 
 Running All Tests (Including Integration)
 ==========================================
@@ -45,10 +48,10 @@ Basic Test Template
     from neutrons_standard.test.integration.test_base import IntegrationTest
     from neutrons_standard.test.integration.test_summary import TestSummary
 
-    @pytest.mark.integration
     class TestMyWorkflow(IntegrationTest):
+        """Subclassing IntegrationTest applies the `integration` marker."""
 
-        @pytest.fixture(scope="function", autouse=True)
+        @pytest.fixture(scope="function", autouse=True)  # noqa: PT003
         def setup(self):
             """Initialize state for each test function."""
             pass
@@ -78,7 +81,6 @@ Key Principles
 
    .. code-block:: python
 
-       @pytest.mark.integration
        class TestLoadRawScans(IntegrationTest):
 
            def _subtest_load_folder(self, state, qtbot):
@@ -86,18 +88,18 @@ Key Principles
                def auto_accept():
                    for w in QApplication.topLevelWidgets():
                        if isinstance(w, QFileDialog):
-                           w.selectFile(Resource.getPath("/inputs/integration/load"))
+                           w.selectFile(Resource.getPath("/inputs/integration/load/datafiles"))
                            w.accept()
                            break
 
                QTimer.singleShot(0, auto_accept)
                qtbot.mouseClick(state.load_button)
-               qtbot.waitUntil(lambda: len(state.project_model.scans) > 0)
+               qtbot.waitUntil(lambda: len(state.project_model.tavi_data.raw_scans) > 0)
 
            def _subtest_verify_scans_visible(self, state):
                """Subtest: Verify loaded scans appear in the project view."""
-               assert len(state.project_model.scans) > 0
-               assert state.gui.scan_list_view.count() > 0
+               assert len(state.project_model.tavi_data.raw_scans) > 0
+               assert len(state.tree_widget.uuid_map) > 0
 
            def test_load_and_display_scans(self, qtbot, qapp):
                """Main test: Load scans and verify they're displayed."""
@@ -114,7 +116,7 @@ Key Principles
 
                self._subtest_load_folder(state, qtbot)
                self._subtest_load_folder(state, qtbot)  # Reuse the same subtest
-               assert len(state.project_model.scans) > 1
+               assert len(state.project_model.tavi_data.raw_scans) > 1
 
    **Benefits:**
 
@@ -158,7 +160,7 @@ Key Principles
        def auto_accept_file_dialog():
            for w in QApplication.topLevelWidgets():
                if isinstance(w, QFileDialog):
-                   w.selectFile(Resource.getPath("/inputs/integration/load"))
+                   w.selectFile(Resource.getPath("/inputs/integration/load/datafiles"))
                    w.accept()
                    break
 
@@ -194,18 +196,31 @@ Key Principles
 Test Data Management
 ====================
 
-Integration tests use test data stored in ``test_data/`` directory. This includes:
+Two separate trees hold test data, and they are not interchangeable:
 
-- Sample HDF5 files (e.g., ``test_data/tavi_test_exp1031.h5``)
-- Configuration and macro files
-- Input directories for file loading tests
+``tests/resources/`` — **what integration tests actually read.**
+    Resolved through ``neutrons_standard.config.Resource.getPath()``, whose paths
+    are relative to this directory. The load test's input lives at
+    ``tests/resources/inputs/integration/load/`` with ``datafiles/`` and
+    ``UBConf/`` subdirectories, referenced as
+    ``Resource.getPath("/inputs/integration/load/datafiles")``. This tree also
+    carries the test-environment ``application.yml``, ``default_settings.yml`` and
+    ``logging_config.json``, which override the packaged ones because
+    ``tests/conftest.py`` sets ``env=test`` before ``neutrons_standard.init``.
+
+``test_data/`` — **a large corpus of real experiment data**, used ad hoc by
+notebooks, scripts, and some unit tests. It holds full SPICE experiment folders
+(``IPTS32912_HB1A_exp1031/``, ``exp815/``, ...) and HDF5 files such as
+``tavi_test_exp1031.h5``. It is not on the ``Resource`` search path.
 
 When adding new integration tests that require test data:
 
-1. Store minimal, representative data files in ``test_data/``
+1. Store minimal, representative fixtures under ``tests/resources/inputs/``
 2. Document the data format and contents
-3. Use ``neutrons_standard.config.Resource.getPath()`` to reference test data
-4. Keep file sizes small to maintain fast test execution
+3. Reference them with ``Resource.getPath()`` — never a hardcoded path
+4. Keep file sizes small; ``library.filestore.raw.size-limit`` is 1 MB, so any
+   larger file is silently skipped by ``fetch_files_at`` and the test will look
+   like it loaded nothing
 
 Git-LFS Consideration
 ---------------------
@@ -232,23 +247,35 @@ Loading Application Components
 .. code-block:: python
 
     def test_application_startup(self, qtbot, qapp):
-        # Initialize project and application models
-        tavi_project_model = TaviProjectModel()
+        # Mirror tavi.__main__.execute: filestore first, then the models.
         filestore = LocalFileStore()
+        tavi_project_model = TaviProjectModel(filestore)
+        plot_model = PlotModel(
+            tavi_project_model.get_plots_handle(),
+            tavi_project_model.get_raw_scans_handle(),
+        )
         application_model = ApplicationModel(filestore)
 
         # Wire up models through a presenter
         dict_of_model = {
             "TaviProjectProxy": TaviProjectProxy(tavi_project_model),
             ApplicationModelInterface.__name__: ApplicationModelProxy(application_model),
+            PlotModelInterface.__name__: PlotModelProxy(plot_model),
         }
 
         main_presenter = MainPresenter(dict_of_model)
+        main_presenter.safe_exit = False
         gui = main_presenter._view
         gui.show()
         qtbot.addWidget(gui)
 
         # Now test interactions with the initialized GUI
+
+``MainPresenter`` requires all three keys — it indexes ``model_dict`` for
+``"TaviProjectProxy"``, ``ApplicationModelInterface.__name__`` and
+``PlotModelInterface.__name__`` — so omitting one raises ``KeyError`` during
+construction. ``PlotModel`` must be built from the project model's live handles,
+which is why the ordering matters.
 
 Testing File Operations
 -----------------------
@@ -263,19 +290,30 @@ Testing File Operations
         def auto_accept():
             for w in QApplication.topLevelWidgets():
                 if isinstance(w, QFileDialog):
-                    w.selectFile(Resource.getPath("/inputs/integration/load"))
+                    w.selectFile(Resource.getPath("/inputs/integration/load/datafiles"))
                     w.accept()
                     break
 
         QTimer.singleShot(0, auto_accept)
 
-        # Trigger the file open action
-        action = state.presenter.file_menu_presenter._view.load_folder_action
-        qtbot.mouseClick(state.gui, Qt.LeftButton, pos=...)
+        # Trigger the file open action by clicking its rect in the popped-up menu
+        file_menu_view = state.presenter.file_menu_presenter._view
+        action = file_menu_view.load_folder_action
+        file_menu_view.popup(state.gui.mapToGlobal(QPoint(10, 10)))
+        qtbot.waitUntil(lambda: file_menu_view.isVisible())
+        qtbot.wait(50)  # allow layout to complete before reading geometry
 
-        # Wait and verify
-        qtbot.waitUntil(lambda: len(state.project_model.scans) > 0)
-        assert UUID(value="expected_uuid") in state.project_model.scans
+        rect = file_menu_view.actionGeometry(action)
+        assert rect.isValid()
+        qtbot.mouseClick(file_menu_view, Qt.LeftButton, pos=rect.center())
+
+        # Verify against the tree view's uuid_map. The uuid is the md5 of the
+        # file's text content, so it is stable for a fixed fixture file.
+        tree_widget = state.presenter.project_view.tree_widget
+        qtbot.wait(50)
+        assert UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c") in tree_widget.uuid_map
+
+        file_menu_view.close()  # always clean up
 
 Best Practices
 ==============
@@ -325,7 +363,8 @@ For debugging GUI issues, pytest-qt can capture screenshots:
 
     def test_with_screenshot(self, qtbot, qapp):
         # ... test code ...
-        qtbot.screenshot()  # Creates a screenshot in the current directory
+        path = qtbot.screenshot(gui)  # takes the widget; returns the file path
+        print(path)                   # written under pytest's tmp dir
 
 Troubleshooting
 ---------------
@@ -341,7 +380,15 @@ Troubleshooting
 - Check that widgets are being properly initialized in the fixture
 
 **Singleton state pollution:**
-- Integration tests bypass singleton reset (see ``conftest.py``)
+
+- ``tests/conftest.py`` calls ``reset_Singletons()`` before each test, class and
+  module — but only for tests that do *not* carry the ``integration`` keyword.
+  Integration tests deliberately keep singleton state across the run, since they
+  exercise the real application wiring.
+- That means ``LoaderRegistry``, ``RawScanLoadController``, ``EventBroker``,
+  ``RecoveryService``, ``TaviProjectModel`` and ``WorkerPool`` persist between
+  integration tests. Constructor arguments passed by a later test are ignored —
+  the first construction wins.
 - Ensure proper cleanup in test fixtures if singletons are used
 - Use separate test classes for tests with conflicting singleton state
 

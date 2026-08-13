@@ -41,14 +41,16 @@ Components:
 - ``TaviError`` - Base exception for all domain errors
 - ``RecoverableError`` - Requires additional system workflow
 - ``NonRecoverableError`` - Stops the current workflow
-- ``ExceptionEvent`` - Event wrapper for exceptions
+- ``ExceptionEvent`` - Event wrapper for exceptions (field: ``error``)
+- ``Worker`` - Thread boundary; captures every backend exception and publishes it
 - ``RecoveryService`` - Central exception router
 - ``ErrorPresenter`` - Frontend error orchestration
+- ``ErrorView`` - Marshals the handler back onto the GUI thread via a Qt signal
 - ``TaviMessageBox`` - UI dialog wrapper
 
 Flow:
 
-Exception → ``ExceptionEvent`` → ``RecoveryService`` → handler → frontend/backend action
+Exception → ``Worker`` → ``ExceptionEvent`` → ``RecoveryService`` → handler → ``ErrorPresenter`` → ``ErrorView`` → ``TaviMessageBox``
 
 Exception Hierarchy
 -------------------
@@ -101,10 +103,13 @@ The ``RecoveryService`` is responsible for routing exceptions to handlers.
 
 Responsibilities:
 
-- Subscribes to ``ExceptionEvent``
-- Enforces ``TaviError``-only participation
-- Routes exceptions by exact type
-- Fails fast when no handler is registered
+- Subscribes to ``ExceptionEvent`` on the ``EventBroker``
+- Enforces ``TaviError``-only participation at *registration* time —
+  ``register`` raises ``RuntimeError`` for anything that is not a ``TaviError``
+  subclass
+- Routes exceptions by exact type (``type(ex)``, no inheritance traversal)
+- Fails fast when no handler is registered: ``default_handler`` raises
+  ``RuntimeError(f"FATAL: no handler for exception found {ex}")``
 
 Registration
 ~~~~~~~~~~~~
@@ -146,11 +151,21 @@ Responsibilities:
 Current Behavior
 ~~~~~~~~~~~~~~~~
 
-Currently, the presenter registers handling for ``NonRecoverableError`` and:
+Currently, the presenter registers exactly one handler — for
+``NonRecoverableError`` — which:
 
-- Logs the error
-- Displays a critical dialog
+- Writes ``stack_trace`` plus the message to a timestamped error log via
+  ``ApplicationModel.write_error_log``
+- Forwards the exception to ``ErrorView.handle_nonrecoverable_exception``
 - Stops the current workflow
+
+``ErrorView`` does not show the dialog directly either. Because the exception
+arrives on a worker thread, the view re-emits it as a Qt signal
+(``nonrecoverable_signal``), and the connected slot — now running on the GUI
+thread — calls ``TaviMessageBox.critical(self, "Error", str(ex))``.
+
+No handler is registered for ``RecoverableError`` yet, so one reaching the
+service today would hit ``default_handler`` and raise.
 
 
 Future Recoverable Workflow Example

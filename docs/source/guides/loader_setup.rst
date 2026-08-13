@@ -38,7 +38,7 @@ Example: Creating a loader for a hypothetical "MyFormat" scan type
     from typing import Any
 
     from tavi.library.data.enum.raw_scan_type import RawScanType
-    from tavi.library.data.scan import Scan, ScanData, ScanMetadata
+    from tavi.library.data.scan import RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
     from tavi.library.storage.interface.file_store_interface import FileStoreInterface
     from tavi.library.storage.loader.interface.base import AbstractLoader
 
@@ -52,7 +52,8 @@ Example: Creating a loader for a hypothetical "MyFormat" scan type
 
         def load(self, path: str) -> Scan:
             """Load scan data from file."""
-            # Implement your file loading logic
+            # Implement your file loading logic. AbstractLoader.generate_uuid(path)
+            # gives you a content-hash uuid for free.
             pass
 
         def get_scan_type(self) -> RawScanType:
@@ -80,6 +81,10 @@ Example: Creating a loader for a hypothetical "MyFormat" scan type
             """Parse metadata from the file."""
             pass
 
+        def parse_tavi_metadata(self, path: str) -> TaviMetadata:
+            """Parse the TAVI-specific metadata: default axes, friendly name/path."""
+            pass
+
         def parse_scan_values(self, path: str) -> ScanData:
             """Parse scan data values from the file."""
             pass
@@ -88,9 +93,24 @@ Example: Creating a loader for a hypothetical "MyFormat" scan type
             """Parse any external metadata associated with the file."""
             pass
 
-        def adapt_scan_data(self, meta: ScanMetadata, values: ScanData) -> Scan:
-            """Combine metadata and values into a Scan object."""
+        def adapt_scan_data(
+            self, meta: ScanMetadata, tavi_meta: TaviMetadata, values: ScanData
+        ) -> RawScan:
+            """Combine parsed data into a RawScan object."""
             pass
+
+All eight methods above are abstract on ``LoaderInterface`` — omit one and
+Python refuses to instantiate the class. ``AbstractLoader`` supplies only
+``__init__``, ``set_filestore`` and ``generate_uuid``.
+
+.. note::
+
+   ``ORNLSpiceLoader`` widens two of these signatures for its own use:
+   ``parse_external_metadata(file_path, ub_name)`` takes the UB filename it read
+   out of the header, and ``adapt_scan_data(uuid, values, meta, tavi_meta, prov)``
+   takes the provenance and uuid too. Since ``load()`` is the only caller, the
+   widening is invisible to the registry — but it does mean the interface
+   signatures are a lower bound, not a guarantee.
 
 Step 2: Add Enum Value for Your Format
 ---------------------------------------
@@ -133,19 +153,33 @@ Register your loader in the ``LoaderRegistry`` singleton located at ``src/tavi/l
     class LoaderRegistry:
         """Registry for managing loaders."""
 
-        def __init__(self, filestore: Filestore) -> None:
+        def __init__(self) -> None:
             """Initialize registry with filestore."""
             self.registry: dict[str, AbstractLoader] = {}
-            self.set_filestore(filestore)
+            self.filestore = None
 
-            # Register loaders in order of priority (highest first)
             self._register_loader(ORNLSpiceLoader(self.filestore))
             self._register_loader(MyFormatLoader(self.filestore))  # Add your loader
             self._register_loader(DefaultLoader(self.filestore))
 
         # ... rest of the implementation
 
-**Important**: Register more specific loaders **before** more general ones. The `DefaultLoader` should always be last as it returns a score of 0 for everything.
+Two things to note about this constructor:
+
+- It takes **no arguments**. ``self.filestore`` starts as ``None`` and every
+  loader is constructed with that ``None``. The real filestore is injected later
+  by ``tavi.library.init()`` calling ``set_filestore()``, which propagates it to
+  every registered loader. Your loader must therefore tolerate being constructed
+  with a ``None`` filestore — do no file I/O in ``__init__``.
+- ``_register_loader`` derives the registry key from ``loader.get_scan_type()``,
+  which is why Step 2's enum value has to exist before this works.
+
+**Registration order does not set priority.** Selection is purely by highest
+score (see `How Classification Works`_); the registry is a dict and
+``RawScanClassifier`` iterates all of it. ``DefaultLoader`` is harmless anywhere
+in the order because it always scores ``0``. Order only breaks a tie: the
+classifier replaces its running best on a *strictly* greater score, so if two
+loaders return the same score the earlier-registered one wins.
 
 Step 4: Test Your Loader
 ------------------------
@@ -175,11 +209,15 @@ How Classification Works
 
 When ``RawScanClassifier.get_classification(file_path)`` is called:
 
-1. It retrieves all registered loaders from `LoaderRegistry`
-2. It calls `get_score(file_path)` on **each** loader
-3. It tracks which loader returned the highest score
-4. It returns the `get_scan_type()` of the winning loader
-5. If no loader scores above 0, it returns `RawScanType.NONE` (from DefaultLoader)
+1. It retrieves all registered loaders from ``LoaderRegistry.get_loaders()``
+   (which refreshes the filestore on each loader first)
+2. It calls ``get_score(file_path)`` on **each** loader
+3. It tracks which loader returned the highest score, starting from
+   ``(RawScanType.NONE, 0)`` and replacing only on a strictly greater score
+4. It returns the ``get_scan_type()`` of the winning loader
+5. If no loader scores above 0, the initial ``RawScanType.NONE`` survives, and
+   ``RawScanLoadController`` resolves that to ``DefaultLoader`` — which raises
+   ``RuntimeError`` if anything then calls ``load()``
 
 .. code-block:: python
 
@@ -230,13 +268,15 @@ The ``ORNLSpiceLoader`` demonstrates a production-ready implementation:
         def __init__(self, filestore: FileStoreInterface) -> None:
             """Initialize ORNL Spice loader with classifier."""
             super().__init__(filestore)
-            self.classifier = RuleBasedClassifier()
+            self.classifier = RuleBasedClassifier(filestore)
             self.classification_rules = ORNLSpiceRuleSet()
 
-        def get_score(self, path: str) -> int:
+        def get_score(self, file_path: str) -> float:
             """Get score for scan using rule-based classification."""
-            # Uses a dedicated RuleBasedClassifier for intelligent scoring
-            return self.classifier.get_score(path, self.classification_rules)
+            # RuleBasedClassifier is a singleton, so rebind the filestore each
+            # call - this loader may have been constructed with a None filestore.
+            self.classifier.set_filestore(self.filestore)
+            return self.classifier.get_score(file_path, self.classification_rules)
 
 This example shows how you can:
 - Use helper classifiers for complex format detection

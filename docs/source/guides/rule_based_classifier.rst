@@ -19,15 +19,24 @@ Architecture
 The RuleBasedClassifier is built on three core components:
 
 **RuleBasedClassifier**
-    The main classifier that applies a set of rules to score files. It computes a cumulative score by multiplying each rule's score by its weight.
+    The main classifier that applies a set of rules to score files. It computes a
+    cumulative score by multiplying each rule's score by its weight. It is a
+    ``@Singleton``, so the ``filestore`` constructor argument is only honoured on
+    the first construction; later callers rebind it with ``set_filestore()``
+    (which is what ``ORNLSpiceLoader.get_score`` does on every call).
 
 **RuleInterface**
     An abstract base class for all classification rules. Each rule implements a single classification criterion.
 
     .. code-block:: python
 
-        def get_score(self, path: str, filestore: FileStoreInterface) -> float:
-            """Get the score for a file path (between 0.0 and 1.0)."""
+        def get_score(self, path: str, filestore: FileStoreInterface) -> int:
+            """Get the score for a file path."""
+
+    The interface declares ``int``, and every built-in rule returns ``0`` or
+    ``1``. Custom rules may return a fractional confidence — the classifier sums
+    into a float — but the declared type has not been widened, so treat 0/1 as
+    the convention.
 
 **RuleSet**
     A collection of rules with associated weights. Each rule is registered with a weight that determines its influence on the final score.
@@ -50,12 +59,12 @@ Basic Usage
 
     from tavi.backend.classification.rule_based_classifier import RuleBasedClassifier
     from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
-    from tavi.library.storage.file_store import FileStore
+    from tavi.library.storage.local_file_store import LocalFileStore
 
     # Initialize the file store
-    filestore = FileStore()
+    filestore = LocalFileStore()
 
-    # Create a classifier
+    # Create a classifier (a singleton - the filestore is only bound on first call)
     classifier = RuleBasedClassifier(filestore)
 
     # Create a rule set
@@ -121,15 +130,32 @@ Built-in Rule Sets
 -------------------
 
 **ORNLSpiceRuleSet**
-    A pre-configured rule set for classifying ORNL SPICE format files. Includes rules for:
+    A pre-configured rule set for classifying ORNL SPICE format files. Five rules,
+    each registered with weight ``1/5`` so the total is 1.0 and a perfectly
+    matching file scores 1.0:
 
-    - Instrument name in filename
-    - DEF_XY property detection
-    - DAT file format verification
-    - Hashtag comment markers
-    - SPICE file extension
+    ``InstrumentInFilenameRule``
+        The filename's leading ``_``-delimited token, upper-cased, is in
+        ``Config["ORNL.instrument.names"]`` (``HB1A``, ``HB1``, ``HB3``, ``CG4C``).
 
-    All rules have equal weight (1).
+    ``DefXYRule``
+        Every field in ``Config["ORNL.spice.metadata.field-name.def"]``
+        (``def_x``, ``def_y``) appears as a header line of the form
+        ``# <field> =`` followed by a space.
+
+    ``DatFormatRule``
+        The file parses as whitespace-separated columns with at least one numeric
+        column, either treating ``#`` as a comment marker or starting from the
+        first all-numeric line.
+
+    ``HashtagCommentRule``
+        At least one line begins with ``#``.
+
+    ``SpiceFileExtRule``
+        The file extension equals ``Config["ORNL.spice.file.ext"]`` (``.dat``).
+
+    Every rule swallows its own exceptions and returns ``0``, so an unreadable or
+    malformed file scores low rather than raising during classification.
 
 Example: ORNL SPICE Classification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,15 +164,15 @@ Example: ORNL SPICE Classification
 
     from tavi.backend.classification.rule_based_classifier import RuleBasedClassifier
     from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRuleSet
-    from tavi.library.storage.file_store import FileStore
+    from tavi.library.storage.local_file_store import LocalFileStore
 
-    filestore = FileStore()
+    filestore = LocalFileStore()
     classifier = RuleBasedClassifier(filestore)
     rule_set = ORNLSpiceRuleSet()
 
     # Score multiple files
     files = [
-        "CNCS_2020_05_22_12345.dat",
+        "HB1A_exp0978_scan0001.dat",
         "sample.txt",
         "data.spice",
     ]
@@ -171,9 +197,10 @@ Implementation Details
 **File Store Integration**
     Rules access file properties through the ``FileStoreInterface``, which allows rules to:
 
-    - Read file contents
-    - Check file metadata (size, extension, modification date)
-    - Validate file format
+    - Read file contents (``read_text_file``)
+    - Check file metadata — ``get_file_name``, ``get_file_ext``,
+      ``get_file_size_mb``
+    - Validate file format (``validate_file``)
 
 **Extensibility**
     The design supports:

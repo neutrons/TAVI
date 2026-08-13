@@ -28,15 +28,22 @@ Subscribers are callables that accept a single event instance.
 
 .. code-block:: python
 
+   from tavi.meta.event.event_broker import EventBroker
    from tavi.meta.event.event_interface import Event
-   from myapp.events import UserCreatedEvent
-   from myapp.event_broker import EventBroker
+
+   class UserCreatedEvent(Event):
+       user_id: str
 
    def on_user_created(event: UserCreatedEvent) -> None:
        print(f"User created: {event.user_id}")
 
    broker = EventBroker()
    broker.register(UserCreatedEvent, on_user_created)
+
+Every event type must subclass :class:`tavi.meta.event.event_interface.Event`,
+which is a pydantic ``BaseModel`` configured with
+``arbitrary_types_allowed=True``. That is what makes the deep copy below
+possible. TAVI's own event types live in ``tavi.meta.event.type``.
 
 Publishing Events
 ~~~~~~~~~~~~~~~~~
@@ -48,8 +55,11 @@ When an event is published, all subscribers registered for that event type are i
    event = UserCreatedEvent(user_id="123")
    broker.publish(event)
 
-Each subscriber receives a **deep copy** of the event instance. This prevents
-subscribers from mutating shared state and affecting other listeners.
+Each subscriber receives a **deep copy** of the event instance
+(``event.model_copy(deep=True)``). This prevents subscribers from mutating shared
+state and affecting other listeners, and it is the mechanism that lets an event
+safely carry model-owned objects — see
+:doc:`../design/frontend/plot_data_model`.
 
 Event Dispatch Semantics
 ------------------------
@@ -63,25 +73,32 @@ Recursion Guard
 ---------------
 
 The broker enforces a maximum call depth to prevent infinite or runaway recursion
-when events trigger other events during handling.
+when events trigger other events during handling. The default
+``call_depth_max`` is **3**.
 
-If the maximum depth is exceeded, a ``RuntimeError`` is raised:
+If the maximum depth is exceeded, ``publish`` raises:
 
-.. code-block:: python
+.. code-block:: text
 
-   RuntimeError: Event recursive depth of 1 has been exceeded.
+   RuntimeError: Event recursive depth of 3 has been exceeded.
 
 This protects against patterns like:
 
 - A handler publishing the same event type it is subscribed to
 - Circular event chains between handlers
 
-If deeper event chaining is required, the maximum depth can be increased:
+Note that legitimate chains count against this budget. The selection →
+visualization flow already nests three deep (``FocusEvent`` →
+``RawScanFocusEvent`` → ``PlotFocusEvent``; see
+:doc:`../design/frontend/visualization_flow`), so it sits right at the limit.
+
+If deeper event chaining is required, raise the maximum on the singleton before
+the chain runs:
 
 .. code-block:: python
 
    broker = EventBroker()
-   broker.call_depth_max = 3
+   broker.call_depth_max = 5
 
 Recommended Practices
 ---------------------

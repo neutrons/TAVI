@@ -80,37 +80,61 @@ Simplified flow:
 .. code-block:: python
 
    try:
-       results = self.target(*self.args, **self.kwargs)
-   except RecoverableError as e:
-       ...
-   except NonRecoverableError as e:
-       ...
-   except Exception as e:
-       stack_trace = ...
+       # Expects the return to be wrapped in a ModelResponse
+       results: ModelResponse = self.target(*self.args, **self.kwargs)
+   except Exception as e:  # noqa: BLE001
+       stack_trace = f"{self.call_stack} \n {traceback.format_exc()}"
+       error_message = str(e)
+       results = ModelResponse(code=ResponseCode.ERROR, message=error_message)
        self.event_broker.publish(
-           ExceptionEvent(e=NonRecoverableError(error_message, stack_trace))
+           ExceptionEvent(error=NonRecoverableError(error_message, stack_trace))
        )
 
 Key responsibilities of Worker:
 
 - Prevent exceptions from escaping the thread
-- Capture stack trace context
-- Convert unexpected exceptions into domain-level ``TaviError``
+- Capture stack trace context — including the *submitting* thread's stack, saved
+  as ``call_stack`` when ``WorkerPool.create_worker`` was called, which a bare
+  ``format_exc()`` on the worker thread would not show
+- Convert exceptions into domain-level ``TaviError``
 - Dispatch via ``EventBroker``
 
-Important:
+.. important::
 
-If backend code already raises a ``TaviError`` subtype,
-the Worker may pass it through directly instead of wrapping it.
+   The ``Worker`` currently has a **single** ``except Exception`` clause and
+   wraps everything — including exceptions that are already ``TaviError``
+   subtypes — in a fresh ``NonRecoverableError`` carrying only the original's
+   ``str()``. There is no ``except RecoverableError`` branch and no pass-through
+   for existing ``TaviError`` instances.
+
+   Consequences to plan around:
+
+   - A ``RecoverableError`` raised in backend code reaches the
+     ``RecoveryService`` as a ``NonRecoverableError``, so a handler registered
+     for the recoverable type will not fire.
+   - A custom ``NonRecoverableError`` subtype loses its identity, so exact-type
+     handler lookup falls back to the ``NonRecoverableError`` handler.
+
+   Custom exception types are therefore only distinguishable today if they are
+   raised and published on the caller's own thread rather than through a worker.
+   Wiring per-type dispatch through the worker boundary requires teaching
+   ``Worker.run`` to re-publish ``TaviError`` instances unchanged.
+
+Note also that ``ExceptionEvent``'s field is named ``error``, not ``e``.
 
 Step 4 — Register a Handler
 ---------------------------
 
-Handlers currently are registered in the frontend orchestration layer:
+Handlers currently are registered in the frontend orchestration layer
+(``ErrorPresenter.__init__``):
 
 .. code-block:: python
 
-   recovery.register(InvalidConfigurationError, self.handle_invalid_config)
+   self.recovery_service = RecoveryService()
+   self.recovery_service.register(InvalidConfigurationError, self.handle_invalid_config)
+
+``register`` raises ``RuntimeError`` if the type is not a ``TaviError``
+subclass.
 
 Rules:
 
@@ -128,10 +152,36 @@ Example: NonRecoverable
 .. code-block:: python
 
    def handle_invalid_config(self, ex: InvalidConfigurationError) -> None:
-       self.application_model.write_error_log(ex.stack_trace)
-       TaviMessageBox.critical(self.view, "Error", str(ex))
+       self.application_model.write_error_log(f"{ex.stack_trace}\n{str(ex)}")
+       self._view.handle_invalid_config(ex)
 
 This stops the workflow and returns control to the user.
+
+.. warning::
+
+   Do **not** call ``TaviMessageBox`` (or any other Qt widget) directly from a
+   handler. Handlers run on whichever thread published the ``ExceptionEvent`` —
+   normally a worker thread — and Qt widgets may only be touched from the GUI
+   thread.
+
+   ``ErrorPresenter`` delegates to ``ErrorView`` instead, which re-emits the
+   exception as a Qt signal. The connected slot runs on the GUI thread and is
+   the only place the message box is actually constructed:
+
+   .. code-block:: python
+
+      class ErrorView(QWidget):
+          nonrecoverable_signal = Signal(NonRecoverableError)
+
+          def __init__(self) -> None:
+              super().__init__()
+              self.nonrecoverable_signal.connect(self._handle_nonrecoverable_exception)
+
+          def handle_nonrecoverable_exception(self, ex: NonRecoverableError) -> None:
+              self.nonrecoverable_signal.emit(ex)          # any thread
+
+          def _handle_nonrecoverable_exception(self, ex: NonRecoverableError) -> None:
+              TaviMessageBox.critical(self, "Error", str(ex))   # GUI thread
 
 Example: Recoverable
 
@@ -149,9 +199,14 @@ Worker Contract
 The Worker enforces:
 
 - All backend exceptions are captured
-- All errors become ``TaviError`` instances
+- All errors become ``NonRecoverableError`` instances (see the caveat in Step 3)
 - All errors enter the system through ``ExceptionEvent``
 - Backend never interacts directly with UI
+
+After publishing, the worker still emits ``finished`` and then asserts that the
+target returned a ``ModelResponse``. On the error path it substitutes
+``ModelResponse(code=ResponseCode.ERROR, message=...)`` itself, so the assertion
+only fires for a target that returned successfully with the wrong type.
 
 This keeps thread boundaries clean and recovery centralized.
 
