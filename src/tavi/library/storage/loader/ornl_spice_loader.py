@@ -13,7 +13,6 @@ from tavi.backend.classification.rule_set.ornl_spice_rule_set import ORNLSpiceRu
 from tavi.library.data.enum.raw_scan_type import RawScanType
 from tavi.library.data.scan import UUID, Provenance, RawScan, Scan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
-from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint, MotorAngles
 from tavi.library.experiment.utilities import SE2K, get_angle_from_triangle, get_side_from_triangle
 from tavi.library.fit import Fit, FitPackage, ModelName
@@ -326,122 +325,6 @@ class ORNLSpiceLoader(AbstractLoader):
                 hkl.append(centers if len(centers) > 1 else centers[0])
             return hkl
 
-    def get_peak_center(
-        self,
-        tavi_data: TaviData,
-        scan_num: int,
-        IPTS: Optional[int] = None,
-        exp_num: Optional[int] = None,
-        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        fixed_energy: float = 0,
-        fit_package: FitPackage = FitPackage.lmfit,
-        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
-    ) -> list[DataPoint]:
-        """Create one DataPoint per fitted peak center in the scan."""
-        scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
-        hkl = self.get_hkl(tavi_data, scan_num, IPTS, exp_num)
-        motor_angles_list = self.fit_motor_angles(tavi_data, scan_num, IPTS, exp_num, fit_package, model_dict)
-        # Detect if this is an inelastic scan
-        fit = Fit(package=fit_package)
-        y = scan.metadata.def_y
-        if abs(max(scan.data.e) - min(scan.data.e)) > 0.1:
-            e_center = self._fit_centers(fit, scan.data.e, scan.data.data[y], model_dict)
-            eis, efs = [], []
-            for i in range(len(e_center)):
-                ei, ef = self.get_ei_ef(e_center[i], mode, fixed_energy)
-                eis.append(ei)
-                efs.append(ef)
-            # One DataPoint per peak, pairing each motor-angle peak with its energy peak.
-            return [
-                DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles, ei, ef in zip(motor_angles_list, eis, efs)
-            ]
-        else:
-            e_center = np.mean(scan.data.e)
-        ei, ef = self.get_ei_ef(e_center, mode, fixed_energy)
-        return [DataPoint(hkl=hkl, ei=ei, ef=ef, angles=angles) for angles in motor_angles_list]
-
-    def fit_motor_angles(
-        self,
-        tavi_data: TaviData,
-        scan_num: int,
-        IPTS: Optional[int] = None,
-        exp_num: Optional[int] = None,
-        fit_package: FitPackage = FitPackage.lmfit,
-        model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
-    ) -> list[MotorAngles]:
-        """
-        Generate fitted motor positions, one MotorAngles per fitted peak center.
-
-        The scanned (default-x) motor is fit with model_dict; when it has a paired
-        motor (omega for a 2theta scan, s1 for an s2 scan) that motor is fit too and
-        centers are paired by sorted order. Motors that are not scanned use their
-        mean over the scan. A list with one entry per fitted center is returned.
-        """
-        scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
-        def_x, def_y = scan.metadata.def_x, scan.metadata.def_y
-        if def_x[0].isdigit():
-            def_x = "_" + def_x
-        if def_y[0].isdigit():
-            def_y = "_" + def_y
-        x, y = scan.data.data[def_x], scan.data.data[def_y]
-        fit = Fit(package=fit_package)
-
-        # fitted: motor -> per-peak centers; means: motor -> single value shared by all peaks.
-        fitted: dict[str, list[float]] = {}
-        means: dict[str, float] = {}
-        match def_x:
-            case "_2theta":
-                fitted["two_theta"] = self._fit_centers(fit, x, y, model_dict)
-                fitted["omega"] = self._fit_centers(fit, scan.data.omega, y, model_dict)
-                means["chi"] = np.mean(scan.data.chi)
-                means["phi"] = np.mean(scan.data.phi)
-            case "omega":
-                means["two_theta"] = np.mean(scan.data._2theta)
-                fitted["omega"] = self._fit_centers(fit, x, y, model_dict)
-                means["chi"] = np.mean(scan.data.chi)
-                means["phi"] = np.mean(scan.data.phi)
-            case "chi":
-                means["two_theta"] = np.mean(scan.data._2theta)
-                means["omega"] = np.mean(scan.data.omega)
-                fitted["chi"] = self._fit_centers(fit, x, y, model_dict)
-                means["phi"] = np.mean(scan.data.phi)
-            case "phi":
-                means["two_theta"] = np.mean(scan.data._2theta)
-                means["omega"] = np.mean(scan.data.omega)
-                means["chi"] = np.mean(scan.data.chi)
-                fitted["phi"] = self._fit_centers(fit, x, y, model_dict)
-            case "s2":
-                fitted["s2"] = self._fit_centers(fit, x, y, model_dict)
-                fitted["s1"] = self._fit_centers(fit, scan.data.s1, y, model_dict)
-                means["sgl"] = np.mean(scan.data.sgl)
-                means["sgu"] = np.mean(scan.data.sgu)
-            case "s1":
-                means["s2"] = np.mean(scan.data.s2)
-                fitted["s1"] = self._fit_centers(fit, x, y, model_dict)
-                means["sgl"] = np.mean(scan.data.sgl)
-                means["sgu"] = np.mean(scan.data.sgu)
-            case "sgl":
-                means["s2"] = np.mean(scan.data.s2)
-                means["s1"] = np.mean(scan.data.s1)
-                fitted["sgl"] = self._fit_centers(fit, x, y, model_dict)
-                means["sgu"] = np.mean(scan.data.sgu)
-            case "sgu":
-                means["s2"] = np.mean(scan.data.s2)
-                means["s1"] = np.mean(scan.data.s1)
-                means["sgl"] = np.mean(scan.data.sgl)
-                fitted["sgu"] = self._fit_centers(fit, x, y, model_dict)
-            case _:
-                raise ValueError("Not implemented yet.")
-
-        # All fitted motors share the same peak count; guard against a mismatch.
-        n_peaks = min(len(centers) for centers in fitted.values())
-        all_motors = ("two_theta", "omega", "chi", "phi", "s2", "s1", "sgl", "sgu")
-        angles_list = []
-        for i in range(n_peaks):
-            angles_dict = {motor: (fitted[motor][i] if motor in fitted else means.get(motor)) for motor in all_motors}
-            angles_list.append(MotorAngles(angles_dict=angles_dict))
-        return angles_list
-
     @staticmethod
     def _fit_centers(
         fit: Fit, x: np.ndarray, y: np.ndarray, model_dict: list[tuple[ModelName, dict[str, Any]]]
@@ -463,8 +346,6 @@ class ORNLSpiceLoader(AbstractLoader):
         exp_num: Optional[int] = None,
         fit_package: FitPackage = FitPackage.lmfit,
         model_dict: list[tuple[ModelName, dict[str, Any]]] = [],
-        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        fixed_energy: float = 0,
     ) -> list:
         """Create a DataPoint from the scan row whose column value is closest to center."""
         scan = self.get_data_from_scan_number(tavi_data, scan_num, IPTS, exp_num)
@@ -477,7 +358,7 @@ class ORNLSpiceLoader(AbstractLoader):
             def_y = "_" + def_y
 
         if def_x in ["s1", "s2", "omega"]:
-            x = self.get_delta_q(tavi_data, scan_num, IPTS, exp_num, mode, fixed_energy)
+            x = self.get_delta_q(tavi_data, scan_num, IPTS, exp_num)
         else:
             x = np.asarray(scan.data.data[def_x])
         y = np.asanyarray(scan.data.data[def_y])
@@ -533,23 +414,32 @@ class ORNLSpiceLoader(AbstractLoader):
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
-        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        fixed_energy: float = 0,
     ) -> np.ndarray:
         """Get delta q of a scan."""
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
         try:
             qs = scan.data.q
         except AttributeError:
-            es = scan.data.e
-            if mode == FixedEnergyMode.FIX_Ef:
-                ef = fixed_energy
-                eis = [e + ef for e in es]
-                efs = [ef] * len(eis)
+            # e is always present. Columns come back as lists, so go through
+            # np.asarray to get element-wise arithmetic instead of concatenation.
+            es = np.asarray(scan.data.e)
+
+            # This part assumes at least ei or ef is present in ornl spice data. If neither exists, the data is corrupt from daq side.
+
+            # If "ei" in ornl spice data, create from data
+            if "ei" in scan.data.data:
+                eis = np.asarray(scan.data.ei)
+            # else calculate using efs
             else:
-                ei = fixed_energy
-                efs = [e - ei for e in es]
-                eis = [ei] * len(efs)
+                eis = es + np.asarray(scan.data.ef)
+
+            # If "ef" in ornl spice data, create from data
+            if "ef" in scan.data.data:
+                efs = np.asarray(scan.data.ef)
+            # else calculate using eis
+            else:
+                efs = np.asarray(eis) - es
+
             kis = np.array([SE2K(ei) for ei in eis])
             kfs = np.array([SE2K(ef) for ef in efs])
             two_thetas = scan.data.s2 if "s2" in dir(scan.data) else scan.data._2theta
@@ -636,17 +526,6 @@ class ORNLSpiceLoader(AbstractLoader):
         kf = SE2K(ef)
         psi_rad = get_angle_from_triangle(ki, q_norm, kf)
         return psi_rad
-
-    def get_ei_ef(self, e: float, mode: FixedEnergyMode, fixed_energy: float) -> tuple[float, float]:
-        """Get (ei, ef) given the complementary energy."""
-        if mode is FixedEnergyMode.FIX_Ef:
-            ef = fixed_energy
-            ei = e + ef
-            return ei, ef
-        else:
-            ei = fixed_energy
-            ef = ei - e
-            return ei, ef
 
     def load_hb1a_4c_ub(self, file_path: str) -> dict:
         """C sharp ub specific to ORNL/HB1A in 4 circle mode."""

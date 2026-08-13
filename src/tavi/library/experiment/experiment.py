@@ -11,7 +11,6 @@ import numpy as np
 
 from tavi.library.data.scan import RawScan
 from tavi.library.data.tavi_data import TaviData
-from tavi.library.experiment.enum import FixedEnergyMode
 from tavi.library.experiment.peak import DataPoint
 from tavi.library.experiment.utilities import spice_to_mantid
 from tavi.library.fit import FitPackage, ModelName
@@ -27,15 +26,11 @@ class Experiment:
 
     def __init__(
         self,
-        mode: FixedEnergyMode = FixedEnergyMode.FIX_Ef,
-        fixed_energy: float = 0,
         loader: AbstractLoader = ORNLSpiceLoader(LocalFileStore()),
     ) -> None:
         """Init."""
         self.tavi_data: TaviData = TaviData(raw_scans={})
-        self.mode = mode
         self.loader = loader
-        self.set_fixed_energy(fixed_energy)
 
     def load_file(self, file_path: str) -> None:
         """
@@ -71,32 +66,6 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
-    def get_peak_center(
-        self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]
-    ) -> DataPoint:
-        """Find the center of the peak. It's used in refining UB matrix, which can be compared with SPICE results for validation."""
-        match self.loader:
-            case ORNLSpiceLoader():
-                scan_num = scan_identifier["scan_num"]
-                IPTS = scan_identifier.get("IPTS", None)
-                exp_num = scan_identifier.get("exp_num", None)
-                if self.mode is FixedEnergyMode.FIX_Ef:
-                    fixed_energy = self.ef
-                else:
-                    fixed_energy = self.ei
-                return self.loader.get_peak_center(
-                    tavi_data=self.tavi_data,
-                    scan_num=scan_num,
-                    IPTS=IPTS,
-                    exp_num=exp_num,
-                    mode=self.mode,
-                    fixed_energy=fixed_energy,
-                    fit_package=fit_package,
-                    model_dict=model_dict,
-                )
-            case _:
-                raise ValueError("Loader not implemented.")
-
     def get_closest_to_center_data_point(
         self, scan_identifier: dict, fit_package: FitPackage, model_dict: list[tuple[ModelName, dict[str, Any]]]
     ) -> DataPoint:
@@ -106,7 +75,6 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                fixed_energy = self.ef if self.mode is FixedEnergyMode.FIX_Ef else self.ei
                 return self.loader.get_data_point_closest_to_center(
                     tavi_data=self.tavi_data,
                     scan_num=scan_num,
@@ -114,8 +82,6 @@ class Experiment:
                     exp_num=exp_num,
                     fit_package=fit_package,
                     model_dict=model_dict,
-                    mode=self.mode,
-                    fixed_energy=fixed_energy,
                 )
             case _:
                 raise ValueError("Loader not implemented.")
@@ -127,8 +93,7 @@ class Experiment:
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                fixed_energy = self.ef if self.mode is FixedEnergyMode.FIX_Ef else self.ei
-                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, self.mode, fixed_energy)
+                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num)
             case _:
                 raise ValueError("Loader not implemented.")
 
@@ -169,24 +134,6 @@ class Experiment:
         match self.loader:
             case ORNLSpiceLoader():
                 return self.loader.get_psi(q_norm, ei, ef)
-            case _:
-                raise ValueError("Loader not implemented.")
-
-    def set_fixed_energy(self, e: float) -> None:
-        """Set ei or ef based on mode."""
-        if self.mode is FixedEnergyMode.FIX_Ef:
-            self.ef = e
-        else:
-            self.ei = e
-
-    def get_ei_ef(self, e: float) -> tuple[float, float]:
-        """Get (ei, ef) given the complementary energy."""
-        match self.loader:
-            case ORNLSpiceLoader():
-                if self.mode is FixedEnergyMode.FIX_Ef:
-                    return self.loader.get_ei_ef(e, self.mode, self.ef)
-                else:
-                    return self.loader.get_ei_ef(e, self.mode, self.ei)
             case _:
                 raise ValueError("Loader not implemented.")
 
