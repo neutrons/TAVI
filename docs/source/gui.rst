@@ -6,7 +6,8 @@ Graphical user interface
 The TAVI application window is built by ``TaviView.build_ui`` from four
 independently-owned sub-views arranged in a horizontal splitter.
 
-.. image:: images/tavi_placeholder.png
+.. image:: images/tavi_gui.png
+   :alt: The TAVI application window
    :width: 600
 
 Layout
