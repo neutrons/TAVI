@@ -78,7 +78,9 @@ Method Notes
   ``resolution_frame``, ``projection_axis`` and ``model_dict``, then hands the
   result to the browser. In that case ``browse`` returns
   ``(hkls, fit_results, res_mat_4d)`` for intensity export; otherwise it returns
-  ``None``.
+  ``(None, None, None)``. It always returns a 3-tuple, so unpacking is safe
+  either way — but truth-testing the result is not, since a 3-tuple of ``None``
+  is itself truthy.
 * ``show_fits`` must stay ``True`` when the resolution bar is on -- the bar is
   positioned from the fitted centre.
 

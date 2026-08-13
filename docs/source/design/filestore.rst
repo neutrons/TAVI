@@ -53,6 +53,9 @@ Methods:
     def write_user_data_file(file_subpath: str, value: str) -> None
         """Write application data to user home directory."""
 
+    def read_user_data_file(file_subpath: str) -> str
+        """Read application data from user home directory."""
+
     def write_text_file(file_path: str, value: str) -> None
         """Write text content to a file."""
 
@@ -64,6 +67,15 @@ Methods:
 
     def get_file_size_mb(file_path: str) -> float
         """Get file size in megabytes."""
+
+    def get_file_name(file_path: str) -> str
+        """Get the file name."""
+
+    def get_parent(file_path: str) -> str
+        """Get the parent directory of a path."""
+
+    def join_path(root_path: str, target_path: str) -> str
+        """Join two paths."""
 
 LocalFileStore Implementation
 -----------------------------
@@ -89,16 +101,19 @@ Example:
 
 **write_user_data_file(file_subpath, value)**
 
-- Writes to user application home directory
-- Resolves tilde paths
-- **Note**: Currently checks if value (content) starts with "/", not the path
+- Writes under the user application home directory, ``Config["user.application.home"]``
+  (``~/.TAVI/`` by default)
+- Expands the tilde and creates the home directory if it is missing
+- Strips a leading ``/`` from ``file_subpath``, so an absolute-looking subpath is
+  still resolved relative to the user home rather than the filesystem root
+- Delegates the actual write to ``write_text_file``
 
 Example:
 
 .. code-block:: python
 
     filestore = LocalFileStore()
-    # Writes to $USER_HOME/mydata/config.txt
+    # Writes to ~/.TAVI/mydata/config.txt
     filestore.write_user_data_file("mydata/config.txt", "settings")
 
 File Reading
@@ -106,15 +121,27 @@ File Reading
 
 **read_text_file(file_path)**
 
-- Reads entire file content as string
-- Raises ``RuntimeError`` if file doesn't exist or is a directory
-- Validates file existence before reading
+- Reads entire file content as a UTF-8 string
+- Raises ``RuntimeError`` if the path doesn't exist or is not a file
+- Validates via ``_is_real_file(..., throws=True)`` before reading
 
 Example:
 
 .. code-block:: python
 
     content = filestore.read_text_file("/path/to/file.txt")
+
+**read_user_data_file(file_subpath)**
+
+- Mirror of ``write_user_data_file``: resolves ``file_subpath`` under the user
+  application home, then delegates to ``read_text_file``
+- Raises ``RuntimeError(f"File does not exist: {user_data_file}")`` when missing
+
+Example:
+
+.. code-block:: python
+
+    raw_settings = filestore.read_user_data_file("settings.yaml")
 
 File Validation & Inspection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,9 +165,15 @@ Example:
 
 **get_file_ext(file_path)**
 
-- Returns file extension including the dot (e.g., ".txt", ".json")
+- Returns file extension including the dot (e.g., ".txt", ".json"), via ``Path.suffix``
 - Raises ``RuntimeError`` if file doesn't exist
 - Works with multi-part extensions (e.g., ".tar.gz" returns ".gz")
+
+**get_file_name(file_path)**
+
+- Returns the final path component including the extension (``Path.name``)
+- Raises ``RuntimeError`` if file doesn't exist
+- Used by ``InstrumentInFilenameRule`` to test the leading token of a SPICE filename
 
 **get_file_size_mb(file_path)**
 
@@ -165,11 +198,14 @@ Retrieves and filters files from a directory.
 
 Process:
 
-1. Validates directory path exists
+1. Raises ``RuntimeError`` if the path does not exist
 2. Raises ``RuntimeError`` if path is a file
-3. Iterates through directory contents
+3. Iterates through directory contents (non-recursive, ``Path.iterdir``)
 4. Applies ``validate_file()`` to each item
-5. Returns list of valid file paths (absolute)
+5. Returns a **sorted** list of valid absolute file paths
+
+The sort is what makes folder loading deterministic — the order scans appear in
+the project tree matches the lexical order of their filenames.
 
 Example:
 
@@ -178,6 +214,14 @@ Example:
     valid_files = filestore.fetch_files_at("/data/scans")
     for filepath in valid_files:
         print(f"Processing: {filepath}")
+
+Path Helpers
+~~~~~~~~~~~~
+
+``get_parent(file_path)`` and ``join_path(root_path, target_path)`` are thin
+``pathlib`` wrappers that do **not** touch the filesystem, so they work on paths
+that do not exist yet. ``ORNLSpiceLoader`` uses them to resolve a scan's sibling
+``UBConf`` directory from the ``.dat`` file's own path.
 
 Internal Methods
 ~~~~~~~~~~~~~~~~
@@ -209,7 +253,9 @@ The maximum file size for validation is controlled by:
 
     Config["library.filestore.raw.size-limit"]  # in MB
 
-Default value should be set in application configuration.
+The default lives in ``src/tavi/resources/application.yml`` and is currently
+**1 MB**. Any file larger than that fails ``validate_file()`` and is silently
+skipped by ``fetch_files_at``.
 
 User Home Directory
 ~~~~~~~~~~~~~~~~~~~
@@ -218,9 +264,10 @@ User data files are written relative to:
 
 .. code-block:: python
 
-    Config["user.application.home"]  # typically ~/.<appname>
+    Config["user.application.home"]  # ~/.TAVI/ by default
 
-This supports tilde expansion for cross-platform compatibility.
+The value is expanded with ``Path.expanduser()``, so a leading ``~`` resolves per
+platform.
 
 Error Handling
 --------------
@@ -242,12 +289,14 @@ Common Scenarios:
     try:
         content = filestore.read_text_file("/missing/file.txt")
     except RuntimeError as e:
-        print(f"File error: {e}")  # "File at path ... does not exist"
+        # "File at path `/missing/file.txt` does not exist or is not a file."
+        print(f"File error: {e}")
 
     try:
         filestore.fetch_files_at("/data/file.txt")  # passing a file
     except RuntimeError as e:
-        print(f"Path error: {e}")  # "Path ... is a file. A folder path is expected"
+        # "Path `/data/file.txt` is a file.  A folder path is expected."
+        print(f"Path error: {e}")
 
 Validation Failures
 ~~~~~~~~~~~~~~~~~~~
@@ -327,15 +376,24 @@ Use ``TemporaryDirectory`` for isolated tests:
 Configuration Overrides
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Use ``Config_override`` context manager for tests:
+Use the ``Config_override`` context manager from ``tests/util/Config_helpers.py``:
 
 .. code-block:: python
 
-    from tests.util.Config_helpers import Config_override
+    from util.Config_helpers import Config_override
 
     with Config_override("library.filestore.raw.size-limit", 100):
         # Tests with custom size limit
         result = filestore.validate_file(filepath)
+
+``tests/conftest.py`` also exposes it as the ``Config_override_fixture`` fixture,
+which unwinds every override at teardown:
+
+.. code-block:: python
+
+    def test_large_file(Config_override_fixture):
+        Config_override_fixture("library.filestore.raw.size-limit", 100)
+        assert filestore.validate_file(filepath)
 
 Design Characteristics
 ----------------------

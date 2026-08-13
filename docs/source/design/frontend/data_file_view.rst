@@ -47,10 +47,27 @@ Data Table and Variable Checklist
 
 ``populate_columns`` rebuilds the data table with one column per key in
 ``scan.data.data``. ``populate_variables`` rebuilds the checklist with one
-checked row per column name. Unchecking a row hides the matching data table
-column (matched by header text) via ``_on_variable_check_changed``; rechecking
-shows it again. Column visibility is purely a view concern — it does not
-affect the underlying data.
+checked row per column name. Every cell in both tables has ``ItemIsEditable``
+cleared — the panel is read-only.
+
+Two interactions link the checklist back to the data table:
+
+**Visibility.** Unchecking a row hides the matching data table column, matched by
+header text, via ``_on_variable_check_changed``; rechecking shows it again. A
+checkbox embedded in the checklist's corner button flips every row at once.
+
+**Ordering.** Dragging a variable row to a new position moves the corresponding
+data table column to the same position (``_on_variable_row_moved``). The two are
+matched by *logical* index rather than visual position: rows and columns are
+always populated together from the same ordered name list, so a row's logical
+index is always the matching column's logical index regardless of how either
+header has since been reordered.
+
+Both are purely view concerns — neither affects the underlying data.
+
+The **Restore Metadata From File** and **Save Modified Metadata To File** buttons
+at the bottom of the panel exist but are disabled; metadata editing is not
+implemented.
 
 Populating the Metadata Widget
 -------------------------------
@@ -63,9 +80,14 @@ field within that category. It is populated via:
     DataFileView.populate_metadata(metadata: dict[str, dict])
 
 ``metadata`` must be ``{category_display_name: {field_name: value, ...}, ...}``.
-Each top-level value must be a flat dict — anything else raises ``ValueError``.
+Each top-level value must be a flat dict — anything else raises
+``ValueError(f"Metadata tab {tab_name!r} must be a dict, not {type(fields).__name__!r}.")``.
 Non-dict field values (e.g. a list) are rendered via ``str()`` in a single
 table cell rather than expanded further.
+
+When a focus event carries no scans, ``clear_data()`` empties both tables and
+resets the metadata widget to a single tab labelled ``"Empty"``, which is also
+the state the panel starts in.
 
 Loaders and other code should not build this dict by hand. Instead, populate
 ``ScanMetadata`` correctly and call ``ScanMetadata.by_category()`` to get the

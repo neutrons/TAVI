@@ -14,9 +14,9 @@ Main Flow
         participant RawScanClassifier
         participant LoaderRegistry
         participant ORNLSpiceLoader
-        LoaderRegistry ->> LoaderRegistry: init(FileStore)
-        ORNLSpiceLoader -->> LoaderRegistry: is registered via main
-        LoaderRegistry ->> LoaderRegistry: init loader instance with appropriate FileStore
+        LoaderRegistry ->> LoaderRegistry: init() registers built-in loaders
+        ORNLSpiceLoader -->> LoaderRegistry: registered under its get_scan_type()
+        LoaderRegistry ->> LoaderRegistry: set_filestore(FileStore) via library.init()
         ProjectModel ->>+RawScanLoadController: load raw scans (path)
         RawScanLoadController ->>FileStore: get files(s) at (path)
         FileStore ->>FileStore: validate file on disk
@@ -28,26 +28,29 @@ Main Flow
                 RawScanClassifier ->> ORNLSpiceLoader: getScore(str path)
                 RawScanClassifier ->> RawScanClassifier: update best score
             end
-            RawScanClassifier -->> RawScanLoadController: (ORNL SPICE) stubbed
+            RawScanClassifier -->> RawScanLoadController: RawScanType.ORNLSpice
 
-            RawScanLoadController ->> LoaderRegistry: buildLoader(classification, DataService)
+            RawScanLoadController ->> LoaderRegistry: get_loader(classification)
             LoaderRegistry -->> RawScanLoadController: ORNLSpiceLoader
-            RawScanLoadController ->> ORNLSpiceLoader: load(raw scan file (handler?))
+            RawScanLoadController ->> ORNLSpiceLoader: load(file_path)
 
-            ORNLSpiceLoader ->> ORNLSpiceLoader: setup
-            ORNLSpiceLoader ->> ORNLSpiceLoader: parse metadata
-            ORNLSpiceLoader ->> ORNLSpiceLoader: parse ub
-            ORNLSpiceLoader ->> ORNLSpiceLoader: parse scan values
-            ORNLSpiceLoader ->> FileStore: fetch external metadata files
-            FileStore -->> ORNLSpiceLoader: return external metadata or None
-            ORNLSpiceLoader ->> ORNLSpiceLoader: parse external metadata
-            ORNLSpiceLoader ->> ORNLSpiceLoader: adapt parsed data into RawScan
+            ORNLSpiceLoader ->> ORNLSpiceLoader: generate_uuid (md5 of file text)
+            ORNLSpiceLoader ->> ORNLSpiceLoader: parse_scan_values
+            ORNLSpiceLoader ->> ORNLSpiceLoader: parse_metadata
+            ORNLSpiceLoader ->> ORNLSpiceLoader: parse_tavi_metadata
+            ORNLSpiceLoader ->> ORNLSpiceLoader: create_provenance
+            ORNLSpiceLoader ->> FileStore: read sibling UBConf file
+            FileStore -->> ORNLSpiceLoader: return UB configuration text
+            ORNLSpiceLoader ->> ORNLSpiceLoader: parse_external_metadata, merge into meta.data
+            ORNLSpiceLoader ->> ORNLSpiceLoader: adapt_scan_data -> RawScan
             ORNLSpiceLoader -->> RawScanLoadController: RawScan
             RawScanLoadController ->>RawScanLoadController: append to result List
         end
         RawScanLoadController -->>ProjectModel: List[RawScan]
-        ProjectModel ->> ProjectModel : update TaviData.scans
-        ProjectModel ->> EventBroker : emit RawScanListUpdateEvent
+        ProjectModel ->> ProjectModel : update TaviData.raw_scans
+        loop foreach RawScan
+            ProjectModel ->> EventBroker : publish RawScanAppendEvent
+        end
 
 
 Classification Flow
@@ -64,8 +67,8 @@ Classification Flow
         participant RuleBasedClassifier
         participant RuleSet
         participant Rule
-        ORNLSpiceLoader ->> LoaderRegistry: Register with Registry via main
-        LoaderRegistry ->> LoaderRegistry: Init loaders with appropriate FileStore
+        ORNLSpiceLoader ->> LoaderRegistry: Registered in LoaderRegistry.__init__
+        LoaderRegistry ->> LoaderRegistry: set_filestore propagates FileStore to all loaders
         loop foreach File
             RawScanLoadController ->> RawScanClassifier: classify input schema
             RawScanClassifier ->> LoaderRegistry : get loaders
@@ -82,12 +85,16 @@ Classification Flow
                 RuleBasedClassifier -->> ORNLSpiceLoader: score
                 ORNLSpiceLoader -->> RawScanClassifier: score
             end
-            RawScanClassifier ->> RawScanClassifier:return best match
-            RawScanClassifier -->> RawScanLoadController: (ORNL SPICE) stubbed
-            RawScanLoadController ->>RawScanLoadController: ...
+            RawScanClassifier ->> RawScanClassifier: keep highest score (ties keep the first)
+            RawScanClassifier -->> RawScanLoadController: winning loader's RawScanType
+            RawScanLoadController ->>RawScanLoadController: load via that loader
             RawScanLoadController ->>RawScanLoadController: append to result List
-        RawScanLoadController ->>RawScanLoadController: append to result List
         end
+
+Note: ``RawScanClassifier`` starts from ``(RawScanType.NONE, 0)`` and only
+replaces it on a **strictly** higher score, so a file every loader rejects
+classifies as ``RawScanType.NONE`` and resolves to ``DefaultLoader``, which raises
+on ``load()``.
 
 
 Disk Access Flow
@@ -97,18 +104,25 @@ Disk Access Flow
 
     sequenceDiagram
         participant RawScanLoadController
-        participant DiskServiceInterface
-        participant LocalDiskService
-        RawScanLoadController ->>LocalDiskService: get scan(s) at (path)
-        LocalDiskService ->>pathlib: get list of ALL files @ path from disk
-        loop foreach filepath
-            LocalDiskService ->> LocalDiskService: get file size(path)
-            LocalDiskService ->> pathlib:.stat()
-            pathlib -->> LocalDiskService : filesize
-                alt 0 < filesize < threshold
-                    LocalDiskService ->>LocalDiskService: skip
+        participant LocalFileStore
+        participant pathlib
+        RawScanLoadController ->>LocalFileStore: fetch_files_at(path)
+        LocalFileStore ->>LocalFileStore: raise RuntimeError if path missing or is a file
+        LocalFileStore ->>pathlib: iterdir() - all entries at path
+        loop foreach entry
+            LocalFileStore ->> LocalFileStore: validate_file(path)
+            LocalFileStore ->> LocalFileStore: _is_real_file(path)
+            LocalFileStore ->> pathlib: .stat().st_size
+            pathlib -->> LocalFileStore : filesize
+                alt not a real file OR size > library.filestore.raw.size-limit
+                    LocalFileStore ->>LocalFileStore: skip
                 else
-                    LocalDiskService ->>LocalDiskService: append to result list
+                    LocalFileStore ->>LocalFileStore: append absolute path to result list
                 end
         end
-        LocalDiskService -->> RawScanLoadController: List[str]
+        LocalFileStore ->>LocalFileStore: sort()
+        LocalFileStore -->> RawScanLoadController: List[str]
+
+The size limit is a **maximum**, not a minimum: files *larger* than
+``library.filestore.raw.size-limit`` (1 MB by default) are skipped. Directory
+entries are skipped too, so ``fetch_files_at`` never recurses.

@@ -1,165 +1,163 @@
-.. _hyspecpptfields:
+.. _tavifields:
 
 =======================
 Fields and Validation
 =======================
 
-The main functionality of the tool is to display a plot, based on the filled in parameters, automatically; no plot button exists.
+This page documents the user-editable fields of the TAVI GUI, where their values
+come from, and where each is validated.
 
-Overall, users can:
-   * plot crosshair and heatmap from Powder experiment
-   * plot crosshair and heatmap from Single Crystal experiment
-   * switch between Powder and Single Crystal modes while keeping the previous valid state
-   * click on "Help" button that opens up a readthedocs user documentation
-   * show the angle between momentum transfer and incident beam at the crosshair position. A value of `nan` means that conservation of energy and momentum does not permit measurement at that point.
+Plotter Controls
+================
 
-Fields
---------
+The 1D Plotter panel (``Plot1DView``) is the only panel with editable fields
+today. Its controls are collected into a
+:class:`tavi.library.data.plot.PlotFields` snapshot by ``get_plot_fields()`` and
+passed to ``PlotModel.update_fields``. There is no "plot" button — a field
+losing focus emits ``fields_focus_changed``, which triggers the round trip.
 
-Below are the fields of SingleCrystal and Powder experiment models
-For the purpose of ensuring only valid fields are passed to the Model, custom qt validators are included that perform more complex checks.
-
-.. list-table:: Common Fields
+.. list-table:: Axis Fields
   :header-rows: 1
 
   * - Field
     - Type
     - Value Origin
     - Default
-    - Additional validation
-    - Mandatory
-  * - Polarization Type
+    - Validation
+  * - X Axis
     - String
-    - predefined choices:[Powder, Single Crystal]
-    - Powder
-    -
-    - yes
-  * - Ei (Incident Energy) - meV
-    - Double
-    -
-    - 20
-    - 0 < Ei < 100
-    - yes
-  * - S2 (HYSPEC Detector Tank Angle)
-    - Double
-    -
-    - 30
-    - -100 < S2< 100 && (S2 > 30 || S2 < -30)
-    - yes
-  * - Ap (Polarization Direction Angle)
-    - Double
-    -
-    - 0
-    - -180 < Ap < 180
-    - yes
-  * - Delta E
-    - Double
-    -
-    - 0
-    -
-    - yes
-  * - mod Q (\|Q\|)
-    - Double
-    -
-    - 0
-    - 0 <= \|Q\| <=10
-    - yes
-  * - Plot Type
+    - column name of the focused scan
+    - ``scan.tavimeta.default_axis[0]``
+    - must be a key of ``scan.data.data``
+  * - Y Axis
     - String
-    - predefined choices: :math:`[ \alpha_s, \cos^2(\alpha_s),  (1+\cos^2(\alpha_s))/2 ]`
-    - :math:`\cos^2(\alpha_s)`
-    -
-    - yes
+    - column name of the focused scan
+    - ``scan.tavimeta.default_axis[1]``
+    - must be a key of ``scan.data.data``
 
-
-Below are the additional fields of SingleCrystal Model
-
-
-.. list-table:: Single Crystal Model Additional Fields
+.. list-table:: Rebin Fields
   :header-rows: 1
 
   * - Field
     - Type
+    - Value Origin
     - Default
-    - Additional validation
-    - Mandatory
-  * - a
-    - Double
-    - 1
-    - 1 < a < 100
-    - yes
-  * - b
-    - Double
-    - 1
-    - 1 < b < 100
-    - yes
-  * - c
-    - Double
-    - 1
-    - 1 < c < 100
-    - yes
-  * - alpha
-    - Double
-    - 90
-    - 30 < alpha < 150
-    - yes
-  * - beta
-    - Double
-    - 90
-    - 30 < beta < 150
-    - yes
-  * - gamma
-    - Double
-    - 90
-    - 30 < gamma < 150
-    - yes
-  * - H
-    - Double
-    - 0
-    - -100 < H < 100
-    - yes
-  * - K
-    - Double
-    - 0
-    - -100 < K < 100
-    - yes
-  * - L
-    - Double
-    - 0
-    - -100 < L < 100
-    - yes
+    - Validation
+  * - Rebin Mode
+    - Enum
+    - radio group -> :class:`tavi.library.data.enum.rebin_mode.RebinMode`
+      (``none`` / ``tolerance`` / ``equal_step``)
+    - ``No Rebin`` (``RebinMode.NONE``)
+    - constrained by the radio group
+  * - Rebin Start
+    - String
+    -
+    - ``"0"``
+    - not consumed yet
+  * - Rebin Stop
+    - String
+    -
+    - ``"2"``
+    - not consumed yet
+  * - Rebin Step
+    - String
+    -
+    - ``"0.02"``
+    - not consumed yet
 
-Validation
-----------
+.. note::
 
-Regarding validation, if all fields are valid, then the front end (View) triggers the backend (Model) to send the current parameters and receive the new data to plot the graphs (heatmap and/or crosshair).
-If a user types an invalid value, then a red border appears on the related field(s).
+   The rebin controls are currently **disabled**. Rebinning previously mutated
+   the plotted arrays in place; that path was removed when ``Plot`` stopped
+   owning data. The intended replacement — producing a new scan for the series to
+   point at — is described in :doc:`frontend/plot_data_model`.
 
+.. list-table:: Preset (Normalization) Fields
+  :header-rows: 1
 
-Front end side validation includes:
-   * required fields
-   * field types
-   * threshold limits: Ei, S2, Ap, modQ, and single crystal parameters
+  * - Field
+    - Type
+    - Value Origin
+    - Default
+    - Validation
+  * - Preset Type
+    - Enum
+    - :class:`tavi.library.data.enum.preset_type.PresetType`
+      (``none`` / ``normalize``)
+    - ``none``
+    - constrained by the combo box
+  * - Preset Channel
+    - String
+    - dropdown repopulated from the focused scan's column names
+    - first column of the focused scan
+    - must be a key of ``scan.data.data`` when the type is ``normalize``
+  * - Preset Value
+    - String
+    -
+    - ``"1"``
+    - must parse as ``float`` when the type is ``normalize``
 
+Where Validation Happens
+========================
 
-Backend side validation includes:
-  * Emin recalculation due to DeltaE update
+TAVI does **not** use Qt validators on these fields. All of them are free-form
+``QLineEdit`` / ``QComboBox`` values; validation is a backend concern, performed
+in :meth:`tavi.backend.model.plot_model.PlotModel._resolve_series_update`:
 
+* ``x_axis`` and ``y_axis`` are stripped and looked up in ``scan.data.data``.
+* When ``preset_type`` is ``NORMALIZE``, ``preset_channel`` must also be a column
+  and ``preset_value`` must parse as a float.
 
-Inter-Field Validations
-------------------------
+If any check fails the update is rejected wholesale: ``_apply_fields_to_plot``
+returns ``None``, no ``PlotFocusEvent`` is published, and the canvas keeps showing
+the last valid plot. An invalid entry is therefore a no-op rather than an error
+dialog — the fields resync to the plotted values on the next successful render.
 
-Polarization Type:
-  * If Polarization Type set to "Single Crystal", all parameters of Single Crystal block are required. The valid default/model-stored values are set at the appropriate fields.
-  * If Polarization Type set to "Powder", all parameters of Single Crystal block are hidden and not required. The valid default/model-stored values are set at the appropriate fields.
+Field Synchronization
+=====================
 
-modQ (\|Q\|):
-  * If Polarization Type set to "Single Crystal", it is a read-only field. The value is returned from the backend after all Single crystal parameters are filled in.
-  * If Polarization Type set to "Powder", user can fill the value in.
+Whatever is actually rendered is written back into the controls, so the fields
+never drift from the plot:
 
-alpha, beta , gamma; all the below conditions need to be met for the fields to be valid:
-  * All three angles' values are less than 360 degrees: (alpha + beta+ gamma) <=360
-  * They can form a triangle: (alpha + beta) < gamma and (alpha + beta) < gamma and (beta + gamma) < alpha
+``sync_axis_fields(x_name, y_name)``
+    Called per rendered series from ``Plot1DView._render_plots``. Reflects the
+    plotted column names in the axis fields.
 
-Emin, DeltaE:
-  * A change in deltaE can trigger an update to Emin; the process is hidden to the user
+``sync_preset_fields(normalized_by, normalized_by_value)``
+    Also called from ``_render_plots``. Sets the preset type to ``NORMALIZE``
+    when the series carries a normalization channel and ``NONE`` otherwise, then
+    fills in the channel and value.
+
+``set_preset_channel_options(columns)``
+    Called by ``PlotterPresenter.handle_raw_scan_focus``. Repopulates the channel
+    dropdown from the newly focused scan's columns.
+
+``reset_controls_to_defaults()``
+    Also called on raw-scan focus, before the dropdown is repopulated. Returns the
+    rebin radio group and the preset type/value to their defaults.
+
+All four block widget signals while writing, so a programmatic sync never
+re-triggers ``fields_focus_changed`` and loops back into the model.
+
+Filter Panel
+============
+
+``FilterView`` renders Temperature, a ± tolerance, and an IPTS number, plus
+**Clear Filters** and **Apply Filters** buttons. The widgets exist and hold
+default values (3, 0.01, 1234), but nothing is wired to a presenter or model yet
+— the panel is a layout placeholder.
+
+Data File Panel
+===============
+
+``DataFileView`` has no editable fields. Its data table and metadata tables are
+explicitly non-editable (``ItemIsEditable`` cleared on every item). Two
+interactions do exist:
+
+* **Variable checklist** — unchecking a row hides the matching data table column,
+  matched by header text. Purely a view concern; it does not affect the data.
+* **Variable row reordering** — dragging a row in the variable table moves the
+  corresponding data table column to the same position.
+
+The **Restore Metadata From File** and **Save Modified Metadata To File** buttons
+are present but disabled; metadata editing is not implemented.

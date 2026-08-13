@@ -186,9 +186,11 @@ There are two ways to get it, and which one is used depends on the caller:
    * the goniometer ``type`` in the instrument JSON to match one of the
      implemented cases exactly -- ``"Y,-Z,X"`` (Huber table, uses ``omega``,
      ``sgl``, ``sgu``) or ``"Y,Z,Y,bisect"`` (four-circle, uses ``omega``,
-     ``chi``, ``phi``). The strings carry **no spaces**, matching the
-     ``"type"`` entry in ``hb1.json``, ``hb1a_tas.json``, ``hb3.json`` and
-     ``cg4c.json``.
+     ``chi``, ``phi``). The strings carry **no spaces**. ``hb1.json``,
+     ``hb1a_tas.json``, ``hb3.json`` and ``cg4c.json`` declare ``"Y,-Z,X"``;
+     ``hb1a_4c.json`` declares ``"Y,Z,Y,bisect"``. Note that
+     ``Goniometer.__init__`` defaults to ``"Y, -Z, X"`` *with* spaces, which
+     matches neither -- a hand-built goniometer must pass ``type`` explicitly.
    * the ``MotorAngles`` of the data point to carry the keys the goniometer
      expects. ``ORNLSpiceLoader.get_data_point_closest_to_center`` populates
      ``two_theta``, ``omega``, ``sgl`` and ``sgu`` for SPICE scans that report

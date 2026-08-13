@@ -26,4 +26,23 @@ Installation for Triple-Axis Data Visualization (TAVI) development
 
    .. code-block:: bash
 
-      $ Tavi
+      $ tavi
+
+  The same entry point is also available as a pixi task, which does not require an
+  activated shell:
+
+   .. code-block:: bash
+
+      $ pixi run tavi
+
+Useful development tasks
+------------------------
+
+All defined in the ``[tool.pixi.tasks]`` table of ``pyproject.toml``:
+
+.. code-block:: bash
+
+   $ pixi run test               # unit tests
+   $ pixi run integration-test   # integration tests only
+   $ pixi run build-docs         # build this documentation into docs/_build/html
+   $ pixi run clean-all          # remove caches, build and doc artifacts

@@ -208,26 +208,40 @@ The plotter presenter always clears the canvas before appending.  Every plot
 focus event represents a *replacement*, not an *addition*.  Overplot behaviour
 (accumulating multiple series on the same axes) requires a separate code path.
 
-Preset controls always mirror the focused entity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Controls are reset on scan focus, synced on plot render
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Both focus paths call the view's ``sync_preset_fields(normalized_by,
-normalized_by_value)`` so the preset type/channel/value controls reflect
-what is actually plotted:
+The two focus paths touch the plotter controls differently, and the ordering
+matters because a RawScan focus is always immediately followed by a plot focus
+(``PlotModel`` reacts to the first by publishing the second).
 
-- **RawScan focus** — ``PlotterPresenter.handle_raw_scan_focus`` derives
-  ``normalized_by``/``normalized_by_value`` from
-  ``scan.tavimeta.normalization`` and syncs them alongside repopulating the
-  channel dropdown.
-- **Plot focus** — ``PlotterPresenter.handle_plot_focus`` (via
-  ``Plot1DView._render_plots``) syncs from the resolved series'
-  ``normalized_by``/``normalized_by_value``.
+- **RawScan focus** — ``PlotterPresenter.handle_raw_scan_focus`` calls
+  ``reset_controls_to_defaults()`` (rebin radio back to *No Rebin*, rebin
+  start/stop/step back to ``0``/``2``/``0.02``, preset type back to ``NONE``,
+  preset value back to ``"1"``), then ``set_preset_channel_options(...)`` to
+  repopulate the channel dropdown from the newly focused scan's columns. It does
+  **not** derive normalization from ``scan.tavimeta.normalization``.
+- **Plot focus** — ``Plot1DView._render_plots`` calls ``sync_axis_fields(x_name,
+  y_name)`` and ``sync_preset_fields(normalized_by, normalized_by_value)`` per
+  rendered series, so the axis and preset controls end up reflecting what is
+  actually on the canvas.
 
-Previously, ``handle_raw_scan_focus`` reset the preset type to ``NONE``
-unconditionally and never re-derived it, so a scan configured with a
-normalization channel showed type ``NONE`` on selection but ``NORMALIZE``
-once a plot was generated from it — the two paths must derive preset state
-identically, or the controls desync depending on which path last ran.
+So a scan carrying a normalization channel does briefly show preset type
+``NONE`` — the reset — before the plot focus event lands and
+``sync_preset_fields`` promotes it to ``NORMALIZE``. Because both events are
+dispatched synchronously through the broker, the user only ever sees the final
+state.
+
+Both sync methods and the reset block widget signals while writing, so
+programmatically updating a control never re-emits ``fields_focus_changed`` and
+loops back into the model.
+
+.. note::
+
+   ``_render_plots`` calls both sync methods **once per series**, so with a
+   multi-series overlay the controls end up showing the last series' values.
+   The controls describe a single series; the overlay case has no defined
+   answer yet.
 
 Mixed selection limitation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

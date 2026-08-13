@@ -26,6 +26,7 @@ Core Rule: Plot Holds No Data
         source_scan_uuid: UUID
         scan_name: str
         normalized_by: Optional[str]
+        normalized_by_value: Optional[float] = None
         x_name: str
         y_name: str
         error_name: str
@@ -53,6 +54,7 @@ than a named list of these pointers.
             +UUID source_scan_uuid
             +str scan_name
             +Optional~str~ normalized_by
+            +Optional~float~ normalized_by_value
             +str x_name
             +str y_name
             +str error_name
@@ -97,13 +99,16 @@ method call across it:
     def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Look up the scan this series points at and pull the x/y/err arrays named by it."""
         scan = scans[series.source_scan_uuid]
-        x = np.array(scan.data.data[series.x_name])
+        x_name = "_" + series.x_name if series.x_name[0].isdigit() else series.x_name
+        x = np.array(scan.data.data[x_name])
         y = np.array(scan.data.data[series.y_name])
         err = np.sqrt(np.abs(y))
         if series.normalized_by is not None:
             channel_data = np.array(scan.data.data[series.normalized_by])
             weight = series.normalized_by_value if series.normalized_by_value is not None else 1.0
-            err = weight * (y / channel_data) * np.sqrt(y / np.sqrt(y) + channel_data / np.sqrt(channel_data))
+            # Error propagation for the ratio y/channel_data, computed against the
+            # pre-normalization y before it is overwritten below.
+            err = weight * (err / channel_data)
             y = y * weight / channel_data
         return x, y, err
 
@@ -112,6 +117,10 @@ method call across it:
         """Return the minimal {uuid: Scan} slice of `scans` referenced by any series in `plots`."""
         return {series.source_scan_uuid: scans[series.source_scan_uuid]
                 for plot in plots for series in plot.series}
+
+The ``x_name`` fixup mirrors the loader: column names beginning with a digit are
+stored with a leading underscore so they remain attribute-accessible
+(``2theta`` becomes ``_2theta``), and the series stores the user-facing name.
 
 Whichever model actually owns scan storage — ``PlotModel`` (raw-scan-focus,
 ``update_fields``) or ``TaviProjectModel`` (re-focusing a previously saved

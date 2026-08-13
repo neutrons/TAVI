@@ -21,10 +21,14 @@ Class Diagram
             +fetch_files_at(String path) : list~String~
             +validate_file(String file_path) : bool
             +write_user_data_file(String file_subpath, String value)
+            +read_user_data_file(String file_subpath) : String
             +write_text_file(String file_path, String value)
             +read_text_file(String file_path) : String
             +get_file_ext(String file_path) : String
             +get_file_size_mb(String file_path) : float
+            +get_file_name(String file_path) : String
+            +get_parent(String file_path) : String
+            +join_path(String root_path, String target_path) : String
         }
         class LocalFileStore {
             -is_real_file(Path file_path, bool throws=False) : bool
@@ -35,7 +39,7 @@ Class Diagram
         }
         class RawScanType~StrEnum~{
             ORNLSpice
-            UNKNOWN
+            NONE
         }
         class LoaderRegistry {
             -register_loader(AbstractLoader loader)
@@ -49,7 +53,7 @@ Class Diagram
         class LoaderInterface{
             +load(String path) : Scan
             +get_scan_type() : RawScanType
-            +get_score(String path): int
+            +get_score(String path): float
             +parse_metadata(String path) : ScanMetadata
             +parse_tavi_metadata(String path) : TaviMetadata
             +parse_scan_values(String path) : ScanData
@@ -65,10 +69,16 @@ Class Diagram
             RuleBasedClassifier classifier
             ORNLSpiceRuleSet classification_rules
         }
+        class DefaultLoader{
+            +get_scan_type() : RawScanType.NONE
+            +get_score(str path) : 0
+        }
         class RuleBasedClassifier{
-            RuleSet rule_set
-            +get_score(str path, RuleSet rule_set) : int
-            -get_score_from_rules(str path, RuleSet rule_set) : int
+            FileStoreInterface filestore
+            +__init__(FileStoreInterface filestore)
+            +set_filestore(FileStoreInterface filestore)
+            +get_score(str path, RuleSet rule_set) : float
+            -get_score_from_rules(str path, RuleSet rule_set) : float
         }
         class ORNLSpiceRuleSet{
         }
@@ -92,21 +102,22 @@ Class Diagram
         class RawScan {
         }
         class Provenance {
-            Str: raw_file_path
+            Str raw_file
             Dict~UUID,int~ contributing_scans
         }
         class ScanMetadata{
             Dict~str, Any~ data
-            LoaderEnum loader_name
+            Dict~str, List~str~~ categories
+            +by_category() Dict~str, Any~
         }
         class TaviMetadata{
-            Tuple~str, str~ default_axis_cols
-            String normalization = None
+            Tuple~str, str~ default_axis
             String friendly_name
             String friendly_path
+            Optional~Tuple~str, float~~ normalization = None
         }
         class ScanData {
-            Dict~str, list~ data
+            Dict~str, list~float~~ data
         }
 
         RawScanLoadControllerInterface <|-- RawScanLoadController
@@ -117,14 +128,17 @@ Class Diagram
         RawScanClassifier *-- LoaderRegistry
         AbstractLoader *-- FileStoreInterface
         AbstractLoader <|-- ORNLSpiceLoader
+        AbstractLoader <|-- DefaultLoader
+        LoaderInterface <|-- AbstractLoader
         LoaderRegistry o-- AbstractLoader
 
         FileStoreInterface <|-- LocalFileStore
 
+        RuleSet <|-- ORNLSpiceRuleSet
         RuleSet o-- RuleInterface
-        RuleInterface <|-- Rule
-        RuleBasedClassifier *-- RuleSet
+        RuleBasedClassifier ..> RuleSet : scores against
         ORNLSpiceLoader *-- RuleBasedClassifier
+        ORNLSpiceLoader *-- ORNLSpiceRuleSet
 
         Scan <|-- RawScan
         Scan <|-- ComboScan

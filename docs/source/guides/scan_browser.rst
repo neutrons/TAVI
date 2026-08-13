@@ -101,11 +101,13 @@ fits.
 Return Value
 ============
 
-Without resolution bars ``browse_scans`` returns ``None``. With them it returns
+``browse_scans`` always returns a 3-tuple. Without resolution bars every element
+is ``None``:
 
 .. code-block:: python
 
-   hkls, fit_results, res_mat_4d = browse_scans(..., resolution_bars=bars)
+   hkls, fit_results, res_mat_4d = browse_scans(...)                       # (None, None, None)
+   hkls, fit_results, res_mat_4d = browse_scans(..., resolution_bars=bars) # populated
 
 * ``hkls`` -- ``(h, k, l)`` per scan, in ``scan_list`` order,
 * ``fit_results`` -- the ``FitResult`` per scan (see :ref:`fit_package`),

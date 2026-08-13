@@ -1,5 +1,5 @@
-Project View ↔ NewRawScan Integration
-====================================
+Project View ↔ RawScanAppendEvent Integration
+==============================================
 
 Overview
 --------
@@ -114,6 +114,11 @@ The Project View is implemented via ``TreeViewWidget`` and is responsible for:
 - Tracking nodes via ``uuid_map``
 - Rendering scan entries under a ``/Raw`` root
 
+Four roots are created up front by ``_init_path`` in ``TreeViewWidget.__init__``
+— ``/Raw``, ``/Combined``, ``/Fits`` and ``/Plots``. Only ``Raw`` and ``Plots``
+receive entries today; ``Combined`` and ``Fits`` are reserved for combined scans
+and saved fits.
+
 Adding a Scan
 ~~~~~~~~~~~~~
 
@@ -131,8 +136,10 @@ The method:
 
 normalizes input by:
 
-- Stripping leading ``/`` from ``path``
-- Prefixing with ``/Raw``
+- Stripping a leading ``/`` from ``path``
+- Prefixing with ``Raw/``, then delegating to ``add_item_at_path``
+
+``add_plot`` is the same method with a ``Plots/`` prefix.
 
 Tree Construction
 ~~~~~~~~~~~~~~~~~
@@ -364,14 +371,21 @@ returns ``isValid() == False`` and is silently skipped.
 Recursive Delete
 ----------------
 
-``remove_entry`` walks children depth-first before removing itself:
+``remove_entry`` walks children depth-first before removing itself, guarding on
+index validity at every level:
 
 .. code-block:: python
 
     def remove_entry(self, index: QModelIndex) -> None:
+        if not index.isValid():
+            return
+
         for row in range(self.treeModel.rowCount(index)):
-            child = self.treeModel.index(row, 0, index)
-            self.remove_entry(child)
+            for col in range(self.treeModel.columnCount(index)):
+                child_index = self.treeModel.index(row, col, index)
+                if child_index.isValid():
+                    self.remove_entry(child_index)
+
         self._remove_index(index)
 
 ``_remove_index`` removes the row from the model and purges the UUID from
