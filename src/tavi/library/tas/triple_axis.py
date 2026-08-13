@@ -264,6 +264,8 @@ class TAS:
         xlabel: Optional[str] = None,
         ylabel: Optional[str] = None,
         fit_package: FitPackage = FitPackage.lmfit,
+        resolution_frame: str | Tuple = "local",
+        projection_axes: list=[0,1],
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
     ) -> None:
         """
@@ -297,10 +299,16 @@ class TAS:
         )
         ellipses = []
         for idx, peak in peaks:
-            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
+            rot_mat = None
+            if resolution_frame != "local":
+                try:
+                    rot_mat = self.instrument.goni.r_mat(peak.angles)
+                except Exception as err:
+                    raise ValueError("Rotation matrix can not be calculated") from err
+            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=rot_mat)
             ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
-            coh_para = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=0)
-            coh_perp = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=1)
+            coh_para = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).coh_fwhm(projection_axis=0)
+            coh_perp = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).coh_fwhm(projection_axis=1)
             ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
