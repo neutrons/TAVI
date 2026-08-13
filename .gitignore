@@ -58,7 +58,6 @@ test_data/
 # Translations
 *.mo
 *.pot
-*.ipynb
 
 # Django stuff:
 *.log
