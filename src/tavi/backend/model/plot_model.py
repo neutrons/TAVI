@@ -10,7 +10,8 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent, SavePlotEvent
+from tavi.meta.event.type.model_event import PlotAppendEvent
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
 
@@ -27,6 +28,26 @@ class PlotModel(PlotModelInterface):
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
+
+
+    def _handle_save_plot_event(self, e: SavePlotEvent) -> None:
+        """Record a presenter-submitted plot in ``tavi_data`` and announce it."""
+        if e.plot.friendly_name:
+            base_name = e.plot.friendly_name
+        else:
+            run_names = "_".join(series.scan_name for series in e.plot.series)
+            base_name = f"{run_names}_Plot"
+
+        existing_names = {plot.friendly_name for plot in self._plots.values() if plot.friendly_name}
+        friendly_name = base_name
+        increment = 0
+        while friendly_name in existing_names:
+            increment += 1
+            friendly_name = f"{base_name}({increment})"
+
+        self._plots[e.plot.uuid] = e.plot.model_copy(update={"friendly_name": friendly_name})
+        self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
         # needs to create a new plot when a raw scan is focussed.
@@ -72,7 +93,8 @@ class PlotModel(PlotModelInterface):
                 return None
             updated_series.append(series.model_copy(update=series_update))
 
-        return plot.model_copy(update={"series": updated_series})
+        friendly_name = fields.friendly_name.strip() or None
+        return plot.model_copy(update={"series": updated_series, "friendly_name": friendly_name})
 
     def _resolve_series_update(self, scan: RawScan, fields: PlotFields) -> Optional[dict]:
         """Build the ``model_copy()`` update dict for one series against its source scan, or None if invalid."""

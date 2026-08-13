@@ -20,3 +20,14 @@ class TaviData(BaseModel):
             return self.plots[uuid]
 
         raise KeyError("No such UUID available in TaviData for any type.")
+
+    def remove_by_uuid(self, uuid: UUID) -> None:
+        """Remove the scan or plot matching uuid, or raise KeyError."""
+        if uuid in self.raw_scans:
+            del self.raw_scans[uuid]
+            return
+        if uuid in self.plots:
+            del self.plots[uuid]
+            return
+
+        raise KeyError("No such UUID available in TaviData for any type.")

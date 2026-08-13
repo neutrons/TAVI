@@ -415,6 +415,7 @@ def test_get_plot_fields_contains_all_expected_keys(view):
         "y_axis", "x_axis", "rebin_mode",
         "rebin_start", "rebin_stop", "rebin_step",
         "preset_type", "preset_channel", "preset_value",
+        "friendly_name",
     }
 
 
@@ -426,6 +427,17 @@ def test_get_plot_fields_reflects_edited_values(view):
     assert fields.y_axis == "en"
     assert fields.x_axis == "qh"
     assert fields.preset_value == "42"
+
+
+def test_get_plot_fields_friendly_name_defaults_empty(view):
+    fields = view.get_plot_fields()
+    assert fields.friendly_name == ""
+
+
+def test_get_plot_fields_friendly_name_reflects_edited_value(view):
+    view.current_plot_combo.setCurrentText("my_custom_name")
+    fields = view.get_plot_fields()
+    assert fields.friendly_name == "my_custom_name"
 
 
 # ---------------------------------------------------------------------------
@@ -440,6 +452,7 @@ def test_reset_controls_to_defaults_restores_values(view):
     view.preset_type_combo.setCurrentText("special")
     view.preset_channel_combo.setCurrentText("other")
     view.preset_value_edit.setText("7")
+    view.current_plot_combo.setCurrentText("custom_name")
 
     view.reset_controls_to_defaults()
 
@@ -451,6 +464,7 @@ def test_reset_controls_to_defaults_restores_values(view):
     # setCurrentText("other") above was a no-op; text stays empty.
     assert view.preset_channel_combo.currentText() == ""
     assert view.preset_value_edit.text() == "1"
+    assert view.current_plot_combo.currentText() == ""
 
 
 def test_reset_controls_to_defaults_does_not_emit_fields_focus_changed(view, qtbot):

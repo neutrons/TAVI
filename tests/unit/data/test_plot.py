@@ -68,6 +68,18 @@ def test_plot_series_normalized_by_value_can_be_set():
     assert plot.series[0].normalized_by_value == 2.5
 
 
+def test_plot_friendly_name_defaults_to_none():
+    plot = make_plot()
+
+    assert plot.friendly_name is None
+
+
+def test_plot_friendly_name_can_be_set():
+    plot = Plot(series=[make_series()], friendly_name="my_custom_name")
+
+    assert plot.friendly_name == "my_custom_name"
+
+
 def test_plot_supports_multiple_series():
     series_a = make_series(source_scan_uuid=UUID(value="scan-001"), scan_name="scan_a")
     series_b = make_series(source_scan_uuid=UUID(value="scan-002"), scan_name="scan_b")

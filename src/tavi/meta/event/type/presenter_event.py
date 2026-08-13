@@ -29,6 +29,12 @@ class SavePlotEvent(Event):
     plot: Plot
 
 
+class RemoveItemEvent(Event):
+    """Request to remove a raw scan or plot from the project's data store by uuid."""
+
+    uuid: UUID
+
+
 class PlotFocusEvent(Event):
     """
     Event to render a list of plots.
