@@ -9,7 +9,9 @@ from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
 
 class PlotModel(PlotModelInterface):
@@ -77,16 +79,19 @@ class PlotModel(PlotModelInterface):
         x_name = fields.x_axis.strip()
         y_name = fields.y_axis.strip()
         if x_name not in scan.data.data or y_name not in scan.data.data:
+            self._report_error(f"Column '{x_name}' or '{y_name}' not found in scan data.")
             return None
 
         norm_channel, norm_value = None, None
         if fields.preset_type == PresetType.NORMALIZE:
             norm_channel = fields.preset_channel.strip()
             if norm_channel not in scan.data.data:
+                self._report_error(f"Normalization column '{norm_channel}' not found in scan data.")
                 return None
             try:
                 norm_value = float(fields.preset_value.strip())
             except ValueError:
+                self._report_error(f"Normalization value '{fields.preset_value}' is not a number.")
                 return None
 
         return {
@@ -95,3 +100,7 @@ class PlotModel(PlotModelInterface):
             "normalized_by": norm_channel,
             "normalized_by_value": norm_value,
         }
+
+    def _report_error(self, message: str) -> None:
+        """Surface a plot-field validation failure to the user instead of failing silently."""
+        self._event_broker.publish(ExceptionEvent(error=NonRecoverableError(message, "")))
