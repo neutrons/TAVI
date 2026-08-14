@@ -119,8 +119,6 @@ select = [
 # ------------------ #
 # Pixi configuration #
 # ------------------ #
-[tool.pixi.activation.env]
-QT_API = "pyside6"
 
 [tool.pixi.workspace]
 preview = ["pixi-build"]                                             # Need this to access pixi-build feature
@@ -140,7 +138,7 @@ versioningit = "*"
 
 [tool.pixi.package.run-dependencies]
 #dependencies for the conda package - for tavi to run
-pyside6 = ">=6.8.1"
+pyqt = ">=5.15"
 qtpy = ">=2.4.2"
 numpy = ">=2.2.0"
 scipy = ">=1.14.1"
@@ -156,7 +154,7 @@ neutrons_standard = "*"
 
 [tool.pixi.dependencies]
 # Conda package dependencies for the local environment though pixi
-pyside6 = ">=6.8.1"
+pyqt = ">=5.15"
 qtpy = ">=2.4.2"
 numpy = ">=2.2.0"
 scipy = ">=1.14.1"
