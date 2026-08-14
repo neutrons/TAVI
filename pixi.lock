@@ -12387,8 +12387,8 @@ packages:
   timestamp: 1733569565672
 - pypi: ./
   name: tavi
-  version: 1.1.0.dev7
-  sha256: f88d2f63eaa742e939ad89fd7210aa19164e696838d8d8f821227b9178ea8277
+  version: 1.1.0.dev8
+  sha256: 70129709169f635f1b208b3fa011325e36d1e3a494564b29740484450465fbc3
   requires_python: '>=3.10'
 - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2023.0.0-hd3d4ead_2.conda
   sha256: 8a4053839b8e997a5965e2dff7d6cf3c77be62d82c0e48c8a04a5ed2d2e73035
