@@ -3,8 +3,10 @@
 from typing import Any
 
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QGuiApplication, QKeySequence
 from qtpy.QtWidgets import (
     QAbstractButton,
+    QAction,
     QCheckBox,
     QHBoxLayout,
     QHeaderView,
@@ -37,6 +39,7 @@ class DataFileView(QWidget):
         self.data_table.setAlternatingRowColors(True)
         self.data_table.setCornerButtonEnabled(True)
         self.data_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        self._enable_copy(self.data_table)
 
         top_split.addWidget(self.data_table)
 
@@ -83,6 +86,47 @@ class DataFileView(QWidget):
         btn_layout.addWidget(self.restore_metadata_button)
         btn_layout.addWidget(self.save_metadata_button)
         layout.addLayout(btn_layout)
+
+    def _enable_copy(self, table: QTableWidget) -> None:
+        """Give a table a Ctrl+C / right-click "Copy" action - item views have no copy support of their own."""
+        copy_action = QAction("Copy", table)
+        copy_action.setShortcut(QKeySequence.StandardKey.Copy)
+        copy_action.setShortcutContext(Qt.ShortcutContext.WidgetShortcut)
+        copy_action.triggered.connect(lambda: self._copy_selection(table))
+        table.addAction(copy_action)
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
+
+    def _copy_selection(self, table: QTableWidget) -> None:
+        """
+        Put the selected cells on the clipboard as tab-separated text, one line per row.
+
+        Rows and columns are emitted in the header's *visual* order so a copy matches what
+        the user sees after dragging variables around, and hidden columns are left out.
+        Cells inside the selection's bounding box that are not themselves selected come
+        out empty, which keeps non-rectangular selections aligned.
+        """
+        selection = table.selectedRanges()
+        if not selection:
+            return
+
+        rows = sorted({row for rng in selection for row in range(rng.topRow(), rng.bottomRow() + 1)})
+        columns = {col for rng in selection for col in range(rng.leftColumn(), rng.rightColumn() + 1)}
+        columns = sorted(
+            (col for col in columns if not table.isColumnHidden(col)),
+            key=table.horizontalHeader().visualIndex,
+        )
+
+        lines = []
+        for row in rows:
+            if table.isRowHidden(row):
+                continue
+            cells = []
+            for col in columns:
+                item = table.item(row, col)
+                cells.append(item.text() if item is not None and item.isSelected() else "")
+            lines.append("\t".join(cells))
+
+        QGuiApplication.clipboard().setText("\n".join(lines))
 
     def populate_columns(self, data: dict[str, list[float]]) -> None:
         """Repopulate the data table with a newly-focused scan's column values."""
