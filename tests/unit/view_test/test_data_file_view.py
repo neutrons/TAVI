@@ -412,3 +412,88 @@ def test_copy_renders_a_short_columns_missing_cells_as_empty(view, clipboard):
     view._copy_selection(view.data_table)
 
     assert clipboard.text() == "1.0\t3.0\n2.0\t"
+
+
+# ---------------------------------------------------------------------------
+# copying metadata cells — every tab's table gets the same copy support
+# ---------------------------------------------------------------------------
+
+
+def test_metadata_table_has_a_copy_action(view):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}})
+
+    assert _copy_action(view.meta_tabs.widget(0)) is not None
+
+
+def test_every_metadata_tab_has_its_own_copy_action(view):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}, "Other": {"k": "v"}})
+
+    assert all(_copy_action(view.meta_tabs.widget(i)) is not None for i in range(view.meta_tabs.count()))
+
+
+def test_empty_metadata_placeholder_tab_has_a_copy_action(view):
+    """The 'Empty' tab is built by a separate path, so it needs the copy wiring too."""
+    assert _copy_action(view.meta_tabs.widget(0)) is not None
+
+
+def test_metadata_table_copy_action_bound_to_standard_copy_shortcut(view):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}})
+
+    action = _copy_action(view.meta_tabs.widget(0))
+    assert action.shortcut() == QKeySequence(QKeySequence.StandardKey.Copy)
+
+
+def test_metadata_table_offers_the_copy_action_in_its_context_menu(view):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}})
+
+    assert view.meta_tabs.widget(0).contextMenuPolicy() == Qt.ContextMenuPolicy.ActionsContextMenu
+
+
+def test_copy_metadata_key_and_value_of_one_row(view, clipboard):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1", "proposal": "9865"}})
+    table = view.meta_tabs.widget(0)
+    _select(table, 0, 0, 0, 1)
+
+    view._copy_selection(table)
+
+    assert clipboard.text() == "scan\t1"
+
+
+def test_copy_metadata_block_spanning_several_rows(view, clipboard):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1", "proposal": "9865"}})
+    table = view.meta_tabs.widget(0)
+    _select(table, 0, 0, 1, 1)
+
+    view._copy_selection(table)
+
+    assert clipboard.text() == "scan\t1\nproposal\t9865"
+
+
+def test_copy_metadata_value_only(view, clipboard):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1", "proposal": "9865"}})
+    table = view.meta_tabs.widget(0)
+    _select(table, 1, 1, 1, 1)
+
+    view._copy_selection(table)
+
+    assert clipboard.text() == "9865"
+
+
+def test_copy_metadata_reads_from_the_selected_tab_only(view, clipboard):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}, "Other": {"k": "v"}})
+    second_tab = view.meta_tabs.widget(1)
+    _select(view.meta_tabs.widget(0), 0, 0, 0, 1)
+    _select(second_tab, 0, 0, 0, 1)
+
+    view._copy_selection(second_tab)
+
+    assert clipboard.text() == "k\tv"
+
+
+def test_copy_metadata_with_no_selection_leaves_clipboard_alone(view, clipboard):
+    view.populate_metadata({"ORNL Metadata": {"scan": "1"}})
+    clipboard.setText("untouched")
+
+    view._copy_selection(view.meta_tabs.widget(0))
+
+    assert clipboard.text() == "untouched"
