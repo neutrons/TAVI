@@ -242,3 +242,4 @@ class DataFileView(QWidget):
         header.hide()
 
         table.verticalHeader().hide()
+        self._enable_copy(table)
