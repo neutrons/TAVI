@@ -55,13 +55,13 @@ class DataFileView(QWidget):
         button = self.variable_table.findChild(QAbstractButton)
         if button:
             checkbox = QCheckBox("", button)
-            checkbox.setMinimumSize(button.width() / 2, button.height())
+            checkbox.setMinimumSize(button.width() // 2, button.height())
 
             def flipChecks(checkState: Any) -> None:
                 for row in range(self.variable_table.rowCount()):
                     self.variable_table.item(row, 0).setCheckState(checkState)
 
-            checkbox.checkStateChanged.connect(flipChecks)
+            checkbox.stateChanged.connect(flipChecks)
 
         self.variable_table.itemChanged.connect(self._on_variable_check_changed)
         self.variable_table.verticalHeader().setSectionsMovable(True)
