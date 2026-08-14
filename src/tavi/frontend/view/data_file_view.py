@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from qtpy.QtCore import Qt
+from qtpy.QtCore import Qt, Signal
 from qtpy.QtGui import QGuiApplication, QKeySequence
 from qtpy.QtWidgets import (
     QAbstractButton,
@@ -22,6 +22,8 @@ from qtpy.QtWidgets import (
 
 class DataFileView(QWidget):
     """Data file panel widget."""
+
+    title_changed = Signal(str)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct data file view."""
@@ -127,6 +129,9 @@ class DataFileView(QWidget):
             lines.append("\t".join(cells))
 
         QGuiApplication.clipboard().setText("\n".join(lines))
+    def set_title(self, title: str) -> None:
+        """Emit ``title_changed`` so an owning tab widget can relabel itself."""
+        self.title_changed.emit(title)
 
     def populate_columns(self, data: dict[str, list[float]]) -> None:
         """Repopulate the data table with a newly-focused scan's column values."""

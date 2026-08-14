@@ -497,3 +497,11 @@ def test_copy_metadata_with_no_selection_leaves_clipboard_alone(view, clipboard)
     view._copy_selection(view.meta_tabs.widget(0))
 
     assert clipboard.text() == "untouched"
+# set_title / title_changed
+# ---------------------------------------------------------------------------
+
+
+def test_set_title_emits_title_changed(view, qtbot):
+    with qtbot.waitSignal(view.title_changed, timeout=1000) as blocker:
+        view.set_title("Data File (my_scan)")
+    assert blocker.args == ["Data File (my_scan)"]

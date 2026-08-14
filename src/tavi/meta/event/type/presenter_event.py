@@ -1,5 +1,7 @@
 """Events that Presenters emit."""
 
+from typing import Optional
+
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import UUID, RawScan, Scan
 from tavi.meta.event.event_interface import Event
@@ -41,4 +43,18 @@ class PlotFocusEvent(Event):
     """
 
     plots: list[Plot]
+    scans: dict[UUID, Scan] = {}
+
+
+class ActivePlotChangedEvent(Event):
+    """
+    Event announcing which single plot is currently "active" (selected via the plotter's plot dropdown).
+
+    Published by the plotter presenter both on a fresh ``PlotFocusEvent`` (defaulting to the first
+    plot) and whenever the dropdown selection changes. ``scans`` is the same snapshot carried by the
+    triggering ``PlotFocusEvent``, so consumers (e.g. the data widget) can resolve the active plot's
+    series without reaching into any model's live storage.
+    """
+
+    plot: Optional[Plot] = None
     scans: dict[UUID, Scan] = {}

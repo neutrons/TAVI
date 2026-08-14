@@ -6,9 +6,10 @@ import pytest
 
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.view.data_file_view import DataFileView
+from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, RawScanFocusEvent
 
 
 def make_scan(uuid_val="scan-001", data=None, metadata=None) -> RawScan:
@@ -103,3 +104,104 @@ def test_handle_raw_scan_focus_via_event_broker(presenter):
     EventBroker().publish(RawScanFocusEvent(scans=[scan]))
 
     presenter._view.populate_columns.assert_called_once_with(scan.data.data)
+
+
+# ---------------------------------------------------------------------------
+# tab title
+# ---------------------------------------------------------------------------
+
+
+def test_handle_raw_scan_focus_sets_title_from_friendly_name(presenter):
+    scan = make_scan(uuid_val="scan-001")
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    assert received == ["Data File (test_scan)"]
+
+
+def test_handle_raw_scan_focus_no_scans_resets_title(presenter):
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
+
+    assert received == ["Data File"]
+
+
+# ---------------------------------------------------------------------------
+# handle_active_plot_changed
+# ---------------------------------------------------------------------------
+
+
+def make_plot_event(series_scan_uuid="scan-001", scan=None) -> ActivePlotChangedEvent:
+    if scan is None:
+        scan = make_scan(uuid_val=series_scan_uuid)
+    series = PlotSeries(
+        source_scan_uuid=UUID(value=series_scan_uuid),
+        scan_name="test_plot",
+        normalized_by=None,
+        x_name="qh",
+        y_name="en",
+        error_name="err",
+    )
+    plot = Plot(uuid=UUID(value="plot-001"), series=[series])
+    return ActivePlotChangedEvent(plot=plot, scans={scan.uuid: scan})
+
+
+def test_handle_active_plot_changed_populates_from_first_series_scan(presenter):
+    event = make_plot_event()
+    presenter._view.populate_columns = MagicMock()
+
+    presenter.handle_active_plot_changed(event)
+
+    scan = event.scans[UUID(value="scan-001")]
+    presenter._view.populate_columns.assert_called_once_with(scan.data.data)
+
+
+def test_handle_active_plot_changed_sets_title_from_contributing_scan(presenter):
+    event = make_plot_event()
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_active_plot_changed(event)
+
+    assert received == ["Data File (test_scan)"]
+
+
+def test_handle_active_plot_changed_uses_first_series_when_plot_has_several(presenter):
+    scan1 = make_scan(uuid_val="scan-001")
+    scan2 = make_scan(uuid_val="scan-002")
+    series1 = PlotSeries(
+        source_scan_uuid=UUID(value="scan-001"),
+        scan_name="a", normalized_by=None, x_name="qh", y_name="en", error_name="err",
+    )
+    series2 = PlotSeries(
+        source_scan_uuid=UUID(value="scan-002"),
+        scan_name="b", normalized_by=None, x_name="qh", y_name="en", error_name="err",
+    )
+    plot = Plot(uuid=UUID(value="plot-001"), series=[series1, series2])
+    event = ActivePlotChangedEvent(plot=plot, scans={scan1.uuid: scan1, scan2.uuid: scan2})
+    presenter._view.populate_columns = MagicMock()
+
+    presenter.handle_active_plot_changed(event)
+
+    presenter._view.populate_columns.assert_called_once_with(scan1.data.data)
+
+
+def test_handle_active_plot_changed_no_plot_clears_view(presenter):
+    presenter._view.clear_data = MagicMock()
+
+    presenter.handle_active_plot_changed(ActivePlotChangedEvent(plot=None, scans={}))
+
+    presenter._view.clear_data.assert_called_once()
+
+
+def test_handle_active_plot_changed_via_event_broker(presenter):
+    event = make_plot_event()
+    presenter._view.populate_columns = MagicMock()
+
+    EventBroker().publish(event)
+
+    presenter._view.populate_columns.assert_called_once()

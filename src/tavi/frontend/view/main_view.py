@@ -159,5 +159,6 @@ class TaviView(QMainWindow):
 
         self.data_file_view = data_file_view
         tabs.addTab(self.data_file_view, "Data File")
+        self.data_file_view.title_changed.connect(lambda title: tabs.setTabText(0, title))
 
         return tabs
