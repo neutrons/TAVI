@@ -12,7 +12,7 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
-    FocusEvent,
+    FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
     SavePlotEvent,
@@ -92,14 +92,15 @@ class PlotterPresenter(AbstractPresenter):
         """
         Switch the active plot to whichever entry the "Current Plot" dropdown now points at.
 
-        Re-publishes ``FocusEvent`` for the currently-focused uuids so the model (the sole
-        owner of Plot/Scan state) resolves fresh data and re-emits ``PlotFocusEvent`` — rather
-        than the presenter replaying a Plot object it cached itself.
+        Publishes ``FocusActivePlotEvent`` for just that one uuid so the owning model (the
+        sole owner of Plot/Scan state) resolves it and announces ``ActivePlotChangedEvent`` —
+        the rest of the currently-focused batch is left untouched, so switching which plot is
+        active never re-resolves or re-renders the whole set.
         """
         if not (0 <= index < len(self._focused_plot_uuids)):
             return
         self._active_plot_uuid = self._focused_plot_uuids[index]
-        self._event_broker.publish(FocusEvent(ids=self._focused_plot_uuids))
+        self._event_broker.publish(FocusActivePlotEvent(uuid=self._active_plot_uuid))
 
     def _plot_label(self, plot: Plot) -> str:
         """Build a human-readable dropdown label for a plot from its series' scan names."""

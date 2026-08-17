@@ -10,7 +10,12 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
+    FocusActivePlotEvent,
+    PlotFocusEvent,
+    RawScanFocusEvent,
+)
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
 
@@ -27,6 +32,7 @@ class PlotModel(PlotModelInterface):
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
         """Build one single-series preview plot per focused raw scan, so each run can be focused independently."""
@@ -35,6 +41,19 @@ class PlotModel(PlotModelInterface):
         plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
         self._last_plots = plots
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+
+    def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
+        """
+        Resolve a single unsaved preview plot by uuid and announce it as the active plot.
+
+        Preview plots (built from a raw scan) live only in ``_last_plots`` — they are never
+        written into ``TaviData`` — so a dropdown switch among them can only be resolved
+        here, against this model's own uuids, not by the project model.
+        """
+        plot = next((p for p in self._last_plots if p.uuid == e.uuid), None)
+        if plot is None:
+            return
+        self._event_broker.publish(ActivePlotChangedEvent(plot=plot, scans=scans_for_plots([plot], self._raw_scans)))
 
     def _preview_plot_for_scan(self, scan: RawScan) -> Plot:
         """Build an unsaved single-series preview plot from one raw scan's default axis."""

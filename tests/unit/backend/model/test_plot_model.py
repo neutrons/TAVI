@@ -6,7 +6,7 @@ from tavi.backend.model.plot_model import PlotModel
 from tavi.library.data.plot import PlotFields
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, FocusActivePlotEvent, PlotFocusEvent, RawScanFocusEvent
 
 
 def make_plot_fields(**overrides) -> PlotFields:
@@ -292,6 +292,46 @@ class TestPlotModel(unittest.TestCase):
 
         assert response.code.name == "OK"
         assert len(received) == 0
+
+    def test_registers_active_plot_focus_event_handler(self):
+        assert FocusActivePlotEvent in self.broker.registry
+        assert len(self.broker.registry[FocusActivePlotEvent]) == 1
+
+    def test_active_plot_focus_event_announces_matching_preview_plot(self):
+        """An unsaved preview plot's uuid must resolve here — it is never in TaviData."""
+        scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+        preview_uuid = self.model._last_plots[0].uuid
+
+        received: list[ActivePlotChangedEvent] = []
+        self.broker.register(ActivePlotChangedEvent, received.append)
+        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+
+        assert len(received) == 1
+        assert received[0].plot.uuid == preview_uuid
+
+    def test_active_plot_focus_event_does_not_republish_plot_focus_event(self):
+        """Switching the active plot must not re-resolve or re-render the whole focused batch."""
+        scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+        preview_uuid = self.model._last_plots[0].uuid
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+
+        assert received == []
+
+    def test_active_plot_focus_event_ignores_unrelated_uuid(self):
+        """A uuid this model never generated (e.g. a saved plot's) must be a no-op here."""
+        received: list[ActivePlotChangedEvent] = []
+        self.broker.register(ActivePlotChangedEvent, received.append)
+
+        self.broker.publish(FocusActivePlotEvent(uuid=UUID(value="not-a-preview-plot")))
+
+        assert received == []
 
     def test_update_fields_none_preset_type_clears_normalization(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=("monitor", 1.0))

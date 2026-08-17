@@ -13,7 +13,7 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
-    FocusEvent,
+    FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
     SavePlotEvent,
@@ -350,9 +350,10 @@ def test_handle_plot_clicked_two_clicks_produce_different_uuids(presenter):
 # Current Plot dropdown / ActivePlotChangedEvent
 #
 # The presenter holds only uuids between events (``_focused_plot_uuids``,
-# ``_active_plot_uuid``) — never a cached Plot/Scan object. A dropdown switch re-publishes
-# ``FocusEvent`` so the model (the single source of truth for Plot/Scan data) resolves fresh
-# data and re-emits ``PlotFocusEvent``, rather than the presenter replaying its own copy.
+# ``_active_plot_uuid``) — never a cached Plot/Scan object. A dropdown switch publishes
+# ``FocusActivePlotEvent`` for just the newly-active uuid so the owning model (the single
+# source of truth for Plot/Scan data) resolves it and announces ``ActivePlotChangedEvent`` —
+# the rest of the focused batch is never re-resolved or re-rendered.
 # ---------------------------------------------------------------------------
 
 
@@ -408,14 +409,14 @@ def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
 
 
 def test_handle_plot_focus_preserves_active_selection_when_same_plots_refocused(presenter):
-    """Simulates the model re-resolving the same uuids after a dropdown-triggered FocusEvent."""
+    """Simulates the model re-resolving the same uuids after e.g. a tree-selection FocusEvent replay."""
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
     presenter._active_plot_uuid = plot_b.uuid  # a prior dropdown pick
 
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
-    presenter.handle_plot_focus(event)  # same uuids re-focused, e.g. via FocusEvent replay
+    presenter.handle_plot_focus(event)  # same uuids re-focused
 
     assert received[0].plot.uuid == plot_b.uuid
 
@@ -433,16 +434,16 @@ def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(
     assert received[0].plot.uuid == plot_c.uuid
 
 
-def test_handle_plot_combo_changed_publishes_focus_event_for_focused_uuids(presenter):
+def test_handle_plot_combo_changed_publishes_active_plot_focus_event_for_new_selection(presenter):
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
     received = []
-    EventBroker().register(FocusEvent, received.append)
+    EventBroker().register(FocusActivePlotEvent, received.append)
 
     presenter.handle_plot_combo_changed(1)
 
     assert len(received) == 1
-    assert received[0].ids == [plot_a.uuid, plot_b.uuid]
+    assert received[0].uuid == plot_b.uuid
 
 
 def test_handle_plot_combo_changed_sets_active_plot_uuid(presenter):
@@ -458,20 +459,20 @@ def test_handle_plot_combo_changed_ignores_out_of_range_index(presenter):
     plot = make_plot("plot-a")
     presenter.handle_plot_focus(make_event(plots=[plot]))
     received = []
-    EventBroker().register(FocusEvent, received.append)
+    EventBroker().register(FocusActivePlotEvent, received.append)
 
     presenter.handle_plot_combo_changed(5)
 
     assert received == []
 
 
-def test_selecting_dropdown_entry_via_view_publishes_focus_event(presenter, qtbot):
+def test_selecting_dropdown_entry_via_view_publishes_active_plot_focus_event(presenter, qtbot):
     """The wiring from the view's combo to the presenter, end-to-end."""
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
     received = []
-    EventBroker().register(FocusEvent, received.append)
+    EventBroker().register(FocusActivePlotEvent, received.append)
 
     presenter._view.current_plot_combo.setCurrentIndex(1)
 
-    assert received[0].ids == [plot_a.uuid, plot_b.uuid]
+    assert received[0].uuid == plot_b.uuid

@@ -46,6 +46,18 @@ class PlotFocusEvent(Event):
     scans: dict[UUID, Scan] = {}
 
 
+class FocusActivePlotEvent(Event):
+    """
+    Request to switch which currently-focused plot is "active", by uuid.
+
+    Unlike ``FocusEvent``, this does not ask a model to re-resolve or re-broadcast the
+    whole focused batch (no ``PlotFocusEvent``, no view re-render) — only the single plot
+    named by ``uuid`` is looked up, and the result is announced via ``ActivePlotChangedEvent``.
+    """
+
+    uuid: UUID
+
+
 class ActivePlotChangedEvent(Event):
     """
     Event announcing which single plot is currently "active" (selected via the plotter's plot dropdown).

@@ -15,7 +15,9 @@ from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
     DownstreamReadyEvent,
+    FocusActivePlotEvent,
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -36,6 +38,7 @@ class TaviProjectModel(TaviProjectInterface):
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
+        self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
 
     def get_plots_handle(self) -> dict:
@@ -89,12 +92,22 @@ class TaviProjectModel(TaviProjectInterface):
         friendly_name = f"{run_names}_Plot"
         self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
+    def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
+        """Resolve a single saved plot by uuid and announce it as the active plot, without touching the rest."""
+        inst = self.tavi_data.fetch_by_uuid(e.uuid)
+        if not isinstance(inst, Plot):
+            return
+        scans = scans_for_plots([inst], self.tavi_data.raw_scans)
+        self._event_broker.publish(ActivePlotChangedEvent(plot=inst, scans=scans))
+
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""
         ids = e.ids
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []
         for uuid in ids:
+            # An unmatched uuid belongs to another owner (e.g. an unsaved preview plot the
+            # plot model tracks itself) — not a TaviData-persisted item, so just skip it here.
             inst = self.tavi_data.fetch_by_uuid(uuid)
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)

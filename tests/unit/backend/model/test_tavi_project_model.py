@@ -11,7 +11,9 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
     DownstreamReadyEvent,
+    FocusActivePlotEvent,
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -287,6 +289,19 @@ def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     assert received[0].plots[0].uuid == plot.uuid
 
 
+def test_handle_focus_event_unmatched_uuid_is_noop_not_a_crash(model):
+    """An unsaved preview plot's uuid belongs to the plot model, never to TaviData — must not raise."""
+    received_raw = []
+    received_plot = []
+    EventBroker().register(RawScanFocusEvent, received_raw.append)
+    EventBroker().register(PlotFocusEvent, received_plot.append)
+
+    EventBroker().publish(FocusEvent(ids=[UUID(value="not-persisted")]))
+
+    assert received_raw == []
+    assert received_plot == []
+
+
 def test_handle_focus_event_plot_publishes_scans_referenced_by_its_series(model):
     plot = make_plot()
     scan = make_raw_scan()
@@ -345,6 +360,67 @@ def test_handle_focus_event_empty_ids_publishes_nothing(model):
 
     assert len(raw_received) == 0
     assert len(plot_received) == 0
+
+
+# ---------------------------------------------------------------------------
+# _handle_active_plot_focus_event
+# ---------------------------------------------------------------------------
+
+
+def test_init_registers_active_plot_focus_event_handler(model):
+    broker = EventBroker()
+    assert model._handle_active_plot_focus_event in broker.registry[FocusActivePlotEvent]
+
+
+def test_handle_active_plot_focus_event_announces_matching_saved_plot(model):
+    plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+    EventBroker().publish(FocusActivePlotEvent(uuid=plot.uuid))
+
+    assert len(received) == 1
+    assert received[0].plot.uuid == plot.uuid
+
+
+def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(model):
+    """Switching the active plot must not re-resolve or re-render the whole focused batch."""
+    plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(PlotFocusEvent, received.append)
+    EventBroker().publish(FocusActivePlotEvent(uuid=plot.uuid))
+
+    assert received == []
+
+
+def test_handle_active_plot_focus_event_ignores_unmatched_uuid(model):
+    """A uuid this model doesn't own (e.g. an unsaved preview plot's) must be a no-op here."""
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+
+    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="not-persisted")))
+
+    assert received == []
+
+
+def test_handle_active_plot_focus_event_ignores_raw_scan_uuid(model):
+    """A raw-scan uuid resolves to a RawScan, not a Plot — must not be announced as an active plot."""
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+
+    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
+
+    assert received == []
 
 
 # ---------------------------------------------------------------------------
