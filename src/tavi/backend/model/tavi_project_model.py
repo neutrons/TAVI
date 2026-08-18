@@ -106,9 +106,12 @@ class TaviProjectModel(TaviProjectInterface):
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []
         for uuid in ids:
-            # An unmatched uuid belongs to another owner (e.g. an unsaved preview plot the
-            # plot model tracks itself) — not a TaviData-persisted item, so just skip it here.
+            # FocusEvent ids come from the project tree, which only ever lists uuids
+            # TaviData actually owns — an unresolvable one means tree/TaviData are out of
+            # sync, a bug worth surfacing loudly rather than silently dropping the item.
             inst = self.tavi_data.fetch_by_uuid(uuid)
+            if inst is None:
+                raise KeyError(f"FocusEvent id {uuid} does not resolve to any RawScan or Plot in TaviData.")
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)
             if isinstance(inst, Plot):

@@ -268,11 +268,23 @@ Preview plots are not TaviData items
 A preview ``Plot`` built from a raw scan is deliberately never written into
 ``TaviData.plots`` — only clicking **Add Plot** persists it (see below), and
 until then it exists only in ``PlotModel._last_plots``. ``TaviData.fetch_by_uuid``
-reflects this: it returns ``None`` for a uuid it doesn't recognize instead of
-raising, and ``TaviProjectModel``'s ``FocusEvent``/``FocusActivePlotEvent``
-handlers treat that ``None`` as "not mine" and skip it rather than crash.
-This is what lets a preview plot's uuid safely reach the broker (e.g. inside
-``_focused_plot_uuids``) without ever being mistaken for a saved one.
+reflects this: it returns ``None`` for a uuid it doesn't recognize rather
+than raising, so callers can decide for themselves what a miss means.
+
+That decision differs by event, because the two events have different
+provenance guarantees:
+
+- ``FocusEvent`` ids come from the project tree, which only ever lists
+  uuids ``TaviData`` actually owns. ``TaviProjectModel._handle_focus_event``
+  treats a ``None`` here as a bug — tree and ``TaviData`` have drifted out of
+  sync — and raises ``KeyError`` rather than silently dropping the item. This
+  handler must not anticipate being handed uuids it doesn't own; doing so
+  would hide a real desync as a quiet no-op.
+- ``FocusActivePlotEvent`` is, by design, broadcast to **two** owners at
+  once (see above) — a ``None``/non-``Plot`` result in
+  ``TaviProjectModel._handle_active_plot_focus_event`` just means "this uuid
+  belongs to ``PlotModel`` instead," which is the expected outcome for half
+  of all switches, not an error condition.
 
 Events carry their own data; presenters/views hold none
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

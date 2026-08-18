@@ -289,17 +289,12 @@ def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     assert received[0].plots[0].uuid == plot.uuid
 
 
-def test_handle_focus_event_unmatched_uuid_is_noop_not_a_crash(model):
-    """An unsaved preview plot's uuid belongs to the plot model, never to TaviData — must not raise."""
-    received_raw = []
-    received_plot = []
-    EventBroker().register(RawScanFocusEvent, received_raw.append)
-    EventBroker().register(PlotFocusEvent, received_plot.append)
-
-    EventBroker().publish(FocusEvent(ids=[UUID(value="not-persisted")]))
-
-    assert received_raw == []
-    assert received_plot == []
+def test_handle_focus_event_unmatched_uuid_raises(model):
+    """FocusEvent ids come from the tree, which only ever lists TaviData-owned uuids — an
+    unresolvable one means tree/TaviData are out of sync, and must surface loudly, not be
+    silently dropped."""
+    with pytest.raises(KeyError):
+        EventBroker().publish(FocusEvent(ids=[UUID(value="not-persisted")]))
 
 
 def test_handle_focus_event_plot_publishes_scans_referenced_by_its_series(model):
