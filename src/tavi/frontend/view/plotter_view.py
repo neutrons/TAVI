@@ -145,10 +145,10 @@ class Plot1DView(QWidget):
         fig = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(fig)
         self.canvas.axes = fig.add_subplot(111)
-        toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = NavigationToolbar(self.canvas, self)
 
         layout.addWidget(self.canvas)
-        layout.addWidget(toolbar)
+        layout.addWidget(self.toolbar)
 
     def append_plot(
         self,
@@ -173,6 +173,10 @@ class Plot1DView(QWidget):
     def clear_plot(self) -> None:
         """Clear all data from the plot."""
         self.canvas.axes.cla()
+        # Drop the toolbar's view history along with the data. Matplotlib captures the
+        # "Home" view lazily on the first pan/zoom, so without this the next plot's Home
+        # button would restore the *previous* plot's axis limits.
+        self.toolbar.update()
         self.canvas.draw()
 
     def _render_plots(self, resolved: list) -> None:

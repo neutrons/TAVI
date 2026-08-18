@@ -155,6 +155,39 @@ def test_clear_plot_on_empty_does_not_raise(view):
     view.clear_plot()
 
 
+def test_clear_plot_resets_toolbar_view_history(view):
+    """Home must return to the new plot's limits, not a previous plot's zoomed view."""
+    view.append_plot(
+        np.array([1.0, 2.0]),
+        np.array([3.0, 4.0]),
+        np.array([0.0, 0.0]),
+        "scan1", "monitor", "qh", "en", "err",
+    )
+    # Stand in for a user zoom: matplotlib records the home view on the nav stack.
+    view.toolbar.push_current()
+    assert view.toolbar._nav_stack() is not None
+
+    view.clear_plot()
+
+    assert view.toolbar._nav_stack() is None
+
+
+def test_render_plots_home_view_follows_the_new_plot(view):
+    view._render_plots(
+        [(np.array([0.0, 10.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())]
+    )
+    view.canvas.axes.set_xlim(4.0, 5.0)  # user zooms in
+    view.toolbar.push_current()
+
+    view._render_plots(
+        [(np.array([100.0, 200.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())]
+    )
+    new_xlim = view.canvas.axes.get_xlim()
+    view.toolbar.home()
+
+    assert view.canvas.axes.get_xlim() == new_xlim
+
+
 # ---------------------------------------------------------------------------
 # on_radio_toggled
 # ---------------------------------------------------------------------------
