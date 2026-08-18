@@ -143,3 +143,25 @@ def get_side_from_triangle(a: float, b: float, angle: float) -> float:
     if (np.abs(a) < 1e-6) or (np.abs(b) < 1e-6):
         raise ValueError("Triangle cannot be closed.")
     return np.sqrt(a**2 + b**2 - 2 * a * b * np.cos(angle))
+
+
+def translation(number: float, character: str) -> str:
+    """Used in projection. Borrowed from SHIVER histogram_parameters.py. Thanks to Andrei."""
+    if number == 0:
+        return "0"
+    if number == 1:
+        return character
+    if number == -1:
+        return "-" + character
+    return str(number) + character
+
+
+def update_dimension_names(resolution_frame: tuple) -> list:
+    """Update the combo box dimension selection items based on the projection values.Borrowed from SHIVER histogram_parameters.py. Thanks to Andrei."""
+    chars = ["H", "K", "L"]
+    combo_dimensions = []
+    for i in range(3):
+        index_max = np.argmax(np.abs(resolution_frame[i]))
+        combo_dimensions.append("[" + ",".join([translation(x, chars[index_max]) for x in resolution_frame[i]]) + "]")
+    combo_dimensions.append("DeltaE")
+    return combo_dimensions

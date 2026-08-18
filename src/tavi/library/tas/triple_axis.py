@@ -7,6 +7,7 @@ import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
+from tavi.library.experiment.utilities import update_dimension_names
 from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
@@ -338,5 +339,10 @@ class TAS:
             ellipses.append(
                 (idx, peak, ellipse_co, axes_angle, coh_para, coh_perp, ellipse_incoh, incoh_para, incoh_perp)
             )
+            combo_dimensions = update_dimension_names(resolution_frame=resolution_frame)
+            if not xlabel:
+                xlabel = combo_dimensions[ellipse_axes[0]]
+            if not ylabel:
+                ylabel = combo_dimensions[ellipse_axes[1]]
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
