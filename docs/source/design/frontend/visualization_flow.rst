@@ -38,8 +38,9 @@ Six components take part, each with a single responsibility:
 - **Project model** — resolves each identifier to a typed domain object and
   re-publishes a type-specific event
 - **Plot model** — builds one unsaved preview ``Plot`` (composition of
-  ``PlotSeries``) per focused raw scan (RawScan path only), and attaches the
-  scans that those ``Plot``\(s)' series reference to the outgoing event
+  ``PlotSeries``, keyed by that scan's own uuid) per focused raw scan
+  (RawScan path only), and attaches the scans that those ``Plot``\(s)'
+  series reference to the outgoing event
 - **Plotter presenter + view** — resolves each series against the event's own
   scan snapshot, clears the canvas and renders each resolved series, and
   tracks which of the focused plots is "active"
@@ -93,7 +94,7 @@ RawScan Selection — Full Chain
         end
         Plot1DView ->> Plot1DView: redraw canvas
         PlotterPresenter ->> Plot1DView: set_plot_options(labels, default_index)
-        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(plot, scans)
+        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(scan)
         EventBroker ->> DataFilePresenter: handle active plot changed
 
 
@@ -136,7 +137,7 @@ before publishing, for the same reason ``PlotModel`` does on the other path.
         end
         Plot1DView ->> Plot1DView: redraw canvas
         PlotterPresenter ->> Plot1DView: set_plot_options(labels, default_index)
-        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(plot, scans)
+        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(scan)
 
 
 Switching the Active Plot
@@ -149,6 +150,10 @@ replay either chain: nothing needs re-resolving, since every plot in the
 dropdown was already resolved when the batch was focused. Only the one
 newly-active plot needs to be looked up and announced.
 
+The presenter publishes a single ``FocusActivePlotEvent(uuid)`` — it does not
+need to know (and ``PlotFocusEvent`` carries no flag saying) which model
+produced the currently-focused batch:
+
 .. mermaid::
 
     sequenceDiagram
@@ -156,7 +161,8 @@ newly-active plot needs to be looked up and announced.
         participant Plot1DView
         participant PlotterPresenter
         participant EventBroker
-        participant Owner as PlotModel / TaviProjectModel
+        participant PlotModel
+        participant TaviProjectModel
         participant DataFilePresenter
 
         User ->> Plot1DView: picks a different "Current Plot" entry
@@ -164,22 +170,25 @@ newly-active plot needs to be looked up and announced.
         PlotterPresenter ->> PlotterPresenter: _active_plot_uuid = _focused_plot_uuids[index]
         PlotterPresenter ->> EventBroker: publish FocusActivePlotEvent(uuid)
 
-        EventBroker ->> Owner: handle active-plot focus event
-        Owner ->> Owner: look up the single plot by uuid
-        Owner ->> EventBroker: publish ActivePlotChangedEvent(plot, scans)
+        EventBroker ->> PlotModel: handle active-plot focus event
+        EventBroker ->> TaviProjectModel: handle active-plot focus event
+        Note over PlotModel,TaviProjectModel: whichever one owns uuid resolves it;<br/>the other no-ops
+        Note over PlotModel,TaviProjectModel: first_contributing_scan(plot, scans) — plot.series[0]'s source scan
+        Note over PlotModel,TaviProjectModel: publish ActivePlotChangedEvent(scan)
 
         EventBroker ->> DataFilePresenter: handle active plot changed
-        DataFilePresenter ->> DataFilePresenter: populate from plot.series[0]'s source scan
+        DataFilePresenter ->> DataFilePresenter: populate from scan
 
-Note that ``Owner`` is never both models at once: a focused batch is either
-every unsaved preview plot ``PlotModel`` built from a ``RawScanFocusEvent``
-(tracked in ``PlotModel._last_plots``, never written to ``TaviData``), or
-every saved plot ``TaviProjectModel`` resolved from a ``FocusEvent``
-(tracked in ``TaviData.plots``) — never a mix. Each model only registers a
-``FocusActivePlotEvent`` handler for the uuids it actually owns, and silently
-ignores a uuid it doesn't recognize (see
-`Preview plots are not TaviData items`_ below), so exactly one of them
-answers per switch.
+``FocusActivePlotEvent`` is registered by *both* ``TaviProjectModel`` and
+``PlotModel`` — each checks membership first (``e.uuid in self.tavi_data.plots``,
+or a linear scan over ``self._last_plots``) and returns without publishing if
+the uuid isn't one of its own, rather than indexing straight in and letting a
+miss raise. This works because saved-plot uuids (freshly minted via
+``uuid4()`` on save) and preview-plot uuids (borrowed from the ``RawScan``
+they preview — see `Preview plots are keyed by their source scan's uuid`_
+below) never collide: exactly one model ever recognizes a given uuid as its
+own, so the presenter never has to guess which model to ask, and neither
+model needs to reason about the other's storage to decline gracefully.
 
 No ``PlotFocusEvent`` is published on this path — the canvas is left alone.
 Only ``ActivePlotChangedEvent`` fires, which is why switching the active plot
@@ -262,30 +271,29 @@ multi-scan focus produces one single-series preview ``Plot`` per scan (not
 one multi-series ``Plot``), so each run stays independently selectable in
 the "Current Plot" dropdown and independently resolvable by uuid.
 
-Preview plots are not TaviData items
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Preview plots are keyed by their source scan's uuid
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A preview ``Plot`` built from a raw scan is deliberately never written into
 ``TaviData.plots`` — only clicking **Add Plot** persists it (see below), and
-until then it exists only in ``PlotModel._last_plots``. ``TaviData.fetch_by_uuid``
-stays a single, standard failure mode: it raises ``KeyError`` for any uuid it
-doesn't recognize, rather than every caller reimplementing its own
-"does this exist" check. What differs is whether a given caller expects that
-failure to be possible, because the two events that reach ``TaviProjectModel``
-have different provenance guarantees:
+until then it exists only in ``PlotModel._last_plots``. Rather than minting
+a fresh, TaviData-unaware uuid for it (``PlotSeries`` and ``UUIDFactory``
+would happily do this), ``_preview_plot_for_scan`` gives the preview
+``Plot`` the *same* uuid as the one ``RawScan`` it previews — a preview is a
+1:1, single-series wrapper around one run, so this loses no information and
+makes the uuid trivially real: it is always the uuid of something already
+sitting in ``TaviData.raw_scans``.
 
-- ``FocusEvent`` ids come from the project tree, which only ever lists
-  uuids ``TaviData`` actually owns. ``TaviProjectModel._handle_focus_event``
-  does not catch the ``KeyError`` — a miss here is a bug (tree and
-  ``TaviData`` have drifted out of sync), and letting it propagate surfaces
-  that loudly instead of silently dropping the item. This handler must not
-  anticipate being handed uuids it doesn't own.
-- ``FocusActivePlotEvent`` is, by design, broadcast to **two** owners at
-  once (see above), so ``TaviProjectModel._handle_active_plot_focus_event``
-  *does* catch the ``KeyError`` — it just means "this uuid belongs to
-  ``PlotModel`` instead," the expected outcome for half of all switches, not
-  an error condition. Catching it here is a deliberate, narrow exception to
-  the rule above, not a general policy of swallowing lookup failures.
+This is what lets ``FocusActivePlotEvent`` (see `Switching the Active Plot`_)
+be handled by both models with neither reasoning about the other: since a
+preview plot's uuid is a real ``TaviData.raw_scans`` key,
+``TaviProjectModel._handle_active_plot_focus_event`` cannot use
+``fetch_by_uuid`` here — it would resolve to the ``RawScan``, the wrong type,
+instead of telling us the uuid isn't a plot at all. It checks
+``e.uuid in self.tavi_data.plots`` directly instead, and no-ops on a miss.
+``PlotModel`` mirrors this by scanning its own ``_last_plots`` for a matching
+uuid. Neither model imports, mentions, or reasons about the other's storage;
+each just knows its own identity space.
 
 Events carry their own data; presenters/views hold none
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -363,8 +371,25 @@ File tab in sync with whichever plot the user has made active via the
 dropdown, rather than freezing on whatever scan was focused first.
 ``DataFileView.set_title`` emits a ``title_changed`` signal that
 ``TaviView`` connects to retitle the tab itself (e.g. ``"Data File
-(scan_name)"``); an empty/``None`` active plot resets the title to plain
+(scan_name)"``); a ``None`` scan (nothing active) resets the title to plain
 ``"Data File"``. See :doc:`data_file_view` for the presenter/view details.
+
+``ActivePlotChangedEvent`` carries a scan, not a plot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The data widget only ever displays data that lives on a ``Scan`` — it has no
+use for a ``Plot`` object itself. So rather than carry the active ``Plot``
+plus a ``scans`` snapshot for ``DataFilePresenter`` to resolve against (which
+also meant handling the case where that ``Plot`` is an unsaved preview with
+nowhere persistent to live), every publisher of ``ActivePlotChangedEvent``
+resolves ``first_contributing_scan(plot, scans)`` (``plot_resolver.py``) —
+the scan backing the plot's first series — itself, and the event carries
+that ``Scan`` directly (``scan: Optional[Scan]``). A ``Plot`` always has at
+least one series pointing at a real scan, whether the plot is a saved
+``TaviData`` entry or an unsaved preview, so this always resolves; ``None``
+only ever means no plot is currently active. ``DataFilePresenter`` is left
+with a single branch: ``None`` clears the view, otherwise populate from the
+scan.
 
 Mixed selection limitation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

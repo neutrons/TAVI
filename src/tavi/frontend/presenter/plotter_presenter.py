@@ -4,7 +4,7 @@ from typing import Optional
 from uuid import uuid4
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import resolve_series
+from tavi.backend.model.plot_resolver import first_contributing_scan, resolve_series
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.plot import Plot
@@ -28,9 +28,9 @@ class PlotterPresenter(AbstractPresenter):
         self._model = model
         self._current_plot: Optional[Plot] = None
         # Only UUIDs are held between events — the model's tavi_data is the single source of
-        # truth for Plot/Scan objects. A dropdown switch re-asks the owning model via
-        # FocusActivePlotEvent rather than replaying a cached Plot, so this never drifts from
-        # the model.
+        # truth for Plot/Scan objects. A dropdown switch re-asks the owning model (via
+        # FocusActivePlotEvent, handled by both models — whichever owns the uuid acts) rather
+        # than replaying a cached Plot, so this never drifts from the model.
         self._focused_plot_uuids: list[UUID] = []
         self._active_plot_uuid: Optional[UUID] = None
 
@@ -87,16 +87,17 @@ class PlotterPresenter(AbstractPresenter):
         self._view.set_plot_options([self._plot_label(plot) for plot in e.plots], default_index=default_index)
 
         active_plot = next((plot for plot in e.plots if plot.uuid == self._active_plot_uuid), None)
-        self._event_broker.publish(ActivePlotChangedEvent(plot=active_plot, scans=e.scans))
+        scan = first_contributing_scan(active_plot, e.scans) if active_plot is not None else None
+        self._event_broker.publish(ActivePlotChangedEvent(scan=scan))
 
     def handle_plot_combo_changed(self, index: int) -> None:
         """
         Switch the active plot to whichever entry the "Current Plot" dropdown now points at.
 
-        Publishes ``FocusActivePlotEvent`` for just that one uuid so the owning model (the
-        sole owner of Plot/Scan state) resolves it and announces ``ActivePlotChangedEvent`` —
-        the rest of the currently-focused batch is left untouched, so switching which plot is
-        active never re-resolves or re-renders the whole set.
+        Publishes a single-uuid ``FocusActivePlotEvent`` — whichever model actually owns this
+        uuid (saved vs. unsaved preview) resolves it and announces ``ActivePlotChangedEvent``;
+        the presenter doesn't need to know which. The rest of the batch is left untouched, so
+        switching which plot is active never re-resolves or re-renders the whole set.
         """
         if not (0 <= index < len(self._focused_plot_uuids)):
             return

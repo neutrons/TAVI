@@ -367,7 +367,7 @@ def test_init_registers_active_plot_focus_event_handler(model):
     assert model._handle_active_plot_focus_event in broker.registry[FocusActivePlotEvent]
 
 
-def test_handle_active_plot_focus_event_announces_matching_saved_plot(model):
+def test_handle_active_plot_focus_event_announces_matching_saved_plots_scan(model):
     plot = make_plot()
     scan = make_raw_scan()
     model.tavi_data.raw_scans[scan.uuid] = scan
@@ -378,7 +378,7 @@ def test_handle_active_plot_focus_event_announces_matching_saved_plot(model):
     EventBroker().publish(FocusActivePlotEvent(uuid=plot.uuid))
 
     assert len(received) == 1
-    assert received[0].plot.uuid == plot.uuid
+    assert received[0].scan.uuid == scan.uuid
 
 
 def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(model):
@@ -395,25 +395,13 @@ def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(mode
     assert received == []
 
 
-def test_handle_active_plot_focus_event_ignores_unmatched_uuid(model):
-    """A uuid this model doesn't own (e.g. an unsaved preview plot's) must be a no-op here."""
+def test_handle_active_plot_focus_event_is_a_noop_for_a_uuid_that_is_not_a_saved_plot(model):
+    """A uuid belonging to a preview plot (PlotModel's to handle) or an unknown uuid must not
+    raise here — saved and preview plot uuids never collide, so a miss just means it isn't ours."""
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
 
-    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="not-persisted")))
-
-    assert received == []
-
-
-def test_handle_active_plot_focus_event_ignores_raw_scan_uuid(model):
-    """A raw-scan uuid resolves to a RawScan, not a Plot — must not be announced as an active plot."""
-    scan = make_raw_scan()
-    model.tavi_data.raw_scans[scan.uuid] = scan
-
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
+    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="not-a-saved-plot")))
 
     assert received == []
 

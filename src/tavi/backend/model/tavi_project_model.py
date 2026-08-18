@@ -5,7 +5,7 @@ from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-from tavi.backend.model.plot_resolver import scans_for_plots
+from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
@@ -93,17 +93,19 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
-        """Resolve a single saved plot by uuid and announce it as the active plot, without touching the rest."""
-        try:
-            inst = self.tavi_data.fetch_by_uuid(e.uuid)
-        except KeyError:
-            # FocusActivePlotEvent is broadcast to both this model and PlotModel — a miss
-            # here just means the uuid belongs to an unsaved preview plot instead.
+        """
+        Resolve a single saved plot by uuid and announce its first contributing scan, without touching the rest.
+
+        ``uuid`` may belong to an unsaved preview plot instead (``PlotModel``'s to handle) — a
+        plain ``in`` check, not ``fetch_by_uuid``, since a preview plot's uuid is borrowed from
+        its source ``RawScan`` and *is* present in ``tavi_data.raw_scans``; ``fetch_by_uuid``
+        would resolve it to the wrong type instead of telling us it isn't ours.
+        """
+        if e.uuid not in self.tavi_data.plots:
             return
-        if not isinstance(inst, Plot):
-            return
-        scans = scans_for_plots([inst], self.tavi_data.raw_scans)
-        self._event_broker.publish(ActivePlotChangedEvent(plot=inst, scans=scans))
+        plot = self.tavi_data.plots[e.uuid]
+        scan = first_contributing_scan(plot, self.tavi_data.raw_scans)
+        self._event_broker.publish(ActivePlotChangedEvent(scan=scan))
 
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""

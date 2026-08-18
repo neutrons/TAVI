@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import scans_for_plots
+from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
@@ -44,16 +44,16 @@ class PlotModel(PlotModelInterface):
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """
-        Resolve a single unsaved preview plot by uuid and announce it as the active plot.
+        Resolve a single currently-focused preview plot by uuid and announce its first contributing scan.
 
-        Preview plots (built from a raw scan) live only in ``_last_plots`` — they are never
-        written into ``TaviData`` — so a dropdown switch among them can only be resolved
-        here, against this model's own uuids, not by the project model.
+        ``uuid`` may belong to a saved plot instead (``TaviProjectModel``'s to handle) — preview
+        and saved plot uuids never collide (see ``FocusActivePlotEvent``), so a miss here just
+        means this uuid isn't one of ours, not a bug.
         """
         plot = next((p for p in self._last_plots if p.uuid == e.uuid), None)
         if plot is None:
             return
-        self._event_broker.publish(ActivePlotChangedEvent(plot=plot, scans=scans_for_plots([plot], self._raw_scans)))
+        self._event_broker.publish(ActivePlotChangedEvent(scan=first_contributing_scan(plot, self._raw_scans)))
 
     def _preview_plot_for_scan(self, scan: RawScan) -> Plot:
         """Build an unsaved single-series preview plot from one raw scan's default axis."""

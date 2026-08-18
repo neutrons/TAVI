@@ -349,11 +349,10 @@ def test_handle_plot_clicked_two_clicks_produce_different_uuids(presenter):
 # ---------------------------------------------------------------------------
 # Current Plot dropdown / ActivePlotChangedEvent
 #
-# The presenter holds only uuids between events (``_focused_plot_uuids``,
-# ``_active_plot_uuid``) — never a cached Plot/Scan object. A dropdown switch publishes
-# ``FocusActivePlotEvent`` for just the newly-active uuid so the owning model (the single
-# source of truth for Plot/Scan data) resolves it and announces ``ActivePlotChangedEvent`` —
-# the rest of the focused batch is never re-resolved or re-rendered.
+# The presenter holds only uuids between events — never a cached Plot/Scan object. A dropdown
+# switch publishes a single-uuid ``FocusActivePlotEvent``; whichever model actually owns that
+# uuid (saved vs. unsaved preview) resolves it and announces ``ActivePlotChangedEvent`` — the
+# rest of the focused batch is never re-resolved or re-rendered.
 # ---------------------------------------------------------------------------
 
 
@@ -377,14 +376,15 @@ def test_handle_plot_focus_populates_plot_dropdown(presenter):
 
 
 def test_handle_plot_focus_publishes_active_plot_changed_for_first_plot(presenter):
-    plot = make_plot("plot-xyz")
+    scan = make_scan("scan-xyz")
+    plot = make_plot("plot-xyz", series=[make_series("scan-xyz")])
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
 
-    presenter.handle_plot_focus(make_event(plots=[plot]))
+    presenter.handle_plot_focus(make_event(plots=[plot], scans={scan.uuid: scan}))
 
     assert len(received) == 1
-    assert received[0].plot.uuid == plot.uuid
+    assert received[0].scan.uuid == scan.uuid
 
 
 def test_handle_plot_focus_empty_plots_publishes_active_plot_changed_with_no_plot(presenter):
@@ -394,7 +394,7 @@ def test_handle_plot_focus_empty_plots_publishes_active_plot_changed_with_no_plo
     presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
 
     assert len(received) == 1
-    assert received[0].plot is None
+    assert received[0].scan is None
 
 
 def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
@@ -418,7 +418,7 @@ def test_handle_plot_focus_preserves_active_selection_when_same_plots_refocused(
     EventBroker().register(ActivePlotChangedEvent, received.append)
     presenter.handle_plot_focus(event)  # same uuids re-focused
 
-    assert received[0].plot.uuid == plot_b.uuid
+    assert received[0].scan.uuid == plot_b.series[0].source_scan_uuid
 
 
 def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(presenter):
@@ -426,15 +426,16 @@ def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(
     presenter.handle_plot_focus(event_ab)
     presenter._active_plot_uuid = None  # simulate previous selection no longer present below
 
-    plot_c = make_plot("plot-c")
+    scan_c = make_scan("scan-c")
+    plot_c = make_plot("plot-c", series=[make_series("scan-c")])
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
-    presenter.handle_plot_focus(make_event(plots=[plot_c]))
+    presenter.handle_plot_focus(make_event(plots=[plot_c], scans={scan_c.uuid: scan_c}))
 
-    assert received[0].plot.uuid == plot_c.uuid
+    assert received[0].scan.uuid == scan_c.uuid
 
 
-def test_handle_plot_combo_changed_publishes_active_plot_focus_event_for_new_selection(presenter):
+def test_handle_plot_combo_changed_publishes_active_plot_focus_event(presenter):
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
     received = []

@@ -6,7 +6,6 @@ import pytest
 
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.view.data_file_view import DataFileView
-from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, RawScanFocusEvent
@@ -136,18 +135,16 @@ def test_handle_raw_scan_focus_no_scans_resets_title(presenter):
 
 
 def make_plot_event(series_scan_uuid="scan-001", scan=None) -> ActivePlotChangedEvent:
+    """
+    An ``ActivePlotChangedEvent`` for the active plot's first contributing scan.
+
+    Named ``make_plot_event`` (not ``make_scan_event``) to keep call sites at their prior test
+    names/intent — the event is still conceptually "the active plot changed", it just carries
+    the plot's resolved scan directly rather than a Plot object and a snapshot to resolve it against.
+    """
     if scan is None:
         scan = make_scan(uuid_val=series_scan_uuid)
-    series = PlotSeries(
-        source_scan_uuid=UUID(value=series_scan_uuid),
-        scan_name="test_plot",
-        normalized_by=None,
-        x_name="qh",
-        y_name="en",
-        error_name="err",
-    )
-    plot = Plot(uuid=UUID(value="plot-001"), series=[series])
-    return ActivePlotChangedEvent(plot=plot, scans={scan.uuid: scan})
+    return ActivePlotChangedEvent(scan=scan)
 
 
 def test_handle_active_plot_changed_populates_from_first_series_scan(presenter):
@@ -156,8 +153,7 @@ def test_handle_active_plot_changed_populates_from_first_series_scan(presenter):
 
     presenter.handle_active_plot_changed(event)
 
-    scan = event.scans[UUID(value="scan-001")]
-    presenter._view.populate_columns.assert_called_once_with(scan.data.data)
+    presenter._view.populate_columns.assert_called_once_with(event.scan.data.data)
 
 
 def test_handle_active_plot_changed_sets_title_from_contributing_scan(presenter):
@@ -170,30 +166,10 @@ def test_handle_active_plot_changed_sets_title_from_contributing_scan(presenter)
     assert received == ["Data File (test_scan)"]
 
 
-def test_handle_active_plot_changed_uses_first_series_when_plot_has_several(presenter):
-    scan1 = make_scan(uuid_val="scan-001")
-    scan2 = make_scan(uuid_val="scan-002")
-    series1 = PlotSeries(
-        source_scan_uuid=UUID(value="scan-001"),
-        scan_name="a", normalized_by=None, x_name="qh", y_name="en", error_name="err",
-    )
-    series2 = PlotSeries(
-        source_scan_uuid=UUID(value="scan-002"),
-        scan_name="b", normalized_by=None, x_name="qh", y_name="en", error_name="err",
-    )
-    plot = Plot(uuid=UUID(value="plot-001"), series=[series1, series2])
-    event = ActivePlotChangedEvent(plot=plot, scans={scan1.uuid: scan1, scan2.uuid: scan2})
-    presenter._view.populate_columns = MagicMock()
-
-    presenter.handle_active_plot_changed(event)
-
-    presenter._view.populate_columns.assert_called_once_with(scan1.data.data)
-
-
 def test_handle_active_plot_changed_no_plot_clears_view(presenter):
     presenter._view.clear_data = MagicMock()
 
-    presenter.handle_active_plot_changed(ActivePlotChangedEvent(plot=None, scans={}))
+    presenter.handle_active_plot_changed(ActivePlotChangedEvent(scan=None))
 
     presenter._view.clear_data.assert_called_once()
 

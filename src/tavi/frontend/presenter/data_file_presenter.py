@@ -32,16 +32,11 @@ class DataFilePresenter(AbstractPresenter):
 
     def handle_active_plot_changed(self, e: ActivePlotChangedEvent) -> None:
         """Repopulate the data widget from the active plot's first contributing scan."""
-        if e.plot is None or not e.plot.series:
+        if e.scan is None:
             self._view.clear_data()
             self._view.set_title("Data File")
             return
-        scan = e.scans.get(e.plot.series[0].source_scan_uuid)
-        if scan is None:
-            self._view.clear_data()
-            self._view.set_title("Data File")
-            return
-        self._populate_from_scan(scan)
+        self._populate_from_scan(e.scan)
 
     def _populate_from_scan(self, scan: Scan) -> None:
         """Repopulate every data widget section from a single scan, and retitle its tab."""

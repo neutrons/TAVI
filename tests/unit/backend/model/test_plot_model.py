@@ -6,7 +6,12 @@ from tavi.backend.model.plot_model import PlotModel
 from tavi.library.data.plot import PlotFields
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, FocusActivePlotEvent, PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
+    FocusActivePlotEvent,
+    PlotFocusEvent,
+    RawScanFocusEvent,
+)
 
 
 def make_plot_fields(**overrides) -> PlotFields:
@@ -297,7 +302,7 @@ class TestPlotModel(unittest.TestCase):
         assert FocusActivePlotEvent in self.broker.registry
         assert len(self.broker.registry[FocusActivePlotEvent]) == 1
 
-    def test_active_plot_focus_event_announces_matching_preview_plot(self):
+    def test_active_plot_focus_event_announces_matching_preview_plots_scan(self):
         """An unsaved preview plot's uuid must resolve here — it is never in TaviData."""
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
@@ -309,7 +314,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
 
         assert len(received) == 1
-        assert received[0].plot.uuid == preview_uuid
+        assert received[0].scan.uuid == scan.uuid
 
     def test_active_plot_focus_event_does_not_republish_plot_focus_event(self):
         """Switching the active plot must not re-resolve or re-render the whole focused batch."""
@@ -324,8 +329,9 @@ class TestPlotModel(unittest.TestCase):
 
         assert received == []
 
-    def test_active_plot_focus_event_ignores_unrelated_uuid(self):
-        """A uuid this model never generated (e.g. a saved plot's) must be a no-op here."""
+    def test_active_plot_focus_event_is_a_noop_for_a_uuid_that_is_not_a_focused_preview(self):
+        """A uuid belonging to a saved plot (TaviProjectModel's to handle) must not raise here —
+        preview and saved plot uuids never collide, so a miss just means it isn't ours."""
         received: list[ActivePlotChangedEvent] = []
         self.broker.register(ActivePlotChangedEvent, received.append)
 
