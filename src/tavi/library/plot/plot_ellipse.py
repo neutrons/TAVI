@@ -130,11 +130,14 @@ class PlotResolution:
         Lay out a grid of resolution ellipses, one subplot per peak.
 
         Args:
-            ellipses: Sequence of (peak, mat, axes_angle, coh_para, coh_perp)
-                tuples. ``peak`` provides the hkl for the subplot title, ``mat``
-                is the 2D resolution matrix to draw, ``axes_angle`` is the skew
-                angle (degrees) between the plot axes, and ``coh_para`` /
-                ``coh_perp`` are the coherent FWHMs shown in the title.
+            ellipses: Sequence of (idx, peak, ellipse_co, axes_angle, coh_para,
+                coh_perp, ellipse_incoh, incoh_para, incoh_perp) tuples. ``idx``
+                and ``peak`` provide the scan number and hkl for the subplot
+                title, ``ellipse_co`` / ``ellipse_incoh`` are the 2D resolution
+                matrices drawn as a solid and a dotted ellipse respectively,
+                ``axes_angle`` is the skew angle (degrees) between the plot
+                axes, and ``coh_para`` / ``coh_perp`` / ``incoh_para`` /
+                ``incoh_perp`` are the FWHMs shown in the title.
             xlabel: Custom x-axis label applied to each subplot. Left unlabeled if None.
             ylabel: Custom y-axis label applied to each subplot. Left unlabeled if None.
 
@@ -143,13 +146,28 @@ class PlotResolution:
         ncols = min(3, n)
         nrows = int(np.ceil(n / ncols))
         fig = plt.figure(figsize=(4 * ncols, 4 * nrows))
-        for i, (idx, peak, mat, angle, coh_para, coh_perp) in enumerate(ellipses, start=1):
-            ax = fig.add_subplot(nrows, ncols, i, axes_class=Axes, grid_helper=grid_helper(angle))
+        for i, (
+            idx,
+            peak,
+            ellipse_co,
+            axes_angle,
+            coh_para,
+            coh_perp,
+            ellipse_incoh,
+            incoh_para,
+            incoh_perp,
+        ) in enumerate(ellipses, start=1):
+            ax = fig.add_subplot(nrows, ncols, i, axes_class=Axes, grid_helper=grid_helper(axes_angle))
             ax.grid(True)
             h, k, l = peak.hkl
-            ax.set_title(f"{idx}, ({h:g} {k:g} {l:g}), fwhm_s1 = {coh_perp:.4f}, \n fwhm_th2th = {coh_para:.4f}")
-            p = cls(axes_angle=angle)
-            p.add_ellipse(mat)
+            ax.set_title(
+                f"{idx}, ({h:.2f} {k:.2f} {l:.2f})"
+                f"\n coh_{xlabel} = {coh_para:.3f}, coh_{ylabel} = {coh_perp:.3f}"
+                f"\n incoh_{xlabel} = {incoh_para:.3f}, incoh_{ylabel} = {incoh_perp:.3f}"
+            )
+            p = cls(axes_angle=axes_angle)
+            p.add_ellipse(ellipse_co)
+            p.add_ellipse(ellipse_incoh, linestyle=":")
             p.plot(ax=ax, show=False)
             if xlabel is not None:
                 ax.set_xlabel(xlabel)

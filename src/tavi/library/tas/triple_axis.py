@@ -7,6 +7,7 @@ import numpy as np
 
 from tavi.library.experiment.experiment import Experiment
 from tavi.library.experiment.peak import DataPoint
+from tavi.library.experiment.utilities import update_dimension_names
 from tavi.library.fit import FitPackage, ModelName
 from tavi.library.geometry.sample import Sample
 from tavi.library.Instrument.instrument import Instrument
@@ -264,6 +265,8 @@ class TAS:
         xlabel: Optional[str] = None,
         ylabel: Optional[str] = None,
         fit_package: FitPackage = FitPackage.lmfit,
+        resolution_frame: str | Tuple = "local",
+        ellipse_axes: tuple = (0, 1),
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
     ) -> None:
         """
@@ -274,6 +277,11 @@ class TAS:
             xlabel: Custom x-axis label for each subplot. Left unlabeled if None.
             ylabel: Custom y-axis label for each subplot. Left unlabeled if None.
             fit_package: Fitting backend used to locate each peak center.
+            resolution_frame: ``"local"`` for the local Q frame, or a 4-tuple of
+                projection vectors plus ``"e"`` for an hkle frame, e.g.
+                ``((1, 0, 0), (0, 1, 0), (0, 0, 1), "e")``.
+            ellipse_axes: Pair of resolution_frame axes spanning the ellipse
+                plane. 0/1/2 for the momentum axes, 3 for energy.
             model_dict: Models passed to the fit when locating peak centers.
 
         """
@@ -293,14 +301,48 @@ class TAS:
             instrument=self.instrument,
             sample=self.sample,
             experiment=self.experiment,
-            resolution_frame="local",
+            resolution_frame=resolution_frame,
         )
         ellipses = []
         for idx, peak in peaks:
-            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=None)
-            ellipse, axes_angle = self.resolution.get_ellipse(res_mat=res_4d, ellipse_axes=(0, 1))
-            coh_para = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=0)
-            coh_perp = ResolutionEllipsoid(res_4d, resolution_frame="local").coh_fwhm(projection_axis=1)
-            ellipses.append((idx, peak, ellipse, axes_angle, coh_para, coh_perp))
+            rot_mat = None
+            if resolution_frame != "local":
+                try:
+                    rot_mat = self.instrument.goni.r_mat(peak.angles)
+                except Exception as err:
+                    raise ValueError("Rotation matrix can not be calculated") from err
+            res_4d, r0 = self.resolution.get_resolution(hkl=peak.hkl, ei=peak.ei, ef=peak.ef, rot_mat=rot_mat)
+            ellipse_co, axes_angle = self.resolution.get_ellipse(
+                res_mat=res_4d, ellipse_axes=ellipse_axes, PROJECTION=False
+            )
+            ellipse_incoh, axes_angle_incoh = self.resolution.get_ellipse(
+                res_mat=res_4d, ellipse_axes=ellipse_axes, PROJECTION=True
+            )
+            # This should never raise but just in case.
+            if axes_angle != axes_angle_incoh:
+                raise ValueError(
+                    "Something wrong, axes angles for the ellipse between coherent and incoherent calculation is different."
+                )
+            semi_axis_x, semi_axis_y = ellipse_axes
+            coh_para = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).coh_fwhm(
+                projection_axis=semi_axis_x
+            )
+            coh_perp = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).coh_fwhm(
+                projection_axis=semi_axis_y
+            )
+            incoh_para = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).incoh_fwhm(
+                projection_axis=semi_axis_x
+            )
+            incoh_perp = ResolutionEllipsoid(res_4d, resolution_frame=resolution_frame).incoh_fwhm(
+                projection_axis=semi_axis_y
+            )
+            ellipses.append(
+                (idx, peak, ellipse_co, axes_angle, coh_para, coh_perp, ellipse_incoh, incoh_para, incoh_perp)
+            )
+            combo_dimensions = update_dimension_names(resolution_frame=resolution_frame)
+            if not xlabel:
+                xlabel = combo_dimensions[ellipse_axes[0]]
+            if not ylabel:
+                ylabel = combo_dimensions[ellipse_axes[1]]
 
         PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
