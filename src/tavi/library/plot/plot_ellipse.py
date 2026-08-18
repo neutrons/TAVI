@@ -162,8 +162,8 @@ class PlotResolution:
             h, k, l = peak.hkl
             ax.set_title(
                 f"{idx}, ({h:.2f} {k:.2f} {l:.2f})"
-                f"\n coh_x = {coh_para:.4f}, coh_y = {coh_perp:.4f}"
-                f"\n incoh_x = {incoh_para:.4f}, incoh_y = {incoh_perp:.4f}"
+                f"\n coh_{xlabel} = {coh_para:.3f}, coh_{ylabel} = {coh_perp:.3f}"
+                f"\n incoh_{xlabel} = {incoh_para:.3f}, incoh_{ylabel} = {incoh_perp:.3f}"
             )
             p = cls(axes_angle=axes_angle)
             p.add_ellipse(ellipse_co)
