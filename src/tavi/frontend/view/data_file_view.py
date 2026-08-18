@@ -129,6 +129,7 @@ class DataFileView(QWidget):
             lines.append("\t".join(cells))
 
         QGuiApplication.clipboard().setText("\n".join(lines))
+
     def set_title(self, title: str) -> None:
         """Emit ``title_changed`` so an owning tab widget can relabel itself."""
         self.title_changed.emit(title)
