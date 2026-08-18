@@ -29,6 +29,8 @@ class Plot(BaseModel):
 
     uuid: UUID = UUIDFactory()
     series: list[PlotSeries]
+    friendly_name: Optional[str] = None
+    """User-chosen display name, set via the plotter's fields. ``None`` until the user names it explicitly."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -45,3 +47,4 @@ class PlotFields(BaseModel):
     preset_type: PresetType
     preset_channel: str
     preset_value: str
+    friendly_name: str = ""

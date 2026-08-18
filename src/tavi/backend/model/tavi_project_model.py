@@ -13,13 +13,13 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
     DownstreamReadyEvent,
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
-    SavePlotEvent,
+    RemoveItemEvent,
 )
 
 
@@ -36,7 +36,7 @@ class TaviProjectModel(TaviProjectInterface):
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
-        self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
+        self._event_broker.register(RemoveItemEvent, self._handle_remove_item_event)
 
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
@@ -82,12 +82,9 @@ class TaviProjectModel(TaviProjectInterface):
         settings_dict = dict(settings)
         return settings_dict["TAVI"]["recent"]["projects"]
 
-    def _handle_save_plot_event(self, e: SavePlotEvent) -> None:
-        """Record a presenter-submitted plot in ``tavi_data`` and announce it."""
-        self.tavi_data.plots[e.plot.uuid] = e.plot
-        run_names = "_".join(series.scan_name for series in e.plot.series)
-        friendly_name = f"{run_names}_Plot"
-        self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
+    def _handle_remove_item_event(self, e: RemoveItemEvent) -> None:
+        """Remove a raw scan or plot from ``tavi_data`` by uuid."""
+        self.tavi_data.remove_by_uuid(e.uuid)
 
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""

@@ -3,10 +3,11 @@ import unittest
 from unittest import mock
 
 from tavi.backend.model.plot_model import PlotModel
-from tavi.library.data.plot import PlotFields
+from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.model_event import PlotAppendEvent
+from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent, SavePlotEvent
 
 
 def make_plot_fields(**overrides) -> PlotFields:
@@ -44,11 +45,29 @@ def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monit
     )
 
 
+def make_series(scan_name, uuid_val="scan-001") -> PlotSeries:
+    return PlotSeries(
+        source_scan_uuid=UUID(value=uuid_val),
+        scan_name=scan_name,
+        normalized_by=None,
+        x_name="qh",
+        y_name="en",
+        error_name="err",
+    )
+
+
+def make_plot(uuid_val="plot-001", series=None) -> Plot:
+    if series is None:
+        series = [make_series("test_plot")]
+    return Plot(uuid=UUID(value=uuid_val), series=series)
+
+
 class TestPlotModel(unittest.TestCase):
     def setUp(self):
         self.broker = EventBroker()
         self.raw_scans = {}
-        self.model = PlotModel(plots=[], raw_scans=self.raw_scans)
+        self.plots = {}
+        self.model = PlotModel(plots=self.plots, raw_scans=self.raw_scans)
 
     def tearDown(self):
         pass
@@ -160,6 +179,30 @@ class TestPlotModel(unittest.TestCase):
         assert series.x_name == "en"
         assert series.y_name == "qh"
 
+    def test_update_fields_stores_friendly_name_on_plot(self):
+        scan = make_raw_scan(x_col="qh", y_col="en")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh", friendly_name="my_custom_name"))
+
+        assert received[0].plots[0].friendly_name == "my_custom_name"
+
+    def test_update_fields_blank_friendly_name_leaves_it_unset(self):
+        scan = make_raw_scan(x_col="qh", y_col="en")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh", friendly_name="   "))
+
+        assert received[0].plots[0].friendly_name is None
+
     def test_update_fields_no_focused_plot_is_noop(self):
         response = self.model.update_fields(make_plot_fields())
 
@@ -261,3 +304,88 @@ class TestPlotModel(unittest.TestCase):
         series = received[0].plots[0].series[0]
         assert series.normalized_by is None
         assert series.normalized_by_value is None
+
+    def test_init_registers_save_plot_event_handler(self):
+        assert self.model._handle_save_plot_event in self.broker.registry[SavePlotEvent]
+
+    def test_handle_save_plot_event_stores_plot(self):
+        plot = make_plot()
+
+        self.broker.publish(SavePlotEvent(plot=plot))
+
+        assert self.plots[plot.uuid].uuid == plot.uuid
+
+    def test_handle_save_plot_event_publishes_plot_append_event(self):
+        plot = make_plot()
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=plot))
+
+        assert len(received) == 1
+        assert received[0].uuid == plot.uuid
+        assert received[0].friendly_path == ""
+
+    def test_handle_save_plot_event_friendly_name_is_run_name_plus_plot_suffix(self):
+        plot = make_plot(series=[make_series("run1")])
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=plot))
+
+        assert received[0].friendly_name == "run1_Plot"
+
+    def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(self):
+        plot = make_plot(series=[make_series("run1"), make_series("run2")])
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=plot))
+
+        assert received[0].friendly_name == "run1_run2_Plot"
+
+    def test_handle_save_plot_event_second_save_of_same_run_name_increments_suffix(self):
+        first = make_plot(uuid_val="plot-001", series=[make_series("run1")])
+        second = make_plot(uuid_val="plot-002", series=[make_series("run1")])
+
+        self.broker.publish(SavePlotEvent(plot=first))
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=second))
+
+        assert received[0].friendly_name == "run1_Plot(1)"
+
+    def test_handle_save_plot_event_stamps_final_name_onto_stored_plot(self):
+        first = make_plot(uuid_val="plot-001", series=[make_series("run1")])
+        second = make_plot(uuid_val="plot-002", series=[make_series("run1")])
+
+        self.broker.publish(SavePlotEvent(plot=first))
+        self.broker.publish(SavePlotEvent(plot=second))
+
+        assert self.plots[first.uuid].friendly_name == "run1_Plot"
+        assert self.plots[second.uuid].friendly_name == "run1_Plot(1)"
+
+    def test_handle_save_plot_event_user_provided_name_overrides_run_name_default(self):
+        plot = make_plot(series=[make_series("run1")])
+        plot = plot.model_copy(update={"friendly_name": "my_custom_name"})
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=plot))
+
+        assert received[0].friendly_name == "my_custom_name"
+
+    def test_handle_save_plot_event_user_provided_name_still_deduped_against_existing(self):
+        first = make_plot(uuid_val="plot-001", series=[make_series("run1")])
+        first = first.model_copy(update={"friendly_name": "my_custom_name"})
+        second = make_plot(uuid_val="plot-002", series=[make_series("run2")])
+        second = second.model_copy(update={"friendly_name": "my_custom_name"})
+
+        self.broker.publish(SavePlotEvent(plot=first))
+
+        received = []
+        self.broker.register(PlotAppendEvent, received.append)
+        self.broker.publish(SavePlotEvent(plot=second))
+
+        assert received[0].friendly_name == "my_custom_name(1)"

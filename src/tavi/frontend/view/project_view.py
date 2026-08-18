@@ -48,6 +48,10 @@ class ProjectView(QWidget):
         """Connect selection signal to callback."""
         self.tree_widget.selected_signal.connect(callback)
 
+    def hookup_remove_signal(self, callback: Callable) -> None:
+        """Connect item-removed signal to callback."""
+        self.tree_widget.item_removed.connect(callback)
+
     def get_selected_items(self) -> list[UUID]:
         """Get list of selected item UUIDs."""
         return self.tree_widget.get_selected_items()
@@ -128,6 +132,7 @@ class TreeViewWidget(QWidget):
 
     selected_signal = Signal()
     highlighted_scan_changed = Signal(str)
+    item_removed = Signal(object)
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -209,6 +214,7 @@ class TreeViewWidget(QWidget):
         if item_data:
             uuid = item_data["id"]
             self.uuid_map.pop(uuid)
+            self.item_removed.emit(uuid)
         self.treeModel.removeRow(index.row(), index.parent())
 
     def remove_entry(self, index: QModelIndex) -> None:
@@ -352,7 +358,7 @@ class TreeViewWidget(QWidget):
     def add_item_at_path(self, uuid: UUID, name: str, path: str) -> None:
         """Add a new entry in the tree based on the path."""
         if uuid in self.uuid_map:
-            raise RuntimeError("Attempting to add UUID object that already exists to Project View.")
+            raise RuntimeError(f"Attempting to add UUID {uuid} object that already exists to Project View.")
 
         path = path.removesuffix("/")
         if path in self.path_map:

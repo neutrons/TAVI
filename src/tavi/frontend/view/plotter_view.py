@@ -126,7 +126,9 @@ class Plot1DView(QWidget):
 
         plot_controls = QHBoxLayout()  # remove `self` here too — that was incorrectly setting parent
         self.current_plot_combo = QComboBox()
-        self.current_plot_combo.addItem("plot_1")
+        self.current_plot_combo.setEditable(True)
+        self.current_plot_combo.setPlaceholderText("auto-generated")
+        self.current_plot_combo.lineEdit().editingFinished.connect(self.fields_focus_changed.emit)
         plot_controls.addWidget(self.current_plot_combo)
         plot_controls.addStretch(1)
         self.plot_button = QPushButton("Add Plot")
@@ -228,6 +230,7 @@ class Plot1DView(QWidget):
             self.rebin_step_edit,
             self.preset_type_combo,
             self.preset_value_edit,
+            self.current_plot_combo,
         )
         for widget in widgets:
             widget.blockSignals(True)
@@ -238,6 +241,7 @@ class Plot1DView(QWidget):
             self.rebin_step_edit.setText("0.02")
             self.preset_type_combo.setCurrentText(PresetType.NONE.value)
             self.preset_value_edit.setText("1")
+            self.current_plot_combo.setCurrentText("")
         finally:
             for widget in widgets:
                 widget.blockSignals(False)
@@ -263,6 +267,7 @@ class Plot1DView(QWidget):
             preset_type=PresetType(self.preset_type_combo.currentText()),
             preset_channel=self.preset_channel_combo.currentText(),
             preset_value=self.preset_value_edit.text(),
+            friendly_name=self.current_plot_combo.currentText(),
         )
 
     def on_radio_toggled(self) -> None:

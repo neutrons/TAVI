@@ -108,7 +108,7 @@ def test_add_raw_scan_duplicate_uuid_raises(qtbot):
     qtbot.addWidget(w)
 
     w.add_raw_scan(UUID(value="dup"), "scan1", "/exp1")
-    with pytest.raises(RuntimeError, match="Attempting to add UUID object that already exists"):
+    with pytest.raises(RuntimeError, match="Attempting to add UUID .* object that already exists"):
         w.add_raw_scan(UUID(value="dup"), "scan2", "/exp2")
 
 
@@ -179,6 +179,22 @@ def test_remove_entry_removes_item_and_cleans_uuid_map(qtbot):
     w.remove_entry(index)
 
     assert uuid not in w.uuid_map
+
+
+def test_remove_entry_emits_item_removed_signal(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="rm2")
+    w.add_raw_scan(uuid, "scan_to_remove", "/exp")
+    item = w.uuid_map[uuid]
+    index = w.treeModel.indexFromItem(item)
+
+    received = []
+    w.item_removed.connect(received.append)
+    w.remove_entry(index)
+
+    assert received == [uuid]
 
 
 def test_show_context_menu_deletes_all_selected(qtbot):
@@ -357,3 +373,19 @@ def test_project_view_hookup_select_signal(qtbot):
     view.tree_widget.select(None)
 
     assert called == [True]
+
+
+def test_project_view_hookup_remove_signal(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+
+    uuid = UUID(value="pv-rm1")
+    view.add_raw_scan(uuid, "scan", "/exp")
+
+    called = []
+    view.hookup_remove_signal(called.append)
+
+    item = view.tree_widget.uuid_map[uuid]
+    view.tree_widget.remove_entry(view.tree_widget.treeModel.indexFromItem(item))
+
+    assert called == [uuid]

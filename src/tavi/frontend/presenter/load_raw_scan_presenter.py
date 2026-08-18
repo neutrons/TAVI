@@ -8,7 +8,7 @@ from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent
-from tavi.meta.event.type.presenter_event import FocusEvent
+from tavi.meta.event.type.presenter_event import FocusEvent, RemoveItemEvent
 
 
 class LoadRawScanPresenter(AbstractPresenter):
@@ -39,6 +39,7 @@ class LoadRawScanPresenter(AbstractPresenter):
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
         self._view.hookup_select_signal(self.handle_selection_event)
+        self._view.hookup_remove_signal(self.handle_remove_event)
         self.event_broker.register(FocusEvent, self.print_selected)
 
     def init_view(self) -> None:
@@ -62,3 +63,8 @@ class LoadRawScanPresenter(AbstractPresenter):
     def print_selected(self, e: FocusEvent) -> None:
         """Test method."""
         print(e.ids)
+
+    def handle_remove_event(self, uuid: UUID) -> None:
+        """Announce that an item was removed from the tree so the backend can drop it too."""
+        self.inventory.pop(uuid, None)
+        self.event_broker.publish(RemoveItemEvent(uuid=uuid))

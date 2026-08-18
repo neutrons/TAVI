@@ -9,13 +9,13 @@ from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
     DownstreamReadyEvent,
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
-    SavePlotEvent,
+    RemoveItemEvent,
 )
 
 SETTINGS_YAML = "TAVI:\n  recent:\n    projects:\n      - /path/to/project1\n      - /path/to/project2\n"
@@ -55,17 +55,6 @@ def make_plot(uuid_val="plot-001", series=None):
             )
         ]
     return Plot(uuid=UUID(value=uuid_val), series=series)
-
-
-def make_series(scan_name, uuid_val="scan-001"):
-    return PlotSeries(
-        source_scan_uuid=UUID(value=uuid_val),
-        scan_name=scan_name,
-        normalized_by=None,
-        x_name="qh",
-        y_name="en",
-        error_name="err",
-    )
 
 
 @pytest.fixture(autouse=True)
@@ -348,50 +337,36 @@ def test_handle_focus_event_empty_ids_publishes_nothing(model):
 
 
 # ---------------------------------------------------------------------------
-# _handle_save_plot_event
+# _handle_remove_item_event
+#
+# NOTE: saving a plot (`SavePlotEvent` / `PlotAppendEvent`) is handled by
+# `PlotModel`, not `TaviProjectModel` — see tests/unit/backend/model/test_plot_model.py.
 # ---------------------------------------------------------------------------
 
 
-def test_init_registers_save_plot_event_handler(model):
+def test_init_registers_remove_item_event_handler(model):
     broker = EventBroker()
-    assert model._handle_save_plot_event in broker.registry[SavePlotEvent]
+    assert model._handle_remove_item_event in broker.registry[RemoveItemEvent]
 
 
-def test_handle_save_plot_event_stores_plot(model):
+def test_handle_remove_item_event_removes_raw_scan(model):
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+
+    EventBroker().publish(RemoveItemEvent(uuid=scan.uuid))
+
+    assert scan.uuid not in model.tavi_data.raw_scans
+
+
+def test_handle_remove_item_event_removes_plot(model):
     plot = make_plot()
+    model.tavi_data.plots[plot.uuid] = plot
 
-    EventBroker().publish(SavePlotEvent(plot=plot))
+    EventBroker().publish(RemoveItemEvent(uuid=plot.uuid))
 
-    assert model.tavi_data.plots[plot.uuid].uuid == plot.uuid
-
-
-def test_handle_save_plot_event_publishes_plot_append_event(model):
-    plot = make_plot()
-
-    received = []
-    EventBroker().register(PlotAppendEvent, received.append)
-    EventBroker().publish(SavePlotEvent(plot=plot))
-
-    assert len(received) == 1
-    assert received[0].uuid == plot.uuid
-    assert received[0].friendly_path == ""
+    assert plot.uuid not in model.tavi_data.plots
 
 
-def test_handle_save_plot_event_friendly_name_is_run_name_plus_plot_suffix(model):
-    plot = make_plot(series=[make_series("run1")])
-
-    received = []
-    EventBroker().register(PlotAppendEvent, received.append)
-    EventBroker().publish(SavePlotEvent(plot=plot))
-
-    assert received[0].friendly_name == "run1_Plot"
-
-
-def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(model):
-    plot = make_plot(series=[make_series("run1"), make_series("run2")])
-
-    received = []
-    EventBroker().register(PlotAppendEvent, received.append)
-    EventBroker().publish(SavePlotEvent(plot=plot))
-
-    assert received[0].friendly_name == "run1_run2_Plot"
+def test_handle_remove_item_event_unknown_uuid_raises_key_error(model):
+    with pytest.raises(KeyError):
+        model._handle_remove_item_event(RemoveItemEvent(uuid=UUID(value="nonexistent")))
