@@ -28,8 +28,9 @@ class PlotterPresenter(AbstractPresenter):
         self._model = model
         self._current_plot: Optional[Plot] = None
         # Only UUIDs are held between events — the model's tavi_data is the single source of
-        # truth for Plot/Scan objects. A dropdown switch re-asks for the current selection via
-        # FocusEvent rather than replaying a cached Plot, so this never drifts from the model.
+        # truth for Plot/Scan objects. A dropdown switch re-asks the owning model via
+        # FocusActivePlotEvent rather than replaying a cached Plot, so this never drifts from
+        # the model.
         self._focused_plot_uuids: list[UUID] = []
         self._active_plot_uuid: Optional[UUID] = None
 
