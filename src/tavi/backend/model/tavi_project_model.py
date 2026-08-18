@@ -94,7 +94,12 @@ class TaviProjectModel(TaviProjectInterface):
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """Resolve a single saved plot by uuid and announce it as the active plot, without touching the rest."""
-        inst = self.tavi_data.fetch_by_uuid(e.uuid)
+        try:
+            inst = self.tavi_data.fetch_by_uuid(e.uuid)
+        except KeyError:
+            # FocusActivePlotEvent is broadcast to both this model and PlotModel — a miss
+            # here just means the uuid belongs to an unsaved preview plot instead.
+            return
         if not isinstance(inst, Plot):
             return
         scans = scans_for_plots([inst], self.tavi_data.raw_scans)
@@ -107,11 +112,9 @@ class TaviProjectModel(TaviProjectInterface):
         plots: list[Plot] = []
         for uuid in ids:
             # FocusEvent ids come from the project tree, which only ever lists uuids
-            # TaviData actually owns — an unresolvable one means tree/TaviData are out of
-            # sync, a bug worth surfacing loudly rather than silently dropping the item.
+            # TaviData actually owns — fetch_by_uuid raising here means tree/TaviData are
+            # out of sync, a bug worth surfacing loudly rather than silently dropping the item.
             inst = self.tavi_data.fetch_by_uuid(uuid)
-            if inst is None:
-                raise KeyError(f"FocusEvent id {uuid} does not resolve to any RawScan or Plot in TaviData.")
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)
             if isinstance(inst, Plot):

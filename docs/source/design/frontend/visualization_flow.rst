@@ -268,23 +268,24 @@ Preview plots are not TaviData items
 A preview ``Plot`` built from a raw scan is deliberately never written into
 ``TaviData.plots`` — only clicking **Add Plot** persists it (see below), and
 until then it exists only in ``PlotModel._last_plots``. ``TaviData.fetch_by_uuid``
-reflects this: it returns ``None`` for a uuid it doesn't recognize rather
-than raising, so callers can decide for themselves what a miss means.
-
-That decision differs by event, because the two events have different
-provenance guarantees:
+stays a single, standard failure mode: it raises ``KeyError`` for any uuid it
+doesn't recognize, rather than every caller reimplementing its own
+"does this exist" check. What differs is whether a given caller expects that
+failure to be possible, because the two events that reach ``TaviProjectModel``
+have different provenance guarantees:
 
 - ``FocusEvent`` ids come from the project tree, which only ever lists
   uuids ``TaviData`` actually owns. ``TaviProjectModel._handle_focus_event``
-  treats a ``None`` here as a bug — tree and ``TaviData`` have drifted out of
-  sync — and raises ``KeyError`` rather than silently dropping the item. This
-  handler must not anticipate being handed uuids it doesn't own; doing so
-  would hide a real desync as a quiet no-op.
+  does not catch the ``KeyError`` — a miss here is a bug (tree and
+  ``TaviData`` have drifted out of sync), and letting it propagate surfaces
+  that loudly instead of silently dropping the item. This handler must not
+  anticipate being handed uuids it doesn't own.
 - ``FocusActivePlotEvent`` is, by design, broadcast to **two** owners at
-  once (see above) — a ``None``/non-``Plot`` result in
-  ``TaviProjectModel._handle_active_plot_focus_event`` just means "this uuid
-  belongs to ``PlotModel`` instead," which is the expected outcome for half
-  of all switches, not an error condition.
+  once (see above), so ``TaviProjectModel._handle_active_plot_focus_event``
+  *does* catch the ``KeyError`` — it just means "this uuid belongs to
+  ``PlotModel`` instead," the expected outcome for half of all switches, not
+  an error condition. Catching it here is a deliberate, narrow exception to
+  the rule above, not a general policy of swallowing lookup failures.
 
 Events carry their own data; presenters/views hold none
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

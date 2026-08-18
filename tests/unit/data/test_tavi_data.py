@@ -1,5 +1,7 @@
 """Tests for TaviData."""
 
+import pytest
+
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
@@ -41,8 +43,9 @@ def test_fetch_by_uuid_returns_plot():
     assert data.fetch_by_uuid(plot.uuid) is plot
 
 
-def test_fetch_by_uuid_returns_none_when_uuid_belongs_to_neither():
-    """An unsaved/unpersisted uuid (e.g. a preview plot) is not an error here — just absent."""
+def test_fetch_by_uuid_raises_when_uuid_belongs_to_neither():
+    """A standard, single-place failure — callers that expect a possible miss catch this themselves."""
     data = TaviData(raw_scans={}, plots={})
 
-    assert data.fetch_by_uuid(UUID(value="not-persisted")) is None
+    with pytest.raises(KeyError):
+        data.fetch_by_uuid(UUID(value="not-persisted"))
