@@ -84,7 +84,9 @@ class PlotterPresenter(AbstractPresenter):
         self._focused_plot_uuids = new_uuids
 
         default_index = new_uuids.index(self._active_plot_uuid) if self._active_plot_uuid in new_uuids else 0
-        self._view.set_plot_options([self._plot_label(plot) for plot in e.plots], default_index=default_index)
+        # Emitted rather than called directly: PlotFocusEvent may be published from PlotModel's
+        # worker thread (via PlotModelProxy), and QComboBox may only be touched from the GUI thread.
+        self._view.set_plot_options_signal.emit([self._plot_label(plot) for plot in e.plots], default_index)
 
         active_plot = next((plot for plot in e.plots if plot.uuid == self._active_plot_uuid), None)
         scan = first_contributing_scan(active_plot, e.scans) if active_plot is not None else None

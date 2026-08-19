@@ -2,7 +2,6 @@
 
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.data_file_view import DataFileView
-from tavi.library.data.scan import Scan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, RawScanFocusEvent
 
@@ -24,23 +23,12 @@ class DataFilePresenter(AbstractPresenter):
 
     def handle_raw_scan_focus(self, e: RawScanFocusEvent) -> None:
         """Repopulate column data and column name widgets whenever a new scan is focused."""
-        if not e.scans:
-            self._view.clear_data()
-            self._view.set_title("Data File")
-            return
-        self._populate_from_scan(e.scans[0])
+        # Emitted rather than called directly: this may run on TaviProjectModel's worker
+        # thread (via its Proxy), and view widgets may only be touched from the GUI thread.
+        self._view.scan_focus_changed.emit(e.scans[0] if e.scans else None)
 
     def handle_active_plot_changed(self, e: ActivePlotChangedEvent) -> None:
         """Repopulate the data widget from the active plot's first contributing scan."""
-        if e.scan is None:
-            self._view.clear_data()
-            self._view.set_title("Data File")
-            return
-        self._populate_from_scan(e.scan)
-
-    def _populate_from_scan(self, scan: Scan) -> None:
-        """Repopulate every data widget section from a single scan, and retitle its tab."""
-        self._view.populate_columns(scan.data.data)
-        self._view.populate_variables(list(scan.data.data.keys()))
-        self._view.populate_metadata(scan.metadata.by_category())
-        self._view.set_title(f"Data File ({scan.tavimeta.friendly_name})")
+        # Emitted rather than called directly: this may run on PlotModel's worker thread
+        # (via PlotModelProxy), and view widgets may only be touched from the GUI thread.
+        self._view.scan_focus_changed.emit(e.scan)

@@ -24,11 +24,15 @@ class DataFileView(QWidget):
     """Data file panel widget."""
 
     title_changed = Signal(str)
+    scan_focus_changed = Signal(object)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct data file view."""
         super().__init__(parent)
         self._build_ui()
+        # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
+        # a worker thread (PlotModel/TaviProjectModel running behind their Proxy).
+        self.scan_focus_changed.connect(self._apply_scan_focus)
 
     def _build_ui(self) -> None:
         """Build the data file UI."""
@@ -133,6 +137,17 @@ class DataFileView(QWidget):
     def set_title(self, title: str) -> None:
         """Emit ``title_changed`` so an owning tab widget can relabel itself."""
         self.title_changed.emit(title)
+
+    def _apply_scan_focus(self, scan: Any) -> None:
+        """Repopulate every data widget section from a newly-focused scan, or clear them if there isn't one."""
+        if scan is None:
+            self.clear_data()
+            self.set_title("Data File")
+            return
+        self.populate_columns(scan.data.data)
+        self.populate_variables(list(scan.data.data.keys()))
+        self.populate_metadata(scan.metadata.by_category())
+        self.set_title(f"Data File ({scan.tavimeta.friendly_name})")
 
     def populate_columns(self, data: dict[str, list[float]]) -> None:
         """Repopulate the data table with a newly-focused scan's column values."""

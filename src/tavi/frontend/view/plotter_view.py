@@ -33,6 +33,7 @@ class Plot1DView(QWidget):
     render_plots_signal = Signal(list)
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
+    set_plot_options_signal = Signal(list, int)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -41,6 +42,7 @@ class Plot1DView(QWidget):
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
+        self.set_plot_options_signal.connect(self.set_plot_options)
 
     def _build_ui(self) -> None:
         """Build the 1D plotter UI."""
