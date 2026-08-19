@@ -21,7 +21,7 @@ class EventBroker:
         """Initialize the EventBroker."""
         self.registry: dict[Type[T], list[Callable]] = {}
         self.call_depth = 0
-        self.call_depth_max = 3
+        self.call_depth_max = 5
 
     def register(self, event_type: Type[T], callable: Callable) -> None:
         """Register a subscriber to receive published events."""

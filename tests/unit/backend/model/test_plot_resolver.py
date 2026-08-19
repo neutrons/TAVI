@@ -1,6 +1,6 @@
 import numpy.testing as npt
 
-from tavi.backend.model.plot_resolver import resolve_series, scans_for_plots
+from tavi.backend.model.plot_resolver import first_contributing_scan, resolve_series, scans_for_plots
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 
@@ -102,3 +102,13 @@ def test_scans_for_plots_returns_only_referenced_scans():
     result = scans_for_plots([plot], {scan_a.uuid: scan_a, scan_b.uuid: scan_b})
 
     assert set(result) == {scan_a.uuid}
+
+
+def test_first_contributing_scan_returns_the_first_series_scan():
+    scan_a = make_scan(uuid_val="scan-a")
+    scan_b = make_scan(uuid_val="scan-b")
+    plot = Plot(series=[make_series(uuid_val="scan-a"), make_series(uuid_val="scan-b")])
+
+    result = first_contributing_scan(plot, {scan_a.uuid: scan_a, scan_b.uuid: scan_b})
+
+    assert result.uuid == scan_a.uuid

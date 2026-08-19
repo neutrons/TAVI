@@ -74,13 +74,13 @@ Recursion Guard
 
 The broker enforces a maximum call depth to prevent infinite or runaway recursion
 when events trigger other events during handling. The default
-``call_depth_max`` is **3**.
+``call_depth_max`` is **5**.
 
 If the maximum depth is exceeded, ``publish`` raises:
 
 .. code-block:: text
 
-   RuntimeError: Event recursive depth of 3 has been exceeded.
+   RuntimeError: Event recursive depth of 5 has been exceeded.
 
 This protects against patterns like:
 
@@ -88,9 +88,14 @@ This protects against patterns like:
 - Circular event chains between handlers
 
 Note that legitimate chains count against this budget. The selection →
-visualization flow already nests three deep (``FocusEvent`` →
-``RawScanFocusEvent`` → ``PlotFocusEvent``; see
-:doc:`../design/frontend/visualization_flow`), so it sits right at the limit.
+visualization flow already nests four deep on a fresh selection
+(``FocusEvent`` → ``RawScanFocusEvent`` → ``PlotFocusEvent`` →
+``ActivePlotChangedEvent``; see
+:doc:`../design/frontend/visualization_flow`) — the limit was raised from 3
+to 5 specifically to give that chain headroom once ``ActivePlotChangedEvent``
+was added on the end of it. Switching the active plot from the "Current
+Plot" dropdown is a separate, shallower chain (``FocusActivePlotEvent`` →
+``ActivePlotChangedEvent``, 2 deep) that shares the same budget.
 
 If deeper event chaining is required, raise the maximum on the singleton before
 the chain runs:

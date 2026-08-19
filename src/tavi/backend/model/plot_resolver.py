@@ -33,3 +33,15 @@ def resolve_series(series: PlotSeries, scans: dict[UUID, Scan]) -> tuple[np.ndar
 def scans_for_plots(plots: list[Plot], scans: dict[UUID, Scan]) -> dict[UUID, Scan]:
     """Return the minimal ``{uuid: Scan}`` slice of ``scans`` referenced by any series in ``plots``."""
     return {series.source_scan_uuid: scans[series.source_scan_uuid] for plot in plots for series in plot.series}
+
+
+def first_contributing_scan(plot: Plot, scans: dict[UUID, Scan]) -> Scan:
+    """
+    Return the Scan backing a plot's first series.
+
+    Every Plot has at least one series, and every series points at a Scan that exists in the
+    current setup — so this always resolves, whether ``plot`` is a saved ``TaviData`` entry or
+    an unsaved preview. Consumers that only display scan-level data (e.g. the data widget) use
+    this instead of a Plot, which may not live anywhere persistent.
+    """
+    return scans[plot.series[0].source_scan_uuid]

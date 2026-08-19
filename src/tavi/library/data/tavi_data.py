@@ -19,4 +19,4 @@ class TaviData(BaseModel):
         if uuid in self.plots:
             return self.plots[uuid]
 
-        raise KeyError("No such UUID available in TaviData for any type.")
+        raise KeyError(f"No such UUID {uuid} available in TaviData for any type.")

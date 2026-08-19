@@ -553,3 +553,41 @@ def test_clicking_plot_button_emits_plot_clicked(view, qtbot):
 
 def test_overplot_button_disabled(view):
     assert not view.overplot_button.isEnabled()
+
+
+# ---------------------------------------------------------------------------
+# Current Plot dropdown / set_plot_options
+# ---------------------------------------------------------------------------
+
+
+def test_set_plot_options_populates_combo(view):
+    view.set_plot_options(["run1", "run2"])
+    items = [view.current_plot_combo.itemText(i) for i in range(view.current_plot_combo.count())]
+    assert items == ["run1", "run2"]
+
+
+def test_set_plot_options_selects_default_index(view):
+    view.set_plot_options(["run1", "run2"], default_index=1)
+    assert view.current_plot_combo.currentIndex() == 1
+
+
+def test_set_plot_options_replaces_previous_items(view):
+    view.set_plot_options(["run1", "run2"])
+    view.set_plot_options(["run3"])
+    items = [view.current_plot_combo.itemText(i) for i in range(view.current_plot_combo.count())]
+    assert items == ["run3"]
+
+
+def test_set_plot_options_does_not_emit_plot_combo_index_changed(view, qtbot):
+    received = []
+    view.plot_combo_index_changed.connect(received.append)
+    view.set_plot_options(["run1", "run2"])
+    assert received == []
+
+
+def test_hookup_plot_combo_changed_signal_invokes_callback(view):
+    calls = []
+    view.hookup_plot_combo_changed_signal(lambda index: calls.append(index))
+    view.set_plot_options(["run1", "run2"])
+    view.current_plot_combo.setCurrentIndex(1)
+    assert calls == [1]

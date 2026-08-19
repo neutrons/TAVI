@@ -6,7 +6,12 @@ from tavi.backend.model.plot_model import PlotModel
 from tavi.library.data.plot import PlotFields
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
+    FocusActivePlotEvent,
+    PlotFocusEvent,
+    RawScanFocusEvent,
+)
 
 
 def make_plot_fields(**overrides) -> PlotFields:
@@ -65,7 +70,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.publish(RawScanFocusEvent(scans=[]))
 
         assert len(received_events) == 0
-        assert self.model._last_plot is None
+        assert self.model._last_plots == []
 
     def test_raw_scan_focus_event_publishes_plot_focus_event(self):
         received_events: list[PlotFocusEvent] = []
@@ -121,18 +126,64 @@ class TestPlotModel(unittest.TestCase):
 
         assert received[0].plots[0].series[0].normalized_by is None
 
-    def test_only_first_scan_processed(self):
-        """PlotModel only handles scans[0] from the event."""
+    def test_all_focused_scans_processed(self):
+        """Multiple focused runs each get their own single-series preview plot."""
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        scan1 = make_raw_scan(x_col="qh", x_vals=[1.0])
-        scan2 = make_raw_scan(x_col="qh", x_vals=[99.0])
-        # scan2 has different friendly_name setup — both have "test_scan"
+        scan1 = make_raw_scan(x_col="qh", x_vals=[1.0], uuid_val="scan-001")
+        scan2 = make_raw_scan(x_col="qh", x_vals=[99.0], uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
+        self.raw_scans[scan2.uuid] = scan2
         self.broker.publish(RawScanFocusEvent(scans=[scan1, scan2]))
 
-        assert len(received[0].plots) == 1
+        assert len(received[0].plots) == 2
+        assert [p.series[0].source_scan_uuid for p in received[0].plots] == [scan1.uuid, scan2.uuid]
+        assert all(len(p.series) == 1 for p in received[0].plots)
+
+    def test_all_focused_scans_referenced_in_scan_snapshot(self):
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        scan1 = make_raw_scan(uuid_val="scan-001")
+        scan2 = make_raw_scan(uuid_val="scan-002")
+        self.raw_scans[scan1.uuid] = scan1
+        self.raw_scans[scan2.uuid] = scan2
+        self.broker.publish(RawScanFocusEvent(scans=[scan1, scan2]))
+
+        assert set(received[0].scans.keys()) == {scan1.uuid, scan2.uuid}
+
+    def test_update_fields_applies_to_every_focused_run(self):
+        scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
+        scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
+        self.raw_scans[scan1.uuid] = scan1
+        self.raw_scans[scan2.uuid] = scan2
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan1, scan2]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"))
+
+        assert response.code.name == "OK"
+        assert len(received[0].plots) == 2
+        assert all(p.series[0].x_name == "en" and p.series[0].y_name == "qh" for p in received[0].plots)
+
+    def test_update_fields_rejects_whole_batch_when_one_run_lacks_the_column(self):
+        """Runs with different column vocabularies: an invalid edit must not partially apply."""
+        scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
+        scan2 = make_raw_scan(x_col="qk", y_col="ei", uuid_val="scan-002")
+        self.raw_scans[scan1.uuid] = scan1
+        self.raw_scans[scan2.uuid] = scan2
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan1, scan2]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="en"))
+
+        assert response.code.name == "OK"
+        assert len(received) == 0
 
     def test_plot_focus_event_carries_the_referenced_scan(self):
         received: list[PlotFocusEvent] = []
@@ -246,6 +297,47 @@ class TestPlotModel(unittest.TestCase):
 
         assert response.code.name == "OK"
         assert len(received) == 0
+
+    def test_registers_active_plot_focus_event_handler(self):
+        assert FocusActivePlotEvent in self.broker.registry
+        assert len(self.broker.registry[FocusActivePlotEvent]) == 1
+
+    def test_active_plot_focus_event_announces_matching_preview_plots_scan(self):
+        """An unsaved preview plot's uuid must resolve here — it is never in TaviData."""
+        scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+        preview_uuid = self.model._last_plots[0].uuid
+
+        received: list[ActivePlotChangedEvent] = []
+        self.broker.register(ActivePlotChangedEvent, received.append)
+        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+
+        assert len(received) == 1
+        assert received[0].scan.uuid == scan.uuid
+
+    def test_active_plot_focus_event_does_not_republish_plot_focus_event(self):
+        """Switching the active plot must not re-resolve or re-render the whole focused batch."""
+        scan = make_raw_scan()
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+        preview_uuid = self.model._last_plots[0].uuid
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+
+        assert received == []
+
+    def test_active_plot_focus_event_is_a_noop_for_a_uuid_that_is_not_a_focused_preview(self):
+        """A uuid belonging to a saved plot (TaviProjectModel's to handle) must not raise here —
+        preview and saved plot uuids never collide, so a miss just means it isn't ours."""
+        received: list[ActivePlotChangedEvent] = []
+        self.broker.register(ActivePlotChangedEvent, received.append)
+
+        self.broker.publish(FocusActivePlotEvent(uuid=UUID(value="not-a-preview-plot")))
+
+        assert received == []
 
     def test_update_fields_none_preset_type_clears_normalization(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=("monitor", 1.0))

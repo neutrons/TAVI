@@ -9,18 +9,22 @@ by the user: its column data, a checklist of columns, and its metadata. The
 view itself is agnostic to scan type — ``populate_columns``,
 ``populate_variables``, and ``populate_metadata`` take plain dicts/lists, not
 a ``Scan`` object. It is driven entirely by ``DataFilePresenter``, which
-today subscribes to ``RawScanFocusEvent`` (the only focus event currently
-wired up) and forwards the focused scan's contents to the view. The view
-holds no scan data of its own between events.
+subscribes to both ``RawScanFocusEvent`` (a scan focused directly from the
+tree) and ``ActivePlotChangedEvent`` (a plot made active via the plotter's
+"Current Plot" dropdown — see :doc:`visualization_flow`), and forwards
+whichever scan is relevant to the view. The view holds no scan data of its
+own between events.
 
 Architecture
 ------------
 
 - **Presenter** (``DataFilePresenter``): Subscribes to ``RawScanFocusEvent``
-  via the ``EventBroker`` and translates each event into view calls. Holds no
-  scan data itself.
+  and ``ActivePlotChangedEvent`` via the ``EventBroker`` and translates each
+  event into view calls, through a shared ``_populate_from_scan`` helper.
+  Holds no scan data itself.
 - **View** (``DataFileView``): A ``QWidget`` with three regions — a data
-  table, a variable checklist, and a tabbed metadata panel.
+  table, a variable checklist, and a tabbed metadata panel — plus a
+  ``title_changed`` signal used to retitle its owning tab.
 
 Data Flow
 ---------
@@ -32,15 +36,35 @@ Data Flow
     EventBroker
         ↓
     DataFilePresenter.handle_raw_scan_focus
-        - scans is empty  → view.clear_data()
+        - scans is empty  → view.clear_data(); view.set_title("Data File")
         - scans[0] is used, rest ignored
         ↓
-    DataFileView.populate_columns(scan.data.data)
-    DataFileView.populate_variables(list(scan.data.data.keys()))
-    DataFileView.populate_metadata(scan.metadata.by_category())
+    DataFilePresenter._populate_from_scan(scan)
 
-Only the first scan in the event is displayed — the panel shows one scan at a
-time, regardless of scan type.
+    ActivePlotChangedEvent(plot, scans)
+        ↓
+    EventBroker
+        ↓
+    DataFilePresenter.handle_active_plot_changed
+        - plot is None or has no series      → view.clear_data(); view.set_title("Data File")
+        - plot.series[0].source_scan_uuid not in scans → view.clear_data(); view.set_title("Data File")
+        - otherwise: look up that series' scan in `scans`
+        ↓
+    DataFilePresenter._populate_from_scan(scan)
+
+    DataFilePresenter._populate_from_scan(scan):
+        DataFileView.populate_columns(scan.data.data)
+        DataFileView.populate_variables(list(scan.data.data.keys()))
+        DataFileView.populate_metadata(scan.metadata.by_category())
+        DataFileView.set_title(f"Data File ({scan.tavimeta.friendly_name})")
+            ↓
+        DataFileView.title_changed(title) --Qt signal--> TaviView relabels tab 0
+
+Only one scan is ever displayed at a time — whichever scan the *active*
+selection points at, regardless of whether that selection came from the
+tree directly (``RawScanFocusEvent``) or from switching plots in the
+plotter's dropdown while multiple scans/plots are focused
+(``ActivePlotChangedEvent``).
 
 Data Table and Variable Checklist
 ----------------------------------
@@ -148,5 +172,19 @@ displayed, and vice versa.
 One scan at a time
 ~~~~~~~~~~~~~~~~~~~
 
-``handle_raw_scan_focus`` only ever renders ``scans[0]``. The panel is a
-single-scan inspector, not a multi-scan comparison view.
+``handle_raw_scan_focus`` only ever renders ``scans[0]``, and
+``handle_active_plot_changed`` only ever renders the active plot's first
+series' scan. The panel is a single-scan inspector, not a multi-scan
+comparison view — even when the plotter is showing several plots at once,
+the Data File tab always reflects exactly one of them (the active one).
+
+Tab retitling is push-based, not polled
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``DataFileView`` doesn't know it lives inside a ``QTabWidget`` — it just
+emits ``title_changed`` on every repopulation (including the empty/cleared
+case, which resets to plain ``"Data File"``). ``TaviView`` is the one that
+knows the tab index and wires the signal to ``tabs.setTabText(0, title)``.
+This keeps the view ignorant of its container, matching how it already
+receives content purely through method calls rather than reaching out for
+context.

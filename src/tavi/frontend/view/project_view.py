@@ -2,7 +2,7 @@
 
 from typing import Callable, List, Optional
 
-from qtpy.QtCore import QModelIndex, QObject, QPersistentModelIndex, Qt, Signal
+from qtpy.QtCore import QItemSelection, QModelIndex, QObject, QPersistentModelIndex, Qt, Signal
 from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
     QAbstractItemView,
@@ -159,6 +159,7 @@ class TreeViewWidget(QWidget):
 
         self.path_map: dict[str, StandardItem] = {}
         self.uuid_map: dict[UUID, StandardItem] = {}
+        self._selection_order: list[UUID] = []
 
         layoutTreeView.addWidget(self.treeView)
 
@@ -228,21 +229,16 @@ class TreeViewWidget(QWidget):
         self._remove_index(index)
 
     def get_selected_items(self) -> list[UUID]:
-        """Get list of selected item UUIDs from tree view."""
-        indexes = self.treeView.selectedIndexes()
-        idList = set()
-        for index in indexes:
+        """Get list of selected item UUIDs from tree view, in the order the user selected them."""
+        currently_selected = set()
+        for index in self.treeView.selectedIndexes():
             item_data = self.treeModel.data(index, Qt.UserRole + 1)
             if item_data:
-                idList.add(item_data["id"])
-            # else:
-            #     # if its a folder, then select all children in the folder?
-            #     for c_index in self.get_selected_child_entries(index):
-            #         item_data = self.treeModel.data(c_index, Qt.UserRole + 1)
-            #         if item_data:
-            #             idList.add(item_data["id"])
+                currently_selected.add(item_data["id"])
 
-        return list(idList)
+        # Drop stale entries (e.g. deselected/removed) while keeping selection order intact.
+        self._selection_order = [uuid for uuid in self._selection_order if uuid in currently_selected]
+        return list(self._selection_order)
 
     # NOTE: Add this back if we want selecting a folder to select all entries in a folder.
     # def get_selected_child_entries(self, index: QModelIndex) -> None:
@@ -385,8 +381,16 @@ class TreeViewWidget(QWidget):
             self.experiment_folder.appendRow(StandardItem(file))
         self.treeView.setModel(self.treeModel)
 
-    def _on_selection_changed(self, selected: object, deselected: object) -> None:
-        """Adapt QItemSelectionModel.selectionChanged's (selected, deselected) signature to select()."""
+    def _on_selection_changed(self, selected: QItemSelection, deselected: QItemSelection) -> None:
+        """Track selected items in click order (deselecting then reselecting moves an item to the end)."""
+        for index in deselected.indexes():
+            item_data = self.treeModel.data(index, Qt.UserRole + 1)
+            if item_data and item_data["id"] in self._selection_order:
+                self._selection_order.remove(item_data["id"])
+        for index in selected.indexes():
+            item_data = self.treeModel.data(index, Qt.UserRole + 1)
+            if item_data and item_data["id"] not in self._selection_order:
+                self._selection_order.append(item_data["id"])
         self.select(None)
 
     def select(self, _: object) -> None:

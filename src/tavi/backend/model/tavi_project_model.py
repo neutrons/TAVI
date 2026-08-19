@@ -5,7 +5,7 @@ from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-from tavi.backend.model.plot_resolver import scans_for_plots
+from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
@@ -15,7 +15,9 @@ from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
     DownstreamReadyEvent,
+    FocusActivePlotEvent,
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -36,6 +38,7 @@ class TaviProjectModel(TaviProjectInterface):
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
+        self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
 
     def get_plots_handle(self) -> dict:
@@ -89,12 +92,30 @@ class TaviProjectModel(TaviProjectInterface):
         friendly_name = f"{run_names}_Plot"
         self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
+    def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
+        """
+        Resolve a single saved plot by uuid and announce its first contributing scan, without touching the rest.
+
+        ``uuid`` may belong to an unsaved preview plot instead (``PlotModel``'s to handle) — a
+        plain ``in`` check, not ``fetch_by_uuid``, since a preview plot's uuid is borrowed from
+        its source ``RawScan`` and *is* present in ``tavi_data.raw_scans``; ``fetch_by_uuid``
+        would resolve it to the wrong type instead of telling us it isn't ours.
+        """
+        if e.uuid not in self.tavi_data.plots:
+            return
+        plot = self.tavi_data.plots[e.uuid]
+        scan = first_contributing_scan(plot, self.tavi_data.raw_scans)
+        self._event_broker.publish(ActivePlotChangedEvent(scan=scan))
+
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""
         ids = e.ids
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []
         for uuid in ids:
+            # FocusEvent ids come from the project tree, which only ever lists uuids
+            # TaviData actually owns — fetch_by_uuid raising here means tree/TaviData are
+            # out of sync, a bug worth surfacing loudly rather than silently dropping the item.
             inst = self.tavi_data.fetch_by_uuid(uuid)
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)

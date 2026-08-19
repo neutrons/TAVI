@@ -1,5 +1,7 @@
 """Events that Presenters emit."""
 
+from typing import Optional
+
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import UUID, RawScan, Scan
 from tavi.meta.event.event_interface import Event
@@ -42,3 +44,32 @@ class PlotFocusEvent(Event):
 
     plots: list[Plot]
     scans: dict[UUID, Scan] = {}
+
+
+class FocusActivePlotEvent(Event):
+    """
+    Request to make one already-focused plot active, by uuid.
+
+    Handled by both ``TaviProjectModel`` and ``PlotModel`` — each checks whether ``uuid`` is one
+    of its own (``TaviData.plots`` vs. an unsaved preview in ``PlotModel._last_plots``) and
+    no-ops otherwise. Saved-plot uuids (fresh ``uuid4()`` on save) and preview-plot uuids (the
+    same uuid as the ``RawScan`` they preview) never collide, so exactly one model ever acts on
+    a given uuid. The publisher does not need to know which kind of plot is currently focused.
+    """
+
+    uuid: UUID
+
+
+class ActivePlotChangedEvent(Event):
+    """
+    Event announcing the scan backing whichever single plot is currently "active".
+
+    Selected via the plotter's plot dropdown. Carries the ``Scan`` itself — the active plot's first contributing scan (see
+    ``first_contributing_scan``) — rather than the ``Plot`` and a snapshot to resolve it against.
+    A ``Plot`` may be an unsaved preview with nowhere persistent to live; consumers that only
+    display data (e.g. the data widget) care about the scan, not the plot's save state, and a
+    plot's first contributing scan always exists in the current setup. ``None`` means no plot is
+    currently active.
+    """
+
+    scan: Optional[Scan] = None

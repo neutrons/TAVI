@@ -160,6 +160,73 @@ def test_get_selected_items_returns_uuid_after_programmatic_selection(qtbot):
     assert uuid in result
 
 
+def test_get_selected_items_preserves_selection_order(qtbot):
+    """Order dispatched must match click order, not row/model order."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="ord1")
+    uuid2 = UUID(value="ord2")
+    uuid3 = UUID(value="ord3")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+    w.add_raw_scan(uuid3, "scan3", "/exp")
+
+    idx3 = w.treeModel.indexFromItem(w.uuid_map[uuid3])
+    idx1 = w.treeModel.indexFromItem(w.uuid_map[uuid1])
+    idx2 = w.treeModel.indexFromItem(w.uuid_map[uuid2])
+
+    sel_model = w.treeView.selectionModel()
+    select_flag = sel_model.SelectionFlag.Select
+    sel_model.select(idx3, select_flag)
+    sel_model.select(idx1, select_flag)
+    sel_model.select(idx2, select_flag)
+
+    assert w.get_selected_items() == [uuid3, uuid1, uuid2]
+
+
+def test_get_selected_items_drops_deselected_item_from_order(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="desel1")
+    uuid2 = UUID(value="desel2")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+
+    idx1 = w.treeModel.indexFromItem(w.uuid_map[uuid1])
+    idx2 = w.treeModel.indexFromItem(w.uuid_map[uuid2])
+
+    sel_model = w.treeView.selectionModel()
+    sel_model.select(idx1, sel_model.SelectionFlag.Select)
+    sel_model.select(idx2, sel_model.SelectionFlag.Select)
+    sel_model.select(idx1, sel_model.SelectionFlag.Deselect)
+
+    assert w.get_selected_items() == [uuid2]
+
+
+def test_get_selected_items_reselecting_item_moves_it_to_end_of_order(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid1 = UUID(value="re1")
+    uuid2 = UUID(value="re2")
+    w.add_raw_scan(uuid1, "scan1", "/exp")
+    w.add_raw_scan(uuid2, "scan2", "/exp")
+
+    idx1 = w.treeModel.indexFromItem(w.uuid_map[uuid1])
+    idx2 = w.treeModel.indexFromItem(w.uuid_map[uuid2])
+
+    sel_model = w.treeView.selectionModel()
+    select_flag = sel_model.SelectionFlag.Select
+    sel_model.select(idx1, select_flag)
+    sel_model.select(idx2, select_flag)
+    sel_model.select(idx1, sel_model.SelectionFlag.Deselect)
+    sel_model.select(idx1, select_flag)
+
+    assert w.get_selected_items() == [uuid2, uuid1]
+
+
 # ---------------------------------------------------------------------------
 # TreeViewWidget — remove_entry
 # ---------------------------------------------------------------------------

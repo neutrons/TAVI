@@ -32,6 +32,8 @@ class Plot1DView(QWidget):
     fields_focus_changed = Signal()
     render_plots_signal = Signal(list)
     plot_clicked = Signal()
+    plot_combo_index_changed = Signal(int)
+    set_plot_options_signal = Signal(list, int)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -40,6 +42,7 @@ class Plot1DView(QWidget):
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
+        self.set_plot_options_signal.connect(self.set_plot_options)
 
     def _build_ui(self) -> None:
         """Build the 1D plotter UI."""
@@ -126,7 +129,7 @@ class Plot1DView(QWidget):
 
         plot_controls = QHBoxLayout()  # remove `self` here too — that was incorrectly setting parent
         self.current_plot_combo = QComboBox()
-        self.current_plot_combo.addItem("plot_1")
+        self.current_plot_combo.currentIndexChanged.connect(self.plot_combo_index_changed.emit)
         plot_controls.addWidget(self.current_plot_combo)
         plot_controls.addStretch(1)
         self.plot_button = QPushButton("Add Plot")
@@ -209,6 +212,21 @@ class Plot1DView(QWidget):
         finally:
             for widget in widgets:
                 widget.blockSignals(False)
+
+    def set_plot_options(self, labels: list[str], default_index: int = 0) -> None:
+        """Repopulate the "Current Plot" dropdown with a label per currently-focused plot."""
+        self.current_plot_combo.blockSignals(True)
+        try:
+            self.current_plot_combo.clear()
+            self.current_plot_combo.addItems(labels)
+            if 0 <= default_index < len(labels):
+                self.current_plot_combo.setCurrentIndex(default_index)
+        finally:
+            self.current_plot_combo.blockSignals(False)
+
+    def hookup_plot_combo_changed_signal(self, callback: Callable) -> None:
+        """Connect the "Current Plot" dropdown's index-changed signal to callback."""
+        self.plot_combo_index_changed.connect(callback)
 
     def set_preset_channel_options(self, columns: list[str], default: Optional[str] = None) -> None:
         """Repopulate the preset-channel dropdown with a newly-focused scan's column names."""

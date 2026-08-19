@@ -3,14 +3,19 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import scans_for_plots
+from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
-from tavi.meta.event.type.presenter_event import PlotFocusEvent, RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import (
+    ActivePlotChangedEvent,
+    FocusActivePlotEvent,
+    PlotFocusEvent,
+    RawScanFocusEvent,
+)
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
 
@@ -23,18 +28,36 @@ class PlotModel(PlotModelInterface):
 
         self._plots = plots
         self._raw_scans = raw_scans
-        self._last_plot: Optional[Plot] = None
+        self._last_plots: list[Plot] = []
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
-        # needs to create a new plot when a raw scan is focussed.
+        """Build one single-series preview plot per focused raw scan, so each run can be focused independently."""
         if not e.scans:
             return
-        scan: RawScan = e.scans[0]
-        x_name = scan.tavimeta.default_axis[0]
-        y_name = scan.tavimeta.default_axis[1]
+        plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        self._last_plots = plots
+        self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+
+    def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
+        """
+        Resolve a single currently-focused preview plot by uuid and announce its first contributing scan.
+
+        ``uuid`` may belong to a saved plot instead (``TaviProjectModel``'s to handle) — preview
+        and saved plot uuids never collide (see ``FocusActivePlotEvent``), so a miss here just
+        means this uuid isn't one of ours, not a bug.
+        """
+        plot = next((p for p in self._last_plots if p.uuid == e.uuid), None)
+        if plot is None:
+            return
+        self._event_broker.publish(ActivePlotChangedEvent(scan=first_contributing_scan(plot, self._raw_scans)))
+
+    def _preview_plot_for_scan(self, scan: RawScan) -> Plot:
+        """Build an unsaved single-series preview plot from one raw scan's default axis."""
+        x_name, y_name = scan.tavimeta.default_axis
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
             scan_name=scan.tavimeta.friendly_name,
@@ -44,22 +67,24 @@ class PlotModel(PlotModelInterface):
             y_name=y_name,
             error_name="error",
         )
-        plot = Plot(series=[series])
-        self._last_plot = plot
-        self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
+        return Plot(series=[series])
 
     def update_fields(self, fields: PlotFields) -> ModelResponse:
-        """Update axis columns on every series of the currently-focused plot using the plotter's control fields."""
-        if self._last_plot is None:
+        """Update axis columns on every series of every currently-focused preview plot using the plotter's fields."""
+        if not self._last_plots:
             return ModelResponse(code=ResponseCode.OK)
 
-        updated_plot = self._apply_fields_to_plot(self._last_plot, fields)
-        if updated_plot is not None:
-            self._last_plot = updated_plot
-            self._event_broker.publish(
-                PlotFocusEvent(plots=[updated_plot], scans=scans_for_plots([updated_plot], self._raw_scans))
-            )
+        updated_plots = []
+        for plot in self._last_plots:
+            updated_plot = self._apply_fields_to_plot(plot, fields)
+            if updated_plot is None:
+                return ModelResponse(code=ResponseCode.OK)
+            updated_plots.append(updated_plot)
 
+        self._last_plots = updated_plots
+        self._event_broker.publish(
+            PlotFocusEvent(plots=updated_plots, scans=scans_for_plots(updated_plots, self._raw_scans))
+        )
         return ModelResponse(code=ResponseCode.OK)
 
     def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields) -> Optional[Plot]:

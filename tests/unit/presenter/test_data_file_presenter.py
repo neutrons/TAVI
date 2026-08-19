@@ -8,7 +8,7 @@ from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.view.data_file_view import DataFileView
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, RawScanFocusEvent
 
 
 def make_scan(uuid_val="scan-001", data=None, metadata=None) -> RawScan:
@@ -103,3 +103,81 @@ def test_handle_raw_scan_focus_via_event_broker(presenter):
     EventBroker().publish(RawScanFocusEvent(scans=[scan]))
 
     presenter._view.populate_columns.assert_called_once_with(scan.data.data)
+
+
+# ---------------------------------------------------------------------------
+# tab title
+# ---------------------------------------------------------------------------
+
+
+def test_handle_raw_scan_focus_sets_title_from_friendly_name(presenter):
+    scan = make_scan(uuid_val="scan-001")
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+
+    assert received == ["Data File (test_scan)"]
+
+
+def test_handle_raw_scan_focus_no_scans_resets_title(presenter):
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
+
+    assert received == ["Data File"]
+
+
+# ---------------------------------------------------------------------------
+# handle_active_plot_changed
+# ---------------------------------------------------------------------------
+
+
+def make_plot_event(series_scan_uuid="scan-001", scan=None) -> ActivePlotChangedEvent:
+    """
+    An ``ActivePlotChangedEvent`` for the active plot's first contributing scan.
+
+    Named ``make_plot_event`` (not ``make_scan_event``) to keep call sites at their prior test
+    names/intent — the event is still conceptually "the active plot changed", it just carries
+    the plot's resolved scan directly rather than a Plot object and a snapshot to resolve it against.
+    """
+    if scan is None:
+        scan = make_scan(uuid_val=series_scan_uuid)
+    return ActivePlotChangedEvent(scan=scan)
+
+
+def test_handle_active_plot_changed_populates_from_first_series_scan(presenter):
+    event = make_plot_event()
+    presenter._view.populate_columns = MagicMock()
+
+    presenter.handle_active_plot_changed(event)
+
+    presenter._view.populate_columns.assert_called_once_with(event.scan.data.data)
+
+
+def test_handle_active_plot_changed_sets_title_from_contributing_scan(presenter):
+    event = make_plot_event()
+    received = []
+    presenter._view.title_changed.connect(received.append)
+
+    presenter.handle_active_plot_changed(event)
+
+    assert received == ["Data File (test_scan)"]
+
+
+def test_handle_active_plot_changed_no_plot_clears_view(presenter):
+    presenter._view.clear_data = MagicMock()
+
+    presenter.handle_active_plot_changed(ActivePlotChangedEvent(scan=None))
+
+    presenter._view.clear_data.assert_called_once()
+
+
+def test_handle_active_plot_changed_via_event_broker(presenter):
+    event = make_plot_event()
+    presenter._view.populate_columns = MagicMock()
+
+    EventBroker().publish(event)
+
+    presenter._view.populate_columns.assert_called_once()

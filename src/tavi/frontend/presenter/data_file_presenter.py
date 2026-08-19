@@ -3,18 +3,19 @@
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.data_file_view import DataFileView
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import RawScanFocusEvent
+from tavi.meta.event.type.presenter_event import ActivePlotChangedEvent, RawScanFocusEvent
 
 
 class DataFilePresenter(AbstractPresenter):
-    """Mediates between raw scan focus events and the DataFileView. Holds no scan data of its own."""
+    """Mediates between raw scan/plot focus events and the DataFileView. Holds no scan data of its own."""
 
     def __init__(self) -> None:
-        """Create the view and subscribe to ``RawScanFocusEvent``."""
+        """Create the view and subscribe to ``RawScanFocusEvent`` and ``ActivePlotChangedEvent``."""
         super().__init__()
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self.handle_raw_scan_focus)
+        self._event_broker.register(ActivePlotChangedEvent, self.handle_active_plot_changed)
 
     def init_view(self) -> None:
         """Create the data file view."""
@@ -22,10 +23,12 @@ class DataFilePresenter(AbstractPresenter):
 
     def handle_raw_scan_focus(self, e: RawScanFocusEvent) -> None:
         """Repopulate column data and column name widgets whenever a new scan is focused."""
-        if not e.scans:
-            self._view.clear_data()
-            return
-        scan = e.scans[0]
-        self._view.populate_columns(scan.data.data)
-        self._view.populate_variables(list(scan.data.data.keys()))
-        self._view.populate_metadata(scan.metadata.by_category())
+        # Emitted rather than called directly: this may run on TaviProjectModel's worker
+        # thread (via its Proxy), and view widgets may only be touched from the GUI thread.
+        self._view.scan_focus_changed.emit(e.scans[0] if e.scans else None)
+
+    def handle_active_plot_changed(self, e: ActivePlotChangedEvent) -> None:
+        """Repopulate the data widget from the active plot's first contributing scan."""
+        # Emitted rather than called directly: this may run on PlotModel's worker thread
+        # (via PlotModelProxy), and view widgets may only be touched from the GUI thread.
+        self._view.scan_focus_changed.emit(e.scan)

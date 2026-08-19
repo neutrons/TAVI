@@ -101,6 +101,16 @@ def test_tavi_view_has_plotter_view(built_view):
     assert isinstance(built_view.plotter_view, Plot1DView)
 
 
+def test_data_file_view_title_changed_updates_tab_text(built_view):
+    tabs = built_view.data_file_view.parent()
+    while tabs is not None and not isinstance(tabs, QTabWidget):
+        tabs = tabs.parent()
+
+    built_view.data_file_view.set_title("Data File (my_scan)")
+
+    assert tabs.tabText(0) == "Data File (my_scan)"
+
+
 # ---------------------------------------------------------------------------
 # TaviView — install_menu_bar
 # ---------------------------------------------------------------------------
