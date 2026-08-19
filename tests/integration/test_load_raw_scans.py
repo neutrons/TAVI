@@ -1,4 +1,4 @@
-
+import os
 
 from qtpy import QtCore
 from qtpy.QtCore import QPoint, Qt, QTimer
@@ -77,26 +77,36 @@ class TestLoadRawScans(IntegrationTest):
         rect = file_menu_view.actionGeometry(action)
         assert rect.isValid()
 
-        def auto_accept():
-            for w in QApplication.topLevelWidgets():
-                if isinstance(w, QFileDialog):
-                    w.selectFile(Resource.getPath("/inputs/integration/load/datafiles"))   # simulate user choice
-                    w.accept()
-                    self.test_summary.SUCCESS()
-                    break
+        folder = Resource.getPath("/inputs/integration/load/datafiles")
 
-        QTimer.singleShot(0, auto_accept)  # CRITICAL: 0 ms
-        
+        # Stand in for the user's folder choice. This replaces the dialog's *blocking*
+        # exec_() rather than driving the shown dialog from a timer: the synthetic
+        # mouseClick below spins the event loop before it delivers the click, so a
+        # QTimer scheduled here would fire before handle_load_folder ever runs. It also
+        # keeps the dialog from inheriting the lastVisitedDir that Qt persists in
+        # QSettings, which otherwise makes the test load whatever folder this machine
+        # last browsed to. Everything downstream of exec_() is still the real code path.
+        def choose_folder(dlg):
+            dlg.setDirectory(os.path.dirname(folder))
+            dlg.selectFile(folder)
+            self.test_summary.SUCCESS()
+            return QFileDialog.Accepted
+
+        monkeypatch.setattr(QFileDialog, "exec_", choose_folder)
+
         qtbot.mouseClick(file_menu_view, Qt.LeftButton, pos=rect.center())
 
 
         project_view = main_presenter.project_view
         tree_widget = project_view.tree_widget
-        
-        qtbot.wait(50)
-        
+
+        # The load runs on a worker thread (see Proxy), so the tree fills in
+        # asynchronously -- wait for it instead of assuming a fixed delay.
+        expected = UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c")
+        qtbot.waitUntil(lambda: expected in tree_widget.uuid_map, timeout=5000)
+
         # confirm it actually loaded a file.
-        assert UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c") in tree_widget.uuid_map, tree_widget.uuid_map
+        assert expected in tree_widget.uuid_map, tree_widget.uuid_map
         self.test_summary.SUCCESS()
         
 
