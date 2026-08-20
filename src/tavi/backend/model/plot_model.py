@@ -37,10 +37,17 @@ class PlotModel(PlotModelInterface):
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
-        """Build one single-series preview plot per focused raw scan, so each run can be focused independently."""
-        if not e.scans:
+        """
+        Build one single-series preview plot per focused raw scan, so each run can be focused independently.
+
+        Merged with ``e.also_plots`` (saved plots focused in the same multiselect) into one
+        combined batch and a single ``PlotFocusEvent`` publish, so a scan+plot multiselect
+        overlays both instead of the plots-only branch's own publish clobbering this one.
+        """
+        if not e.scans and not e.also_plots:
             return
-        plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        preview_plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        plots = preview_plots + list(e.also_plots)
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
 
     def _handle_plot_focus_event(self, e: PlotFocusEvent) -> None:
@@ -100,16 +107,23 @@ class PlotModel(PlotModelInterface):
         )
         return ModelResponse(code=ResponseCode.OK)
 
-    def save_focused_plots(self) -> ModelResponse:
-        """Combine every currently-focused plot's series into one new plot and publish it for saving."""
+    def save_focused_plots(self, fit_uuids: Optional[list[UUID]] = None) -> ModelResponse:
+        """
+        Combine every currently-focused plot's series into one new plot and publish it for saving.
+
+        ``fit_uuids`` (the fits currently overlaid on the canvas) are stamped onto the new
+        plot so re-focusing it later brings its fit curves back too.
+        """
         if not self._last_plots:
             return ModelResponse(code=ResponseCode.OK)
 
         series = [series.model_copy(deep=True) for plot in self._last_plots for series in plot.series]
-        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series)))
+        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series, fits=fit_uuids or [])))
         return ModelResponse(code=ResponseCode.OK)
 
-    def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]) -> Optional[Plot]:
+    def _apply_fields_to_plot(
+        self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]
+    ) -> Optional[Plot]:
         """
         Return a copy of ``plot`` with the targeted series updated, or None if any of them rejects the fields.
 

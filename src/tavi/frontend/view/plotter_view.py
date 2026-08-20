@@ -24,6 +24,7 @@ from qtpy.QtWidgets import (
 
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.enum.rebin_mode import RebinMode
+from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields
 
 
@@ -36,6 +37,7 @@ class Plot1DView(QWidget):
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
     sync_fields_signal = Signal(object)
+    append_fit_curve_signal = Signal(object)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -46,6 +48,7 @@ class Plot1DView(QWidget):
         self.render_plots_signal.connect(self._render_plots)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
+        self.append_fit_curve_signal.connect(self._append_fit_curve)
 
     def _build_ui(self) -> None:
         """Build the 1D plotter UI."""
@@ -179,6 +182,13 @@ class Plot1DView(QWidget):
         ax.errorbar(x, y, yerr=err, label=label, fmt="o", capsize=3)
         ax.set_xlabel(x_name)
         ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
+        ax.legend()
+        self.canvas.draw()
+
+    def _append_fit_curve(self, fit: FitCurve) -> None:
+        """Draw a fit's evaluated curve as a solid line, distinct from append_plot's scatter style."""
+        ax = self.canvas.axes
+        ax.plot(fit.x, fit.best_fit, "-", label=f"{fit.scan_name} fit")
         ax.legend()
         self.canvas.draw()
 

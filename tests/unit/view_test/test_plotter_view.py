@@ -7,6 +7,7 @@ import pytest
 from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields
 
 
@@ -708,3 +709,53 @@ def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
     assert view.preset_type_combo.isEnabled() is True
     assert view.preset_channel_combo.isEnabled() is True
     assert view.preset_value_edit.isEnabled() is True
+
+
+# ---------------------------------------------------------------------------
+# fit curve rendering
+# ---------------------------------------------------------------------------
+
+
+def make_fit_curve() -> FitCurve:
+    return FitCurve(scan_name="my_scan", x=[1.0, 2.0, 3.0], best_fit=[1.1, 2.1, 3.1])
+
+
+def test_append_fit_curve_adds_a_line(view):
+    view._append_fit_curve(make_fit_curve())
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_append_fit_curve_label_includes_scan_name_and_fit(view):
+    view._append_fit_curve(make_fit_curve())
+    labels = [line.get_label() for line in view.canvas.axes.lines]
+    assert any("my_scan" in lbl and "fit" in lbl for lbl in labels)
+
+
+def test_append_fit_curve_does_not_add_an_errorbar_container(view):
+    """A fit curve is a solid line, not a scatter/errorbar series like append_plot's data points."""
+    view._append_fit_curve(make_fit_curve())
+    assert len(view.canvas.axes.containers) == 0
+
+
+def test_append_fit_curve_signal_emits_to_append_fit_curve(view, qtbot):
+    with qtbot.waitSignal(view.append_fit_curve_signal, timeout=1000):
+        view.append_fit_curve_signal.emit(make_fit_curve())
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_append_fit_curve_survives_alongside_a_data_series(view):
+    """append_plot's errorbar series and the fit curve coexist - neither call clears the other's artists."""
+    view.append_plot(
+        np.array([1.0, 2.0]),
+        np.array([3.0, 4.0]),
+        np.array([0.0, 0.0]),
+        "my_scan", None, "qh", "en", "err",
+    )
+    lines_before = len(view.canvas.axes.lines)
+
+    view._append_fit_curve(make_fit_curve())
+
+    assert len(view.canvas.axes.containers) == 1
+    assert len(view.canvas.axes.lines) == lines_before + 1
+    labels = [line.get_label() for line in view.canvas.axes.lines]
+    assert any("my_scan" in lbl and "fit" in lbl for lbl in labels)

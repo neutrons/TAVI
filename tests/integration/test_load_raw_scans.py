@@ -51,6 +51,7 @@ class TestLoadRawScans(IntegrationTest):
 
         dict_of_model = {
             "TaviProjectProxy": TaviProjectProxy(tavi_project_model),
+            "Filestore": filestore,
             ApplicationModelInterface.__name__: ApplicationModelProxy(application_model),
             PlotModelInterface.__name__: PlotModelProxy(plot_model),
         }

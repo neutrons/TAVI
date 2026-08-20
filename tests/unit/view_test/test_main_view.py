@@ -8,6 +8,7 @@ from qtpy.QtWidgets import QMenuBar, QMessageBox, QSplitter, QTabWidget
 from tavi import __version__
 from tavi.frontend.view.data_file_view import DataFileView
 from tavi.frontend.view.filter_view import FilterView
+from tavi.frontend.view.fitting_view import FittingView
 from tavi.frontend.view.main_view import MainWindow, TaviView
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.frontend.view.project_view import ProjectView
@@ -22,6 +23,7 @@ def built_view(qtbot):
         project_view=ProjectView(),
         plot_view=Plot1DView(),
         data_file_view=DataFileView(),
+        fitting_view=FittingView(),
         filter_view=FilterView(),
     )
     return view

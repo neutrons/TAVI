@@ -37,6 +37,7 @@ class FileMenu(QMenu):
         """
         super().__init__(parent)
         self.load_folder_callback = None
+        self.get_last_folder_callback: Optional[Callable[[], Optional[str]]] = None
         self.exit_callback: Optional[Callable[[], None]] = None
 
         # ---- File Menu ----
@@ -133,6 +134,10 @@ class FileMenu(QMenu):
         """Build callback connections for the load data - set by the presenter."""
         self.load_folder_callback = callback
 
+    def setup_callback_get_last_folder(self, callback: Callable[[], Optional[str]]) -> None:
+        """Register the presenter's callback for fetching the last folder opened, to seed the dialog."""
+        self.get_last_folder_callback = callback
+
     def load_folder(self, folder: str) -> None:
         """Pass loaded file through callback connections."""
         self.load_folder_callback(folder)  # type: ignore
@@ -141,12 +146,19 @@ class FileMenu(QMenu):
         """
         Open a system window and allow users to select a folder directory.
 
+        Opens on whichever folder was last selected (the presenter persists this via
+        the filestore), and forwards the new selection back to the presenter to persist.
+
         It executes the "load_folder" function.
         """
         dlg = QFileDialog(self, "Select a folder")
         dlg.setFileMode(QFileDialog.Directory)
         dlg.setOption(QFileDialog.Option.ShowDirsOnly, False)
         dlg.setOption(QFileDialog.Option.DontUseNativeDialog, True)
+
+        last_folder = self.get_last_folder_callback() if self.get_last_folder_callback else None
+        if last_folder:
+            dlg.setDirectory(last_folder)
 
         if dlg.exec_():
             folder = dlg.selectedFiles()  # returns a list

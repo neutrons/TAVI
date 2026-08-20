@@ -67,3 +67,96 @@ def test_set_unknown_parameter_raises():
     fit = Fit(package=FitPackage.lmfit)
     with pytest.raises(ValueError, match="unknown parameter"):
         fit.fit(x, y, [(ModelName.Gaussian, dict(guess=True, set={"nope": dict(value=1.0)}))])
+
+
+# ---------------------------------------------------------------------------
+# err -> weights
+# ---------------------------------------------------------------------------
+
+
+def test_err_downweights_a_noisy_outlier():
+    """A single wildly-off point with a huge error bar must not drag the fit toward it."""
+    x, y = _gaussian_data()
+    y = y.copy()
+    outlier_index = 10
+    y[outlier_index] += 1000.0
+    err = np.ones_like(x)
+    err[outlier_index] = 1e6
+
+    fit = Fit(package=FitPackage.lmfit)
+    weighted = fit.fit(x, y, [(ModelName.Gaussian, dict(guess=True))], err=err)
+    unweighted = fit.fit(x, y, [(ModelName.Gaussian, dict(guess=True))])
+
+    true_amplitude = 100 * 0.2 * np.sqrt(2 * np.pi)
+    assert abs(weighted.peak.values["amplitude"] - true_amplitude) < abs(
+        unweighted.peak.values["amplitude"] - true_amplitude
+    )
+
+
+def test_err_zero_gets_zero_weight_not_infinite():
+    """A zero-error point must not blow up into an infinite weight."""
+    x, y = _gaussian_data()
+    err = np.ones_like(x)
+    err[0] = 0.0
+
+    fit = Fit(package=FitPackage.lmfit)
+    result = fit.fit(x, y, [(ModelName.Gaussian, dict(guess=True))], err=err)
+
+    assert np.isfinite(result.peak.values["amplitude"])
+
+
+def test_err_none_fits_unweighted_as_before():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    result = fit.fit(x, y, [(ModelName.Gaussian, dict(guess=True))], err=None)
+    assert result.raw.weights is None
+
+
+def test_guess_finds_center_near_true_peak():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Gaussian)
+    assert guess["center"] == pytest.approx(0.5, abs=0.05)
+
+
+def test_guess_amplitude_is_positive_for_a_positive_peak():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Gaussian)
+    assert guess["amplitude"] > 0
+
+
+def test_guess_includes_fwhm():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Gaussian)
+    assert guess["fwhm"] > 0
+
+
+def test_guess_strips_prefix_from_keys():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Gaussian, prefix="peak_")
+    assert "center" in guess
+    assert "peak_center" not in guess
+
+
+def test_guess_works_for_lorentzian():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Lorentzian)
+    assert guess["center"] == pytest.approx(0.5, abs=0.05)
+
+
+def test_guess_works_for_voigt():
+    x, y = _gaussian_data()
+    fit = Fit(package=FitPackage.lmfit)
+    guess = fit.guess(x, y, ModelName.Voigt)
+    assert guess["center"] == pytest.approx(0.5, abs=0.05)
+
+
+def test_guess_rejects_non_lmfit_package():
+    x, y = _gaussian_data()
+    fit = Fit(package="not-lmfit")
+    with pytest.raises(ValueError, match="not supported"):
+        fit.guess(x, y, ModelName.Gaussian)
