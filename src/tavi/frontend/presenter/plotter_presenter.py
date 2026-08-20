@@ -1,7 +1,6 @@
 """Presenter for the 1D plotter panel."""
 
 from typing import Optional
-from uuid import uuid4
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.backend.model.plot_resolver import first_contributing_scan, resolve_series
@@ -15,7 +14,6 @@ from tavi.meta.event.type.presenter_event import (
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
-    SavePlotEvent,
 )
 
 
@@ -26,7 +24,6 @@ class PlotterPresenter(AbstractPresenter):
         """Create the view and subscribe to ``PlotFocusEvent``."""
         super().__init__()
         self._model = model
-        self._current_plot: Optional[Plot] = None
         # Only UUIDs are held between events — the model's tavi_data is the single source of
         # truth for Plot/Scan objects. A dropdown switch re-asks the owning model (via
         # FocusActivePlotEvent, handled by both models — whichever owns the uuid acts) rather
@@ -54,16 +51,24 @@ class PlotterPresenter(AbstractPresenter):
         self._view.set_preset_channel_options(list(scan.data.data.keys()))
 
     def handle_fields_changed(self) -> None:
-        """Pull current control field values from the view and dispatch to the model."""
+        """
+        Pull current control field values from the view and dispatch to the model.
+
+        "Apply All" checked (the default) updates every focused plot, same as always; unchecked
+        scopes the edit to just the active plot, leaving the rest of the batch untouched.
+        """
         fields = self._view.get_plot_fields()
-        self._model.update_fields(fields)
+        target_uuid = None if self._view.is_apply_all_checked() else self._active_plot_uuid
+        self._model.update_fields(fields, target_uuid=target_uuid)
 
     def handle_plot_clicked(self) -> None:
-        """Deep-copy the currently focused plot under a fresh uuid and publish it as a new plot."""
-        if self._current_plot is None:
-            return
-        new_plot = self._current_plot.model_copy(deep=True, update={"uuid": UUID(value=str(uuid4()))})
-        self._event_broker.publish(SavePlotEvent(plot=new_plot))
+        """
+        Ask the model to save every currently-focused plot's series as one new plot.
+
+        The model (not this presenter) holds the live Plot data, so it resolves and combines
+        the batch itself rather than the presenter replaying cached Plot objects.
+        """
+        self._model.save_focused_plots()
 
     def handle_plot_focus(self, e: PlotFocusEvent) -> None:
         """
@@ -72,7 +77,6 @@ class PlotterPresenter(AbstractPresenter):
         ``e.scans`` is a deep-copied snapshot carried by the event itself (see
         ``PlotFocusEvent``) — this never reaches into any model's live storage.
         """
-        self._current_plot = e.plots[0] if e.plots else None
         resolved = [(*resolve_series(series, e.scans), series) for plot in e.plots for series in plot.series]
         self._view.render_plots_signal.emit(resolved)
 
@@ -89,6 +93,11 @@ class PlotterPresenter(AbstractPresenter):
         self._view.set_plot_options_signal.emit([self._plot_label(plot) for plot in e.plots], default_index)
 
         active_plot = next((plot for plot in e.plots if plot.uuid == self._active_plot_uuid), None)
+        # From the active plot specifically - not resolved's last entry, which may belong to a
+        # different, untouched plot and would otherwise overwrite what the user just typed.
+        active_series = active_plot.series[0] if active_plot is not None and active_plot.series else None
+        self._view.sync_fields_signal.emit(active_series)
+
         scan = first_contributing_scan(active_plot, e.scans) if active_plot is not None else None
         self._event_broker.publish(ActivePlotChangedEvent(scan=scan))
 

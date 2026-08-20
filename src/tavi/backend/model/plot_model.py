@@ -15,6 +15,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    SavePlotEvent,
 )
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
@@ -69,13 +70,22 @@ class PlotModel(PlotModelInterface):
         )
         return Plot(series=[series])
 
-    def update_fields(self, fields: PlotFields) -> ModelResponse:
-        """Update axis columns on every series of every currently-focused preview plot using the plotter's fields."""
+    def update_fields(self, fields: PlotFields, target_uuid: Optional[UUID] = None) -> ModelResponse:
+        """
+        Update axis columns on every series of the focused preview plot(s) using the plotter's fields.
+
+        Every currently-focused plot is updated when ``target_uuid`` is ``None`` ("Apply All");
+        otherwise only the one plot matching ``target_uuid`` is touched, and every other plot is
+        carried through unchanged.
+        """
         if not self._last_plots:
             return ModelResponse(code=ResponseCode.OK)
 
         updated_plots = []
         for plot in self._last_plots:
+            if target_uuid is not None and plot.uuid != target_uuid:
+                updated_plots.append(plot)
+                continue
             updated_plot = self._apply_fields_to_plot(plot, fields)
             if updated_plot is None:
                 return ModelResponse(code=ResponseCode.OK)
@@ -85,6 +95,15 @@ class PlotModel(PlotModelInterface):
         self._event_broker.publish(
             PlotFocusEvent(plots=updated_plots, scans=scans_for_plots(updated_plots, self._raw_scans))
         )
+        return ModelResponse(code=ResponseCode.OK)
+
+    def save_focused_plots(self) -> ModelResponse:
+        """Combine every currently-focused plot's series into one new plot and publish it for saving."""
+        if not self._last_plots:
+            return ModelResponse(code=ResponseCode.OK)
+
+        series = [series.model_copy(deep=True) for plot in self._last_plots for series in plot.series]
+        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series)))
         return ModelResponse(code=ResponseCode.OK)
 
     def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields) -> Optional[Plot]:
