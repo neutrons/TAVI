@@ -186,23 +186,22 @@ class TestPlotModel(unittest.TestCase):
         assert response.code.name == "OK"
         assert len(received) == 0
 
-    def test_update_fields_with_target_uuid_only_updates_that_plot(self):
+    def test_update_fields_with_target_uuid_only_updates_that_series(self):
         scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
         scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
         self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan1, scan2]))
-        target_uuid = self.model._last_plots[0].uuid
 
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"), target_uuid=target_uuid)
+        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"), target_uuid=scan1.uuid)
 
         assert response.code.name == "OK"
-        updated = {p.uuid: p for p in received[0].plots}
-        assert updated[target_uuid].series[0].x_name == "en"
-        assert updated[target_uuid].series[0].y_name == "qh"
+        updated_series = {s.source_scan_uuid: s for p in received[0].plots for s in p.series}
+        assert updated_series[scan1.uuid].x_name == "en"
+        assert updated_series[scan1.uuid].y_name == "qh"
 
     def test_update_fields_with_target_uuid_leaves_other_plots_untouched(self):
         scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
@@ -210,31 +209,49 @@ class TestPlotModel(unittest.TestCase):
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
         self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan1, scan2]))
-        target_uuid = self.model._last_plots[0].uuid
-        other_uuid = self.model._last_plots[1].uuid
 
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"), target_uuid=target_uuid)
+        self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"), target_uuid=scan1.uuid)
 
-        updated = {p.uuid: p for p in received[0].plots}
-        assert updated[other_uuid].series[0].x_name == "qh"
-        assert updated[other_uuid].series[0].y_name == "en"
+        updated_series = {s.source_scan_uuid: s for p in received[0].plots for s in p.series}
+        assert updated_series[scan2.uuid].x_name == "qh"
+        assert updated_series[scan2.uuid].y_name == "en"
 
-    def test_update_fields_with_target_uuid_invalid_column_only_blocks_that_plot(self):
-        """An invalid edit targeted at one plot must not silently fall back to the other run's columns."""
+    def test_update_fields_with_target_uuid_leaves_sibling_series_in_the_same_plot_untouched(self):
+        """A single saved plot's series can be edited individually - its siblings must stay as-is."""
+        scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
+        scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
+        self.raw_scans[scan1.uuid] = scan1
+        self.raw_scans[scan2.uuid] = scan2
+        fused = self.model._preview_plot_for_scan(scan1).model_copy(
+            update={"series": [self.model._preview_plot_for_scan(scan1).series[0],
+                                self.model._preview_plot_for_scan(scan2).series[0]]}
+        )
+        self.model._last_plots = [fused]
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"), target_uuid=scan1.uuid)
+
+        updated_series = {s.source_scan_uuid: s for p in received[0].plots for s in p.series}
+        assert updated_series[scan1.uuid].x_name == "en"
+        assert updated_series[scan2.uuid].x_name == "qh"
+
+    def test_update_fields_with_target_uuid_invalid_column_only_blocks_that_series(self):
+        """An invalid edit targeted at one series must not silently fall back to the other run's columns."""
         scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-001")
         scan2 = make_raw_scan(x_col="qk", y_col="ei", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
         self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan1, scan2]))
-        target_uuid = self.model._last_plots[1].uuid  # scan2, which lacks qh/en
 
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
 
-        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="en"), target_uuid=target_uuid)
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="en"), target_uuid=scan2.uuid)
 
         assert response.code.name == "OK"
         assert len(received) == 0
@@ -357,29 +374,39 @@ class TestPlotModel(unittest.TestCase):
         assert len(self.broker.registry[FocusActivePlotEvent]) == 1
 
     def test_active_plot_focus_event_announces_matching_preview_plots_scan(self):
-        """An unsaved preview plot's uuid must resolve here — it is never in TaviData."""
+        """A series' source scan uuid must resolve here — it is never one of TaviData's saved plots."""
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
         self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
-        preview_uuid = self.model._last_plots[0].uuid
 
         received: list[ActivePlotChangedEvent] = []
         self.broker.register(ActivePlotChangedEvent, received.append)
-        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+        self.broker.publish(FocusActivePlotEvent(uuid=scan.uuid))
 
         assert len(received) == 1
         assert received[0].scan.uuid == scan.uuid
+
+    def test_active_plot_focus_event_announces_matching_preview_plots_series(self):
+        """The plotter resyncs its axis/preset fields from this - not just the scan's default axis."""
+        scan = make_raw_scan(x_col="qh", y_col="en")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[ActivePlotChangedEvent] = []
+        self.broker.register(ActivePlotChangedEvent, received.append)
+        self.broker.publish(FocusActivePlotEvent(uuid=scan.uuid))
+
+        assert received[0].series == self.model._last_plots[0].series[0]
 
     def test_active_plot_focus_event_does_not_republish_plot_focus_event(self):
         """Switching the active plot must not re-resolve or re-render the whole focused batch."""
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
         self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
-        preview_uuid = self.model._last_plots[0].uuid
 
         received: list[PlotFocusEvent] = []
         self.broker.register(PlotFocusEvent, received.append)
-        self.broker.publish(FocusActivePlotEvent(uuid=preview_uuid))
+        self.broker.publish(FocusActivePlotEvent(uuid=scan.uuid))
 
         assert received == []
 
@@ -429,7 +456,11 @@ class TestPlotModel(unittest.TestCase):
         assert received[0].plot.uuid != original_uuid
 
     def test_save_focused_plots_combines_series_from_every_focused_run(self):
-        """Multiselect focus (one preview plot per selected scan) must save all their series together."""
+        """
+        Multiselect focus (one preview plot per selected scan) must save one plot with all their
+        series together - the plotter's "Current Plot" dropdown offers each series individually
+        regardless of whether they live in one fused plot or several single-series ones.
+        """
         scan1 = make_raw_scan(uuid_val="scan-001")
         scan2 = make_raw_scan(uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
@@ -441,6 +472,7 @@ class TestPlotModel(unittest.TestCase):
 
         self.model.save_focused_plots()
 
+        assert len(received) == 1
         saved_sources = [series.source_scan_uuid for series in received[0].plot.series]
         assert saved_sources == [scan1.uuid, scan2.uuid]
 
