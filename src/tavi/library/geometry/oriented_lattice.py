@@ -326,8 +326,8 @@ class OrientedLattice:
         q_norm = 2 * np.pi * np.linalg.norm(self._B @ np.array(hkl))
         return q_norm
 
-    def reciprocal_vectors(self) -> tuple:
-        """Compute reciprocal lattice vector based on Eq.9-21."""
+    def real_space_vectors(self) -> tuple:
+        """Compute real lattice vector based on Eq.9-21."""
         cos_alpha = np.cos(np.radians(self._alpha))
         sin_alpha = np.sin(np.radians(self._alpha))
 
@@ -349,7 +349,19 @@ class OrientedLattice:
                 self._c * Vabg / sin_gamma,
             ]
         )
-        return (a_vec, b_vec, c_vec)
+        return a_vec, b_vec, c_vec, Vabg
+
+    def reciprocal_vectors(self)->tuple:
+        """Compute reciprocal lattice vectors."""
+        a_vec, b_vec, c_vec, Vabg = self.real_space_vectors()
+        V = Vabg*self._a*self._b*self._c
+        prefactor = 2 * np.pi / V
+        a_star_vec = np.cross(b_vec, c_vec) * prefactor
+        b_star_vec = np.cross(c_vec, a_vec) * prefactor
+        c_star_vec = np.cross(a_vec, b_vec) * prefactor
+
+        return (a_star_vec, b_star_vec, c_star_vec)
+
 
     def rot_matrix_with_minimal_tilt(
         self,
