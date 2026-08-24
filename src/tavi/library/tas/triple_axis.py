@@ -339,7 +339,8 @@ class TAS:
             ellipses.append(
                 (idx, peak, ellipse_co, axes_angle, coh_para, coh_perp, ellipse_incoh, incoh_para, incoh_perp)
             )
-            combo_dimensions = update_dimension_names(resolution_frame=resolution_frame)
+            if resolution_frame != "local":
+                combo_dimensions = update_dimension_names(resolution_frame=resolution_frame)
             if not xlabel:
                 xlabel = combo_dimensions[ellipse_axes[0]]
             if not ylabel:
