@@ -351,17 +351,16 @@ class OrientedLattice:
         )
         return a_vec, b_vec, c_vec
 
-    def reciprocal_vectors(self)->tuple:
+    def reciprocal_vectors(self) -> tuple:
         """Compute reciprocal lattice vectors."""
         a_vec, b_vec, c_vec = self.real_space_vectors()
-        V = self.Vabg*self._a*self._b*self._c
+        V = self.Vabg * self._a * self._b * self._c
         prefactor = 2 * np.pi / V
         a_star_vec = np.cross(b_vec, c_vec) * prefactor
         b_star_vec = np.cross(c_vec, a_vec) * prefactor
         c_star_vec = np.cross(a_vec, b_vec) * prefactor
 
         return (a_star_vec, b_star_vec, c_star_vec)
-
 
     def rot_matrix_with_minimal_tilt(
         self,
