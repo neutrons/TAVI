@@ -22,6 +22,18 @@ from tavi.library.storage.loader.interface.base import AbstractLoader
 logger = logging.getLogger(__name__)
 
 
+# SPICE writes some column names with a space in them (HB1 in polarization mode has "psc ramp"),
+# which a plain whitespace split would turn into two columns, shifting every column after it.
+_SPICE_NAME_FIXUPS = {"psc ramp": "psc_ramp"}
+
+
+def _split_col_names(header_line: str) -> list[str]:
+    """Split the col_headers line into one name per column, joining names that contain a space."""
+    for raw_name, fixed_name in _SPICE_NAME_FIXUPS.items():
+        header_line = header_line.replace(raw_name, fixed_name)
+    return header_line.strip("#").split()
+
+
 def _normalize_col_name(col_name: str) -> str:
     """Apply the same sanitization used for column keys, so lookups by name always match."""
     if not col_name:
@@ -178,7 +190,7 @@ class ORNLSpiceLoader(AbstractLoader):
         all_content = f.splitlines()
         headers = [line.strip() for line in all_content if "#" in line]
         index_col_name = headers.index("# col_headers =")
-        col_names = headers[index_col_name + 1].strip("#").split()
+        col_names = _split_col_names(headers[index_col_name + 1])
         try:
             with warnings.catch_warnings():
                 # Treat all warnings as exceptions within this block
@@ -193,6 +205,13 @@ class ORNLSpiceLoader(AbstractLoader):
             # see HB1_exp0815_scan0001.dat file
             logger.error(e)
             col_values = np.array(None)
+
+        # a name we don't know how to join would shift every column after it, so report and drop the
+        # trailing names instead of mislabeling data or running off the end of the row
+        if col_values.ndim > 0 and len(col_names) != col_values.shape[-1]:
+            logger.error("%s: %d column names for %d data columns", file_path, len(col_names), col_values.shape[-1])
+            col_names = col_names[: col_values.shape[-1]]
+
         data = dict()
         for col_index, col_name in enumerate(col_names):
             attr_name = _normalize_col_name(col_name)
