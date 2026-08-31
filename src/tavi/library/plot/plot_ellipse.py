@@ -1,6 +1,7 @@
 """Handle plotting a 2d ellipse resolution matrix."""
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 import matplotlib.pyplot as plt
@@ -123,6 +124,7 @@ class PlotResolution:
         ellipses: list[tuple],
         xlabel: Optional[str] = None,
         ylabel: Optional[str] = None,
+        save_figure: Optional[str] = None,
     ) -> None:
         """
         Lay out a grid of resolution ellipses, one subplot per peak.
@@ -138,6 +140,10 @@ class PlotResolution:
                 ``incoh_perp`` are the FWHMs shown in the title.
             xlabel: Custom x-axis label applied to each subplot. Left unlabeled if None.
             ylabel: Custom y-axis label applied to each subplot. Left unlabeled if None.
+            save_figure: Output file name for the figure. When given, the figure is
+                saved under that name instead of being shown; the format follows the
+                suffix, defaulting to .png when the name has none. The figure is
+                displayed and not saved when None (default).
 
         """
         n = len(ellipses)
@@ -172,4 +178,14 @@ class PlotResolution:
             if ylabel is not None:
                 ax.set_ylabel(ylabel)
         plt.tight_layout()
-        plt.show()
+        if save_figure:
+            # matplotlib picks the writer from the suffix; default to png when the
+            # name carries none. Close the figure so saving in a loop doesn't pile
+            # up open figures.
+            path = Path(save_figure)
+            if not path.suffix:
+                path = path.with_suffix(".png")
+            fig.savefig(path, dpi=150)
+            plt.close(fig)
+        else:
+            plt.show()

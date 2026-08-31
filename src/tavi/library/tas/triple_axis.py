@@ -110,6 +110,7 @@ class TAS:
         normalize: str = None,
         multiply_factor: float = 1.0,
         coh_bar: bool = True,
+        save_figure: str = None,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
@@ -150,6 +151,9 @@ class TAS:
             coh_bar: Which resolution bar to draw when show_resolution_bar is set.
                 True (default) draws the coherent FWHM, labeled "res"; False draws
                 the incoherent FWHM, labeled "incoh_res".
+            save_figure: File name to save the figure under. When given, the figure
+                is saved instead of shown; the format follows the suffix, defaulting
+                to .png. Shown and not saved when None.
 
         """
         resolution_bar_4d = None
@@ -178,6 +182,7 @@ class TAS:
             normalize,
             multiply_factor,
             coh_bar,
+            save_figure,
         )
 
     def resolution_bar(
@@ -285,6 +290,7 @@ class TAS:
         resolution_frame: str | Tuple = "local",
         ellipse_axes: tuple = (0, 1),
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+        save_figure: Optional[str] = None,
     ) -> None:
         """
         Plot the resolution ellipse for each scan in a grid of subplots.
@@ -300,6 +306,9 @@ class TAS:
             ellipse_axes: Pair of resolution_frame axes spanning the ellipse
                 plane. 0/1/2 for the momentum axes, 3 for energy.
             model_dict: Models passed to the fit when locating peak centers.
+            save_figure: File name to save the figure under. When given, the figure
+                is saved instead of shown; the format follows the suffix, defaulting
+                to .png. Shown and not saved when None.
 
         """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
@@ -363,4 +372,4 @@ class TAS:
             if not ylabel:
                 ylabel = combo_dimensions[ellipse_axes[1]]
 
-        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
+        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel, save_figure=save_figure)

@@ -1,5 +1,6 @@
 """Data browser."""
 
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
@@ -25,6 +26,7 @@ def browse_scans(
     normalize: Optional[str] = None,
     multiply_factor: float = 1.0,
     coh_bar: bool = True,
+    save_figure: Optional[str] = None,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -60,6 +62,10 @@ def browse_scans(
         coh_bar: Whether the widths in resolution_bars are coherent FWHMs. Only
             affects the legend label: "res" when True (default), "incoh_res" when
             the incoherent FWHM was passed in instead.
+        save_figure: Output file name for the figure. When given, the figure is
+            saved under that name instead of being shown; the format follows the
+            suffix, defaulting to .png when the name has none. The figure is
+            displayed and not saved when None (default).
 
     """
     from tavi.library.fit import Fit
@@ -214,7 +220,17 @@ def browse_scans(
         ax.set_visible(False)
 
     fig.tight_layout()
-    plt.show()
+    if save_figure:
+        # matplotlib picks the writer from the suffix; default to png when the
+        # name carries none. Close the figure so saving in a loop doesn't pile
+        # up open figures.
+        path = Path(save_figure)
+        if not path.suffix:
+            path = path.with_suffix(".png")
+        fig.savefig(path, dpi=150)
+        plt.close(fig)
+    else:
+        plt.show()
     if resolution_bars is not None:
         return hkls, fit_results, res_mat_4d
     return None, None, None
