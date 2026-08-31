@@ -22,6 +22,8 @@ def browse_scans(
     def_y: str = None,
     xlim: Optional[float | list[float]] = None,
     ylim: Optional[float | list[float]] = None,
+    normalize: Optional[str] = None,
+    multiply_factor: float = 1.0,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -49,6 +51,11 @@ def browse_scans(
         ylim: A scalar pads the y-axis symmetrically around the data range (e.g. 1.2
             widens it to 1.2x the data span about its midpoint); a [min, max] list
             sets the y range directly.
+        normalize: Name of a column in the scan data (e.g. "monitor", "time") to
+            normalize by. The y data (and its error bars) are divided element-wise
+            by that column. No normalization is applied when None.
+        multiply_factor: Scale applied to the y data (and its error bars) after
+            normalization. Defaults to 1.0, i.e. no scaling.
 
     """
     from tavi.library.fit import Fit
@@ -87,9 +94,26 @@ def browse_scans(
         else:
             x = np.asarray(scan.data.data[def_x])
             xlabel = def_x
-        y = np.asarray(scan.data.data[def_y])
+        y = np.asarray(scan.data.data[def_y], dtype=float)
+        y_err = np.sqrt(np.abs(y))
 
-        ax.errorbar(x, y, yerr=np.sqrt(y), fmt="o")
+        # Normalize element-wise by the requested channel, then apply the overall
+        # scale. Errors are propagated through both so the bars stay consistent with
+        # the plotted (and fitted) y.
+        if normalize:
+            # Columns whose names start with a digit are stored with a leading
+            # underscore, same as def_x/def_y above.
+            norm_key = "_" + normalize if normalize[0].isdigit() else normalize
+            if norm_key not in scan.data.data:
+                raise KeyError(f"Normalization column '{normalize}' not found in scan {num}.")
+            norm = np.asarray(scan.data.data[norm_key], dtype=float)
+            y = y / norm
+            y_err = y_err / norm
+        if multiply_factor != 1.0:
+            y = y * multiply_factor
+            y_err = y_err * multiply_factor
+
+        ax.errorbar(x, y, yerr=y_err, fmt="o")
 
         if show_fits:
             fit_result = fit.fit(x, y, model_dict)
@@ -160,7 +184,10 @@ def browse_scans(
         hkls.append(hkl)
         ax.set_title(f"{num}, {hkl}")
         ax.set_xlabel(xlabel)
-        ax.set_ylabel(def_y)
+        ylabel = f"{def_y}/{normalize}" if normalize else def_y
+        if multiply_factor != 1.0:
+            ylabel = f"{ylabel}*{multiply_factor:g}"
+        ax.set_ylabel(ylabel)
 
         # A scalar scales the axis symmetrically around the data midpoint (e.g. 1.1
         # widens to 1.1x the data span); a [min, max] sequence sets the range directly.

@@ -107,6 +107,8 @@ class TAS:
         ylim: float | list[float] = None,
         resolution_frame: str | tuple = "local",
         projection_axis: int = 0,
+        normalize: str = None,
+        multiply_factor: float = 1.0,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
@@ -141,6 +143,9 @@ class TAS:
                 ``((1, 0, 0), (0, 1, 0), (0, 0, 1), "e")``.
             projection_axis: Axis of resolution_frame the FWHM is taken along.
                 0/1/2 for the momentum axes, 3 for energy.
+            normalize: Name of a scan data column (e.g. "monitor", "time") to divide
+                the y data by element-wise. No normalization when None.
+            multiply_factor: Scale applied to the y data after normalization.
 
         """
         resolution_bar_4d = None
@@ -162,6 +167,8 @@ class TAS:
             def_y,
             xlim,
             ylim,
+            normalize,
+            multiply_factor,
         )
 
     def resolution_bar(
