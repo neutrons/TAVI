@@ -22,7 +22,7 @@ class VERITAS:
 
     @staticmethod
     def export_intensity(
-        title:str,
+        title: str,
         hkls: list,
         fit_results: list,
         res_4ds: list,
