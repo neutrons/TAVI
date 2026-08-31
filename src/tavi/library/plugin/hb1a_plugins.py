@@ -35,6 +35,7 @@ class VERITAS:
         Export the intensity data to a .int file for refinement.
 
         Args:
+            title: Title line written as the first line of the file header.
             hkls: List of (h, k, l) per peak.
             fit_results: Fit result per peak, providing amplitude and amplitude_err.
             res_4ds: (resolution matrix, r0) per peak.
