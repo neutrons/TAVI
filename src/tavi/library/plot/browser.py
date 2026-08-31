@@ -24,6 +24,7 @@ def browse_scans(
     ylim: Optional[float | list[float]] = None,
     normalize: Optional[str] = None,
     multiply_factor: float = 1.0,
+    coh_bar: bool = True,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -56,6 +57,9 @@ def browse_scans(
             by that column. No normalization is applied when None.
         multiply_factor: Scale applied to the y data (and its error bars) after
             normalization. Defaults to 1.0, i.e. no scaling.
+        coh_bar: Whether the widths in resolution_bars are coherent FWHMs. Only
+            affects the legend label: "res" when True (default), "incoh_res" when
+            the incoherent FWHM was passed in instead.
 
     """
     from tavi.library.fit import Fit
@@ -141,7 +145,7 @@ def browse_scans(
                     ax.plot(x_fine, y_comp, "--", lw=1, label=label)
 
             if show_resolution_bar:
-                # Resolution bar: horizontal line of width = coherent FWHM (coh) in q,
+                # Resolution bar: horizontal line of width = the FWHM in q,
                 # centered on each fitted peak and drawn at the peak's half-maximum.
                 # The half-maximum sits at the background plus half the peak height, so
                 # any linear (or other non-peak) background is added beneath the bar.
@@ -153,11 +157,12 @@ def browse_scans(
                     return component is not None and "center" not in component.values
 
                 coh_list = np.atleast_1d(coh)
+                label_prefix = "res=" if coh_bar else "incoh_res="
                 if show_component_labels:
                     sep = "\n" if len(coh) > 1 else ", "
-                    reso_label = "res=" + sep.join(f"{c:.3g}" for c in coh_list)
+                    reso_label = label_prefix + sep.join(f"{c:.3g}" for c in coh_list)
                 else:
-                    reso_label = "res=" + ",".join(f"{c:.3g}" for c in coh_list)
+                    reso_label = label_prefix + ",".join(f"{c:.3g}" for c in coh_list)
                 for idx, peak in enumerate(peaks):
                     center = peak.values["center"]
                     components = fit_result.raw.eval_components(x=center)
