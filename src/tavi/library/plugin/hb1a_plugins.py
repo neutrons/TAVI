@@ -22,6 +22,7 @@ class VERITAS:
 
     @staticmethod
     def export_intensity(
+        title: str,
         hkls: list,
         fit_results: list,
         res_4ds: list,
@@ -34,6 +35,7 @@ class VERITAS:
         Export the intensity data to a .int file for refinement.
 
         Args:
+            title: Title line written as the first line of the file header.
             hkls: List of (h, k, l) per peak.
             fit_results: Fit result per peak, providing amplitude and amplitude_err.
             res_4ds: (resolution matrix, r0) per peak.
@@ -47,7 +49,7 @@ class VERITAS:
         """
         export: list = []
         for hkl, fit_result, res_4d in zip(hkls, fit_results, res_4ds):
-            mat, r0 = res_4d[0], res_4d[1]
+            mat, r0 = res_4d[0][0], res_4d[0][1]
             # ====================================================
             # resolution calculated here
             det = np.abs(mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0])
@@ -70,7 +72,7 @@ class VERITAS:
         if save_to_file:
             target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
             with open(target, "w") as f:
-                f.write("Single crystal data of NdBi (hb1a)\n")
+                f.write(f"{title}\n")
                 f.write("(3i5,2f8.2,i4,3f8.2)\n")
                 f.write(f"{wavelength}  0   0\n")
 

@@ -107,6 +107,10 @@ class TAS:
         ylim: float | list[float] = None,
         resolution_frame: str | tuple = "local",
         projection_axis: int = 0,
+        normalize: str = None,
+        multiply_factor: float = 1.0,
+        coh_bar: bool = True,
+        save_figure: str = None,
     ) -> None:
         """
         Browse scan with options to show resolution bar.
@@ -141,6 +145,15 @@ class TAS:
                 ``((1, 0, 0), (0, 1, 0), (0, 0, 1), "e")``.
             projection_axis: Axis of resolution_frame the FWHM is taken along.
                 0/1/2 for the momentum axes, 3 for energy.
+            normalize: Name of a scan data column (e.g. "monitor", "time") to divide
+                the y data by element-wise. No normalization when None.
+            multiply_factor: Scale applied to the y data after normalization.
+            coh_bar: Which resolution bar to draw when show_resolution_bar is set.
+                True (default) draws the coherent FWHM, labeled "res"; False draws
+                the incoherent FWHM, labeled "incoh_res".
+            save_figure: File name to save the figure under. When given, the figure
+                is saved instead of shown; the format follows the suffix, defaulting
+                to .png. Shown and not saved when None.
 
         """
         resolution_bar_4d = None
@@ -148,7 +161,11 @@ class TAS:
             # if show_resolution_bar is turned on, return fit_resutls and res_4d to be prepared for
             # intensity export.
             resolution_bar_4d = self.resolution_bar(
-                scan_list, resolution_frame=resolution_frame, projection_axis=projection_axis, model_dict=model_dict
+                scan_list,
+                resolution_frame=resolution_frame,
+                projection_axis=projection_axis,
+                model_dict=model_dict,
+                coh_bar=coh_bar,
             )
         return browse_scans(
             self.experiment,
@@ -162,6 +179,10 @@ class TAS:
             def_y,
             xlim,
             ylim,
+            normalize,
+            multiply_factor,
+            coh_bar,
+            save_figure,
         )
 
     def resolution_bar(
@@ -171,9 +192,10 @@ class TAS:
         resolution_frame: str | Tuple = "local",
         projection_axis: int = 0,
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+        coh_bar: bool = True,
     ) -> tuple[list[float], list]:
         """
-        Compute the coherent FWHM resolution bar for each scan.
+        Compute the FWHM resolution bar for each scan.
 
         Args:
             scan_list: Scan numbers to compute the resolution for.
@@ -184,11 +206,14 @@ class TAS:
             projection_axis: Axis of resolution_frame the FWHM is taken along.
                 0/1/2 for the momentum axes, 3 for energy.
             model_dict: Models used to fit each scan when locating peak centers.
+            coh_bar: If True (default), return the coherent FWHM; if False, return
+                the incoherent FWHM instead. Both are computed either way.
 
         Returns:
-            ``(resolution_bar, res_4ds)``. Both are lists with one entry per
-            scan, each entry a tuple with one item per fitted peak in that scan:
-            the coherent FWHM, and the ``(res_mat, r0)`` pair respectively.
+            ``(bars, res_4ds)``. Both are lists with one entry per scan, each
+            entry a tuple with one item per fitted peak in that scan: the
+            coherent (or incoherent, per coh_bar) FWHM, and the
+            ``(res_mat, r0)`` pair respectively.
 
         """
         # This step just get the center data point, has nothing to do with calculations.
@@ -202,7 +227,7 @@ class TAS:
         else:
             raise ValueError("Data format not implemented yet.")
         resolution_bar = []
-        incoh_bar = []  # leave it here to allow plotting incoh resolution bar in the future
+        incoh_bar = []
         res_4ds = []
 
         # check what kind of projection_axes we are using. We supply two options:
@@ -231,7 +256,6 @@ class TAS:
                 resolution_bar.append(tuple(cohs))
                 incoh_bar.append(tuple(incohs))
                 res_4ds.append(tuple(res_group))
-            print("incoherent FWHM = ", incoh_bar)
         elif isinstance(resolution_frame, tuple):
             for center_group in centers:
                 cohs, incohs, res_group = [], [], []
@@ -253,11 +277,9 @@ class TAS:
                 resolution_bar.append(tuple(cohs))
                 incoh_bar.append(tuple(incohs))
                 res_4ds.append(tuple(res_group))
-            # printing for now. Later it will be massaged into visualization.
-            print("incoherent FWHM = ", incoh_bar)
         else:
             raise ValueError("Resolution frame is not defined properly.")
-        return resolution_bar, res_4ds  # , incoh_bar
+        return (resolution_bar if coh_bar else incoh_bar), res_4ds
 
     def browse_resolution_ellipse(
         self,
@@ -268,6 +290,7 @@ class TAS:
         resolution_frame: str | Tuple = "local",
         ellipse_axes: tuple = (0, 1),
         model_dict: List[Tuple] = [(ModelName.Gaussian, dict(guess=True))],
+        save_figure: Optional[str] = None,
     ) -> None:
         """
         Plot the resolution ellipse for each scan in a grid of subplots.
@@ -283,6 +306,9 @@ class TAS:
             ellipse_axes: Pair of resolution_frame axes spanning the ellipse
                 plane. 0/1/2 for the momentum axes, 3 for energy.
             model_dict: Models passed to the fit when locating peak centers.
+            save_figure: File name to save the figure under. When given, the figure
+                is saved instead of shown; the format follows the suffix, defaulting
+                to .png. Shown and not saved when None.
 
         """
         if isinstance(self.experiment.loader, ORNLSpiceLoader):
@@ -346,4 +372,4 @@ class TAS:
             if not ylabel:
                 ylabel = combo_dimensions[ellipse_axes[1]]
 
-        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel)
+        PlotResolution.plot_resolution_ellipse(ellipses, xlabel=xlabel, ylabel=ylabel, save_figure=save_figure)

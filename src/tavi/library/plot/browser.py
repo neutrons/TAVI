@@ -1,5 +1,6 @@
 """Data browser."""
 
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
@@ -22,6 +23,10 @@ def browse_scans(
     def_y: str = None,
     xlim: Optional[float | list[float]] = None,
     ylim: Optional[float | list[float]] = None,
+    normalize: Optional[str] = None,
+    multiply_factor: float = 1.0,
+    coh_bar: bool = True,
+    save_figure: Optional[str] = None,
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -49,6 +54,18 @@ def browse_scans(
         ylim: A scalar pads the y-axis symmetrically around the data range (e.g. 1.2
             widens it to 1.2x the data span about its midpoint); a [min, max] list
             sets the y range directly.
+        normalize: Name of a column in the scan data (e.g. "monitor", "time") to
+            normalize by. The y data (and its error bars) are divided element-wise
+            by that column. No normalization is applied when None.
+        multiply_factor: Scale applied to the y data (and its error bars) after
+            normalization. Defaults to 1.0, i.e. no scaling.
+        coh_bar: Whether the widths in resolution_bars are coherent FWHMs. Only
+            affects the legend label: "res" when True (default), "incoh_res" when
+            the incoherent FWHM was passed in instead.
+        save_figure: Output file name for the figure. When given, the figure is
+            saved under that name instead of being shown; the format follows the
+            suffix, defaulting to .png when the name has none. The figure is
+            displayed and not saved when None (default).
 
     """
     from tavi.library.fit import Fit
@@ -87,9 +104,26 @@ def browse_scans(
         else:
             x = np.asarray(scan.data.data[def_x])
             xlabel = def_x
-        y = np.asarray(scan.data.data[def_y])
+        y = np.asarray(scan.data.data[def_y], dtype=float)
+        y_err = np.sqrt(np.abs(y))
 
-        ax.errorbar(x, y, yerr=np.sqrt(y), fmt="o")
+        # Normalize element-wise by the requested channel, then apply the overall
+        # scale. Errors are propagated through both so the bars stay consistent with
+        # the plotted (and fitted) y.
+        if normalize:
+            # Columns whose names start with a digit are stored with a leading
+            # underscore, same as def_x/def_y above.
+            norm_key = "_" + normalize if normalize[0].isdigit() else normalize
+            if norm_key not in scan.data.data:
+                raise KeyError(f"Normalization column '{normalize}' not found in scan {num}.")
+            norm = np.asarray(scan.data.data[norm_key], dtype=float)
+            y = y / norm
+            y_err = y_err / norm
+        if multiply_factor != 1.0:
+            y = y * multiply_factor
+            y_err = y_err * multiply_factor
+
+        ax.errorbar(x, y, yerr=y_err, fmt="o")
 
         if show_fits:
             fit_result = fit.fit(x, y, model_dict)
@@ -117,7 +151,7 @@ def browse_scans(
                     ax.plot(x_fine, y_comp, "--", lw=1, label=label)
 
             if show_resolution_bar:
-                # Resolution bar: horizontal line of width = coherent FWHM (coh) in q,
+                # Resolution bar: horizontal line of width = the FWHM in q,
                 # centered on each fitted peak and drawn at the peak's half-maximum.
                 # The half-maximum sits at the background plus half the peak height, so
                 # any linear (or other non-peak) background is added beneath the bar.
@@ -129,11 +163,12 @@ def browse_scans(
                     return component is not None and "center" not in component.values
 
                 coh_list = np.atleast_1d(coh)
+                label_prefix = "res=" if coh_bar else "incoh_res="
                 if show_component_labels:
                     sep = "\n" if len(coh) > 1 else ", "
-                    reso_label = "res=" + sep.join(f"{c:.3g}" for c in coh_list)
+                    reso_label = label_prefix + sep.join(f"{c:.3g}" for c in coh_list)
                 else:
-                    reso_label = "res=" + ",".join(f"{c:.3g}" for c in coh_list)
+                    reso_label = label_prefix + ",".join(f"{c:.3g}" for c in coh_list)
                 for idx, peak in enumerate(peaks):
                     center = peak.values["center"]
                     components = fit_result.raw.eval_components(x=center)
@@ -160,7 +195,10 @@ def browse_scans(
         hkls.append(hkl)
         ax.set_title(f"{num}, {hkl}")
         ax.set_xlabel(xlabel)
-        ax.set_ylabel(def_y)
+        ylabel = f"{def_y}/{normalize}" if normalize else def_y
+        if multiply_factor != 1.0:
+            ylabel = f"{ylabel}*{multiply_factor:g}"
+        ax.set_ylabel(ylabel)
 
         # A scalar scales the axis symmetrically around the data midpoint (e.g. 1.1
         # widens to 1.1x the data span); a [min, max] sequence sets the range directly.
@@ -182,7 +220,17 @@ def browse_scans(
         ax.set_visible(False)
 
     fig.tight_layout()
-    plt.show()
+    if save_figure:
+        # matplotlib picks the writer from the suffix; default to png when the
+        # name carries none. Close the figure so saving in a loop doesn't pile
+        # up open figures.
+        path = Path(save_figure)
+        if not path.suffix:
+            path = path.with_suffix(".png")
+        fig.savefig(path, dpi=150)
+        plt.close(fig)
+    else:
+        plt.show()
     if resolution_bars is not None:
         return hkls, fit_results, res_mat_4d
     return None, None, None
