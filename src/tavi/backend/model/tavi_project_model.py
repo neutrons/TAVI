@@ -5,7 +5,7 @@ from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
+from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
@@ -94,18 +94,19 @@ class TaviProjectModel(TaviProjectInterface):
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """
-        Resolve a single saved plot by uuid and announce its first contributing scan, without touching the rest.
+        Resolve one series, by its source scan's uuid, across every currently-saved plot.
 
-        ``uuid`` may belong to an unsaved preview plot instead (``PlotModel``'s to handle) — a
-        plain ``in`` check, not ``fetch_by_uuid``, since a preview plot's uuid is borrowed from
-        its source ``RawScan`` and *is* present in ``tavi_data.raw_scans``; ``fetch_by_uuid``
-        would resolve it to the wrong type instead of telling us it isn't ours.
+        This is how a single series is picked out of an otherwise-fused, multi-series saved
+        plot for "Current Plot" browsing/editing. ``uuid`` may belong to a series living in an
+        unsaved preview plot instead (``PlotModel``'s to handle) — a miss here just means this
+        uuid isn't currently one of ours, not a bug.
         """
-        if e.uuid not in self.tavi_data.plots:
+        match = find_series_by_source(list(self.tavi_data.plots.values()), e.uuid)
+        if match is None:
             return
-        plot = self.tavi_data.plots[e.uuid]
-        scan = first_contributing_scan(plot, self.tavi_data.raw_scans)
-        self._event_broker.publish(ActivePlotChangedEvent(scan=scan))
+        _, series = match
+        scan = self.tavi_data.raw_scans[series.source_scan_uuid]
+        self._event_broker.publish(ActivePlotChangedEvent(scan=scan, series=series))
 
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""

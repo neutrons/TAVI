@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import (
     QButtonGroup,
+    QCheckBox,
     QComboBox,
     QFormLayout,
     QGridLayout,
@@ -34,6 +35,7 @@ class Plot1DView(QWidget):
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
+    sync_fields_signal = Signal(object)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -43,6 +45,7 @@ class Plot1DView(QWidget):
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
         self.set_plot_options_signal.connect(self.set_plot_options)
+        self.sync_fields_signal.connect(self._sync_fields_from_series)
 
     def _build_ui(self) -> None:
         """Build the 1D plotter UI."""
@@ -131,6 +134,12 @@ class Plot1DView(QWidget):
         self.current_plot_combo = QComboBox()
         self.current_plot_combo.currentIndexChanged.connect(self.plot_combo_index_changed.emit)
         plot_controls.addWidget(self.current_plot_combo)
+        self.apply_all_checkbox = QCheckBox("Apply All")
+        # Connected before setChecked so the initial True state actually takes effect, rather
+        # than firing before anything is listening.
+        self.apply_all_checkbox.toggled.connect(self._on_apply_all_toggled)
+        self.apply_all_checkbox.setChecked(True)
+        plot_controls.addWidget(self.apply_all_checkbox)
         plot_controls.addStretch(1)
         self.plot_button = QPushButton("Add Plot")
         self.plot_button.clicked.connect(self.plot_clicked.emit)
@@ -185,12 +194,40 @@ class Plot1DView(QWidget):
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
+        if not resolved:
+            return
         for x, y, err, series in resolved:
             self.append_plot(
                 x, y, err, series.scan_name, series.normalized_by, series.x_name, series.y_name, series.error_name
             )
-            self.sync_axis_fields(series.x_name, series.y_name)
-            self.sync_preset_fields(series.normalized_by, series.normalized_by_value)
+        # With "Apply All" off, individually-tweaked plots may no longer share a common x/y
+        # column - set once, from the whole batch, rather than letting the last append_plot's
+        # single-series label silently hide that the others are on different units.
+        self._sync_axis_labels([series for *_, series in resolved])
+
+    def _sync_axis_labels(self, series_list: list[Any]) -> None:
+        """Set the axes' x/y labels from every plotted series, flagging it when their units differ."""
+        ax = self.canvas.axes
+        ax.set_xlabel(self._combined_axis_label(series.x_name for series in series_list))
+        ax.set_ylabel(
+            self._combined_axis_label(
+                (f"{series.y_name} / {series.normalized_by}" if series.normalized_by else series.y_name)
+                for series in series_list
+            )
+        )
+        self.canvas.draw()
+
+    def _combined_axis_label(self, names: Any) -> str:
+        """A single shared name as-is; multiple distinct names joined so mixed units are visible, not hidden."""
+        unique_names = list(dict.fromkeys(names))
+        return unique_names[0] if len(unique_names) == 1 else " / ".join(unique_names)
+
+    def _sync_fields_from_series(self, series: Optional[Any]) -> None:
+        """Reflect the active plot's series in the axis/preset fields - never the whole focused batch."""
+        if series is None:
+            return
+        self.sync_axis_fields(series.x_name, series.y_name)
+        self.sync_preset_fields(series.normalized_by, series.normalized_by_value)
 
     def sync_axis_fields(self, x_name: str, y_name: str) -> None:
         """Reflect the actually-plotted x/y column names in the axis fields."""
@@ -227,6 +264,14 @@ class Plot1DView(QWidget):
     def hookup_plot_combo_changed_signal(self, callback: Callable) -> None:
         """Connect the "Current Plot" dropdown's index-changed signal to callback."""
         self.plot_combo_index_changed.connect(callback)
+
+    def is_apply_all_checked(self) -> bool:
+        """Return whether field edits should apply to every focused plot rather than just the active one."""
+        return self.apply_all_checkbox.isChecked()
+
+    def _on_apply_all_toggled(self, checked: bool) -> None:
+        """Toggle "current plot" browsing - fields stay editable either way (see ``handle_fields_changed``)."""
+        self.current_plot_combo.setEnabled(not checked)
 
     def set_preset_channel_options(self, columns: list[str], default: Optional[str] = None) -> None:
         """Repopulate the preset-channel dropdown with a newly-focused scan's column names."""

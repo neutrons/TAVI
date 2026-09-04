@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from tavi.library.data.plot import Plot
+from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, Scan
 from tavi.meta.event.event_interface import Event
 
@@ -48,13 +48,14 @@ class PlotFocusEvent(Event):
 
 class FocusActivePlotEvent(Event):
     """
-    Request to make one already-focused plot active, by uuid.
+    Request to make one already-focused series active, by its source scan's uuid.
 
-    Handled by both ``TaviProjectModel`` and ``PlotModel`` — each checks whether ``uuid`` is one
-    of its own (``TaviData.plots`` vs. an unsaved preview in ``PlotModel._last_plots``) and
-    no-ops otherwise. Saved-plot uuids (fresh ``uuid4()`` on save) and preview-plot uuids (the
-    same uuid as the ``RawScan`` they preview) never collide, so exactly one model ever acts on
-    a given uuid. The publisher does not need to know which kind of plot is currently focused.
+    Handled by both ``TaviProjectModel`` and ``PlotModel`` — each searches its own focused plots
+    (``TaviData.plots`` vs. an unsaved preview in ``PlotModel._last_plots``) for a series whose
+    ``source_scan_uuid`` matches, and no-ops otherwise. A series' source scan is what identifies
+    it - not its containing ``Plot``'s uuid - so one entry can be picked out of an otherwise-fused,
+    multi-series saved plot exactly as it would be among several single-series preview plots. The
+    publisher does not need to know which model currently owns the matching series.
     """
 
     uuid: UUID
@@ -62,14 +63,19 @@ class FocusActivePlotEvent(Event):
 
 class ActivePlotChangedEvent(Event):
     """
-    Event announcing the scan backing whichever single plot is currently "active".
+    Event announcing the scan (and series) backing whichever single series is currently "active".
 
-    Selected via the plotter's plot dropdown. Carries the ``Scan`` itself — the active plot's first contributing scan (see
-    ``first_contributing_scan``) — rather than the ``Plot`` and a snapshot to resolve it against.
-    A ``Plot`` may be an unsaved preview with nowhere persistent to live; consumers that only
-    display data (e.g. the data widget) care about the scan, not the plot's save state, and a
-    plot's first contributing scan always exists in the current setup. ``None`` means no plot is
+    Selected via the plotter's "Current Plot" dropdown - one entry per series, not per Plot, so a
+    fused multi-series plot still offers each of its series individually. Carries the ``Scan``
+    itself rather than the ``Plot`` and a snapshot to resolve it against, since a ``Plot`` may be
+    an unsaved preview with nowhere persistent to live; consumers that only display data (e.g.
+    the data widget) care about the scan, not the plot's save state. ``None`` means no series is
     currently active.
+
+    ``series`` is carried alongside the scan so the plotter can resync its own axis/preset fields
+    to whichever series just became active - a plain default-axis scan lookup wouldn't reflect a
+    per-series edit (e.g. "Apply All" off).
     """
 
     scan: Optional[Scan] = None
+    series: Optional[PlotSeries] = None
