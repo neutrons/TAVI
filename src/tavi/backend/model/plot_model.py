@@ -109,9 +109,7 @@ class PlotModel(PlotModelInterface):
         self._event_broker.publish(SavePlotEvent(plot=Plot(series=series)))
         return ModelResponse(code=ResponseCode.OK)
 
-    def _apply_fields_to_plot(
-        self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]
-    ) -> Optional[Plot]:
+    def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]) -> Optional[Plot]:
         """
         Return a copy of ``plot`` with the targeted series updated, or None if any of them rejects the fields.
 
