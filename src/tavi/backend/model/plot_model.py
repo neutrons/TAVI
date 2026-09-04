@@ -33,6 +33,7 @@ class PlotModel(PlotModelInterface):
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
@@ -40,8 +41,11 @@ class PlotModel(PlotModelInterface):
         if not e.scans:
             return
         plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
-        self._last_plots = plots
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+
+    def _handle_plot_focus_event(self, e: PlotFocusEvent) -> None:
+        """Sync ``_last_plots`` to whatever's now on screen, from this model or ``TaviProjectModel``."""
+        self._last_plots = e.plots
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """

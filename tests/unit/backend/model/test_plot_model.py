@@ -282,6 +282,33 @@ class TestPlotModel(unittest.TestCase):
         assert series.x_name == "en"
         assert series.y_name == "qh"
 
+    def test_focusing_a_saved_plot_after_a_raw_scan_updates_last_plots(self):
+        """A saved multi-select plot focused via ``PlotFocusEvent`` (not a raw-scan event) must
+        replace ``_last_plots``, or a later field edit would silently rewrite the stale raw scan."""
+        raw_scan = make_raw_scan(uuid_val="scan-001")
+        self.raw_scans[raw_scan.uuid] = raw_scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[raw_scan]))
+
+        saved_scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="saved-001")
+        saved_scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="saved-002")
+        self.raw_scans[saved_scan1.uuid] = saved_scan1
+        self.raw_scans[saved_scan2.uuid] = saved_scan2
+        saved_plot = self.model._preview_plot_for_scan(saved_scan1).model_copy(
+            update={"series": [self.model._preview_plot_for_scan(saved_scan1).series[0],
+                                self.model._preview_plot_for_scan(saved_scan2).series[0]]}
+        )
+        self.broker.publish(PlotFocusEvent(plots=[saved_plot], scans={saved_scan1.uuid: saved_scan1, saved_scan2.uuid: saved_scan2}))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="qh"))
+
+        assert response.code.name == "OK"
+        assert len(received[0].plots) == 1
+        updated_uuids = {s.source_scan_uuid for s in received[0].plots[0].series}
+        assert updated_uuids == {saved_scan1.uuid, saved_scan2.uuid}
+
     def test_update_fields_no_focused_plot_is_noop(self):
         response = self.model.update_fields(make_plot_fields())
 
