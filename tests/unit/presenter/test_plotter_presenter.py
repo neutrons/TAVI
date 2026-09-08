@@ -16,7 +16,6 @@ from tavi.meta.event.type.presenter_event import (
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
-    SavePlotEvent,
 )
 
 
@@ -188,20 +187,20 @@ def test_handle_plot_focus_never_touches_model(presenter):
     assert not presenter._model.method_calls
 
 
-def test_handle_plot_focus_sets_current_plot_to_first_plot(presenter):
-    plot = make_plot("plot-xyz")
+def test_handle_plot_focus_updates_focused_series_uuids(presenter):
+    plot_a, plot_b, event = _two_plot_event()
 
-    presenter.handle_plot_focus(make_event(plots=[plot]))
+    presenter.handle_plot_focus(event)
 
-    assert presenter._current_plot is plot
+    assert presenter._focused_series_uuids == [plot_a.series[0].source_scan_uuid, plot_b.series[0].source_scan_uuid]
 
 
-def test_handle_plot_focus_empty_plots_clears_current_plot(presenter):
-    presenter._current_plot = make_plot()
+def test_handle_plot_focus_empty_plots_clears_focused_series_uuids(presenter):
+    presenter._focused_series_uuids = [make_series().source_scan_uuid]
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
 
-    assert presenter._current_plot is None
+    assert presenter._focused_series_uuids == []
 
 
 # ---------------------------------------------------------------------------
@@ -273,77 +272,43 @@ def test_handle_raw_scan_focus_no_scan_selected_does_not_sync_preset_fields(pres
 
 
 # ---------------------------------------------------------------------------
-# handle_plot_clicked
+# handle_fields_changed / Apply All
 # ---------------------------------------------------------------------------
 
 
-def test_handle_plot_clicked_noop_when_no_current_plot(presenter):
-    broker = EventBroker()
-    received = []
-    broker.register(SavePlotEvent, received.append)
+def test_handle_fields_changed_apply_all_checked_targets_no_uuid(presenter):
+    """Apply All checked (the default) is the existing "update every focused plot" behavior."""
+    presenter.handle_plot_focus(make_event())
+    assert presenter._view.is_apply_all_checked() is True
 
+    presenter.handle_fields_changed()
+
+    presenter._model.update_fields.assert_called_once_with(
+        presenter._view.get_plot_fields(), target_uuid=None
+    )
+
+
+def test_handle_fields_changed_apply_all_unchecked_targets_active_series(presenter):
+    plot_a, plot_b, event = _two_plot_event()
+    presenter.handle_plot_focus(event)
+    presenter.handle_plot_combo_changed(1)  # active series is now plot_b's
+    presenter._view.apply_all_checkbox.setChecked(False)
+
+    presenter.handle_fields_changed()
+
+    presenter._model.update_fields.assert_called_once_with(
+        presenter._view.get_plot_fields(), target_uuid=plot_b.series[0].source_scan_uuid
+    )
+
+
+def test_handle_plot_clicked_delegates_to_model(presenter):
+    """
+    The model owns the live Plot data (``_last_plots``), so it - not this presenter - resolves
+    and combines every currently-focused plot's series into the one saved as a new plot.
+    """
     presenter.handle_plot_clicked()
 
-    assert received == []
-
-
-def test_handle_plot_clicked_publishes_save_plot_event(presenter):
-    presenter._current_plot = make_plot("plot-original")
-    broker = EventBroker()
-    received = []
-    broker.register(SavePlotEvent, received.append)
-
-    presenter.handle_plot_clicked()
-
-    assert len(received) == 1
-    assert isinstance(received[0].plot, Plot)
-
-
-def test_handle_plot_clicked_saved_plot_gets_a_fresh_uuid(presenter):
-    original = make_plot("plot-original")
-    presenter._current_plot = original
-    broker = EventBroker()
-    received = []
-    broker.register(SavePlotEvent, received.append)
-
-    presenter.handle_plot_clicked()
-
-    assert received[0].plot.uuid != original.uuid
-
-
-def test_handle_plot_clicked_preserves_series_data(presenter):
-    original = make_plot("plot-original", series=[make_series("scan-001", "my_run")])
-    presenter._current_plot = original
-    broker = EventBroker()
-    received = []
-    broker.register(SavePlotEvent, received.append)
-
-    presenter.handle_plot_clicked()
-
-    assert received[0].plot.series[0].scan_name == "my_run"
-
-
-def test_handle_plot_clicked_does_not_mutate_current_plot(presenter):
-    """Clicking again (e.g. on an already-saved plot) must not reuse or mutate the original object."""
-    original = make_plot("plot-original")
-    presenter._current_plot = original
-
-    presenter.handle_plot_clicked()
-
-    assert presenter._current_plot is original
-    assert presenter._current_plot.uuid == UUID(value="plot-original")
-
-
-def test_handle_plot_clicked_two_clicks_produce_different_uuids(presenter):
-    presenter._current_plot = make_plot("plot-original")
-    broker = EventBroker()
-    received = []
-    broker.register(SavePlotEvent, received.append)
-
-    presenter.handle_plot_clicked()
-    presenter.handle_plot_clicked()
-
-    assert received[0].plot.uuid != received[1].plot.uuid
+    presenter._model.save_focused_plots.assert_called_once_with()
 
 
 # ---------------------------------------------------------------------------
@@ -397,6 +362,44 @@ def test_handle_plot_focus_empty_plots_publishes_active_plot_changed_with_no_plo
     assert received[0].scan is None
 
 
+def test_handle_plot_focus_syncs_fields_from_the_active_plot(presenter):
+    plot_a, plot_b, event = _two_plot_event(scan_name_a="a", scan_name_b="b")
+    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid
+
+    presenter.handle_plot_focus(event)
+
+    assert presenter._view.x_axis_edit.text() == plot_b.series[0].x_name
+    assert presenter._view.y_axis_edit.text() == plot_b.series[0].y_name
+
+
+def test_handle_plot_focus_syncs_fields_from_the_active_plot_not_the_last_one(presenter):
+    """
+    Regression: with Apply All off, ``update_fields(target_uuid=...)`` edits one series and
+    carries the rest through untouched. If that edited series isn't last in the batch, the
+    fields must still reflect it - not the untouched last series' (e.g. default) values.
+    """
+    plot_a = make_plot("plot-a", series=[make_series("scan-a", "a", x_name="edited_x", y_name="edited_y")])
+    plot_b = make_plot("plot-b", series=[make_series("scan-b", "b", x_name="default_x", y_name="default_y")])
+    scans = {
+        plot_a.series[0].source_scan_uuid: make_scan("scan-a", x_col="edited_x", y_col="edited_y"),
+        plot_b.series[0].source_scan_uuid: make_scan("scan-b", x_col="default_x", y_col="default_y"),
+    }
+    presenter._active_series_uuid = plot_a.series[0].source_scan_uuid  # active, but first (not last) in the batch
+
+    presenter.handle_plot_focus(make_event(plots=[plot_a, plot_b], scans=scans))
+
+    assert presenter._view.x_axis_edit.text() == "edited_x"
+    assert presenter._view.y_axis_edit.text() == "edited_y"
+
+
+def test_handle_plot_focus_empty_plots_does_not_touch_fields(presenter):
+    presenter._view.x_axis_edit.setText("untouched")
+
+    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
+
+    assert presenter._view.x_axis_edit.text() == "untouched"
+
+
 def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
     """Only uuids may persist between events — Plot/Scan objects are never cached on the presenter."""
     _, _, event = _two_plot_event()
@@ -405,14 +408,14 @@ def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
 
     assert not hasattr(presenter, "_focused_plots")
     assert not hasattr(presenter, "_plot_scan_snapshot")
-    assert all(isinstance(uuid_, UUID) for uuid_ in presenter._focused_plot_uuids)
+    assert all(isinstance(uuid_, UUID) for uuid_ in presenter._focused_series_uuids)
 
 
 def test_handle_plot_focus_preserves_active_selection_when_same_plots_refocused(presenter):
     """Simulates the model re-resolving the same uuids after e.g. a tree-selection FocusEvent replay."""
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
-    presenter._active_plot_uuid = plot_b.uuid  # a prior dropdown pick
+    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid  # a prior dropdown pick
 
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
@@ -424,7 +427,7 @@ def test_handle_plot_focus_preserves_active_selection_when_same_plots_refocused(
 def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(presenter):
     plot_a, _, event_ab = _two_plot_event()
     presenter.handle_plot_focus(event_ab)
-    presenter._active_plot_uuid = None  # simulate previous selection no longer present below
+    presenter._active_series_uuid = None  # simulate previous selection no longer present below
 
     scan_c = make_scan("scan-c")
     plot_c = make_plot("plot-c", series=[make_series("scan-c")])
@@ -433,6 +436,42 @@ def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(
     presenter.handle_plot_focus(make_event(plots=[plot_c], scans={scan_c.uuid: scan_c}))
 
     assert received[0].scan.uuid == scan_c.uuid
+
+
+def test_handle_plot_focus_publishes_series_matching_the_active_plot(presenter):
+    """``ActivePlotChangedEvent.series`` must reflect whichever series is active, not just the first."""
+    plot_a, plot_b, event = _two_plot_event()
+    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+
+    presenter.handle_plot_focus(event)
+
+    assert received[0].series == plot_b.series[0]
+
+
+def test_active_plot_changed_event_resyncs_axis_fields(presenter):
+    """
+    Regression: a dropdown switch (see ``handle_plot_combo_changed``) never re-renders, so without
+    this the fields kept showing whichever plot was active before the switch - editing them would
+    then silently target the wrong plot, or "restoring" a value would appear to do nothing.
+    """
+    presenter._view.x_axis_edit.setText("stale")
+    presenter._view.y_axis_edit.setText("stale")
+    series = make_series(x_name="fresh_x", y_name="fresh_y")
+
+    EventBroker().publish(ActivePlotChangedEvent(series=series))
+
+    assert presenter._view.x_axis_edit.text() == "fresh_x"
+    assert presenter._view.y_axis_edit.text() == "fresh_y"
+
+
+def test_active_plot_changed_event_with_no_series_leaves_fields_untouched(presenter):
+    presenter._view.x_axis_edit.setText("kept")
+
+    EventBroker().publish(ActivePlotChangedEvent(series=None))
+
+    assert presenter._view.x_axis_edit.text() == "kept"
 
 
 def test_handle_plot_combo_changed_publishes_active_plot_focus_event(presenter):
@@ -444,16 +483,16 @@ def test_handle_plot_combo_changed_publishes_active_plot_focus_event(presenter):
     presenter.handle_plot_combo_changed(1)
 
     assert len(received) == 1
-    assert received[0].uuid == plot_b.uuid
+    assert received[0].uuid == plot_b.series[0].source_scan_uuid
 
 
-def test_handle_plot_combo_changed_sets_active_plot_uuid(presenter):
+def test_handle_plot_combo_changed_sets_active_series_uuid(presenter):
     plot_a, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
 
     presenter.handle_plot_combo_changed(1)
 
-    assert presenter._active_plot_uuid == plot_b.uuid
+    assert presenter._active_series_uuid == plot_b.series[0].source_scan_uuid
 
 
 def test_handle_plot_combo_changed_ignores_out_of_range_index(presenter):
@@ -476,4 +515,4 @@ def test_selecting_dropdown_entry_via_view_publishes_active_plot_focus_event(pre
 
     presenter._view.current_plot_combo.setCurrentIndex(1)
 
-    assert received[0].uuid == plot_b.uuid
+    assert received[0].uuid == plot_b.series[0].source_scan_uuid

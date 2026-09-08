@@ -367,36 +367,103 @@ def test_render_plots_clears_then_plots_each_series(view):
     assert "old" not in labels
 
 
-def test_render_plots_syncs_axis_fields_to_last_series(view):
+def test_render_plots_sets_single_axis_label_when_all_series_share_it(view):
+    resolved = [
+        (
+            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            _series(x_name="qh", y_name="en", normalized_by=None),
+        ),
+        (
+            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            _series(x_name="qh", y_name="en", normalized_by=None),
+        ),
+    ]
+    view._render_plots(resolved)
+    assert view.canvas.axes.get_xlabel() == "qh"
+    assert view.canvas.axes.get_ylabel() == "en"
+
+
+def test_render_plots_combines_axis_labels_when_series_units_differ(view):
+    """Apply All off lets individually-tweaked plots diverge - the axis label must surface that, not hide it."""
+    resolved = [
+        (
+            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            _series(x_name="qh", y_name="en", normalized_by=None),
+        ),
+        (
+            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            _series(x_name="qk", y_name="ei", normalized_by=None),
+        ),
+    ]
+    view._render_plots(resolved)
+    assert view.canvas.axes.get_xlabel() == "qh / qk"
+    assert view.canvas.axes.get_ylabel() == "en / ei"
+
+
+def test_render_plots_combines_ylabel_normalization_before_deduping(view):
+    resolved = [
+        (
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
+            _series(y_name="en", normalized_by="monitor"),
+        ),
+        (
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
+            _series(y_name="en", normalized_by=None),
+        ),
+    ]
+    view._render_plots(resolved)
+    assert view.canvas.axes.get_ylabel() == "en / monitor / en"
+
+
+def test_render_plots_does_not_sync_axis_or_preset_fields(view):
+    """
+    Field sync is driven separately, by ``sync_fields_signal`` from the active plot (see below) -
+    ``_render_plots`` no longer picks a series (e.g. "the last one") to sync fields from itself.
+    """
+    view.x_axis_edit.setText("untouched")
     resolved = [
         (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qh", y_name="en")),
         (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qk", y_name="ei")),
     ]
     view._render_plots(resolved)
+    assert view.x_axis_edit.text() == "untouched"
+
+
+def test_sync_fields_from_series_updates_axis_fields(view):
+    view._sync_fields_from_series(_series(x_name="qk", y_name="ei"))
+
     assert view.x_axis_edit.text() == "qk"
     assert view.y_axis_edit.text() == "ei"
 
 
-def test_render_plots_syncs_preset_fields_to_last_series(view):
+def test_sync_fields_from_series_updates_preset_fields(view):
     view.set_preset_channel_options(["monitor", "time"])
-    resolved = [
-        (
-            np.array([1.0, 2.0]),
-            np.array([3.0, 4.0]),
-            np.array([0.0, 0.0]),
-            _series(normalized_by="monitor", normalized_by_value=2.0),
-        ),
-        (
-            np.array([1.0, 2.0]),
-            np.array([3.0, 4.0]),
-            np.array([0.0, 0.0]),
-            _series(normalized_by="time", normalized_by_value=5.0),
-        ),
-    ]
-    view._render_plots(resolved)
+
+    view._sync_fields_from_series(_series(normalized_by="time", normalized_by_value=5.0))
+
     assert view.preset_type_combo.currentText() == "normalize"
     assert view.preset_channel_combo.currentText() == "time"
     assert view.preset_value_edit.text() == "5.0"
+
+
+def test_sync_fields_from_series_none_is_noop(view):
+    view.x_axis_edit.setText("untouched")
+
+    view._sync_fields_from_series(None)
+
+    assert view.x_axis_edit.text() == "untouched"
+
+
+def test_sync_fields_signal_reaches_sync_fields_from_series(view, qtbot):
+    with qtbot.waitSignal(view.sync_fields_signal, timeout=1000):
+        view.sync_fields_signal.emit(_series(x_name="qz", y_name="ez"))
+
+    assert view.x_axis_edit.text() == "qz"
+    assert view.y_axis_edit.text() == "ez"
 
 
 def test_render_plots_signal_emits_to_render_plots(view, qtbot):
@@ -591,3 +658,53 @@ def test_hookup_plot_combo_changed_signal_invokes_callback(view):
     view.set_plot_options(["run1", "run2"])
     view.current_plot_combo.setCurrentIndex(1)
     assert calls == [1]
+
+
+# ---------------------------------------------------------------------------
+# Apply All checkbox
+# ---------------------------------------------------------------------------
+
+
+def test_apply_all_checked_by_default(view):
+    assert view.is_apply_all_checked() is True
+
+
+def test_current_plot_combo_disabled_by_default(view):
+    """Apply All is checked by default, so picking one plot to target is initially moot."""
+    assert view.current_plot_combo.isEnabled() is False
+
+
+def test_unchecking_apply_all_enables_plot_combo(view):
+    view.apply_all_checkbox.setChecked(False)
+    assert view.current_plot_combo.isEnabled() is True
+
+
+def test_rechecking_apply_all_disables_plot_combo(view):
+    view.apply_all_checkbox.setChecked(False)
+    view.apply_all_checkbox.setChecked(True)
+    assert view.current_plot_combo.isEnabled() is False
+
+
+def test_is_apply_all_checked_reflects_unchecked_state(view):
+    view.apply_all_checkbox.setChecked(False)
+    assert view.is_apply_all_checked() is False
+
+
+def test_axis_and_preset_fields_enabled_by_default(view):
+    """Apply All is checked by default, so editing (applied to every focused plot) is available."""
+    assert view.x_axis_edit.isEnabled() is True
+    assert view.y_axis_edit.isEnabled() is True
+    assert view.preset_type_combo.isEnabled() is True
+    assert view.preset_channel_combo.isEnabled() is True
+    assert view.preset_value_edit.isEnabled() is True
+
+
+def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
+    """Apply All off still targets one plot (the active one) - fields stay editable, just narrower in scope."""
+    view.apply_all_checkbox.setChecked(False)
+
+    assert view.x_axis_edit.isEnabled() is True
+    assert view.y_axis_edit.isEnabled() is True
+    assert view.preset_type_combo.isEnabled() is True
+    assert view.preset_channel_combo.isEnabled() is True
+    assert view.preset_value_edit.isEnabled() is True

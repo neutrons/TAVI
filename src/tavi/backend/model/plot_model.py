@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import first_contributing_scan, scans_for_plots
+from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
@@ -15,6 +15,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    SavePlotEvent,
 )
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
@@ -32,6 +33,7 @@ class PlotModel(PlotModelInterface):
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
@@ -39,21 +41,24 @@ class PlotModel(PlotModelInterface):
         if not e.scans:
             return
         plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
-        self._last_plots = plots
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+
+    def _handle_plot_focus_event(self, e: PlotFocusEvent) -> None:
+        """Sync ``_last_plots`` to whatever's now on screen, from this model or ``TaviProjectModel``."""
+        self._last_plots = e.plots
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """
-        Resolve a single currently-focused preview plot by uuid and announce its first contributing scan.
+        Resolve one currently-focused series, by its source scan's uuid, and announce it.
 
-        ``uuid`` may belong to a saved plot instead (``TaviProjectModel``'s to handle) — preview
-        and saved plot uuids never collide (see ``FocusActivePlotEvent``), so a miss here just
-        means this uuid isn't one of ours, not a bug.
+        ``uuid`` may belong to a series living in a saved plot instead (``TaviProjectModel``'s
+        to handle) — a miss here just means this uuid isn't currently one of ours, not a bug.
         """
-        plot = next((p for p in self._last_plots if p.uuid == e.uuid), None)
-        if plot is None:
+        match = find_series_by_source(self._last_plots, e.uuid)
+        if match is None:
             return
-        self._event_broker.publish(ActivePlotChangedEvent(scan=first_contributing_scan(plot, self._raw_scans)))
+        _, series = match
+        self._event_broker.publish(ActivePlotChangedEvent(scan=self._raw_scans[series.source_scan_uuid], series=series))
 
     def _preview_plot_for_scan(self, scan: RawScan) -> Plot:
         """Build an unsaved single-series preview plot from one raw scan's default axis."""
@@ -69,14 +74,22 @@ class PlotModel(PlotModelInterface):
         )
         return Plot(series=[series])
 
-    def update_fields(self, fields: PlotFields) -> ModelResponse:
-        """Update axis columns on every series of every currently-focused preview plot using the plotter's fields."""
+    def update_fields(self, fields: PlotFields, target_uuid: Optional[UUID] = None) -> ModelResponse:
+        """
+        Update axis columns on the focused preview plots' series using the plotter's fields.
+
+        Every series in every currently-focused plot is updated when ``target_uuid`` is ``None``
+        ("Apply All"); otherwise ``target_uuid`` (a series' ``source_scan_uuid``) scopes the edit
+        to just that one series - every other series, in that plot or any other, is carried
+        through unchanged. This is how one series can be edited within an otherwise-fused,
+        multi-series saved plot without touching its siblings.
+        """
         if not self._last_plots:
             return ModelResponse(code=ResponseCode.OK)
 
         updated_plots = []
         for plot in self._last_plots:
-            updated_plot = self._apply_fields_to_plot(plot, fields)
+            updated_plot = self._apply_fields_to_plot(plot, fields, target_uuid)
             if updated_plot is None:
                 return ModelResponse(code=ResponseCode.OK)
             updated_plots.append(updated_plot)
@@ -87,10 +100,27 @@ class PlotModel(PlotModelInterface):
         )
         return ModelResponse(code=ResponseCode.OK)
 
-    def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields) -> Optional[Plot]:
-        """Return a copy of ``plot`` with every series updated per ``fields``, or None if any series rejects them."""
+    def save_focused_plots(self) -> ModelResponse:
+        """Combine every currently-focused plot's series into one new plot and publish it for saving."""
+        if not self._last_plots:
+            return ModelResponse(code=ResponseCode.OK)
+
+        series = [series.model_copy(deep=True) for plot in self._last_plots for series in plot.series]
+        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series)))
+        return ModelResponse(code=ResponseCode.OK)
+
+    def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]) -> Optional[Plot]:
+        """
+        Return a copy of ``plot`` with the targeted series updated, or None if any of them rejects the fields.
+
+        ``target_uuid`` (a series' ``source_scan_uuid``) restricts this to just the one matching
+        series in ``plot`` - every other series is carried through as-is. ``None`` updates all of them.
+        """
         updated_series = []
         for series in plot.series:
+            if target_uuid is not None and series.source_scan_uuid != target_uuid:
+                updated_series.append(series)
+                continue
             scan = self._raw_scans[series.source_scan_uuid]
             series_update = self._resolve_series_update(scan, fields)
             if series_update is None:

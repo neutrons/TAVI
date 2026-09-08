@@ -375,10 +375,24 @@ def test_handle_active_plot_focus_event_announces_matching_saved_plots_scan(mode
 
     received = []
     EventBroker().register(ActivePlotChangedEvent, received.append)
-    EventBroker().publish(FocusActivePlotEvent(uuid=plot.uuid))
+    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
 
     assert len(received) == 1
     assert received[0].scan.uuid == scan.uuid
+
+
+def test_handle_active_plot_focus_event_announces_matching_saved_plots_series(model):
+    """The plotter resyncs its axis/preset fields from this - not just the scan's default axis."""
+    plot = make_plot()
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
+
+    assert received[0].series == plot.series[0]
 
 
 def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(model):
@@ -390,7 +404,7 @@ def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(mode
 
     received = []
     EventBroker().register(PlotFocusEvent, received.append)
-    EventBroker().publish(FocusActivePlotEvent(uuid=plot.uuid))
+    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
 
     assert received == []
 

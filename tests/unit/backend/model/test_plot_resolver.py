@@ -1,6 +1,6 @@
 import numpy.testing as npt
 
-from tavi.backend.model.plot_resolver import first_contributing_scan, resolve_series, scans_for_plots
+from tavi.backend.model.plot_resolver import find_series_by_source, resolve_series, scans_for_plots
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 
@@ -104,11 +104,36 @@ def test_scans_for_plots_returns_only_referenced_scans():
     assert set(result) == {scan_a.uuid}
 
 
-def test_first_contributing_scan_returns_the_first_series_scan():
-    scan_a = make_scan(uuid_val="scan-a")
-    scan_b = make_scan(uuid_val="scan-b")
+def test_find_series_by_source_finds_a_series_within_a_multi_series_plot():
+    """The point of this lookup: pick one series out of an otherwise-fused, multi-series plot."""
     plot = Plot(series=[make_series(uuid_val="scan-a"), make_series(uuid_val="scan-b")])
 
-    result = first_contributing_scan(plot, {scan_a.uuid: scan_a, scan_b.uuid: scan_b})
+    result = find_series_by_source([plot], UUID(value="scan-b"))
 
-    assert result.uuid == scan_a.uuid
+    assert result is not None
+    found_plot, found_series = result
+    assert found_plot is plot
+    assert found_series.source_scan_uuid == UUID(value="scan-b")
+
+
+def test_find_series_by_source_searches_across_every_plot_in_the_batch():
+    plot_a = Plot(series=[make_series(uuid_val="scan-a")])
+    plot_b = Plot(series=[make_series(uuid_val="scan-b")])
+
+    result = find_series_by_source([plot_a, plot_b], UUID(value="scan-b"))
+
+    assert result is not None
+    found_plot, _ = result
+    assert found_plot is plot_b
+
+
+def test_find_series_by_source_returns_none_when_no_series_matches():
+    plot = Plot(series=[make_series(uuid_val="scan-a")])
+
+    result = find_series_by_source([plot], UUID(value="not-focused"))
+
+    assert result is None
+
+
+def test_find_series_by_source_empty_plots_returns_none():
+    assert find_series_by_source([], UUID(value="scan-a")) is None
