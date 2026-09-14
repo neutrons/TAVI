@@ -34,11 +34,7 @@ class ProcessData:
         """
         self.tavi_data = tavi_data
 
-    def append(
-        self,
-        uuids: Sequence[UUID],
-        columns: Sequence[str]
-    ) -> ProcessedScan:
+    def append(self, uuids: Sequence[UUID], columns: Sequence[str]) -> ProcessedScan:
         """
         Append several scans into one, column by column.
 
