@@ -312,7 +312,12 @@ class ORNLSpiceLoader(AbstractLoader):
             m = re.search(r"\(([^)]+)\)", scan_title)
             if m is None:
                 raise ValueError(f"No (h k l) found in scan_title: {scan_title!r}")
-            hkl = np.array([float(v) for v in re.split(r"[,\s]+", m.group(1).strip())])
+            values = re.split(r"[,\s]+", m.group(1).strip())
+            # Compact notation such as "(051)" parses as a single value, so require three
+            # separated indices. Callers catch the ValueError and fall back to fitting.
+            if len(values) != 3:
+                raise ValueError(f"Expected 3 values in (h k l), got {values} in scan_title: {scan_title!r}")
+            hkl = np.array([float(v) for v in values])
             return np.round(hkl, 2)
         else:
             tol = 1e-3

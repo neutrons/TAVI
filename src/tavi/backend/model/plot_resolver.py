@@ -5,7 +5,7 @@ A Plot never carries data, only a ``source_scan_uuid`` per series. These are the
 operations needed to turn that composition into something drawable, and both are pure
 functions over scans handed to them (typically the deep-copied snapshot an event carries) —
 never a live handle into a model's storage. ``source_scan_uuid`` may point at any ``Scan``
-(``RawScan`` today, potentially a derived ``ComboScan``/``ProcessedScan`` later).
+(``RawScan``, or a ``ProcessedScan`` derived from others by ``ProcessData``).
 """
 
 import numpy as np
