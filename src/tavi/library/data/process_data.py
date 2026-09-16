@@ -1,5 +1,6 @@
 """Combine loaded scans into derived ProcessedScan objects."""
 
+import abc
 from typing import Sequence
 from uuid import uuid4
 
@@ -14,66 +15,102 @@ from tavi.library.data.scan import (
 from tavi.library.data.tavi_data import TaviData
 
 
-class ProcessData:
+class ProcessOps(metaclass=abc.ABCMeta):
     """
-    Build derived scans from scans a project has already loaded.
+    Base class for process operations.
 
-    Resolves uuids against a ``TaviData`` pool and returns new ``ProcessedScan``
-    objects. Producing is not storing: nothing is written back into
-    ``TaviData`` - registering the result is the model layer's job.
+    An operation resolves its origin uuids against a ``TaviData`` pool and
+    returns a new ``ProcessedScan``. Producing is not storing: registering the
+    result is the model layer's job.
+
+    Subclasses take whatever else they need in their own ``__init__``, check
+    their inputs in ``validate`` and build the result in ``exec``. Calling
+    ``validate`` is left to ``exec``, not enforced here.
     """
 
-    def __init__(self, tavi_data: TaviData) -> None:
+    def __init__(self, tavi_data: TaviData, uuids: Sequence[UUID]) -> None:
         """
-        Store the data pool that uuids are resolved against.
+        Store what the operation runs on.
 
         Args:
-            tavi_data: The project data holding the raw and processed scans that
-                ``uuids`` passed to ``append`` are looked up in.
+            tavi_data: The pool ``uuids`` are looked up in.
+            uuids: Origin scan uuids, in the order the operation takes them.
 
         """
         self.tavi_data = tavi_data
+        self.uuids = uuids
 
-    def append(self, uuids: Sequence[UUID], columns: Sequence[str]) -> ProcessedScan:
+    @property
+    def size(self) -> int:
+        """Number of uuids, can be used for GUI generation."""
+        return len(self.uuids)
+
+    @abc.abstractmethod
+    def validate(self) -> None:
+        """Raise if the operation's inputs cannot produce a scan."""
+
+    @abc.abstractmethod
+    def exec(self) -> ProcessedScan:
+        """Run the operation and return the derived scan, registered nowhere."""
+
+
+class AppendOp(ProcessOps):
+    """
+    Append several scans into one, column by column.
+
+    Columns not named in ``columns`` are dropped, and nothing is carried over
+    from the origins' ``metadata`` or ``normalization``, which describe one
+    origin rather than the combination.
+
+    Nothing here raises on a mismatch: a column missing from an origin
+    contributes nothing, leaving the result's columns at differing lengths, and
+    a uuid listed twice appends its rows twice while ``prov.contributing_scans``
+    keeps a single entry. Requesting columns every origin carries is the
+    caller's job.
+    """
+
+    def __init__(self, tavi_data: TaviData, uuids: Sequence[UUID], columns: Sequence[str]) -> None:
         """
-        Append several scans into one, column by column.
-
-        The origin scans are taken in the order given, and each requested column
-        of the result is the origins' columns of that name laid end to end.
-        Values are stored as plain floats, since loaders may hand back numpy
-        arrays. Columns not named in ``columns`` are dropped.
-
-        A column missing from an origin contributes nothing rather than raising,
-        which leaves the result's columns at differing lengths - it is the
-        caller's responsibility to request columns every origin carries. For the
-        same reason, listing a uuid twice is not rejected: its rows appear twice
-        while ``prov.contributing_scans`` keeps a single entry for it. Passing no
-        uuids yields an empty scan rather than raising.
-
-        Nothing is carried over from the origins' ``metadata``, and the result's
-        ``tavimeta.normalization`` is left unset - both describe an individual
-        origin rather than the combination.
+        Store the origins and the columns to carry over.
 
         Args:
+            tavi_data: The pool ``uuids`` are looked up in.
             uuids: Origin scan uuids, in the order their rows should be appended.
             columns: Names of the columns to carry over. At least two, the first
                 two becoming the result's ``tavimeta.default_axis``.
 
+        """
+        super().__init__(tavi_data, uuids)
+        self.columns = columns
+
+    def validate(self) -> None:
+        """
+        Check that there are enough columns to form a default axis.
+
+        Raises:
+            ValueError: If fewer than two columns are requested.
+
+        """
+        if len(self.columns) < 2:
+            raise ValueError("Append data need at least 2 columns.")
+
+    def exec(self) -> ProcessedScan:
+        """
+        Lay the origins' columns end to end into one new scan.
+
         Returns:
-            A ``ProcessedScan`` with a fresh uuid, each origin uuid recorded in
-            ``prov.contributing_scans`` at weight 1, and the origins' friendly
-            names joined with ``+`` as its ``tavimeta.friendly_name``. Its
-            ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty, a
-            combined scan having no file of its own. It is registered nowhere -
-            storing it in ``TaviData`` is the caller's job.
+            A ``ProcessedScan`` with a fresh uuid, every origin recorded in
+            ``prov.contributing_scans`` at weight 1, and their friendly names
+            joined with ``+``. ``prov.raw_file`` and ``tavimeta.friendly_path``
+            are empty, a combined scan having no file of its own. Storing it in
+            ``TaviData`` is the caller's job.
 
         Raises:
             ValueError: If fewer than two columns are requested.
             KeyError: If a uuid is not present in the data pool.
 
         """
-        if len(columns) < 2:
-            raise ValueError("Append data need at least 2 columns.")
+        self.validate()
 
         # create a processed_scan object with a new uuid.
         processed_scan = ProcessedScan(
@@ -81,7 +118,7 @@ class ProcessData:
             data=ScanData(),
             metadata=ScanMetadata(),
             tavimeta=TaviMetadata(
-                default_axis=(columns[0], columns[1]),
+                default_axis=(self.columns[0], self.columns[1]),
                 friendly_name="",
                 friendly_path="",
             ),
@@ -91,13 +128,13 @@ class ProcessData:
 
         friendly_names = []
         # loop through given uuids.
-        for uuid in uuids:
+        for uuid in self.uuids:
             precombined_scan = self.tavi_data.fetch_by_uuid(uuid)
             # set provenance, weight is always 1 as appending doesn't modify weights.
             processed_scan.prov.contributing_scans[uuid] = 1
             friendly_names.append(precombined_scan.tavimeta.friendly_name)
             # loop through given columns that we need to append.
-            for column in columns:
+            for column in self.columns:
                 # If the column not in processed_scan, we initialize an empty entry
                 if column not in processed_scan.data.data:
                     processed_scan.data.data[column] = []

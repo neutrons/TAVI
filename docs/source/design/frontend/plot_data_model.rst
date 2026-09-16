@@ -304,9 +304,10 @@ Under this design, "undo rebin" is just repointing the ``PlotSeries`` back
 at the original ``source_scan_uuid`` — no data needs to be restored, because
 the raw scan was never mutated in the first place.
 
-The append case of this is already built: ``ProcessData.combine`` produces a
+The append case of this is already built: ``AppendOp`` produces a
 ``ProcessedScan`` from several origin scans laid end to end
-(see :doc:`../process_data`). Rebin has the same shape and remains open.
+(see :doc:`../process_data`). Rebin has the same shape — another ``ProcessOps``
+subclass — and remains open.
 
 Key Design Decisions
 -----------------------

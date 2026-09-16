@@ -14,7 +14,7 @@ class TaviData(BaseModel):
     processed_scans: dict[UUID, ProcessedScan] = Field(default_factory=dict)
 
     def all_scans(self) -> dict[UUID, Scan]:
-        """Return every scan, raw and derived, in one lookup - what ``ProcessData`` resolves uuids against."""
+        """Return every scan, raw and derived, in one lookup - what ``ProcessOps`` resolves uuids against."""
         return {**self.raw_scans, **self.processed_scans}
 
     def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | Plot:
