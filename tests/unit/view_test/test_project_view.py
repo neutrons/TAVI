@@ -3,8 +3,9 @@
 from unittest.mock import MagicMock
 
 import pytest
-from qtpy.QtCore import Qt
+from qtpy.QtCore import QPoint, Qt
 from qtpy.QtGui import QColor
+from qtpy.QtWidgets import QMenu
 
 from tavi.frontend.view.project_view import ProjectView, StandardItem, TreeViewWidget
 from tavi.library.data.scan import UUID
@@ -298,6 +299,68 @@ def test_show_context_menu_falls_back_to_single_item_when_nothing_selected(qtbot
     assert uuid2 in w.uuid_map
 
 
+def test_remove_folder_cleans_all_children_from_uuid_map(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuids = [UUID(value=f"child{i}") for i in range(5)]
+    for i, uuid in enumerate(uuids):
+        w.add_raw_scan(uuid, f"scan{i}", "/exp")
+
+    w.remove_entry(w.treeModel.indexFromItem(w.path_map["/Raw/exp"]))
+
+    assert w.uuid_map == {}
+
+
+def test_remove_folder_prunes_path_map(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.add_raw_scan(UUID(value="p1"), "scan1", "/exp")
+    assert "/Raw/exp" in w.path_map
+
+    w.remove_entry(w.treeModel.indexFromItem(w.path_map["/Raw/exp"]))
+
+    assert "/Raw/exp" not in w.path_map
+    assert "/Raw" in w.path_map
+
+
+def test_reload_folder_after_removal(qtbot):
+    """Removing a folder and re-loading the same folder must not reuse the deleted folder item."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.add_raw_scan(UUID(value="before1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="before2"), "scan2", "/exp")
+
+    w.remove_entry(w.treeModel.indexFromItem(w.path_map["/Raw/exp"]))
+
+    # Re-loading the same folder used to raise
+    # "wrapped C/C++ object of type StandardItem has been deleted".
+    w.add_raw_scan(UUID(value="after1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="after2"), "scan2", "/exp")
+
+    assert w.path_map["/Raw/exp"].rowCount() == 2
+    assert set(w.uuid_map) == {UUID(value="after1"), UUID(value="after2")}
+
+
+def test_remove_nested_folder_prunes_descendant_paths(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.add_raw_scan(UUID(value="n1"), "scan1", "/exp/sub")
+    w.add_raw_scan(UUID(value="n2"), "scan2", "/exp2")
+    assert "/Raw/exp/sub" in w.path_map
+
+    w.remove_entry(w.treeModel.indexFromItem(w.path_map["/Raw/exp"]))
+
+    assert "/Raw/exp" not in w.path_map
+    assert "/Raw/exp/sub" not in w.path_map
+    # A sibling whose path shares a prefix must survive.
+    assert "/Raw/exp2" in w.path_map
+    assert UUID(value="n2") in w.uuid_map
+
+
 # ---------------------------------------------------------------------------
 # TreeViewWidget — select / selected_signal
 # ---------------------------------------------------------------------------
@@ -424,3 +487,158 @@ def test_project_view_hookup_select_signal(qtbot):
     view.tree_widget.select(None)
 
     assert called == [True]
+
+
+# ---------------------------------------------------------------------------
+# TreeViewWidget — removal request / model-confirmed removal
+# ---------------------------------------------------------------------------
+
+
+def test_collect_uuids_gathers_whole_subtree(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.add_raw_scan(UUID(value="c1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="c2"), "scan2", "/exp")
+    w.add_raw_scan(UUID(value="c3"), "scan3", "/exp/nested")
+
+    uuids = w._collect_uuids(w.treeModel.indexFromItem(w.path_map["/Raw/exp"]))
+
+    assert set(uuids) == {UUID(value="c1"), UUID(value="c2"), UUID(value="c3")}
+
+
+def test_collect_uuids_on_leaf_returns_just_that_uuid(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.add_raw_scan(UUID(value="leaf"), "scan1", "/exp")
+
+    uuids = w._collect_uuids(w.treeModel.indexFromItem(w.uuid_map[UUID(value="leaf")]))
+
+    assert uuids == [UUID(value="leaf")]
+
+
+def test_context_menu_emits_remove_requested_without_touching_tree(qtbot, monkeypatch):
+    """The tree asks the model to remove; it must not delete rows on its own."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="m1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="m2"), "scan2", "/exp")
+
+    monkeypatch.setattr(QMenu, "exec", lambda self, *a, **k: self.actions()[0])
+    folder_index = w.treeModel.indexFromItem(w.path_map["/Raw/exp"])
+    monkeypatch.setattr(w.treeView, "indexAt", lambda _pos: folder_index)
+
+    emitted = []
+    w.remove_requested.connect(emitted.append)
+    w.show_context_menu(QPoint(0, 0))
+
+    assert len(emitted) == 1
+    assert set(emitted[0]) == {UUID(value="m1"), UUID(value="m2")}
+    # Nothing removed yet — the model has not confirmed.
+    assert set(w.uuid_map) == {UUID(value="m1"), UUID(value="m2")}
+    assert "/Raw/exp" in w.path_map
+
+
+def test_context_menu_does_not_offer_removal_for_root(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="r1"), "scan1", "/exp")
+
+    monkeypatch.setattr(QMenu, "exec", lambda self, *a, **k: self.actions()[0] if self.actions() else None)
+    raw_index = w.treeModel.indexFromItem(w.path_map["/Raw"])
+    monkeypatch.setattr(w.treeView, "indexAt", lambda _pos: raw_index)
+
+    emitted = []
+    w.remove_requested.connect(emitted.append)
+    w.show_context_menu(QPoint(0, 0))
+
+    assert emitted == []
+
+
+def test_remove_item_removes_row_and_cleans_uuid_map(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="x1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="x2"), "scan2", "/exp")
+
+    w.remove_item(UUID(value="x1"))
+
+    assert UUID(value="x1") not in w.uuid_map
+    assert w.path_map["/Raw/exp"].rowCount() == 1
+
+
+def test_remove_item_ignores_unknown_uuid(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="x1"), "scan1", "/exp")
+
+    w.remove_item(UUID(value="never-added"))
+
+    assert UUID(value="x1") in w.uuid_map
+
+
+def test_remove_item_prunes_folder_once_empty(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="x1"), "scan1", "/exp")
+    w.add_raw_scan(UUID(value="x2"), "scan2", "/exp")
+
+    w.remove_item(UUID(value="x1"))
+    assert "/Raw/exp" in w.path_map
+
+    w.remove_item(UUID(value="x2"))
+    assert "/Raw/exp" not in w.path_map
+
+
+def test_remove_item_prunes_nested_folders_bottom_up(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="n1"), "scan1", "/exp/nested")
+
+    w.remove_item(UUID(value="n1"))
+
+    assert "/Raw/exp/nested" not in w.path_map
+    assert "/Raw/exp" not in w.path_map
+
+
+def test_remove_item_never_prunes_the_fixed_roots(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="only"), "scan1", "/exp")
+
+    w.remove_item(UUID(value="only"))
+
+    for root in w.ROOT_PATHS:
+        assert root in w.path_map
+
+
+def test_remove_item_leaves_sibling_folder_alone(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="a1"), "scan1", "/expA")
+    w.add_raw_scan(UUID(value="b1"), "scan2", "/expB")
+
+    w.remove_item(UUID(value="a1"))
+
+    assert "/Raw/expA" not in w.path_map
+    assert "/Raw/expB" in w.path_map
+    assert UUID(value="b1") in w.uuid_map
+
+
+def test_reload_same_folder_after_remove_item_round_trip(qtbot):
+    """The user's bug: load a folder, remove it, load it again."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="first1"), "scan1", "/IPTS-1091")
+    w.add_raw_scan(UUID(value="first2"), "scan2", "/IPTS-1091")
+
+    for uuid in [UUID(value="first1"), UUID(value="first2")]:
+        w.remove_item(uuid)
+    assert w.uuid_map == {}
+    assert "/Raw/IPTS-1091" not in w.path_map
+
+    w.add_raw_scan(UUID(value="second1"), "scan1", "/IPTS-1091")
+    w.add_raw_scan(UUID(value="second2"), "scan2", "/IPTS-1091")
+
+    assert w.path_map["/Raw/IPTS-1091"].rowCount() == 2

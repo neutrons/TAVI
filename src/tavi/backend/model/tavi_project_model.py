@@ -8,12 +8,18 @@ from tavi.backend.model.interface.tavi_project_interface import TaviProjectInter
 from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import RawScan
+from tavi.library.data.scan import UUID, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import (
+    PlotAppendEvent,
+    PlotRemoveEvent,
+    RawScanAppendEvent,
+    RawScanRemoveEvent,
+    SyncRecentProjects,
+)
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     DownstreamReadyEvent,
@@ -63,6 +69,47 @@ class TaviProjectModel(TaviProjectInterface):
 
         for event in events:
             self._event_broker.publish(event)
+
+        return ModelResponse(code=ResponseCode.OK)
+
+    def remove_items(self, uuids: list[UUID]) -> ModelResponse:
+        """
+        Drop raw scans and plots from the project and announce each removal.
+
+        A saved plot holds no data of its own, only a ``source_scan_uuid`` per series, so a
+        series whose scan is being removed can no longer be resolved and is dropped with it.
+        The plot itself survives as long as it has a series left — removing one run should not
+        destroy the rest of a fused, multi-series plot. Unknown uuids are ignored: the tree may
+        ask twice for the same item (e.g. a folder and a scan inside it both selected).
+        """
+        requested = list(dict.fromkeys(uuids))
+        removed_scans = [uuid for uuid in requested if uuid in self.tavi_data.raw_scans]
+        removed_plots = [uuid for uuid in requested if uuid in self.tavi_data.plots]
+
+        orphaned = set(removed_scans)
+        pruned_plots = {}
+        for plot_uuid, plot in self.tavi_data.plots.items():
+            if plot_uuid in removed_plots:
+                continue
+            surviving = [series for series in plot.series if series.source_scan_uuid not in orphaned]
+            if len(surviving) == len(plot.series):
+                continue
+            if surviving:
+                pruned_plots[plot_uuid] = plot.model_copy(update={"series": surviving})
+            else:
+                removed_plots.append(plot_uuid)
+
+        # Mutate in place: PlotModel holds this same dict by reference (get_raw_scans_handle).
+        self.tavi_data.plots.update(pruned_plots)
+        for uuid in removed_scans:
+            del self.tavi_data.raw_scans[uuid]
+        for uuid in removed_plots:
+            del self.tavi_data.plots[uuid]
+
+        for uuid in removed_scans:
+            self._event_broker.publish(RawScanRemoveEvent(uuid=uuid))
+        for uuid in removed_plots:
+            self._event_broker.publish(PlotRemoveEvent(uuid=uuid))
 
         return ModelResponse(code=ResponseCode.OK)
 

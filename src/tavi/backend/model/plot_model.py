@@ -10,6 +10,7 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.model_event import RawScanRemoveEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     FocusActivePlotEvent,
@@ -35,6 +36,42 @@ class PlotModel(PlotModelInterface):
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
         self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
+        self._event_broker.register(RawScanRemoveEvent, self._handle_raw_scan_remove_event)
+
+    def _handle_raw_scan_remove_event(self, e: RawScanRemoveEvent) -> None:
+        """
+        Drop focused series whose source scan has left ``_raw_scans``, and redraw what's left.
+
+        ``_last_plots`` outlives the scans it points at — it holds copies, and a preview plot is
+        never saved anywhere — so without this every later ``_raw_scans[source_scan_uuid]`` lookup
+        (update_fields, active-plot focus, scans_for_plots) would raise for the deleted scan.
+        Series are filtered individually so removing one run leaves the other series of a fused
+        plot on screen.
+
+        Every focused series is reconciled against ``_raw_scans``, not just ``e.uuid``: removing a
+        folder deletes the whole batch of scans before publishing the first of its per-scan events,
+        so by the time any one event arrives, series belonging to *other* scans in that batch are
+        already unresolvable too. Filtering on ``e.uuid`` alone would leave them in ``_last_plots``
+        and the redraw below would raise. Reconciling makes this idempotent, so the rest of the
+        batch's events find nothing left to do.
+        """
+        updated_plots = []
+        for plot in self._last_plots:
+            surviving = [series for series in plot.series if series.source_scan_uuid in self._raw_scans]
+            if len(surviving) == len(plot.series):
+                updated_plots.append(plot)
+            elif surviving:
+                updated_plots.append(plot.model_copy(update={"series": surviving}))
+
+        if len(updated_plots) == len(self._last_plots) and all(
+            new is old for new, old in zip(updated_plots, self._last_plots)
+        ):
+            return
+
+        self._last_plots = updated_plots
+        self._event_broker.publish(
+            PlotFocusEvent(plots=updated_plots, scans=scans_for_plots(updated_plots, self._raw_scans))
+        )
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
         """Build one single-series preview plot per focused raw scan, so each run can be focused independently."""
