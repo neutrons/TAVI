@@ -48,6 +48,14 @@ class ProjectView(QWidget):
         """Connect selection signal to callback."""
         self.tree_widget.selected_signal.connect(callback)
 
+    def hookup_remove_signal(self, callback: Callable) -> None:
+        """Connect the tree's removal request signal to callback."""
+        self.tree_widget.remove_requested.connect(callback)
+
+    def remove_item(self, uuid: UUID) -> None:
+        """Remove an item from the view."""
+        self.tree_widget.remove_item(uuid)
+
     def get_selected_items(self) -> list[UUID]:
         """Get list of selected item UUIDs."""
         return self.tree_widget.get_selected_items()
@@ -118,6 +126,10 @@ class TreeViewWidget(QWidget):
     -------
     selected_signal : Signal()
         Emitted whenever the tree's current selection changes.
+    remove_requested : Signal(list)
+        Emitted with the ``list[UUID]`` the user asked to remove. The tree does not delete
+        the rows itself — it waits for the model to confirm via ``remove_item()``, so the
+        tree can never show a different set of scans than the backend actually holds.
 
     Parameters
     ----------
@@ -128,6 +140,10 @@ class TreeViewWidget(QWidget):
 
     selected_signal = Signal()
     highlighted_scan_changed = Signal(str)
+    remove_requested = Signal(list)
+
+    # The fixed top-level folders, created at startup and never removed even when emptied.
+    ROOT_PATHS = ("/Raw", "/Combined", "/Fits", "/Plots")
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -163,10 +179,8 @@ class TreeViewWidget(QWidget):
 
         layoutTreeView.addWidget(self.treeView)
 
-        self._init_path("/Raw")
-        self._init_path("/Combined")
-        self._init_path("/Fits")
-        self._init_path("/Plots")
+        for root_path in self.ROOT_PATHS:
+            self._init_path(root_path)
         self.treeView.setModel(self.treeModel)
         # selectionChanged (unlike `clicked`) fires for keyboard (Up/Down) navigation too,
         # not just mouse clicks. Same model instance is reused across later setModel() calls
@@ -201,30 +215,79 @@ class TreeViewWidget(QWidget):
         if action and action is delete_action:
             # Convert to persistent indexes so earlier removals don't invalidate later ones
             persistent = [QPersistentModelIndex(i) for i in to_delete]
+            uuids: list[UUID] = []
             for pi in persistent:
-                if pi.isValid():
-                    self.remove_entry(QModelIndex(pi))
+                if not pi.isValid():
+                    continue
+                for uuid in self._collect_uuids(QModelIndex(pi)):
+                    # A folder and a scan inside it can both be selected; ask only once.
+                    if uuid not in uuids:
+                        uuids.append(uuid)
+
+            # The rows stay put until the model confirms the removal and the presenter calls
+            # remove_item() — the tree never deletes state the backend still holds.
+            if uuids:
+                self.remove_requested.emit(uuids)
+
+    def _collect_uuids(self, index: QModelIndex) -> list[UUID]:
+        """Collect the uuids carried by index and every item beneath it, depth-first."""
+        uuids: list[UUID] = []
+        item_data = self.treeModel.data(index, Qt.UserRole + 1)
+        if item_data:
+            uuids.append(item_data["id"])
+        for row in range(self.treeModel.rowCount(index)):
+            uuids.extend(self._collect_uuids(self.treeModel.index(row, 0, index)))
+        return uuids
+
+    def remove_item(self, uuid: UUID) -> None:
+        """Remove the entry for uuid, along with any folders it leaves empty."""
+        item = self.uuid_map.get(uuid)
+        if item is None:
+            return
+        parent = item.parent()
+        self._remove_index(item.index())
+        self._prune_empty_folders(parent)
+
+    def _prune_empty_folders(self, item: Optional[StandardItem]) -> None:
+        """Walk up from a removed item deleting folders left childless, stopping at the fixed roots."""
+        # parent() is None once we reach a top-level item, so this terminates at the roots.
+        while item is not None and item.rowCount() == 0:
+            path = next((p for p, folder in self.path_map.items() if folder is item), None)
+            if path is None or path in self.ROOT_PATHS:
+                return
+            parent = item.parent()
+            self._remove_index(item.index())
+            item = parent
 
     def _remove_index(self, index: QModelIndex) -> None:
+        item = self.treeModel.itemFromIndex(index)
         item_data = self.treeModel.data(index, Qt.UserRole + 1)
         if item_data:
             uuid = item_data["id"]
-            self.uuid_map.pop(uuid)
+            self.uuid_map.pop(uuid, None)
+
+        # Folder items are tracked by path. Drop the entry (and any nested paths) so that
+        # re-loading the same folder rebuilds it instead of reusing an item Qt has deleted.
+        path = next((p for p, folder in self.path_map.items() if folder is item), None)
+        if path is not None:
+            for stale in [p for p in self.path_map if p == path or p.startswith(f"{path}/")]:
+                self.path_map.pop(stale)
+
         self.treeModel.removeRow(index.row(), index.parent())
 
     def remove_entry(self, index: QModelIndex) -> None:
-        """Recursively prints all children of a QModelIndex."""
+        """Remove the item at index and all of its children from the tree."""
         if not index.isValid():
             return
 
-        # Iterate through rows
-        for row in range(self.treeModel.rowCount(index)):
-            # Iterate through columns (usually 0 is sufficient for tree structures)
-            for col in range(self.treeModel.columnCount(index)):
-                child_index = self.treeModel.index(row, col, index)
-                if child_index.isValid():
-                    # Recursively walk the children of this child
-                    self.remove_entry(child_index)
+        # Walk children back-to-front: each removal shifts the rows after it, so a
+        # forward loop would skip siblings and leave them in uuid_map/path_map.
+        # Column 0 is enough — removeRow drops the whole row.
+        for row in reversed(range(self.treeModel.rowCount(index))):
+            child_index = self.treeModel.index(row, 0, index)
+            if child_index.isValid():
+                # Recursively walk the children of this child
+                self.remove_entry(child_index)
 
         self._remove_index(index)
 

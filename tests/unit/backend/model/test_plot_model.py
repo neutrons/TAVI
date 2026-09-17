@@ -3,9 +3,10 @@ import unittest
 from unittest import mock
 
 from tavi.backend.model.plot_model import PlotModel
-from tavi.library.data.plot import PlotFields
+from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, ScanData, ScanMetadata, TaviMetadata, Provenance
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import RawScanRemoveEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     FocusActivePlotEvent,
@@ -47,6 +48,17 @@ def make_raw_scan(x_col="qh", x_vals=None, y_col="en", y_vals=None, norm=("monit
             friendly_path="/test_path",
         ),
         prov=Provenance(raw_file="scan0001.dat", contributing_scans={UUID(value=uuid_val): 1}),
+    )
+
+
+def make_series(scan: RawScan) -> PlotSeries:
+    return PlotSeries(
+        source_scan_uuid=scan.uuid,
+        scan_name=scan.tavimeta.friendly_name,
+        normalized_by=None,
+        x_name="qh",
+        y_name="en",
+        error_name="error",
     )
 
 
@@ -530,3 +542,153 @@ class TestPlotModel(unittest.TestCase):
         series = received[0].plots[0].series[0]
         assert series.normalized_by is None
         assert series.normalized_by_value is None
+
+    def test_raw_scan_remove_event_drops_preview_of_removed_scan(self):
+        scan = make_raw_scan(uuid_val="scan-gone")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        del self.raw_scans[scan.uuid]
+        self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        assert self.model._last_plots == []
+
+    def test_raw_scan_remove_event_keeps_other_focused_scans(self):
+        gone = make_raw_scan(uuid_val="scan-gone")
+        kept = make_raw_scan(uuid_val="scan-kept")
+        self.raw_scans[gone.uuid] = gone
+        self.raw_scans[kept.uuid] = kept
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[gone, kept]))
+
+        del self.raw_scans[gone.uuid]
+        self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=gone.uuid))
+
+        sources = [s.source_scan_uuid for p in self.model._last_plots for s in p.series]
+        assert sources == [kept.uuid]
+
+    def test_raw_scan_remove_event_republishes_plot_focus(self):
+        scan = make_raw_scan(uuid_val="scan-gone")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        del self.raw_scans[scan.uuid]
+        self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        assert len(received) == 1
+        assert received[0].plots == []
+
+    def test_raw_scan_remove_event_ignores_scan_not_on_screen(self):
+        scan = make_raw_scan(uuid_val="scan-shown")
+        self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[scan]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=UUID(value="scan-elsewhere")))
+
+        assert received == []
+        assert len(self.model._last_plots) == 1
+
+    def test_update_fields_after_removal_does_not_raise(self):
+        """_last_plots outlives the scans it points at; a stale series would KeyError here."""
+        gone = make_raw_scan(uuid_val="scan-gone")
+        kept = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-kept")
+        self.raw_scans[gone.uuid] = gone
+        self.raw_scans[kept.uuid] = kept
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[gone, kept]))
+
+        del self.raw_scans[gone.uuid]
+        self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=gone.uuid))
+
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="en"))
+
+        assert response.code.name == "OK"
+
+    def test_batch_removal_of_several_focused_scans_does_not_raise(self):
+        """Removing a folder deletes the whole batch before publishing any per-scan event."""
+        a = make_raw_scan(uuid_val="scan-a")
+        b = make_raw_scan(uuid_val="scan-b")
+        c = make_raw_scan(uuid_val="scan-c")
+        for scan in (a, b, c):
+            self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[a, b, c]))
+
+        for scan in (a, b, c):
+            del self.raw_scans[scan.uuid]
+        for scan in (a, b, c):
+            self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        assert self.model._last_plots == []
+
+    def test_batch_removal_publishes_a_single_plot_focus_event(self):
+        """The first event reconciles everything; the rest of the batch finds nothing to do."""
+        a = make_raw_scan(uuid_val="scan-a")
+        b = make_raw_scan(uuid_val="scan-b")
+        for scan in (a, b):
+            self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[a, b]))
+
+        received: list[PlotFocusEvent] = []
+        self.broker.register(PlotFocusEvent, received.append)
+
+        for scan in (a, b):
+            del self.raw_scans[scan.uuid]
+        for scan in (a, b):
+            self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        assert len(received) == 1
+        assert received[0].plots == []
+
+    def test_batch_removal_keeps_focused_scan_outside_the_batch(self):
+        gone_a = make_raw_scan(uuid_val="scan-gone-a")
+        gone_b = make_raw_scan(uuid_val="scan-gone-b")
+        kept = make_raw_scan(uuid_val="scan-kept")
+        for scan in (gone_a, gone_b, kept):
+            self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[gone_a, gone_b, kept]))
+
+        for scan in (gone_a, gone_b):
+            del self.raw_scans[scan.uuid]
+        for scan in (gone_a, gone_b):
+            self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        sources = [s.source_scan_uuid for p in self.model._last_plots for s in p.series]
+        assert sources == [kept.uuid]
+
+    def test_batch_removal_prunes_fused_plot_to_surviving_series(self):
+        gone_a = make_raw_scan(uuid_val="scan-gone-a")
+        gone_b = make_raw_scan(uuid_val="scan-gone-b")
+        kept = make_raw_scan(uuid_val="scan-kept")
+        for scan in (gone_a, gone_b, kept):
+            self.raw_scans[scan.uuid] = scan
+        fused = Plot(series=[make_series(s) for s in (gone_a, gone_b, kept)])
+        self.model._handle_plot_focus_event(PlotFocusEvent(plots=[fused], scans=dict(self.raw_scans)))
+
+        for scan in (gone_a, gone_b):
+            del self.raw_scans[scan.uuid]
+        for scan in (gone_a, gone_b):
+            self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        assert len(self.model._last_plots) == 1
+        assert [s.source_scan_uuid for s in self.model._last_plots[0].series] == [kept.uuid]
+
+    def test_update_fields_after_batch_removal_does_not_raise(self):
+        a = make_raw_scan(uuid_val="scan-a")
+        b = make_raw_scan(uuid_val="scan-b")
+        kept = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-kept")
+        for scan in (a, b, kept):
+            self.raw_scans[scan.uuid] = scan
+        self.model._handle_raw_scan_focus_event(RawScanFocusEvent(scans=[a, b, kept]))
+
+        for scan in (a, b):
+            del self.raw_scans[scan.uuid]
+        for scan in (a, b):
+            self.model._handle_raw_scan_remove_event(RawScanRemoveEvent(uuid=scan.uuid))
+
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="en"))
+
+        assert response.code.name == "OK"

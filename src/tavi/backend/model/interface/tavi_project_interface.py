@@ -13,5 +13,10 @@ class TaviProjectInterface(metaclass=abc.ABCMeta):
         """Abstract method to get tavi data."""
         pass
 
+    @abc.abstractmethod
+    def remove_items(self, uuids: list) -> None:
+        """Abstract method to remove raw scans and plots from tavi data."""
+        pass
+
 
 TaviProjectProxy = Proxy(TaviProjectInterface)
