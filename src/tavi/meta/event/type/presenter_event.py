@@ -2,6 +2,7 @@
 
 from typing import Optional
 
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, Scan
 from tavi.meta.event.event_interface import Event
@@ -20,9 +21,43 @@ class DownstreamReadyEvent(Event):
 
 
 class RawScanFocusEvent(Event):
-    """Event to plot a list of raw scans."""
+    """
+    Event to plot a list of raw scans.
+
+    ``also_plots`` carries any saved ``Plot``s focused in the same tree multiselect (see
+    ``TaviProjectModel._handle_focus_event``) - ``PlotModel`` folds them into the same preview
+    batch and publishes one merged ``PlotFocusEvent``, so a scan+plot multiselect overlays
+    both instead of one clobbering the other.
+    """
 
     scans: list[RawScan]
+    also_plots: list[Plot] = []
+
+
+class FitFocusEvent(Event):
+    """
+    Announce that a list of fits is now focused. Mirrors RawScanFocusEvent/PlotFocusEvent.
+
+    UI-facing only (``PlotterPresenter``/``FittingPresenter``): they clear stale state and mark
+    these uuids as pending a curve. The backend recompute trigger is the separate
+    ``FitRecomputeEvent``, published right after this one - keeping them distinct (rather than
+    having ``FitModel`` also subscribe to this one) guarantees the UI has already marked its
+    pending state by the time ``FitModel``'s resulting ``FitComputedEvent`` arrives, regardless of
+    subscriber registration order.
+
+    ``exclusive`` is False when this batch's original selection also included raw scans or
+    plots (see ``TaviProjectModel._handle_focus_event``) - subscribers should overlay onto
+    that still-focused scan/plot canvas rather than clearing it.
+    """
+
+    fits: list[FitEntry]
+    exclusive: bool = True
+
+
+class FitRecomputeEvent(Event):
+    """Ask FitModel to recompute each of these fits against its source series' current data."""
+
+    fits: list[FitEntry]
 
 
 class SavePlotEvent(Event):
@@ -79,3 +114,34 @@ class ActivePlotChangedEvent(Event):
 
     scan: Optional[Scan] = None
     series: Optional[PlotSeries] = None
+
+
+class PeakParamsSuggestedEvent(Event):
+    """
+    Announce a heuristic initial guess for one peak's amplitude/center/FWHM, from real data.
+
+    ``source_scan_uuid`` lets the presenter drop a stale reply that arrives after the user has
+    since switched to a different active series - the same staleness concern ``FitComputedEvent``
+    guards against.
+    """
+
+    source_scan_uuid: UUID
+    amplitude: float
+    center: float
+    fwhm: float
+
+
+class FitComputedEvent(Event):
+    """
+    Announce a fit result, whether freshly performed or recomputed after being reselected.
+
+    Two independent subscribers act on this: ``PlotterPresenter``/``Plot1DView`` render ``curve``
+    alongside the data it was fit against and ``FittingPresenter`` reflects ``result`` in the
+    fitting panel; ``TaviProjectModel`` persists ``fit`` (the spec only - never ``curve``) into
+    ``TaviData.fits`` and announces it in the project tree via ``FitAppendEvent`` the first time
+    it sees this uuid. Unlike ``SavePlotEvent`` (one consumer), this one intentionally has several.
+    """
+
+    fit: FitEntry
+    curve: FitCurve
+    result: FitResultSummary

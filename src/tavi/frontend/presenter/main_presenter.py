@@ -1,10 +1,12 @@
 """Main presenter for tavi."""
 
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
+from tavi.backend.model.interface.fit_model_interface import FitModelInterface
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
+from tavi.frontend.presenter.fitting_presenter import FittingPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.filter_view import FilterView
@@ -26,6 +28,7 @@ class MainPresenter:
         self.file_menu_presenter = FileMenuPresenter(
             self.exit,
             model=model_dict["TaviProjectProxy"],
+            filestore=model_dict["Filestore"],
         )
         self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(self.menu_bar)
@@ -37,6 +40,8 @@ class MainPresenter:
 
         self.data_file_presenter = DataFilePresenter()
 
+        self.fitting_presenter = FittingPresenter(model_dict[FitModelInterface.__name__])
+
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view()
         self.error_view.setParent(self._view)
@@ -45,6 +50,7 @@ class MainPresenter:
             project_view=self.load_raw_scan_presenter.view(),
             plot_view=self.plotter_presenter.view(),
             data_file_view=self.data_file_presenter.view(),
+            fitting_view=self.fitting_presenter.view(),
             filter_view=FilterView(),
         )
 

@@ -137,11 +137,33 @@ class Fit:
         """Initialize with the fitting backend to use."""
         self.package = package
 
+    def guess(self, x: np.ndarray, y: np.ndarray, model_name: ModelName, prefix: str = "") -> dict[str, float]:
+        """
+        Return a heuristic initial-parameter guess for one bare model, evaluated against ``(x, y)``.
+
+        Existing manual guesses (e.g. a peak centered far from where the data actually is) are a
+        common cause of a fit converging to a flat line - the optimizer never sees a gradient
+        signal to move away from a starting point where the model doesn't overlap the data at
+        all. This delegates to lmfit's own peak-finding heuristic (``Model.guess``) instead.
+
+        Returns bare parameter names (the prefix stripped), e.g. ``{"amplitude", "center",
+        "sigma"}`` for a Gaussian/Lorentzian/Voigt, or ``{"slope", "intercept"}`` for a Linear.
+        """
+        if self.package != FitPackage.lmfit:
+            raise ValueError(f"Package {self.package} not supported yet.")
+
+        x = np.asarray(x, dtype=float)
+        y = np.asarray(y, dtype=float)
+        model = self._build_model(model_name, prefix)
+        params = model.guess(y, x=x)
+        return {name[len(prefix) :]: par.value for name, par in params.items()}
+
     def fit(
         self,
         x: np.ndarray,
         y: np.ndarray,
         model_dict: list[tuple[ModelName, dict[str, Any]]],
+        err: Optional[np.ndarray] = None,
     ) -> FitResult:
         """
         Fit a composite model built from one or more named sub-models.
@@ -167,6 +189,9 @@ class Fit:
                   (``vary=False``), bound it (``min=``/``max=``), or tie it to
                   another (``expr=``). Names are bare (the prefix is added
                   automatically), e.g. ``set={"center": dict(value=0.5, vary=False)}``.
+            err: Optional per-point 1-sigma uncertainty on ``y``, converted to lmfit
+                ``weights`` (``1/err``). A zero-error point gets a zero weight (excluded)
+                rather than an infinite one. ``None`` fits unweighted, as before.
 
         Returns:
             A :class:`FitResult` with one :class:`ComponentResult` per component,
@@ -178,6 +203,11 @@ class Fit:
 
         x = np.asarray(x, dtype=float)
         y = np.asarray(y, dtype=float)
+        weights = None
+        if err is not None:
+            err = np.asarray(err, dtype=float)
+            with np.errstate(divide="ignore"):
+                weights = np.where(err > 0, 1.0 / err, 0.0)
 
         fit_function = None
         params = lmfit.Parameters()
@@ -221,7 +251,7 @@ class Fit:
         if fit_function is None:
             raise ValueError("model_dict is empty; provide at least one model.")
 
-        result = fit_function.fit(y, params, x=x)
+        result = fit_function.fit(y, params, x=x, weights=weights)
         return self._build_fit_result(result, prefixes, fit_function)
 
     @staticmethod

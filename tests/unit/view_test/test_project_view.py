@@ -76,6 +76,33 @@ def test_add_plot_creates_uuid_entry(qtbot):
 
 
 # ---------------------------------------------------------------------------
+# TreeViewWidget — add_fit
+# ---------------------------------------------------------------------------
+
+
+def test_add_fit_reuses_the_preexisting_fits_root(qtbot):
+    """add_fit must fill the pre-created "/Fits" root, not spawn a sibling "/Fit" folder."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    fits_root = w.path_map["/Fits"]
+
+    w.add_fit(UUID(value="fit1"), "run1_Fit", "")
+
+    assert "/Fit" not in w.path_map
+    assert fits_root.rowCount() == 1
+
+
+def test_add_fit_creates_uuid_entry(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="fit2")
+    w.add_fit(uuid, "run2_Fit", "")
+
+    assert uuid in w.uuid_map
+
+
+# ---------------------------------------------------------------------------
 # TreeViewWidget — add_raw_scan / add_item_at_path
 # ---------------------------------------------------------------------------
 
@@ -396,6 +423,16 @@ def test_project_view_add_plot_delegates(qtbot):
 
     uuid = UUID(value="pv-plot1")
     view.add_plot(uuid, "run1_Plot", "")
+
+    assert uuid in view.tree_widget.uuid_map
+
+
+def test_project_view_add_fit_delegates(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+
+    uuid = UUID(value="pv-fit1")
+    view.add_fit(uuid, "run1_Fit", "")
 
     assert uuid in view.tree_widget.uuid_map
 
