@@ -218,9 +218,7 @@ class FitModel(FitModelInterface):
             },
         )
 
-    def _build_peak(
-        self, spec: FitSpec, x: np.ndarray, y: np.ndarray
-    ) -> Optional[tuple[ModelName, dict[str, Any]]]:
+    def _build_peak(self, spec: FitSpec, x: np.ndarray, y: np.ndarray) -> Optional[tuple[ModelName, dict[str, Any]]]:
         """Return the peak's (ModelName, params) component, or None on error."""
         peak = spec.peak
         shape = self._resolve_peak_shape(peak.shape)

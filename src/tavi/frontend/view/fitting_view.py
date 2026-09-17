@@ -320,9 +320,7 @@ class FittingView(QWidget):
             ),
         )
 
-    def get_suggest_request(
-        self, source_scan_uuid: UUID, x: list[float], y: list[float]
-    ) -> SuggestPeakParamsRequest:
+    def get_suggest_request(self, source_scan_uuid: UUID, x: list[float], y: list[float]) -> SuggestPeakParamsRequest:
         """Build a SuggestPeakParamsRequest from the currently selected peak shape and already-resolved data."""
         return SuggestPeakParamsRequest(
             source_scan_uuid=source_scan_uuid,
