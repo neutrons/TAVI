@@ -6,13 +6,25 @@ import numpy as np
 import pytest
 
 from tavi.backend.model.fit_model import FitModel
-from tavi.library.data.fit_entry import FitEntry, FitRequest, ParamField, PeakField, SuggestPeakParamsRequest
+from tavi.library.data.fit_entry import (
+    FitEntry,
+    FitRequest,
+    ParamField,
+    PeakField,
+    SuggestBackgroundParamsRequest,
+    SuggestPeakParamsRequest,
+)
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
-from tavi.meta.event.type.presenter_event import FitComputedEvent, FitRecomputeEvent, PeakParamsSuggestedEvent
+from tavi.meta.event.type.presenter_event import (
+    BackgroundParamsSuggestedEvent,
+    FitComputedEvent,
+    FitRecomputeEvent,
+    PeakParamsSuggestedEvent,
+)
 
 GAUSSIAN_AMPLITUDE = 5.0
 GAUSSIAN_CENTER = 0.0
@@ -190,7 +202,7 @@ def test_perform_fit_unsupported_background_reports_error(model):
     computed = []
     EventBroker().register(FitComputedEvent, computed.append)
 
-    model.perform_fit(make_request(background="Linear"))
+    model.perform_fit(make_request(background="Quadratic"))
 
     assert len(errors) == 1
     assert computed == []
@@ -347,6 +359,99 @@ def test_fit_focus_unknown_source_scan_is_noop():
 
 
 # ---------------------------------------------------------------------------
+# Linear background
+# ---------------------------------------------------------------------------
+
+LINEAR_BG_SLOPE = 0.4
+LINEAR_BG_INTERCEPT = 2.0
+
+
+def make_gaussian_on_a_slope_xy(n=201):
+    """A Gaussian riding on a sloped baseline, so both components have a known true answer."""
+    x = np.linspace(-5, 5, n)
+    peak = GAUSSIAN_AMPLITUDE * np.exp(-((x - GAUSSIAN_CENTER) ** 2) / (2 * GAUSSIAN_SIGMA**2))
+    return x, peak + LINEAR_BG_SLOPE * x + LINEAR_BG_INTERCEPT
+
+
+def make_linear_background_request(**overrides) -> FitRequest:
+    x, y = make_gaussian_on_a_slope_xy()
+    defaults = dict(
+        x=x.tolist(),
+        y=y.tolist(),
+        err=np.ones_like(x).tolist(),
+        background="Linear",
+        background_constant=make_param(""),
+        background_slope=make_param(""),
+    )
+    defaults.update(overrides)
+    return make_request(**defaults)
+
+
+def test_perform_fit_linear_background_is_supported(model):
+    errors = []
+    EventBroker().register(ExceptionEvent, errors.append)
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    assert errors == []
+    assert len(computed) == 1
+
+
+def test_perform_fit_linear_background_recovers_slope_and_intercept(model):
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    result = computed[0].result
+    assert result.background_slope == pytest.approx(LINEAR_BG_SLOPE, abs=0.05)
+    assert result.background_constant == pytest.approx(LINEAR_BG_INTERCEPT, abs=0.1)
+
+
+def test_perform_fit_linear_background_still_recovers_the_peak(model):
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    result = computed[0].result
+    assert result.center == pytest.approx(GAUSSIAN_CENTER, abs=0.05)
+    assert result.amplitude == pytest.approx(GAUSSIAN_AREA, rel=0.05)
+
+
+def test_perform_fit_constant_background_reports_no_slope(model):
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_request(background="Constant"))
+
+    assert computed[0].result.background_slope is None
+
+
+def test_perform_fit_linear_background_honours_a_fixed_slope(model):
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_linear_background_request(background_slope=make_param(0, fixed=True)))
+
+    assert computed[0].result.background_slope == pytest.approx(0.0, abs=1e-9)
+
+
+def test_perform_fit_linear_background_non_numeric_slope_reports_error(model):
+    errors = []
+    EventBroker().register(ExceptionEvent, errors.append)
+    computed = []
+    EventBroker().register(FitComputedEvent, computed.append)
+
+    model.perform_fit(make_linear_background_request(background_slope=make_param("abc")))
+
+    assert len(errors) == 1
+    assert computed == []
+
+
+# ---------------------------------------------------------------------------
 # suggest_peak_params
 # ---------------------------------------------------------------------------
 
@@ -444,5 +549,101 @@ def test_suggest_peak_params_range_with_too_few_points_reports_error(model):
     EventBroker().register(ExceptionEvent, errors.append)
 
     model.suggest_peak_params(make_suggest_request(range_min="4.99", range_max="5.0"))
+
+    assert len(errors) == 1
+
+
+# ---------------------------------------------------------------------------
+# suggest_background_params
+# ---------------------------------------------------------------------------
+
+BACKGROUND_SLOPE = 0.4
+BACKGROUND_INTERCEPT = 2.0
+
+
+def make_sloped_background_xy(n=101):
+    """A pure straight line, so the guess has an exact answer to recover."""
+    x = np.linspace(-5, 5, n)
+    y = BACKGROUND_SLOPE * x + BACKGROUND_INTERCEPT
+    return x, y
+
+
+def make_suggest_background_request(**overrides):
+    x, y = make_sloped_background_xy()
+    defaults = dict(
+        source_scan_uuid=UUID(value="scan-001"),
+        x=x.tolist(),
+        y=y.tolist(),
+        range_min="-5",
+        range_max="5",
+        background="Linear",
+    )
+    defaults.update(overrides)
+    return SuggestBackgroundParamsRequest(**defaults)
+
+
+def test_suggest_background_params_returns_ok(model):
+    response = model.suggest_background_params(make_suggest_background_request())
+    assert response.code == ResponseCode.OK
+
+
+def test_suggest_background_params_publishes_event(model):
+    received = []
+    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+
+    model.suggest_background_params(make_suggest_background_request())
+
+    assert len(received) == 1
+    assert received[0].source_scan_uuid == UUID(value="scan-001")
+
+
+def test_suggest_background_params_recovers_a_straight_line(model):
+    received = []
+    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+
+    model.suggest_background_params(make_suggest_background_request())
+
+    assert received[0].slope == pytest.approx(BACKGROUND_SLOPE, abs=1e-6)
+    assert received[0].intercept == pytest.approx(BACKGROUND_INTERCEPT, abs=1e-6)
+
+
+def test_suggest_background_params_honours_the_fitting_range(model):
+    received = []
+    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+    # Outside the range the line bends; a range-respecting guess never sees those points.
+    x, y = make_sloped_background_xy()
+    y[x > 0] = 100.0
+
+    model.suggest_background_params(make_suggest_background_request(y=y.tolist(), range_min="-5", range_max="0"))
+
+    assert received[0].slope == pytest.approx(BACKGROUND_SLOPE, abs=1e-6)
+
+
+def test_suggest_background_params_supports_constant(model):
+    received = []
+    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+
+    model.suggest_background_params(make_suggest_background_request(background="Constant"))
+
+    assert len(received) == 1
+
+
+def test_suggest_background_params_unsupported_background_reports_error(model):
+    errors = []
+    EventBroker().register(ExceptionEvent, errors.append)
+    suggested = []
+    EventBroker().register(BackgroundParamsSuggestedEvent, suggested.append)
+
+    model.suggest_background_params(make_suggest_background_request(background="Quadratic"))
+
+    assert len(errors) == 1
+    assert suggested == []
+
+
+def test_suggest_background_params_non_numeric_range_reports_error(model):
+    errors = []
+    EventBroker().register(ExceptionEvent, errors.append)
+
+    model.suggest_background_params(make_suggest_background_request(range_min="abc"))
 
     assert len(errors) == 1

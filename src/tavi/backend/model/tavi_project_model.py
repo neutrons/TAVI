@@ -168,5 +168,12 @@ class TaviProjectModel(TaviProjectInterface):
             # FitRecomputeEvent (backend trigger), so PlotterPresenter/FittingPresenter have
             # already marked these uuids pending by the time FitModel's resulting
             # FitComputedEvent arrives - see FitFocusEvent's docstring.
-            self._event_broker.publish(FitFocusEvent(fits=fits, exclusive=not (raw_scans or plots)))
+            # Carry each fit's own source scan along, so the presenter can redraw the data the
+            # fit was made against without reaching into this model's storage.
+            fit_scans = {
+                fit.series.source_scan_uuid: self.tavi_data.raw_scans[fit.series.source_scan_uuid]
+                for fit in fits
+                if fit.series.source_scan_uuid in self.tavi_data.raw_scans
+            }
+            self._event_broker.publish(FitFocusEvent(fits=fits, exclusive=not (raw_scans or plots), scans=fit_scans))
             self._event_broker.publish(FitRecomputeEvent(fits=fits))

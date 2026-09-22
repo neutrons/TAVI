@@ -11,6 +11,7 @@ from tavi.library.data.scan import UUID, Scan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    BackgroundParamsSuggestedEvent,
     FitComputedEvent,
     FitFocusEvent,
     PeakParamsSuggestedEvent,
@@ -40,8 +41,10 @@ class FittingPresenter(AbstractPresenter):
         self._event_broker.register(FitFocusEvent, self.handle_fit_focus)
         self._event_broker.register(FitComputedEvent, self.handle_fit_computed)
         self._event_broker.register(PeakParamsSuggestedEvent, self.handle_peak_params_suggested)
+        self._event_broker.register(BackgroundParamsSuggestedEvent, self.handle_background_params_suggested)
         self._view.hookup_perform_fit_signal(self.handle_perform_fit_clicked)
         self._view.hookup_suggest_params_signal(self.handle_suggest_params_clicked)
+        self._view.hookup_suggest_background_signal(self.handle_suggest_background_clicked)
 
     def init_view(self) -> None:
         """Create the fitting view."""
@@ -114,3 +117,26 @@ class FittingPresenter(AbstractPresenter):
         if self._active_series is None or e.source_scan_uuid != self._active_series.source_scan_uuid:
             return
         self._view.set_peak_params_signal.emit(e.amplitude, e.center, e.fwhm)
+
+    def handle_suggest_background_clicked(self) -> None:
+        """
+        Resolve the active series' data and ask the model to guess a starting slope/intercept.
+
+        No-ops when nothing is active, same as the peak's Suggest Params. - there's no data to
+        guess against.
+        """
+        if self._active_scan is None or self._active_series is None:
+            return
+        x, y, _err = resolve_series(self._active_series, {self._active_scan.uuid: self._active_scan})
+        request = self._view.get_suggest_background_request(
+            source_scan_uuid=self._active_series.source_scan_uuid,
+            x=x.tolist(),
+            y=y.tolist(),
+        )
+        self._model.suggest_background_params(request)
+
+    def handle_background_params_suggested(self, e: BackgroundParamsSuggestedEvent) -> None:
+        """Fill the background table with a suggested guess, but only for the currently active series."""
+        if self._active_series is None or e.source_scan_uuid != self._active_series.source_scan_uuid:
+            return
+        self._view.set_background_params_signal.emit(e.slope, e.intercept)

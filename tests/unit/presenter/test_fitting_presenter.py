@@ -12,6 +12,7 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    BackgroundParamsSuggestedEvent,
     FitComputedEvent,
     FitFocusEvent,
     PeakParamsSuggestedEvent,
@@ -226,7 +227,7 @@ def test_handle_peak_params_suggested_fills_peak_table_for_active_series(present
             PeakParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
         )
 
-    amplitude_row, center_row, fwhm_row = presenter._view.peak_table.rows
+    amplitude_row, center_row, fwhm_row = presenter._view.peak_panels[0].peak_table.rows
     assert amplitude_row.value_edit.text() == "5"
     assert center_row.value_edit.text() == "1.5"
     assert fwhm_row.value_edit.text() == "0.75"
@@ -234,7 +235,7 @@ def test_handle_peak_params_suggested_fills_peak_table_for_active_series(present
 
 def test_handle_peak_params_suggested_ignores_suggestion_for_a_different_series(presenter):
     EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
-    amplitude_row, _, _ = presenter._view.peak_table.rows
+    amplitude_row, _, _ = presenter._view.peak_panels[0].peak_table.rows
     amplitude_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
@@ -245,7 +246,7 @@ def test_handle_peak_params_suggested_ignores_suggestion_for_a_different_series(
 
 
 def test_handle_peak_params_suggested_noop_when_nothing_active(presenter):
-    amplitude_row, _, _ = presenter._view.peak_table.rows
+    amplitude_row, _, _ = presenter._view.peak_panels[0].peak_table.rows
     amplitude_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
@@ -253,3 +254,67 @@ def test_handle_peak_params_suggested_noop_when_nothing_active(presenter):
     )
 
     assert amplitude_row.value_edit.text() == "unchanged"
+
+
+# ---------------------------------------------------------------------------
+# handle_suggest_background_clicked
+# ---------------------------------------------------------------------------
+
+
+def test_suggest_background_clicked_with_no_active_series_is_noop(presenter):
+    presenter.handle_suggest_background_clicked()
+
+    presenter._model.suggest_background_params.assert_not_called()
+
+
+def test_suggest_background_clicked_calls_model_with_resolved_data(presenter):
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+
+    presenter.handle_suggest_background_clicked()
+
+    presenter._model.suggest_background_params.assert_called_once()
+    request = presenter._model.suggest_background_params.call_args[0][0]
+    assert request.source_scan_uuid == UUID(value="scan-001")
+    assert request.x == [1.0, 2.0, 3.0]
+    assert request.y == [4.0, 5.0, 6.0]
+
+
+# ---------------------------------------------------------------------------
+# handle_background_params_suggested
+# ---------------------------------------------------------------------------
+
+
+def test_handle_background_params_suggested_fills_background_table(presenter, qtbot):
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+
+    with qtbot.waitSignal(presenter._view.set_background_params_signal, timeout=1000):
+        EventBroker().publish(
+            BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
+        )
+
+    slope_row, intercept_row = presenter._view.background_table.rows
+    assert slope_row.value_edit.text() == "0.25"
+    assert intercept_row.value_edit.text() == "12.5"
+
+
+def test_handle_background_params_suggested_ignores_a_different_series(presenter):
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    slope_row, _ = presenter._view.background_table.rows
+    slope_row.value_edit.setText("unchanged")
+
+    EventBroker().publish(
+        BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-999"), slope=0.25, intercept=12.5)
+    )
+
+    assert slope_row.value_edit.text() == "unchanged"
+
+
+def test_handle_background_params_suggested_noop_when_nothing_active(presenter):
+    slope_row, _ = presenter._view.background_table.rows
+    slope_row.value_edit.setText("unchanged")
+
+    EventBroker().publish(
+        BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
+    )
+
+    assert slope_row.value_edit.text() == "unchanged"

@@ -52,6 +52,11 @@ class FitFocusEvent(Event):
 
     fits: list[FitEntry]
     exclusive: bool = True
+    scans: dict[UUID, Scan] = {}
+    """The Scan each focused fit's own series points at, same contract as ``PlotFocusEvent.scans``.
+    Every fit carries the full ``PlotSeries`` it was fit against - scan, x/y columns and
+    normalization alike - so this is what lets re-focusing a fit redraw the data underneath its
+    curve, and repopulate the Data File tab, instead of leaving them blank."""
 
 
 class FitRecomputeEvent(Event):
@@ -129,6 +134,20 @@ class PeakParamsSuggestedEvent(Event):
     amplitude: float
     center: float
     fwhm: float
+
+
+class BackgroundParamsSuggestedEvent(Event):
+    """
+    Announce a heuristic initial guess for the background's slope/intercept, from real data.
+
+    Mirrors ``PeakParamsSuggestedEvent``, ``source_scan_uuid`` staleness guard included. Kept a
+    separate event rather than extra fields on that one, so a peak guess and a background guess
+    can never partly overwrite each other's fields in the panel.
+    """
+
+    source_scan_uuid: UUID
+    slope: float
+    intercept: float
 
 
 class FitComputedEvent(Event):

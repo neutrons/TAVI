@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, UUIDFactory
@@ -40,7 +40,15 @@ class FitSpec(BaseModel):
     range_max: str
     background: str
     background_constant: ParamField
-    peak: PeakField
+    """The background line's constant term (its intercept)."""
+    background_slope: ParamField = Field(
+        default_factory=lambda: ParamField(value="", fixed=False, minimum="", maximum="")
+    )
+    """The background line's slope. Blank by default, which means "guess it from the data",
+    exactly as a blank peak parameter does; fixing it at 0 gives a flat background."""
+    peaks: list[PeakField]
+    """One entry per peak panel, in panel order. Every entry becomes its own lmfit component
+    (``peak1_``, ``peak2_``, ...) summed into one composite model."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -67,6 +75,24 @@ class SuggestPeakParamsRequest(BaseModel):
     range_min: str
     range_max: str
     shape: str
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class SuggestBackgroundParamsRequest(BaseModel):
+    """
+    Everything ``FitModel`` needs to guess the background's starting parameters from data.
+
+    Mirrors ``SuggestPeakParamsRequest``; ``background`` is the raw combo text, resolved (and
+    rejected if unsupported) by the model rather than the view.
+    """
+
+    source_scan_uuid: UUID
+    x: list[float]
+    y: list[float]
+    range_min: str
+    range_max: str
+    background: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -98,15 +124,25 @@ class FitCurve(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-class FitResultSummary(BaseModel):
-    """Scalar fit-result readback for the fitting panel: value + 1-sigma uncertainty per parameter."""
+class PeakResult(BaseModel):
+    """One fitted peak's values and 1-sigma uncertainties."""
 
-    reduced_chi_squared: float
     amplitude: float
     amplitude_err: Optional[float]
     center: float
     center_err: Optional[float]
     fwhm: float
     fwhm_err: Optional[float]
+
+
+class FitResultSummary(BaseModel):
+    """Scalar fit-result readback for the fitting panel: value + 1-sigma uncertainty per parameter."""
+
+    reduced_chi_squared: float
+    peaks: list[PeakResult]
+    """One entry per requested peak, in the same order as ``FitSpec.peaks`` - so entry *i* reads
+    back into peak panel *i*."""
     background_constant: Optional[float] = None
     background_constant_err: Optional[float] = None
+    background_slope: Optional[float] = None
+    background_slope_err: Optional[float] = None

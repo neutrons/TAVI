@@ -12,6 +12,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    FitFocusEvent,
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -34,6 +35,7 @@ class PlotModel(PlotModelInterface):
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
         self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
+        self._event_broker.register(FitFocusEvent, self._handle_fit_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
@@ -53,6 +55,34 @@ class PlotModel(PlotModelInterface):
     def _handle_plot_focus_event(self, e: PlotFocusEvent) -> None:
         """Sync ``_last_plots`` to whatever's now on screen, from this model or ``TaviProjectModel``."""
         self._last_plots = e.plots
+
+    def _handle_fit_focus_event(self, e: FitFocusEvent) -> None:
+        """
+        Sync ``_last_plots`` to the series the focused fits were made against.
+
+        A fit focused on its own is rendered by ``PlotterPresenter`` straight from the event (each
+        FitEntry carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
+        ``_last_plots`` would otherwise still describe whatever was focused before - leaving a
+        subsequent axis/preset edit, or Save Plot, acting on the wrong plot entirely.
+
+        Deliberately updates state without publishing: the canvas already shows these series, and
+        a ``PlotFocusEvent`` here would both re-render them and clear the presenter's pending-fit
+        set before the recomputed curves arrive.
+
+        A non-exclusive batch is skipped - its scans/plots already published a ``PlotFocusEvent``,
+        and the fits overlay onto that rather than replacing it.
+        """
+        if not e.exclusive:
+            return
+        series_by_source: dict[UUID, PlotSeries] = {}
+        for fit in e.fits:
+            if fit.series.source_scan_uuid in e.scans:
+                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        if not series_by_source:
+            return
+        # One single-series plot per source scan, matching the shape _handle_raw_scan_focus_event
+        # builds, so "Apply All", the Current Plot dropdown and Save Plot all behave identically.
+        self._last_plots = [Plot(series=[series.model_copy(deep=True)]) for series in series_by_source.values()]
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """

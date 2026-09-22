@@ -2,7 +2,7 @@
 
 import pytest
 
-from tavi.frontend.view.fitting_view import FittingView, ParamTable
+from tavi.frontend.view.fitting_view import PEAK_EXPRESSIONS, FittingView, ParamTable
 from tavi.library.data.fit_entry import FitResultSummary
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
@@ -35,53 +35,167 @@ def test_fitting_view_instantiates(view):
     assert view is not None
 
 
-def test_default_num_peaks_is_two(view):
-    assert view.num_peaks_spin.value() == 2
+def test_default_num_peaks_is_one(view):
+    assert view.num_peaks_spin.value() == 1
 
 
-def test_default_peak_index_is_one(view):
-    assert view.peak_index_label.text() == "# 1"
+def test_one_panel_per_peak_by_default(view):
+    assert len(view.peak_panels) == 1
 
 
-def test_background_table_has_one_row(view):
-    assert len(view.background_table.rows) == 1
+def test_panels_are_numbered_from_one(view):
+    view.num_peaks_spin.setValue(2)
+
+    assert [panel.peak_index_label.text() for panel in view.peak_panels] == ["# 1", "# 2"]
+
+
+def test_background_table_has_a_slope_and_an_intercept_row(view):
+    assert len(view.background_table.rows) == 2
 
 
 def test_peak_table_has_three_rows(view):
-    assert len(view.peak_table.rows) == 3
+    assert len(view.peak_panels[0].peak_table.rows) == 3
 
 
 # ---------------------------------------------------------------------------
-# Peak paging
+# Peak panel stack
 # ---------------------------------------------------------------------------
 
 
-def test_next_advances_peak_index(view):
-    view._go_next()
-    assert view.peak_index_label.text() == "# 2"
+def test_raising_num_peaks_appends_panels(view):
+    view.num_peaks_spin.setValue(4)
+
+    assert len(view.peak_panels) == 4
+    assert view.peak_panels[-1].peak_index_label.text() == "# 4"
 
 
-def test_next_stops_at_num_peaks(view):
-    view._go_next()
-    view._go_next()
-    assert view.peak_index_label.text() == "# 2"
-
-
-def test_prev_stops_at_one(view):
-    view._go_prev()
-    assert view.peak_index_label.text() == "# 1"
-
-
-def test_prev_after_next_returns_to_one(view):
-    view._go_next()
-    view._go_prev()
-    assert view.peak_index_label.text() == "# 1"
-
-
-def test_shrinking_num_peaks_clamps_current_index(view):
-    view._go_next()
+def test_lowering_num_peaks_drops_panels(view):
     view.num_peaks_spin.setValue(1)
-    assert view.peak_index_label.text() == "# 1"
+
+    assert len(view.peak_panels) == 1
+    assert view.peak_panels[0].peak_index_label.text() == "# 1"
+
+
+def test_each_panel_has_its_own_shape_combo(view):
+    view.num_peaks_spin.setValue(2)
+
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
+
+    assert view.peak_panels[1].peak_shape_combo.currentText() == "Gaussian"
+
+
+def test_each_panel_has_its_own_param_table(view):
+    view.num_peaks_spin.setValue(2)
+
+    view.peak_panels[0].peak_table.rows[0].value_edit.setText("42")
+
+    assert view.peak_panels[1].peak_table.rows[0].value_edit.text() == "0"
+
+
+def test_every_panel_suggest_button_emits_the_shared_signal(view, qtbot):
+    view.num_peaks_spin.setValue(2)
+
+    with qtbot.waitSignal(view.suggest_params_clicked, timeout=1000):
+        view.peak_panels[1].suggest_btn.click()
+
+
+def test_suggested_params_land_in_the_panel_that_asked(view):
+    view.num_peaks_spin.setValue(2)
+
+    view.peak_panels[1].suggest_btn.click()
+
+    view._set_peak_params(5.0, 1.5, 0.75)
+
+    assert view.peak_panels[1].peak_table.rows[0].value_edit.text() == "5"
+    assert view.peak_panels[0].peak_table.rows[0].value_edit.text() == "0"
+
+
+# ---------------------------------------------------------------------------
+# Background Suggest Params.
+# ---------------------------------------------------------------------------
+
+
+def test_background_suggest_button_click_emits_signal(view, qtbot):
+    with qtbot.waitSignal(view.suggest_background_clicked, timeout=1000):
+        view.suggest_background_btn.click()
+
+
+def test_hookup_suggest_background_signal_connects_callback(view):
+    calls = []
+    view.hookup_suggest_background_signal(lambda: calls.append(1))
+
+    view.suggest_background_clicked.emit()
+
+    assert calls == [1]
+
+
+def test_get_suggest_background_request_carries_resolved_data_and_background(view):
+    request = view.get_suggest_background_request(UUID(value="scan-001"), [1.0, 2.0], [3.0, 4.0])
+
+    assert request.source_scan_uuid == UUID(value="scan-001")
+    assert request.x == [1.0, 2.0]
+    assert request.y == [3.0, 4.0]
+    assert request.background == "Linear"
+
+
+def test_get_suggest_background_request_reads_fitting_range(view):
+    view.min_edit.setText("-3")
+    view.max_edit.setText("3")
+
+    request = view.get_suggest_background_request(UUID(value="scan-001"), [], [])
+
+    assert request.range_min == "-3"
+    assert request.range_max == "3"
+
+
+def test_set_background_params_signal_fills_background_table(view, qtbot):
+    with qtbot.waitSignal(view.set_background_params_signal, timeout=1000):
+        view.set_background_params_signal.emit(0.25, 12.5)
+
+    slope_row, intercept_row = view.background_table.rows
+    assert slope_row.value_edit.text() == "0.25"
+    assert intercept_row.value_edit.text() == "12.5"
+
+
+# ---------------------------------------------------------------------------
+# Peak expression
+# ---------------------------------------------------------------------------
+
+
+def test_gaussian_shows_its_expression_read_only(view):
+    panel = view.peak_panels[0]
+
+    assert panel.peak_expr.text() == PEAK_EXPRESSIONS["Gaussian"]
+    assert panel.peak_expr.isReadOnly()
+
+
+def test_lorentzian_swaps_in_its_own_expression(view):
+    panel = view.peak_panels[0]
+
+    panel.peak_shape_combo.setCurrentText("Lorentzian")
+
+    assert panel.peak_expr.text() == PEAK_EXPRESSIONS["Lorentzian"]
+    assert panel.peak_expr.isReadOnly()
+
+
+def test_custom_hands_an_empty_editable_field_to_the_user(view):
+    panel = view.peak_panels[0]
+
+    panel.peak_shape_combo.setCurrentText("Custom")
+
+    assert panel.peak_expr.text() == ""
+    assert not panel.peak_expr.isReadOnly()
+
+
+def test_custom_equation_survives_switching_shapes(view):
+    panel = view.peak_panels[0]
+    panel.peak_shape_combo.setCurrentText("Custom")
+    panel.peak_expr.setText("a * exp(-(x - c)**2)")
+
+    panel.peak_shape_combo.setCurrentText("Gaussian")
+    panel.peak_shape_combo.setCurrentText("Custom")
+
+    assert panel.peak_expr.text() == "a * exp(-(x - c)**2)"
 
 
 # ---------------------------------------------------------------------------
@@ -197,20 +311,23 @@ def test_get_fit_request_reads_fitting_range(view):
 
 
 def test_get_fit_request_reads_background_state(view):
-    view.background_combo.setCurrentText("None")
-    view.background_table.rows[0].value_edit.setText("2.5")
-    view.background_table.rows[0].fix_check.setChecked(True)
+    slope_row, intercept_row = view.background_table.rows
+    intercept_row.value_edit.setText("2.5")
+    intercept_row.fix_check.setChecked(True)
+    slope_row.value_edit.setText("0.4")
 
     request = view.get_fit_request(make_series(), [], [], [])
 
-    assert request.background == "None"
+    assert request.background == "Linear"
     assert request.background_constant.value == "2.5"
     assert request.background_constant.fixed is True
+    assert request.background_slope.value == "0.4"
+    assert request.background_slope.fixed is False
 
 
 def test_get_fit_request_reads_peak_state(view):
-    view.peak_shape_combo.setCurrentText("Lorentzian")
-    amplitude_row, center_row, fwhm_row = view.peak_table.rows
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
+    amplitude_row, center_row, fwhm_row = view.peak_panels[0].peak_table.rows
     amplitude_row.value_edit.setText("7")
     center_row.min_edit.setText("-1")
     fwhm_row.max_edit.setText("2")
@@ -286,7 +403,7 @@ def test_set_fit_result_signal_fills_peak_table_and_chi_squared(view, qtbot):
     with qtbot.waitSignal(view.set_fit_result_signal, timeout=1000):
         view.set_fit_result_signal.emit(make_result())
 
-    amplitude_row, center_row, fwhm_row = view.peak_table.rows
+    amplitude_row, center_row, fwhm_row = view.peak_panels[0].peak_table.rows
     assert amplitude_row.value_edit.text() == "5"
     assert amplitude_row.std_edit.text() == "0.1"
     assert center_row.value_edit.text() == "1.5"
@@ -299,16 +416,40 @@ def test_set_fit_result_signal_fills_peak_table_and_chi_squared(view, qtbot):
 def test_set_fit_result_blank_uncertainty_when_not_estimated(view):
     view._set_fit_result(make_result(amplitude_err=None))
 
-    amplitude_row, _, _ = view.peak_table.rows
+    amplitude_row, _, _ = view.peak_panels[0].peak_table.rows
     assert amplitude_row.std_edit.text() == ""
 
 
 def test_set_fit_result_updates_background_constant_when_present(view):
     view._set_fit_result(make_result(background_constant=2.0, background_constant_err=0.3))
 
-    (background_row,) = view.background_table.rows
-    assert background_row.value_edit.text() == "2"
-    assert background_row.std_edit.text() == "0.3"
+    _slope_row, intercept_row = view.background_table.rows
+    assert intercept_row.value_edit.text() == "2"
+    assert intercept_row.std_edit.text() == "0.3"
+
+
+def test_set_fit_result_updates_background_slope_when_present(view):
+    view._set_fit_result(
+        make_result(
+            background_constant=2.0,
+            background_constant_err=0.3,
+            background_slope=0.4,
+            background_slope_err=0.05,
+        )
+    )
+
+    slope_row, _intercept_row = view.background_table.rows
+    assert slope_row.value_edit.text() == "0.4"
+    assert slope_row.std_edit.text() == "0.05"
+
+
+def test_set_fit_result_leaves_slope_alone_for_a_constant_background(view):
+    slope_row, _intercept_row = view.background_table.rows
+    slope_row.value_edit.setText("unchanged")
+
+    view._set_fit_result(make_result(background_constant=2.0, background_constant_err=0.3))
+
+    assert slope_row.value_edit.text() == "unchanged"
 
 
 def test_set_fit_result_leaves_background_untouched_when_absent(view):
@@ -326,7 +467,7 @@ def test_set_fit_result_leaves_background_untouched_when_absent(view):
 
 def test_suggest_params_button_click_emits_signal(view, qtbot):
     with qtbot.waitSignal(view.suggest_params_clicked, timeout=1000):
-        view.suggest_btn.click()
+        view.peak_panels[0].suggest_btn.click()
 
 
 def test_hookup_suggest_params_signal_connects_callback(view):
@@ -339,7 +480,7 @@ def test_hookup_suggest_params_signal_connects_callback(view):
 
 
 def test_get_suggest_request_carries_resolved_data_and_shape(view):
-    view.peak_shape_combo.setCurrentText("Lorentzian")
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
 
     request = view.get_suggest_request(UUID(value="scan-001"), [1.0, 2.0], [3.0, 4.0])
 
@@ -363,7 +504,7 @@ def test_set_peak_params_signal_fills_peak_table(view, qtbot):
     with qtbot.waitSignal(view.set_peak_params_signal, timeout=1000):
         view.set_peak_params_signal.emit(5.0, 1.5, 0.75)
 
-    amplitude_row, center_row, fwhm_row = view.peak_table.rows
+    amplitude_row, center_row, fwhm_row = view.peak_panels[0].peak_table.rows
     assert amplitude_row.value_edit.text() == "5"
     assert center_row.value_edit.text() == "1.5"
     assert fwhm_row.value_edit.text() == "0.75"
@@ -372,7 +513,7 @@ def test_set_peak_params_signal_fills_peak_table(view, qtbot):
 def test_set_peak_params_directly(view):
     view._set_peak_params(5.0, 1.5, 0.75)
 
-    amplitude_row, center_row, fwhm_row = view.peak_table.rows
+    amplitude_row, center_row, fwhm_row = view.peak_panels[0].peak_table.rows
     assert amplitude_row.value_edit.text() == "5"
     assert center_row.value_edit.text() == "1.5"
     assert fwhm_row.value_edit.text() == "0.75"

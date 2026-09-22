@@ -187,21 +187,39 @@ class PlotterPresenter(AbstractPresenter):
         already ran first and its render must stay on canvas, so only add to the pending-fit
         set rather than wiping it (fits overlay onto whatever scans/plots are also focused).
 
-        Otherwise (fits selected on their own) clear the canvas, via render_plots_signal (which
-        _render_plots clears the canvas on even when given an empty list), so a fit selected on
-        its own doesn't leave whatever scan/plot was previously focused still drawn in the meantime.
+        Otherwise (fits selected on their own) the canvas is re-rendered from the fits' own
+        series rather than cleared: every FitEntry carries the full PlotSeries it was fit
+        against - scan, x/y columns and normalization - so the data the fit describes is drawn
+        back underneath it, and the resulting ActivePlotChangedEvent repopulates the plotter's
+        axis/preset fields and the Data File tab exactly as focusing that scan would.
         """
         if not e.exclusive:
             self._focused_fit_uuids |= {fit.uuid for fit in e.fits}
             return
-        self._view.render_plots_signal.emit([])
-        self._focused_series_uuids = []
-        self._active_series_uuid = None
-        self._view.set_plot_options_signal.emit([], 0)
+
+        # One series per source scan: two fits on the same scan describe the same data, and
+        # drawing it twice would just overplot it. First fit wins, matching _fits_by_source_uuid.
+        series_by_source: dict[UUID, PlotSeries] = {}
+        for fit in e.fits:
+            if fit.series.source_scan_uuid in e.scans:
+                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        all_series = list(series_by_source.values())
+
+        self._view.render_plots_signal.emit([(*resolve_series(s, e.scans), s) for s in all_series])
+
+        new_uuids = list(series_by_source)
+        self._focused_series_uuids = new_uuids
+        self._active_series_uuid = new_uuids[0] if new_uuids else None
+        self._view.set_plot_options_signal.emit([self._series_label(s) for s in all_series], 0)
+        # The curves themselves aren't drawn yet - FitModel recomputes them and they arrive
+        # back as FitComputedEvent, which handle_fit_computed appends on top of this render.
         self._fits_by_source_uuid = {}
         self._fit_uuid_by_source_uuid = {}
         self._focused_fit_uuids = {fit.uuid for fit in e.fits}
-        self._event_broker.publish(ActivePlotChangedEvent(scan=None, series=None))
+
+        active_series = all_series[0] if all_series else None
+        scan = e.scans.get(active_series.source_scan_uuid) if active_series is not None else None
+        self._event_broker.publish(ActivePlotChangedEvent(scan=scan, series=active_series))
 
     def handle_fit_computed(self, e: FitComputedEvent) -> None:
         """Draw a fit's curve, but only if it's against a currently-focused series or was just selected."""
