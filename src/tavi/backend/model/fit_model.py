@@ -88,6 +88,10 @@ class FitModel(FitModelInterface):
             background_slope=request.background_slope,
             peaks=request.peaks,
         )
+        if request.fit_uuid is not None:
+            # Refitting a series the panel already has a fit for: keep that uuid so the new spec
+            # replaces it in TaviData.fits, instead of each click leaving another fit behind.
+            fit_entry = fit_entry.model_copy(update={"uuid": request.fit_uuid})
         self._publish_fit_computed(fit_entry, curve_x, result)
         return ModelResponse(code=ResponseCode.OK)
 
@@ -109,6 +113,7 @@ class FitModel(FitModelInterface):
         # on a coarse scan - re-evaluate on a fine grid, the same way browser.py plots a fit.
         x_fine = np.linspace(curve_x.min(), curve_x.max(), 300)
         curve = FitCurve(
+            source_scan_uuid=fit_entry.series.source_scan_uuid,
             scan_name=fit_entry.series.scan_name,
             x=x_fine.tolist(),
             best_fit=result.raw.eval(x=x_fine).tolist(),

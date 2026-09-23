@@ -383,6 +383,7 @@ class FittingView(QWidget):
         x: list[float],
         y: list[float],
         err: list[float],
+        fit_uuid: Optional[UUID] = None,
     ) -> FitRequest:
         """Build a FitRequest from the view's current background/peak field state and already-resolved data."""
         slope_row, intercept_row = self.background_table.rows
@@ -391,6 +392,7 @@ class FittingView(QWidget):
             x=list(x),
             y=list(y),
             err=list(err),
+            fit_uuid=fit_uuid,
             range_min=self.min_edit.text(),
             range_max=self.max_edit.text(),
             background=self.background_combo.currentText(),

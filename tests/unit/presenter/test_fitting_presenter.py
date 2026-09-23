@@ -6,7 +6,7 @@ import pytest
 
 from tavi.frontend.presenter.fitting_presenter import FittingPresenter
 from tavi.frontend.view.fitting_view import FittingView
-from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
@@ -44,28 +44,26 @@ def make_param(value=0) -> ParamField:
     return ParamField(value=str(value), fixed=False, minimum="", maximum="")
 
 
-def make_fit_entry(uuid_val="scan-001") -> FitEntry:
+def make_fit_entry(uuid_val="scan-001", fit_uuid="fit-001") -> FitEntry:
     return FitEntry(
+        uuid=UUID(value=fit_uuid),
         series=make_series(uuid_val),
         range_min="0",
         range_max="10",
         background="None",
         background_constant=make_param(0),
-        peak=PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1)),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
     )
 
 
-def make_fit_computed_event(uuid_val="scan-001", reduced_chi_squared=0.5) -> FitComputedEvent:
-    fit = make_fit_entry(uuid_val)
-    curve = FitCurve(scan_name="test_scan", x=[1.0, 2.0], best_fit=[4.1, 4.9])
+def make_fit_computed_event(uuid_val="scan-001", reduced_chi_squared=0.5, fit_uuid="fit-001") -> FitComputedEvent:
+    fit = make_fit_entry(uuid_val, fit_uuid)
+    curve = FitCurve(
+        source_scan_uuid=UUID(value=uuid_val), scan_name="test_scan", x=[1.0, 2.0], best_fit=[4.1, 4.9]
+    )
     result = FitResultSummary(
         reduced_chi_squared=reduced_chi_squared,
-        amplitude=1.0,
-        amplitude_err=None,
-        center=0.0,
-        center_err=None,
-        fwhm=1.0,
-        fwhm_err=None,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
     )
     return FitComputedEvent(fit=fit, curve=curve, result=result)
 
@@ -146,6 +144,48 @@ def test_perform_fit_clicked_calls_model_with_resolved_data(presenter):
     assert request.x == [1.0, 2.0, 3.0]
     assert request.y == [4.0, 5.0, 6.0]
     assert len(request.err) == 3
+
+
+def test_first_perform_fit_requests_a_new_fit(presenter):
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+
+    presenter.handle_perform_fit_clicked()
+
+    assert presenter._model.perform_fit.call_args[0][0].fit_uuid is None
+
+
+def test_perform_fit_again_reuses_the_existing_fit_uuid(presenter):
+    """Refitting the same data overwrites that fit instead of leaving another one behind."""
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    presenter.handle_perform_fit_clicked()
+    EventBroker().publish(make_fit_computed_event(fit_uuid="fit-001"))
+
+    presenter.handle_perform_fit_clicked()
+
+    assert presenter._model.perform_fit.call_args[0][0].fit_uuid == UUID(value="fit-001")
+
+
+def test_perform_fit_on_a_different_series_requests_a_new_fit(presenter):
+    """A fit belongs to the data it was made against - switching series must not overwrite it."""
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    EventBroker().publish(make_fit_computed_event(fit_uuid="fit-001"))
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan("scan-002"), series=make_series("scan-002")))
+
+    presenter.handle_perform_fit_clicked()
+
+    assert presenter._model.perform_fit.call_args[0][0].fit_uuid is None
+
+
+def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(presenter):
+    """Tweaking a params of a fit picked from the tree edits it in place, rather than forking a copy."""
+    event = make_fit_computed_event(fit_uuid="fit-042")
+    EventBroker().publish(FitFocusEvent(fits=[event.fit]))
+    EventBroker().publish(event)
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+
+    presenter.handle_perform_fit_clicked()
+
+    assert presenter._model.perform_fit.call_args[0][0].fit_uuid == UUID(value="fit-042")
 
 
 # ---------------------------------------------------------------------------

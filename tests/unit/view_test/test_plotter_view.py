@@ -9,6 +9,7 @@ from qtpy.QtCore import Qt
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields
+from tavi.library.data.scan import UUID
 
 
 @pytest.fixture
@@ -716,12 +717,73 @@ def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
 # ---------------------------------------------------------------------------
 
 
-def make_fit_curve() -> FitCurve:
-    return FitCurve(scan_name="my_scan", x=[1.0, 2.0, 3.0], best_fit=[1.1, 2.1, 3.1])
+def make_fit_curve(uuid_val="scan-001", scan_name="my_scan", best_fit=None) -> FitCurve:
+    return FitCurve(
+        source_scan_uuid=UUID(value=uuid_val),
+        scan_name=scan_name,
+        x=[1.0, 2.0, 3.0],
+        best_fit=best_fit or [1.1, 2.1, 3.1],
+    )
 
 
 def test_append_fit_curve_adds_a_line(view):
     view._append_fit_curve(make_fit_curve())
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_refitting_a_series_replaces_its_curve_rather_than_stacking_another(view):
+    """Performing a fit again on the same data redraws one curve - it doesn't leave the old one behind."""
+    view._append_fit_curve(make_fit_curve(best_fit=[1.1, 2.1, 3.1]))
+    view._append_fit_curve(make_fit_curve(best_fit=[9.9, 9.9, 9.9]))
+
+    assert len(view.canvas.axes.lines) == 1
+    assert list(view.canvas.axes.lines[0].get_ydata()) == [9.9, 9.9, 9.9]
+
+
+def test_refitting_a_series_keeps_its_curve_the_same_color(view):
+    """Removing a line doesn't rewind matplotlib's color cycle - without care a refit would recolor itself."""
+    view._append_fit_curve(make_fit_curve())
+    original_color = view.canvas.axes.lines[0].get_color()
+
+    view._append_fit_curve(make_fit_curve())
+    view._append_fit_curve(make_fit_curve())
+
+    assert view.canvas.axes.lines[0].get_color() == original_color
+
+
+def test_fit_curves_for_different_series_keep_distinct_colors(view):
+    """Pinning a refit's color must not pin *every* curve to it - a second series still gets its own."""
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-002", scan_name="scan_two"))
+
+    colors = [line.get_color() for line in view.canvas.axes.lines]
+    assert len(set(colors)) == 2
+
+
+def test_refitting_a_series_does_not_duplicate_its_legend_entry(view):
+    view._append_fit_curve(make_fit_curve())
+    view._append_fit_curve(make_fit_curve())
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels.count("my_scan fit") == 1
+
+
+def test_fit_curves_for_different_series_are_drawn_side_by_side(view):
+    """Only the *same* series' curve is replaced - a second scan's fit still overlays alongside it."""
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-002", scan_name="scan_two"))
+
+    assert len(view.canvas.axes.lines) == 2
+
+
+def test_clear_plot_drops_the_remembered_fit_curves(view):
+    """cla() already discarded the lines - a stale handle would blow up the next draw for that series."""
+    view._append_fit_curve(make_fit_curve())
+    view.clear_plot()
+
+    view._append_fit_curve(make_fit_curve())
+
     assert len(view.canvas.axes.lines) == 1
 
 

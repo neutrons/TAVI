@@ -67,12 +67,14 @@ def make_request(**overrides) -> FitRequest:
         range_max="5",
         background="None",
         background_constant=make_param(0),
-        peak=PeakField(
-            shape="Gaussian",
-            amplitude=make_param(GAUSSIAN_AMPLITUDE),
-            center=make_param(GAUSSIAN_CENTER),
-            fwhm=make_param(GAUSSIAN_FWHM),
-        ),
+        peaks=[
+            PeakField(
+                shape="Gaussian",
+                amplitude=make_param(GAUSSIAN_AMPLITUDE),
+                center=make_param(GAUSSIAN_CENTER),
+                fwhm=make_param(GAUSSIAN_FWHM),
+            )
+        ],
     )
     defaults.update(overrides)
     return FitRequest(**defaults)
@@ -108,6 +110,36 @@ def test_perform_fit_does_not_cache_the_curve_on_the_spec(model):
     assert not hasattr(fit, "x")
     assert not hasattr(fit, "best_fit")
     assert fit.series.source_scan_uuid == UUID(value="scan-001")
+
+
+def test_perform_fit_curve_carries_its_source_scan(model):
+    """The curve identifies the series it belongs to, so redrawing it replaces that series' line."""
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_request())
+
+    assert received[0].curve.source_scan_uuid == UUID(value="scan-001")
+
+
+def test_perform_fit_without_a_fit_uuid_mints_a_new_one_each_time(model):
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_request())
+    model.perform_fit(make_request())
+
+    assert received[0].fit.uuid != received[1].fit.uuid
+
+
+def test_perform_fit_with_a_fit_uuid_refits_that_fit_in_place(model):
+    """A refit carries the existing uuid through, so TaviProjectModel overwrites that entry."""
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_request(fit_uuid=UUID(value="fit-007")))
+
+    assert received[0].fit.uuid == UUID(value="fit-007")
 
 
 def test_perform_fit_recovers_amplitude(model):

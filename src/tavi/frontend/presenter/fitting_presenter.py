@@ -35,6 +35,10 @@ class FittingPresenter(AbstractPresenter):
         # recomputed result even though selecting a fit clears the active series (see
         # PlotterPresenter.handle_fit_focus).
         self._focused_fit_uuids: set[UUID] = set()
+        # The fit the panel is currently showing for each series, keyed the way every other fit
+        # lookup here is - by source scan uuid, since "two fits on the same scan describe the
+        # same data" (PlotterPresenter.handle_fit_focus). Uuids only, per the presenter contract.
+        self._fit_uuid_by_source_uuid: dict[UUID, UUID] = {}
 
         self._event_broker = EventBroker()
         self._event_broker.register(ActivePlotChangedEvent, self.handle_active_plot_changed)
@@ -71,6 +75,10 @@ class FittingPresenter(AbstractPresenter):
 
         No-ops when nothing is active - fitting only makes sense against a currently-plotted
         series, matching the "only works if there is an active plot" requirement.
+
+        The first fit against a series mints a new fit; every later one re-runs that same fit
+        (``fit_uuid``), so repeatedly clicking Perform Fit refines one fit rather than leaving a
+        trail of near-identical ones in the project tree.
         """
         if self._active_scan is None or self._active_series is None:
             return
@@ -80,6 +88,7 @@ class FittingPresenter(AbstractPresenter):
             x=x.tolist(),
             y=y.tolist(),
             err=err.tolist(),
+            fit_uuid=self._fit_uuid_by_source_uuid.get(self._active_series.source_scan_uuid),
         )
         self._model.perform_fit(request)
 
@@ -94,6 +103,10 @@ class FittingPresenter(AbstractPresenter):
         )
         if not matches_active and e.fit.uuid not in self._focused_fit_uuids:
             return
+        # Whatever the panel is now showing for this series is what the next Perform Fit
+        # overwrites - which also makes refitting a fit picked from the tree edit that fit,
+        # rather than forking a copy of it.
+        self._fit_uuid_by_source_uuid[e.fit.series.source_scan_uuid] = e.fit.uuid
         self._view.set_fit_result_signal.emit(e.result)
 
     def handle_suggest_params_clicked(self) -> None:

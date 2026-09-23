@@ -64,6 +64,12 @@ class FitRequest(FitSpec):
     x: list[float]
     y: list[float]
     err: list[float]
+    fit_uuid: Optional[UUID] = None
+    """The uuid of the fit this request re-runs, when the panel already has one for this series.
+
+    ``None`` means "no fit yet" and mints a fresh ``FitEntry``; supplying one instead refits in
+    place, so ``TaviProjectModel`` overwrites that entry rather than growing the project tree by
+    one fit per click of Perform Fit."""
 
 
 class SuggestPeakParamsRequest(BaseModel):
@@ -117,6 +123,10 @@ class FitCurve(BaseModel):
     or recomputed after being selected from the project tree.
     """
 
+    source_scan_uuid: UUID
+    """The scan the fitted series came from. One drawn curve per source scan - the same key
+    ``PlotterPresenter`` caches these under - so redrawing replaces that series' curve rather
+    than stacking another one on top of it."""
     scan_name: str
     x: list[float]
     best_fit: list[float]

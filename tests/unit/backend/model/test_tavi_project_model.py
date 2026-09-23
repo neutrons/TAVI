@@ -593,7 +593,9 @@ def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(mo
 
 
 def make_fit_computed_event(fit) -> FitComputedEvent:
-    curve = FitCurve(scan_name=fit.series.scan_name, x=[1.0, 2.0], best_fit=[1.1, 1.9])
+    curve = FitCurve(
+        source_scan_uuid=fit.series.source_scan_uuid, scan_name=fit.series.scan_name, x=[1.0, 2.0], best_fit=[1.1, 1.9]
+    )
     result = FitResultSummary(reduced_chi_squared=1.0, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)
     return FitComputedEvent(fit=fit, curve=curve, result=result)
 

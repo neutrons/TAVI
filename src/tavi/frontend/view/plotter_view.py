@@ -42,6 +42,10 @@ class Plot1DView(QWidget):
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
         super().__init__(parent)
+        # The fit curve currently drawn for each source scan, so a refit of that series can drop
+        # its own line before drawing the new one - matplotlib would otherwise keep every
+        # superseded curve (and its legend entry) on the axes.
+        self._fit_lines: dict[str, Any] = {}
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
@@ -186,15 +190,27 @@ class Plot1DView(QWidget):
         self.canvas.draw()
 
     def _append_fit_curve(self, fit: FitCurve) -> None:
-        """Draw a fit's evaluated curve as a solid line, distinct from append_plot's scatter style."""
+        """Draw a fit's evaluated curve as a solid line, replacing whatever was drawn for that series."""
         ax = self.canvas.axes
-        ax.plot(fit.x, fit.best_fit, "-", label=f"{fit.scan_name} fit")
+        superseded = self._fit_lines.pop(fit.source_scan_uuid.value, None)
+        # Removing a line doesn't rewind the axes' property cycle, so an unqualified plot() would
+        # hand each refit the next color - reuse the superseded curve's own. None (the first fit
+        # for this series) reads as "unset" and takes the next cycle color, as before.
+        color = superseded.get_color() if superseded is not None else None
+        if superseded is not None:
+            superseded.remove()
+        (line,) = ax.plot(fit.x, fit.best_fit, "-", color=color, label=f"{fit.scan_name} fit")
+        self._fit_lines[fit.source_scan_uuid.value] = line
+        # Rebuilt after the swap, so the dropped curve's entry goes with it.
         ax.legend()
         self.canvas.draw()
 
     def clear_plot(self) -> None:
         """Clear all data from the plot."""
         self.canvas.axes.cla()
+        # cla() already discarded the lines themselves - keeping handles to them would leave
+        # _append_fit_curve trying to remove artists that are no longer on the axes.
+        self._fit_lines.clear()
         # Drop the toolbar's view history along with the data. Matplotlib captures the
         # "Home" view lazily on the first pan/zoom, so without this the next plot's Home
         # button would restore the *previous* plot's axis limits.

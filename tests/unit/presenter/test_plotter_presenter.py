@@ -554,7 +554,9 @@ def make_fit_entry(uuid_val="scan-001") -> FitEntry:
 
 def make_fit_computed_event(uuid_val="scan-001") -> FitComputedEvent:
     fit = make_fit_entry(uuid_val)
-    curve = FitCurve(scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
+    curve = FitCurve(
+        source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
+    )
     result = FitResultSummary(
         reduced_chi_squared=0.5, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None
     )
@@ -646,7 +648,9 @@ def test_handle_fit_focus_draws_curve_once_recomputed(presenter):
     entry = make_fit_entry()
     presenter.handle_fit_focus(FitFocusEvent(fits=[entry]))
 
-    curve = FitCurve(scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
+    curve = FitCurve(
+        source_scan_uuid=entry.series.source_scan_uuid, scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
+    )
     result = FitResultSummary(
         reduced_chi_squared=0.5, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None
     )
