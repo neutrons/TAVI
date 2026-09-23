@@ -8,7 +8,7 @@ import pytest
 
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
-from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
@@ -548,7 +548,7 @@ def make_fit_entry(uuid_val="scan-001") -> FitEntry:
         range_max="10",
         background="None",
         background_constant=make_param(0),
-        peak=PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1)),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
     )
 
 
@@ -558,7 +558,8 @@ def make_fit_computed_event(uuid_val="scan-001") -> FitComputedEvent:
         source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
     )
     result = FitResultSummary(
-        reduced_chi_squared=0.5, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None
+        reduced_chi_squared=0.5,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
     )
     return FitComputedEvent(fit=fit, curve=curve, result=result)
 
@@ -652,7 +653,8 @@ def test_handle_fit_focus_draws_curve_once_recomputed(presenter):
         source_scan_uuid=entry.series.source_scan_uuid, scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
     )
     result = FitResultSummary(
-        reduced_chi_squared=0.5, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None
+        reduced_chi_squared=0.5,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
     )
     EventBroker().publish(FitComputedEvent(fit=entry, curve=curve, result=result))
 

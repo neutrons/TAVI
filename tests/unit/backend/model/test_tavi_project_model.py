@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tavi.backend.model.tavi_project_model import TaviProjectModel
-from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
@@ -75,7 +75,7 @@ def make_fit_entry(uuid_val="fit-001", scan_name="test_scan"):
         range_max="10",
         background="None",
         background_constant=make_param(0),
-        peak=PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1)),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
     )
 
 
@@ -596,7 +596,10 @@ def make_fit_computed_event(fit) -> FitComputedEvent:
     curve = FitCurve(
         source_scan_uuid=fit.series.source_scan_uuid, scan_name=fit.series.scan_name, x=[1.0, 2.0], best_fit=[1.1, 1.9]
     )
-    result = FitResultSummary(reduced_chi_squared=1.0, amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)
+    result = FitResultSummary(
+        reduced_chi_squared=1.0,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
+    )
     return FitComputedEvent(fit=fit, curve=curve, result=result)
 
 

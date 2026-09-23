@@ -168,9 +168,9 @@ def test_perform_fit_result_recovers_center_and_fwhm(model):
     model.perform_fit(make_request())
 
     result = received[0].result
-    assert result.amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-3)
-    assert result.center == pytest.approx(GAUSSIAN_CENTER, abs=1e-3)
-    assert result.fwhm == pytest.approx(GAUSSIAN_FWHM, rel=1e-3)
+    assert result.peaks[0].amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-3)
+    assert result.peaks[0].center == pytest.approx(GAUSSIAN_CENTER, abs=1e-3)
+    assert result.peaks[0].fwhm == pytest.approx(GAUSSIAN_FWHM, rel=1e-3)
 
 
 def test_perform_fit_reports_uncertainties_for_noisy_data(model):
@@ -185,22 +185,29 @@ def test_perform_fit_reports_uncertainties_for_noisy_data(model):
     model.perform_fit(make_request(y=noisy_y, err=np.full_like(x, 0.02).tolist()))
 
     result = received[0].result
-    assert result.amplitude_err is not None
-    assert result.center_err is not None
-    assert result.fwhm_err is not None
+    assert result.peaks[0].amplitude_err is not None
+    assert result.peaks[0].center_err is not None
+    assert result.peaks[0].fwhm_err is not None
 
 
-def test_perform_fit_with_constant_background_succeeds(model):
+def test_perform_fit_flat_background_is_linear_with_its_slope_fixed(model):
+    """There is no separate "Constant" model - a flat background is Linear with its slope fixed at 0."""
     received = []
     EventBroker().register(FitComputedEvent, received.append)
 
-    x, y = make_gaussian_xy()
-    request = make_request(background="Constant", background_constant=make_param(0), y=(y + 2.0).tolist())
+    _x, y = make_gaussian_xy()
+    request = make_request(
+        background="Linear",
+        background_constant=make_param(0),
+        background_slope=make_param(0, fixed=True),
+        y=(y + 2.0).tolist(),
+    )
 
     model.perform_fit(request)
 
     assert len(received) == 1
     assert received[0].result.background_constant == pytest.approx(2.0, abs=1e-2)
+    assert received[0].result.background_slope == pytest.approx(0.0, abs=1e-9)
 
 
 def test_perform_fit_trims_to_range(model):
@@ -212,7 +219,9 @@ def test_perform_fit_trims_to_range(model):
     curve = received[0].curve
     assert min(curve.x) >= -1
     assert max(curve.x) <= 1
-    assert len(curve.x) < 101
+    # The curve is re-evaluated on a fine grid rather than at the scan's own points, so its
+    # point count says nothing about trimming - its span does.
+    assert max(curve.x) - min(curve.x) == pytest.approx(2.0, abs=0.1)
 
 
 def test_perform_fit_unsupported_peak_shape_reports_error(model):
@@ -221,7 +230,9 @@ def test_perform_fit_unsupported_peak_shape_reports_error(model):
     computed = []
     EventBroker().register(FitComputedEvent, computed.append)
 
-    request = make_request(peak=PeakField(shape="Pseudo-Voigt", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1)))
+    request = make_request(
+        peaks=[PeakField(shape="Pseudo-Voigt", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))]
+    )
     model.perform_fit(request)
 
     assert len(errors) == 1
@@ -245,7 +256,9 @@ def test_perform_fit_non_numeric_peak_field_reports_error(model):
     EventBroker().register(ExceptionEvent, errors.append)
 
     request = make_request(
-        peak=PeakField(shape="Gaussian", amplitude=make_param("not-a-number"), center=make_param(0), fwhm=make_param(1))
+        peaks=[
+            PeakField(shape="Gaussian", amplitude=make_param("not-a-number"), center=make_param(0), fwhm=make_param(1))
+        ]
     )
     model.perform_fit(request)
 
@@ -283,14 +296,14 @@ def test_perform_fit_guesses_blank_peak_params(model):
     EventBroker().register(ExceptionEvent, errors.append)
 
     request = make_request(
-        peak=PeakField(shape="Gaussian", amplitude=make_param(""), center=make_param(""), fwhm=make_param(""))
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(""), center=make_param(""), fwhm=make_param(""))]
     )
     model.perform_fit(request)
 
     assert errors == []
     assert len(received) == 1
-    assert received[0].result.amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-2)
-    assert received[0].result.center == pytest.approx(GAUSSIAN_CENTER, abs=1e-2)
+    assert received[0].result.peaks[0].amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-2)
+    assert received[0].result.peaks[0].center == pytest.approx(GAUSSIAN_CENTER, abs=1e-2)
 
 
 def test_perform_fit_guesses_only_the_blank_peak_field(model):
@@ -299,21 +312,28 @@ def test_perform_fit_guesses_only_the_blank_peak_field(model):
     EventBroker().register(FitComputedEvent, received.append)
 
     request = make_request(
-        peak=PeakField(
-            shape="Gaussian", amplitude=make_param(""), center=make_param(GAUSSIAN_CENTER), fwhm=make_param("")
-        )
+        peaks=[
+            PeakField(
+                shape="Gaussian", amplitude=make_param(""), center=make_param(GAUSSIAN_CENTER), fwhm=make_param("")
+            )
+        ]
     )
     model.perform_fit(request)
 
-    assert received[0].result.center == pytest.approx(GAUSSIAN_CENTER, abs=1e-3)
+    assert received[0].result.peaks[0].center == pytest.approx(GAUSSIAN_CENTER, abs=1e-3)
 
 
 def test_perform_fit_guesses_blank_background_constant(model):
     received = []
     EventBroker().register(FitComputedEvent, received.append)
 
-    x, y = make_gaussian_xy()
-    request = make_request(background="Constant", background_constant=make_param(""), y=(y + 2.0).tolist())
+    _x, y = make_gaussian_xy()
+    request = make_request(
+        background="Linear",
+        background_constant=make_param(""),
+        background_slope=make_param(0, fixed=True),
+        y=(y + 2.0).tolist(),
+    )
     model.perform_fit(request)
 
     assert received[0].result.background_constant == pytest.approx(2.0, abs=0.5)
@@ -332,7 +352,7 @@ def make_fit_entry_from_request(request: FitRequest, uuid_val="fit-001"):
         range_max=request.range_max,
         background=request.background,
         background_constant=request.background_constant,
-        peak=request.peak,
+        peaks=request.peaks,
     )
 
 
@@ -359,7 +379,7 @@ def test_fit_focus_recomputes_against_current_raw_scan_data():
 
     assert len(received) == 1
     assert received[0].fit.uuid == entry.uuid
-    assert received[0].result.amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-2)
+    assert received[0].result.peaks[0].amplitude == pytest.approx(GAUSSIAN_AREA, rel=1e-2)
 
 
 def test_fit_focus_reflects_changed_underlying_data():
@@ -376,7 +396,7 @@ def test_fit_focus_reflects_changed_underlying_data():
     EventBroker().register(FitComputedEvent, received.append)
     EventBroker().publish(FitRecomputeEvent(fits=[entry]))
 
-    assert received[0].result.amplitude == pytest.approx(2 * GAUSSIAN_AREA, rel=1e-2)
+    assert received[0].result.peaks[0].amplitude == pytest.approx(2 * GAUSSIAN_AREA, rel=1e-2)
 
 
 def test_fit_focus_unknown_source_scan_is_noop():
@@ -449,16 +469,18 @@ def test_perform_fit_linear_background_still_recovers_the_peak(model):
     model.perform_fit(make_linear_background_request())
 
     result = computed[0].result
-    assert result.center == pytest.approx(GAUSSIAN_CENTER, abs=0.05)
-    assert result.amplitude == pytest.approx(GAUSSIAN_AREA, rel=0.05)
+    assert result.peaks[0].center == pytest.approx(GAUSSIAN_CENTER, abs=0.05)
+    assert result.peaks[0].amplitude == pytest.approx(GAUSSIAN_AREA, rel=0.05)
 
 
-def test_perform_fit_constant_background_reports_no_slope(model):
+def test_perform_fit_without_a_background_reports_no_background_terms(model):
+    """A "None" background has nothing to report - both terms stay unset rather than reading as a fitted 0."""
     computed = []
     EventBroker().register(FitComputedEvent, computed.append)
 
-    model.perform_fit(make_request(background="Constant"))
+    model.perform_fit(make_request(background="None"))
 
+    assert computed[0].result.background_constant is None
     assert computed[0].result.background_slope is None
 
 
@@ -649,15 +671,6 @@ def test_suggest_background_params_honours_the_fitting_range(model):
     model.suggest_background_params(make_suggest_background_request(y=y.tolist(), range_min="-5", range_max="0"))
 
     assert received[0].slope == pytest.approx(BACKGROUND_SLOPE, abs=1e-6)
-
-
-def test_suggest_background_params_supports_constant(model):
-    received = []
-    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
-
-    model.suggest_background_params(make_suggest_background_request(background="Constant"))
-
-    assert len(received) == 1
 
 
 def test_suggest_background_params_unsupported_background_reports_error(model):

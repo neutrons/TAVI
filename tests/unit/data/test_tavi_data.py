@@ -50,7 +50,7 @@ def make_fit_entry(uuid_val="fit-001") -> FitEntry:
         range_max="10",
         background="None",
         background_constant=make_param(0),
-        peak=PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1)),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
     )
 
 

@@ -58,9 +58,7 @@ def make_fit_entry(uuid_val="scan-001", fit_uuid="fit-001") -> FitEntry:
 
 def make_fit_computed_event(uuid_val="scan-001", reduced_chi_squared=0.5, fit_uuid="fit-001") -> FitComputedEvent:
     fit = make_fit_entry(uuid_val, fit_uuid)
-    curve = FitCurve(
-        source_scan_uuid=UUID(value=uuid_val), scan_name="test_scan", x=[1.0, 2.0], best_fit=[4.1, 4.9]
-    )
+    curve = FitCurve(source_scan_uuid=UUID(value=uuid_val), scan_name="test_scan", x=[1.0, 2.0], best_fit=[4.1, 4.9])
     result = FitResultSummary(
         reduced_chi_squared=reduced_chi_squared,
         peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],

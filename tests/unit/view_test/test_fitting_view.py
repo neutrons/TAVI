@@ -3,7 +3,7 @@
 import pytest
 
 from tavi.frontend.view.fitting_view import PEAK_EXPRESSIONS, FittingView, ParamTable
-from tavi.library.data.fit_entry import FitResultSummary
+from tavi.library.data.fit_entry import FitResultSummary, PeakResult
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
@@ -334,10 +334,21 @@ def test_get_fit_request_reads_peak_state(view):
 
     request = view.get_fit_request(make_series(), [], [], [])
 
-    assert request.peak.shape == "Lorentzian"
-    assert request.peak.amplitude.value == "7"
-    assert request.peak.center.minimum == "-1"
-    assert request.peak.fwhm.maximum == "2"
+    assert request.peaks[0].shape == "Lorentzian"
+    assert request.peaks[0].amplitude.value == "7"
+    assert request.peaks[0].center.minimum == "-1"
+    assert request.peaks[0].fwhm.maximum == "2"
+
+
+def test_get_fit_request_reads_every_peak_panel_in_order(view):
+    """Each panel becomes its own lmfit component, so all of them have to reach the request."""
+    view.num_peaks_spin.setValue(3)
+    for index, panel in enumerate(view.peak_panels):
+        panel.peak_table.rows[1].value_edit.setText(str(index))
+
+    request = view.get_fit_request(make_series(), [], [], [])
+
+    assert [peak.center.value for peak in request.peaks] == ["0", "1", "2"]
 
 
 # ---------------------------------------------------------------------------
@@ -383,15 +394,26 @@ def test_set_fitting_range_directly(view):
 # ---------------------------------------------------------------------------
 
 
+PEAK_RESULT_FIELDS = set(PeakResult.model_fields)
+
+
+def make_peak_result(amplitude=5.0, amplitude_err=0.1, center=1.5, center_err=0.2, fwhm=0.75, fwhm_err=0.05):
+    return PeakResult(
+        amplitude=amplitude,
+        amplitude_err=amplitude_err,
+        center=center,
+        center_err=center_err,
+        fwhm=fwhm,
+        fwhm_err=fwhm_err,
+    )
+
+
 def make_result(**overrides) -> FitResultSummary:
+    """One peak by default; pass ``peaks=[...]`` for a multi-peak result, or a bare peak field to tweak it."""
+    peak_fields = {k: overrides.pop(k) for k in list(overrides) if k in PEAK_RESULT_FIELDS}
     defaults = dict(
         reduced_chi_squared=1.2345,
-        amplitude=5.0,
-        amplitude_err=0.1,
-        center=1.5,
-        center_err=0.2,
-        fwhm=0.75,
-        fwhm_err=0.05,
+        peaks=[make_peak_result(**peak_fields)],
         background_constant=None,
         background_constant_err=None,
     )
@@ -411,6 +433,24 @@ def test_set_fit_result_signal_fills_peak_table_and_chi_squared(view, qtbot):
     assert fwhm_row.value_edit.text() == "0.75"
     assert fwhm_row.std_edit.text() == "0.05"
     assert view.chi2_edit.text() == "1.234"
+
+
+def test_set_fit_result_fills_every_peak_panel_in_order(view):
+    """Peaks go out in panel order, so entry i must read back into panel i."""
+    view.num_peaks_spin.setValue(2)
+
+    view._set_fit_result(make_result(peaks=[make_peak_result(center=1.5), make_peak_result(center=9.5)]))
+
+    assert view.peak_panels[0].peak_table.rows[1].value_edit.text() == "1.5"
+    assert view.peak_panels[1].peak_table.rows[1].value_edit.text() == "9.5"
+
+
+def test_set_fit_result_ignores_peaks_beyond_the_panels_on_screen(view):
+    """A result computed before the spinbox shrank must not write into a panel that's gone."""
+    view._set_fit_result(make_result(peaks=[make_peak_result(center=1.5), make_peak_result(center=9.5)]))
+
+    assert len(view.peak_panels) == 1
+    assert view.peak_panels[0].peak_table.rows[1].value_edit.text() == "1.5"
 
 
 def test_set_fit_result_blank_uncertainty_when_not_estimated(view):
