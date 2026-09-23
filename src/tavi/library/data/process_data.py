@@ -62,11 +62,10 @@ class AppendOp(ProcessOps):
     from the origins' ``metadata`` or ``normalization``, which describe one
     origin rather than the combination.
 
-    Nothing here raises on a mismatch: a column missing from an origin
-    contributes nothing, leaving the result's columns at differing lengths, and
-    a uuid listed twice appends its rows twice while ``prov.contributing_scans``
-    keeps a single entry. Requesting columns every origin carries is the
-    caller's job.
+    Every requested column must be carried by every origin, so that the result's
+    columns come out the same length and its rows stay aligned. A uuid listed
+    twice is still permitted: it appends its rows twice while
+    ``prov.contributing_scans`` keeps a single entry.
     """
 
     def __init__(self, tavi_data: TaviData, uuids: Sequence[UUID], columns: Sequence[str]) -> None:
@@ -85,14 +84,25 @@ class AppendOp(ProcessOps):
 
     def validate(self) -> None:
         """
-        Check that there are enough columns to form a default axis.
+        Check that there are enough columns to form a default axis and that every origin carries them.
 
         Raises:
             ValueError: If fewer than two columns are requested.
+            KeyError: If a uuid is not present in the data pool, or an origin
+                does not carry one of the requested columns.
 
         """
         if len(self.columns) < 2:
             raise ValueError("Append data need at least 2 columns.")
+
+        for uuid in self.uuids:
+            scan = self.tavi_data.fetch_by_uuid(uuid)
+            missing = [column for column in self.columns if column not in scan.data.data]
+            if missing:
+                raise KeyError(
+                    f"Scan {scan.tavimeta.friendly_name!r} ({uuid.value}) has no column(s) {missing}. "
+                    f"Valid columns are: {list(scan.data.data)}."
+                )
 
     def exec(self) -> ProcessedScan:
         """
@@ -107,15 +117,17 @@ class AppendOp(ProcessOps):
 
         Raises:
             ValueError: If fewer than two columns are requested.
-            KeyError: If a uuid is not present in the data pool.
+            KeyError: If a uuid is not present in the data pool, or an origin
+                does not carry one of the requested columns.
 
         """
         self.validate()
 
-        # create a processed_scan object with a new uuid.
+        # create a processed_scan object with a new uuid. Every requested column is
+        # present even with no origins, so default_axis always names a real column.
         processed_scan = ProcessedScan(
             uuid=UUID(value=str(uuid4())),
-            data=ScanData(),
+            data=ScanData(data={column: [] for column in self.columns}),
             metadata=ScanMetadata(),
             tavimeta=TaviMetadata(
                 default_axis=(self.columns[0], self.columns[1]),
@@ -133,20 +145,11 @@ class AppendOp(ProcessOps):
             # set provenance, weight is always 1 as appending doesn't modify weights.
             processed_scan.prov.contributing_scans[uuid] = 1
             friendly_names.append(precombined_scan.tavimeta.friendly_name)
-            # loop through given columns that we need to append.
+            # loop through given columns that we need to append, validate() has
+            # already checked every one of them is carried by this origin.
             for column in self.columns:
-                # If the column not in processed_scan, we initialize an empty entry
-                if column not in processed_scan.data.data:
-                    processed_scan.data.data[column] = []
-
-                # If the column name doesn't exist in the raw_scan, we skip it but allow the user
-                # to do this. It's the user's responsibility to ensure they properly combine columns.
-                try:
-                    append_data = precombined_scan.data.data[column]
-                except KeyError:
-                    continue
                 # loaders may hand back numpy arrays, store plain floats.
-                processed_scan.data.data[column].extend(float(value) for value in append_data)
+                processed_scan.data.data[column].extend(float(value) for value in precombined_scan.data.data[column])
 
         # new friendly name
         processed_scan.tavimeta.friendly_name = "+".join(friendly_names)

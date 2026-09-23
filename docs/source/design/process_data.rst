@@ -108,6 +108,8 @@ AppendOp
    .. method:: validate() -> None
 
       :raises ValueError: If fewer than two columns are requested.
+      :raises KeyError: If a uuid is not present in the data pool, or an origin
+         does not carry one of the requested columns.
 
    .. method:: exec() -> ProcessedScan
 
@@ -119,7 +121,8 @@ AppendOp
          ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty.
       :rtype: ProcessedScan
       :raises ValueError: If fewer than two columns are requested.
-      :raises KeyError: If a uuid is not present in the data pool.
+      :raises KeyError: If a uuid is not present in the data pool, or an origin
+         does not carry one of the requested columns.
 
 Key Design Decisions
 --------------------
@@ -154,16 +157,22 @@ handed. A ``ProcessedScan`` may itself be an origin for the next combination,
 which is why uuids resolve through ``fetch_by_uuid`` rather than against
 ``raw_scans`` alone.
 
-Columns are the caller's responsibility
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Every origin must carry every requested column
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A requested column missing from an origin contributes nothing rather than
-raising, and a column no origin carries comes back empty. This leaves the
-result's columns at differing lengths, which misaligns rows that are meant to be
-read together — but which columns belong together is a question only the caller
-can answer, so ``AppendOp`` combines what it is asked for and does not
-second-guess the selection. Listing a uuid twice is likewise permitted: its rows
-appear twice while ``prov.contributing_scans`` keeps a single entry for it.
+``validate()`` resolves each origin and raises ``KeyError`` — naming the scan,
+the missing columns and the columns it does carry — if any requested column is
+absent. Skipping the missing column instead would leave the result's columns at
+differing lengths, silently misaligning rows that are meant to be read together;
+a scan whose ``qh`` is two values longer than its ``detector`` is not something a
+caller can detect after the fact, so the operation refuses up front rather than
+producing it. Because the check needs the origins resolved, it lives in
+``validate()`` alongside the column-count check rather than in ``__init__``, and
+a GUI can call ``validate()`` on its own to offer the operation before the user
+commits to it.
+
+Listing a uuid twice is still permitted: its rows appear twice while
+``prov.contributing_scans`` keeps a single entry for it.
 
 At least two columns, for the default axis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

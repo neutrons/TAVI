@@ -125,23 +125,33 @@ def test_append_carries_no_metadata_from_its_origins():
     assert combined.tavimeta.normalization is None
 
 
-def test_append_skips_a_column_missing_from_an_origin():
-    """A missing column contributes nothing, combining columns that belong together is the caller's job."""
+def test_append_raises_when_a_column_is_missing_from_an_origin():
+    """Appending a column only some origins carry would leave the result's rows misaligned."""
     first = make_raw_scan("scan-001", data={"qh": [1.0, 2.0], "en": [3.0, 4.0]})
     second = make_raw_scan("scan-002", data={"qh": [5.0]})
 
-    combined = AppendOp(make_tavi_data(first, second), [first.uuid, second.uuid], ["qh", "en"]).exec()
-
-    assert combined.data.qh == [1.0, 2.0, 5.0]
-    assert combined.data.en == [3.0, 4.0]
+    with pytest.raises(KeyError, match="has no column"):
+        AppendOp(make_tavi_data(first, second), [first.uuid, second.uuid], ["qh", "en"]).exec()
 
 
-def test_append_yields_an_empty_column_no_origin_provides():
-    scan = make_raw_scan("scan-001", data={"qh": [1.0]})
+def test_append_column_error_names_the_offending_scan_and_its_columns():
+    scan = make_raw_scan("scan-001", name="HB1A_exp0004_scan0001", data={"qh": [1.0], "en": [2.0]})
 
-    combined = AppendOp(make_tavi_data(scan), [scan.uuid], ["qh", "detector"]).exec()
+    with pytest.raises(KeyError) as excinfo:
+        AppendOp(make_tavi_data(scan), [scan.uuid], ["qh", "detector"]).exec()
 
-    assert combined.data.detector == []
+    message = str(excinfo.value)
+    assert "HB1A_exp0004_scan0001" in message
+    assert "'detector'" in message
+    assert "'qh', 'en'" in message
+
+
+def test_append_raises_before_producing_anything_when_a_column_is_missing():
+    """validate() is callable on its own, so a GUI can offer the operation before committing to it."""
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "en": [2.0]})
+
+    with pytest.raises(KeyError, match="has no column"):
+        AppendOp(make_tavi_data(scan), [scan.uuid], ["qh", "detector"]).validate()
 
 
 def test_append_can_take_a_processed_scan_as_an_origin():
