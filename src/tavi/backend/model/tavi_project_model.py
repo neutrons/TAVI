@@ -6,6 +6,7 @@ from ruamel.yaml import YAML
 
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
+from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import RawScan
@@ -13,10 +14,13 @@ from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     DownstreamReadyEvent,
+    FitComputedEvent,
+    FitFocusEvent,
+    FitRecomputeEvent,
     FocusActivePlotEvent,
     FocusEvent,
     PlotFocusEvent,
@@ -32,7 +36,7 @@ class TaviProjectModel(TaviProjectInterface):
     def __init__(self, filestore: Filestore) -> None:
         """Init tavi data."""
         self.filestore = filestore
-        self.tavi_data: TaviData = TaviData(raw_scans={}, plots={})
+        self.tavi_data: TaviData = TaviData(raw_scans={}, plots={}, fits={})
         self._event_broker: EventBroker = EventBroker()
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
 
@@ -40,6 +44,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.register(FocusEvent, self._handle_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
+        self._event_broker.register(FitComputedEvent, self._handle_fit_computed_event)
 
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
@@ -92,6 +97,20 @@ class TaviProjectModel(TaviProjectInterface):
         friendly_name = f"{run_names}_Plot"
         self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
+    def _handle_fit_computed_event(self, e: FitComputedEvent) -> None:
+        """
+        Record a fit's spec in ``tavi_data`` and announce it, mirroring ``_handle_save_plot_event``.
+
+        Also fires for a fit recomputed after being reselected (same uuid, same spec) - only
+        announce it to the project tree the first time, or a reselect would crash the tree view
+        trying to add a uuid it already has.
+        """
+        is_new = e.fit.uuid not in self.tavi_data.fits
+        self.tavi_data.fits[e.fit.uuid] = e.fit
+        if is_new:
+            friendly_name = f"{e.fit.series.scan_name}_Fit"
+            self._event_broker.publish(FitAppendEvent(uuid=e.fit.uuid, friendly_name=friendly_name, friendly_path=""))
+
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """
         Resolve one series, by its source scan's uuid, across every currently-saved plot.
@@ -113,6 +132,7 @@ class TaviProjectModel(TaviProjectInterface):
         ids = e.ids
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []
+        fits: list[FitEntry] = []
         for uuid in ids:
             # FocusEvent ids come from the project tree, which only ever lists uuids
             # TaviData actually owns — fetch_by_uuid raising here means tree/TaviData are
@@ -122,9 +142,38 @@ class TaviProjectModel(TaviProjectInterface):
                 raw_scans.append(inst)
             if isinstance(inst, Plot):
                 plots.append(inst)
+            if isinstance(inst, FitEntry):
+                fits.append(inst)
+
+        # A focused Plot's own attached fits (stamped on it by PlotModel.save_focused_plots when
+        # it was saved) are re-focused too, even though the user only selected the Plot itself -
+        # this is how re-selecting a saved plot brings its fit curves back, not just its data.
+        attached_fits = {fit.uuid: fit for fit in fits}
+        for plot in plots:
+            for fit_uuid in plot.fits:
+                if fit_uuid not in attached_fits and fit_uuid in self.tavi_data.fits:
+                    attached_fits[fit_uuid] = self.tavi_data.fits[fit_uuid]
+        fits = list(attached_fits.values())
 
         if raw_scans:
-            self._event_broker.publish(RawScanFocusEvent(scans=raw_scans))
-        if plots:
+            # also_plots folds any saved plots focused in the same multiselect into PlotModel's
+            # preview batch, so it publishes one merged PlotFocusEvent instead of this branch's
+            # own publish (below) clobbering the preview render, or vice versa.
+            self._event_broker.publish(RawScanFocusEvent(scans=raw_scans, also_plots=plots))
+        elif plots:
             scans = scans_for_plots(plots, self.tavi_data.raw_scans)
             self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans))
+        if fits:
+            # FitFocusEvent (UI state) is published fully - every subscriber done - before
+            # FitRecomputeEvent (backend trigger), so PlotterPresenter/FittingPresenter have
+            # already marked these uuids pending by the time FitModel's resulting
+            # FitComputedEvent arrives - see FitFocusEvent's docstring.
+            # Carry each fit's own source scan along, so the presenter can redraw the data the
+            # fit was made against without reaching into this model's storage.
+            fit_scans = {
+                fit.series.source_scan_uuid: self.tavi_data.raw_scans[fit.series.source_scan_uuid]
+                for fit in fits
+                if fit.series.source_scan_uuid in self.tavi_data.raw_scans
+            }
+            self._event_broker.publish(FitFocusEvent(fits=fits, exclusive=not (raw_scans or plots), scans=fit_scans))
+            self._event_broker.publish(FitRecomputeEvent(fits=fits))

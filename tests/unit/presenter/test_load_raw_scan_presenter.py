@@ -7,7 +7,7 @@ import pytest
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent
+from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent
 from tavi.meta.event.type.presenter_event import FocusEvent
 
 
@@ -44,6 +44,13 @@ def test_init_registers_plot_append_event():
     broker = EventBroker()
 
     assert presenter.update_plot_treeview_data in broker.registry[PlotAppendEvent]
+
+
+def test_init_registers_fit_append_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.update_fit_treeview_data in broker.registry[FitAppendEvent]
 
 
 def test_init_hooks_up_select_signal():
@@ -137,6 +144,40 @@ def test_update_plot_treeview_data_does_not_touch_raw_scan_inventory():
 
     uuid = UUID(value="plot-002")
     presenter.update_plot_treeview_data(PlotAppendEvent(uuid=uuid, friendly_name="run2_Plot", friendly_path=""))
+
+    assert uuid not in presenter.inventory
+
+
+# ---------------------------------------------------------------------------
+# update_fit_treeview_data
+# ---------------------------------------------------------------------------
+
+
+def test_update_fit_treeview_data_calls_add_fit():
+    presenter, view, model = _make_presenter()
+
+    uuid = UUID(value="fit-001")
+    event = FitAppendEvent(uuid=uuid, friendly_name="run1_Fit", friendly_path="")
+    presenter.update_fit_treeview_data(event)
+
+    view.add_fit.assert_called_once_with(uuid, "run1_Fit", "")
+
+
+def test_update_fit_treeview_data_via_event_broker():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    uuid = UUID(value="fit-broker-1")
+    broker.publish(FitAppendEvent(uuid=uuid, friendly_name="BrokerFit", friendly_path=""))
+
+    view.add_fit.assert_called_once_with(uuid, "BrokerFit", "")
+
+
+def test_update_fit_treeview_data_does_not_touch_raw_scan_inventory():
+    presenter, view, model = _make_presenter()
+
+    uuid = UUID(value="fit-002")
+    presenter.update_fit_treeview_data(FitAppendEvent(uuid=uuid, friendly_name="run2_Fit", friendly_path=""))
 
     assert uuid not in presenter.inventory
 

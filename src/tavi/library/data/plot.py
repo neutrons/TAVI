@@ -29,6 +29,9 @@ class Plot(BaseModel):
 
     uuid: UUID = UUIDFactory()
     series: list[PlotSeries]
+    fits: list[UUID] = []
+    """uuids of FitEntry objects that were overlaid on this plot when it was saved - re-focused
+    (and recomputed fresh, never replayed) whenever this plot is focused again."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

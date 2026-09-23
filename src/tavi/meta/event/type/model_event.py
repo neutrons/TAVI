@@ -20,6 +20,14 @@ class PlotAppendEvent(Event):
     friendly_path: str
 
 
+class FitAppendEvent(Event):
+    """Indicates a new Fit has been added to the Project. Mirrors PlotAppendEvent."""
+
+    uuid: UUID
+    friendly_name: str
+    friendly_path: str
+
+
 class RawScanLoadingEvent(Event):
     """loading raw data event."""
 

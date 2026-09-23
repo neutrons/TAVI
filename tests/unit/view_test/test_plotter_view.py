@@ -7,7 +7,9 @@ import pytest
 from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields
+from tavi.library.data.scan import UUID
 
 
 @pytest.fixture
@@ -708,3 +710,359 @@ def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
     assert view.preset_type_combo.isEnabled() is True
     assert view.preset_channel_combo.isEnabled() is True
     assert view.preset_value_edit.isEnabled() is True
+
+
+# ---------------------------------------------------------------------------
+# fit curve rendering
+# ---------------------------------------------------------------------------
+
+
+def make_fit_curve(uuid_val="scan-001", scan_name="my_scan", best_fit=None, components=None) -> FitCurve:
+    return FitCurve(
+        source_scan_uuid=UUID(value=uuid_val),
+        scan_name=scan_name,
+        x=[1.0, 2.0, 3.0],
+        best_fit=best_fit or [1.1, 2.1, 3.1],
+        components=components or {},
+    )
+
+
+def make_fit_curve_with_components(uuid_val="scan-001", **overrides) -> FitCurve:
+    components = overrides.pop("components", {"bg_": [0.1, 0.1, 0.1], "peak1_": [1.0, 2.0, 3.0]})
+    return make_fit_curve(uuid_val, components=components, **overrides)
+
+
+def component_lines(view) -> list:
+    """Every dashed component line currently on the axes, composite fit curves excluded."""
+    return [line for line in view.canvas.axes.lines if line.get_linestyle() == "--"]
+
+
+def test_append_fit_curve_adds_a_line(view):
+    view._append_fit_curve(make_fit_curve())
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_refitting_a_series_replaces_its_curve_rather_than_stacking_another(view):
+    """Performing a fit again on the same data redraws one curve - it doesn't leave the old one behind."""
+    view._append_fit_curve(make_fit_curve(best_fit=[1.1, 2.1, 3.1]))
+    view._append_fit_curve(make_fit_curve(best_fit=[9.9, 9.9, 9.9]))
+
+    assert len(view.canvas.axes.lines) == 1
+    assert list(view.canvas.axes.lines[0].get_ydata()) == [9.9, 9.9, 9.9]
+
+
+def test_refitting_a_series_keeps_its_curve_the_same_color(view):
+    """Removing a line doesn't rewind matplotlib's color cycle - without care a refit would recolor itself."""
+    view._append_fit_curve(make_fit_curve())
+    original_color = view.canvas.axes.lines[0].get_color()
+
+    view._append_fit_curve(make_fit_curve())
+    view._append_fit_curve(make_fit_curve())
+
+    assert view.canvas.axes.lines[0].get_color() == original_color
+
+
+def test_fit_curves_for_different_series_keep_distinct_colors(view):
+    """Pinning a refit's color must not pin *every* curve to it - a second series still gets its own."""
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-002", scan_name="scan_two"))
+
+    colors = [line.get_color() for line in view.canvas.axes.lines]
+    assert len(set(colors)) == 2
+
+
+def test_refitting_a_series_does_not_duplicate_its_legend_entry(view):
+    view._append_fit_curve(make_fit_curve())
+    view._append_fit_curve(make_fit_curve())
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels.count("my_scan fit") == 1
+
+
+def test_fit_curves_for_different_series_are_drawn_side_by_side(view):
+    """Only the *same* series' curve is replaced - a second scan's fit still overlays alongside it."""
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-001", scan_name="scan_one"))
+    view._append_fit_curve(make_fit_curve(uuid_val="scan-002", scan_name="scan_two"))
+
+    assert len(view.canvas.axes.lines) == 2
+
+
+# ---------------------------------------------------------------------------
+# Hide Label
+# ---------------------------------------------------------------------------
+
+
+def plot_one_scan(view, scan_name="my_scan"):
+    view.append_plot(
+        np.array([1.0, 2.0]),
+        np.array([3.0, 4.0]),
+        np.array([0.0, 0.0]),
+        scan_name,
+        None,
+        "qh",
+        "en",
+        "err",
+    )
+
+
+def test_hide_label_starts_unchecked(view):
+    assert view.hide_label_check.isChecked() is False
+
+
+def test_hide_label_removes_the_legend(view):
+    plot_one_scan(view)
+    assert view.canvas.axes.get_legend() is not None
+
+    view.hide_label_check.setChecked(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_leaves_the_plotted_data_alone(view):
+    """Only the legend goes - the curves and their labels stay exactly as they were."""
+    plot_one_scan(view)
+    view._append_fit_curve(make_fit_curve())
+    lines_before = [(line, line.get_label()) for line in view.canvas.axes.lines]
+
+    view.hide_label_check.setChecked(True)
+
+    assert [(line, line.get_label()) for line in view.canvas.axes.lines] == lines_before
+
+
+def test_unchecking_hide_label_brings_the_legend_back(view):
+    plot_one_scan(view)
+    view.hide_label_check.setChecked(True)
+
+    view.hide_label_check.setChecked(False)
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan"]
+
+
+def test_hide_label_survives_a_later_plot(view):
+    """A new scan must not quietly bring the legend back while the box is still checked."""
+    view.hide_label_check.setChecked(True)
+
+    plot_one_scan(view)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_survives_a_later_fit(view):
+    view.hide_label_check.setChecked(True)
+    plot_one_scan(view)
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_survives_toggling_plot_separately(view):
+    view.hide_label_check.setChecked(True)
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._set_fit_components_visible(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_on_an_empty_canvas_is_harmless(view):
+    view.hide_label_check.setChecked(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_unchecking_hide_label_restores_every_label_drawn_while_hidden(view):
+    """Entries added while hidden are not lost - the legend is rebuilt from the artists, not replayed."""
+    view.hide_label_check.setChecked(True)
+    plot_one_scan(view, "scan_a")
+    plot_one_scan(view, "scan_b")
+
+    view.hide_label_check.setChecked(False)
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels == ["scan_a", "scan_b"]
+
+
+# ---------------------------------------------------------------------------
+# fit components ("Plot Separately")
+# ---------------------------------------------------------------------------
+
+
+def test_fit_components_are_drawn_as_dashed_lines(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
+
+
+def test_fit_components_are_hidden_until_plot_separately_is_checked(view):
+    """The components are always drawn so toggling is instant - but they start invisible."""
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert all(not line.get_visible() for line in component_lines(view))
+
+
+def test_set_fit_components_visible_reveals_them_without_redrawing(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    lines_before = list(view.canvas.axes.lines)
+
+    view._set_fit_components_visible(True)
+
+    assert all(line.get_visible() for line in component_lines(view))
+    assert list(view.canvas.axes.lines) == lines_before
+
+
+def test_set_fit_components_visible_false_hides_them_again(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    view._set_fit_components_visible(False)
+
+    assert all(not line.get_visible() for line in component_lines(view))
+
+
+def test_components_drawn_after_toggling_on_are_visible_immediately(view):
+    """A fit performed while the box is already checked must not come up hidden."""
+    view._set_fit_components_visible(True)
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert all(line.get_visible() for line in component_lines(view))
+
+
+def test_toggling_on_an_empty_canvas_is_harmless(view):
+    """Checking the box before anything is plotted must not warn about an empty legend."""
+    view._set_fit_components_visible(True)
+
+    assert len(view.canvas.axes.lines) == 0
+
+
+def test_legend_is_unchanged_while_plot_separately_is_off(view):
+    """An invisible line still shows up in matplotlib's legend, so the plot has to read exactly
+    as it did before components existed - one "<scan> fit" entry, nothing else."""
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan fit"]
+
+
+def test_components_join_the_legend_only_once_shown(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._set_fit_components_visible(True)
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels == ["my_scan fit", "my_scan bg", "my_scan peak1"]
+
+
+def test_components_leave_the_legend_again_when_hidden(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    view._set_fit_components_visible(False)
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan fit"]
+
+
+def test_components_label_is_the_prefix_without_its_trailing_underscore(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    labels = [line.get_label() for line in component_lines(view)]
+    assert sorted(labels) == ["my_scan bg", "my_scan peak1"]
+
+
+def test_refitting_replaces_the_components_rather_than_stacking_them(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
+
+
+def test_refitting_keeps_each_component_the_same_color(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    colors_before = {line.get_label(): line.get_color() for line in component_lines(view)}
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert {line.get_label(): line.get_color() for line in component_lines(view)} == colors_before
+
+
+def test_refitting_with_fewer_components_drops_the_ones_that_went_away(view):
+    """Dropping a peak (or switching the background off) must take its line with it."""
+    view._set_fit_components_visible(True)
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._append_fit_curve(make_fit_curve_with_components(components={"peak1_": [1.0, 2.0, 3.0]}))
+
+    assert [line.get_label() for line in component_lines(view)] == ["my_scan peak1"]
+
+
+def test_a_fit_with_no_components_draws_only_its_composite_curve(view):
+    view._append_fit_curve(make_fit_curve())
+
+    assert component_lines(view) == []
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_set_fit_components_visible_signal_emits_to_the_handler(view, qtbot):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    with qtbot.waitSignal(view.set_fit_components_visible_signal, timeout=1000):
+        view.set_fit_components_visible_signal.emit(True)
+
+    assert all(line.get_visible() for line in component_lines(view))
+
+
+def test_clear_plot_drops_the_remembered_fit_components(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view.clear_plot()
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
+
+
+def test_clear_plot_drops_the_remembered_fit_curves(view):
+    """cla() already discarded the lines - a stale handle would blow up the next draw for that series."""
+    view._append_fit_curve(make_fit_curve())
+    view.clear_plot()
+
+    view._append_fit_curve(make_fit_curve())
+
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_append_fit_curve_label_includes_scan_name_and_fit(view):
+    view._append_fit_curve(make_fit_curve())
+    labels = [line.get_label() for line in view.canvas.axes.lines]
+    assert any("my_scan" in lbl and "fit" in lbl for lbl in labels)
+
+
+def test_append_fit_curve_does_not_add_an_errorbar_container(view):
+    """A fit curve is a solid line, not a scatter/errorbar series like append_plot's data points."""
+    view._append_fit_curve(make_fit_curve())
+    assert len(view.canvas.axes.containers) == 0
+
+
+def test_append_fit_curve_signal_emits_to_append_fit_curve(view, qtbot):
+    with qtbot.waitSignal(view.append_fit_curve_signal, timeout=1000):
+        view.append_fit_curve_signal.emit(make_fit_curve())
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_append_fit_curve_survives_alongside_a_data_series(view):
+    """append_plot's errorbar series and the fit curve coexist - neither call clears the other's artists."""
+    view.append_plot(
+        np.array([1.0, 2.0]),
+        np.array([3.0, 4.0]),
+        np.array([0.0, 0.0]),
+        "my_scan", None, "qh", "en", "err",
+    )
+    lines_before = len(view.canvas.axes.lines)
+
+    view._append_fit_curve(make_fit_curve())
+
+    assert len(view.canvas.axes.containers) == 1
+    assert len(view.canvas.axes.lines) == lines_before + 1
+    labels = [line.get_label() for line in view.canvas.axes.lines]
+    assert any("my_scan" in lbl and "fit" in lbl for lbl in labels)
