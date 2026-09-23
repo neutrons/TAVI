@@ -5,14 +5,18 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tavi.backend.model.tavi_project_model import TaviProjectModel
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     DownstreamReadyEvent,
+    FitComputedEvent,
+    FitFocusEvent,
+    FitRecomputeEvent,
     FocusActivePlotEvent,
     FocusEvent,
     PlotFocusEvent,
@@ -44,7 +48,7 @@ def make_raw_scan(uuid_val="scan-001"):
     )
 
 
-def make_plot(uuid_val="plot-001", series=None):
+def make_plot(uuid_val="plot-001", series=None, fits=None):
     if series is None:
         series = [
             PlotSeries(
@@ -56,7 +60,23 @@ def make_plot(uuid_val="plot-001", series=None):
                 error_name="err",
             )
         ]
-    return Plot(uuid=UUID(value=uuid_val), series=series)
+    return Plot(uuid=UUID(value=uuid_val), series=series, fits=fits or [])
+
+
+def make_param(value=0):
+    return ParamField(value=str(value), fixed=False, minimum="", maximum="")
+
+
+def make_fit_entry(uuid_val="fit-001", scan_name="test_scan"):
+    return FitEntry(
+        uuid=UUID(value=uuid_val),
+        series=make_series(scan_name),
+        range_min="0",
+        range_max="10",
+        background="None",
+        background_constant=make_param(0),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
+    )
 
 
 def make_series(scan_name, uuid_val="scan-001"):
@@ -324,11 +344,82 @@ def test_handle_focus_event_plot_does_not_publish_raw_scan_event(model):
 
 
 # ---------------------------------------------------------------------------
+# _handle_focus_event — fit routing
+# ---------------------------------------------------------------------------
+
+
+def test_handle_focus_event_fit_publishes_fit_focus_event(model):
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitFocusEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert len(received) == 1
+    assert received[0].fits[0].uuid == fit.uuid
+
+
+def test_handle_focus_event_fit_publishes_fit_recompute_event(model):
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitRecomputeEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert len(received) == 1
+    assert received[0].fits[0].uuid == fit.uuid
+
+
+def test_handle_focus_event_fit_publishes_focus_before_recompute(model):
+    """
+    Regression test for a real bug: FitModel recomputes and publishes FitComputedEvent
+    synchronously while still inside the fit-routing publish call. If FitFocusEvent (which
+    PlotterPresenter/FittingPresenter use to mark a fit as pending) were published after -
+    or as the same event FitModel itself reacts to - FitModel's registration order relative to
+    those presenters could make its resulting FitComputedEvent arrive before the presenters had
+    marked anything pending, silently dropping the curve. Selecting a fit must never depend on
+    subscriber registration order like that.
+    """
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+
+    call_order = []
+    EventBroker().register(FitFocusEvent, lambda e: call_order.append("focus"))
+    EventBroker().register(FitRecomputeEvent, lambda e: call_order.append("recompute"))
+
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert call_order == ["focus", "recompute"]
+
+
+def test_handle_focus_event_fit_does_not_publish_plot_or_raw_scan_events(model):
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+
+    raw_received = []
+    plot_received = []
+    EventBroker().register(RawScanFocusEvent, raw_received.append)
+    EventBroker().register(PlotFocusEvent, plot_received.append)
+
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert raw_received == []
+    assert plot_received == []
+
+
+# ---------------------------------------------------------------------------
 # _handle_focus_event — mixed routing
 # ---------------------------------------------------------------------------
 
 
-def test_handle_focus_event_mixed_uuids_publishes_both_events(model):
+def test_handle_focus_event_mixed_uuids_folds_plots_into_raw_scan_event(model):
+    """
+    A scan+plot multiselect must overlay, not clobber: PlotModel (not tested here) folds a
+    RawScanFocusEvent's ``also_plots`` into one merged PlotFocusEvent publish, so this branch
+    must not also publish its own competing PlotFocusEvent for the same selection.
+    """
     scan = make_raw_scan()
     plot = make_plot()
     model.tavi_data.raw_scans[scan.uuid] = scan
@@ -342,7 +433,33 @@ def test_handle_focus_event_mixed_uuids_publishes_both_events(model):
     EventBroker().publish(FocusEvent(ids=[scan.uuid, plot.uuid]))
 
     assert len(raw_received) == 1
-    assert len(plot_received) == 1
+    assert raw_received[0].also_plots == [plot]
+    assert len(plot_received) == 0
+
+
+def test_handle_focus_event_refocuses_plots_own_attached_fits(model):
+    """
+    Selecting a saved plot alone must also re-focus whatever fits were overlaid on it when it
+    was saved (``Plot.fits``, stamped by ``PlotModel.save_focused_plots``) - otherwise
+    re-opening a plot that was saved together with a fit silently drops the fit.
+    """
+    fit = make_fit_entry()
+    plot = make_plot(series=[make_series("test_scan")], fits=[fit.uuid])
+    model.tavi_data.raw_scans[UUID(value="scan-001")] = make_raw_scan()
+    model.tavi_data.plots[plot.uuid] = plot
+    model.tavi_data.fits[fit.uuid] = fit
+
+    fit_focus_received = []
+    recompute_received = []
+    EventBroker().register(FitFocusEvent, fit_focus_received.append)
+    EventBroker().register(FitRecomputeEvent, recompute_received.append)
+
+    EventBroker().publish(FocusEvent(ids=[plot.uuid]))
+
+    assert len(fit_focus_received) == 1
+    assert fit_focus_received[0].fits == [fit]
+    assert fit_focus_received[0].exclusive is False
+    assert recompute_received[0].fits == [fit]
 
 
 def test_handle_focus_event_empty_ids_publishes_nothing(model):
@@ -468,3 +585,76 @@ def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(mo
     EventBroker().publish(SavePlotEvent(plot=plot))
 
     assert received[0].friendly_name == "run1_run2_Plot"
+
+
+# ---------------------------------------------------------------------------
+# _handle_fit_computed_event
+# ---------------------------------------------------------------------------
+
+
+def make_fit_computed_event(fit) -> FitComputedEvent:
+    curve = FitCurve(
+        source_scan_uuid=fit.series.source_scan_uuid, scan_name=fit.series.scan_name, x=[1.0, 2.0], best_fit=[1.1, 1.9]
+    )
+    result = FitResultSummary(
+        reduced_chi_squared=1.0,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
+    )
+    return FitComputedEvent(fit=fit, curve=curve, result=result)
+
+
+def test_init_registers_fit_computed_event_handler(model):
+    broker = EventBroker()
+    assert model._handle_fit_computed_event in broker.registry[FitComputedEvent]
+
+
+def test_handle_fit_computed_event_stores_fit(model):
+    fit = make_fit_entry()
+
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    assert model.tavi_data.fits[fit.uuid].uuid == fit.uuid
+
+
+def test_handle_fit_computed_event_publishes_fit_append_event(model):
+    fit = make_fit_entry()
+
+    received = []
+    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    assert len(received) == 1
+    assert received[0].uuid == fit.uuid
+    assert received[0].friendly_path == ""
+
+
+def test_handle_fit_computed_event_friendly_name_is_scan_name_plus_fit_suffix(model):
+    fit = make_fit_entry(scan_name="run1")
+
+    received = []
+    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    assert received[0].friendly_name == "run1_Fit"
+
+
+def test_handle_fit_computed_event_does_not_reannounce_a_recomputed_fit(model):
+    """A fit reselected from the tree recomputes (same uuid) - must not re-publish FitAppendEvent."""
+    fit = make_fit_entry()
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    received = []
+    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    assert received == []
+
+
+def test_handle_fit_computed_event_does_not_cache_the_curve(model):
+    """TAVI must not cache the actual fitted data points - only the fit's uuid-keyed spec is stored."""
+    fit = make_fit_entry()
+
+    EventBroker().publish(make_fit_computed_event(fit))
+
+    assert not hasattr(model.tavi_data.fits[fit.uuid], "best_fit")
+    assert not hasattr(model.tavi_data.fits[fit.uuid], "x")

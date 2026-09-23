@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from tavi.frontend.view.file_menu_view import FileMenu
 from tavi.meta.event.event_broker import EventBroker
@@ -10,6 +10,9 @@ from tavi.meta.event.type.model_event import SyncRecentProjects
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
+    from tavi.library.storage.interface.file_store_interface import FileStoreInterface
+
+LAST_EXPERIMENT_FOLDER_FILE = "last_experiment_folder.txt"
 
 
 class FileMenuPresenter:
@@ -26,18 +29,24 @@ class FileMenuPresenter:
     model : TaviProjectInterface
         The underlying project model that handles loading, saving, and maintaining
         TAVI project state.
+    filestore : FileStoreInterface
+        Used directly (not through a model/Proxy) to persist the last experiment folder -
+        seeding the "Load Experiment Folder" dialog needs a synchronous read, which a
+        Proxy-wrapped model (fire-and-forget, no return values) can't give.
 
     """
 
-    def __init__(self, exit_routine: Any, model: TaviProjectInterface) -> None:
+    def __init__(self, exit_routine: Any, model: TaviProjectInterface, filestore: FileStoreInterface) -> None:
         """Init."""
         super().__init__()
         self._view = FileMenu()
         self._exit_routine = exit_routine
         self._model = model
+        self._filestore = filestore
         self._event_broker = EventBroker()
 
         self._view.setup_callback_load_folder(self.handle_load_folder)
+        self._view.setup_callback_get_last_folder(self.get_last_experiment_folder)
         self._view.setup_callback_exit(self.exit)
 
         self._event_broker.register(SyncRecentProjects, self.sync_recent_projects)
@@ -53,7 +62,7 @@ class FileMenuPresenter:
         This method is triggered when the user selects a folder via the menu
         bar. The view provides a list of selected paths (typically a single
         folder), and the presenter forwards the first entry to the model's
-        loading routine.
+        loading routine, and persists it as the folder to reopen the dialog on next time.
 
         Parameters
         ----------
@@ -63,7 +72,15 @@ class FileMenuPresenter:
             single folder.
 
         """
+        self._filestore.write_user_data_file(LAST_EXPERIMENT_FOLDER_FILE, folder[0])
         self._model.load_raw_scan_from_folder(folder[0])
+
+    def get_last_experiment_folder(self) -> Optional[str]:
+        """Return the last folder opened via "Load Experiment Folder", or None the first time."""
+        try:
+            return self._filestore.read_user_data_file(LAST_EXPERIMENT_FOLDER_FILE)
+        except RuntimeError:
+            return None
 
     def exit(self) -> None:
         """Exit in menu."""

@@ -8,11 +8,15 @@ import pytest
 
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
+from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    FitComponentsVisibilityChangedEvent,
+    FitComputedEvent,
+    FitFocusEvent,
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -44,10 +48,10 @@ def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name=
     )
 
 
-def make_plot(uuid_val="plot-001", series=None) -> Plot:
+def make_plot(uuid_val="plot-001", series=None, fits=None) -> Plot:
     if series is None:
         series = [make_series()]
-    return Plot(uuid=UUID(value=uuid_val), series=series)
+    return Plot(uuid=UUID(value=uuid_val), series=series, fits=fits or [])
 
 
 def make_event(plots=None, scans=None) -> PlotFocusEvent:
@@ -308,7 +312,18 @@ def test_handle_plot_clicked_delegates_to_model(presenter):
     """
     presenter.handle_plot_clicked()
 
-    presenter._model.save_focused_plots.assert_called_once_with()
+    presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[])
+
+
+def test_handle_plot_clicked_passes_currently_drawn_fit_uuids(presenter):
+    """A fit drawn on the canvas when Save Plot is clicked is stamped onto the new plot."""
+    presenter.handle_plot_focus(make_event())
+    event = make_fit_computed_event()
+    EventBroker().publish(event)
+
+    presenter.handle_plot_clicked()
+
+    presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[event.fit.uuid])
 
 
 # ---------------------------------------------------------------------------
@@ -516,3 +531,149 @@ def test_selecting_dropdown_entry_via_view_publishes_active_plot_focus_event(pre
     presenter._view.current_plot_combo.setCurrentIndex(1)
 
     assert received[0].uuid == plot_b.series[0].source_scan_uuid
+
+
+# ---------------------------------------------------------------------------
+# FitComputedEvent - drawing a fit curve on the plot widget
+# ---------------------------------------------------------------------------
+
+
+def make_param(value=0) -> ParamField:
+    return ParamField(value=str(value), fixed=False, minimum="", maximum="")
+
+
+def make_fit_entry(uuid_val="scan-001") -> FitEntry:
+    return FitEntry(
+        series=make_series(uuid_val, scan_name="my_scan"),
+        range_min="0",
+        range_max="10",
+        background="None",
+        background_constant=make_param(0),
+        peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
+    )
+
+
+def make_fit_computed_event(uuid_val="scan-001") -> FitComputedEvent:
+    fit = make_fit_entry(uuid_val)
+    curve = FitCurve(source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
+    result = FitResultSummary(
+        reduced_chi_squared=0.5,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
+    )
+    return FitComputedEvent(fit=fit, curve=curve, result=result)
+
+
+def _fit_curve_labels(presenter) -> list[str]:
+    return [line.get_label() for line in presenter._view.canvas.axes.lines if "fit" in line.get_label()]
+
+
+def test_init_registers_fit_computed_event(presenter):
+    broker = EventBroker()
+    assert presenter.handle_fit_computed in broker.registry[FitComputedEvent]
+
+
+def test_init_registers_fit_components_visibility_event(presenter):
+    broker = EventBroker()
+    assert presenter.handle_fit_components_visibility in broker.registry[FitComponentsVisibilityChangedEvent]
+
+
+def test_fit_components_visibility_event_reaches_the_view(presenter, qtbot):
+    with qtbot.waitSignal(presenter._view.set_fit_components_visible_signal, timeout=1000) as blocker:
+        EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+
+    assert blocker.args == [True]
+
+
+def test_fit_components_visibility_event_does_not_refit(presenter):
+    """The components are already drawn - showing them must never go back to the model."""
+    EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+
+    assert not presenter._model.method_calls
+
+
+def test_handle_fit_computed_draws_curve_for_a_focused_series(presenter):
+    presenter.handle_plot_focus(make_event())
+
+    EventBroker().publish(make_fit_computed_event())
+
+    assert len(_fit_curve_labels(presenter)) == 1
+
+
+def test_handle_fit_computed_ignores_fit_for_an_unfocused_series(presenter):
+    presenter.handle_plot_focus(make_event())
+
+    EventBroker().publish(make_fit_computed_event(uuid_val="scan-999"))
+
+    assert _fit_curve_labels(presenter) == []
+
+
+def test_fit_curve_survives_a_re_render_of_the_same_series(presenter):
+    """_render_plots clears the whole canvas on every focus/field-change; the fit must be re-drawn."""
+    event = make_event()
+    presenter.handle_plot_focus(event)
+    EventBroker().publish(make_fit_computed_event())
+    assert len(_fit_curve_labels(presenter)) == 1
+
+    presenter.handle_plot_focus(event)
+
+    assert len(_fit_curve_labels(presenter)) == 1
+
+
+def test_fit_curve_dropped_when_its_series_is_no_longer_focused(presenter):
+    presenter.handle_plot_focus(make_event())
+    EventBroker().publish(make_fit_computed_event())
+    assert len(_fit_curve_labels(presenter)) == 1
+
+    other_plot = make_plot("plot-999", series=[make_series("scan-999")])
+    other_scan = make_scan("scan-999")
+    presenter.handle_plot_focus(make_event(plots=[other_plot], scans={other_scan.uuid: other_scan}))
+
+    assert _fit_curve_labels(presenter) == []
+
+
+def test_reselecting_a_plot_with_the_same_attached_fit_does_not_duplicate_its_curve(presenter):
+    """
+    Re-focusing a plot whose own ``Plot.fits`` includes a fit already drawn (same source scan,
+    same fit uuid, from an earlier focus) must not leave the stale curve on canvas alongside the
+    freshly recomputed one - TaviProjectModel always re-triggers a fresh FitComputedEvent for a
+    plot's own attached fits (see ``_handle_focus_event``), so the stale one must be dropped here.
+    """
+    event = make_fit_computed_event()
+    presenter.handle_plot_focus(make_event())
+    EventBroker().publish(event)
+    assert len(_fit_curve_labels(presenter)) == 1
+
+    plot_with_fit = make_plot(fits=[event.fit.uuid])
+    presenter.handle_plot_focus(make_event(plots=[plot_with_fit]))
+    EventBroker().publish(event)
+
+    assert len(_fit_curve_labels(presenter)) == 1
+
+
+# ---------------------------------------------------------------------------
+# FitFocusEvent - a fit selected directly from the project tree
+# ---------------------------------------------------------------------------
+
+
+def test_handle_fit_focus_clears_the_canvas(presenter):
+    presenter.handle_plot_focus(make_event())
+
+    presenter.handle_fit_focus(FitFocusEvent(fits=[make_fit_entry()]))
+
+    assert len(presenter._view.canvas.axes.lines) == 0
+
+
+def test_handle_fit_focus_draws_curve_once_recomputed(presenter):
+    entry = make_fit_entry()
+    presenter.handle_fit_focus(FitFocusEvent(fits=[entry]))
+
+    curve = FitCurve(
+        source_scan_uuid=entry.series.source_scan_uuid, scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
+    )
+    result = FitResultSummary(
+        reduced_chi_squared=0.5,
+        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
+    )
+    EventBroker().publish(FitComputedEvent(fit=entry, curve=curve, result=result))
+
+    assert len(_fit_curve_labels(presenter)) == 1
