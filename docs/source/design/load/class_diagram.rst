@@ -141,7 +141,7 @@ Class Diagram
         ORNLSpiceLoader *-- ORNLSpiceRuleSet
 
         Scan <|-- RawScan
-        Scan <|-- ComboScan
+        Scan <|-- ProcessedScan
         Scan *-- ScanMetadata
         Scan *-- ScanData
         Scan *-- Provenance
@@ -151,7 +151,7 @@ Class Diagram
 
 .. TaviData o-- Fit
 .. TaviData o-- RawScan
-.. TaviData o-- ComboScan
+.. TaviData o-- ProcessedScan
 .. TaviData o-- Plot
 .. TaviData o-- UUID
 .. ProjectModel *-- TaviData
@@ -164,7 +164,7 @@ Class Diagram
 .. }
 .. class TaviData {
 ..     Dict~UUID,RawScan~ raw_scans
-..     Dict~UUID,ComboScan~ combo_scans
+..     Dict~UUID,ProcessedScan~ processed_scans
 ..     Dict~UUID,Fit~ fits
 ..     Dict~UUID,Plot~ plots
 .. }

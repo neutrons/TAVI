@@ -153,7 +153,11 @@ class RawScan(BaseModel, Scan):
     prov: Provenance = Field(frozen=True)
 
 
-class ComboScan(BaseModel, Scan):
-    """Combined scan class. Same as Scan, all fields read/write-able."""
+class ProcessedScan(BaseModel, Scan):
+    """
+    Processed scan class. Same as Scan, all fields read/write-able.
+
+    Support combined scans, rebined scans. Same as Scan class, multi-column data.
+    """
 
     pass
