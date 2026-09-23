@@ -150,6 +150,19 @@ class BackgroundParamsSuggestedEvent(Event):
     intercept: float
 
 
+class FitComponentsVisibilityChangedEvent(Event):
+    """
+    Announce that the fitting panel's "Plot Separately" checkbox was toggled.
+
+    Purely a display preference, so it carries no fit identity: every drawn fit's components
+    show or hide together. ``FitCurve`` always carries its components, whether or not they are
+    currently shown, so ``PlotterPresenter`` answers this by toggling artists already on the
+    canvas rather than asking ``FitModel`` to recompute anything.
+    """
+
+    visible: bool
+
+
 class FitComputedEvent(Event):
     """
     Announce a fit result, whether freshly performed or recomputed after being reselected.

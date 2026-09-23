@@ -519,6 +519,32 @@ def test_hookup_suggest_params_signal_connects_callback(view):
     assert calls == [1]
 
 
+# ---------------------------------------------------------------------------
+# Plot Separately checkbox
+# ---------------------------------------------------------------------------
+
+
+def test_plot_separately_starts_unchecked(view):
+    assert view.plot_sep_check.isChecked() is False
+
+
+def test_plot_separately_click_emits_its_new_state(view, qtbot):
+    with qtbot.waitSignal(view.plot_separately_toggled, timeout=1000) as blocker:
+        view.plot_sep_check.setChecked(True)
+
+    assert blocker.args == [True]
+
+
+def test_hookup_plot_separately_signal_connects_callback(view):
+    states = []
+    view.hookup_plot_separately_signal(states.append)
+
+    view.plot_sep_check.setChecked(True)
+    view.plot_sep_check.setChecked(False)
+
+    assert states == [True, False]
+
+
 def test_get_suggest_request_carries_resolved_data_and_shape(view):
     view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
 

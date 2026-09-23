@@ -717,13 +717,24 @@ def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
 # ---------------------------------------------------------------------------
 
 
-def make_fit_curve(uuid_val="scan-001", scan_name="my_scan", best_fit=None) -> FitCurve:
+def make_fit_curve(uuid_val="scan-001", scan_name="my_scan", best_fit=None, components=None) -> FitCurve:
     return FitCurve(
         source_scan_uuid=UUID(value=uuid_val),
         scan_name=scan_name,
         x=[1.0, 2.0, 3.0],
         best_fit=best_fit or [1.1, 2.1, 3.1],
+        components=components or {},
     )
+
+
+def make_fit_curve_with_components(uuid_val="scan-001", **overrides) -> FitCurve:
+    components = overrides.pop("components", {"bg_": [0.1, 0.1, 0.1], "peak1_": [1.0, 2.0, 3.0]})
+    return make_fit_curve(uuid_val, components=components, **overrides)
+
+
+def component_lines(view) -> list:
+    """Every dashed component line currently on the axes, composite fit curves excluded."""
+    return [line for line in view.canvas.axes.lines if line.get_linestyle() == "--"]
 
 
 def test_append_fit_curve_adds_a_line(view):
@@ -775,6 +786,144 @@ def test_fit_curves_for_different_series_are_drawn_side_by_side(view):
     view._append_fit_curve(make_fit_curve(uuid_val="scan-002", scan_name="scan_two"))
 
     assert len(view.canvas.axes.lines) == 2
+
+
+# ---------------------------------------------------------------------------
+# fit components ("Plot Separately")
+# ---------------------------------------------------------------------------
+
+
+def test_fit_components_are_drawn_as_dashed_lines(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
+
+
+def test_fit_components_are_hidden_until_plot_separately_is_checked(view):
+    """The components are always drawn so toggling is instant - but they start invisible."""
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert all(not line.get_visible() for line in component_lines(view))
+
+
+def test_set_fit_components_visible_reveals_them_without_redrawing(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    lines_before = list(view.canvas.axes.lines)
+
+    view._set_fit_components_visible(True)
+
+    assert all(line.get_visible() for line in component_lines(view))
+    assert list(view.canvas.axes.lines) == lines_before
+
+
+def test_set_fit_components_visible_false_hides_them_again(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    view._set_fit_components_visible(False)
+
+    assert all(not line.get_visible() for line in component_lines(view))
+
+
+def test_components_drawn_after_toggling_on_are_visible_immediately(view):
+    """A fit performed while the box is already checked must not come up hidden."""
+    view._set_fit_components_visible(True)
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert all(line.get_visible() for line in component_lines(view))
+
+
+def test_toggling_on_an_empty_canvas_is_harmless(view):
+    """Checking the box before anything is plotted must not warn about an empty legend."""
+    view._set_fit_components_visible(True)
+
+    assert len(view.canvas.axes.lines) == 0
+
+
+def test_legend_is_unchanged_while_plot_separately_is_off(view):
+    """An invisible line still shows up in matplotlib's legend, so the plot has to read exactly
+    as it did before components existed - one "<scan> fit" entry, nothing else."""
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan fit"]
+
+
+def test_components_join_the_legend_only_once_shown(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._set_fit_components_visible(True)
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels == ["my_scan fit", "my_scan bg", "my_scan peak1"]
+
+
+def test_components_leave_the_legend_again_when_hidden(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    view._set_fit_components_visible(False)
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan fit"]
+
+
+def test_components_label_is_the_prefix_without_its_trailing_underscore(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._set_fit_components_visible(True)
+
+    labels = [line.get_label() for line in component_lines(view)]
+    assert sorted(labels) == ["my_scan bg", "my_scan peak1"]
+
+
+def test_refitting_replaces_the_components_rather_than_stacking_them(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
+
+
+def test_refitting_keeps_each_component_the_same_color(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    colors_before = {line.get_label(): line.get_color() for line in component_lines(view)}
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert {line.get_label(): line.get_color() for line in component_lines(view)} == colors_before
+
+
+def test_refitting_with_fewer_components_drops_the_ones_that_went_away(view):
+    """Dropping a peak (or switching the background off) must take its line with it."""
+    view._set_fit_components_visible(True)
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._append_fit_curve(make_fit_curve_with_components(components={"peak1_": [1.0, 2.0, 3.0]}))
+
+    assert [line.get_label() for line in component_lines(view)] == ["my_scan peak1"]
+
+
+def test_a_fit_with_no_components_draws_only_its_composite_curve(view):
+    view._append_fit_curve(make_fit_curve())
+
+    assert component_lines(view) == []
+    assert len(view.canvas.axes.lines) == 1
+
+
+def test_set_fit_components_visible_signal_emits_to_the_handler(view, qtbot):
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    with qtbot.waitSignal(view.set_fit_components_visible_signal, timeout=1000):
+        view.set_fit_components_visible_signal.emit(True)
+
+    assert all(line.get_visible() for line in component_lines(view))
+
+
+def test_clear_plot_drops_the_remembered_fit_components(view):
+    view._append_fit_curve(make_fit_curve_with_components())
+    view.clear_plot()
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert len(component_lines(view)) == 2
 
 
 def test_clear_plot_drops_the_remembered_fit_curves(view):

@@ -117,9 +117,18 @@ class FitModel(FitModelInterface):
             scan_name=fit_entry.series.scan_name,
             x=x_fine.tolist(),
             best_fit=result.raw.eval(x=x_fine).tolist(),
+            components=self._evaluate_components(result, x_fine),
         )
         summary = self._build_result_summary(fit_entry, result)
         self._event_broker.publish(FitComputedEvent(fit=fit_entry, curve=curve, result=summary))
+
+    def _evaluate_components(self, result: FitResult, x_fine: np.ndarray) -> dict[str, list[float]]:
+        """Evaluate each model component separately over ``x_fine``, the way browser.py's show_components does."""
+        # A single-component fit has nothing to separate out - its one component is the composite
+        # curve already being published, and drawing it twice would just overplot it.
+        if len(result.components) < 2:
+            return {}
+        return {prefix: np.asarray(values).tolist() for prefix, values in result.raw.eval_components(x=x_fine).items()}
 
     def _build_result_summary(self, fit_entry: FitEntry, result: FitResult) -> FitResultSummary:
         """Read every fitted peak (and, if present, the background) out of a FitResult."""

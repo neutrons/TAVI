@@ -12,6 +12,7 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    FitComponentsVisibilityChangedEvent,
     FitComputedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
@@ -57,6 +58,7 @@ class PlotterPresenter(AbstractPresenter):
         self._event_broker.register(FitFocusEvent, self.handle_fit_focus)
         self._event_broker.register(ActivePlotChangedEvent, self.handle_active_plot_changed)
         self._event_broker.register(FitComputedEvent, self.handle_fit_computed)
+        self._event_broker.register(FitComponentsVisibilityChangedEvent, self.handle_fit_components_visibility)
         self._view.hookup_fields_changed_signal(self.handle_fields_changed)
         self._view.hookup_plot_clicked_signal(self.handle_plot_clicked)
         self._view.hookup_plot_combo_changed_signal(self.handle_plot_combo_changed)
@@ -220,6 +222,10 @@ class PlotterPresenter(AbstractPresenter):
         active_series = all_series[0] if all_series else None
         scan = e.scans.get(active_series.source_scan_uuid) if active_series is not None else None
         self._event_broker.publish(ActivePlotChangedEvent(scan=scan, series=active_series))
+
+    def handle_fit_components_visibility(self, e: FitComponentsVisibilityChangedEvent) -> None:
+        """Show or hide every drawn fit's components - the curves are already on the canvas, so nothing refits."""
+        self._view.set_fit_components_visible_signal.emit(e.visible)
 
     def handle_fit_computed(self, e: FitComputedEvent) -> None:
         """Draw a fit's curve, but only if it's against a currently-focused series or was just selected."""

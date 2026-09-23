@@ -189,7 +189,7 @@ class PeakPanel(QWidget):
         layout.addWidget(self.peak_expr_row)
 
         self.peak_table = ParamTable(
-            row_labels=["Integrated Intensity (a)", "Center (c)", "FWHM (w)"],
+            row_labels=["Int. Inten.", "Center", "FWHM"],
             # Blank min/max means unbounded: _parse_param reads them as None and _bounds then
             # omits them from the lmfit Parameter, rather than inventing a range the data has
             # to fit inside.
@@ -224,6 +224,7 @@ class FittingView(QWidget):
     perform_fit_clicked = Signal()
     suggest_params_clicked = Signal()
     suggest_background_clicked = Signal()
+    plot_separately_toggled = Signal(bool)
     set_chi_squared_signal = Signal(float)
     set_peak_params_signal = Signal(float, float, float)
     set_background_params_signal = Signal(float, float)
@@ -354,6 +355,7 @@ class FittingView(QWidget):
 
         result_row = QHBoxLayout()
         self.plot_sep_check = QCheckBox("Plot Separately")
+        self.plot_sep_check.toggled.connect(self.plot_separately_toggled.emit)
         result_row.addWidget(self.plot_sep_check)
         result_row.addStretch()
         result_row.addWidget(QLabel("χ2 ="))
@@ -376,6 +378,10 @@ class FittingView(QWidget):
     def hookup_suggest_background_signal(self, callback: Any) -> None:
         """Connect the background box's Suggest Params. button's click signal to callback."""
         self.suggest_background_clicked.connect(callback)
+
+    def hookup_plot_separately_signal(self, callback: Any) -> None:
+        """Connect the Plot Separately checkbox's toggled signal to callback."""
+        self.plot_separately_toggled.connect(callback)
 
     def get_fit_request(
         self,
@@ -438,8 +444,8 @@ class FittingView(QWidget):
     def _set_background_params(self, slope: float, intercept: float) -> None:
         """Fill the background table's value column with a suggested starting guess."""
         slope_row, intercept_row = self.background_table.rows
-        slope_row.value_edit.setText(f"{slope:.6g}")
-        intercept_row.value_edit.setText(f"{intercept:.6g}")
+        slope_row.value_edit.setText(f"{slope:.4g}")
+        intercept_row.value_edit.setText(f"{intercept:.4g}")
 
     def _suggest_target(self) -> PeakPanel:
         """The panel a Suggest Params. reply belongs to - the one that asked, else the first."""
@@ -450,9 +456,9 @@ class FittingView(QWidget):
     def _set_peak_params(self, amplitude: float, center: float, fwhm: float) -> None:
         """Fill the requesting peak's value column with a suggested starting guess."""
         amplitude_row, center_row, fwhm_row = self._suggest_target().peak_table.rows
-        amplitude_row.value_edit.setText(f"{amplitude:.6g}")
-        center_row.value_edit.setText(f"{center:.6g}")
-        fwhm_row.value_edit.setText(f"{fwhm:.6g}")
+        amplitude_row.value_edit.setText(f"{amplitude:.4g}")
+        center_row.value_edit.setText(f"{center:.4g}")
+        fwhm_row.value_edit.setText(f"{fwhm:.4g}")
 
     def _param_field(self, row: ParamRow) -> ParamField:
         """Read one ParamTable row's raw text/checked state into a ParamField."""
@@ -485,13 +491,13 @@ class FittingView(QWidget):
 
     def _set_value_and_std(self, row: ParamRow, value: float, std: Optional[float]) -> None:
         """Write a fitted value and its 1-sigma uncertainty (blank if not estimated) into one param row."""
-        row.value_edit.setText(f"{value:.6g}")
-        row.std_edit.setText(f"{std:.6g}" if std is not None else "")
+        row.value_edit.setText(f"{value:.4g}")
+        row.std_edit.setText(f"{std:.4g}" if std is not None else "")
 
     def _set_fitting_range(self, range_min: float, range_max: float) -> None:
         """Reflect the active series' x-data bounds in the fitting range fields."""
-        self.min_edit.setText(f"{range_min:.6g}")
-        self.max_edit.setText(f"{range_max:.6g}")
+        self.min_edit.setText(f"{range_min:.4g}")
+        self.max_edit.setText(f"{range_max:.4g}")
 
     def _set_chi_squared(self, value: float) -> None:
         """Reflect the most recently computed fit's reduced chi-squared in the read-only field."""

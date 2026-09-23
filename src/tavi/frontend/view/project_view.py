@@ -270,7 +270,7 @@ class TreeViewWidget(QWidget):
 
     def _new_item(self, value: str) -> StandardItem:
         """Initialize a StandardItem standardly."""
-        return StandardItem(value, 16, set_bold=True)
+        return StandardItem(value, 16, set_bold=False)
 
     def _new_file(self, value: str, uuid: UUID) -> StandardItem:
         item = self._new_item(f"*{value}")

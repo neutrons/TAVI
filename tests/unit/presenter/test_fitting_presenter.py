@@ -13,6 +13,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     BackgroundParamsSuggestedEvent,
+    FitComponentsVisibilityChangedEvent,
     FitComputedEvent,
     FitFocusEvent,
     PeakParamsSuggestedEvent,
@@ -184,6 +185,40 @@ def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(pre
     presenter.handle_perform_fit_clicked()
 
     assert presenter._model.perform_fit.call_args[0][0].fit_uuid == UUID(value="fit-042")
+
+
+# ---------------------------------------------------------------------------
+# handle_plot_separately_toggled
+# ---------------------------------------------------------------------------
+
+
+def test_plot_separately_checkbox_publishes_visibility_event(presenter):
+    """The fit curves live in the plotter's view, so the toggle has to travel as an event."""
+    received = []
+    EventBroker().register(FitComponentsVisibilityChangedEvent, received.append)
+
+    presenter._view.plot_sep_check.setChecked(True)
+
+    assert [e.visible for e in received] == [True]
+
+
+def test_unchecking_plot_separately_publishes_a_hide_event(presenter):
+    received = []
+    EventBroker().register(FitComponentsVisibilityChangedEvent, received.append)
+
+    presenter._view.plot_sep_check.setChecked(True)
+    presenter._view.plot_sep_check.setChecked(False)
+
+    assert [e.visible for e in received] == [True, False]
+
+
+def test_plot_separately_does_not_refit(presenter):
+    """Components ride along on every FitCurve, so toggling must never re-run the fit."""
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+
+    presenter._view.plot_sep_check.setChecked(True)
+
+    presenter._model.perform_fit.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 import math
 
 import numpy as np
+import numpy.testing as npt
 import pytest
 
 from tavi.backend.model.fit_model import FitModel
@@ -120,6 +121,57 @@ def test_perform_fit_curve_carries_its_source_scan(model):
     model.perform_fit(make_request())
 
     assert received[0].curve.source_scan_uuid == UUID(value="scan-001")
+
+
+def test_perform_fit_publishes_each_component_separately(model):
+    """Every component of a composite model has to reach the curve - "Plot Separately" draws them."""
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    assert sorted(received[0].curve.components) == ["bg_", "peak1_"]
+
+
+def test_perform_fit_components_sum_to_the_composite_curve(model):
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    curve = received[0].curve
+    total = np.sum([np.array(values) for values in curve.components.values()], axis=0)
+    npt.assert_allclose(total, curve.best_fit)
+
+
+def test_perform_fit_components_are_evaluated_on_the_curves_own_grid(model):
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_linear_background_request())
+
+    curve = received[0].curve
+    assert all(len(values) == len(curve.x) for values in curve.components.values())
+
+
+def test_perform_fit_single_component_publishes_no_components(model):
+    """One component *is* the composite curve - separating it out would just overplot it."""
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    model.perform_fit(make_request(background="None"))
+
+    assert received[0].curve.components == {}
+
+
+def test_perform_fit_multi_peak_publishes_one_component_per_peak(model):
+    received = []
+    EventBroker().register(FitComputedEvent, received.append)
+
+    peak = PeakField(shape="Gaussian", amplitude=make_param(""), center=make_param(0), fwhm=make_param(1))
+    model.perform_fit(make_request(background="None", peaks=[peak, peak.model_copy(deep=True)]))
+
+    assert sorted(received[0].curve.components) == ["peak1_", "peak2_"]
 
 
 def test_perform_fit_without_a_fit_uuid_mints_a_new_one_each_time(model):

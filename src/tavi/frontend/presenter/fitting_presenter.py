@@ -12,6 +12,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     BackgroundParamsSuggestedEvent,
+    FitComponentsVisibilityChangedEvent,
     FitComputedEvent,
     FitFocusEvent,
     PeakParamsSuggestedEvent,
@@ -49,6 +50,7 @@ class FittingPresenter(AbstractPresenter):
         self._view.hookup_perform_fit_signal(self.handle_perform_fit_clicked)
         self._view.hookup_suggest_params_signal(self.handle_suggest_params_clicked)
         self._view.hookup_suggest_background_signal(self.handle_suggest_background_clicked)
+        self._view.hookup_plot_separately_signal(self.handle_plot_separately_toggled)
 
     def init_view(self) -> None:
         """Create the fitting view."""
@@ -91,6 +93,16 @@ class FittingPresenter(AbstractPresenter):
             fit_uuid=self._fit_uuid_by_source_uuid.get(self._active_series.source_scan_uuid),
         )
         self._model.perform_fit(request)
+
+    def handle_plot_separately_toggled(self, visible: bool) -> None:
+        """
+        Announce that fit components should be shown or hidden on the canvas.
+
+        Published rather than acted on directly: the curves live in the plotter's view, which
+        this presenter has no handle to. Nothing is refitted - the components are already on
+        every FitCurve, so this only changes what's visible.
+        """
+        self._event_broker.publish(FitComponentsVisibilityChangedEvent(visible=visible))
 
     def handle_fit_focus(self, e: FitFocusEvent) -> None:
         """Track fits selected directly from the project tree, so their recomputed result still displays."""

@@ -14,6 +14,7 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    FitComponentsVisibilityChangedEvent,
     FitComputedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
@@ -554,9 +555,7 @@ def make_fit_entry(uuid_val="scan-001") -> FitEntry:
 
 def make_fit_computed_event(uuid_val="scan-001") -> FitComputedEvent:
     fit = make_fit_entry(uuid_val)
-    curve = FitCurve(
-        source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
-    )
+    curve = FitCurve(source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
     result = FitResultSummary(
         reduced_chi_squared=0.5,
         peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
@@ -571,6 +570,25 @@ def _fit_curve_labels(presenter) -> list[str]:
 def test_init_registers_fit_computed_event(presenter):
     broker = EventBroker()
     assert presenter.handle_fit_computed in broker.registry[FitComputedEvent]
+
+
+def test_init_registers_fit_components_visibility_event(presenter):
+    broker = EventBroker()
+    assert presenter.handle_fit_components_visibility in broker.registry[FitComponentsVisibilityChangedEvent]
+
+
+def test_fit_components_visibility_event_reaches_the_view(presenter, qtbot):
+    with qtbot.waitSignal(presenter._view.set_fit_components_visible_signal, timeout=1000) as blocker:
+        EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+
+    assert blocker.args == [True]
+
+
+def test_fit_components_visibility_event_does_not_refit(presenter):
+    """The components are already drawn - showing them must never go back to the model."""
+    EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+
+    assert not presenter._model.method_calls
 
 
 def test_handle_fit_computed_draws_curve_for_a_focused_series(presenter):

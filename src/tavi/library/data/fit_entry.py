@@ -130,6 +130,11 @@ class FitCurve(BaseModel):
     scan_name: str
     x: list[float]
     best_fit: list[float]
+    components: dict[str, list[float]] = {}
+    """Each model component (``bg_``, ``peak1_``, ...) evaluated on its own over the same ``x``,
+    for "Plot Separately". Always carried, whether or not the panel is currently showing them, so
+    toggling the checkbox redraws from what's already here instead of re-running the fit. A fit
+    with a single component leaves this empty - that component *is* ``best_fit``."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
