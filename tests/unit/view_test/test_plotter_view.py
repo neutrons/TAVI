@@ -789,6 +789,102 @@ def test_fit_curves_for_different_series_are_drawn_side_by_side(view):
 
 
 # ---------------------------------------------------------------------------
+# Hide Label
+# ---------------------------------------------------------------------------
+
+
+def plot_one_scan(view, scan_name="my_scan"):
+    view.append_plot(
+        np.array([1.0, 2.0]),
+        np.array([3.0, 4.0]),
+        np.array([0.0, 0.0]),
+        scan_name,
+        None,
+        "qh",
+        "en",
+        "err",
+    )
+
+
+def test_hide_label_starts_unchecked(view):
+    assert view.hide_label_check.isChecked() is False
+
+
+def test_hide_label_removes_the_legend(view):
+    plot_one_scan(view)
+    assert view.canvas.axes.get_legend() is not None
+
+    view.hide_label_check.setChecked(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_leaves_the_plotted_data_alone(view):
+    """Only the legend goes - the curves and their labels stay exactly as they were."""
+    plot_one_scan(view)
+    view._append_fit_curve(make_fit_curve())
+    lines_before = [(line, line.get_label()) for line in view.canvas.axes.lines]
+
+    view.hide_label_check.setChecked(True)
+
+    assert [(line, line.get_label()) for line in view.canvas.axes.lines] == lines_before
+
+
+def test_unchecking_hide_label_brings_the_legend_back(view):
+    plot_one_scan(view)
+    view.hide_label_check.setChecked(True)
+
+    view.hide_label_check.setChecked(False)
+
+    assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan"]
+
+
+def test_hide_label_survives_a_later_plot(view):
+    """A new scan must not quietly bring the legend back while the box is still checked."""
+    view.hide_label_check.setChecked(True)
+
+    plot_one_scan(view)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_survives_a_later_fit(view):
+    view.hide_label_check.setChecked(True)
+    plot_one_scan(view)
+
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_survives_toggling_plot_separately(view):
+    view.hide_label_check.setChecked(True)
+    view._append_fit_curve(make_fit_curve_with_components())
+
+    view._set_fit_components_visible(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_hide_label_on_an_empty_canvas_is_harmless(view):
+    view.hide_label_check.setChecked(True)
+
+    assert view.canvas.axes.get_legend() is None
+
+
+def test_unchecking_hide_label_restores_every_label_drawn_while_hidden(view):
+    """Entries added while hidden are not lost - the legend is rebuilt from the artists, not replayed."""
+    view.hide_label_check.setChecked(True)
+    plot_one_scan(view, "scan_a")
+    plot_one_scan(view, "scan_b")
+
+    view.hide_label_check.setChecked(False)
+
+    labels = [text.get_text() for text in view.canvas.axes.get_legend().get_texts()]
+    assert labels == ["scan_a", "scan_b"]
+
+
+# ---------------------------------------------------------------------------
 # fit components ("Plot Separately")
 # ---------------------------------------------------------------------------
 

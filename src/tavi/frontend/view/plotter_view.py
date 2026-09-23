@@ -160,6 +160,9 @@ class Plot1DView(QWidget):
         self.overplot_button = QPushButton("Overplot")
         self.overplot_button.setEnabled(False)
         plot_controls.addWidget(self.overplot_button)
+        self.hide_label_check = QCheckBox("Hide Label")
+        self.hide_label_check.toggled.connect(self._on_hide_label_toggled)
+        plot_controls.addWidget(self.hide_label_check)
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 
@@ -192,7 +195,7 @@ class Plot1DView(QWidget):
         ax.errorbar(x, y, yerr=err, label=label, fmt="o", capsize=3)
         ax.set_xlabel(x_name)
         ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
-        ax.legend()
+        self._refresh_legend()
         self.canvas.draw()
 
     def _append_fit_curve(self, fit: FitCurve) -> None:
@@ -209,7 +212,7 @@ class Plot1DView(QWidget):
         self._fit_lines[fit.source_scan_uuid.value] = line
         self._append_fit_components(fit)
         # Rebuilt after the swap, so the dropped curve's entry goes with it.
-        ax.legend()
+        self._refresh_legend()
         self.canvas.draw()
 
     def _append_fit_components(self, fit: FitCurve) -> None:
@@ -250,17 +253,34 @@ class Plot1DView(QWidget):
     def _set_fit_components_visible(self, visible: bool) -> None:
         """Show or hide every drawn fit component, without re-running or redrawing the fits themselves."""
         self._show_components = visible
-        ax = self.canvas.axes
         for lines in self._fit_component_lines.values():
             for line in lines.values():
                 self._set_component_visible(line, visible)
-        # The components just entered or left the legend, so it has to be rebuilt - but legend()
-        # warns rather than no-ops when the canvas holds nothing labelled at all.
-        if ax.get_legend_handles_labels()[0]:
-            ax.legend()
-        elif ax.get_legend() is not None:
-            ax.get_legend().remove()
+        # The components just entered or left the legend, so it has to be rebuilt.
+        self._refresh_legend()
         self.canvas.draw()
+
+    def _on_hide_label_toggled(self, _hidden: bool) -> None:
+        """Drop or restore the legend when "Hide Label" is toggled - the plotted data is untouched."""
+        self._refresh_legend()
+        self.canvas.draw()
+
+    def _refresh_legend(self) -> None:
+        """
+        Rebuild the legend from whatever is currently labelled, or drop it entirely.
+
+        Every caller that adds or relabels an artist goes through here rather than calling
+        ``legend()`` itself, so "Hide Label" survives the next plot or fit instead of the legend
+        quietly coming back. It also covers the two cases a bare ``legend()`` handles badly:
+        matplotlib warns rather than no-ops when nothing on the axes carries a label, and an
+        existing legend outlives the last labelled artist unless it is removed by hand.
+        """
+        ax = self.canvas.axes
+        if self.hide_label_check.isChecked() or not ax.get_legend_handles_labels()[0]:
+            if ax.get_legend() is not None:
+                ax.get_legend().remove()
+            return
+        ax.legend()
 
     def clear_plot(self) -> None:
         """Clear all data from the plot."""
