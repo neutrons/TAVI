@@ -9,6 +9,7 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     FitAppendEvent,
+    FitRemoveEvent,
     PlotAppendEvent,
     PlotRemoveEvent,
     RawScanAppendEvent,
@@ -272,6 +273,13 @@ def test_init_registers_plot_remove_event():
     assert presenter.remove_treeview_data in broker.registry[PlotRemoveEvent]
 
 
+def test_init_registers_fit_remove_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.remove_treeview_data in broker.registry[FitRemoveEvent]
+
+
 def test_init_hooks_up_remove_signal():
     presenter, view, model = _make_presenter()
 
@@ -320,6 +328,15 @@ def test_remove_treeview_data_handles_plot_remove_event():
     uuid = UUID(value="p1")
 
     presenter.remove_treeview_data(PlotRemoveEvent(uuid=uuid))
+
+    view.remove_item.assert_called_once_with(uuid)
+
+
+def test_remove_treeview_data_handles_fit_remove_event():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="f1")
+
+    presenter.remove_treeview_data(FitRemoveEvent(uuid=uuid))
 
     view.remove_item.assert_called_once_with(uuid)
 

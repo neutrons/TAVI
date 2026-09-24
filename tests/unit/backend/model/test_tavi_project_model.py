@@ -14,6 +14,7 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     FitAppendEvent,
+    FitRemoveEvent,
     PlotAppendEvent,
     PlotRemoveEvent,
     RawScanAppendEvent,
@@ -76,10 +77,10 @@ def make_param(value=0):
     return ParamField(value=str(value), fixed=False, minimum="", maximum="")
 
 
-def make_fit_entry(uuid_val="fit-001", scan_name="test_scan"):
+def make_fit_entry(uuid_val="fit-001", scan_name="test_scan", source_uuid="scan-001"):
     return FitEntry(
         uuid=UUID(value=uuid_val),
-        series=make_series(scan_name),
+        series=make_series(scan_name, uuid_val=source_uuid),
         range_min="0",
         range_max="10",
         background="None",
@@ -790,6 +791,81 @@ def test_remove_folder_leaves_scan_focused_from_another_folder(model):
     sources = [s.source_scan_uuid for p in plot_model._last_plots for s in p.series]
     assert sources == [other.uuid]
     assert other.uuid in model.tavi_data.raw_scans
+
+
+# ---------------------------------------------------------------------------
+# remove_items — fits
+# ---------------------------------------------------------------------------
+
+
+def test_remove_items_removes_fit_directly(model):
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitRemoveEvent, received.append)
+    model.remove_items([fit.uuid])
+
+    assert fit.uuid not in model.tavi_data.fits
+    assert [e.uuid for e in received] == [fit.uuid]
+
+
+def test_remove_items_removes_fit_whose_source_scan_is_removed(model):
+    """A FitEntry is bound to one series, so it cannot outlive the scan that series points at."""
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    fit = make_fit_entry(source_uuid=scan.uuid.value)
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitRemoveEvent, received.append)
+    model.remove_items([scan.uuid])
+
+    assert fit.uuid not in model.tavi_data.fits
+    assert [e.uuid for e in received] == [fit.uuid]
+
+
+def test_remove_items_leaves_fit_on_unrelated_scan_alone(model):
+    gone = make_raw_scan(uuid_val="scan-gone")
+    kept = make_raw_scan(uuid_val="scan-kept")
+    model.tavi_data.raw_scans[gone.uuid] = gone
+    model.tavi_data.raw_scans[kept.uuid] = kept
+    fit = make_fit_entry(source_uuid="scan-kept")
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitRemoveEvent, received.append)
+    model.remove_items([gone.uuid])
+
+    assert fit.uuid in model.tavi_data.fits
+    assert received == []
+
+
+def test_remove_items_announces_a_fit_once_when_it_and_its_scan_both_go(model):
+    """Selecting a scan and its fit together must not delete the same entry twice."""
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    fit = make_fit_entry(source_uuid=scan.uuid.value)
+    model.tavi_data.fits[fit.uuid] = fit
+
+    received = []
+    EventBroker().register(FitRemoveEvent, received.append)
+    response = model.remove_items([fit.uuid, scan.uuid])
+
+    assert response.code == ResponseCode.OK
+    assert [e.uuid for e in received] == [fit.uuid]
+
+
+def test_remove_items_removes_every_fit_sharing_a_removed_scan(model):
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    for i in range(3):
+        fit = make_fit_entry(uuid_val=f"fit-{i}", source_uuid=scan.uuid.value)
+        model.tavi_data.fits[fit.uuid] = fit
+
+    model.remove_items([scan.uuid])
+
+    assert model.tavi_data.fits == {}
 
 
 # ---------------------------------------------------------------------------

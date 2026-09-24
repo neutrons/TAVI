@@ -40,6 +40,12 @@ class PlotRemoveEvent(Event):
     uuid: UUID
 
 
+class FitRemoveEvent(Event):
+    """Indicates a Fit has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
 class RawScanLoadingEvent(Event):
     """loading raw data event."""
 
