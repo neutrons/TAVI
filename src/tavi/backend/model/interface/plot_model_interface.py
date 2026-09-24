@@ -23,8 +23,13 @@ class PlotModelInterface(Model, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def save_focused_plots(self) -> ModelResponse:
-        """Combine every currently-focused plot's series into one new plot and save it."""
+    def save_focused_plots(self, fit_uuids: Optional[list[UUID]] = None) -> ModelResponse:
+        """
+        Combine every currently-focused plot's series into one new plot and save it.
+
+        ``fit_uuids`` (the fits currently overlaid on the canvas) are stamped onto the new
+        plot so re-focusing it later brings its fit curves back too.
+        """
 
 
 PlotModelProxy = Proxy(PlotModelInterface)

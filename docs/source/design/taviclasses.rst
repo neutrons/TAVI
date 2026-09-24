@@ -22,6 +22,7 @@ handles application-level concerns such as writing error logs.
     TaviProjectModel "1" --> "1" TaviData
     TaviProjectModel "1" --> "1" RawScanLoadController
     TaviData "1" --> "*" RawScan
+    TaviData "1" --> "*" ProcessedScan
     TaviData "1" --> "*" Plot
     PlotModel ..> TaviData : live handles
 
@@ -40,8 +41,10 @@ handles application-level concerns such as writing error logs.
 
     class TaviData{
         +dict~UUID,RawScan~ raw_scans
+        +dict~UUID,ProcessedScan~ processed_scans
         +dict~UUID,Plot~ plots
-        +fetch_by_uuid(uuid) RawScan|Plot
+        +all_scans() dict~UUID,Scan~
+        +fetch_by_uuid(uuid) RawScan|ProcessedScan|Plot
     }
 
     class PlotModel{

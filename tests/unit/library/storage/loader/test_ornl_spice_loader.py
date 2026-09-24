@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import numpy as np
+import pytest
 
 from tavi.library.storage.local_file_store import LocalFileStore
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
@@ -127,3 +128,25 @@ def test_parse_external_metadata_reads_matching_ubconf_file() -> None:
     np.testing.assert_allclose(ubconf["Energy"], 13.5, atol=1e-6)
     assert isinstance(ubconf["UBMatrix"], np.ndarray)
     assert ubconf["UBMatrix"].shape == (9,)
+
+
+def _loader_with_scan_title(scan_title: str) -> ORNLSpiceLoader:
+    loader = ORNLSpiceLoader(LocalFileStore())
+    scan = MagicMock()
+    scan.metadata.scan_title = scan_title
+    loader.get_data_from_scan_number = MagicMock(return_value=scan)
+    return loader
+
+
+def test_get_hkl_from_title_parses_separated_indices() -> None:
+    loader = _loader_with_scan_title("TbTaO4, (0 5 1) rocking scan, T = 1.5 K, H = 0 T")
+
+    np.testing.assert_allclose(loader.get_hkl(MagicMock(), scan_num=1), [0.0, 5.0, 1.0])
+
+
+def test_get_hkl_from_title_rejects_compact_indices() -> None:
+    """Compact notation splits into one value, which would silently read as h=51 without the check."""
+    loader = _loader_with_scan_title("TbTaO4, (051) rocking scan, T = 1.5 K, H = 0 T")
+
+    with pytest.raises(ValueError, match="Expected 3 values"):
+        loader.get_hkl(MagicMock(), scan_num=1)

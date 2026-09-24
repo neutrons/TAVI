@@ -13,6 +13,7 @@ from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.event.type.model_event import RawScanRemoveEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    FitFocusEvent,
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
@@ -35,6 +36,7 @@ class PlotModel(PlotModelInterface):
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
         self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
+        self._event_broker.register(FitFocusEvent, self._handle_fit_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(RawScanRemoveEvent, self._handle_raw_scan_remove_event)
 
@@ -74,15 +76,50 @@ class PlotModel(PlotModelInterface):
         )
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
-        """Build one single-series preview plot per focused raw scan, so each run can be focused independently."""
-        if not e.scans:
+        """
+        Build one single-series preview plot per focused raw scan, so each run can be focused independently.
+
+        Merged with ``e.also_plots`` (saved plots focused in the same multiselect) into one
+        combined batch and a single ``PlotFocusEvent`` publish, so a scan+plot multiselect
+        overlays both instead of the plots-only branch's own publish clobbering this one.
+        """
+        if not e.scans and not e.also_plots:
             return
-        plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        preview_plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        plots = preview_plots + list(e.also_plots)
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
 
     def _handle_plot_focus_event(self, e: PlotFocusEvent) -> None:
         """Sync ``_last_plots`` to whatever's now on screen, from this model or ``TaviProjectModel``."""
         self._last_plots = e.plots
+
+    def _handle_fit_focus_event(self, e: FitFocusEvent) -> None:
+        """
+        Sync ``_last_plots`` to the series the focused fits were made against.
+
+        A fit focused on its own is rendered by ``PlotterPresenter`` straight from the event (each
+        FitEntry carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
+        ``_last_plots`` would otherwise still describe whatever was focused before - leaving a
+        subsequent axis/preset edit, or Save Plot, acting on the wrong plot entirely.
+
+        Deliberately updates state without publishing: the canvas already shows these series, and
+        a ``PlotFocusEvent`` here would both re-render them and clear the presenter's pending-fit
+        set before the recomputed curves arrive.
+
+        A non-exclusive batch is skipped - its scans/plots already published a ``PlotFocusEvent``,
+        and the fits overlay onto that rather than replacing it.
+        """
+        if not e.exclusive:
+            return
+        series_by_source: dict[UUID, PlotSeries] = {}
+        for fit in e.fits:
+            if fit.series.source_scan_uuid in e.scans:
+                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        if not series_by_source:
+            return
+        # One single-series plot per source scan, matching the shape _handle_raw_scan_focus_event
+        # builds, so "Apply All", the Current Plot dropdown and Save Plot all behave identically.
+        self._last_plots = [Plot(series=[series.model_copy(deep=True)]) for series in series_by_source.values()]
 
     def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
         """
@@ -137,13 +174,18 @@ class PlotModel(PlotModelInterface):
         )
         return ModelResponse(code=ResponseCode.OK)
 
-    def save_focused_plots(self) -> ModelResponse:
-        """Combine every currently-focused plot's series into one new plot and publish it for saving."""
+    def save_focused_plots(self, fit_uuids: Optional[list[UUID]] = None) -> ModelResponse:
+        """
+        Combine every currently-focused plot's series into one new plot and publish it for saving.
+
+        ``fit_uuids`` (the fits currently overlaid on the canvas) are stamped onto the new
+        plot so re-focusing it later brings its fit curves back too.
+        """
         if not self._last_plots:
             return ModelResponse(code=ResponseCode.OK)
 
         series = [series.model_copy(deep=True) for plot in self._last_plots for series in plot.series]
-        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series)))
+        self._event_broker.publish(SavePlotEvent(plot=Plot(series=series, fits=fit_uuids or [])))
         return ModelResponse(code=ResponseCode.OK)
 
     def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields, target_uuid: Optional[UUID]) -> Optional[Plot]:

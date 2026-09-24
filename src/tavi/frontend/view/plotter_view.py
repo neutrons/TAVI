@@ -24,6 +24,7 @@ from qtpy.QtWidgets import (
 
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.enum.rebin_mode import RebinMode
+from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields
 
 
@@ -36,16 +37,28 @@ class Plot1DView(QWidget):
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
     sync_fields_signal = Signal(object)
+    append_fit_curve_signal = Signal(object)
+    set_fit_components_visible_signal = Signal(bool)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
         super().__init__(parent)
+        # The fit curve currently drawn for each source scan, so a refit of that series can drop
+        # its own line before drawing the new one - matplotlib would otherwise keep every
+        # superseded curve (and its legend entry) on the axes.
+        self._fit_lines: dict[str, Any] = {}
+        # Per source scan, one dashed line per model component prefix, kept so "Plot Separately"
+        # can toggle their visibility without the fits having to be recomputed.
+        self._fit_component_lines: dict[str, dict[str, Any]] = {}
+        self._show_components = False
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
+        self.append_fit_curve_signal.connect(self._append_fit_curve)
+        self.set_fit_components_visible_signal.connect(self._set_fit_components_visible)
 
     def _build_ui(self) -> None:
         """Build the 1D plotter UI."""
@@ -147,6 +160,9 @@ class Plot1DView(QWidget):
         self.overplot_button = QPushButton("Overplot")
         self.overplot_button.setEnabled(False)
         plot_controls.addWidget(self.overplot_button)
+        self.hide_label_check = QCheckBox("Hide Label")
+        self.hide_label_check.toggled.connect(self._on_hide_label_toggled)
+        plot_controls.addWidget(self.hide_label_check)
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 
@@ -179,12 +195,100 @@ class Plot1DView(QWidget):
         ax.errorbar(x, y, yerr=err, label=label, fmt="o", capsize=3)
         ax.set_xlabel(x_name)
         ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
-        ax.legend()
+        self._refresh_legend()
         self.canvas.draw()
+
+    def _append_fit_curve(self, fit: FitCurve) -> None:
+        """Draw a fit's evaluated curve as a solid line, replacing whatever was drawn for that series."""
+        ax = self.canvas.axes
+        superseded = self._fit_lines.pop(fit.source_scan_uuid.value, None)
+        # Removing a line doesn't rewind the axes' property cycle, so an unqualified plot() would
+        # hand each refit the next color - reuse the superseded curve's own. None (the first fit
+        # for this series) reads as "unset" and takes the next cycle color, as before.
+        color = superseded.get_color() if superseded is not None else None
+        if superseded is not None:
+            superseded.remove()
+        (line,) = ax.plot(fit.x, fit.best_fit, "-", color=color, label=f"{fit.scan_name} fit")
+        self._fit_lines[fit.source_scan_uuid.value] = line
+        self._append_fit_components(fit)
+        # Rebuilt after the swap, so the dropped curve's entry goes with it.
+        self._refresh_legend()
+        self.canvas.draw()
+
+    def _append_fit_components(self, fit: FitCurve) -> None:
+        """Draw each of a fit's components as its own dashed line, mirroring browser.py's show_components."""
+        ax = self.canvas.axes
+        superseded = self._fit_component_lines.pop(fit.source_scan_uuid.value, {})
+        lines = {}
+        for prefix, values in fit.components.items():
+            # Same color rule as the composite curve: a component keeps the color it was first
+            # drawn in, so a refit doesn't shuffle every component's color.
+            previous = superseded.pop(prefix, None)
+            color = previous.get_color() if previous is not None else None
+            if previous is not None:
+                previous.remove()
+            (line,) = ax.plot(fit.x, values, "--", lw=1, color=color)
+            line.set_label(f"{fit.scan_name} {prefix.rstrip('_') or 'component'}")
+            self._set_component_visible(line, self._show_components)
+            lines[prefix] = line
+        # Whatever the previous fit had and this one doesn't (a peak the user removed, or a
+        # background switched off) has no line to be replaced by, so drop it here.
+        for orphan in superseded.values():
+            orphan.remove()
+        self._fit_component_lines[fit.source_scan_uuid.value] = lines
+
+    def _set_component_visible(self, line: Any, visible: bool) -> None:
+        """
+        Show or hide one component line, leaving the legend exactly as it was while they're off.
+
+        Matplotlib keeps an invisible artist in the legend, so hiding the line is not enough - a
+        leading underscore is what actually excludes it. The label is stored carrying that marker,
+        so exactly one leading underscore is stripped back off to recover the original.
+        """
+        stored = line.get_label()
+        base = stored[1:] if stored.startswith("_") else stored
+        line.set_label(base if visible else f"_{base}")
+        line.set_visible(visible)
+
+    def _set_fit_components_visible(self, visible: bool) -> None:
+        """Show or hide every drawn fit component, without re-running or redrawing the fits themselves."""
+        self._show_components = visible
+        for lines in self._fit_component_lines.values():
+            for line in lines.values():
+                self._set_component_visible(line, visible)
+        # The components just entered or left the legend, so it has to be rebuilt.
+        self._refresh_legend()
+        self.canvas.draw()
+
+    def _on_hide_label_toggled(self, _hidden: bool) -> None:
+        """Drop or restore the legend when "Hide Label" is toggled - the plotted data is untouched."""
+        self._refresh_legend()
+        self.canvas.draw()
+
+    def _refresh_legend(self) -> None:
+        """
+        Rebuild the legend from whatever is currently labelled, or drop it entirely.
+
+        Every caller that adds or relabels an artist goes through here rather than calling
+        ``legend()`` itself, so "Hide Label" survives the next plot or fit instead of the legend
+        quietly coming back. It also covers the two cases a bare ``legend()`` handles badly:
+        matplotlib warns rather than no-ops when nothing on the axes carries a label, and an
+        existing legend outlives the last labelled artist unless it is removed by hand.
+        """
+        ax = self.canvas.axes
+        if self.hide_label_check.isChecked() or not ax.get_legend_handles_labels()[0]:
+            if ax.get_legend() is not None:
+                ax.get_legend().remove()
+            return
+        ax.legend()
 
     def clear_plot(self) -> None:
         """Clear all data from the plot."""
         self.canvas.axes.cla()
+        # cla() already discarded the lines themselves - keeping handles to them would leave
+        # _append_fit_curve trying to remove artists that are no longer on the axes.
+        self._fit_lines.clear()
+        self._fit_component_lines.clear()
         # Drop the toolbar's view history along with the data. Matplotlib captures the
         # "Home" view lazily on the first pan/zoom, so without this the next plot's Home
         # button would restore the *previous* plot's axis limits.

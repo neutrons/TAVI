@@ -11,7 +11,7 @@ from tavi.library.data.scan import (
     Provenance,
     Scan,
     RawScan,
-    ComboScan,
+    ProcessedScan,
 )
 
 
@@ -52,8 +52,8 @@ def make_raw_scan() -> RawScan:
     )
 
 
-def make_combo_scan() -> ComboScan:
-    return ComboScan(
+def make_processed_scan() -> ProcessedScan:
+    return ProcessedScan(
         uuid=UUID(value="combo-001"),
         data=ScanData(),
         metadata=ScanMetadata(),
@@ -84,12 +84,12 @@ def test_raw_scan_can_be_created():
     assert raw_scan.prov.contributing_scans == {UUID(value="scan-001"): 1}
 
 
-def test_combo_scan_can_be_created():
-    combo_scan = make_combo_scan()
+def test_processed_scan_can_be_created():
+    processed_scan = make_processed_scan()
 
-    assert combo_scan.uuid.value == "combo-001"
-    assert isinstance(combo_scan, ComboScan)
-    assert isinstance(combo_scan, Scan)
+    assert processed_scan.uuid.value == "combo-001"
+    assert isinstance(processed_scan, ProcessedScan)
+    assert isinstance(processed_scan, Scan)
 
 
 def test_raw_scan_uuid_is_read_only():
@@ -139,8 +139,8 @@ def test_raw_scan_tavimeta_is_writable():
     assert raw_scan.tavimeta.normalization == ("detector", 1.0)
 
 
-def test_combo_scan_allows_writing_all_fields():
-    combo_scan = make_combo_scan()
+def test_processed_scan_allows_writing_all_fields():
+    processed_scan = make_processed_scan()
 
     new_data = ScanData()
     new_metadata = ScanMetadata()
@@ -151,21 +151,21 @@ def test_combo_scan_allows_writing_all_fields():
         friendly_path="/test_path",
     )
     new_prov = Provenance(
-        raw_file="combo_scan.dat",
+        raw_file="processed_scan.dat",
         contributing_scans={UUID(value="scan-001"): 1, UUID(value="scan-002"): 2},
     )
 
-    combo_scan.uuid = "combo-002"
-    combo_scan.data = new_data
-    combo_scan.metadata = new_metadata
-    combo_scan.tavimeta = new_tavimeta
-    combo_scan.prov = new_prov
+    processed_scan.uuid = "combo-002"
+    processed_scan.data = new_data
+    processed_scan.metadata = new_metadata
+    processed_scan.tavimeta = new_tavimeta
+    processed_scan.prov = new_prov
 
-    assert combo_scan.uuid == "combo-002"
-    assert combo_scan.data is new_data
-    assert combo_scan.metadata is new_metadata
-    assert combo_scan.tavimeta == new_tavimeta
-    assert combo_scan.prov == new_prov
+    assert processed_scan.uuid == "combo-002"
+    assert processed_scan.data is new_data
+    assert processed_scan.metadata is new_metadata
+    assert processed_scan.tavimeta == new_tavimeta
+    assert processed_scan.prov == new_prov
 
 
 def test_tavimetadata_rejects_invalid_default_axis():

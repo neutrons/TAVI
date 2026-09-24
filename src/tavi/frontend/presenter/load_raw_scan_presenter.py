@@ -8,6 +8,7 @@ from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
+    FitAppendEvent,
     PlotAppendEvent,
     PlotRemoveEvent,
     RawScanAppendEvent,
@@ -41,6 +42,7 @@ class LoadRawScanPresenter(AbstractPresenter):
         self.event_broker = EventBroker()
         self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
         self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
+        self.event_broker.register(FitAppendEvent, self.update_fit_treeview_data)
         self.event_broker.register(RawScanRemoveEvent, self.remove_treeview_data)
         self.event_broker.register(PlotRemoveEvent, self.remove_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
@@ -61,6 +63,10 @@ class LoadRawScanPresenter(AbstractPresenter):
     def update_plot_treeview_data(self, event: PlotAppendEvent) -> None:
         """Update the treeview GUI after a plot is added."""
         self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
+
+    def update_fit_treeview_data(self, event: FitAppendEvent) -> None:
+        """Update the treeview GUI after a fit is added."""
+        self._view.add_fit(event.uuid, event.friendly_name, event.friendly_path)
 
     def handle_remove_request(self, uuids: list[UUID]) -> None:
         """Ask the model to drop the items the user removed in the tree."""
