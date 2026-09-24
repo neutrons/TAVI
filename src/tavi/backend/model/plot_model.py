@@ -10,6 +10,7 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.model_event import RawScanRemoveEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     FitFocusEvent,
@@ -37,6 +38,36 @@ class PlotModel(PlotModelInterface):
         self._event_broker.register(PlotFocusEvent, self._handle_plot_focus_event)
         self._event_broker.register(FitFocusEvent, self._handle_fit_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
+        self._event_broker.register(RawScanRemoveEvent, self._handle_raw_scan_remove_event)
+
+    def _handle_raw_scan_remove_event(self, e: RawScanRemoveEvent) -> None:
+        """
+        Drop focused series whose source scan has left ``_raw_scans``, and redraw what's left.
+
+        ``_last_plots`` holds copies that outlive the scans they point at, so stale
+        ``_raw_scans[source_scan_uuid]`` lookups would raise. Every series is reconciled against
+        ``_raw_scans`` rather than just ``e.uuid`` because folder removal deletes the whole batch
+        before publishing its first event — leaving the batch's other scans already unresolvable.
+        """
+        gone = {
+            series.source_scan_uuid
+            for plot in self._last_plots
+            for series in plot.series
+            if series.source_scan_uuid not in self._raw_scans
+        }
+        if not gone:
+            return
+
+        updated_plots = []
+        for plot in self._last_plots:
+            surviving = plot.without_scans(gone)
+            if surviving is not None:
+                updated_plots.append(surviving)
+
+        self._last_plots = updated_plots
+        self._event_broker.publish(
+            PlotFocusEvent(plots=updated_plots, scans=scans_for_plots(updated_plots, self._raw_scans))
+        )
 
     def _handle_raw_scan_focus_event(self, e: RawScanFocusEvent) -> None:
         """

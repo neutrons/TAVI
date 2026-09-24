@@ -28,6 +28,24 @@ class FitAppendEvent(Event):
     friendly_path: str
 
 
+class RawScanRemoveEvent(Event):
+    """Indicates a RawScan has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
+class PlotRemoveEvent(Event):
+    """Indicates a Plot has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
+class FitRemoveEvent(Event):
+    """Indicates a Fit has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
 class RawScanLoadingEvent(Event):
     """loading raw data event."""
 

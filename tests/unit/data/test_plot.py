@@ -78,3 +78,47 @@ def test_plot_supports_multiple_series():
     assert plot.series[0].scan_name == "scan_a"
     assert plot.series[1].scan_name == "scan_b"
     assert plot.series[0].source_scan_uuid != plot.series[1].source_scan_uuid
+
+
+def test_without_scans_returns_self_when_nothing_matches():
+    """Callers detect a no-op by identity, so an untouched plot must come back as the same object."""
+    plot = make_plot()
+
+    assert plot.without_scans({UUID(value="scan-999")}) is plot
+
+
+def test_without_scans_returns_none_when_no_series_survives():
+    plot = make_plot()
+
+    assert plot.without_scans({UUID(value="scan-001")}) is None
+
+
+def test_without_scans_keeps_the_surviving_series_of_a_fused_plot():
+    series_a = make_series(source_scan_uuid=UUID(value="scan-001"), scan_name="scan_a")
+    series_b = make_series(source_scan_uuid=UUID(value="scan-002"), scan_name="scan_b")
+    plot = make_plot(series=[series_a, series_b])
+
+    pruned = plot.without_scans({UUID(value="scan-001")})
+
+    assert [s.scan_name for s in pruned.series] == ["scan_b"]
+
+
+def test_without_scans_does_not_mutate_the_original():
+    series_a = make_series(source_scan_uuid=UUID(value="scan-001"))
+    series_b = make_series(source_scan_uuid=UUID(value="scan-002"))
+    plot = make_plot(series=[series_a, series_b])
+
+    plot.without_scans({UUID(value="scan-001")})
+
+    assert len(plot.series) == 2
+
+
+def test_without_scans_drops_every_matching_series():
+    series_a = make_series(source_scan_uuid=UUID(value="scan-001"), scan_name="scan_a")
+    series_b = make_series(source_scan_uuid=UUID(value="scan-002"), scan_name="scan_b")
+    series_c = make_series(source_scan_uuid=UUID(value="scan-003"), scan_name="scan_c")
+    plot = make_plot(series=[series_a, series_b, series_c])
+
+    pruned = plot.without_scans({UUID(value="scan-001"), UUID(value="scan-003")})
+
+    assert [s.scan_name for s in pruned.series] == ["scan_b"]

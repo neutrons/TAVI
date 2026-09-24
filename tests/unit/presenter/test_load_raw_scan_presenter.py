@@ -7,7 +7,14 @@ import pytest
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent
+from tavi.meta.event.type.model_event import (
+    FitAppendEvent,
+    FitRemoveEvent,
+    PlotAppendEvent,
+    PlotRemoveEvent,
+    RawScanAppendEvent,
+    RawScanRemoveEvent,
+)
 from tavi.meta.event.type.presenter_event import FocusEvent
 
 
@@ -245,3 +252,98 @@ def test_print_selected_does_not_raise(capsys):
     captured = capsys.readouterr()
     assert "p1" in captured.out
     assert "p2" in captured.out
+
+
+# ---------------------------------------------------------------------------
+# removal
+# ---------------------------------------------------------------------------
+
+
+def test_init_registers_raw_scan_remove_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.remove_treeview_data in broker.registry[RawScanRemoveEvent]
+
+
+def test_init_registers_plot_remove_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.remove_treeview_data in broker.registry[PlotRemoveEvent]
+
+
+def test_init_registers_fit_remove_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.remove_treeview_data in broker.registry[FitRemoveEvent]
+
+
+def test_init_hooks_up_remove_signal():
+    presenter, view, model = _make_presenter()
+
+    view.hookup_remove_signal.assert_called_once_with(presenter.handle_remove_request)
+
+
+def test_handle_remove_request_forwards_to_model():
+    presenter, view, model = _make_presenter()
+    uuids = [UUID(value="u1"), UUID(value="u2")]
+
+    presenter.handle_remove_request(uuids)
+
+    model.remove_items.assert_called_once_with(uuids)
+
+
+def test_handle_remove_request_does_not_touch_view():
+    """The tree must wait for the model's remove event, not delete rows on request."""
+    presenter, view, model = _make_presenter()
+
+    presenter.handle_remove_request([UUID(value="u1")])
+
+    view.remove_item.assert_not_called()
+
+
+def test_remove_treeview_data_removes_from_view():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="u1")
+
+    presenter.remove_treeview_data(RawScanRemoveEvent(uuid=uuid))
+
+    view.remove_item.assert_called_once_with(uuid)
+
+
+def test_remove_treeview_data_drops_inventory_entry():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="u1")
+    presenter.update_treeview_data(RawScanAppendEvent(uuid=uuid, friendly_name="scan", friendly_path="/exp"))
+
+    presenter.remove_treeview_data(RawScanRemoveEvent(uuid=uuid))
+
+    assert uuid not in presenter.inventory
+
+
+def test_remove_treeview_data_handles_plot_remove_event():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="p1")
+
+    presenter.remove_treeview_data(PlotRemoveEvent(uuid=uuid))
+
+    view.remove_item.assert_called_once_with(uuid)
+
+
+def test_remove_treeview_data_handles_fit_remove_event():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="f1")
+
+    presenter.remove_treeview_data(FitRemoveEvent(uuid=uuid))
+
+    view.remove_item.assert_called_once_with(uuid)
+
+
+def test_remove_treeview_data_tolerates_uuid_not_in_inventory():
+    presenter, view, model = _make_presenter()
+
+    presenter.remove_treeview_data(PlotRemoveEvent(uuid=UUID(value="never-tracked")))
+
+    view.remove_item.assert_called_once()

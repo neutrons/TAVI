@@ -7,7 +7,14 @@ from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent
+from tavi.meta.event.type.model_event import (
+    FitAppendEvent,
+    FitRemoveEvent,
+    PlotAppendEvent,
+    PlotRemoveEvent,
+    RawScanAppendEvent,
+    RawScanRemoveEvent,
+)
 from tavi.meta.event.type.presenter_event import FocusEvent
 
 
@@ -37,9 +44,13 @@ class LoadRawScanPresenter(AbstractPresenter):
         self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
         self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
         self.event_broker.register(FitAppendEvent, self.update_fit_treeview_data)
+        self.event_broker.register(RawScanRemoveEvent, self.remove_treeview_data)
+        self.event_broker.register(PlotRemoveEvent, self.remove_treeview_data)
+        self.event_broker.register(FitRemoveEvent, self.remove_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
         self._view.hookup_select_signal(self.handle_selection_event)
+        self._view.hookup_remove_signal(self.handle_remove_request)
         self.event_broker.register(FocusEvent, self.print_selected)
 
     def init_view(self) -> None:
@@ -58,6 +69,15 @@ class LoadRawScanPresenter(AbstractPresenter):
     def update_fit_treeview_data(self, event: FitAppendEvent) -> None:
         """Update the treeview GUI after a fit is added."""
         self._view.add_fit(event.uuid, event.friendly_name, event.friendly_path)
+
+    def handle_remove_request(self, uuids: list[UUID]) -> None:
+        """Ask the model to drop the items the user removed in the tree."""
+        self._model.remove_items(uuids)
+
+    def remove_treeview_data(self, event: RawScanRemoveEvent | PlotRemoveEvent | FitRemoveEvent) -> None:
+        """Drop an item from the treeview once the model reports it gone from the project."""
+        self._view.remove_item(event.uuid)
+        self.inventory.pop(event.uuid, None)
 
     def handle_selection_event(self) -> None:
         """Handle selection event by publishing focus event."""

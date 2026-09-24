@@ -9,12 +9,20 @@ from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_pl
 from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import RawScan
+from tavi.library.data.scan import UUID, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitAppendEvent, PlotAppendEvent, RawScanAppendEvent, SyncRecentProjects
+from tavi.meta.event.type.model_event import (
+    FitAppendEvent,
+    FitRemoveEvent,
+    PlotAppendEvent,
+    PlotRemoveEvent,
+    RawScanAppendEvent,
+    RawScanRemoveEvent,
+    SyncRecentProjects,
+)
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     DownstreamReadyEvent,
@@ -68,6 +76,19 @@ class TaviProjectModel(TaviProjectInterface):
 
         for event in events:
             self._event_broker.publish(event)
+
+        return ModelResponse(code=ResponseCode.OK)
+
+    def remove_items(self, uuids: list[UUID]) -> ModelResponse:
+        """Drop the named items, and whatever they orphan, from the project and announce each removal."""
+        purged = self.tavi_data.purge(uuids)
+
+        for uuid in purged.raw_scans:
+            self._event_broker.publish(RawScanRemoveEvent(uuid=uuid))
+        for uuid in purged.plots:
+            self._event_broker.publish(PlotRemoveEvent(uuid=uuid))
+        for uuid in purged.fits:
+            self._event_broker.publish(FitRemoveEvent(uuid=uuid))
 
         return ModelResponse(code=ResponseCode.OK)
 
