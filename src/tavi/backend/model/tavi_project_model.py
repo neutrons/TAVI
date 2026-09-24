@@ -80,55 +80,14 @@ class TaviProjectModel(TaviProjectInterface):
         return ModelResponse(code=ResponseCode.OK)
 
     def remove_items(self, uuids: list[UUID]) -> ModelResponse:
-        """
-        Drop raw scans, plots and fits from the project and announce each removal.
+        """Drop the named items, and whatever they orphan, from the project and announce each removal."""
+        purged = self.tavi_data.purge(uuids)
 
-        A saved plot holds no data of its own, only a ``source_scan_uuid`` per series, so a
-        series whose scan is being removed can no longer be resolved and is dropped with it.
-        The plot itself survives as long as it has a series left — removing one run should not
-        destroy the rest of a fused, multi-series plot. A ``FitEntry`` is bound to exactly one
-        series, so it has nothing to survive on and goes whenever its source scan does. Unknown
-        uuids are ignored: the tree may ask twice for the same item (e.g. a folder and a scan
-        inside it both selected).
-        """
-        requested = list(dict.fromkeys(uuids))
-        removed_scans = [uuid for uuid in requested if uuid in self.tavi_data.raw_scans]
-        removed_plots = [uuid for uuid in requested if uuid in self.tavi_data.plots]
-        removed_fits = [uuid for uuid in requested if uuid in self.tavi_data.fits]
-
-        orphaned = set(removed_scans)
-        pruned_plots = {}
-        for plot_uuid, plot in self.tavi_data.plots.items():
-            if plot_uuid in removed_plots:
-                continue
-            surviving = [series for series in plot.series if series.source_scan_uuid not in orphaned]
-            if len(surviving) == len(plot.series):
-                continue
-            if surviving:
-                pruned_plots[plot_uuid] = plot.model_copy(update={"series": surviving})
-            else:
-                removed_plots.append(plot_uuid)
-
-        removed_fits.extend(
-            fit_uuid
-            for fit_uuid, fit in self.tavi_data.fits.items()
-            if fit_uuid not in removed_fits and fit.series.source_scan_uuid in orphaned
-        )
-
-        # Mutate in place: PlotModel holds this same dict by reference (get_raw_scans_handle).
-        self.tavi_data.plots.update(pruned_plots)
-        for uuid in removed_scans:
-            del self.tavi_data.raw_scans[uuid]
-        for uuid in removed_plots:
-            del self.tavi_data.plots[uuid]
-        for uuid in removed_fits:
-            del self.tavi_data.fits[uuid]
-
-        for uuid in removed_scans:
+        for uuid in purged.raw_scans:
             self._event_broker.publish(RawScanRemoveEvent(uuid=uuid))
-        for uuid in removed_plots:
+        for uuid in purged.plots:
             self._event_broker.publish(PlotRemoveEvent(uuid=uuid))
-        for uuid in removed_fits:
+        for uuid in purged.fits:
             self._event_broker.publish(FitRemoveEvent(uuid=uuid))
 
         return ModelResponse(code=ResponseCode.OK)

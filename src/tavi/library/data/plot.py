@@ -1,5 +1,6 @@
 """Plot data model."""
 
+from collections.abc import Container
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -34,6 +35,25 @@ class Plot(BaseModel):
     (and recomputed fresh, never replayed) whenever this plot is focused again."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def references_scan(self, scan_uuid: UUID) -> bool:
+        """Report whether any of this plot's series is derived from ``scan_uuid``."""
+        return any(series.source_scan_uuid == scan_uuid for series in self.series)
+
+    def without_scans(self, scan_uuids: Container[UUID]) -> Optional["Plot"]:
+        """
+        Return this plot with every series derived from ``scan_uuids`` dropped.
+
+        Returns ``self`` when nothing matched, so callers can detect a no-op by identity, and
+        ``None`` once no series is left - a plot is only its series, so an empty one has no
+        meaning and its caller is expected to drop it entirely.
+        """
+        surviving = [series for series in self.series if series.source_scan_uuid not in scan_uuids]
+        if len(surviving) == len(self.series):
+            return self
+        if not surviving:
+            return None
+        return self.model_copy(update={"series": surviving})
 
 
 class PlotFields(BaseModel):

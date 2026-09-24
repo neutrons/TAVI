@@ -45,23 +45,24 @@ class PlotModel(PlotModelInterface):
         Drop focused series whose source scan has left ``_raw_scans``, and redraw what's left.
 
         ``_last_plots`` holds copies that outlive the scans they point at, so stale
-        ``_raw_scans[source_scan_uuid]`` lookups would raise. Filtering series individually keeps
-        the rest of a fused plot on screen, and reconciling all of them against ``_raw_scans``
-        (not just ``e.uuid``) handles folder removal, which deletes the whole batch before
-        publishing its first event — leaving the batch's other scans already unresolvable.
+        ``_raw_scans[source_scan_uuid]`` lookups would raise. Every series is reconciled against
+        ``_raw_scans`` rather than just ``e.uuid`` because folder removal deletes the whole batch
+        before publishing its first event — leaving the batch's other scans already unresolvable.
         """
+        gone = {
+            series.source_scan_uuid
+            for plot in self._last_plots
+            for series in plot.series
+            if series.source_scan_uuid not in self._raw_scans
+        }
+        if not gone:
+            return
+
         updated_plots = []
         for plot in self._last_plots:
-            surviving = [series for series in plot.series if series.source_scan_uuid in self._raw_scans]
-            if len(surviving) == len(plot.series):
-                updated_plots.append(plot)
-            elif surviving:
-                updated_plots.append(plot.model_copy(update={"series": surviving}))
-
-        if len(updated_plots) == len(self._last_plots) and all(
-            new is old for new, old in zip(updated_plots, self._last_plots)
-        ):
-            return
+            surviving = plot.without_scans(gone)
+            if surviving is not None:
+                updated_plots.append(surviving)
 
         self._last_plots = updated_plots
         self._event_broker.publish(
