@@ -44,18 +44,11 @@ class PlotModel(PlotModelInterface):
         """
         Drop focused series whose source scan has left ``_raw_scans``, and redraw what's left.
 
-        ``_last_plots`` outlives the scans it points at — it holds copies, and a preview plot is
-        never saved anywhere — so without this every later ``_raw_scans[source_scan_uuid]`` lookup
-        (update_fields, active-plot focus, scans_for_plots) would raise for the deleted scan.
-        Series are filtered individually so removing one run leaves the other series of a fused
-        plot on screen.
-
-        Every focused series is reconciled against ``_raw_scans``, not just ``e.uuid``: removing a
-        folder deletes the whole batch of scans before publishing the first of its per-scan events,
-        so by the time any one event arrives, series belonging to *other* scans in that batch are
-        already unresolvable too. Filtering on ``e.uuid`` alone would leave them in ``_last_plots``
-        and the redraw below would raise. Reconciling makes this idempotent, so the rest of the
-        batch's events find nothing left to do.
+        ``_last_plots`` holds copies that outlive the scans they point at, so stale
+        ``_raw_scans[source_scan_uuid]`` lookups would raise. Filtering series individually keeps
+        the rest of a fused plot on screen, and reconciling all of them against ``_raw_scans``
+        (not just ``e.uuid``) handles folder removal, which deletes the whole batch before
+        publishing its first event — leaving the batch's other scans already unresolvable.
         """
         updated_plots = []
         for plot in self._last_plots:
