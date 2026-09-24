@@ -80,26 +80,6 @@ def test_plot_supports_multiple_series():
     assert plot.series[0].source_scan_uuid != plot.series[1].source_scan_uuid
 
 
-def test_references_scan_finds_its_own_source():
-    plot = make_plot()
-
-    assert plot.references_scan(UUID(value="scan-001"))
-
-
-def test_references_scan_is_false_for_an_unrelated_scan():
-    plot = make_plot()
-
-    assert not plot.references_scan(UUID(value="scan-999"))
-
-
-def test_references_scan_finds_a_later_series():
-    series_a = make_series(source_scan_uuid=UUID(value="scan-001"))
-    series_b = make_series(source_scan_uuid=UUID(value="scan-002"))
-    plot = make_plot(series=[series_a, series_b])
-
-    assert plot.references_scan(UUID(value="scan-002"))
-
-
 def test_without_scans_returns_self_when_nothing_matches():
     """Callers detect a no-op by identity, so an untouched plot must come back as the same object."""
     plot = make_plot()

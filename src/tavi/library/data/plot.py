@@ -36,10 +36,6 @@ class Plot(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def references_scan(self, scan_uuid: UUID) -> bool:
-        """Report whether any of this plot's series is derived from ``scan_uuid``."""
-        return any(series.source_scan_uuid == scan_uuid for series in self.series)
-
     def without_scans(self, scan_uuids: Container[UUID]) -> Optional["Plot"]:
         """
         Return this plot with every series derived from ``scan_uuids`` dropped.
