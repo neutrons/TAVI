@@ -222,6 +222,72 @@ def test_load_raw_scan_from_folder_empty_folder(model):
     assert model.tavi_data.raw_scans == {}
 
 
+def test_load_raw_scan_from_folder_skips_a_scan_already_loaded(model):
+    """A uuid is the md5 of the file text, so re-reading an unchanged file must be a no-op."""
+    scan = make_raw_scan()
+    model.raw_scan_load_controller = MagicMock()
+    model.raw_scan_load_controller.load_folder.return_value = [scan]
+    model.load_raw_scan_from_folder("/some/folder")
+
+    received = []
+    EventBroker().register(RawScanAppendEvent, received.append)
+    result = model.load_raw_scan_from_folder("/some/folder")
+
+    assert result.code == ResponseCode.OK
+    assert received == []
+    assert len(model.tavi_data.raw_scans) == 1
+
+
+def test_load_raw_scan_from_folder_keeps_the_stored_copy_of_a_skipped_scan(model):
+    """tavimeta is writable, so a skipped re-load must not overwrite edits made to the held scan."""
+    scan = make_raw_scan()
+    model.raw_scan_load_controller = MagicMock()
+    model.raw_scan_load_controller.load_folder.return_value = [scan]
+    model.load_raw_scan_from_folder("/some/folder")
+    model.tavi_data.raw_scans[scan.uuid].tavimeta.friendly_name = "renamed_by_user"
+
+    model.raw_scan_load_controller.load_folder.return_value = [make_raw_scan()]
+    model.load_raw_scan_from_folder("/some/folder")
+
+    assert model.tavi_data.raw_scans[scan.uuid].tavimeta.friendly_name == "renamed_by_user"
+
+
+def test_load_raw_scan_from_folder_loads_a_changed_file_as_a_new_scan(model):
+    """A file appended to since the last load hashes differently and must come in alongside the old one."""
+    original = make_raw_scan("scan-001")
+    model.raw_scan_load_controller = MagicMock()
+    model.raw_scan_load_controller.load_folder.return_value = [original]
+    model.load_raw_scan_from_folder("/some/folder")
+
+    grown = make_raw_scan("scan-001-with-more-points")
+    model.raw_scan_load_controller.load_folder.return_value = [grown]
+
+    received = []
+    EventBroker().register(RawScanAppendEvent, received.append)
+    model.load_raw_scan_from_folder("/some/folder")
+
+    assert [e.uuid for e in received] == [grown.uuid]
+    assert set(model.tavi_data.raw_scans) == {original.uuid, grown.uuid}
+
+
+def test_load_raw_scan_from_folder_loads_new_scans_alongside_skipped_ones(model):
+    """A partially-overlapping folder announces only the scans the project does not already hold."""
+    known = make_raw_scan("scan-001")
+    model.raw_scan_load_controller = MagicMock()
+    model.raw_scan_load_controller.load_folder.return_value = [known]
+    model.load_raw_scan_from_folder("/some/folder")
+
+    fresh = make_raw_scan("scan-002")
+    model.raw_scan_load_controller.load_folder.return_value = [known, fresh]
+
+    received = []
+    EventBroker().register(RawScanAppendEvent, received.append)
+    model.load_raw_scan_from_folder("/some/folder")
+
+    assert [e.uuid for e in received] == [fresh.uuid]
+    assert set(model.tavi_data.raw_scans) == {known.uuid, fresh.uuid}
+
+
 # ---------------------------------------------------------------------------
 # sync_on_ready
 # ---------------------------------------------------------------------------
