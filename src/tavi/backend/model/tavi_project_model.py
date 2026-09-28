@@ -1,5 +1,7 @@
 """Tavi Project."""
 
+import logging
+
 from neutrons_standard.config import Resource
 from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
@@ -36,6 +38,8 @@ from tavi.meta.event.type.presenter_event import (
     SavePlotEvent,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @Singleton
 class TaviProjectModel(TaviProjectInterface):
@@ -63,10 +67,16 @@ class TaviProjectModel(TaviProjectInterface):
         return self.tavi_data.raw_scans
 
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
-        """Load a folder containing raw scans."""
+        """Load a folder containing raw scans, skipping any whose file content is already in the project."""
         raw_scans: list[RawScan] = self.raw_scan_load_controller.load_folder(folder)
         events = []
         for scan in raw_scans:
+            # A raw scan's uuid is the md5 of its file text: an identical uuid is an unchanged
+            # file, so the stored copy is kept (preserving edits to its writable tavimeta). A
+            # file grown since the last load hashes differently and comes in as a new scan.
+            if scan.uuid in self.tavi_data.raw_scans:
+                logger.info(f"Skipping already-loaded scan {scan.tavimeta.friendly_name!r} ({scan.uuid.value}).")
+                continue
             self.tavi_data.raw_scans[scan.uuid] = scan
             events.append(
                 RawScanAppendEvent(
