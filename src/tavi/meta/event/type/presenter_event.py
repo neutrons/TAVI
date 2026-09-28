@@ -163,6 +163,19 @@ class FitComponentsVisibilityChangedEvent(Event):
     visible: bool
 
 
+class ShowScanTitleChangedEvent(Event):
+    """
+    Announce that the plotter's "Show Title" checkbox was toggled.
+
+    A display preference, so it names no scan: every series is labelled the same way.
+    ``PlotModel`` owns the answer - ``PlotSeries.scan_name`` is set when a preview plot is
+    built - so it relabels what's currently focused and republishes ``PlotFocusEvent`` rather
+    than the view relabelling artists it doesn't own the names of.
+    """
+
+    show_title: bool
+
+
 class FitComputedEvent(Event):
     """
     Announce a fit result, whether freshly performed or recomputed after being reselected.
