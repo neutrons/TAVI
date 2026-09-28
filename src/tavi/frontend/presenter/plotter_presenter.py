@@ -18,6 +18,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    ShowScanTitleChangedEvent,
 )
 
 
@@ -62,6 +63,7 @@ class PlotterPresenter(AbstractPresenter):
         self._view.hookup_fields_changed_signal(self.handle_fields_changed)
         self._view.hookup_plot_clicked_signal(self.handle_plot_clicked)
         self._view.hookup_plot_combo_changed_signal(self.handle_plot_combo_changed)
+        self._view.hookup_show_title_signal(self.handle_show_title_toggled)
 
     def init_view(self) -> None:
         """Create the 1D plot view."""
@@ -85,6 +87,10 @@ class PlotterPresenter(AbstractPresenter):
         fields = self._view.get_plot_fields()
         target_uuid = None if self._view.is_apply_all_checked() else self._active_series_uuid
         self._model.update_fields(fields, target_uuid=target_uuid)
+
+    def handle_show_title_toggled(self, show_title: bool) -> None:
+        """Announce the "Show Title" toggle - PlotModel owns ``scan_name``, so it decides the label."""
+        self._event_broker.publish(ShowScanTitleChangedEvent(show_title=show_title))
 
     def handle_plot_clicked(self) -> None:
         """
