@@ -5,6 +5,8 @@ from typing import Optional
 
 import numpy as np
 
+from tavi.library.fit import FitResult
+
 
 class VERITAS:
     """Plugins."""
@@ -21,6 +23,14 @@ class VERITAS:
         return str(candidate)
 
     @staticmethod
+    def _summed_amplitude(fit_result: FitResult) -> tuple[float, float]:
+        """Sum a fit's peak amplitudes, combining their errors in quadrature (assuming independent peaks)."""
+        peaks = fit_result.peaks
+        amplitude = sum(peak.values["amplitude"] for peak in peaks)
+        amplitude_err = np.sqrt(sum(peak.errors["amplitude"] ** 2 for peak in peaks))
+        return amplitude, amplitude_err
+
+    @staticmethod
     def export_intensity(
         title: str,
         hkls: list,
@@ -30,6 +40,7 @@ class VERITAS:
         save_to_file: Optional[str],
         wavelength: float = 2.37815,
         overwrite: bool = True,
+        background_results: Optional[list] = [],
     ) -> list:
         """
         Export the intensity data to a .int file for refinement.
@@ -45,10 +56,22 @@ class VERITAS:
             overwrite: If True (default), write to save_to_file, replacing it if it
                 exists. If False, write to a new file with "_<n>" appended before the
                 suffix, where n is the next unused version number on disk.
+            background_results: Fit result of the background run measured for each peak,
+                one per entry in hkls. When given, each peak's amplitude has its
+                background's amplitude subtracted, and the two errors are combined in
+                quadrature. Left empty (default), the amplitudes are exported as fitted.
 
         """
+        if background_results and len(background_results) != len(hkls):
+            raise ValueError(
+                f"background_results must be one fit result per peak ({len(hkls)}), got {len(background_results)}."
+            )
+
+        # zip stops at the shortest input, so an absent background list has to be padded
+        # rather than left empty - otherwise no peak would be exported at all.
+        backgrounds = background_results if background_results else [None] * len(hkls)
         export: list = []
-        for hkl, fit_result, res_4d in zip(hkls, fit_results, res_4ds):
+        for hkl, fit_result, res_4d, background_result in zip(hkls, fit_results, res_4ds, backgrounds):
             mat, r0 = res_4d[0][0], res_4d[0][1]
             # ====================================================
             # resolution calculated here
@@ -63,9 +86,16 @@ class VERITAS:
             # ====================================================
             # Sum the amplitudes of all peak components; combine their
             # amplitude errors in quadrature (assuming independent peaks).
-            peaks = fit_result.peaks
-            amplitude = sum(peak.values["amplitude"] for peak in peaks)
-            amplitude_err = np.sqrt(sum(peak.errors["amplitude"] ** 2 for peak in peaks))
+            amplitude, amplitude_err = VERITAS._summed_amplitude(fit_result)
+
+            # The background is an independent measurement, so subtracting it leaves the
+            # difference less precise than either run: the errors add in quadrature even
+            # though the amplitudes subtract.
+            if background_result is not None:
+                bkg_amplitude, bkg_amplitude_err = VERITAS._summed_amplitude(background_result)
+                amplitude = amplitude - bkg_amplitude
+                amplitude_err = np.sqrt(amplitude_err**2 + bkg_amplitude_err**2)
+
             intensity = amplitude / lorentz_factor
             err = amplitude_err / lorentz_factor
             export.append((hkl, intensity, err))
