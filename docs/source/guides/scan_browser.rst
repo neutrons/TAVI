@@ -50,6 +50,23 @@ drawn with :math:`\sqrt{y}` error bars.
 * a **[min, max] list** -- sets the range directly.
 
 
+Background Runs
+===============
+
+``background`` takes one scan number per entry in ``scan_list``, paired by
+position -- a mismatched length is a ``ValueError`` rather than a silently
+truncated pairing. Each background run is overplotted on its scan's own subplot
+as open grey squares labelled ``bkg <scan number>``, and the measurement itself
+is labelled by its scan number so the two are told apart in the legend.
+
+A background is pulled through exactly the same path as the scan it accompanies:
+the same ``def_x`` / ``def_y`` columns, the same ``normalize`` channel and
+``multiply_factor``, and the same :math:`\Delta q` conversion when the signal is
+plotted against :ref:`del_q <resolution_bar>`. It stops there -- a background run
+is never fitted and never carries a resolution bar, so ``fit_results`` and
+``res_mat_4d`` describe only the scans in ``scan_list``.
+
+
 Fits and Components
 ===================
 
