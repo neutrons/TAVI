@@ -59,8 +59,6 @@ class ORNLSpiceLoader(AbstractLoader):
         meta = self.parse_metadata(file_path)
         tavi_meta = self.parse_tavi_metadata(file_path)
         prov = self.create_provenance(file_path)
-
-        # get ubconf file name
         ub_name = meta.ubconf
         ubconf = self.parse_external_metadata(file_path, ub_name)
         # add it to MetaData's data entry
@@ -237,7 +235,10 @@ class ORNLSpiceLoader(AbstractLoader):
         ubconf_path = self.filestore.join_path(ubconf_path, ub_name)
         try:
             return self._parse_ubconf(ubconf_path=ubconf_path)
-        except FileNotFoundError:
+        # A named-but-absent UBConf file is routine (the folder is often not copied alongside
+        # the datafiles); FileStore reports it as RuntimeError, not FileNotFoundError.
+        except (FileNotFoundError, RuntimeError):
+            logger.warning("No readable UBConf file at %s; loading %s without UB metadata.", ubconf_path, file_path)
             return {}
 
     def _parse_ubconf(self, ubconf_path: str) -> dict[str, Any]:
