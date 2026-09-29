@@ -11,6 +11,39 @@ from tavi.library.fit import FitPackage
 from tavi.library.fit.fit import ModelName
 
 
+def _scan_xy(
+    experiment: Experiment,
+    num: int,
+    def_x: str,
+    def_y: str,
+    normalize: Optional[str],
+    multiply_factor: float,
+    use_delta_q: bool,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Pull one scan's x, y and error, in del_q or the raw motor, normalized and scaled as requested."""
+    scan = experiment.get_data_from_scan_number(dict(scan_num=num))
+    x = np.asarray(experiment.get_delta_q(dict(scan_num=num))) if use_delta_q else np.asarray(scan.data.data[def_x])
+    y = np.asarray(scan.data.data[def_y], dtype=float)
+    y_err = np.sqrt(np.abs(y))
+
+    # Normalize element-wise by the requested channel, then apply the overall
+    # scale. Errors are propagated through both so the bars stay consistent with
+    # the plotted (and fitted) y.
+    if normalize:
+        # Columns whose names start with a digit are stored with a leading
+        # underscore, same as def_x/def_y in browse_scans.
+        norm_key = "_" + normalize if normalize[0].isdigit() else normalize
+        if norm_key not in scan.data.data:
+            raise KeyError(f"Normalization column '{normalize}' not found in scan {num}.")
+        norm = np.asarray(scan.data.data[norm_key], dtype=float)
+        y = y / norm
+        y_err = y_err / norm
+    if multiply_factor != 1.0:
+        y = y * multiply_factor
+        y_err = y_err * multiply_factor
+    return x, y, y_err
+
+
 def browse_scans(
     experiment: Experiment,
     scan_list: list[int],
@@ -27,6 +60,7 @@ def browse_scans(
     multiply_factor: float = 1.0,
     coh_bar: bool = True,
     save_figure: Optional[str] = None,
+    background: list[int] = [],
 ) -> None:
     """
     Plot a grid of scans, optionally with Gaussian fits and resolution bars.
@@ -66,6 +100,11 @@ def browse_scans(
             saved under that name instead of being shown; the format follows the
             suffix, defaulting to .png when the name has none. The figure is
             displayed and not saved when None (default).
+        background: Scan numbers of background runs, one per entry in scan_list
+            (same length, paired by position). Each is overplotted on its scan's
+            subplot, normalized and scaled exactly like the scan it accompanies
+            and converted to del_q alongside it. Background runs are never fitted
+            and never contribute to a resolution bar.
 
     """
     from tavi.library.fit import Fit
@@ -75,6 +114,9 @@ def browse_scans(
         raise ValueError("resolution_bars requires show_fits=True (the bar is placed using the fit).")
 
     n = len(scan_list)
+    if background and len(background) != n:
+        raise ValueError(f"background must be one scan number per entry in scan_list ({n}), got {len(background)}.")
+
     ncols = min(3, n)
     nrows = int(np.ceil(n / ncols))
     fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3 * nrows), squeeze=False)
@@ -84,7 +126,8 @@ def browse_scans(
     fit_results = []
     hkls = []
     bars, res_mat_4d = resolution_bars if show_resolution_bar else ([0] * n, [0] * n)
-    for ax, num, coh in zip(axes_flat, scan_list, bars):
+    bkg_list = background if background else [None] * n
+    for ax, num, coh, bkg_num in zip(axes_flat, scan_list, bars, bkg_list):
         scan = experiment.get_data_from_scan_number(dict(scan_num=num))
         if not def_x:
             def_x = scan.metadata.def_x
@@ -98,32 +141,20 @@ def browse_scans(
 
         # With a resolution bar, plot against del_q (the bar width is in q);
         # otherwise plot against the raw default-x motor.
-        if show_resolution_bar and def_x in ["s1", "s2", "omega"]:
-            x = np.asarray(experiment.get_delta_q(dict(scan_num=num)))
-            xlabel = f"del_q({def_x})"
-        else:
-            x = np.asarray(scan.data.data[def_x])
-            xlabel = def_x
-        y = np.asarray(scan.data.data[def_y], dtype=float)
-        y_err = np.sqrt(np.abs(y))
+        use_delta_q = show_resolution_bar and def_x in ["s1", "s2", "omega"]
+        xlabel = f"del_q({def_x})" if use_delta_q else def_x
+        x, y, y_err = _scan_xy(experiment, num, def_x, def_y, normalize, multiply_factor, use_delta_q)
 
-        # Normalize element-wise by the requested channel, then apply the overall
-        # scale. Errors are propagated through both so the bars stay consistent with
-        # the plotted (and fitted) y.
-        if normalize:
-            # Columns whose names start with a digit are stored with a leading
-            # underscore, same as def_x/def_y above.
-            norm_key = "_" + normalize if normalize[0].isdigit() else normalize
-            if norm_key not in scan.data.data:
-                raise KeyError(f"Normalization column '{normalize}' not found in scan {num}.")
-            norm = np.asarray(scan.data.data[norm_key], dtype=float)
-            y = y / norm
-            y_err = y_err / norm
-        if multiply_factor != 1.0:
-            y = y * multiply_factor
-            y_err = y_err * multiply_factor
+        ax.errorbar(x, y, yerr=y_err, fmt="o", label=f"{num}" if bkg_num is not None else None)
 
-        ax.errorbar(x, y, yerr=y_err, fmt="o")
+        # The background run goes through exactly the same treatment as the scan it
+        # accompanies - same columns, normalization and del_q conversion - but is only
+        # drawn: it is never fitted, so it also never carries a resolution bar.
+        if bkg_num is not None:
+            x_bkg, y_bkg, y_bkg_err = _scan_xy(
+                experiment, bkg_num, def_x, def_y, normalize, multiply_factor, use_delta_q
+            )
+            ax.errorbar(x_bkg, y_bkg, yerr=y_bkg_err, fmt="s", mfc="none", color="gray", label=f"bkg {bkg_num}")
 
         if show_fits:
             fit_result = fit.fit(x, y, model_dict)
@@ -183,6 +214,8 @@ def browse_scans(
                         lw=2,
                         label=reso_label if idx == 0 else None,
                     )
+
+        if show_fits or bkg_num is not None:
             ax.legend(fontsize=8, loc="upper right")
 
         # if we can't parse title for nominal hkl position then we use a Gaussian to try to find the center of the peak.
