@@ -1,4 +1,7 @@
 # TAVI, Triple-Axis data VIsualization toolkit
+TAVI can be installed locally as a standard conda package and has been deployed on ORNL's analysis cluster.
+
+<img width="2562" height="1193" alt="image" src="https://github.com/user-attachments/assets/143b0ca6-9cb9-45dc-8112-9b4d6e542720" />
 
 ## Installation
 
