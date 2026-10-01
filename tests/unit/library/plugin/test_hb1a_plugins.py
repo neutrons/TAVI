@@ -254,3 +254,111 @@ def test_export_intensity_incom_rejects_unknown_axis():
 
     with pytest.raises(ValueError, match="axis not defined"):
         VERITAS.export_intensity_incom("title", plus, minus, "a3", None)
+
+
+def make_background_only_fit_result() -> FitResult:
+    """Fit result holding no peak component, as a Linear-only background fit produces."""
+    component = ComponentResult(prefix="l_", values={"slope": 1.0, "intercept": 100.0}, errors={})
+    return FitResult(
+        components={"l_": component},
+        reduced_chi_squared=1.0,
+        best_fit=np.zeros(1),
+        raw=None,
+        fit_function=None,
+    )
+
+
+def test_summed_amplitude_zeroes_a_fit_without_error_bars():
+    """A fit lmfit could not put error bars on reads as zero rather than raising."""
+    assert VERITAS._summed_amplitude(make_fit_result(10.0, None)) == (0.0, 0.0)
+
+
+def test_summed_amplitude_zeroes_a_fit_without_a_peak_component():
+    """A background-only fit has no amplitude to sum."""
+    assert VERITAS._summed_amplitude(make_background_only_fit_result()) == (0.0, 0.0)
+
+
+def test_export_intensity_exports_an_unmeasurable_peak_as_zero():
+    """A peak whose fit has no error bars is still exported, carrying no intensity."""
+    export = VERITAS.export_intensity(
+        "title", [(1.0, 0.0, 0.0)], [make_fit_result(10.0, None)], [make_res_4d()], "s1", None
+    )
+
+    assert export[0][1] == 0.0
+    assert export[0][2] == 0.0
+
+
+def test_export_intensity_zeroes_an_unmeasurable_background():
+    """A background whose fit has no error bars subtracts nothing and adds no uncertainty."""
+    hkls, res_4ds = [(1.0, 0.0, 0.0)], [make_res_4d()]
+    with_background = VERITAS.export_intensity(
+        "title",
+        hkls,
+        [make_fit_result(10.0, 1.0)],
+        res_4ds,
+        "s1",
+        None,
+        background_results=[make_fit_result(3.0, None)],
+    )
+    without_background = VERITAS.export_intensity("title", hkls, [make_fit_result(10.0, 1.0)], res_4ds, "s1", None)
+
+    assert with_background == without_background
+
+
+def test_export_intensity_incom_exports_an_unmeasurable_satellite_as_zero():
+    """A satellite the fit could not measure is exported as zero rather than raising."""
+    plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13))
+    plus[1] = [make_fit_result(10.0, None)]
+    minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, 0.13))
+
+    export = VERITAS.export_intensity_incom("title", plus, minus, "s1", None)
+
+    assert export[0][1] == 0.0
+    assert export[0][2] == 0.0
+
+
+def test_remove_peak_zeroes_the_listed_scans():
+    """A scan in no_peak has its peak amplitude and error zeroed."""
+    fit_results = [make_fit_result(10.0, 1.0), make_fit_result(20.0, 2.0)]
+
+    removed = VERITAS.remove_peak([101, 102], fit_results, [102])
+
+    assert removed[0]["p1_"].values["amplitude"] == 10.0
+    assert removed[1]["p1_"].values["amplitude"] == 0.0
+    assert removed[1]["p1_"].errors["amplitude"] == 0.0
+
+
+def test_remove_peak_returns_the_same_list_it_was_given():
+    """The fit results are modified in place, so a caller holding the list sees the change."""
+    fit_results = [make_fit_result(10.0, 1.0)]
+
+    removed = VERITAS.remove_peak([101], fit_results, [101])
+
+    assert removed is fit_results
+    assert fit_results[0]["p1_"].values["amplitude"] == 0.0
+
+
+def test_remove_peak_warns_about_a_scan_not_in_scan_list():
+    """A stale scan number is warned about, leaving the scans that do match still zeroed."""
+    fit_results = [make_fit_result(10.0, 1.0)]
+
+    with pytest.warns(UserWarning, match=r"\[999\]"):
+        VERITAS.remove_peak([101], fit_results, [101, 999])
+
+    assert fit_results[0]["p1_"].values["amplitude"] == 0.0
+
+
+def test_remove_peak_rejects_misaligned_inputs():
+    """fit_results is positional with scan_list, so a length mismatch cannot be reconciled."""
+    with pytest.raises(ValueError, match="same length"):
+        VERITAS.remove_peak([101, 102], [make_fit_result(10.0, 1.0)], [101])
+
+
+def test_remove_peak_exports_a_zeroed_scan_as_zero_intensity():
+    """A removed peak reaches the export as a zero intensity carrying no uncertainty."""
+    fit_results = VERITAS.remove_peak([101], [make_fit_result(10.0, 1.0)], [101])
+
+    export = VERITAS.export_intensity("title", [(1.0, 0.0, 0.0)], fit_results, [make_res_4d()], "s1", None)
+
+    assert export[0][1] == 0.0
+    assert export[0][2] == 0.0
