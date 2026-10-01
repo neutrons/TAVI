@@ -1,5 +1,6 @@
 """Hb1a specific plugins to reduce diffraction data."""
 
+import warnings
 from pathlib import Path
 from typing import Optional
 
@@ -24,11 +25,108 @@ class VERITAS:
 
     @staticmethod
     def _summed_amplitude(fit_result: FitResult) -> tuple[float, float]:
-        """Sum a fit's peak amplitudes, combining their errors in quadrature (assuming independent peaks)."""
+        """
+        Sum a fit's peak amplitudes, combining their errors in quadrature (assuming independent peaks).
+
+        A fit lmfit could not measure contributes (0, 0): it drops every stderr when it cannot
+        invert the Hessian, and an unmeasured reflection is still exported, carrying no weight.
+        """
         peaks = fit_result.peaks
+        if not peaks:
+            return 0.0, 0.0
+        if any(peak.values.get("amplitude") is None or peak.errors.get("amplitude") is None for peak in peaks):
+            return 0.0, 0.0
         amplitude = sum(peak.values["amplitude"] for peak in peaks)
         amplitude_err = np.sqrt(sum(peak.errors["amplitude"] ** 2 for peak in peaks))
         return amplitude, amplitude_err
+
+    @staticmethod
+    def remove_peak(scan_list: list[int], fit_results: list, no_peak: list[int]) -> list:
+        """
+        Zero the peak amplitude and error of each no_peak scan, modifying and returning fit_results.
+
+        scan_list and fit_results are positional, as browse returns them. A scan measured
+        where no peak turned out to be stays in the export carrying zero intensity, since a
+        refinement cannot otherwise tell it from one that was never measured. A no_peak scan
+        missing from scan_list is warned about rather than raised on.
+        """
+        if len(scan_list) != len(fit_results):
+            raise ValueError(
+                f"scan_list and fit_results must be the same length, got {len(scan_list)} and {len(fit_results)}."
+            )
+
+        missing = [scan for scan in no_peak if scan not in scan_list]
+        if missing:
+            warnings.warn(
+                f"no_peak scans {missing} are not in scan_list, so they have no fit result to zero.",
+                stacklevel=2,
+            )
+
+        zeroed = set(no_peak)
+        for scan, fit_result in zip(scan_list, fit_results):
+            if scan not in zeroed:
+                continue
+            # Only the peak components are zeroed; a background component carries no
+            # amplitude, and keeping it leaves the fit still plottable against its data.
+            for component in fit_result.peaks:
+                component.values["amplitude"] = 0.0
+                component.errors["amplitude"] = 0.0
+        return fit_results
+
+    @staticmethod
+    def _lorentz_factor(res_4d: list, ax: str) -> float:
+        """Resolution-derived Lorentz factor of one peak, for a scan along ax."""
+        mat, r0 = res_4d[0][0], res_4d[0][1]
+        det = np.abs(mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0])
+        if ax == "s1":
+            # use mat[1, 1] for transverse scans, R0 factor is optional
+            return r0 * np.sqrt(det) / np.sqrt(mat[1, 1]) / np.sqrt(2 * np.pi)
+        if ax == "th2th":
+            return r0 * np.sqrt(det) / np.sqrt(mat[0, 0]) / np.sqrt(2 * np.pi)
+        raise ValueError("axis not defined. Only supporting export s1 and the2th scans currently.")
+
+    @staticmethod
+    def _write_int_file(
+        save_to_file: str,
+        overwrite: bool,
+        title: str,
+        wavelength: float,
+        export: list,
+        codes: Optional[list] = None,
+        propagation_vectors: Optional[list] = None,
+        code_before_intensity: bool = False,
+    ) -> None:
+        """
+        Write (hkl, intensity, error) entries to save_to_file in the .int format used for refinement.
+
+        codes fills each line's i4 field, telling the refinement which reflection a line
+        belongs to when several share an hkl (default 1). code_before_intensity moves that
+        field between the hkl and the intensity, carrying the declared format line with it so
+        the header cannot disagree with the lines. propagation_vectors declares the k vectors
+        those codes index, after the wavelength line; None omits the block.
+        """
+        target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
+        codes = codes if codes is not None else [1] * len(export)
+        with open(target, "w") as f:
+            f.write(f"{title}\n")
+            f.write("(3i5,i4,2f8.2,3f8.2)\n" if code_before_intensity else "(3i5,2f8.2,i4,3f8.2)\n")
+            f.write(f"{wavelength}  0   0\n")
+
+            if propagation_vectors is not None:
+                f.write(f"{len(propagation_vectors)}\n")
+                for vector in propagation_vectors:
+                    # .10g keeps an incommensurate component exact enough to refine
+                    # against while still writing a whole number as "1" rather than "1.0".
+                    # Negating a k vector turns its zero components into -0.0, so they are
+                    # folded back to 0.0 rather than written out as "-0".
+                    f.write(" ".join(f"{component if component else 0.0:.10g}" for component in vector) + "\n")
+
+            for ((h, k, l), intensity, err), code in zip(export, codes):
+                hkl_fields = f"{int(round(h)):5d}{int(round(k)):5d}{int(round(l)):5d}"
+                if code_before_intensity:
+                    f.write(f"{hkl_fields}{int(code):4d}{intensity:8.2f}{err:8.2f}\n")
+                else:
+                    f.write(f"{hkl_fields}{intensity:8.2f}{err:8.2f}{int(code):4d}\n")
 
     @staticmethod
     def export_intensity(
@@ -53,13 +151,11 @@ class VERITAS:
             ax: Scan axis; "s1" for transverse scans.
             save_to_file: Output file path. No file is written if None.
             wavelength: Neutron wavelength written to the file header.
-            overwrite: If True (default), write to save_to_file, replacing it if it
-                exists. If False, write to a new file with "_<n>" appended before the
-                suffix, where n is the next unused version number on disk.
-            background_results: Fit result of the background run measured for each peak,
-                one per entry in hkls. When given, each peak's amplitude has its
-                background's amplitude subtracted, and the two errors are combined in
-                quadrature. Left empty (default), the amplitudes are exported as fitted.
+            overwrite: True (default) replaces save_to_file; False writes "_<n>" before the
+                suffix, n being the next unused version on disk.
+            background_results: Background run per peak, one per entry in hkls. Each peak's
+                amplitude has its background subtracted and the errors added in quadrature.
+                Left empty (default), amplitudes are exported as fitted.
 
         """
         if background_results and len(background_results) != len(hkls):
@@ -72,18 +168,7 @@ class VERITAS:
         backgrounds = background_results if background_results else [None] * len(hkls)
         export: list = []
         for hkl, fit_result, res_4d, background_result in zip(hkls, fit_results, res_4ds, backgrounds):
-            mat, r0 = res_4d[0][0], res_4d[0][1]
-            # ====================================================
-            # resolution calculated here
-            det = np.abs(mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0])
-            if ax == "s1":
-                # use mat[1, 1] for transverse scans, R0 factor is optional
-                lorentz_factor = r0 * np.sqrt(det) / np.sqrt(mat[1, 1]) / np.sqrt(2 * np.pi)
-            elif ax == "th2th":
-                lorentz_factor = r0 * np.sqrt(det) / np.sqrt(mat[0, 0]) / np.sqrt(2 * np.pi)
-            else:
-                raise ValueError("axis not defined. Only supporting export s1 and the2th scans currently.")
-            # ====================================================
+            lorentz_factor = VERITAS._lorentz_factor(res_4d, ax)
             # Sum the amplitudes of all peak components; combine their
             # amplitude errors in quadrature (assuming independent peaks).
             amplitude, amplitude_err = VERITAS._summed_amplitude(fit_result)
@@ -100,13 +185,118 @@ class VERITAS:
             err = amplitude_err / lorentz_factor
             export.append((hkl, intensity, err))
         if save_to_file:
-            target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
-            with open(target, "w") as f:
-                f.write(f"{title}\n")
-                f.write("(3i5,2f8.2,i4,3f8.2)\n")
-                f.write(f"{wavelength}  0   0\n")
+            VERITAS._write_int_file(save_to_file, overwrite, title, wavelength, export)
+        return export
 
-                for (h, k, l), intensity, err in export:
-                    f.write(f"{int(round(h)):5d}{int(round(k)):5d}{int(round(l)):5d}{intensity:8.2f}{err:8.2f}   1\n")
-                f.close()
+    @staticmethod
+    def _satellite_entry(hkl: list, fit_result: FitResult, res_4d: list, shift: np.ndarray, ax: str) -> tuple:
+        """Reduce one satellite peak to its (parent hkl, intensity, error) export entry."""
+        lorentz_factor = VERITAS._lorentz_factor(res_4d, ax)
+        # Sum the amplitudes of all peak components; combine their
+        # amplitude errors in quadrature (assuming independent peaks).
+        amplitude, amplitude_err = VERITAS._summed_amplitude(fit_result)
+        return (
+            np.asarray(hkl, dtype=float) + shift,
+            amplitude / lorentz_factor,
+            amplitude_err / lorentz_factor,
+        )
+
+    @staticmethod
+    def _propagation_vectors(coded_vectors: tuple) -> list:
+        """
+        Order the (code, k vector) pairs into the k1, k2, ... list the file header declares.
+
+        A line indexes its k vector by the absolute value of its code, a negative code meaning
+        H - k, so branches sharing a vector number must resolve to the same k.
+        """
+        vectors: dict[int, np.ndarray] = {}
+        for code, vector in coded_vectors:
+            if code == 0:
+                raise ValueError("satellite codes index propagation vectors from 1, so 0 is not a valid code.")
+            resolved = vector if code > 0 else -vector
+            existing = vectors.setdefault(abs(code), resolved)
+            if not np.allclose(existing, resolved):
+                raise ValueError(
+                    f"propagation vector {abs(code)} is given two different values, {existing} and {resolved}. "
+                    f"Use distinct satellite codes when the branches do not share a wavevector."
+                )
+        if sorted(vectors) != list(range(1, len(vectors) + 1)):
+            raise ValueError(f"satellite codes must index propagation vectors 1..n, got {sorted(vectors)}.")
+        return [vectors[index] for index in sorted(vectors)]
+
+    @staticmethod
+    def export_intensity_incom(
+        title: str,
+        plus: list,
+        minus: list,
+        ax: str,
+        save_to_file: Optional[str],
+        wavelength: float = 2.37815,
+        overwrite: bool = True,
+        satellite_codes: tuple[int, int] = (1, 2),
+    ) -> list:
+        """
+        Export the satellite intensities of an incommensurate structure to a .int file for refinement.
+
+        Each satellite is written at its parent nuclear reflection, the +q branch shifted by
+        ``hkl - wavevector`` and the -q branch by ``hkl + wavevector``, so the returned list
+        alternates the two. The branches need not be the same length - where one runs out, the
+        remainder of the longer is appended on its own. Both branches land on the same hkl, so
+        only the satellite code in each line's i4 field tells them apart; the k vectors those
+        codes index are declared in the header.
+
+        Args:
+            title: Title line written as the first line of the file header.
+            plus: The +q branch, as ``[hkls, fit_results, res_4ds, wavevector]`` - one (h, k, l),
+                fit result and (resolution matrix, r0) per peak, plus the branch's wavevector.
+            minus: The -q branch, laid out as plus. It need not hold the same number of peaks.
+            ax: Scan axis; "s1" for transverse scans.
+            save_to_file: Output file path. No file is written if None.
+            wavelength: Neutron wavelength written to the file header.
+            overwrite: True (default) replaces save_to_file; False writes "_<n>" before the
+                suffix, n being the next unused version on disk.
+            satellite_codes: The (plus, minus) i4 values telling the branches apart. (1, 2)
+                gives each its own propagation vector; (1, -1) makes the second a signed index
+                into one vector, requiring both branches to share a wavevector.
+
+        """
+        hkls_plus, fit_results_plus, res_4ds_plus, wavevector_plus = plus
+        hkls_minus, fit_results_minus, res_4ds_minus, wavevector_minus = minus
+
+        if not (len(hkls_plus) == len(fit_results_plus) == len(res_4ds_plus)):
+            raise ValueError("plus must hold one fit result and one resolution per hkl.")
+        if not (len(hkls_minus) == len(fit_results_minus) == len(res_4ds_minus)):
+            raise ValueError("minus must hold one fit result and one resolution per hkl.")
+
+        code_plus, code_minus = satellite_codes
+        # A branch's satellites sit at H + k, so shifting them back onto H shifts by -k.
+        k_plus = np.asarray(wavevector_plus, dtype=float)
+        k_minus = -np.asarray(wavevector_minus, dtype=float)
+        branches = (
+            (hkls_plus, fit_results_plus, res_4ds_plus, -k_plus, code_plus),
+            (hkls_minus, fit_results_minus, res_4ds_minus, -k_minus, code_minus),
+        )
+        propagation_vectors = VERITAS._propagation_vectors(((code_plus, k_plus), (code_minus, k_minus)))
+
+        export: list = []
+        codes: list = []
+        for index in range(max(len(hkls_plus), len(hkls_minus))):
+            for hkls, fit_results, res_4ds, shift, code in branches:
+                # A branch that has run out simply contributes nothing further; the other
+                # one keeps going rather than its remaining satellites being dropped.
+                if index >= len(hkls):
+                    continue
+                export.append(VERITAS._satellite_entry(hkls[index], fit_results[index], res_4ds[index], shift, ax))
+                codes.append(code)
+        if save_to_file:
+            VERITAS._write_int_file(
+                save_to_file,
+                overwrite,
+                title,
+                wavelength,
+                export,
+                codes,
+                propagation_vectors,
+                code_before_intensity=True,
+            )
         return export
