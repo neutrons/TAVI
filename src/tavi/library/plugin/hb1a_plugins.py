@@ -137,12 +137,19 @@ class VERITAS:
             # Sum the amplitudes of all peak components; combine their
             # amplitude errors in quadrature (assuming independent peaks).
             amplitude, amplitude_err = VERITAS._summed_amplitude(fit_result)
+            if amplitude is None or amplitude_err is None:
+                amplitude = 0
+                amplitude_err = 0
 
             # The background is an independent measurement, so subtracting it leaves the
             # difference less precise than either run: the errors add in quadrature even
             # though the amplitudes subtract.
             if background_result is not None:
                 bkg_amplitude, bkg_amplitude_err = VERITAS._summed_amplitude(background_result)
+                if bkg_amplitude is None or bkg_amplitude_err is None:
+                    bkg_amplitude = 0
+                    bkg_amplitude_err = 0
+
                 amplitude = amplitude - bkg_amplitude
                 amplitude_err = np.sqrt(amplitude_err**2 + bkg_amplitude_err**2)
 
