@@ -28,11 +28,6 @@ def _scan_xy(
         if use_delta_q
         else np.asarray(scan.data.data[def_x])
     )
-    x = (
-        np.asarray(experiment.get_delta_q(dict(scan_num=num), q_origin))
-        if use_delta_q
-        else np.asarray(scan.data.data[def_x])
-    )
     y = np.asarray(scan.data.data[def_y], dtype=float)
     y_err = np.sqrt(np.abs(y))
 
