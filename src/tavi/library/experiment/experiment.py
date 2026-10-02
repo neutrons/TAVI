@@ -5,7 +5,7 @@ Handles experimental data intake, extracting peak center, width etc.
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 
@@ -86,8 +86,8 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
-    def get_delta_q(self, scan_identifier: dict, origin=None) -> np.ndarray:
-        """Get delta q of a scan."""
+    def get_delta_q(self, scan_identifier: dict, origin: Optional[float] = None) -> np.ndarray:
+        """Get delta q of a scan, measured from origin rather than from the scan's own centre when given."""
         match self.loader:
             case ORNLSpiceLoader():
                 scan_num = scan_identifier["scan_num"]
