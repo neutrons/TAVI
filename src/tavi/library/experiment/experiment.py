@@ -86,7 +86,7 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
-    def get_delta_q(self, scan_identifier: dict, origin = None) -> np.ndarray:
+    def get_delta_q(self, scan_identifier: dict, origin=None) -> np.ndarray:
         """Get delta q of a scan."""
         match self.loader:
             case ORNLSpiceLoader():

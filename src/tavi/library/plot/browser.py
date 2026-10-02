@@ -19,11 +19,15 @@ def _scan_xy(
     normalize: Optional[str],
     multiply_factor: float,
     use_delta_q: bool,
-    q_origin = None
+    q_origin=None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pull one scan's x, y and error, in del_q or the raw motor, normalized and scaled as requested."""
     scan = experiment.get_data_from_scan_number(dict(scan_num=num))
-    x = np.asarray(experiment.get_delta_q(dict(scan_num=num), q_origin)) if use_delta_q else np.asarray(scan.data.data[def_x])
+    x = (
+        np.asarray(experiment.get_delta_q(dict(scan_num=num), q_origin))
+        if use_delta_q
+        else np.asarray(scan.data.data[def_x])
+    )
     y = np.asarray(scan.data.data[def_y], dtype=float)
     y_err = np.sqrt(np.abs(y))
 

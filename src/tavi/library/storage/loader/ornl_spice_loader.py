@@ -439,7 +439,7 @@ class ORNLSpiceLoader(AbstractLoader):
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
-        origin:  Optional[float] = None,
+        origin: Optional[float] = None,
     ) -> np.ndarray:
         """Get delta q of a scan."""
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
@@ -498,7 +498,7 @@ class ORNLSpiceLoader(AbstractLoader):
             if origin:
                 return np.radians(angles - origin) * q_abs
             return np.radians(angles - angles[mid_idx]) * q_abs
-        
+
     def get_delta_q_origin(
         self,
         tavi_data: TaviData,
