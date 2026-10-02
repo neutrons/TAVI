@@ -19,10 +19,15 @@ def _scan_xy(
     normalize: Optional[str],
     multiply_factor: float,
     use_delta_q: bool,
+    q_origin: Optional[float] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pull one scan's x, y and error, in del_q or the raw motor, normalized and scaled as requested."""
     scan = experiment.get_data_from_scan_number(dict(scan_num=num))
-    x = np.asarray(experiment.get_delta_q(dict(scan_num=num))) if use_delta_q else np.asarray(scan.data.data[def_x])
+    x = (
+        np.asarray(experiment.get_delta_q(dict(scan_num=num), q_origin))
+        if use_delta_q
+        else np.asarray(scan.data.data[def_x])
+    )
     y = np.asarray(scan.data.data[def_y], dtype=float)
     y_err = np.sqrt(np.abs(y))
 
@@ -143,16 +148,16 @@ def browse_scans(
         # otherwise plot against the raw default-x motor.
         use_delta_q = show_resolution_bar and def_x in ["s1", "s2", "omega"]
         xlabel = f"del_q({def_x})" if use_delta_q else def_x
-        x, y, y_err = _scan_xy(experiment, num, def_x, def_y, normalize, multiply_factor, use_delta_q)
-
+        x, y, y_err = _scan_xy(experiment, num, def_x, def_y, normalize, multiply_factor, use_delta_q, q_origin=None)
         ax.errorbar(x, y, yerr=y_err, fmt="o", label=f"{num}" if bkg_num is not None else None)
 
         # The background run goes through exactly the same treatment as the scan it
         # accompanies - same columns, normalization and del_q conversion - but is only
         # drawn: it is never fitted, so it also never carries a resolution bar.
         if bkg_num is not None:
+            q_origin = experiment.get_delta_q_origin(dict(scan_num=num)) if use_delta_q else None
             x_bkg, y_bkg, y_bkg_err = _scan_xy(
-                experiment, bkg_num, def_x, def_y, normalize, multiply_factor, use_delta_q
+                experiment, bkg_num, def_x, def_y, normalize, multiply_factor, use_delta_q, q_origin=q_origin
             )
             ax.errorbar(x_bkg, y_bkg, yerr=y_bkg_err, fmt="s", mfc="none", color="gray", label=f"bkg {bkg_num}")
 

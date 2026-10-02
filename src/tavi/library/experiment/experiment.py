@@ -5,7 +5,7 @@ Handles experimental data intake, extracting peak center, width etc.
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 
@@ -86,14 +86,25 @@ class Experiment:
             case _:
                 raise ValueError("Loader not implemented.")
 
-    def get_delta_q(self, scan_identifier: dict) -> np.ndarray:
-        """Get delta q of a scan."""
+    def get_delta_q(self, scan_identifier: dict, origin: Optional[float] = None) -> np.ndarray:
+        """Get delta q of a scan, measured from origin rather than from the scan's own centre when given."""
         match self.loader:
             case ORNLSpiceLoader():
                 scan_num = scan_identifier["scan_num"]
                 IPTS = scan_identifier.get("IPTS", None)
                 exp_num = scan_identifier.get("exp_num", None)
-                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num)
+                return self.loader.get_delta_q(self.tavi_data, scan_num, IPTS, exp_num, origin)
+            case _:
+                raise ValueError("Loader not implemented.")
+
+    def get_delta_q_origin(self, scan_identifier: dict) -> float:
+        """Get the origin get_delta_q measures a scan from, so another scan can share the same zero."""
+        match self.loader:
+            case ORNLSpiceLoader():
+                scan_num = scan_identifier["scan_num"]
+                IPTS = scan_identifier.get("IPTS", None)
+                exp_num = scan_identifier.get("exp_num", None)
+                return self.loader.get_delta_q_origin(self.tavi_data, scan_num, IPTS, exp_num)
             case _:
                 raise ValueError("Loader not implemented.")
 
