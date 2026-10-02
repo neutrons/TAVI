@@ -93,6 +93,26 @@ Method Notes
 * Supports INI-like UB files and legacy XML UB content.
 * Returns a plain dictionary that can be merged into scan metadata.
 
+``get_delta_q`` / ``get_delta_q_origin``
+----------------------------------------
+
+* ``get_delta_q`` returns the scan's abscissa as an offset in :math:`Q`. A
+  changing :math:`q` marks a th2th scan and the offset is :math:`q` itself; a
+  constant :math:`q` marks a rocking scan and the angular offset (``s1``, else
+  ``omega``) is converted to a :math:`Q` offset with the mean :math:`|Q|`.
+* The origin is the **middle sample** of the scan, ``axis[(n - 1) // 2]``. An
+  even number of points has no true middle, so the lower of the two is taken.
+* ``origin`` overrides that default, so a scan can be put on *another* scan's
+  axis. This is how :doc:`scan_browser` overplots a background: it reads the
+  origin off the scan with ``get_delta_q_origin`` and hands it to the
+  background's ``get_delta_q``, which would otherwise re-zero itself on its own
+  middle sample and be drawn against a shifted axis.
+* ``get_delta_q_origin`` returns exactly the origin ``get_delta_q`` would pick
+  for that scan, so passing it straight back changes nothing. Its **units
+  follow the branch**: a :math:`|Q|` for a th2th scan, an angle in degrees for
+  a rocking scan. An origin is therefore only meaningful between two scans of
+  the same kind -- which is what a scan and its background are.
+
 ``get_data_point_closest_to_center``
 ------------------------------------
 

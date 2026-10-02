@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
+from tavi.library.data.scan import ScanData
 from tavi.library.storage.local_file_store import LocalFileStore
 from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 
@@ -150,3 +151,98 @@ def test_get_hkl_from_title_rejects_compact_indices() -> None:
 
     with pytest.raises(ValueError, match="Expected 3 values"):
         loader.get_hkl(MagicMock(), scan_num=1)
+
+
+def _loader_with_columns(**columns: list[float]) -> ORNLSpiceLoader:
+    loader = ORNLSpiceLoader(LocalFileStore())
+    scan = MagicMock()
+    scan.data = ScanData(data=dict(columns))
+    loader.get_data_from_scan_number = MagicMock(return_value=scan)
+    return loader
+
+
+def test_get_delta_q_of_th2th_scan_is_zero_at_the_middle_sample() -> None:
+    """A changing q marks a th2th scan, whose abscissa is q itself zeroed on the middle sample."""
+    loader = _loader_with_columns(q=[1.0, 1.1, 1.2, 1.3])
+
+    delta_q = loader.get_delta_q(MagicMock(), scan_num=1)
+
+    # An even number of points has no true middle, so (len - 1) // 2 takes the lower of the two.
+    np.testing.assert_allclose(delta_q, [-0.1, 0.0, 0.1, 0.2], atol=1e-12)
+
+
+def test_get_delta_q_of_s1_scan_converts_the_angular_offset_with_mean_q() -> None:
+    """A constant q marks a rocking scan, whose s1 offset is converted to a q offset with the mean |q|."""
+    angles = [29.0, 29.5, 30.0, 30.5]
+    loader = _loader_with_columns(q=[2.0] * 4, s1=angles)
+
+    delta_q = loader.get_delta_q(MagicMock(), scan_num=1)
+
+    np.testing.assert_allclose(delta_q, np.radians(np.asarray(angles) - 29.5) * 2.0, atol=1e-12)
+
+
+def test_get_delta_q_of_rocking_scan_falls_back_to_omega() -> None:
+    """Scans that do not carry s1 record the sample rotation as omega instead."""
+    angles = [29.0, 29.5, 30.0, 30.5]
+    loader = _loader_with_columns(q=[2.0] * 4, omega=angles)
+
+    delta_q = loader.get_delta_q(MagicMock(), scan_num=1)
+
+    np.testing.assert_allclose(delta_q, np.radians(np.asarray(angles) - 29.5) * 2.0, atol=1e-12)
+
+
+def test_get_delta_q_origin_of_th2th_scan_is_the_q_of_the_middle_sample() -> None:
+    """On the th2th branch the origin is a |q|, the same units that branch's abscissa is in."""
+    loader = _loader_with_columns(q=[1.0, 1.1, 1.2, 1.3])
+
+    assert loader.get_delta_q_origin(MagicMock(), scan_num=1) == pytest.approx(1.1)
+
+
+def test_get_delta_q_origin_of_s1_scan_is_the_angle_of_the_middle_sample() -> None:
+    """On the rocking branch the origin is an angle in degrees, not a |q|."""
+    loader = _loader_with_columns(q=[2.0] * 4, s1=[29.0, 29.5, 30.0, 30.5])
+
+    assert loader.get_delta_q_origin(MagicMock(), scan_num=1) == pytest.approx(29.5)
+
+
+def test_a_scans_own_origin_passed_back_to_get_delta_q_changes_nothing() -> None:
+    """The browser leans on this: the origin read off a scan is the one that scan already uses."""
+    loader = _loader_with_columns(q=[2.0] * 4, s1=[29.0, 29.5, 30.0, 30.5])
+
+    origin = loader.get_delta_q_origin(MagicMock(), scan_num=1)
+
+    np.testing.assert_allclose(
+        loader.get_delta_q(MagicMock(), scan_num=1, origin=origin),
+        loader.get_delta_q(MagicMock(), scan_num=1),
+        atol=1e-12,
+    )
+
+
+def test_th2th_background_given_the_scans_origin_shares_its_axis() -> None:
+    """A background sampled over a different range must not be re-zeroed on its own centre."""
+    scan = _loader_with_columns(q=[1.0, 1.1, 1.2, 1.3])
+    background = _loader_with_columns(q=[1.0, 1.1, 1.2, 1.3, 1.4])
+
+    origin = scan.get_delta_q_origin(MagicMock(), scan_num=1)
+
+    # The background's own centre is q = 1.2; borrowing the scan's keeps q = 1.1 at zero.
+    np.testing.assert_allclose(
+        background.get_delta_q(MagicMock(), scan_num=2, origin=origin),
+        [-0.1, 0.0, 0.1, 0.2, 0.3],
+        atol=1e-12,
+    )
+
+
+def test_s1_background_given_the_scans_origin_shares_its_axis() -> None:
+    """Same guarantee on the rocking branch, where the origin travels between scans in degrees."""
+    scan = _loader_with_columns(q=[2.0] * 4, s1=[29.0, 29.5, 30.0, 30.5])
+    angles = [29.0, 29.5, 30.0, 30.5, 31.0]
+    background = _loader_with_columns(q=[2.0] * 5, s1=angles)
+
+    origin = scan.get_delta_q_origin(MagicMock(), scan_num=1)
+
+    np.testing.assert_allclose(
+        background.get_delta_q(MagicMock(), scan_num=2, origin=origin),
+        np.radians(np.asarray(angles) - 29.5) * 2.0,
+        atol=1e-12,
+    )

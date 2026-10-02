@@ -261,8 +261,8 @@ Methods:
     def get_hkl(scan_identifier, use_title=True, model_dict=[]) -> np.ndarray
         """(h, k, l) from the scan title, or from a fit when the title cannot be parsed."""
 
-    def get_delta_q(scan_identifier) -> np.ndarray
-        """Delta-q abscissa for a scan."""
+    def get_delta_q(scan_identifier, origin=None) -> np.ndarray
+        """Delta-q abscissa for a scan, measured from origin when given."""
 
     def get_data_from_scan_number(scan_identifier) -> RawScan
         """Look a loaded scan up by number; raises if zero or several match."""
