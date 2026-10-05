@@ -94,22 +94,24 @@ class VERITAS:
         export: list,
         codes: Optional[list] = None,
         propagation_vectors: Optional[list] = None,
-        code_before_intensity: bool = False,
+        magnetic: bool = False,
     ) -> None:
         """
         Write (hkl, intensity, error) entries to save_to_file in the .int format used for refinement.
 
-        codes fills each line's i4 field, telling the refinement which reflection a line
-        belongs to when several share an hkl (default 1). code_before_intensity moves that
-        field between the hkl and the intensity, carrying the declared format line with it so
-        the header cannot disagree with the lines. propagation_vectors declares the k vectors
-        those codes index, after the wavelength line; None omits the block.
+        magnetic writes each line's code in an i4 field between the hkl and the intensity,
+        telling the refinement which reflection a line belongs to when several share an hkl
+        (default 1), and carries the declared format line with it so the header cannot
+        disagree with the lines; without it no code field is written and codes is unused.
+        Every line ends in the refinement weight, always 1 for these data.
+        propagation_vectors declares the k vectors the codes index, after the wavelength
+        line; None omits the block.
         """
         target = save_to_file if overwrite else VERITAS._next_version_path(save_to_file)
         codes = codes if codes is not None else [1] * len(export)
         with open(target, "w") as f:
             f.write(f"{title}\n")
-            f.write("(3i5,i4,2f8.2,3f8.2)\n" if code_before_intensity else "(3i5,2f8.2,i4,3f8.2)\n")
+            f.write("(3i5,i4,2f8.2,i4)\n" if magnetic else "(3i5,2f8.2,i4)\n")
             f.write(f"{wavelength}  0   0\n")
 
             if propagation_vectors is not None:
@@ -123,10 +125,10 @@ class VERITAS:
 
             for ((h, k, l), intensity, err), code in zip(export, codes):
                 hkl_fields = f"{int(round(h)):5d}{int(round(k)):5d}{int(round(l)):5d}"
-                if code_before_intensity:
-                    f.write(f"{hkl_fields}{int(code):4d}{intensity:8.2f}{err:8.2f}\n")
-                else:
-                    f.write(f"{hkl_fields}{intensity:8.2f}{err:8.2f}{int(code):4d}\n")
+                code_field = f"{int(code):4d}" if magnetic else ""
+                # The trailing i4 is the refinement weight, which every measured
+                # reflection here carries equally.
+                f.write(f"{hkl_fields}{code_field}{intensity:8.2f}{err:8.2f}{1:4d}\n")
 
     @staticmethod
     def export_intensity(
@@ -139,6 +141,7 @@ class VERITAS:
         wavelength: float = 2.37815,
         overwrite: bool = True,
         background_results: Optional[list] = [],
+        wavevector: Optional[list] = None,
     ) -> list:
         """
         Export the intensity data to a .int file for refinement.
@@ -156,12 +159,16 @@ class VERITAS:
             background_results: Background run per peak, one per entry in hkls. Each peak's
                 amplitude has its background subtracted and the errors added in quadrature.
                 Left empty (default), amplitudes are exported as fitted.
+            wavevector: The propagation vector declared in the header when background_results
+                is given, each line's code field indexing it. Required to write such a file.
 
         """
         if background_results and len(background_results) != len(hkls):
             raise ValueError(
                 f"background_results must be one fit result per peak ({len(hkls)}), got {len(background_results)}."
             )
+        if save_to_file and background_results and wavevector is None:
+            raise ValueError("background_results subtracts a nuclear run, so its wavevector must be given.")
 
         # zip stops at the shortest input, so an absent background list has to be padded
         # rather than left empty - otherwise no peak would be exported at all.
@@ -185,7 +192,18 @@ class VERITAS:
             err = amplitude_err / lorentz_factor
             export.append((hkl, intensity, err))
         if save_to_file:
-            VERITAS._write_int_file(save_to_file, overwrite, title, wavelength, export)
+            # A background-subtracted export is the magnetic scattering left over, so the
+            # refinement needs the propagation vector its lines index declared in the header.
+            # The default codes are already 1, which is that vector.
+            VERITAS._write_int_file(
+                save_to_file,
+                overwrite,
+                title,
+                wavelength,
+                export,
+                propagation_vectors=[wavevector] if background_results else None,
+                magnetic=bool(background_results),
+            )
         return export
 
     @staticmethod
@@ -242,8 +260,8 @@ class VERITAS:
         ``hkl - wavevector`` and the -q branch by ``hkl + wavevector``, so the returned list
         alternates the two. The branches need not be the same length - where one runs out, the
         remainder of the longer is appended on its own. Both branches land on the same hkl, so
-        only the satellite code in each line's i4 field tells them apart; the k vectors those
-        codes index are declared in the header.
+        only the satellite code between each line's hkl and intensity tells them apart; the k
+        vectors those codes index are declared in the header.
 
         Args:
             title: Title line written as the first line of the file header.
@@ -297,6 +315,6 @@ class VERITAS:
                 export,
                 codes,
                 propagation_vectors,
-                code_before_intensity=True,
+                magnetic=True,
             )
         return export
