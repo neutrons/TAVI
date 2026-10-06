@@ -3,7 +3,7 @@
 import pytest
 
 from tavi.frontend.view.fitting_view import PEAK_EXPRESSIONS, FittingView, ParamTable
-from tavi.library.data.fit_entry import FitResultSummary, PeakResult
+from tavi.library.data.fit_entry import FitMember, FitResultSummary, FitSpec, ParamField, PeakField, PeakResult
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
@@ -286,69 +286,67 @@ def test_hookup_perform_fit_signal_connects_callback(view):
 
 
 # ---------------------------------------------------------------------------
-# get_fit_request
+# get_fit_spec
 # ---------------------------------------------------------------------------
 
 
-def test_get_fit_request_carries_resolved_data_and_series(view):
-    series = make_series()
-    request = view.get_fit_request(series=series, x=[1.0, 2.0], y=[3.0, 4.0], err=[0.1, 0.1])
+def test_get_fit_spec_returns_a_fit_spec_without_series(view):
+    """A spec says how to fit, not what - so one spec can be applied to every series in a batch."""
+    spec = view.get_fit_spec()
 
-    assert request.series == series
-    assert request.x == [1.0, 2.0]
-    assert request.y == [3.0, 4.0]
-    assert request.err == [0.1, 0.1]
+    assert isinstance(spec, FitSpec)
+    assert not hasattr(spec, "series")
 
 
-def test_get_fit_request_reads_fitting_range(view):
+def test_get_fit_spec_reads_fitting_range(view):
     view.min_edit.setText("-3")
     view.max_edit.setText("3")
 
-    request = view.get_fit_request(make_series(), [], [], [])
+    spec = view.get_fit_spec()
 
-    assert request.range_min == "-3"
-    assert request.range_max == "3"
+    assert spec.range_min == "-3"
+    assert spec.range_max == "3"
 
 
-def test_get_fit_request_reads_background_state(view):
+def test_get_fit_spec_reads_background_state(view):
     slope_row, intercept_row = view.background_table.rows
     intercept_row.value_edit.setText("2.5")
     intercept_row.fix_check.setChecked(True)
     slope_row.value_edit.setText("0.4")
 
-    request = view.get_fit_request(make_series(), [], [], [])
+    spec = view.get_fit_spec()
 
-    assert request.background == "Linear"
-    assert request.background_constant.value == "2.5"
-    assert request.background_constant.fixed is True
-    assert request.background_slope.value == "0.4"
-    assert request.background_slope.fixed is False
+    assert spec.background == "Linear"
+    assert spec.background_constant.value == "2.5"
+    assert spec.background_constant.fixed is True
+    assert spec.background_slope.value == "0.4"
+    assert spec.background_slope.fixed is False
 
 
-def test_get_fit_request_reads_peak_state(view):
+def test_get_fit_spec_reads_peak_state(view):
     view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
     amplitude_row, center_row, fwhm_row = view.peak_panels[0].peak_table.rows
     amplitude_row.value_edit.setText("7")
     center_row.min_edit.setText("-1")
     fwhm_row.max_edit.setText("2")
 
-    request = view.get_fit_request(make_series(), [], [], [])
+    spec = view.get_fit_spec()
 
-    assert request.peaks[0].shape == "Lorentzian"
-    assert request.peaks[0].amplitude.value == "7"
-    assert request.peaks[0].center.minimum == "-1"
-    assert request.peaks[0].fwhm.maximum == "2"
+    assert spec.peaks[0].shape == "Lorentzian"
+    assert spec.peaks[0].amplitude.value == "7"
+    assert spec.peaks[0].center.minimum == "-1"
+    assert spec.peaks[0].fwhm.maximum == "2"
 
 
-def test_get_fit_request_reads_every_peak_panel_in_order(view):
-    """Each panel becomes its own lmfit component, so all of them have to reach the request."""
+def test_get_fit_spec_reads_every_peak_panel_in_order(view):
+    """Each panel becomes its own lmfit component, so all of them have to reach the spec."""
     view.num_peaks_spin.setValue(3)
     for index, panel in enumerate(view.peak_panels):
         panel.peak_table.rows[1].value_edit.setText(str(index))
 
-    request = view.get_fit_request(make_series(), [], [], [])
+    spec = view.get_fit_spec()
 
-    assert [peak.center.value for peak in request.peaks] == ["0", "1", "2"]
+    assert [peak.center.value for peak in spec.peaks] == ["0", "1", "2"]
 
 
 # ---------------------------------------------------------------------------
@@ -583,3 +581,114 @@ def test_set_peak_params_directly(view):
     assert amplitude_row.value_edit.text() == "5"
     assert center_row.value_edit.text() == "1.5"
     assert fwhm_row.value_edit.text() == "0.75"
+
+
+# ---------------------------------------------------------------------------
+# _set_fit_member
+# ---------------------------------------------------------------------------
+
+
+def make_param(value="", fixed=False, minimum="", maximum="") -> ParamField:
+    return ParamField(value=value, fixed=fixed, minimum=minimum, maximum=maximum)
+
+
+def make_peak_field(shape="Gaussian", amplitude="1", center="0", fwhm="1") -> PeakField:
+    return PeakField(shape=shape, amplitude=make_param(amplitude), center=make_param(center), fwhm=make_param(fwhm))
+
+
+def make_member(peaks=None, result=None, **overrides) -> FitMember:
+    fields = dict(
+        series=make_series(),
+        range_min="-2",
+        range_max="5",
+        background="Linear",
+        background_constant=make_param("3", fixed=True, minimum="0", maximum="10"),
+        background_slope=make_param("0.5", minimum="-1", maximum="1"),
+        peaks=peaks if peaks is not None else [make_peak_field()],
+        result=result,
+    )
+    fields.update(overrides)
+    return FitMember(**fields)
+
+
+def test_set_fit_member_round_trips_through_get_fit_spec(view):
+    """Picking a member back from the dropdown must reload exactly the spec it was fit with."""
+    member = make_member(
+        peaks=[
+            PeakField(
+                shape="Lorentzian",
+                amplitude=make_param("7", fixed=True, minimum="1", maximum="9"),
+                center=make_param("0.25", minimum="-1", maximum="1"),
+                fwhm=make_param("0.5", fixed=True, maximum="2"),
+            )
+        ]
+    )
+
+    view._set_fit_member(member)
+
+    assert view.get_fit_spec() == FitSpec(**member.model_dump(exclude={"series", "result"}))
+
+
+def test_set_fit_member_signal_loads_the_member(view, qtbot):
+    with qtbot.waitSignal(view.set_fit_member_signal, timeout=1000):
+        view.set_fit_member_signal.emit(make_member(range_min="-9"))
+
+    assert view.min_edit.text() == "-9"
+
+
+def test_set_fit_member_grows_the_peak_stack_to_the_members_peak_count(view):
+    peaks = [make_peak_field(shape="Gaussian", center="1"), make_peak_field(shape="Lorentzian", center="2")]
+
+    view._set_fit_member(make_member(peaks=peaks))
+
+    assert view.num_peaks_spin.value() == 2
+    assert [panel.peak_shape_combo.currentText() for panel in view.peak_panels] == ["Gaussian", "Lorentzian"]
+    assert [peak.center.value for peak in view.get_fit_spec().peaks] == ["1", "2"]
+
+
+def test_set_fit_member_shrinks_the_peak_stack_to_the_members_peak_count(view):
+    view.num_peaks_spin.setValue(3)
+
+    view._set_fit_member(make_member(peaks=[make_peak_field(center="4")]))
+
+    assert len(view.peak_panels) == 1
+    assert [peak.center.value for peak in view.get_fit_spec().peaks] == ["4"]
+
+
+def test_set_fit_member_restores_fixed_min_and_max(view):
+    view._set_fit_member(make_member())
+
+    slope_row, intercept_row = view.background_table.rows
+    assert intercept_row.fix_check.isChecked() is True
+    assert (intercept_row.min_edit.text(), intercept_row.max_edit.text()) == ("0", "10")
+    assert slope_row.fix_check.isChecked() is False
+    assert (slope_row.min_edit.text(), slope_row.max_edit.text()) == ("-1", "1")
+
+
+def test_set_fit_member_unfixes_a_row_the_member_left_free(view):
+    _slope_row, intercept_row = view.background_table.rows
+    intercept_row.fix_check.setChecked(True)
+
+    view._set_fit_member(make_member(background_constant=make_param("3")))
+
+    assert intercept_row.fix_check.isChecked() is False
+
+
+def test_set_fit_member_overlays_its_result(view):
+    """The spec loads first, then the result fills in value/std - so the fit's own values show."""
+    view._set_fit_member(make_member(result=make_result()))
+
+    amplitude_row, _, _ = view.peak_panels[0].peak_table.rows
+    assert amplitude_row.value_edit.text() == "5"
+    assert amplitude_row.std_edit.text() == "0.1"
+    assert view.chi2_edit.text() == "1.234"
+
+
+def test_set_fit_member_without_result_clears_stale_std(view):
+    amplitude_row, _, _ = view.peak_panels[0].peak_table.rows
+    amplitude_row.std_edit.setText("0.9")
+
+    view._set_fit_member(make_member(result=None))
+
+    assert amplitude_row.std_edit.text() == ""
+    assert amplitude_row.value_edit.text() == "1"

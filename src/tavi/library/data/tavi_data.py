@@ -42,11 +42,10 @@ class TaviData(BaseModel):
         Delete the named items and everything left dangling by them, and report what went.
 
         A plot or fit holds no data of its own, only a ``source_scan_uuid`` per series, so a
-        series whose scan is going can no longer be resolved and goes with it. A plot survives as
-        long as it has a series left - removing one run should not destroy the rest of a fused,
-        multi-series plot - whereas a ``FitEntry`` is bound to exactly one series and so has
-        nothing to survive on. Unknown uuids are ignored: the tree may ask twice for the same
-        item (e.g. a folder and a scan inside it both selected).
+        series whose scan is going can no longer be resolved and goes with it. A plot or fit
+        survives as long as it has a series left - removing one run should not destroy the rest
+        of a fused, multi-series plot, or of a sequential fit. Unknown uuids are ignored: the tree
+        may ask twice for the same item (e.g. a folder and a scan inside it both selected).
 
         Every store is mutated in place rather than rebound, because the models hold these same
         dicts by reference.
@@ -67,13 +66,18 @@ class TaviData(BaseModel):
             elif surviving is not plot:
                 pruned[plot_uuid] = surviving
 
-        fits.extend(
-            fit_uuid
-            for fit_uuid, fit in self.fits.items()
-            if fit_uuid not in fits and fit.series.source_scan_uuid in orphaned
-        )
+        pruned_fits: dict[UUID, FitEntry] = {}
+        for fit_uuid, fit in self.fits.items():
+            if fit_uuid in fits:
+                continue
+            surviving_fit = fit.without_scans(orphaned)
+            if surviving_fit is None:
+                fits.append(fit_uuid)
+            elif surviving_fit is not fit:
+                pruned_fits[fit_uuid] = surviving_fit
 
         self.plots.update(pruned)
+        self.fits.update(pruned_fits)
         for uuid in scans:
             del self.raw_scans[uuid]
         for uuid in plots:
