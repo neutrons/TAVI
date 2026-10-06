@@ -146,7 +146,7 @@ def browse_scans(
 
         # With a resolution bar, plot against del_q (the bar width is in q);
         # otherwise plot against the raw default-x motor.
-        use_delta_q = show_resolution_bar and def_x in ["s1", "s2", "omega"]
+        use_delta_q = show_resolution_bar and def_x in ["s1", "s2", "omega", "_2theta", "2theta"]
         xlabel = f"del_q({def_x})" if use_delta_q else def_x
         x, y, y_err = _scan_xy(experiment, num, def_x, def_y, normalize, multiply_factor, use_delta_q, q_origin=None)
         ax.errorbar(x, y, yerr=y_err, fmt="o", label=f"{num}" if bkg_num is not None else None)
