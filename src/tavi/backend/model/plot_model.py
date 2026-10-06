@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
+from tavi.backend.model.plot_resolver import find_series_by_source, fit_series_by_source, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
@@ -97,7 +97,7 @@ class PlotModel(PlotModelInterface):
         Sync ``_last_plots`` to the series the focused fits were made against.
 
         A fit focused on its own is rendered by ``PlotterPresenter`` straight from the event (each
-        FitEntry carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
+        FitEntry member carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
         ``_last_plots`` would otherwise still describe whatever was focused before - leaving a
         subsequent axis/preset edit, or Save Plot, acting on the wrong plot entirely.
 
@@ -110,10 +110,7 @@ class PlotModel(PlotModelInterface):
         """
         if not e.exclusive:
             return
-        series_by_source: dict[UUID, PlotSeries] = {}
-        for fit in e.fits:
-            if fit.series.source_scan_uuid in e.scans:
-                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        series_by_source = fit_series_by_source(e.fits, e.scans)
         if not series_by_source:
             return
         # One single-series plot per source scan, matching the shape _handle_raw_scan_focus_event
@@ -151,6 +148,7 @@ class PlotModel(PlotModelInterface):
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
             scan_name=scan_name,
+            friendly_name=scan.tavimeta.friendly_name,
             normalized_by=None,
             normalized_by_value=None,
             x_name=x_name,

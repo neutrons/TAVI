@@ -119,6 +119,14 @@ Recommended Practices
   Use narrowly scoped event types (e.g., ``UserCreatedEvent`` instead of a generic
   ``UserEvent``) to keep subscriptions explicit and predictable.
 
+- **Name events by their step in focus -> calculate -> sync**
+  Most widget flows follow the same shape: a ``*FocusEvent`` says what the user
+  selected, a model calculates, and a ``Sync*Event`` brings the UI in line with
+  the result (e.g. ``FitFocusEvent`` -> ``FitModel`` -> ``SyncFitEvent``). Sync
+  events are display only; writing to the project is a separate ``Save*Event``
+  (``SavePlotEvent``, ``SaveFitEvent``). Reuse this naming for new flows so the
+  chains read the same across widgets.
+
 - **Do not mutate incoming events**
   Although handlers receive copies, treat events as immutable to preserve intent
   and make behavior easier to reason about.

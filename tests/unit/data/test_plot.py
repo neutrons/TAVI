@@ -1,5 +1,3 @@
-import pytest
-
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID
 
@@ -122,3 +120,29 @@ def test_without_scans_drops_every_matching_series():
     pruned = plot.without_scans({UUID(value="scan-001"), UUID(value="scan-003")})
 
     assert [s.scan_name for s in pruned.series] == ["scan_b"]
+
+
+def test_series_run_name_is_friendly_name_when_set():
+    series = make_series(scan_name="shared title", friendly_name="run1")
+
+    assert series.run_name == "run1"
+
+
+def test_series_run_name_falls_back_to_scan_name():
+    """A series saved before ``friendly_name`` existed still has a name to show."""
+    series = make_series(scan_name="test_scan")
+
+    assert series.friendly_name is None
+    assert series.run_name == "test_scan"
+
+
+def test_series_display_label_adds_a_title_that_differs_from_the_run_name():
+    series = make_series(scan_name="sample alignment", friendly_name="scan0001")
+
+    assert series.display_label == "scan0001 - sample alignment"
+
+
+def test_series_display_label_is_just_the_run_name_when_no_title_is_shown():
+    series = make_series(scan_name="scan0001", friendly_name="scan0001")
+
+    assert series.display_label == "scan0001"

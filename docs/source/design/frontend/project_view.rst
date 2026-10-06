@@ -115,9 +115,9 @@ The Project View is implemented via ``TreeViewWidget`` and is responsible for:
 - Rendering scan entries under a ``/Raw`` root
 
 Four roots are created up front by ``_init_path`` in ``TreeViewWidget.__init__``
-— ``/Raw``, ``/Combined``, ``/Fits`` and ``/Plots``. Only ``Raw`` and ``Plots``
-receive entries today; ``Combined`` and ``Fits`` are reserved for combined scans
-and saved fits.
+— ``/Raw``, ``/Combined``, ``/Fits`` and ``/Plots``. ``Raw``, ``Plots`` and
+``Fits`` receive entries today; ``Combined`` is reserved for combined scans.
+A fit is added under ``/Fits`` on ``FitAppendEvent`` (see :doc:`fit_data_model`).
 
 Adding a Scan
 ~~~~~~~~~~~~~
