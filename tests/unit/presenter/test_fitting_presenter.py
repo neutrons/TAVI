@@ -20,18 +20,21 @@ from tavi.library.data.fit_entry import (
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent
+from tavi.meta.event.type.model_event import FitRemoveEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     ApplyAllChangedEvent,
     BackgroundParamsSuggestedEvent,
+    ClearFocusEvent,
     FitComponentsVisibilityChangedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
     PeakParamsSuggestedEvent,
     PlotFocusEvent,
+    RedoFitMemberEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
+    UndoFitMemberEvent,
 )
 
 
@@ -656,3 +659,127 @@ def test_handle_background_params_suggested_noop_when_nothing_active(presenter):
     )
 
     assert slope_row.value_edit.text() == "unchanged"
+
+
+# ---------------------------------------------------------------------------
+# Undo/Redo Fit
+# ---------------------------------------------------------------------------
+
+
+def make_history_event(can_undo=True, can_redo=False, uuid_val="scan-001", fit_uuid="fit-001"):
+    return SyncFitHistoryEvent(
+        fit_uuid=UUID(value=fit_uuid), source_scan_uuid=UUID(value=uuid_val), can_undo=can_undo, can_redo=can_redo
+    )
+
+
+def fit_active_series(presenter):
+    """Make scan-001 active and known to be covered by fit-001."""
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    EventBroker().publish(make_sync_fit_event())
+
+
+def history_buttons(presenter):
+    return presenter._view.undo_fit_btn.isEnabled(), presenter._view.redo_fit_btn.isEnabled()
+
+
+def test_history_buttons_start_disabled(presenter):
+    assert history_buttons(presenter) == (False, False)
+
+
+def test_sync_fit_history_for_the_active_member_enables_its_buttons(presenter):
+    fit_active_series(presenter)
+
+    EventBroker().publish(make_history_event(can_undo=True, can_redo=True))
+
+    assert history_buttons(presenter) == (True, True)
+
+
+def test_sync_fit_history_for_another_member_leaves_buttons_disabled(presenter):
+    fit_active_series(presenter)
+
+    EventBroker().publish(make_history_event(uuid_val="scan-002"))
+
+    assert history_buttons(presenter) == (False, False)
+
+
+def test_history_buttons_disabled_while_fitting_every_focused_series(presenter):
+    focus_two_series(presenter)
+    EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002")))
+    EventBroker().publish(make_history_event())
+    assert history_buttons(presenter) == (False, False)
+
+    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
+    assert history_buttons(presenter) == (True, False)
+
+    EventBroker().publish(ApplyAllChangedEvent(apply_all=True))
+    assert history_buttons(presenter) == (False, False)
+
+
+def test_switching_active_series_shows_that_members_history(presenter):
+    focus_two_series(presenter)
+    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
+    EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002")))
+    EventBroker().publish(make_history_event(uuid_val="scan-002"))
+    assert history_buttons(presenter) == (False, False)
+
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan("scan-002"), series=make_series("scan-002")))
+
+    assert history_buttons(presenter) == (True, False)
+
+
+def test_undo_clicked_publishes_undo_for_the_active_member(presenter):
+    fit_active_series(presenter)
+    received = []
+    EventBroker().register(UndoFitMemberEvent, received.append)
+
+    presenter.handle_undo_fit_clicked()
+
+    assert [(e.fit_uuid, e.source_scan_uuid) for e in received] == [(UUID(value="fit-001"), UUID(value="scan-001"))]
+
+
+def test_redo_clicked_publishes_redo_for_the_active_member(presenter):
+    fit_active_series(presenter)
+    received = []
+    EventBroker().register(RedoFitMemberEvent, received.append)
+
+    presenter.handle_redo_fit_clicked()
+
+    assert [(e.fit_uuid, e.source_scan_uuid) for e in received] == [(UUID(value="fit-001"), UUID(value="scan-001"))]
+
+
+def test_undo_clicked_without_a_fit_for_the_active_series_is_noop(presenter):
+    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    received = []
+    EventBroker().register(UndoFitMemberEvent, received.append)
+
+    presenter.handle_undo_fit_clicked()
+
+    assert received == []
+
+
+def test_fit_removed_disables_history_buttons(presenter):
+    fit_active_series(presenter)
+    EventBroker().publish(make_history_event())
+
+    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-001")))
+
+    assert history_buttons(presenter) == (False, False)
+
+
+def test_clear_focus_disables_history_and_forgets_known_fits(presenter):
+    fit_active_series(presenter)
+    EventBroker().publish(make_history_event())
+
+    EventBroker().publish(ClearFocusEvent())
+
+    assert history_buttons(presenter) == (False, False)
+    presenter.handle_perform_fit_clicked()
+    assert last_request(presenter).fit_uuid is None
+
+
+def test_clear_focus_resets_the_view_fields(presenter):
+    presenter._view.num_peaks_spin.setValue(3)
+
+    EventBroker().publish(ClearFocusEvent())
+
+    assert len(presenter._view.peak_panels) == 1

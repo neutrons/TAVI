@@ -1,11 +1,14 @@
 """Tavi Project."""
 
 import logging
+from collections.abc import Callable
+from typing import Optional
 
 from neutrons_standard.config import Resource
 from neutrons_standard.decorators.singleton import Singleton
 from ruamel.yaml import YAML
 
+from tavi.backend.model.fit_history import FitHistory
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
 from tavi.library.data.fit_entry import FitEntry, FitMember
@@ -23,10 +26,13 @@ from tavi.meta.event.type.model_event import (
     PlotRemoveEvent,
     RawScanAppendEvent,
     RawScanRemoveEvent,
+    RestoreFitMemberEvent,
+    SyncFitHistoryEvent,
     SyncRecentProjects,
 )
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    ClearFocusEvent,
     DownstreamReadyEvent,
     FitFocusEvent,
     FitRecomputeEvent,
@@ -34,8 +40,10 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    RedoFitMemberEvent,
     SaveFitEvent,
     SavePlotEvent,
+    UndoFitMemberEvent,
 )
 
 logger = logging.getLogger(__name__)
@@ -51,12 +59,17 @@ class TaviProjectModel(TaviProjectInterface):
         self.tavi_data: TaviData = TaviData(raw_scans={}, plots={}, fits={})
         self._event_broker: EventBroker = EventBroker()
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
+        # Session-only: earlier states of each fit member, for undo/redo. Kept beside TaviData
+        # rather than in it, so dialing a fit in never grows the saved project.
+        self._fit_history = FitHistory()
 
         self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
         self._event_broker.register(SaveFitEvent, self._handle_save_fit_event)
+        self._event_broker.register(UndoFitMemberEvent, self._handle_undo_fit_member_event)
+        self._event_broker.register(RedoFitMemberEvent, self._handle_redo_fit_member_event)
 
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
@@ -96,6 +109,7 @@ class TaviProjectModel(TaviProjectInterface):
     def remove_items(self, uuids: list[UUID]) -> ModelResponse:
         """Drop the named items, and whatever they orphan, from the project and announce each removal."""
         purged = self.tavi_data.purge(uuids)
+        self._fit_history.forget(fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans))
 
         for uuid in purged.raw_scans:
             self._event_broker.publish(RawScanRemoveEvent(uuid=uuid))
@@ -137,16 +151,65 @@ class TaviProjectModel(TaviProjectInterface):
         Merge a fit's members into ``tavi_data`` and announce it, mirroring ``_handle_save_plot_event``.
 
         Each member replaces the stored member for the same scan, so refitting one series of a
-        sequential fit leaves its other members as they were. Only a new fit is announced to the
-        project tree - refitting an existing one would otherwise add its uuid to the tree twice.
+        sequential fit leaves its other members as they were. The state each one replaces becomes
+        an undo step for that member. Only a new fit is announced to the project tree - refitting an
+        existing one would otherwise add its uuid to the tree twice.
         """
         existing = self.tavi_data.fits.get(e.fit_uuid)
         if existing is not None:
+            for member in e.members:
+                previous = existing.member_for(member.source_scan_uuid)
+                # A failed fit has nothing on screen worth going back to.
+                if previous is not None and previous.result is not None:
+                    self._fit_history.record(e.fit_uuid, previous)
             self.tavi_data.fits[e.fit_uuid] = existing.with_members(e.members)
+        else:
+            fit = FitEntry(uuid=e.fit_uuid, name=self._fit_name(e.members), members=e.members)
+            self.tavi_data.fits[fit.uuid] = fit
+            self._event_broker.publish(FitAppendEvent(uuid=fit.uuid, friendly_name=fit.name, friendly_path=""))
+        for member in e.members:
+            self._publish_fit_history(e.fit_uuid, member.source_scan_uuid)
+
+    def _handle_undo_fit_member_event(self, e: UndoFitMemberEvent) -> None:
+        """Roll one member of a fit back to the state before its last save."""
+        self._step_fit_history(e.fit_uuid, e.source_scan_uuid, self._fit_history.undo)
+
+    def _handle_redo_fit_member_event(self, e: RedoFitMemberEvent) -> None:
+        """Reapply the member state the last undo rolled back."""
+        self._step_fit_history(e.fit_uuid, e.source_scan_uuid, self._fit_history.redo)
+
+    def _step_fit_history(
+        self, fit_uuid: UUID, source_scan_uuid: UUID, step: Callable[[UUID, FitMember], Optional[FitMember]]
+    ) -> None:
+        """
+        Swap one member for the state ``step`` returns, then redraw just that member.
+
+        The restored member is recomputed from its spec rather than replayed, the same as selecting
+        a saved fit in the tree - TAVI never caches fitted curves.
+        """
+        fit = self.tavi_data.fits.get(fit_uuid)
+        current = fit.member_for(source_scan_uuid) if fit is not None else None
+        if current is None:
             return
-        fit = FitEntry(uuid=e.fit_uuid, name=self._fit_name(e.members), members=e.members)
-        self.tavi_data.fits[fit.uuid] = fit
-        self._event_broker.publish(FitAppendEvent(uuid=fit.uuid, friendly_name=fit.name, friendly_path=""))
+        restored = step(fit_uuid, current)
+        if restored is None:
+            return
+        fit = fit.with_members([restored])
+        self.tavi_data.fits[fit_uuid] = fit
+        self._publish_fit_history(fit_uuid, source_scan_uuid)
+        self._event_broker.publish(RestoreFitMemberEvent(fit_uuid=fit_uuid, source_scan_uuid=source_scan_uuid))
+        self._event_broker.publish(FitRecomputeEvent(fits=[fit.model_copy(update={"members": [restored]})]))
+
+    def _publish_fit_history(self, fit_uuid: UUID, source_scan_uuid: UUID) -> None:
+        key = (fit_uuid, source_scan_uuid)
+        self._event_broker.publish(
+            SyncFitHistoryEvent(
+                fit_uuid=fit_uuid,
+                source_scan_uuid=source_scan_uuid,
+                can_undo=self._fit_history.can_undo(key),
+                can_redo=self._fit_history.can_redo(key),
+            )
+        )
 
     def _fit_name(self, members: list[FitMember]) -> str:
         """Name a new fit after the run it covers, or the first and last runs of a sequential one."""
@@ -173,6 +236,8 @@ class TaviProjectModel(TaviProjectInterface):
 
     def _handle_focus_event(self, e: FocusEvent) -> None:
         """Route a ``FocusEvent`` to type-specific downstream events."""
+        # First, so every subscriber has let go of the old selection before this one's chain reaches it.
+        self._event_broker.publish(ClearFocusEvent())
         ids = e.ids
         raw_scans: list[RawScan] = []
         plots: list[Plot] = []

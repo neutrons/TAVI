@@ -28,10 +28,13 @@ from tavi.meta.event.type.model_event import (
     PlotRemoveEvent,
     RawScanAppendEvent,
     RawScanRemoveEvent,
+    RestoreFitMemberEvent,
+    SyncFitHistoryEvent,
     SyncRecentProjects,
 )
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    ClearFocusEvent,
     DownstreamReadyEvent,
     FitFocusEvent,
     FitRecomputeEvent,
@@ -39,9 +42,11 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    RedoFitMemberEvent,
     SaveFitEvent,
     SavePlotEvent,
     SyncFitEvent,
+    UndoFitMemberEvent,
 )
 
 SETTINGS_YAML = "TAVI:\n  recent:\n    projects:\n      - /path/to/project1\n      - /path/to/project2\n"
@@ -1130,3 +1135,136 @@ def test_handle_save_fit_event_does_not_cache_the_curve(model):
         assert not hasattr(obj, "best_fit")
         assert not hasattr(obj, "curve")
         assert not hasattr(obj, "x")
+
+
+# ---------------------------------------------------------------------------
+# fit member undo/redo
+# ---------------------------------------------------------------------------
+
+
+def save_refits(fit, *range_maxes):
+    """Save ``fit`` once per ``range_max``, each a refit of its first member - the "dialing in" loop."""
+    member = fit.members[0]
+    for range_max in range_maxes:
+        EventBroker().publish(make_save_fit_event(fit, members=[member.model_copy(update={"range_max": range_max})]))
+
+
+def undo(fit, source_uuid="scan-001"):
+    EventBroker().publish(UndoFitMemberEvent(fit_uuid=fit.uuid, source_scan_uuid=UUID(value=source_uuid)))
+
+
+def redo(fit, source_uuid="scan-001"):
+    EventBroker().publish(RedoFitMemberEvent(fit_uuid=fit.uuid, source_scan_uuid=UUID(value=source_uuid)))
+
+
+def stored_range_max(model, fit, index=0):
+    return model.tavi_data.fits[fit.uuid].members[index].range_max
+
+
+def test_first_save_publishes_history_with_nothing_to_undo(model):
+    fit = make_fit_entry()
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    EventBroker().publish(make_save_fit_event(fit))
+
+    assert [(e.source_scan_uuid, e.can_undo, e.can_redo) for e in received] == [(UUID(value="scan-001"), False, False)]
+
+
+def test_refit_makes_the_member_undoable(model):
+    fit = make_fit_entry()
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    save_refits(fit, "1", "2")
+
+    assert (received[-1].can_undo, received[-1].can_redo) == (True, False)
+
+
+def test_undo_restores_the_previous_member_and_redo_reapplies_it(model):
+    fit = make_fit_entry()
+    save_refits(fit, "1", "2")
+
+    undo(fit)
+    assert stored_range_max(model, fit) == "1"
+
+    redo(fit)
+    assert stored_range_max(model, fit) == "2"
+
+
+def test_undo_publishes_history_restored_then_recompute_of_that_member_only(model):
+    first, second = make_fit_member("run1", source_uuid="scan-001"), make_fit_member("run2", source_uuid="scan-002")
+    fit = make_fit_entry(members=[first, second])
+    EventBroker().publish(make_save_fit_event(fit))
+    save_refits(fit, "5")
+
+    calls = []
+    EventBroker().register(SyncFitHistoryEvent, lambda e: calls.append(("history", e.can_undo, e.can_redo)))
+    EventBroker().register(RestoreFitMemberEvent, lambda e: calls.append(("restored", e.source_scan_uuid)))
+    EventBroker().register(FitRecomputeEvent, lambda e: calls.append(("recompute", e.fits[0].members)))
+    undo(fit)
+
+    assert calls[0] == ("history", False, True)
+    assert calls[1] == ("restored", first.source_scan_uuid)
+    assert calls[2][0] == "recompute"
+    assert [m.source_scan_uuid for m in calls[2][1]] == [first.source_scan_uuid]
+    assert calls[2][1][0].range_max == "10"
+
+
+def test_undo_leaves_other_members_alone(model):
+    first, second = make_fit_member("run1", source_uuid="scan-001"), make_fit_member("run2", source_uuid="scan-002")
+    fit = make_fit_entry(members=[first, second])
+    EventBroker().publish(make_save_fit_event(fit))
+    EventBroker().publish(make_save_fit_event(fit, members=[second.model_copy(update={"range_max": "7"})]))
+    save_refits(fit, "5")
+
+    undo(fit)
+
+    assert stored_range_max(model, fit, 0) == "10"
+    assert stored_range_max(model, fit, 1) == "7"
+
+
+def test_undo_with_nothing_to_undo_publishes_nothing(model):
+    fit = make_fit_entry()
+    EventBroker().publish(make_save_fit_event(fit))
+    received = []
+    EventBroker().register(FitRecomputeEvent, received.append)
+
+    undo(fit)
+    undo(make_fit_entry(uuid_val="unknown-fit"))
+
+    assert received == []
+
+
+def test_a_failed_previous_fit_is_not_an_undo_step(model):
+    fit = make_fit_entry()
+    failed = fit.members[0].model_copy(update={"result": None})
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=[failed]))
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    save_refits(fit, "1")
+
+    assert received[-1].can_undo is False
+
+
+def test_removing_a_fit_forgets_its_history(model):
+    fit = make_fit_entry()
+    save_refits(fit, "1", "2")
+
+    model.remove_items([fit.uuid])
+
+    assert not model._fit_history.can_undo((fit.uuid, UUID(value="scan-001")))
+
+
+def test_focus_event_clears_focus_before_routing(model):
+    """Subscribers must let go of the old selection before the new one's chain (here FitFocusEvent) reaches them."""
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+    call_order = []
+    EventBroker().register(ClearFocusEvent, lambda e: call_order.append("clear"))
+    EventBroker().register(FitFocusEvent, lambda e: call_order.append("focus"))
+
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert call_order == ["clear", "focus"]

@@ -10,12 +10,13 @@ from tavi.library.data.scan import UUID, UUIDFactory
 
 
 class ParamField(BaseModel):
-    """One editable parameter row's raw, unparsed text state: value / fixed / min / max."""
+    """One editable parameter row's raw, unparsed text state: value / fixed / min / max / constraint."""
 
     value: str
     fixed: bool
     minimum: str
     maximum: str
+    constrained: bool = False
 
 
 class PeakField(BaseModel):

@@ -10,18 +10,21 @@ from tavi.library.data.fit_entry import FitRequest
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, Scan
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent
+from tavi.meta.event.type.model_event import FitRemoveEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
     ApplyAllChangedEvent,
     BackgroundParamsSuggestedEvent,
+    ClearFocusEvent,
     FitComponentsVisibilityChangedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
     PeakParamsSuggestedEvent,
     PlotFocusEvent,
+    RedoFitMemberEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
+    UndoFitMemberEvent,
 )
 
 
@@ -52,6 +55,9 @@ class FittingPresenter(AbstractPresenter):
         self._focused_series: list[PlotSeries] = []
         # Mirrors the plotter's checkbox, which starts checked.
         self._apply_all = True
+        # (can undo, can redo) per (fit uuid, source scan uuid), from SyncFitHistoryEvent - flags
+        # only, the history itself stays in TaviProjectModel.
+        self._history_flags: dict[tuple[UUID, UUID], tuple[bool, bool]] = {}
 
         self._event_broker = EventBroker()
         self._event_broker.register(ActivePlotChangedEvent, self.handle_active_plot_changed)
@@ -64,7 +70,11 @@ class FittingPresenter(AbstractPresenter):
         self._event_broker.register(FocusActivePlotEvent, self.handle_focus_active_plot)
         self._event_broker.register(SyncFitSpecEvent, self.handle_sync_fit_spec)
         self._event_broker.register(FitRemoveEvent, self.handle_fit_removed)
+        self._event_broker.register(SyncFitHistoryEvent, self.handle_sync_fit_history)
+        self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
         self._view.hookup_perform_fit_signal(self.handle_perform_fit_clicked)
+        self._view.hookup_undo_fit_signal(self.handle_undo_fit_clicked)
+        self._view.hookup_redo_fit_signal(self.handle_redo_fit_clicked)
         self._view.hookup_suggest_params_signal(self.handle_suggest_params_clicked)
         self._view.hookup_suggest_background_signal(self.handle_suggest_background_clicked)
         self._view.hookup_plot_separately_signal(self.handle_plot_separately_toggled)
@@ -84,6 +94,7 @@ class FittingPresenter(AbstractPresenter):
         """
         self._active_scan = e.scan
         self._active_series = e.series
+        self._refresh_history_buttons()
         if self._active_scan is None or self._active_series is None:
             return
         if self._active_series.source_scan_uuid in self._fit_uuid_by_source_uuid:
@@ -95,10 +106,12 @@ class FittingPresenter(AbstractPresenter):
     def handle_plot_focus(self, e: PlotFocusEvent) -> None:
         """Track every focused series, flattened in the same order as the plotter's Current Plot dropdown."""
         self._focused_series = [series for plot in e.plots for series in plot.series]
+        self._refresh_history_buttons()
 
     def handle_apply_all_changed(self, e: ApplyAllChangedEvent) -> None:
         """Track the plotter's "Apply All" checkbox: whether Perform Fit covers every focused series or one."""
         self._apply_all = e.apply_all
+        self._refresh_history_buttons()
 
     def handle_focus_active_plot(self, e: FocusActivePlotEvent) -> None:
         """
@@ -123,6 +136,62 @@ class FittingPresenter(AbstractPresenter):
         self._fit_uuid_by_source_uuid = {
             source: fit_uuid for source, fit_uuid in self._fit_uuid_by_source_uuid.items() if fit_uuid != e.uuid
         }
+        self._history_flags = {key: flags for key, flags in self._history_flags.items() if key[0] != e.uuid}
+        self._refresh_history_buttons()
+
+    def handle_clear_focus(self, _: ClearFocusEvent) -> None:
+        """
+        Start over once the old selection is cleared: default fields, and no fit known for any scan.
+
+        Forgetting the scan-to-fit map is what gives each selection its own history - Perform Fit on
+        a raw scan picked again mints a new fit rather than extending an old one. Undo history itself
+        stays with the model, so picking that old fit from the tree brings it back.
+        """
+        self._fit_uuid_by_source_uuid = {}
+        self._focused_fit_uuids = set()
+        self._view.reset_fields_signal.emit()
+        self._refresh_history_buttons()
+
+    def handle_sync_fit_history(self, e: SyncFitHistoryEvent) -> None:
+        """Track whether one fit member can be undone/redone, and update the buttons if it's the active one."""
+        self._history_flags[(e.fit_uuid, e.source_scan_uuid)] = (e.can_undo, e.can_redo)
+        self._refresh_history_buttons()
+
+    def handle_undo_fit_clicked(self) -> None:
+        """Ask the project to roll the active member back to the state before its last save."""
+        target = self._history_target()
+        if target is not None:
+            self._event_broker.publish(UndoFitMemberEvent(fit_uuid=target[0], source_scan_uuid=target[1]))
+
+    def handle_redo_fit_clicked(self) -> None:
+        """Ask the project to reapply the active member state the last undo rolled back."""
+        target = self._history_target()
+        if target is not None:
+            self._event_broker.publish(RedoFitMemberEvent(fit_uuid=target[0], source_scan_uuid=target[1]))
+
+    def _history_target(self) -> Optional[tuple[UUID, UUID]]:
+        """
+        The (fit uuid, source scan uuid) Undo/Redo acts on: the active series' fit member, or ``None``.
+
+        Undo is for dialing one member in, so it's only offered while Perform Fit would refit that
+        member alone - a sequential run across every focused series has no single member to step.
+        """
+        if self._active_series is None or self._fits_every_focused_series():
+            return None
+        source = self._active_series.source_scan_uuid
+        fit_uuid = self._fit_uuid_by_source_uuid.get(source)
+        if fit_uuid is None:
+            return None
+        return fit_uuid, source
+
+    def _refresh_history_buttons(self) -> None:
+        target = self._history_target()
+        can_undo, can_redo = self._history_flags.get(target, (False, False)) if target else (False, False)
+        self._view.set_fit_history_enabled_signal.emit(can_undo, can_redo)
+
+    def _fits_every_focused_series(self) -> bool:
+        """Whether Perform Fit runs a sequential fit over every focused series rather than the active one."""
+        return self._apply_all and len(self._focused_series) > 1
 
     def handle_perform_fit_clicked(self) -> None:
         """
@@ -135,11 +204,12 @@ class FittingPresenter(AbstractPresenter):
 
         Refitting the same series again reuses the fit already covering them (``fit_uuid``), so
         repeatedly clicking Perform Fit refines one fit rather than leaving a trail of
-        near-identical ones in the project tree.
+        near-identical ones in the project tree. A new tree selection forgets that (``handle_clear_focus``),
+        so fitting a raw scan picked again starts a new fit.
         """
         if self._active_scan is None or self._active_series is None:
             return
-        if self._apply_all and len(self._focused_series) > 1:
+        if self._fits_every_focused_series():
             series = list(self._focused_series)
         else:
             series = [self._active_series]
@@ -175,6 +245,7 @@ class FittingPresenter(AbstractPresenter):
             # The plotter redraws exactly these fits' series (see PlotterPresenter.handle_fit_focus),
             # so they - not whatever was focused before - are what Apply All now covers.
             self._focused_series = list(fit_series_by_source(e.fits, e.scans).values())
+        self._refresh_history_buttons()
 
     def handle_sync_fit(self, e: SyncFitEvent) -> None:
         """Remember which fit covers each computed series, and show the active series' member in the panel."""
@@ -194,6 +265,7 @@ class FittingPresenter(AbstractPresenter):
                 shown = outcome.member
         if shown is not None:
             self._view.set_fit_member_signal.emit(shown)
+        self._refresh_history_buttons()
 
     def handle_suggest_params_clicked(self) -> None:
         """
