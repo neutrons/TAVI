@@ -692,3 +692,79 @@ def test_set_fit_member_without_result_clears_stale_std(view):
 
     assert amplitude_row.std_edit.text() == ""
     assert amplitude_row.value_edit.text() == "1"
+
+
+# ---------------------------------------------------------------------------
+# Undo/Redo Fit
+# ---------------------------------------------------------------------------
+
+
+def test_undo_and_redo_start_disabled(view):
+    assert not view.undo_fit_btn.isEnabled()
+    assert not view.redo_fit_btn.isEnabled()
+
+
+def test_set_fit_history_enabled_signal_toggles_each_button(view):
+    view.set_fit_history_enabled_signal.emit(True, False)
+
+    assert view.undo_fit_btn.isEnabled()
+    assert not view.redo_fit_btn.isEnabled()
+
+
+def test_undo_and_redo_buttons_reach_their_callbacks(view, qtbot):
+    calls = []
+    view.hookup_undo_fit_signal(lambda: calls.append("undo"))
+    view.hookup_redo_fit_signal(lambda: calls.append("redo"))
+    view.set_fit_history_enabled_signal.emit(True, True)
+
+    view.undo_fit_btn.click()
+    view.redo_fit_btn.click()
+
+    assert calls == ["undo", "redo"]
+
+
+def test_reset_fields_restores_default_background_and_peaks(view):
+    view.num_peaks_spin.setValue(2)
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
+    center = view.peak_panels[0].peak_table.rows[1]
+    center.value_edit.setText("3.5")
+    center.fix_check.setChecked(True)
+    view.background_table.rows[0].value_edit.setText("9")
+    view.chi2_edit.setText("1.2")
+
+    view.reset_fields_signal.emit()
+
+    assert view.num_peaks_spin.value() == 1
+    assert len(view.peak_panels) == 1
+    panel = view.peak_panels[0]
+    assert panel.peak_shape_combo.currentText() == "Gaussian"
+    assert panel.peak_table.rows[1].value_edit.text() == "1"
+    assert not panel.peak_table.rows[1].fix_check.isChecked()
+    assert view.background_table.rows[0].value_edit.text() == "0"
+    assert view.chi2_edit.text() == ""
+
+
+def test_fit_spec_reads_the_background_constraint_checkbox(view):
+    slope_row, intercept_row = view.background_table.rows
+    slope_row.constraint_check.setChecked(True)
+
+    spec = view.get_fit_spec()
+
+    assert spec.background_slope.constrained is True
+    assert spec.background_constant.constrained is False
+
+
+def test_set_fit_member_restores_the_background_constraint_checkbox(view):
+    member = FitMember(
+        series=make_series(),
+        range_min="0",
+        range_max="10",
+        background="Linear",
+        background_constant=ParamField(value="1", fixed=False, minimum="0", maximum="2", constrained=True),
+        peaks=[],
+    )
+
+    view.set_fit_member_signal.emit(member)
+
+    _slope_row, intercept_row = view.background_table.rows
+    assert intercept_row.constraint_check.isChecked()

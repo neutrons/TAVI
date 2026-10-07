@@ -40,8 +40,10 @@ GAUSSIAN_FWHM = GAUSSIAN_SIGMA * 2 * math.sqrt(2 * math.log(2))
 GAUSSIAN_AREA = GAUSSIAN_AMPLITUDE * GAUSSIAN_SIGMA * math.sqrt(2 * math.pi)
 
 
-def make_param(value, fixed=False, minimum="", maximum="") -> ParamField:
-    return ParamField(value=str(value), fixed=fixed, minimum=str(minimum), maximum=str(maximum))
+def make_param(value, fixed=False, minimum="", maximum="", constrained=False) -> ParamField:
+    return ParamField(
+        value=str(value), fixed=fixed, minimum=str(minimum), maximum=str(maximum), constrained=constrained
+    )
 
 
 def make_gaussian_xy(n=101, center=GAUSSIAN_CENTER, amplitude=GAUSSIAN_AMPLITUDE):
@@ -821,6 +823,37 @@ def test_perform_fit_linear_background_honours_a_fixed_slope(model, raw_scans):
     model.perform_fit(make_linear_background_request(raw_scans, background_slope=make_param(0, fixed=True)))
 
     assert computed[0].outcomes[0].member.result.background_slope == pytest.approx(0.0, abs=1e-9)
+
+
+def fitted_background_slope(model, raw_scans, slope: ParamField) -> float:
+    computed = []
+    EventBroker().register(SyncFitEvent, computed.append)
+    model.perform_fit(make_linear_background_request(raw_scans, background_slope=slope))
+    return computed[0].outcomes[0].member.result.background_slope
+
+
+def test_perform_fit_linear_background_constrained_slope_stays_within_its_bounds(model, raw_scans):
+    bound = LINEAR_BG_SLOPE / 2
+    slope = make_param("", minimum=-bound, maximum=bound, constrained=True)
+
+    assert fitted_background_slope(model, raw_scans, slope) <= bound + 1e-9
+
+
+def test_perform_fit_linear_background_unconstrained_slope_ignores_its_bounds(model, raw_scans):
+    bound = LINEAR_BG_SLOPE / 2
+    slope = make_param("", minimum=-bound, maximum=bound, constrained=False)
+
+    assert fitted_background_slope(model, raw_scans, slope) == pytest.approx(LINEAR_BG_SLOPE, abs=0.05)
+
+
+def test_perform_fit_linear_background_unconstrained_ignores_non_numeric_bounds(model, raw_scans):
+    """Unchecked means min/max do nothing - not even fail the fit with whatever text is left in them."""
+    errors = []
+    EventBroker().register(ExceptionEvent, errors.append)
+
+    fitted_background_slope(model, raw_scans, make_param("", minimum="abc", maximum="xyz"))
+
+    assert errors == []
 
 
 def test_perform_fit_linear_background_non_numeric_slope_reports_error(model, raw_scans):

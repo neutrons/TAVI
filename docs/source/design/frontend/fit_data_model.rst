@@ -29,6 +29,18 @@ Use cases covered
   result saved for that member. Edit it and press Perform Fit: only that member
   is refit, and the rest of the fit is left alone. TAVI does no validity check on
   any fit; judging whether a fit worked is up to the user.
+* **Undo or redo a refit.** While dialing in one member, press Undo Fit to go
+  back to that member's state (spec and result) before its last save, and Redo
+  Fit to go forward again. The buttons only act on the active series, and are
+  enabled only while Perform Fit would refit that series alone ("Apply All"
+  unchecked, or only one series focused). History is kept per member for the
+  session, not saved in the project.
+* **Start over on a new selection.** Selecting anything in the project tree
+  resets the panel's background and peak fields to their defaults, and the
+  range follows the newly active series. Undo/Redo disable until there is
+  something to step to. Picking a raw scan again and fitting it starts a new
+  fit with its own history. To carry on with an earlier fit and its history,
+  select that fit in the tree.
 * **Recover a saved fit.** Select the fit in the project tree. Every member is
   recomputed from its stored spec (not re-chained) and drawn on the main plotter
   only. No windows open, and open ones are not refreshed. Uncheck "Apply All"
@@ -121,6 +133,43 @@ listens to the dropdown's own ``FocusActivePlotEvent`` rather than
 and syncing from there would eat into the broker's depth budget (see
 :doc:`../../guides/event_broker`).
 
+**Undo/redo is per member, and a step is one save.** Every change to a fit
+arrives as a ``SaveFitEvent``, so ``TaviProjectModel`` records the member each
+merge displaces in a ``FitHistory`` keyed by ``(fit uuid, source scan uuid)``.
+Field edits that were never fit are not steps: the panel's line edits have
+their own undo for typing, and the use case is going back to a *fit*. A step
+from a sequential run is recorded per member too, so a bad run can be undone
+one scan at a time, but only from the active series - undo is for dialing one
+member in. Other choices:
+
+* History is linear. Saving after an undo clears that member's redo stack.
+* Each member keeps at most ``FIT_HISTORY_LIMIT`` (10) states, and the oldest
+  is dropped first.
+* A failed fit (``result=None``) is not recorded as a step, since there is no
+  fit to go back to.
+* History lives beside ``TaviData`` rather than in it, so dialing a fit in
+  doesn't grow the saved project. It is forgotten when its fit or scan is
+  removed.
+* A restored member is recomputed from its spec through ``FitRecomputeEvent``,
+  never replayed from a cached curve.
+* ``FittingPresenter`` keeps only the ``(can undo, can redo)`` flags from
+  ``SyncFitHistoryEvent`` for each member, never the states themselves.
+
+**Each selection starts over.** ``TaviProjectModel`` publishes
+``ClearFocusEvent`` first thing on every ``FocusEvent``, before the chain
+that event sets off. A new selection is two operations, a clear and a focus,
+so the clear is its own event and says nothing about any widget; each
+subscriber decides what letting go of the old selection means for it.
+``FittingPresenter`` resets the panel's fields and forgets
+which fit covers each scan, so the panel never shows one scan's parameters
+against another scan's data. Because the scan-to-fit map is cleared, Perform
+Fit on a raw scan picked again mints a new fit with its own history. A fit
+picked from the tree is mapped back by the ``SyncFitEvent`` that follows, and
+its history (still held by ``TaviProjectModel``) comes back with it.
+``PlotFocusEvent`` can't be the cue, because ``PlotModel`` republishes it for
+every field edit, and a ``FittingPresenter`` handler on ``FocusEvent`` itself
+would run after the chain or before it depending on registration order.
+
 **Windows only for a freshly saved fit.** ``FitWindowPresenter`` only touches
 windows for a fit it has just seen a ``SaveFitEvent`` for. On the save, it notes
 which windows the following ``SyncFitEvent`` should fill: every member of a
@@ -159,6 +208,7 @@ under the stated condition, or that end in UI state rather than another event.
         combo([Pick series in Current Plot]):::user
         applyall([Toggle Apply All]):::user
         perform([Perform Fit]):::user
+        undoredo([Undo / Redo Fit]):::user
         separately([Toggle Plot Separately]):::user
         remove([Remove items from tree]):::user
 
@@ -177,8 +227,15 @@ under the stated condition, or that end in UI state rather than another event.
         FitComponentsVisibilityChangedEvent:::event
         RawScanRemoveEvent:::event
         FitRemoveEvent:::event
+        UndoFitMemberEvent:::event
+        ClearFocusEvent:::event
+        RedoFitMemberEvent:::event
+        SyncFitHistoryEvent:::event
+        RestoreFitMemberEvent:::event
 
         tree -- LoadRawScanPresenter --> FocusEvent
+        FocusEvent -- "TaviProjectModel: always, before routing" --> ClearFocusEvent
+        ClearFocusEvent -. "FittingPresenter: reset panel fields, forget scan-to-fit map" .-> panel
         FocusEvent -- "TaviProjectModel: scans selected" --> RawScanFocusEvent
         FocusEvent -- "TaviProjectModel: plots only" --> PlotFocusEvent
         FocusEvent -- "TaviProjectModel: fits selected, or attached to a selected plot (1st)" --> FitFocusEvent
@@ -197,6 +254,16 @@ under the stated condition, or that end in UI state rather than another event.
 
         SaveFitEvent -. "TaviProjectModel: merge members; new uuid only" .-> FitAppendEvent
         SaveFitEvent -. "FitWindowPresenter: note windows to fill" .-> windows[(fit windows)]
+        SaveFitEvent -- "TaviProjectModel: record displaced members" --> SyncFitHistoryEvent
+        SyncFitHistoryEvent -. "FittingPresenter: enable Undo/Redo for the active member" .-> panel
+
+        undoredo -- "FittingPresenter: active member, single-series mode only" --> UndoFitMemberEvent
+        undoredo -- "FittingPresenter" --> RedoFitMemberEvent
+        UndoFitMemberEvent -- "TaviProjectModel: swap member (1st)" --> SyncFitHistoryEvent
+        RedoFitMemberEvent -- "TaviProjectModel: same" --> SyncFitHistoryEvent
+        UndoFitMemberEvent -- "TaviProjectModel (2nd)" --> RestoreFitMemberEvent
+        UndoFitMemberEvent -- "TaviProjectModel: restored member only (3rd)" --> FitRecomputeEvent
+        RestoreFitMemberEvent -. "FitWindowPresenter: note window, only if open" .-> windows
         FitAppendEvent -- LoadRawScanPresenter --> treenode[(tree /Fits node)]
         SyncFitEvent -. "PlotterPresenter: append curves" .-> canvas[(main plotter)]
         SyncFitEvent -. "FittingPresenter: map scan to fit, load panel" .-> panel[(fitting panel)]
@@ -230,17 +297,25 @@ browsing a fit runs ``FocusEvent`` (1), ``FitFocusEvent`` (2),
 ``SyncFitEvent`` (3). A recompute never saves, so no ``FitAppendEvent``
 follows. Perform Fit and ``sync_fit_spec`` start from a model call rather than
 an event, so ``SaveFitEvent``, ``SyncFitEvent`` and ``SyncFitSpecEvent`` are at
-depth 1 and ``FitAppendEvent`` at 2. Adding a new link to any of these chains
+depth 1 and ``FitAppendEvent`` and ``SyncFitHistoryEvent`` at 2. Undo/redo
+runs ``UndoFitMemberEvent`` (1), ``FitRecomputeEvent`` (2), ``SyncFitEvent``
+(3). Adding a new link to any of these chains
 should be checked against that budget.
 
 Two orderings are relied on rather than enforced by the broker:
 
+* ``TaviProjectModel`` publishes ``ClearFocusEvent`` *before* routing a
+  ``FocusEvent``, so the panel has started over before the new selection's
+  ``ActivePlotChangedEvent`` and ``SyncFitEvent`` reach it.
 * ``TaviProjectModel`` publishes ``FitFocusEvent`` *before*
   ``FitRecomputeEvent``, so the presenters have marked the fit selected by the
   time its ``SyncFitEvent`` arrives.
 * ``FitModel.perform_fit`` publishes ``SaveFitEvent`` *before*
   ``SyncFitEvent``. ``FitWindowPresenter`` only fills windows it noted on the
   save, so this order is what tells it the sync is a fresh fit.
+* ``TaviProjectModel`` publishes ``RestoreFitMemberEvent`` *before* the
+  ``FitRecomputeEvent`` for an undo/redo, for the same reason: it is how
+  ``FitWindowPresenter`` knows that one recompute should refresh an open window.
 
 Run a sequential fit
 --------------------
@@ -351,6 +426,40 @@ Refit one member
         EventBroker ->> PlotterPresenter: replace scan k's curve
         EventBroker ->> FitWindowPresenter: refresh it if noted (never reopens)
 
+Undo a refit
+------------
+
+.. mermaid::
+
+    sequenceDiagram
+        participant User
+        participant FittingView
+        participant FittingPresenter
+        participant EventBroker
+        participant TaviProjectModel
+        participant FitWindowPresenter
+        participant FitModel
+        participant PlotterPresenter
+
+        Note over TaviProjectModel: each SaveFitEvent recorded the member it displaced
+        User ->> FittingView: Undo Fit (enabled: active member has a step)
+        FittingView ->> FittingPresenter: undo_fit_clicked
+        FittingPresenter ->> EventBroker: UndoFitMemberEvent(fit_uuid, scan k)
+        EventBroker ->> TaviProjectModel: pop member k's undo state, push current onto redo
+        TaviProjectModel ->> TaviProjectModel: fits[fit_uuid].with_members([restored])
+        TaviProjectModel ->> EventBroker: SyncFitHistoryEvent(can_undo, can_redo)
+        EventBroker ->> FittingPresenter: update Undo/Redo buttons
+        TaviProjectModel ->> EventBroker: RestoreFitMemberEvent(fit_uuid, scan k)
+        EventBroker ->> FitWindowPresenter: note scan k's window, only if open
+        TaviProjectModel ->> EventBroker: FitRecomputeEvent(fit with member k only)
+        EventBroker ->> FitModel: recompute member k from its restored spec
+        FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[ok])
+        EventBroker ->> PlotterPresenter: replace scan k's curve
+        EventBroker ->> FittingPresenter: load restored member into the panel
+        EventBroker ->> FitWindowPresenter: refresh it if noted
+
+Redo is the same with the stacks swapped.
+
 Remove a fit or scan
 --------------------
 
@@ -367,6 +476,7 @@ Remove a fit or scan
         User ->> LoadRawScanPresenter: remove items
         LoadRawScanPresenter ->> TaviProjectModel: remove_items(uuids)
         TaviProjectModel ->> TaviProjectModel: TaviData.purge - drop members of removed scans, fits left empty
+        TaviProjectModel ->> TaviProjectModel: forget undo history of removed fits and scans
         TaviProjectModel ->> EventBroker: RawScanRemoveEvent per scan
         EventBroker ->> FitWindowPresenter: close every window on that scan
         EventBroker ->> LoadRawScanPresenter: drop tree node
@@ -375,12 +485,3 @@ Remove a fit or scan
         EventBroker ->> FitWindowPresenter: close the fit's windows
         EventBroker ->> LoadRawScanPresenter: drop tree node
 
-
-Open questions
---------------
-
-* **Undo/redo.** Not implemented. Because every edit to a fit arrives as a
-  ``SaveFitEvent`` naming the fit and the members it replaces, a natural
-  design is a command stack in ``TaviProjectModel`` that records the members a
-  merge displaced. Undo would re-merge those members and recompute them through
-  ``FitRecomputeEvent``.
