@@ -4,204 +4,222 @@ Selection → Visualization Flow
 Overview
 --------
 
-Selecting an item in the project tree triggers a chain of typed events that
-ultimately renders a plot in the ``Plot1DView`` widget.  The chain is fully
-decoupled: no layer holds a direct reference to any other layer; each component
-publishes an event and relies on the ``EventBroker`` singleton to deliver it
-to the next stage.
+Selecting items in the project tree triggers a chain of typed events that
+ends with the selection drawn in the ``Plot1DView`` widget. The chain is fully
+decoupled: no layer holds a direct reference to any other layer. Each
+component publishes an event and relies on the ``EventBroker`` singleton to
+deliver it to the next stage.
 
-The tree supports multi-select: every currently-selected scan or plot is
-focused together, in the order the user selected them (see
-`Selection order is preserved across multi-select`_ below).
+Two concepts run through every flow on this page:
 
-Two variants exist depending on what was selected:
+- **Focus** is what is being looked at: every series drawn on the canvas and
+  listed in the "Current Plot" dropdown.
+- **Stage** is the part of the focus that edits and fits apply to. With
+  "Apply All" checked every focused series is staged; without it, only the
+  series picked in the "Current Plot" dropdown is. The first staged series
+  *leads*: it is the one the plotter's axis/preset fields, the Data File tab
+  and the fitting panel show.
 
-- **RawScan selected** — each selected scan's data must be converted into a
-  plottable form before rendering (full chain)
-- **Plot selected** — pre-built plot objects are retrieved directly and
-  forwarded to the renderer, skipping the conversion step
+Both are changed by small, single-purpose events. Each one does exactly one
+thing, and a compound action is built from them:
 
-Whichever batch is focused, the plotter's "Current Plot" dropdown lists every
-plot in it, and exactly one is "active" at a time — see
-`Switching the Active Plot`_ for how that selection is changed without
-re-resolving or re-rendering the whole batch.
+- A new tree selection is ``ClearFocusEvent`` followed by one or more
+  ``Focus*`` events. ``Focus*`` events only *add* to what is focused, so a
+  mixed scan + plot + fit selection simply publishes several of them side by
+  side.
+- A restage is ``ClearStageEvent`` followed by ``StageSeriesEvent``, which
+  likewise only adds.
+
+The tree supports multi-select: every selected item is focused, in the order
+the user selected them (see `Selection order is preserved across
+multi-select`_ below).
 
 
 Participants
 ------------
 
-Six components take part, each with a single responsibility:
+- **Project tree** — translates user interaction into a generic selection
+  event, preserving the order items were selected in
+- **Load presenter** — collects the selected identifiers and publishes
+  ``FocusEvent``
+- **Project model** (``TaviProjectModel``) — the only component that knows
+  what type each tree uuid is. It clears the old focus, resolves each
+  identifier to a domain object, and publishes one additive ``Focus*`` event
+  per item type
+- **Plot model** (``PlotModel``) — owns the focus (``_last_plots``) and the
+  stage (``_staged_uuids``). It turns raw scans and fits into single-series
+  preview ``Plot``\ s, applies field edits to the staged series, and syncs both
+  focus and stage back out (``SyncPlotEvent``, ``SyncStageEvent``)
+- **Plotter presenter + view** — draws focused series, lists them in the
+  "Current Plot" dropdown, and publishes the user's staging choices
+  (``ClearStageEvent``/``StageSeriesEvent``)
+- **Data file presenter + view** — shows the lead staged series' scan in the
+  Data File tab
+- **Fitting presenter** — fits the staged series and shows the lead one in
+  the fitting panel (see :doc:`fit_data_model`)
 
-- **Project tree** — translates user interaction into a generic selection event,
-  preserving the order items were selected in
-- **Load presenter** — collects the selected identifiers and publishes a focus event
-- **Project model** — resolves each identifier to a typed domain object and
-  re-publishes a type-specific event
-- **Plot model** — builds one unsaved preview ``Plot`` (composition of
-  ``PlotSeries``, keyed by that scan's own uuid) per focused raw scan
-  (RawScan path only), and attaches the scans that those ``Plot``\(s)'
-  series reference to the outgoing event
-- **Plotter presenter + view** — resolves each series against the event's own
-  scan snapshot, clears the canvas and renders each resolved series, and
-  tracks which of the focused plots is "active"
-- **Data file presenter + view** — mirrors whichever plot is currently
-  "active" into the Data File tab, retitled to that plot's source scan
-
-Neither the project model nor the plot model ever hands a live
-``raw_scans``/``plots`` handle to a presenter. Whatever a presenter or view
-needs to render travels *inside* the event that triggers it — see
-:doc:`plot_data_model` for why.
+Neither model ever hands a live ``raw_scans``/``plots`` handle to a
+presenter. Whatever a presenter or view needs to render travels *inside* the
+event that triggers it — see :doc:`plot_data_model` for why.
 
 
-RawScan Selection — Full Chain
--------------------------------
+Event summary
+-------------
+
+=========================  =========================  ==========================================================
+Event                      Published by               Meaning
+=========================  =========================  ==========================================================
+``FocusEvent``             ``LoadRawScanPresenter``   The tree selection changed; ids of every selected item.
+``ClearFocusEvent``        ``TaviProjectModel``       Nothing is focused any more (stage included).
+``FocusRawScanEvent``      ``TaviProjectModel``       Add these raw scans to the focus.
+``FocusPlotEvent``         ``TaviProjectModel``,      Add these plots to the focus.
+                           ``PlotModel``
+``FocusFitEvent``          ``TaviProjectModel``       Add these fits (and the series they were fit against).
+``SyncPlotEvent``          ``PlotModel``              The focused plots as they now stand, after an edit or
+                                                      removal. Same focus, new content.
+``ClearStageEvent``        ``PlotterPresenter``       Nothing is staged any more.
+``StageSeriesEvent``       ``PlotterPresenter``       Add these focused series to the stage.
+``SyncStageEvent``         ``PlotModel``              The staged series and their scans; the first one leads.
+=========================  =========================  ==========================================================
+
+
+Selection — Full Chain
+----------------------
+
+The diagram shows a mixed selection of raw scans and saved plots with "Apply
+All" checked. A selection of only one type simply skips the other branch.
 
 .. mermaid::
 
     sequenceDiagram
         participant User
-        participant TreeViewWidget
         participant LoadRawScanPresenter
         participant EventBroker
         participant TaviProjectModel
         participant PlotModel
         participant PlotterPresenter
         participant Plot1DView
-
-        User ->> TreeViewWidget: selects one or more scan nodes (click, ctrl/shift-click, arrow keys)
-        TreeViewWidget ->> LoadRawScanPresenter: selection signal (Qt)
-        LoadRawScanPresenter ->> LoadRawScanPresenter: collect selected identifiers, in selection order
-        LoadRawScanPresenter ->> EventBroker: publish focus event
-
-        EventBroker ->> TaviProjectModel: handle focus event
-        TaviProjectModel ->> TaviProjectModel: resolve identifiers → RawScan objects
-        TaviProjectModel ->> EventBroker: publish raw-scan focus event
-
-        EventBroker ->> PlotModel: handle raw-scan focus event
-        loop for each focused scan
-            PlotModel ->> PlotModel: build one single-series preview Plot (PlotSeries pointing at scan.uuid)
-        end
-        PlotModel ->> PlotModel: gather referenced scans (scans_for_plots)
-        PlotModel ->> EventBroker: publish plot focus event (plots + scans)
-
-        EventBroker ->> PlotterPresenter: handle plot focus event
-        loop for each series across plots
-            PlotterPresenter ->> PlotterPresenter: resolve_series(series, event.scans)
-        end
-        PlotterPresenter ->> Plot1DView: clear canvas
-        loop for each resolved series
-            PlotterPresenter ->> Plot1DView: append plot
-        end
-        Plot1DView ->> Plot1DView: redraw canvas
-        PlotterPresenter ->> Plot1DView: set_plot_options(labels, default_index)
-        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(scan)
-        EventBroker ->> DataFilePresenter: handle active plot changed
-
-
-Plot Selection — Short-Circuit Chain
--------------------------------------
-
-When the selected identifier(s) resolve to pre-built plot objects,
-``TaviProjectModel`` publishes the plot focus event directly.
-``PlotModel`` is never invoked — but ``TaviProjectModel`` still must gather
-the scans referenced by those ``Plot``\(s)' series (it owns ``raw_scans`` too)
-before publishing, for the same reason ``PlotModel`` does on the other path.
-
-.. mermaid::
-
-    sequenceDiagram
-        participant User
-        participant TreeViewWidget
-        participant LoadRawScanPresenter
-        participant EventBroker
-        participant TaviProjectModel
-        participant PlotterPresenter
-        participant Plot1DView
-
-        User ->> TreeViewWidget: selects one or more plot nodes (click, ctrl/shift-click, arrow keys)
-        TreeViewWidget ->> LoadRawScanPresenter: selection signal (Qt)
-        LoadRawScanPresenter ->> EventBroker: publish focus event
-
-        EventBroker ->> TaviProjectModel: handle focus event
-        TaviProjectModel ->> TaviProjectModel: resolve identifiers → Plot objects
-        TaviProjectModel ->> TaviProjectModel: gather referenced scans (scans_for_plots)
-        TaviProjectModel ->> EventBroker: publish plot focus event (plots + scans)
-
-        EventBroker ->> PlotterPresenter: handle plot focus event
-        loop for each series across plots
-            PlotterPresenter ->> PlotterPresenter: resolve_series(series, event.scans)
-        end
-        PlotterPresenter ->> Plot1DView: clear canvas
-        loop for each resolved series
-            PlotterPresenter ->> Plot1DView: append plot
-        end
-        Plot1DView ->> Plot1DView: redraw canvas
-        PlotterPresenter ->> Plot1DView: set_plot_options(labels, default_index)
-        PlotterPresenter ->> EventBroker: publish ActivePlotChangedEvent(scan)
-
-
-Switching the Active Plot
---------------------------
-
-Both chains above end by rendering every focused plot and picking one as
-"active" — the one whose source scan drives the Data File tab. Picking a
-*different* already-focused plot from the "Current Plot" dropdown does not
-replay either chain: nothing needs re-resolving, since every plot in the
-dropdown was already resolved when the batch was focused. Only the one
-newly-active plot needs to be looked up and announced.
-
-The presenter publishes a single ``FocusActivePlotEvent(uuid)`` — it does not
-need to know (and ``PlotFocusEvent`` carries no flag saying) which model
-produced the currently-focused batch:
-
-.. mermaid::
-
-    sequenceDiagram
-        participant User
-        participant Plot1DView
-        participant PlotterPresenter
-        participant EventBroker
-        participant PlotModel
-        participant TaviProjectModel
         participant DataFilePresenter
 
-        User ->> Plot1DView: picks a different "Current Plot" entry
-        Plot1DView ->> PlotterPresenter: plot_combo_index_changed(index)
-        PlotterPresenter ->> PlotterPresenter: _active_plot_uuid = _focused_plot_uuids[index]
-        PlotterPresenter ->> EventBroker: publish FocusActivePlotEvent(uuid)
+        User ->> LoadRawScanPresenter: selects scan and plot nodes (in selection order)
+        LoadRawScanPresenter ->> EventBroker: FocusEvent(ids)
 
-        EventBroker ->> PlotModel: handle active-plot focus event
-        EventBroker ->> TaviProjectModel: handle active-plot focus event
-        Note over PlotModel,TaviProjectModel: whichever one owns uuid resolves it;<br/>the other no-ops
-        Note over PlotModel,TaviProjectModel: first_contributing_scan(plot, scans) — plot.series[0]'s source scan
-        Note over PlotModel,TaviProjectModel: publish ActivePlotChangedEvent(scan)
+        EventBroker ->> TaviProjectModel: handle focus event
+        TaviProjectModel ->> EventBroker: ClearFocusEvent
+        EventBroker ->> PlotModel: forget focused plots and stage
+        EventBroker ->> PlotterPresenter: empty canvas and dropdown, reset controls
+        EventBroker ->> DataFilePresenter: clear the data tab
 
-        EventBroker ->> DataFilePresenter: handle active plot changed
-        DataFilePresenter ->> DataFilePresenter: populate from scan
+        TaviProjectModel ->> TaviProjectModel: resolve ids → RawScan / Plot / FitEntry
+        TaviProjectModel ->> EventBroker: FocusRawScanEvent(scans)
+        EventBroker ->> PlotterPresenter: offer the first scan's columns as preset channels
+        EventBroker ->> PlotModel: build one single-series preview Plot per scan
+        PlotModel ->> EventBroker: FocusPlotEvent(previews, scans)
+        EventBroker ->> PlotModel: append previews to _last_plots
+        EventBroker ->> PlotterPresenter: resolve_series against event.scans, add to canvas and dropdown
+        PlotterPresenter ->> Plot1DView: add_plots_signal(resolved) — draws without clearing
+        PlotterPresenter ->> EventBroker: StageSeriesEvent(new series uuids)
+        EventBroker ->> PlotModel: add to stage
+        PlotModel ->> EventBroker: SyncStageEvent(staged series, scans)
+        EventBroker ->> PlotterPresenter: sync axis/preset fields to the lead series
+        EventBroker ->> DataFilePresenter: show the lead series' scan
 
-``FocusActivePlotEvent`` is registered by *both* ``TaviProjectModel`` and
-``PlotModel`` — each checks membership first (``e.uuid in self.tavi_data.plots``,
-or a linear scan over ``self._last_plots``) and returns without publishing if
-the uuid isn't one of its own, rather than indexing straight in and letting a
-miss raise. This works because saved-plot uuids (freshly minted via
-``uuid4()`` on save) and preview-plot uuids (borrowed from the ``RawScan``
-they preview — see `Preview plots are keyed by their source scan's uuid`_
-below) never collide: exactly one model ever recognizes a given uuid as its
-own, so the presenter never has to guess which model to ask, and neither
-model needs to reason about the other's storage to decline gracefully.
+        TaviProjectModel ->> EventBroker: FocusPlotEvent(saved plots, scans)
+        Note over EventBroker,DataFilePresenter: same handling as the preview FocusPlotEvent above
 
-No ``PlotFocusEvent`` is published on this path — the canvas is left alone.
-Only ``ActivePlotChangedEvent`` fires, which is why switching the active plot
-never re-clears or re-renders ``Plot1DView``.
+With "Apply All" unchecked, ``PlotterPresenter`` stages only the first series
+of the selection — so there is always something for edits and fits to act
+on — and leaves later ``FocusPlotEvent``\ s unstaged.
+
+Selecting fits adds one more branch. ``TaviProjectModel`` publishes
+``FocusFitEvent``, and ``PlotModel`` answers with a ``FocusPlotEvent`` for each
+fitted series that is not already focused, so a fit's data is drawn under its
+curve. The fit curves themselves arrive later through ``RecomputeFitEvent`` and
+``SyncFitEvent`` — see :doc:`fit_data_model`.
+
+
+Restaging — the dropdown and "Apply All"
+----------------------------------------
+
+Changing what is staged never re-renders the canvas: nothing that is drawn
+has changed, only which series edits apply to.
+
+.. mermaid::
+
+    sequenceDiagram
+        participant User
+        participant Plot1DView
+        participant PlotterPresenter
+        participant EventBroker
+        participant PlotModel
+        participant DataFilePresenter
+        participant FittingPresenter
+
+        alt picks a series in "Current Plot" ("Apply All" off)
+            User ->> Plot1DView: picks entry k
+            Plot1DView ->> PlotterPresenter: plot_combo_index_changed(k)
+            PlotterPresenter ->> EventBroker: ClearStageEvent
+            PlotterPresenter ->> EventBroker: StageSeriesEvent([series k])
+        else toggles "Apply All"
+            User ->> Plot1DView: toggles the checkbox
+            Plot1DView ->> PlotterPresenter: apply_all_toggled(checked)
+            PlotterPresenter ->> EventBroker: ClearStageEvent
+            PlotterPresenter ->> EventBroker: StageSeriesEvent(lead first, then every other focused series — or the lead alone)
+        end
+        EventBroker ->> PlotModel: replace stage
+        PlotModel ->> EventBroker: SyncStageEvent(staged series, scans)
+        EventBroker ->> PlotterPresenter: sync fields, point the dropdown at the lead
+        EventBroker ->> DataFilePresenter: show the lead series' scan
+        EventBroker ->> FittingPresenter: track the stage, show the lead's saved fit if it has one
+
+The dropdown is disabled while "Apply All" is checked, so a dropdown pick
+always stages one series alone. Checking "Apply All" keeps the current lead
+first, so the panels keep showing the series they showed before.
+
+
+Editing the staged series
+-------------------------
+
+Editing an axis or preset field applies to the staged series only. The
+presenter does not pick a target: ``PlotModel`` already tracks the stage.
+
+.. mermaid::
+
+    sequenceDiagram
+        participant User
+        participant Plot1DView
+        participant PlotterPresenter
+        participant PlotModel
+        participant EventBroker
+
+        User ->> Plot1DView: edits an axis/preset field
+        Plot1DView ->> PlotterPresenter: fields_focus_changed
+        PlotterPresenter ->> PlotModel: update_fields(fields) (proxy call)
+        PlotModel ->> PlotModel: update every staged series; unstaged series carried through
+        PlotModel ->> EventBroker: SyncPlotEvent(all focused plots, scans)
+        EventBroker ->> PlotterPresenter: redraw the canvas, re-append fit curves
+        PlotModel ->> EventBroker: SyncStageEvent(staged series, scans)
+        EventBroker ->> PlotterPresenter: sync fields to the edited lead
+
+If any staged series rejects the fields (an unknown column, a non-numeric
+preset value), ``PlotModel`` reports the error and changes nothing.
+
+Removing a focused scan from the project takes the same path:
+``PlotModel`` drops the scan's series and publishes ``SyncPlotEvent``, and
+``SyncStageEvent`` too if a staged series went with it. If every staged
+series was removed, ``PlotterPresenter`` restages the first remaining one.
+
+The plotter's "Show Title" checkbox is a direct proxy call,
+``PlotModel.set_show_title(show_title)``, not an event: only ``PlotModel``
+owns series labels, so there is no one else to tell. It applies to the next
+scans focused.
 
 
 Add Plot — Saving a New Plot Entry
-------------------------------------
+----------------------------------
 
-Clicking **Add Plot** on the plotter panel runs the reverse direction of the
-chains above: instead of a selection producing a rendered plot, the
-*currently rendered* plot is captured and persisted as a new, independent
-entry in the project.
+Clicking **Add Plot** captures every focused series as one new, independent
+plot in the project.
 
 .. mermaid::
 
@@ -209,196 +227,159 @@ entry in the project.
         participant User
         participant Plot1DView
         participant PlotterPresenter
+        participant PlotModel
         participant EventBroker
         participant TaviProjectModel
         participant LoadRawScanPresenter
-        participant ProjectView
 
         User ->> Plot1DView: clicks "Add Plot"
-        Plot1DView ->> PlotterPresenter: plot_clicked signal
-        PlotterPresenter ->> PlotterPresenter: deep-copy _current_plot under a fresh uuid
-        PlotterPresenter ->> EventBroker: publish SavePlotEvent(plot)
+        Plot1DView ->> PlotterPresenter: plot_clicked
+        PlotterPresenter ->> PlotModel: save_focused_plots(fit_uuids of drawn curves)
+        PlotModel ->> PlotModel: copy every focused series into one new Plot (fresh uuid)
+        PlotModel ->> EventBroker: SavePlotEvent(plot)
+        EventBroker ->> TaviProjectModel: store in TaviData.plots
+        TaviProjectModel ->> EventBroker: AddPlotEvent(uuid, friendly_name, friendly_path="")
+        EventBroker ->> LoadRawScanPresenter: add the node under /Plots
 
-        EventBroker ->> TaviProjectModel: handle save-plot event
-        TaviProjectModel ->> TaviProjectModel: store plot in TaviData.plots
-        TaviProjectModel ->> TaviProjectModel: friendly_name = "_".join(series.scan_name) + "_Plot"
-        TaviProjectModel ->> EventBroker: publish PlotAppendEvent(uuid, friendly_name, friendly_path="")
-
-        EventBroker ->> LoadRawScanPresenter: handle plot append event
-        LoadRawScanPresenter ->> ProjectView: add_plot(uuid, friendly_name, friendly_path)
-
-The new plot is then selectable like any other — its own future
-``FocusEvent`` will resolve it through the "Plot Selection" chain above.
-
-Why a fresh uuid on every click
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``_current_plot`` may already be a *saved* plot (the user re-selected an
-existing ``Plots`` tree entry, then clicked **Add Plot** again).
-``TaviProjectModel.tavi_data.plots`` is keyed by uuid, and ``ProjectView``
-raises if a uuid is inserted twice — reusing the uuid would silently
-overwrite the original entry (model) or crash the tree (view) on the second
-click. Deep-copying under a new uuid before publishing means every click
-produces an independent entry, regardless of whether the source plot was
-ephemeral (fresh off a raw-scan selection) or already saved.
-
-``friendly_path`` is always empty
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Saved plots have no folder/grouping requirement yet, so
-``TaviProjectModel`` always publishes ``friendly_path=""``. ``ProjectView``
-still places every plot under the ``Plots`` tree root regardless.
+The new ``Plot`` always gets a fresh uuid, so clicking **Add Plot** twice on
+the same focus creates two independent entries rather than overwriting one.
+The fits currently drawn on the canvas are stamped onto it (``Plot.fits``),
+so focusing it later brings its fit curves back too.
 
 
 Key Design Decisions
 --------------------
 
-Typed event routing in the project model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Prime events: clear, then add
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The project model dispatches to different downstream events based on the
-runtime type of each resolved object.  This keeps the upstream trigger generic
-— the caller does not need to know whether it selected a scan or a plot —
-while allowing downstream consumers to specialize.
+A new selection is two operations, a clear and a focus, so it is published as
+two kinds of event rather than one "change selection" event. Every ``Focus*``
+event only adds, which is what lets a mixed selection publish
+``FocusRawScanEvent``, ``FocusPlotEvent`` and ``FocusFitEvent`` side by side
+without one wiping the canvas the other just drew. Earlier versions folded
+the clear into the focus events instead — a replacing ``PlotFocusEvent``, an
+``exclusive`` flag on the fit event, and an ``also_plots`` field so a scan +
+plot selection could be merged into a single publish. Splitting the clear out
+removed all three.
+
+The stage follows the same pattern (``ClearStageEvent`` then
+``StageSeriesEvent``). ``ClearFocusEvent`` implies the stage is cleared too,
+since the stage is part of the focus.
+
+Focus versus sync
+~~~~~~~~~~~~~~~~~
+
+``FocusPlotEvent`` and ``SyncPlotEvent`` carry the same payload but mean
+different things, and their subscribers react differently. A focus is a new
+selection: it may reset controls and pick a default stage. A sync is the same
+focus with updated content: it redraws but must not reset anything the user
+set up. ``PlotModel`` publishes a sync after every field edit, so a single
+event for both would wipe the panels on every keystroke.
+
+The user stages; the model tracks and syncs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Staging is a user choice, made in the plotter's UI, so ``PlotterPresenter``
+publishes it — the same way the tree publishes ``FocusEvent``. ``PlotModel``
+is the source of truth for what is actually staged: it resolves the staged
+uuids against the focused plots and publishes ``SyncStageEvent`` with the
+series and scans. Every consumer reads the stage from that one sync, so the
+data tab, the plotter fields and the fitting panel can never disagree about
+which series leads.
+
+``StageSeriesEvent`` may arrive before the plots it names: ``PlotterPresenter``
+stages from its own ``FocusPlotEvent`` handler, which can run before
+``PlotModel``'s. ``PlotModel`` keeps the uuids anyway and syncs the stage
+again once a ``FocusPlotEvent`` brings the series in, so the result does not
+depend on subscriber registration order.
+
+There is no separate "active series". With "Apply All" off the stage is
+exactly the series picked in the dropdown; with it on the dropdown is
+disabled and the lead staged series plays that role.
+
+Events for broadcast, proxy calls for requests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Focus, stage and sync are broadcast as events because many components react
+to each. A request that only one component answers — a field edit
+(``update_fields``), "Show Title" (``set_show_title``), Add Plot
+(``save_focused_plots``) — is a direct call through that model's proxy
+instead. The model then publishes a sync event if the data changed.
+
+Typed event routing in the project model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Only ``TaviData`` knows what type each tree uuid is, so the tree publishes
+one generic ``FocusEvent`` and ``TaviProjectModel`` narrows it into typed
+``Focus*`` events. The tree never needs to know whether it selected a scan, a
+plot or a fit.
 
 PlotModel as an adapter
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
-``PlotModel`` exists to convert raw scan domain objects into ``Plot``
-compositions (``Plot``/``PlotSeries`` — see :doc:`plot_data_model`).  This
-keeps rendering concerns out of both the domain model and the view layer. A
-multi-scan focus produces one single-series preview ``Plot`` per scan (not
-one multi-series ``Plot``), so each run stays independently selectable in
-the "Current Plot" dropdown and independently resolvable by uuid.
+``PlotModel`` converts raw scans (and fitted series) into ``Plot``
+compositions (``Plot``/``PlotSeries`` — see :doc:`plot_data_model`). A
+multi-scan focus produces one single-series preview ``Plot`` per scan, not one
+multi-series ``Plot``, so each run stays independently stageable in the
+"Current Plot" dropdown. Preview plots are never written into
+``TaviData.plots``; only **Add Plot** persists them.
 
-Preview plots are keyed by their source scan's uuid
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Series are identified by their source scan
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A preview ``Plot`` built from a raw scan is deliberately never written into
-``TaviData.plots`` — only clicking **Add Plot** persists it (see below), and
-until then it exists only in ``PlotModel._last_plots``. Rather than minting
-a fresh, TaviData-unaware uuid for it (``PlotSeries`` and ``UUIDFactory``
-would happily do this), ``_preview_plot_for_scan`` gives the preview
-``Plot`` the *same* uuid as the one ``RawScan`` it previews — a preview is a
-1:1, single-series wrapper around one run, so this loses no information and
-makes the uuid trivially real: it is always the uuid of something already
-sitting in ``TaviData.raw_scans``.
-
-This is what lets ``FocusActivePlotEvent`` (see `Switching the Active Plot`_)
-be handled by both models with neither reasoning about the other: since a
-preview plot's uuid is a real ``TaviData.raw_scans`` key,
-``TaviProjectModel._handle_active_plot_focus_event`` cannot use
-``fetch_by_uuid`` here — it would resolve to the ``RawScan``, the wrong type,
-instead of telling us the uuid isn't a plot at all. It checks
-``e.uuid in self.tavi_data.plots`` directly instead, and no-ops on a miss.
-``PlotModel`` mirrors this by scanning its own ``_last_plots`` for a matching
-uuid. Neither model imports, mentions, or reasons about the other's storage;
-each just knows its own identity space.
+The dropdown, the stage and the drawn fit curves all key a series by its
+``source_scan_uuid``, never by its containing ``Plot``'s uuid. That is what
+lets one series be picked out of a fused, multi-series saved plot exactly as
+it would be among several single-series previews, and what lets a scan that
+is selected alongside its own fit be focused once rather than twice.
 
 Events carry their own data; presenters/views hold none
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``PlotFocusEvent`` carries both the focused ``Plot``\(s) and the ``Scan``
-objects their series reference (``scans``), gathered by whichever model
-publishes it. ``PlotterPresenter`` resolves each series against that
+``FocusPlotEvent``, ``SyncPlotEvent`` and ``SyncStageEvent`` carry the
+``Scan`` objects their series reference (``scans``), gathered by the model
+that publishes them. ``PlotterPresenter`` resolves each series against that
 snapshot and forwards resolved arrays to the view. Neither the presenter nor
-the view ever holds a live handle to ``raw_scans``, nor calls a model
-synchronously to fetch data — every value they need arrives already inside
-the event that triggered them.
+the view ever holds a live handle to ``raw_scans``; between events the
+presenter keeps only uuids and dropdown labels.
 
-Clear-before-append semantics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Controls are reset on clear, synced from the lead
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The plotter presenter always clears the canvas before appending.  Every plot
-focus event represents a *replacement*, not an *addition*.  Overplot behaviour
-(accumulating multiple series on the same axes) requires a separate code path.
-
-Controls are reset on scan focus, synced on plot render
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The two focus paths touch the plotter controls differently, and the ordering
-matters because a RawScan focus is always immediately followed by a plot focus
-(``PlotModel`` reacts to the first by publishing the second).
-
-- **RawScan focus** — ``PlotterPresenter.handle_raw_scan_focus`` calls
-  ``reset_controls_to_defaults()`` (rebin radio back to *No Rebin*, rebin
-  start/stop/step back to ``0``/``2``/``0.02``, preset type back to ``NONE``,
-  preset value back to ``"1"``), then ``set_preset_channel_options(...)`` to
-  repopulate the channel dropdown from the newly focused scan's columns. It does
-  **not** derive normalization from ``scan.tavimeta.normalization``.
-- **Plot focus** — ``Plot1DView._render_plots`` calls ``sync_axis_fields(x_name,
-  y_name)`` and ``sync_preset_fields(normalized_by, normalized_by_value)`` per
-  rendered series, so the axis and preset controls end up reflecting what is
-  actually on the canvas.
-
-So a scan carrying a normalization channel does briefly show preset type
-``NONE`` — the reset — before the plot focus event lands and
-``sync_preset_fields`` promotes it to ``NORMALIZE``. Because both events are
-dispatched synchronously through the broker, the user only ever sees the final
-state.
+- **ClearFocusEvent** — ``PlotterPresenter`` calls
+  ``reset_controls_to_defaults()``: rebin back to *No Rebin* with
+  ``0``/``2``/``0.02``, preset type back to ``NONE``, preset value back to
+  ``"1"``. It does **not** derive normalization from
+  ``scan.tavimeta.normalization``.
+- **FocusRawScanEvent** — the preset channel dropdown is repopulated from
+  the first focused scan's columns.
+- **SyncStageEvent** — the axis and preset fields are synced to the lead
+  staged series (``sync_axis_fields``/``sync_preset_fields``), so they always
+  describe the series an edit would change.
 
 Both sync methods and the reset block widget signals while writing, so
-programmatically updating a control never re-emits ``fields_focus_changed`` and
-loops back into the model.
-
-.. note::
-
-   ``_render_plots`` calls both sync methods **once per series**, so with a
-   multi-series overlay the controls end up showing the last series' values.
-   The controls describe a single series; the overlay case has no defined
-   answer yet.
+programmatically updating a control never re-emits ``fields_focus_changed``
+and loops back into the model.
 
 Selection order is preserved across multi-select
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``TreeViewWidget`` tracks a ``_selection_order`` list alongside Qt's own
 selection model, appending a uuid when it's selected and removing it when
 it's deselected. ``get_selected_items()`` returns items in that order rather
 than Qt's (unordered) ``selectedIndexes()`` order, and drops any uuid no
 longer selected (e.g. a removed tree entry) before returning. Deselecting an
-item and reselecting it moves it to the end — the tracked order reflects the
-current *click* order, not first-ever-selected order. This determines the
-order plots appear in in the "Current Plot" dropdown and, on a genuinely new
-selection, which one defaults to active (index 0 — see
-``handle_plot_focus``'s ``new_uuids[0]`` fallback).
+item and reselecting it moves it to the end. Within each item type this
+determines the order series appear in the "Current Plot" dropdown and, with
+"Apply All" off, which one is staged by default (the first). Across types,
+raw scans are focused before saved plots, and fits last.
 
-The data widget follows the active plot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Depth budget
+~~~~~~~~~~~~
 
-``DataFilePresenter`` subscribes to ``ActivePlotChangedEvent`` in addition to
-``RawScanFocusEvent``. In a multi-select scenario this is what keeps the Data
-File tab in sync with whichever plot the user has made active via the
-dropdown, rather than freezing on whatever scan was focused first.
-``DataFileView.set_title`` emits a ``title_changed`` signal that
-``TaviView`` connects to retitle the tab itself (e.g. ``"Data File
-(scan_name)"``); a ``None`` scan (nothing active) resets the title to plain
-``"Data File"``. See :doc:`data_file_view` for the presenter/view details.
-
-``ActivePlotChangedEvent`` carries a scan, not a plot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The data widget only ever displays data that lives on a ``Scan`` — it has no
-use for a ``Plot`` object itself. So rather than carry the active ``Plot``
-plus a ``scans`` snapshot for ``DataFilePresenter`` to resolve against (which
-also meant handling the case where that ``Plot`` is an unsaved preview with
-nowhere persistent to live), every publisher of ``ActivePlotChangedEvent``
-resolves ``first_contributing_scan(plot, scans)`` (``plot_resolver.py``) —
-the scan backing the plot's first series — itself, and the event carries
-that ``Scan`` directly (``scan: Optional[Scan]``). A ``Plot`` always has at
-least one series pointing at a real scan, whether the plot is a saved
-``TaviData`` entry or an unsaved preview, so this always resolves; ``None``
-only ever means no plot is currently active. ``DataFilePresenter`` is left
-with a single branch: ``None`` clears the view, otherwise populate from the
-scan.
-
-Mixed selection limitation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If a user selects both scan and plot identifiers simultaneously, the project
-model publishes both a raw-scan focus event and a plot focus event.  Because
-the plot model reacts to the raw-scan event by publishing another plot focus
-event, the plotter presenter receives two plot focus events in sequence and
-clears the canvas between them.  Only the final group survives — a known
-consequence of the clear-before-append design. Selection-order tracking does
-not change this: it orders items *within* one focus event, not across the
-two separately-dispatched events here.
+The broker allows a nesting depth of 5 (see :doc:`../../guides/event_broker`).
+The deepest chain here is a raw scan selection: ``FocusEvent`` (1),
+``FocusRawScanEvent`` (2), ``FocusPlotEvent`` (3), ``StageSeriesEvent`` (4),
+``SyncStageEvent`` (5). Handlers of ``SyncStageEvent`` reached this way must
+not publish anything further.

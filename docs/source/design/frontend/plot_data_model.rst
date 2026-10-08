@@ -24,7 +24,8 @@ Core Rule: Plot Holds No Data
         """One scan's contribution to a Plot: which scan, and which columns of it to display."""
 
         source_scan_uuid: UUID
-        scan_name: str
+        scan_name: str                       # legend label; the shared scan title when "Show Title" is on
+        friendly_name: Optional[str] = None  # the run's own name - see ``run_name``
         normalized_by: Optional[str]
         normalized_by_value: Optional[float] = None
         x_name: str
@@ -43,6 +44,16 @@ pointer (``source_scan_uuid``) plus a column specification (``x_name`` /
 ``y_name`` / ``error_name`` / ``normalized_by``). ``Plot`` is nothing more
 than a named list of these pointers.
 
+``scan_name`` is only a display label. With "Show Title" on it holds the
+instrument's scan title, which many scans share (e.g. every
+"sample alignment" run). Anything that has to tell series apart uses the
+run's own name instead. ``PlotSeries.run_name`` is the scan's ``friendly_name``,
+falling back to ``scan_name`` for series saved before that field existed. Saved
+plot and fit names use it. ``PlotSeries.display_label`` is ``run_name``,
+followed by the title when the two differ (e.g.
+``scan0012 - sample alignment``). The legend, the fit curve labels and the
+"Current Plot" dropdown all use it.
+
 .. mermaid::
 
     classDiagram
@@ -53,6 +64,7 @@ than a named list of these pointers.
         class PlotSeries {
             +UUID source_scan_uuid
             +str scan_name
+            +Optional~str~ friendly_name
             +Optional~str~ normalized_by
             +Optional~float~ normalized_by_value
             +str x_name
@@ -122,29 +134,33 @@ The ``x_name`` fixup mirrors the loader: column names beginning with a digit are
 stored with a leading underscore so they remain attribute-accessible
 (``2theta`` becomes ``_2theta``), and the series stores the user-facing name.
 
-Whichever model actually owns scan storage — ``PlotModel`` (raw-scan-focus,
-``update_fields``) or ``TaviProjectModel`` (re-focusing a previously saved
-``Plot``) — calls ``scans_for_plots`` right before publishing, and attaches
-the result to ``PlotFocusEvent.scans``:
+Whichever model actually owns scan storage — ``PlotModel`` (focusing raw
+scans or fitted series, and syncing after ``update_fields`` or a removal) or
+``TaviProjectModel`` (re-focusing a previously saved ``Plot``) — calls
+``scans_for_plots`` right before publishing, and attaches the result to the
+event's ``scans``. A new focus is a ``FocusPlotEvent``; new content for the
+plots already focused is a ``SyncPlotEvent`` (see :doc:`visualization_flow`):
 
 .. code-block:: python
 
-    self._event_broker.publish(PlotFocusEvent(plots=[plot], scans=scans_for_plots([plot], self._raw_scans)))
+    self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
 
 ``EventBroker.publish`` deep-copies every event before delivering it (this
 is not special-cased for ``scans`` — every event field already gets this),
 so what the presenter receives is an independent snapshot, not a live
 reference into ``self._raw_scans``.
 
-``PlotterPresenter.handle_plot_focus`` then calls ``resolve_series`` once
-per ``PlotSeries`` across ``e.plots``, reading only ``e.scans`` — never a
-model, never a stored handle:
+``PlotterPresenter.handle_plot_focus`` (and ``handle_sync_plot``) then calls
+``resolve_series`` once per ``PlotSeries`` across ``e.plots``, reading only
+``e.scans`` — never a model, never a stored handle:
 
 .. code-block:: python
 
-    def handle_plot_focus(self, e: PlotFocusEvent) -> None:
-        resolved = [(*resolve_series(series, e.scans), series) for plot in e.plots for series in plot.series]
-        self._view.render_plots_signal.emit(resolved)
+    def _resolve(self, series: list[PlotSeries], scans: dict[UUID, Scan]) -> list:
+        return [(*resolve_series(s, scans), s) for s in series]
+
+A focus adds the resolved series to the canvas (``add_plots_signal``); a sync
+redraws it from scratch (``render_plots_signal``).
 
 The view never sees a scan, a live model, or a ``PlotSeries`` from storage —
 only the resolved arrays and the ``PlotSeries`` snapshot carrying the
@@ -259,7 +275,7 @@ field already anticipates exactly this — a derived scan mapping back to one
 or more contributing source uuids). ``ProcessedScan`` would sit in the same
 role ``RawScan`` does today: immutable once produced, stored in a
 scan-lookup dict keyed by uuid, and resolvable by ``resolve_series`` without
-any change to that function — ``resolve_series``/``PlotFocusEvent.scans``
+any change to that function — ``resolve_series``/``FocusPlotEvent.scans``
 are already typed as ``Scan``, not ``RawScan``, precisely so a
 ``ProcessedScan`` slots in without touching either.
 
@@ -324,12 +340,12 @@ Presenters and views hold no state — the event does
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Only the models that own scan storage (``PlotModel``, ``TaviProjectModel``)
-ever read ``raw_scans``. Whichever one publishes ``PlotFocusEvent`` attaches
-exactly the scans its plots' series reference (``scans_for_plots``) to
-``PlotFocusEvent.scans``. ``PlotterPresenter`` and ``Plot1DView`` resolve
+ever read ``raw_scans``. Whichever one publishes ``FocusPlotEvent`` or
+``SyncPlotEvent`` attaches exactly the scans its plots' series reference
+(``scans_for_plots``) to the event's ``scans``. ``PlotterPresenter`` and ``Plot1DView`` resolve
 against that per-event snapshot and nothing else — no live handle, no
 synchronous call back into a model. This is the same reason
-``RawScanFocusEvent`` already carries full ``RawScan`` objects rather than
+``FocusRawScanEvent`` already carries full ``RawScan`` objects rather than
 uuids for the presenter to look up: the event is the only channel through
 which rendering-layer code is allowed to see data.
 

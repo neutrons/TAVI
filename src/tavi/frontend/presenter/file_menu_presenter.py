@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from tavi.frontend.view.file_menu_view import FileMenu
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import SyncRecentProjects
+from tavi.meta.event.type.model_event import SyncRecentProjectsEvent
 
 if TYPE_CHECKING:
     from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
@@ -49,9 +49,9 @@ class FileMenuPresenter:
         self._view.setup_callback_get_last_folder(self.get_last_experiment_folder)
         self._view.setup_callback_exit(self.exit)
 
-        self._event_broker.register(SyncRecentProjects, self.sync_recent_projects)
+        self._event_broker.register(SyncRecentProjectsEvent, self.sync_recent_projects)
 
-    def sync_recent_projects(self, e: SyncRecentProjects) -> None:
+    def sync_recent_projects(self, e: SyncRecentProjectsEvent) -> None:
         """Sync recent events with model."""
         self._view.init_recent_projects(e.recent_projects)
 

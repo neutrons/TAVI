@@ -8,12 +8,12 @@ from tavi.frontend.view.project_view import ProjectView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
-    FitAppendEvent,
-    FitRemoveEvent,
-    PlotAppendEvent,
-    PlotRemoveEvent,
-    RawScanAppendEvent,
-    RawScanRemoveEvent,
+    AddFitEvent,
+    AddPlotEvent,
+    AddRawScanEvent,
+    RemoveFitEvent,
+    RemovePlotEvent,
+    RemoveRawScanEvent,
 )
 from tavi.meta.event.type.presenter_event import FocusEvent
 
@@ -41,32 +41,31 @@ class LoadRawScanPresenter(AbstractPresenter):
         super().__init__()
         self._model = model
         self.event_broker = EventBroker()
-        self.event_broker.register(RawScanAppendEvent, self.update_treeview_data)
-        self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
-        self.event_broker.register(FitAppendEvent, self.update_fit_treeview_data)
-        self.event_broker.register(RawScanRemoveEvent, self.remove_treeview_data)
-        self.event_broker.register(PlotRemoveEvent, self.remove_treeview_data)
-        self.event_broker.register(FitRemoveEvent, self.remove_treeview_data)
+        self.event_broker.register(AddRawScanEvent, self.update_treeview_data)
+        self.event_broker.register(AddPlotEvent, self.update_plot_treeview_data)
+        self.event_broker.register(AddFitEvent, self.update_fit_treeview_data)
+        self.event_broker.register(RemoveRawScanEvent, self.remove_treeview_data)
+        self.event_broker.register(RemovePlotEvent, self.remove_treeview_data)
+        self.event_broker.register(RemoveFitEvent, self.remove_treeview_data)
         self.inventory: dict[UUID, tuple[str, str]] = {}
 
         self._view.hookup_select_signal(self.handle_selection_event)
         self._view.hookup_remove_signal(self.handle_remove_request)
-        self.event_broker.register(FocusEvent, self.print_selected)
 
     def init_view(self) -> None:
         """Create the project tree view."""
         self._view = ProjectView()
 
-    def update_treeview_data(self, event: RawScanAppendEvent) -> None:
+    def update_treeview_data(self, event: AddRawScanEvent) -> None:
         """Update the treeview GUI after loading complete."""
         self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
         self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)
 
-    def update_plot_treeview_data(self, event: PlotAppendEvent) -> None:
+    def update_plot_treeview_data(self, event: AddPlotEvent) -> None:
         """Update the treeview GUI after a plot is added."""
         self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
 
-    def update_fit_treeview_data(self, event: FitAppendEvent) -> None:
+    def update_fit_treeview_data(self, event: AddFitEvent) -> None:
         """Update the treeview GUI after a fit is added."""
         self._view.add_fit(event.uuid, event.friendly_name, event.friendly_path)
 
@@ -74,7 +73,7 @@ class LoadRawScanPresenter(AbstractPresenter):
         """Ask the model to drop the items the user removed in the tree."""
         self._model.remove_items(uuids)
 
-    def remove_treeview_data(self, event: RawScanRemoveEvent | PlotRemoveEvent | FitRemoveEvent) -> None:
+    def remove_treeview_data(self, event: RemoveRawScanEvent | RemovePlotEvent | RemoveFitEvent) -> None:
         """Drop an item from the treeview once the model reports it gone from the project."""
         self._view.remove_item(event.uuid)
         self.inventory.pop(event.uuid, None)
@@ -83,7 +82,3 @@ class LoadRawScanPresenter(AbstractPresenter):
         """Handle selection event by publishing focus event."""
         idList: list[UUID] = self._view.get_selected_items()
         self.event_broker.publish(FocusEvent(ids=idList))
-
-    def print_selected(self, e: FocusEvent) -> None:
-        """Test method."""
-        print(e.ids)

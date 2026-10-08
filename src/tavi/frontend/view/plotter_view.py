@@ -33,6 +33,7 @@ class Plot1DView(QWidget):
 
     fields_focus_changed = Signal()
     render_plots_signal = Signal(list)
+    add_plots_signal = Signal(list)
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
@@ -40,6 +41,7 @@ class Plot1DView(QWidget):
     append_fit_curve_signal = Signal(object)
     set_fit_components_visible_signal = Signal(bool)
     show_title_toggled = Signal(bool)
+    apply_all_toggled = Signal(bool)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -52,10 +54,13 @@ class Plot1DView(QWidget):
         # can toggle their visibility without the fits having to be recomputed.
         self._fit_component_lines: dict[str, dict[str, Any]] = {}
         self._show_components = False
+        # Every series currently drawn, so axis labels can be set across all of them.
+        self._plotted_series: list[Any] = []
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
+        self.add_plots_signal.connect(self._add_plots)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
         self.append_fit_curve_signal.connect(self._append_fit_curve)
@@ -152,6 +157,7 @@ class Plot1DView(QWidget):
         # Connected before setChecked so the initial True state actually takes effect, rather
         # than firing before anything is listening.
         self.apply_all_checkbox.toggled.connect(self._on_apply_all_toggled)
+        self.apply_all_checkbox.toggled.connect(self.apply_all_toggled.emit)
         self.apply_all_checkbox.setChecked(True)
         plot_controls.addWidget(self.apply_all_checkbox)
         plot_controls.addStretch(1)
@@ -305,16 +311,22 @@ class Plot1DView(QWidget):
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
+        self._plotted_series = []
+        self._add_plots(resolved)
+
+    def _add_plots(self, resolved: list) -> None:
+        """Draw more series on top of what's already on the canvas (see ``add_plots_signal``)."""
         if not resolved:
             return
         for x, y, err, series in resolved:
             self.append_plot(
-                x, y, err, series.scan_name, series.normalized_by, series.x_name, series.y_name, series.error_name
+                x, y, err, series.display_label, series.normalized_by, series.x_name, series.y_name, series.error_name
             )
-        # With "Apply All" off, individually-tweaked plots may no longer share a common x/y
-        # column - set once, from the whole batch, rather than letting the last append_plot's
-        # single-series label silently hide that the others are on different units.
-        self._sync_axis_labels([series for *_, series in resolved])
+        self._plotted_series += [series for *_, series in resolved]
+        # Staged edits may leave plots no longer sharing a common x/y column - set once, from
+        # everything drawn, rather than letting the last append_plot's single-series label
+        # silently hide that the others are on different units.
+        self._sync_axis_labels(self._plotted_series)
 
     def _sync_axis_labels(self, series_list: list[Any]) -> None:
         """Set the axes' x/y labels from every plotted series, flagging it when their units differ."""
@@ -379,6 +391,10 @@ class Plot1DView(QWidget):
     def hookup_show_title_signal(self, callback: Callable) -> None:
         """Connect the "Show Title" checkbox's toggled signal to callback."""
         self.show_title_toggled.connect(callback)
+
+    def hookup_apply_all_signal(self, callback: Callable) -> None:
+        """Connect the "Apply All" checkbox's toggled signal to callback."""
+        self.apply_all_toggled.connect(callback)
 
     def is_show_title_checked(self) -> bool:
         """Return whether series should be labelled with the scan title instead of the friendly name."""

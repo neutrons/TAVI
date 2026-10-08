@@ -52,7 +52,7 @@ Errors
 ------
 
 Backend failures never reach the GUI as raw exceptions. They are wrapped as
-``TaviError`` subtypes, published as an ``ExceptionEvent``, and routed by the
+``TaviError`` subtypes, published as an ``ReportErrorEvent``, and routed by the
 ``RecoveryService`` to a registered handler. The frontend handler
 (``ErrorPresenter``) logs the error and shows a critical ``TaviMessageBox``
 pop-up. See :doc:`design/recovery_service` for the full mechanism.
