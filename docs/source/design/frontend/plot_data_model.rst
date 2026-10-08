@@ -24,7 +24,8 @@ Core Rule: Plot Holds No Data
         """One scan's contribution to a Plot: which scan, and which columns of it to display."""
 
         source_scan_uuid: UUID
-        scan_name: str
+        scan_name: str                       # legend label; the shared scan title when "Show Title" is on
+        friendly_name: Optional[str] = None  # the run's own name - see ``run_name``
         normalized_by: Optional[str]
         normalized_by_value: Optional[float] = None
         x_name: str
@@ -43,6 +44,16 @@ pointer (``source_scan_uuid``) plus a column specification (``x_name`` /
 ``y_name`` / ``error_name`` / ``normalized_by``). ``Plot`` is nothing more
 than a named list of these pointers.
 
+``scan_name`` is only a display label. With "Show Title" on it holds the
+instrument's scan title, which many scans share (e.g. every
+"sample alignment" run). Anything that has to tell series apart uses the
+run's own name instead. ``PlotSeries.run_name`` is the scan's ``friendly_name``,
+falling back to ``scan_name`` for series saved before that field existed. Saved
+plot and fit names use it. ``PlotSeries.display_label`` is ``run_name``,
+followed by the title when the two differ (e.g.
+``scan0012 - sample alignment``). The legend, the fit curve labels and the
+"Current Plot" dropdown all use it.
+
 .. mermaid::
 
     classDiagram
@@ -53,6 +64,7 @@ than a named list of these pointers.
         class PlotSeries {
             +UUID source_scan_uuid
             +str scan_name
+            +Optional~str~ friendly_name
             +Optional~str~ normalized_by
             +Optional~float~ normalized_by_value
             +str x_name

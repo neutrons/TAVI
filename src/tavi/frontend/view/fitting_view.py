@@ -21,14 +21,14 @@ from qtpy.QtWidgets import (
 )
 
 from tavi.library.data.fit_entry import (
-    FitRequest,
+    FitMember,
     FitResultSummary,
+    FitSpec,
     ParamField,
     PeakField,
     SuggestBackgroundParamsRequest,
     SuggestPeakParamsRequest,
 )
-from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
 COLUMN_HEADERS = ["", "value", "", "std", "fix", "min", "max", "constraint"]
@@ -41,6 +41,14 @@ PEAK_EXPRESSIONS = {
     "Gaussian": "y = A / (sigma sqrt(2pi)) exp( -(x - mu)^2 / (2 sigma^2) )",
     "Lorentzian": "y = (A / pi) [ sigma / ( (x - mu)^2 + sigma^2 ) ]",
 }
+
+
+# (value, std, min, max) per row. Blank min/max means unbounded: _parse_param reads them as None
+# and _bounds then omits them from the lmfit Parameter, rather than inventing a range the data has
+# to fit inside.
+BACKGROUND_LABELS = ["k =", "x0 ="]
+BACKGROUND_DEFAULTS = [(0, 0, "", ""), (0, 0, "", "")]
+PEAK_DEFAULTS = [(0, 0, "", ""), (1, 0, "", ""), (1, 0, "", "")]
 
 
 @dataclass
@@ -190,10 +198,7 @@ class PeakPanel(QWidget):
 
         self.peak_table = ParamTable(
             row_labels=["Int. Inten.", "Center", "FWHM"],
-            # Blank min/max means unbounded: _parse_param reads them as None and _bounds then
-            # omits them from the lmfit Parameter, rather than inventing a range the data has
-            # to fit inside.
-            defaults=[(0, 0, "", ""), (1, 0, "", ""), (1, 0, "", "")],
+            defaults=PEAK_DEFAULTS,
         )
         layout.addWidget(self.peak_table)
 
@@ -222,6 +227,8 @@ class FittingView(QWidget):
     """1D fitting panel widget: fitting range, background, per-peak parameters, and fit controls."""
 
     perform_fit_clicked = Signal()
+    undo_fit_clicked = Signal()
+    redo_fit_clicked = Signal()
     suggest_params_clicked = Signal()
     suggest_background_clicked = Signal()
     plot_separately_toggled = Signal(bool)
@@ -230,6 +237,9 @@ class FittingView(QWidget):
     set_background_params_signal = Signal(float, float)
     set_fitting_range_signal = Signal(float, float)
     set_fit_result_signal = Signal(object)
+    set_fit_member_signal = Signal(object)
+    set_fit_history_enabled_signal = Signal(bool, bool)
+    reset_fields_signal = Signal()
 
     def __init__(self, parent: Any = None) -> None:
         """Construct fitting view."""
@@ -240,6 +250,8 @@ class FittingView(QWidget):
         self._suggest_panel: Optional[PeakPanel] = None
         self._build_ui()
         self.perform_fit_btn.clicked.connect(self.perform_fit_clicked.emit)
+        self.undo_fit_btn.clicked.connect(self.undo_fit_clicked.emit)
+        self.redo_fit_btn.clicked.connect(self.redo_fit_clicked.emit)
         # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
         # a worker thread (FitModel running behind FitModelProxy).
         self.set_chi_squared_signal.connect(self._set_chi_squared)
@@ -247,6 +259,9 @@ class FittingView(QWidget):
         self.set_background_params_signal.connect(self._set_background_params)
         self.set_fitting_range_signal.connect(self._set_fitting_range)
         self.set_fit_result_signal.connect(self._set_fit_result)
+        self.set_fit_member_signal.connect(self._set_fit_member)
+        self.set_fit_history_enabled_signal.connect(self._set_fit_history_enabled)
+        self.reset_fields_signal.connect(self._reset_fields)
 
     def _build_ui(self) -> None:
         """Build the 1D fitting UI."""
@@ -297,11 +312,7 @@ class FittingView(QWidget):
         expr_row.addWidget(self.background_expr)
         layout.addLayout(expr_row)
 
-        self.background_table = ParamTable(
-            row_labels=["k =", "x0 ="],
-            # Blank min/max leaves both terms unbounded - see the peak table's note.
-            defaults=[(0, 0, "", ""), (0, 0, "", "")],
-        )
+        self.background_table = ParamTable(row_labels=BACKGROUND_LABELS, defaults=BACKGROUND_DEFAULTS)
         layout.addWidget(self.background_table)
         return box
 
@@ -349,6 +360,13 @@ class FittingView(QWidget):
         self.constraints_btn = QPushButton("Use Math Constraints")
         fit_row.addWidget(self.constraints_btn)
         fit_row.addStretch()
+        # Disabled until the presenter says the active member has a step to go to.
+        self.undo_fit_btn = QPushButton("Undo Fit")
+        self.undo_fit_btn.setEnabled(False)
+        fit_row.addWidget(self.undo_fit_btn)
+        self.redo_fit_btn = QPushButton("Redo Fit")
+        self.redo_fit_btn.setEnabled(False)
+        fit_row.addWidget(self.redo_fit_btn)
         self.perform_fit_btn = QPushButton("Perform Fit")
         fit_row.addWidget(self.perform_fit_btn)
         rows.addLayout(fit_row)
@@ -371,6 +389,14 @@ class FittingView(QWidget):
         """Connect the Perform Fit button's click signal to callback."""
         self.perform_fit_clicked.connect(callback)
 
+    def hookup_undo_fit_signal(self, callback: Any) -> None:
+        """Connect the Undo Fit button's click signal to callback."""
+        self.undo_fit_clicked.connect(callback)
+
+    def hookup_redo_fit_signal(self, callback: Any) -> None:
+        """Connect the Redo Fit button's click signal to callback."""
+        self.redo_fit_clicked.connect(callback)
+
     def hookup_suggest_params_signal(self, callback: Any) -> None:
         """Connect the Suggest Params. button's click signal to callback."""
         self.suggest_params_clicked.connect(callback)
@@ -383,22 +409,10 @@ class FittingView(QWidget):
         """Connect the Plot Separately checkbox's toggled signal to callback."""
         self.plot_separately_toggled.connect(callback)
 
-    def get_fit_request(
-        self,
-        series: PlotSeries,
-        x: list[float],
-        y: list[float],
-        err: list[float],
-        fit_uuid: Optional[UUID] = None,
-    ) -> FitRequest:
-        """Build a FitRequest from the view's current background/peak field state and already-resolved data."""
+    def get_fit_spec(self) -> FitSpec:
+        """Read the panel's current range/background/peak field state into a FitSpec, unparsed."""
         slope_row, intercept_row = self.background_table.rows
-        return FitRequest(
-            series=series,
-            x=list(x),
-            y=list(y),
-            err=list(err),
-            fit_uuid=fit_uuid,
+        return FitSpec(
             range_min=self.min_edit.text(),
             range_max=self.max_edit.text(),
             background=self.background_combo.currentText(),
@@ -467,11 +481,12 @@ class FittingView(QWidget):
             fixed=row.fix_check.isChecked(),
             minimum=row.min_edit.text(),
             maximum=row.max_edit.text(),
+            constrained=row.constraint_check.isChecked(),
         )
 
     def _set_fit_result(self, result: FitResultSummary) -> None:
         """Read a fit's value/uncertainty back into the same value/std columns used to request it."""
-        # Mirrors get_fit_request: peaks go out in panel order, so they come back in panel order.
+        # Mirrors get_fit_spec: peaks go out in panel order, so they come back in panel order.
         # zip stops at the shorter of the two, which keeps a result computed before the spinbox
         # changed from writing into a panel that no longer exists.
         for panel, peak in zip(self.peak_panels, result.peaks):
@@ -488,6 +503,58 @@ class FittingView(QWidget):
                 self._set_value_and_std(slope_row, result.background_slope, result.background_slope_err)
 
         self._set_chi_squared(result.reduced_chi_squared)
+
+    def _set_fit_member(self, member: FitMember) -> None:
+        """
+        Show one saved member in the panel: the spec it was fit with, overlaid with what that fit produced.
+
+        The inverse of ``get_fit_spec`` - picking a member of a sequential fit in the Current Plot
+        dropdown reloads exactly the shapes, bounds, fixed flags and range it was fit with, so a
+        Perform Fit from here refits that member as it stands rather than as the panel last was.
+        """
+        self.min_edit.setText(member.range_min)
+        self.max_edit.setText(member.range_max)
+        self.background_combo.setCurrentText(member.background)
+        slope_row, intercept_row = self.background_table.rows
+        self._set_param_field(slope_row, member.background_slope)
+        self._set_param_field(intercept_row, member.background_constant)
+
+        # Resizes the peak stack through _on_num_peaks_changed, the same as the user spinning it.
+        self.num_peaks_spin.setValue(max(1, len(member.peaks)))
+        for panel, peak in zip(self.peak_panels, member.peaks):
+            panel.peak_shape_combo.setCurrentText(peak.shape)
+            amplitude_row, center_row, fwhm_row = panel.peak_table.rows
+            self._set_param_field(amplitude_row, peak.amplitude)
+            self._set_param_field(center_row, peak.center)
+            self._set_param_field(fwhm_row, peak.fwhm)
+
+        if member.result is not None:
+            self._set_fit_result(member.result)
+
+    def _reset_fields(self) -> None:
+        """Put the background and peak fields back to their defaults; the range follows the next active series."""
+        self.background_combo.setCurrentIndex(0)
+        self.background_table.set_rows(BACKGROUND_LABELS, BACKGROUND_DEFAULTS)
+        # Dropping every panel rather than resetting the first one also resets its shape and
+        # stashed custom expression.
+        self._sync_peak_panels(0)
+        self.num_peaks_spin.setValue(1)
+        self._sync_peak_panels(1)
+        self.chi2_edit.setText("")
+
+    def _set_fit_history_enabled(self, can_undo: bool, can_redo: bool) -> None:
+        """Enable Undo/Redo Fit only when the active member has a step to go to."""
+        self.undo_fit_btn.setEnabled(can_undo)
+        self.redo_fit_btn.setEnabled(can_redo)
+
+    def _set_param_field(self, row: ParamRow, field: ParamField) -> None:
+        """Write one ParamField back into its row - the inverse of ``_param_field``; std is left blank."""
+        row.value_edit.setText(field.value)
+        row.std_edit.setText("")
+        row.fix_check.setChecked(field.fixed)
+        row.min_edit.setText(field.minimum)
+        row.max_edit.setText(field.maximum)
+        row.constraint_check.setChecked(field.constrained)
 
     def _set_value_and_std(self, row: ParamRow, value: float, std: Optional[float]) -> None:
         """Write a fitted value and its 1-sigma uncertainty (blank if not estimated) into one param row."""

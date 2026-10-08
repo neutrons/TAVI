@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import resolve_series
+from tavi.backend.model.plot_resolver import fit_series_by_source, resolve_series
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.fit_entry import FitCurve
@@ -12,13 +12,14 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    ApplyAllChangedEvent,
     FitComponentsVisibilityChangedEvent,
-    FitComputedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
     ShowScanTitleChangedEvent,
+    SyncFitEvent,
 )
 
 
@@ -49,7 +50,7 @@ class PlotterPresenter(AbstractPresenter):
         # not just draw them.
         self._fit_uuid_by_source_uuid: dict[UUID, UUID] = {}
         # A fit selected directly from the project tree (handle_fit_focus) - its curve isn't
-        # known yet (FitEntry only caches the spec), so handle_fit_computed's re-render gate
+        # known yet (FitEntry only caches the spec), so handle_sync_fit's re-render gate
         # must also accept a match by fit uuid, not just by focused series.
         self._focused_fit_uuids: set[UUID] = set()
 
@@ -58,12 +59,13 @@ class PlotterPresenter(AbstractPresenter):
         self._event_broker.register(RawScanFocusEvent, self.handle_raw_scan_focus)
         self._event_broker.register(FitFocusEvent, self.handle_fit_focus)
         self._event_broker.register(ActivePlotChangedEvent, self.handle_active_plot_changed)
-        self._event_broker.register(FitComputedEvent, self.handle_fit_computed)
+        self._event_broker.register(SyncFitEvent, self.handle_sync_fit)
         self._event_broker.register(FitComponentsVisibilityChangedEvent, self.handle_fit_components_visibility)
         self._view.hookup_fields_changed_signal(self.handle_fields_changed)
         self._view.hookup_plot_clicked_signal(self.handle_plot_clicked)
         self._view.hookup_plot_combo_changed_signal(self.handle_plot_combo_changed)
         self._view.hookup_show_title_signal(self.handle_show_title_toggled)
+        self._view.hookup_apply_all_signal(self.handle_apply_all_toggled)
 
     def init_view(self) -> None:
         """Create the 1D plot view."""
@@ -92,6 +94,10 @@ class PlotterPresenter(AbstractPresenter):
         """Announce the "Show Title" toggle - PlotModel owns ``scan_name``, so it decides the label."""
         self._event_broker.publish(ShowScanTitleChangedEvent(show_title=show_title))
 
+    def handle_apply_all_toggled(self, apply_all: bool) -> None:
+        """Announce the "Apply All" toggle - it also scopes what the fitting panel's Perform Fit covers."""
+        self._event_broker.publish(ApplyAllChangedEvent(apply_all=apply_all))
+
     def handle_plot_clicked(self) -> None:
         """
         Ask the model to save every currently-focused plot's series as one new plot.
@@ -101,7 +107,8 @@ class PlotterPresenter(AbstractPresenter):
         currently drawn on the canvas are stamped onto the new plot too, so re-focusing it
         later brings its fit curves back rather than just its raw data.
         """
-        self._model.save_focused_plots(fit_uuids=list(self._fit_uuid_by_source_uuid.values()))
+        # A multi-member fit draws one curve per scan, so its uuid appears once per member here.
+        self._model.save_focused_plots(fit_uuids=list(dict.fromkeys(self._fit_uuid_by_source_uuid.values())))
 
     def handle_plot_focus(self, e: PlotFocusEvent) -> None:
         """
@@ -188,7 +195,7 @@ class PlotterPresenter(AbstractPresenter):
         A FitEntry only caches the fit's spec (never its curve - see FitEntry's docstring), so
         the curve has to be recomputed against the source series' current data before there's
         anything to draw; that recompute happens in FitModel and arrives back as a
-        FitComputedEvent (handled below).
+        SyncFitEvent (handled below).
 
         When ``e.exclusive`` is False, this fit selection was made alongside a scan/plot
         selection in the same tree multiselect - ``handle_plot_focus``/``handle_raw_scan_focus``
@@ -205,12 +212,9 @@ class PlotterPresenter(AbstractPresenter):
             self._focused_fit_uuids |= {fit.uuid for fit in e.fits}
             return
 
-        # One series per source scan: two fits on the same scan describe the same data, and
-        # drawing it twice would just overplot it. First fit wins, matching _fits_by_source_uuid.
-        series_by_source: dict[UUID, PlotSeries] = {}
-        for fit in e.fits:
-            if fit.series.source_scan_uuid in e.scans:
-                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        # One series per source scan, across every member of every focused fit - a sequential fit
+        # shows each of its scans, and lists each one in the Current Plot dropdown.
+        series_by_source = fit_series_by_source(e.fits, e.scans)
         all_series = list(series_by_source.values())
 
         self._view.render_plots_signal.emit([(*resolve_series(s, e.scans), s) for s in all_series])
@@ -220,7 +224,7 @@ class PlotterPresenter(AbstractPresenter):
         self._active_series_uuid = new_uuids[0] if new_uuids else None
         self._view.set_plot_options_signal.emit([self._series_label(s) for s in all_series], 0)
         # The curves themselves aren't drawn yet - FitModel recomputes them and they arrive
-        # back as FitComputedEvent, which handle_fit_computed appends on top of this render.
+        # back as SyncFitEvent, which handle_sync_fit appends on top of this render.
         self._fits_by_source_uuid = {}
         self._fit_uuid_by_source_uuid = {}
         self._focused_fit_uuids = {fit.uuid for fit in e.fits}
@@ -233,15 +237,18 @@ class PlotterPresenter(AbstractPresenter):
         """Show or hide every drawn fit's components - the curves are already on the canvas, so nothing refits."""
         self._view.set_fit_components_visible_signal.emit(e.visible)
 
-    def handle_fit_computed(self, e: FitComputedEvent) -> None:
-        """Draw a fit's curve, but only if it's against a currently-focused series or was just selected."""
-        source_scan_uuid = e.fit.series.source_scan_uuid
-        if source_scan_uuid not in self._focused_series_uuids and e.fit.uuid not in self._focused_fit_uuids:
-            return
-        self._fits_by_source_uuid[source_scan_uuid] = e.curve
-        self._fit_uuid_by_source_uuid[source_scan_uuid] = e.fit.uuid
-        self._view.append_fit_curve_signal.emit(e.curve)
+    def handle_sync_fit(self, e: SyncFitEvent) -> None:
+        """Draw each computed member's curve, but only if it's against a focused series or its fit was just selected."""
+        for outcome in e.outcomes:
+            source_scan_uuid = outcome.member.source_scan_uuid
+            if outcome.curve is None:
+                continue
+            if source_scan_uuid not in self._focused_series_uuids and e.fit_uuid not in self._focused_fit_uuids:
+                continue
+            self._fits_by_source_uuid[source_scan_uuid] = outcome.curve
+            self._fit_uuid_by_source_uuid[source_scan_uuid] = e.fit_uuid
+            self._view.append_fit_curve_signal.emit(outcome.curve)
 
     def _series_label(self, series: PlotSeries) -> str:
-        """Build a human-readable dropdown label for one series."""
-        return series.scan_name or series.source_scan_uuid.value
+        """Build a dropdown label for one series that tells it apart from every other one."""
+        return series.display_label or series.source_scan_uuid.value
