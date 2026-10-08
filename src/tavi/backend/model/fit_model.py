@@ -31,14 +31,14 @@ from tavi.library.data.scan import UUID, RawScan, new_uuid
 from tavi.library.fit import Fit, FitPackage, ModelName
 from tavi.library.fit.fit import FitResult
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.presenter_event import (
-    BackgroundParamsSuggestedEvent,
-    FitRecomputeEvent,
-    PeakParamsSuggestedEvent,
+    RecomputeFitEvent,
     SaveFitEvent,
+    SyncBackgroundParamsEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
+    SyncPeakParamsEvent,
 )
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
@@ -121,7 +121,7 @@ class FitModel(FitModelInterface):
         # runs on the proxy's worker while a recompute runs on whichever thread published it.
         self._error_sink = threading.local()
         self._event_broker = EventBroker()
-        self._event_broker.register(FitRecomputeEvent, self._handle_fit_recompute_event)
+        self._event_broker.register(RecomputeFitEvent, self._handle_fit_recompute_event)
 
     def perform_fit(self, request: FitRequest) -> ModelResponse:
         """
@@ -160,7 +160,7 @@ class FitModel(FitModelInterface):
             self._event_broker.publish(SyncFitSpecEvent(fit_uuid=fit_uuid, member=member))
         return ModelResponse(code=ResponseCode.OK)
 
-    def _handle_fit_recompute_event(self, e: FitRecomputeEvent) -> None:
+    def _handle_fit_recompute_event(self, e: RecomputeFitEvent) -> None:
         """Recompute every member of each selected fit from its own stored spec - never a cached curve, never re-seeded."""
         for fit in e.fits:
             members = [member for member in fit.members if member.source_scan_uuid in self._raw_scans]
@@ -262,7 +262,7 @@ class FitModel(FitModelInterface):
 
         guess = Fit(FitPackage.lmfit).guess(x, y, shape, prefix="peak_")
         self._event_broker.publish(
-            PeakParamsSuggestedEvent(
+            SyncPeakParamsEvent(
                 source_scan_uuid=request.source_scan_uuid,
                 amplitude=guess["amplitude"],
                 center=guess["center"],
@@ -289,7 +289,7 @@ class FitModel(FitModelInterface):
         # value - the fit refines it - but it is not a peak-free background estimate.
         guess = Fit(FitPackage.lmfit).guess(x, y, ModelName.Linear, prefix="bg_")
         self._event_broker.publish(
-            BackgroundParamsSuggestedEvent(
+            SyncBackgroundParamsEvent(
                 source_scan_uuid=request.source_scan_uuid,
                 slope=guess["slope"],
                 intercept=guess["intercept"],
@@ -492,4 +492,4 @@ class FitModel(FitModelInterface):
         self._publish_error(message)
 
     def _publish_error(self, message: str) -> None:
-        self._event_broker.publish(ExceptionEvent(error=NonRecoverableError(message, "")))
+        self._event_broker.publish(ReportErrorEvent(error=NonRecoverableError(message, "")))

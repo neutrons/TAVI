@@ -1,4 +1,4 @@
-Project View ↔ RawScanAppendEvent Integration
+Project View ↔ AddRawScanEvent Integration
 ==============================================
 
 Overview
@@ -6,12 +6,12 @@ Overview
 
 The Project View is updated reactively when new raw scans are loaded into the
 project model. This interaction is mediated through an event-driven architecture
-centered on the ``RawScanAppendEvent``.
+centered on the ``AddRawScanEvent``.
 
 The flow is:
 
 1. Backend loads raw scans
-2. Model emits ``RawScanAppendEvent``
+2. Model emits ``AddRawScanEvent``
 3. Presenter listens and transforms the event
 4. View updates the Project Tree
 
@@ -43,7 +43,7 @@ Loading raw scans triggers the following sequence:
         ↓
     TaviProjectModel
         - stores scans in TaviData
-        - emits RawScanAppendEvent per scan
+        - emits AddRawScanEvent per scan
         ↓
     EventBroker
         ↓
@@ -59,7 +59,7 @@ Model Responsibilities
 The ``TaviProjectModel`` is responsible for:
 
 - Persisting scans in ``TaviData.raw_scans``
-- Emitting a ``RawScanAppendEvent`` per scan
+- Emitting a ``AddRawScanEvent`` per scan
 
 Each event contains:
 
@@ -75,11 +75,11 @@ Implementation detail:
 Event Definition
 ----------------
 
-``RawScanAppendEvent`` is a typed model event:
+``AddRawScanEvent`` is a typed model event:
 
 .. code-block:: python
 
-    class RawScanAppendEvent(Event):
+    class AddRawScanEvent(Event):
         uuid: UUID
         friendly_name: str
         friendly_path: str
@@ -91,7 +91,7 @@ Presenter Responsibilities
 
 The ``LoadRawScanPresenter``:
 
-- Registers with the ``EventBroker`` for ``RawScanAppendEvent``
+- Registers with the ``EventBroker`` for ``AddRawScanEvent``
 - Maintains a local ``inventory`` of loaded scans
 - Translates events into view updates
 
@@ -117,7 +117,7 @@ The Project View is implemented via ``TreeViewWidget`` and is responsible for:
 Four roots are created up front by ``_init_path`` in ``TreeViewWidget.__init__``
 — ``/Raw``, ``/Combined``, ``/Fits`` and ``/Plots``. ``Raw``, ``Plots`` and
 ``Fits`` receive entries today; ``Combined`` is reserved for combined scans.
-A fit is added under ``/Fits`` on ``FitAppendEvent`` (see :doc:`fit_data_model`).
+A fit is added under ``/Fits`` on ``AddFitEvent`` (see :doc:`fit_data_model`).
 
 Adding a Scan
 ~~~~~~~~~~~~~
@@ -214,7 +214,7 @@ Summary
 -------
 
 The Project View does not directly depend on the loading mechanism. Instead, it
-subscribes to ``RawScanAppendEvent`` and incrementally builds a hierarchical
+subscribes to ``AddRawScanEvent`` and incrementally builds a hierarchical
 representation of scans under the ``/Raw`` namespace.
 
 This pattern cleanly separates:
@@ -233,7 +233,7 @@ Overview
 --------
 
 Plots are added to the Project View the same way raw scans are: reactively,
-through a typed event. The event here is ``PlotAppendEvent``, published by
+through a typed event. The event here is ``AddPlotEvent``, published by
 ``TaviProjectModel`` once a plot has been saved (see
 :doc:`visualization_flow`'s "Add Plot" section for how a plot gets saved in
 the first place).
@@ -242,7 +242,7 @@ The flow is:
 
 1. ``PlotterPresenter`` publishes ``SavePlotEvent`` with the plot to save
 2. ``TaviProjectModel`` stores it in ``TaviData.plots`` and emits
-   ``PlotAppendEvent``
+   ``AddPlotEvent``
 3. ``LoadRawScanPresenter`` listens and forwards to the view
 4. View updates the Project Tree
 
@@ -257,7 +257,7 @@ Data Flow
         ↓
     TaviProjectModel._handle_save_plot_event
         - stores plot in TaviData.plots
-        - emits PlotAppendEvent
+        - emits AddPlotEvent
         ↓
     EventBroker
         ↓
@@ -270,11 +270,11 @@ Data Flow
 Event Definition
 ----------------
 
-``PlotAppendEvent`` mirrors ``RawScanAppendEvent`` field-for-field:
+``AddPlotEvent`` mirrors ``AddRawScanEvent`` field-for-field:
 
 .. code-block:: python
 
-    class PlotAppendEvent(Event):
+    class AddPlotEvent(Event):
         uuid: UUID
         friendly_name: str
         friendly_path: str
@@ -292,9 +292,9 @@ Presenter Responsibilities
 
 .. code-block:: python
 
-    self.event_broker.register(PlotAppendEvent, self.update_plot_treeview_data)
+    self.event_broker.register(AddPlotEvent, self.update_plot_treeview_data)
 
-    def update_plot_treeview_data(self, event: PlotAppendEvent) -> None:
+    def update_plot_treeview_data(self, event: AddPlotEvent) -> None:
         self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
 
 Unlike ``update_treeview_data``, this does **not** touch ``self.inventory`` —
