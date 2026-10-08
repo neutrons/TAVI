@@ -51,9 +51,12 @@ docs/source/     # Sphinx docs — guides/ (how things work) and design/ (why).
 
 ## Architecture: event-driven MVP
 
-This is **not** a direct-call MVP — presenters and models never hold live
-references to each other's storage. Everything flows through the singleton
-`EventBroker` (`tavi.meta.event.event_broker.EventBroker`):
+Presenters and models never hold live references to each other's storage.
+Concepts are broadcast through the singleton `EventBroker`
+(`tavi.meta.event.event_broker.EventBroker`); a request that only one model
+answers is a direct call through that model's `Proxy` (e.g.
+`PlotModel.update_fields`, `TaviProjectModel.undo_fit_member`), which then
+announces its result with a `Sync*Event`:
 
 - Every event is a pydantic `Event` subclass in `tavi/meta/event/type/`.
 - `EventBroker().register(EventType, handler)` subscribes; `.publish(event)`
@@ -68,14 +71,23 @@ references to each other's storage. Everything flows through the singleton
   `list[UUID]` between events, but never a live `Plot`/`Scan`/`RawScan`. Data
   a presenter needs to render travels *inside* the event that triggers it.
   Models (`TaviProjectModel`, `PlotModel`) are the single source of truth for
-  domain data (`TaviData.raw_scans`, `TaviData.plots`, `PlotModel._last_plots`).
+  domain data (`TaviData.raw_scans`, `TaviData.plots`, `PlotModel._last_plots`)
+  and for what is focused and staged (`PlotModel`).
 - Read `docs/source/design/frontend/visualization_flow.rst` for a worked,
   diagrammed example of a full event chain (tree selection → rendered plot),
-  including the lighter-weight "switch the active plot" side-channel.
+  including restaging from the "Current Plot" dropdown and "Apply All".
 
-When adding a new interaction, prefer adding a new narrowly-scoped `Event`
-type over overloading an existing one — see "Prefer domain-specific events"
-in `docs/source/guides/event_broker.rst`.
+Events follow a fixed vocabulary — read "Designing TAVI events" in
+`docs/source/guides/event_broker.rst` before adding one:
+- Name every event `VerbNounEvent`, with a verb from the lexicon (Focus,
+  Stage, Clear, Sync, Recompute, Save, Add/Remove, Restore, Set, Report,
+  Start). Names describe the domain, never a widget (`ClearFocusEvent`, not
+  `ResetFitPanelEvent`).
+- Each event is one prime operation. Publish a clear and then a focus rather
+  than one "change" event; don't add flags or optional payloads that change
+  what an event means. `Focus*` and `Stage*` events only add.
+- Focus is what the user looks at; the stage is the part of the focus that
+  edits and fits apply to; the first staged series leads.
 
 ## Testing conventions
 

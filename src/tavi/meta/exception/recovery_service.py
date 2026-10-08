@@ -5,7 +5,7 @@ from typing import Callable, TypeVar
 from neutrons_standard.decorators.singleton import Singleton
 
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.exception.tavi_exception import TaviError
 
 T = TypeVar("T", bound=TaviError)
@@ -20,7 +20,7 @@ class RecoveryService:
         self.event_broker: EventBroker = EventBroker()
         self.exception_handlers: dict[T, Callable] = {}
 
-        self.event_broker.register(ExceptionEvent, self.handle_exception)
+        self.event_broker.register(ReportErrorEvent, self.handle_exception)
 
     def register(self, ex_type: T, callable: Callable) -> None:
         """Register a handler for an exception type."""
@@ -28,7 +28,7 @@ class RecoveryService:
             raise RuntimeError(f"Only Exceptions of subtype {TaviError.__name__} can be registered.")
         self.exception_handlers[ex_type] = callable
 
-    def handle_exception(self, event: ExceptionEvent) -> None:
+    def handle_exception(self, event: ReportErrorEvent) -> None:
         """Direct exception to the correct handler."""
         ex: TaviError = event.error
         handler: Callable = self.exception_handlers.get(type(ex), self.default_handler)

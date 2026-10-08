@@ -22,11 +22,11 @@ class FitModelInterface(Model, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def suggest_peak_params(self, request: SuggestPeakParamsRequest) -> ModelResponse:
-        """Guess starting amplitude/center/FWHM for one peak from data and publish a PeakParamsSuggestedEvent."""
+        """Guess starting amplitude/center/FWHM for one peak from data and publish a SyncPeakParamsEvent."""
 
     @abc.abstractmethod
     def suggest_background_params(self, request: SuggestBackgroundParamsRequest) -> ModelResponse:
-        """Guess starting slope/intercept for the background and publish a BackgroundParamsSuggestedEvent."""
+        """Guess starting slope/intercept for the background and publish a SyncBackgroundParamsEvent."""
 
 
 FitModelProxy = Proxy(FitModelInterface)

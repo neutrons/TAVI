@@ -109,32 +109,34 @@ in :meth:`tavi.backend.model.plot_model.PlotModel._resolve_series_update`:
   and ``preset_value`` must parse as a float.
 
 If any check fails the update is rejected wholesale: ``_apply_fields_to_plot``
-returns ``None``, no ``PlotFocusEvent`` is published, and the canvas keeps showing
-the last valid plot. An invalid entry is therefore a no-op rather than an error
-dialog — the fields resync to the plotted values on the next successful render.
+returns ``None``, the failure is reported as a ``ReportErrorEvent``, no
+``SyncPlotEvent`` is published, and the canvas keeps showing the last valid plot.
+Edits only ever apply to the *staged* series (see :doc:`frontend/visualization_flow`);
+the fields resync to the lead staged series on the next ``SyncStageEvent``.
 
 Field Synchronization
 =====================
 
-Whatever is actually rendered is written back into the controls, so the fields
-never drift from the plot:
+The lead staged series is written back into the controls, so the fields always
+describe the series an edit would change:
 
 ``sync_axis_fields(x_name, y_name)``
-    Called per rendered series from ``Plot1DView._render_plots``. Reflects the
-    plotted column names in the axis fields.
+    Called (through ``sync_fields_signal``) by ``PlotterPresenter.handle_sync_stage``
+    with the lead staged series. Reflects its column names in the axis fields.
 
 ``sync_preset_fields(normalized_by, normalized_by_value)``
-    Also called from ``_render_plots``. Sets the preset type to ``NORMALIZE``
+    Called alongside ``sync_axis_fields``. Sets the preset type to ``NORMALIZE``
     when the series carries a normalization channel and ``NONE`` otherwise, then
     fills in the channel and value.
 
 ``set_preset_channel_options(columns)``
-    Called by ``PlotterPresenter.handle_raw_scan_focus``. Repopulates the channel
-    dropdown from the newly focused scan's columns.
+    Called by ``PlotterPresenter.handle_raw_scan_focus`` (``FocusRawScanEvent``).
+    Repopulates the channel dropdown from the first focused scan's columns.
 
 ``reset_controls_to_defaults()``
-    Also called on raw-scan focus, before the dropdown is repopulated. Returns the
-    rebin radio group and the preset type/value to their defaults.
+    Called by ``PlotterPresenter.handle_clear_focus`` (``ClearFocusEvent``), before
+    anything new is focused. Returns the rebin radio group and the preset
+    type/value to their defaults.
 
 All four block widget signals while writing, so a programmatic sync never
 re-triggers ``fields_focus_changed`` and loops back into the model.

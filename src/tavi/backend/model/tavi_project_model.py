@@ -10,7 +10,7 @@ from ruamel.yaml import YAML
 
 from tavi.backend.model.fit_history import FitHistory
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
-from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
+from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
@@ -20,30 +20,26 @@ from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoad
 from tavi.library.storage.interface.filestore_interface import Filestore
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
-    FitAppendEvent,
-    FitRemoveEvent,
-    PlotAppendEvent,
-    PlotRemoveEvent,
-    RawScanAppendEvent,
-    RawScanRemoveEvent,
+    AddFitEvent,
+    AddPlotEvent,
+    AddRawScanEvent,
+    RemoveFitEvent,
+    RemovePlotEvent,
+    RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
-    SyncRecentProjects,
+    SyncRecentProjectsEvent,
 )
 from tavi.meta.event.type.presenter_event import (
-    ActivePlotChangedEvent,
     ClearFocusEvent,
-    DownstreamReadyEvent,
-    FitFocusEvent,
-    FitRecomputeEvent,
-    FocusActivePlotEvent,
     FocusEvent,
-    PlotFocusEvent,
-    RawScanFocusEvent,
-    RedoFitMemberEvent,
+    FocusFitEvent,
+    FocusPlotEvent,
+    FocusRawScanEvent,
+    RecomputeFitEvent,
     SaveFitEvent,
     SavePlotEvent,
-    UndoFitMemberEvent,
+    StartApplicationEvent,
 )
 
 logger = logging.getLogger(__name__)
@@ -63,13 +59,10 @@ class TaviProjectModel(TaviProjectInterface):
         # rather than in it, so dialing a fit in never grows the saved project.
         self._fit_history = FitHistory()
 
-        self._event_broker.register(DownstreamReadyEvent, self.sync_on_ready)
+        self._event_broker.register(StartApplicationEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
-        self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
         self._event_broker.register(SaveFitEvent, self._handle_save_fit_event)
-        self._event_broker.register(UndoFitMemberEvent, self._handle_undo_fit_member_event)
-        self._event_broker.register(RedoFitMemberEvent, self._handle_redo_fit_member_event)
 
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
@@ -96,7 +89,7 @@ class TaviProjectModel(TaviProjectInterface):
                 continue
             self.tavi_data.raw_scans[scan.uuid] = scan
             events.append(
-                RawScanAppendEvent(
+                AddRawScanEvent(
                     uuid=scan.uuid, friendly_name=scan.tavimeta.friendly_name, friendly_path=scan.tavimeta.friendly_path
                 )
             )
@@ -112,22 +105,22 @@ class TaviProjectModel(TaviProjectInterface):
         self._fit_history.forget(fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans))
 
         for uuid in purged.raw_scans:
-            self._event_broker.publish(RawScanRemoveEvent(uuid=uuid))
+            self._event_broker.publish(RemoveRawScanEvent(uuid=uuid))
         for uuid in purged.plots:
-            self._event_broker.publish(PlotRemoveEvent(uuid=uuid))
+            self._event_broker.publish(RemovePlotEvent(uuid=uuid))
         for uuid in purged.fits:
-            self._event_broker.publish(FitRemoveEvent(uuid=uuid))
+            self._event_broker.publish(RemoveFitEvent(uuid=uuid))
 
         return ModelResponse(code=ResponseCode.OK)
 
-    def sync_on_ready(self, _: DownstreamReadyEvent) -> None:
+    def sync_on_ready(self, _: StartApplicationEvent) -> None:
         """Sync with downstream when its ready."""
         self.emit_sync_recent_projects()
 
     def emit_sync_recent_projects(self) -> None:
         """Notify consumers of latest recent projects."""
         recent_projects = self._get_recent_projects()
-        e = SyncRecentProjects(recent_projects=recent_projects)
+        e = SyncRecentProjectsEvent(recent_projects=recent_projects)
         self._event_broker.publish(e)
 
     def _get_recent_projects(self) -> list[str]:
@@ -144,7 +137,7 @@ class TaviProjectModel(TaviProjectInterface):
         self.tavi_data.plots[e.plot.uuid] = e.plot
         run_names = "_".join(series.run_name for series in e.plot.series)
         friendly_name = f"{run_names}_Plot"
-        self._event_broker.publish(PlotAppendEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
+        self._event_broker.publish(AddPlotEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
 
     def _handle_save_fit_event(self, e: SaveFitEvent) -> None:
         """
@@ -166,17 +159,19 @@ class TaviProjectModel(TaviProjectInterface):
         else:
             fit = FitEntry(uuid=e.fit_uuid, name=self._fit_name(e.members), members=e.members)
             self.tavi_data.fits[fit.uuid] = fit
-            self._event_broker.publish(FitAppendEvent(uuid=fit.uuid, friendly_name=fit.name, friendly_path=""))
+            self._event_broker.publish(AddFitEvent(uuid=fit.uuid, friendly_name=fit.name, friendly_path=""))
         for member in e.members:
             self._publish_fit_history(e.fit_uuid, member.source_scan_uuid)
 
-    def _handle_undo_fit_member_event(self, e: UndoFitMemberEvent) -> None:
+    def undo_fit_member(self, fit_uuid: UUID, source_scan_uuid: UUID) -> ModelResponse:
         """Roll one member of a fit back to the state before its last save."""
-        self._step_fit_history(e.fit_uuid, e.source_scan_uuid, self._fit_history.undo)
+        self._step_fit_history(fit_uuid, source_scan_uuid, self._fit_history.undo)
+        return ModelResponse(code=ResponseCode.OK)
 
-    def _handle_redo_fit_member_event(self, e: RedoFitMemberEvent) -> None:
+    def redo_fit_member(self, fit_uuid: UUID, source_scan_uuid: UUID) -> ModelResponse:
         """Reapply the member state the last undo rolled back."""
-        self._step_fit_history(e.fit_uuid, e.source_scan_uuid, self._fit_history.redo)
+        self._step_fit_history(fit_uuid, source_scan_uuid, self._fit_history.redo)
+        return ModelResponse(code=ResponseCode.OK)
 
     def _step_fit_history(
         self, fit_uuid: UUID, source_scan_uuid: UUID, step: Callable[[UUID, FitMember], Optional[FitMember]]
@@ -198,7 +193,7 @@ class TaviProjectModel(TaviProjectInterface):
         self.tavi_data.fits[fit_uuid] = fit
         self._publish_fit_history(fit_uuid, source_scan_uuid)
         self._event_broker.publish(RestoreFitMemberEvent(fit_uuid=fit_uuid, source_scan_uuid=source_scan_uuid))
-        self._event_broker.publish(FitRecomputeEvent(fits=[fit.model_copy(update={"members": [restored]})]))
+        self._event_broker.publish(RecomputeFitEvent(fits=[fit.model_copy(update={"members": [restored]})]))
 
     def _publish_fit_history(self, fit_uuid: UUID, source_scan_uuid: UUID) -> None:
         key = (fit_uuid, source_scan_uuid)
@@ -218,24 +213,13 @@ class TaviProjectModel(TaviProjectInterface):
             return f"{first}_Fit"
         return f"{first}-{last}_Fit"
 
-    def _handle_active_plot_focus_event(self, e: FocusActivePlotEvent) -> None:
-        """
-        Resolve one series, by its source scan's uuid, across every currently-saved plot.
-
-        This is how a single series is picked out of an otherwise-fused, multi-series saved
-        plot for "Current Plot" browsing/editing. ``uuid`` may belong to a series living in an
-        unsaved preview plot instead (``PlotModel``'s to handle) — a miss here just means this
-        uuid isn't currently one of ours, not a bug.
-        """
-        match = find_series_by_source(list(self.tavi_data.plots.values()), e.uuid)
-        if match is None:
-            return
-        _, series = match
-        scan = self.tavi_data.raw_scans[series.source_scan_uuid]
-        self._event_broker.publish(ActivePlotChangedEvent(scan=scan, series=series))
-
     def _handle_focus_event(self, e: FocusEvent) -> None:
-        """Route a ``FocusEvent`` to type-specific downstream events."""
+        """
+        Clear the old focus, then route a ``FocusEvent``'s ids to one additive ``Focus*`` event per item type.
+
+        Only ``TaviData`` knows what type each tree uuid is, which is why the tree publishes one
+        generic ``FocusEvent`` and this model narrows it.
+        """
         # First, so every subscriber has let go of the old selection before this one's chain reaches it.
         self._event_broker.publish(ClearFocusEvent())
         ids = e.ids
@@ -265,18 +249,15 @@ class TaviProjectModel(TaviProjectInterface):
         fits = list(attached_fits.values())
 
         if raw_scans:
-            # also_plots folds any saved plots focused in the same multiselect into PlotModel's
-            # preview batch, so it publishes one merged PlotFocusEvent instead of this branch's
-            # own publish (below) clobbering the preview render, or vice versa.
-            self._event_broker.publish(RawScanFocusEvent(scans=raw_scans, also_plots=plots))
-        elif plots:
+            self._event_broker.publish(FocusRawScanEvent(scans=raw_scans))
+        if plots:
             scans = scans_for_plots(plots, self.tavi_data.raw_scans)
-            self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans))
+            self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans))
         if fits:
-            # FitFocusEvent (UI state) is published fully - every subscriber done - before
-            # FitRecomputeEvent (backend trigger), so PlotterPresenter/FittingPresenter have
+            # FocusFitEvent (UI state) is published fully - every subscriber done - before
+            # RecomputeFitEvent (backend trigger), so PlotterPresenter/FittingPresenter have
             # already marked these uuids pending by the time FitModel's resulting
-            # SyncFitEvent arrives - see FitFocusEvent's docstring.
+            # SyncFitEvent arrives - see FocusFitEvent's docstring.
             # Carry each fit's own source scan along, so the presenter can redraw the data the
             # fit was made against without reaching into this model's storage.
             fit_scans = {
@@ -285,5 +266,5 @@ class TaviProjectModel(TaviProjectInterface):
                 for member in fit.members
                 if member.source_scan_uuid in self.tavi_data.raw_scans
             }
-            self._event_broker.publish(FitFocusEvent(fits=fits, exclusive=not (raw_scans or plots), scans=fit_scans))
-            self._event_broker.publish(FitRecomputeEvent(fits=fits))
+            self._event_broker.publish(FocusFitEvent(fits=fits, scans=fit_scans))
+            self._event_broker.publish(RecomputeFitEvent(fits=fits))

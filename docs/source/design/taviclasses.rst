@@ -50,9 +50,14 @@ handles application-level concerns such as writing error logs.
     class PlotModel{
         -dict~UUID,Plot~ _plots
         -dict~UUID,RawScan~ _raw_scans
-        -Plot _last_plot
+        -list~Plot~ _last_plots
+        -list~UUID~ _staged_uuids
         +update_fields(PlotFields) ModelResponse
-        -_handle_raw_scan_focus_event(RawScanFocusEvent)
+        +set_show_title(bool) ModelResponse
+        +save_focused_plots(fit_uuids) ModelResponse
+        -_handle_raw_scan_focus_event(FocusRawScanEvent)
+        -_handle_plot_focus_event(FocusPlotEvent)
+        -_handle_stage_series_event(StageSeriesEvent)
     }
 
     class ApplicationModel{
@@ -85,7 +90,7 @@ into ``TaviProjectModel``'s storage, obtained via ``get_plots_handle()`` and
    ``get_plots_handle()`` returns ``TaviData.plots``, which is a
    ``dict[UUID, Plot]``. The annotation is wrong, not the call — the attribute
    holds a dict. It is currently harmless because ``self._plots`` is stored and
-   never read; ``PlotModel`` works off ``_last_plot`` and ``_raw_scans`` instead.
+   never read; ``PlotModel`` works off ``_last_plots`` and ``_raw_scans`` instead.
 
 Every model method returns a ``ModelResponse`` (``code``, optional ``message``),
 because models are invoked through a ``Proxy`` that runs them on a worker thread
@@ -191,27 +196,32 @@ exposes the result through ``view()``.
 
     class FileMenuPresenter{
         +handle_load_folder(folder)
-        +sync_recent_projects(SyncRecentProjects)
+        +sync_recent_projects(SyncRecentProjectsEvent)
         +exit()
     }
 
     class LoadRawScanPresenter{
         -dict~UUID,tuple~ inventory
-        +update_treeview_data(RawScanAppendEvent)
-        +update_plot_treeview_data(PlotAppendEvent)
+        +update_treeview_data(AddRawScanEvent)
+        +update_plot_treeview_data(AddPlotEvent)
         +handle_selection_event()
     }
 
     class PlotterPresenter{
-        -Plot _current_plot
-        +handle_plot_focus(PlotFocusEvent)
-        +handle_raw_scan_focus(RawScanFocusEvent)
+        -list~UUID~ _focused_series_uuids
+        -list~UUID~ _staged_uuids
+        +handle_clear_focus(ClearFocusEvent)
+        +handle_plot_focus(FocusPlotEvent)
+        +handle_sync_plot(SyncPlotEvent)
+        +handle_raw_scan_focus(FocusRawScanEvent)
+        +handle_sync_stage(SyncStageEvent)
         +handle_fields_changed()
         +handle_plot_clicked()
     }
 
     class DataFilePresenter{
-        +handle_raw_scan_focus(RawScanFocusEvent)
+        +handle_clear_focus(ClearFocusEvent)
+        +handle_sync_stage(SyncStageEvent)
     }
 
     class ErrorPresenter{
@@ -249,13 +259,13 @@ hands the resulting dict to ``MainPresenter``.
         Presenter->>View: TaviView() and install_menu_bar()
         Presenter->>Presenter: construct sub-presenters (each creates its view)
         Presenter->>View: build_ui(project, plot, data_file, filter)
-        Presenter->>Broker: publish DownstreamReadyEvent
+        Presenter->>Broker: publish StartApplicationEvent
         Broker->>Model: sync_on_ready
-        Model->>Broker: publish SyncRecentProjects(recent_projects)
+        Model->>Broker: publish SyncRecentProjectsEvent(recent_projects)
         Broker->>Presenter: FileMenuPresenter populates Recent Projects menu
         Main->>View: show()
 
-``DownstreamReadyEvent`` exists because the models are constructed before the
+``StartApplicationEvent`` exists because the models are constructed before the
 presenters subscribe. Publishing it once the UI is fully wired lets the model
 push its startup state (currently the recent-projects list) downstream without
 the presenters having to poll.
@@ -283,7 +293,7 @@ Loading a folder
         Controller-->>Model: list[RawScan]
         Model->>Model: store each scan in TaviData.raw_scans
         loop per scan
-            Model->>Broker: publish RawScanAppendEvent
+            Model->>Broker: publish AddRawScanEvent
             Broker->>Tree: LoadRawScanPresenter.update_treeview_data
         end
 
@@ -309,5 +319,5 @@ rather than by the presenter.
 
 ``Worker.run`` is also the single exception-capture point for backend code: any
 exception raised on the worker thread is converted into a ``NonRecoverableError``
-carrying the captured stack trace and published as an ``ExceptionEvent``. See
+carrying the captured stack trace and published as an ``ReportErrorEvent``. See
 :doc:`recovery_service`.

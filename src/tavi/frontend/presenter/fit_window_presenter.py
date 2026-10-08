@@ -4,7 +4,7 @@ from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.fit_window_view import FitWindowKey, FitWindowsView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent, RestoreFitMemberEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent, RemoveRawScanEvent, RestoreFitMemberEvent
 from tavi.meta.event.type.presenter_event import SaveFitEvent, SyncFitEvent
 
 
@@ -34,8 +34,8 @@ class FitWindowPresenter(AbstractPresenter):
         self._event_broker.register(SaveFitEvent, self.handle_save_fit)
         self._event_broker.register(RestoreFitMemberEvent, self.handle_restore_fit_member)
         self._event_broker.register(SyncFitEvent, self.handle_sync_fit)
-        self._event_broker.register(FitRemoveEvent, self.handle_fit_removed)
-        self._event_broker.register(RawScanRemoveEvent, self.handle_raw_scan_removed)
+        self._event_broker.register(RemoveFitEvent, self.handle_fit_removed)
+        self._event_broker.register(RemoveRawScanEvent, self.handle_raw_scan_removed)
         self._view.hookup_window_closed_signal(self.handle_window_closed)
 
     def init_view(self) -> None:
@@ -75,11 +75,11 @@ class FitWindowPresenter(AbstractPresenter):
         # only be created on the GUI thread.
         self._view.show_outcomes_signal.emit(e.fit_uuid, outcomes, open_missing)
 
-    def handle_fit_removed(self, e: FitRemoveEvent) -> None:
+    def handle_fit_removed(self, e: RemoveFitEvent) -> None:
         """Close every window showing a member of a fit that's left the project."""
         self._close([key for key in self._open_windows if key[0] == e.uuid])
 
-    def handle_raw_scan_removed(self, e: RawScanRemoveEvent) -> None:
+    def handle_raw_scan_removed(self, e: RemoveRawScanEvent) -> None:
         """Close every window showing a scan that's left the project - its member was pruned with it."""
         self._close([key for key in self._open_windows if key[1] == e.uuid])
 

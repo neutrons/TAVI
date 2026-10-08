@@ -9,19 +9,18 @@ by the user: its column data, a checklist of columns, and its metadata. The
 view itself is agnostic to scan type — ``populate_columns``,
 ``populate_variables``, and ``populate_metadata`` take plain dicts/lists, not
 a ``Scan`` object. It is driven entirely by ``DataFilePresenter``, which
-subscribes to both ``RawScanFocusEvent`` (a scan focused directly from the
-tree) and ``ActivePlotChangedEvent`` (a plot made active via the plotter's
-"Current Plot" dropdown — see :doc:`visualization_flow`), and forwards
-whichever scan is relevant to the view. The view holds no scan data of its
-own between events.
+subscribes to ``ClearFocusEvent`` (a new tree selection is starting) and
+``SyncStageEvent`` (the staged series changed — see :doc:`visualization_flow`),
+and shows the scan behind the *lead* staged series. The view holds no scan
+data of its own between events.
 
 Architecture
 ------------
 
-- **Presenter** (``DataFilePresenter``): Subscribes to ``RawScanFocusEvent``
-  and ``ActivePlotChangedEvent`` via the ``EventBroker`` and translates each
-  event into view calls, through a shared ``_populate_from_scan`` helper.
-  Holds no scan data itself.
+- **Presenter** (``DataFilePresenter``): Subscribes to ``ClearFocusEvent``
+  and ``SyncStageEvent`` via the ``EventBroker`` and forwards a scan (or
+  ``None``) to the view through its ``scan_focus_changed`` signal, so the view
+  is only ever touched on the GUI thread. Holds no scan data itself.
 - **View** (``DataFileView``): A ``QWidget`` with three regions — a data
   table, a variable checklist, and a tabbed metadata panel — plus a
   ``title_changed`` signal used to retitle its owning tab.
@@ -31,40 +30,36 @@ Data Flow
 
 .. code-block:: text
 
-    RawScanFocusEvent(scans=[...])
+    ClearFocusEvent
         ↓
     EventBroker
         ↓
-    DataFilePresenter.handle_raw_scan_focus
-        - scans is empty  → view.clear_data(); view.set_title("Data File")
-        - scans[0] is used, rest ignored
-        ↓
-    DataFilePresenter._populate_from_scan(scan)
+    DataFilePresenter.handle_clear_focus
+        → view.scan_focus_changed(None)
 
-    ActivePlotChangedEvent(plot, scans)
+    SyncStageEvent(series=[...], scans={...})
         ↓
     EventBroker
         ↓
-    DataFilePresenter.handle_active_plot_changed
-        - plot is None or has no series      → view.clear_data(); view.set_title("Data File")
-        - plot.series[0].source_scan_uuid not in scans → view.clear_data(); view.set_title("Data File")
-        - otherwise: look up that series' scan in `scans`
-        ↓
-    DataFilePresenter._populate_from_scan(scan)
+    DataFilePresenter.handle_sync_stage
+        - series is empty → view.scan_focus_changed(None)
+        - otherwise       → view.scan_focus_changed(scans[series[0].source_scan_uuid])
 
-    DataFilePresenter._populate_from_scan(scan):
-        DataFileView.populate_columns(scan.data.data)
-        DataFileView.populate_variables(list(scan.data.data.keys()))
-        DataFileView.populate_metadata(scan.metadata.by_category())
-        DataFileView.set_title(f"Data File ({scan.tavimeta.friendly_name})")
-            ↓
-        DataFileView.title_changed(title) --Qt signal--> TaviView relabels tab 0
+    DataFileView, on scan_focus_changed(scan):
+        - scan is None → clear_data(); set_title("Data File")
+        - otherwise:
+            populate_columns(scan.data.data)
+            populate_variables(list(scan.data.data.keys()))
+            populate_metadata(scan.metadata.by_category())
+            set_title(f"Data File ({scan.tavimeta.friendly_name})")
+                ↓
+            title_changed(title) --Qt signal--> TaviView relabels tab 0
 
-Only one scan is ever displayed at a time — whichever scan the *active*
-selection points at, regardless of whether that selection came from the
-tree directly (``RawScanFocusEvent``) or from switching plots in the
-plotter's dropdown while multiple scans/plots are focused
-(``ActivePlotChangedEvent``).
+Only one scan is ever displayed at a time — the one behind the lead staged
+series. A new selection empties the panel first (``ClearFocusEvent``); the
+``SyncStageEvent`` that follows the new focus fills it again. Picking another
+series in the plotter's "Current Plot" dropdown restages, so the panel
+follows it.
 
 Data Table and Variable Checklist
 ----------------------------------
@@ -109,7 +104,7 @@ Each top-level value must be a flat dict — anything else raises
 Non-dict field values (e.g. a list) are rendered via ``str()`` in a single
 table cell rather than expanded further.
 
-When a focus event carries no scans, ``clear_data()`` empties both tables and
+When nothing is staged, ``clear_data()`` empties both tables and
 resets the metadata widget to a single tab labelled ``"Empty"``, which is also
 the state the panel starts in.
 
@@ -172,11 +167,10 @@ displayed, and vice versa.
 One scan at a time
 ~~~~~~~~~~~~~~~~~~~
 
-``handle_raw_scan_focus`` only ever renders ``scans[0]``, and
-``handle_active_plot_changed`` only ever renders the active plot's first
-series' scan. The panel is a single-scan inspector, not a multi-scan
-comparison view — even when the plotter is showing several plots at once,
-the Data File tab always reflects exactly one of them (the active one).
+``handle_sync_stage`` only ever renders the lead staged series' scan. The
+panel is a single-scan inspector, not a multi-scan comparison view — even
+when several series are staged (``Apply All`` checked), the Data File tab
+always reflects exactly one of them, the lead.
 
 Tab retitling is push-based, not polled
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

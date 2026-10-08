@@ -110,7 +110,7 @@ class FitEntry(BaseModel):
     of many do.
 
     TAVI must not cache the actual fitted data points: selecting a fit later recomputes its
-    curves fresh (see ``FitRecomputeEvent`` / ``FitModel``) against the source series' current data,
+    curves fresh (see ``RecomputeFitEvent`` / ``FitModel``) against the source series' current data,
     rather than replaying stale points cached at fit time.
     """
 

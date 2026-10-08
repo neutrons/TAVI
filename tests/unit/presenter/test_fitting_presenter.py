@@ -20,21 +20,16 @@ from tavi.library.data.fit_entry import (
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent, SyncFitHistoryEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
-    ActivePlotChangedEvent,
-    ApplyAllChangedEvent,
-    BackgroundParamsSuggestedEvent,
     ClearFocusEvent,
-    FitComponentsVisibilityChangedEvent,
-    FitFocusEvent,
-    FocusActivePlotEvent,
-    PeakParamsSuggestedEvent,
-    PlotFocusEvent,
-    RedoFitMemberEvent,
+    FocusFitEvent,
+    SetFitComponentsVisibleEvent,
+    SyncBackgroundParamsEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
-    UndoFitMemberEvent,
+    SyncPeakParamsEvent,
+    SyncStageEvent,
 )
 
 
@@ -106,11 +101,18 @@ def make_plot(*uuid_vals) -> Plot:
     return Plot(series=[make_series(uuid_val) for uuid_val in uuid_vals])
 
 
+def stage(*uuid_vals):
+    """Publish what PlotModel syncs once these series are staged, in order - the first leads."""
+    EventBroker().publish(
+        SyncStageEvent(
+            series=[make_series(v) for v in uuid_vals], scans={UUID(value=v): make_scan(v) for v in uuid_vals}
+        )
+    )
+
+
 def focus_two_series(presenter):
-    """Focus scan-001 and scan-002 together, with scan-001 active - the shape of a sequential batch."""
-    scans = {UUID(value=v): make_scan(v) for v in ("scan-001", "scan-002")}
-    EventBroker().publish(PlotFocusEvent(plots=[make_plot("scan-001", "scan-002")], scans=scans))
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    """Stage scan-001 and scan-002 together, scan-001 leading - the shape of a sequential batch."""
+    stage("scan-001", "scan-002")
 
 
 def last_request(presenter):
@@ -119,7 +121,7 @@ def last_request(presenter):
 
 @pytest.fixture
 def presenter(qtbot):
-    p = FittingPresenter(MagicMock())
+    p = FittingPresenter(MagicMock(), MagicMock())
     qtbot.addWidget(p._view)
     return p
 
@@ -133,9 +135,9 @@ def test_init_view_is_fitting_view(presenter):
     assert isinstance(presenter._view, FittingView)
 
 
-def test_init_registers_active_plot_changed_event(presenter):
+def test_init_registers_sync_stage_event(presenter):
     broker = EventBroker()
-    assert presenter.handle_active_plot_changed in broker.registry[ActivePlotChangedEvent]
+    assert presenter.handle_sync_stage in broker.registry[SyncStageEvent]
 
 
 def test_init_registers_sync_fit_event(presenter):
@@ -143,32 +145,29 @@ def test_init_registers_sync_fit_event(presenter):
     assert presenter.handle_sync_fit in broker.registry[SyncFitEvent]
 
 
-def test_init_starts_with_no_active_series(presenter):
-    assert presenter._active_scan is None
-    assert presenter._active_series is None
+def test_init_starts_with_no_lead_series(presenter):
+    assert presenter._lead_scan is None
+    assert presenter._lead_series is None
 
 
 # ---------------------------------------------------------------------------
-# handle_active_plot_changed
+# handle_sync_stage
 # ---------------------------------------------------------------------------
 
 
-def test_handle_active_plot_changed_caches_scan_and_series(presenter):
-    scan = make_scan()
-    series = make_series()
+def test_sync_stage_tracks_the_lead_scan_and_series(presenter):
+    stage("scan-002", "scan-001")
 
-    EventBroker().publish(ActivePlotChangedEvent(scan=scan, series=series))
-
-    assert presenter._active_scan.uuid == scan.uuid
-    assert presenter._active_series.source_scan_uuid == series.source_scan_uuid
+    assert presenter._lead_scan.uuid == UUID(value="scan-002")
+    assert presenter._lead_series.source_scan_uuid == UUID(value="scan-002")
 
 
-def test_handle_active_plot_changed_none_clears_active_series(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
-    EventBroker().publish(ActivePlotChangedEvent(scan=None, series=None))
+def test_sync_stage_with_nothing_staged_clears_the_lead(presenter):
+    stage("scan-001")
+    EventBroker().publish(SyncStageEvent(series=[]))
 
-    assert presenter._active_scan is None
-    assert presenter._active_series is None
+    assert presenter._lead_scan is None
+    assert presenter._lead_series is None
 
 
 # ---------------------------------------------------------------------------
@@ -176,15 +175,15 @@ def test_handle_active_plot_changed_none_clears_active_series(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_perform_fit_clicked_with_no_active_series_is_noop(presenter):
+def test_perform_fit_clicked_with_no_lead_series_is_noop(presenter):
     presenter.handle_perform_fit_clicked()
 
     presenter._model.perform_fit.assert_not_called()
 
 
-def test_perform_fit_clicked_requests_the_active_series_with_the_panels_spec(presenter):
+def test_perform_fit_clicked_requests_the_lead_series_with_the_panels_spec(presenter):
     """Data isn't resolved here - FitModel resolves each series against its own scan handle."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -197,7 +196,7 @@ def test_perform_fit_clicked_requests_the_active_series_with_the_panels_spec(pre
 
 
 def test_first_perform_fit_requests_a_new_fit(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -206,7 +205,7 @@ def test_first_perform_fit_requests_a_new_fit(presenter):
 
 def test_perform_fit_again_reuses_the_existing_fit_uuid(presenter):
     """Refitting the same data overwrites that fit instead of leaving another one behind."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     presenter.handle_perform_fit_clicked()
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-001"))
 
@@ -217,9 +216,9 @@ def test_perform_fit_again_reuses_the_existing_fit_uuid(presenter):
 
 def test_perform_fit_on_a_different_series_requests_a_new_fit(presenter):
     """A fit belongs to the data it was made against - switching series must not overwrite it."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-001"))
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan("scan-002"), series=make_series("scan-002")))
+    stage("scan-002")
 
     presenter.handle_perform_fit_clicked()
 
@@ -229,9 +228,9 @@ def test_perform_fit_on_a_different_series_requests_a_new_fit(presenter):
 def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(presenter):
     """Tweaking a params of a fit picked from the tree edits it in place, rather than forking a copy."""
     event = make_sync_fit_event(fit_uuid="fit-042")
-    EventBroker().publish(FitFocusEvent(fits=[make_fit_entry(fit_uuid="fit-042")]))
+    EventBroker().publish(FocusFitEvent(fits=[make_fit_entry(fit_uuid="fit-042")]))
     EventBroker().publish(event)
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -239,16 +238,11 @@ def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(pre
 
 
 # ---------------------------------------------------------------------------
-# handle_perform_fit_clicked - sequential fits / Apply All
+# handle_perform_fit_clicked - sequential fits
 # ---------------------------------------------------------------------------
 
 
-def test_init_apply_all_defaults_to_true(presenter):
-    """Mirrors the plotter's Apply All checkbox, which starts checked."""
-    assert presenter._apply_all is True
-
-
-def test_perform_fit_with_apply_all_and_two_focused_requests_a_sequential_fit(presenter):
+def test_perform_fit_with_two_staged_requests_a_sequential_fit(presenter):
     focus_two_series(presenter)
 
     presenter.handle_perform_fit_clicked()
@@ -258,9 +252,9 @@ def test_perform_fit_with_apply_all_and_two_focused_requests_a_sequential_fit(pr
     assert request.seed_from_previous is True
 
 
-def test_perform_fit_with_apply_all_off_fits_only_the_active_series(presenter):
+def test_perform_fit_after_restaging_one_fits_only_that_series(presenter):
     focus_two_series(presenter)
-    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -269,9 +263,8 @@ def test_perform_fit_with_apply_all_off_fits_only_the_active_series(presenter):
     assert request.seed_from_previous is False
 
 
-def test_perform_fit_with_apply_all_and_one_focused_is_not_sequential(presenter):
-    EventBroker().publish(PlotFocusEvent(plots=[make_plot("scan-001")], scans={UUID(value="scan-001"): make_scan()}))
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+def test_perform_fit_with_one_staged_is_not_sequential(presenter):
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -307,11 +300,11 @@ def test_perform_fit_mints_a_new_fit_when_only_some_series_have_one(presenter):
     assert last_request(presenter).fit_uuid is None
 
 
-def test_perform_fit_on_one_member_with_apply_all_off_refits_its_sequential_fit(presenter):
+def test_perform_fit_on_one_staged_member_refits_its_sequential_fit(presenter):
     """Refitting one member alone edits that member of the existing fit."""
     focus_two_series(presenter)
     EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002"), fit_uuid="fit-seq"))
-    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
+    stage("scan-001")
 
     presenter.handle_perform_fit_clicked()
 
@@ -322,9 +315,9 @@ def test_perform_fit_on_one_member_with_apply_all_off_refits_its_sequential_fit(
 
 def test_perform_fit_after_fit_removed_mints_a_new_fit(presenter):
     """A removed fit must not be revived by the next Perform Fit on its series."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-001"))
-    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-001")))
+    EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-001")))
 
     presenter.handle_perform_fit_clicked()
 
@@ -332,51 +325,50 @@ def test_perform_fit_after_fit_removed_mints_a_new_fit(presenter):
 
 
 def test_fit_removed_leaves_other_fits_known(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-001"))
-    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-999")))
+    EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-999")))
 
     presenter.handle_perform_fit_clicked()
 
     assert last_request(presenter).fit_uuid == UUID(value="fit-001")
 
 
-def test_sequential_request_covers_a_fit_selected_alone_from_the_tree(presenter):
-    """An exclusive FitFocusEvent redraws exactly that fit's series, so they become what Apply All covers."""
-    scans = {UUID(value=v): make_scan(v) for v in ("scan-001", "scan-002")}
-    EventBroker().publish(FitFocusEvent(fits=[make_fit_entry(("scan-001", "scan-002"), "fit-seq")], scans=scans))
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+def test_refit_of_a_fit_focused_from_the_tree_reuses_it(presenter):
+    """A focused fit's members are mapped when its recompute syncs, so refitting them edits that fit."""
+    EventBroker().publish(FocusFitEvent(fits=[make_fit_entry(("scan-001", "scan-002"), "fit-seq")]))
+    EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002"), fit_uuid="fit-seq"))
+    focus_two_series(presenter)
 
     presenter.handle_perform_fit_clicked()
 
-    request = last_request(presenter)
-    assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001"), UUID(value="scan-002")]
+    assert last_request(presenter).fit_uuid == UUID(value="fit-seq")
 
 
 # ---------------------------------------------------------------------------
-# syncing a saved fit's spec from the Current Plot dropdown
+# syncing a saved fit's spec when a new series leads the stage
 # ---------------------------------------------------------------------------
 
 
-def test_focus_active_plot_with_a_known_fit_syncs_its_spec(presenter):
+def test_new_lead_with_a_known_fit_syncs_its_spec(presenter):
     focus_two_series(presenter)
     EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002"), fit_uuid="fit-seq"))
 
-    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="scan-002")))
+    stage("scan-002")
 
     presenter._model.sync_fit_spec.assert_called_once_with(UUID(value="fit-seq"), UUID(value="scan-002"))
 
 
-def test_focus_active_plot_without_a_known_fit_does_not_sync_a_spec(presenter):
+def test_new_lead_without_a_known_fit_does_not_sync_a_spec(presenter):
     focus_two_series(presenter)
 
-    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="scan-002")))
+    stage("scan-002")
 
     presenter._model.sync_fit_spec.assert_not_called()
 
 
-def test_sync_fit_spec_for_the_active_series_loads_the_member(presenter, qtbot):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+def test_sync_fit_spec_for_the_lead_series_loads_the_member(presenter, qtbot):
+    stage("scan-001")
 
     with qtbot.waitSignal(presenter._view.set_fit_member_signal, timeout=1000):
         EventBroker().publish(
@@ -389,7 +381,7 @@ def test_sync_fit_spec_for_the_active_series_loads_the_member(presenter, qtbot):
 
 def test_sync_fit_spec_for_a_different_series_is_ignored(presenter):
     """The user may have moved on before the answer arrived - only the active series' member loads."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     presenter._view.chi2_edit.setText("0.01")
 
     EventBroker().publish(SyncFitSpecEvent(fit_uuid=UUID(value="fit-001"), member=make_member("scan-002")))
@@ -413,18 +405,18 @@ def test_sync_fit_spec_with_nothing_active_is_ignored(presenter):
 def test_active_plot_changed_resets_range_to_the_series_x_bounds(presenter):
     presenter._view.min_edit.setText("custom")
 
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     assert (presenter._view.min_edit.text(), presenter._view.max_edit.text()) == ("1", "3")
 
 
 def test_active_plot_changed_keeps_range_when_a_fit_is_known_for_the_series(presenter):
     """The fit's own saved range is about to be shown instead, so the reset must not clobber it."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     EventBroker().publish(make_sync_fit_event())
     presenter._view.min_edit.setText("custom")
 
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     assert presenter._view.min_edit.text() == "custom"
 
@@ -437,7 +429,7 @@ def test_active_plot_changed_keeps_range_when_a_fit_is_known_for_the_series(pres
 def test_plot_separately_checkbox_publishes_visibility_event(presenter):
     """The fit curves live in the plotter's view, so the toggle has to travel as an event."""
     received = []
-    EventBroker().register(FitComponentsVisibilityChangedEvent, received.append)
+    EventBroker().register(SetFitComponentsVisibleEvent, received.append)
 
     presenter._view.plot_sep_check.setChecked(True)
 
@@ -446,7 +438,7 @@ def test_plot_separately_checkbox_publishes_visibility_event(presenter):
 
 def test_unchecking_plot_separately_publishes_a_hide_event(presenter):
     received = []
-    EventBroker().register(FitComponentsVisibilityChangedEvent, received.append)
+    EventBroker().register(SetFitComponentsVisibleEvent, received.append)
 
     presenter._view.plot_sep_check.setChecked(True)
     presenter._view.plot_sep_check.setChecked(False)
@@ -456,7 +448,7 @@ def test_unchecking_plot_separately_publishes_a_hide_event(presenter):
 
 def test_plot_separately_does_not_refit(presenter):
     """Components ride along on every FitCurve, so toggling must never re-run the fit."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter._view.plot_sep_check.setChecked(True)
 
@@ -468,8 +460,8 @@ def test_plot_separately_does_not_refit(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_handle_sync_fit_updates_chi_squared_for_active_series(presenter, qtbot):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+def test_handle_sync_fit_updates_chi_squared_for_lead_series(presenter, qtbot):
+    stage("scan-001")
 
     with qtbot.waitSignal(presenter._view.set_fit_member_signal, timeout=1000):
         EventBroker().publish(make_sync_fit_event())
@@ -478,7 +470,7 @@ def test_handle_sync_fit_updates_chi_squared_for_active_series(presenter, qtbot)
 
 
 def test_handle_sync_fit_ignores_fit_for_a_different_series(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     presenter._view.chi2_edit.setText("0.01")
 
     EventBroker().publish(make_sync_fit_event(uuid_val="scan-999"))
@@ -497,10 +489,10 @@ def test_handle_sync_fit_noop_when_nothing_active(presenter):
 def test_handle_sync_fit_shows_result_for_a_fit_selected_from_the_tree(presenter, qtbot):
     """
     Selecting a fit clears the active series (see PlotterPresenter.handle_fit_focus) - its
-    recomputed result must still display, gated by FitFocusEvent instead of the active series.
+    recomputed result must still display, gated by FocusFitEvent instead of the active series.
     """
     event = make_sync_fit_event(uuid_val="scan-001", reduced_chi_squared=0.75)
-    EventBroker().publish(FitFocusEvent(fits=[make_fit_entry()]))
+    EventBroker().publish(FocusFitEvent(fits=[make_fit_entry()]))
 
     with qtbot.waitSignal(presenter._view.set_fit_member_signal, timeout=1000):
         EventBroker().publish(event)
@@ -537,14 +529,14 @@ def test_handle_sync_fit_records_the_fit_for_every_focused_member(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_suggest_params_clicked_with_no_active_series_is_noop(presenter):
+def test_suggest_params_clicked_with_no_lead_series_is_noop(presenter):
     presenter.handle_suggest_params_clicked()
 
     presenter._model.suggest_peak_params.assert_not_called()
 
 
 def test_suggest_params_clicked_calls_model_with_resolved_data(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter.handle_suggest_params_clicked()
 
@@ -560,12 +552,12 @@ def test_suggest_params_clicked_calls_model_with_resolved_data(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_handle_peak_params_suggested_fills_peak_table_for_active_series(presenter, qtbot):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+def test_handle_peak_params_suggested_fills_peak_table_for_lead_series(presenter, qtbot):
+    stage("scan-001")
 
     with qtbot.waitSignal(presenter._view.set_peak_params_signal, timeout=1000):
         EventBroker().publish(
-            PeakParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
+            SyncPeakParamsEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
         )
 
     amplitude_row, center_row, fwhm_row = presenter._view.peak_panels[0].peak_table.rows
@@ -575,12 +567,12 @@ def test_handle_peak_params_suggested_fills_peak_table_for_active_series(present
 
 
 def test_handle_peak_params_suggested_ignores_suggestion_for_a_different_series(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     amplitude_row, _, _ = presenter._view.peak_panels[0].peak_table.rows
     amplitude_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
-        PeakParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-999"), amplitude=5.0, center=1.5, fwhm=0.75)
+        SyncPeakParamsEvent(source_scan_uuid=UUID(value="scan-999"), amplitude=5.0, center=1.5, fwhm=0.75)
     )
 
     assert amplitude_row.value_edit.text() == "unchanged"
@@ -591,7 +583,7 @@ def test_handle_peak_params_suggested_noop_when_nothing_active(presenter):
     amplitude_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
-        PeakParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
+        SyncPeakParamsEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
     )
 
     assert amplitude_row.value_edit.text() == "unchanged"
@@ -602,14 +594,14 @@ def test_handle_peak_params_suggested_noop_when_nothing_active(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_suggest_background_clicked_with_no_active_series_is_noop(presenter):
+def test_suggest_background_clicked_with_no_lead_series_is_noop(presenter):
     presenter.handle_suggest_background_clicked()
 
     presenter._model.suggest_background_params.assert_not_called()
 
 
 def test_suggest_background_clicked_calls_model_with_resolved_data(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     presenter.handle_suggest_background_clicked()
 
@@ -626,11 +618,11 @@ def test_suggest_background_clicked_calls_model_with_resolved_data(presenter):
 
 
 def test_handle_background_params_suggested_fills_background_table(presenter, qtbot):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
 
     with qtbot.waitSignal(presenter._view.set_background_params_signal, timeout=1000):
         EventBroker().publish(
-            BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
+            SyncBackgroundParamsEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
         )
 
     slope_row, intercept_row = presenter._view.background_table.rows
@@ -639,12 +631,12 @@ def test_handle_background_params_suggested_fills_background_table(presenter, qt
 
 
 def test_handle_background_params_suggested_ignores_a_different_series(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     slope_row, _ = presenter._view.background_table.rows
     slope_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
-        BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-999"), slope=0.25, intercept=12.5)
+        SyncBackgroundParamsEvent(source_scan_uuid=UUID(value="scan-999"), slope=0.25, intercept=12.5)
     )
 
     assert slope_row.value_edit.text() == "unchanged"
@@ -655,7 +647,7 @@ def test_handle_background_params_suggested_noop_when_nothing_active(presenter):
     slope_row.value_edit.setText("unchanged")
 
     EventBroker().publish(
-        BackgroundParamsSuggestedEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
+        SyncBackgroundParamsEvent(source_scan_uuid=UUID(value="scan-001"), slope=0.25, intercept=12.5)
     )
 
     assert slope_row.value_edit.text() == "unchanged"
@@ -672,9 +664,9 @@ def make_history_event(can_undo=True, can_redo=False, uuid_val="scan-001", fit_u
     )
 
 
-def fit_active_series(presenter):
+def fit_lead_series(presenter):
     """Make scan-001 active and known to be covered by fit-001."""
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
+    stage("scan-001")
     EventBroker().publish(make_sync_fit_event())
 
 
@@ -687,7 +679,7 @@ def test_history_buttons_start_disabled(presenter):
 
 
 def test_sync_fit_history_for_the_active_member_enables_its_buttons(presenter):
-    fit_active_series(presenter)
+    fit_lead_series(presenter)
 
     EventBroker().publish(make_history_event(can_undo=True, can_redo=True))
 
@@ -695,7 +687,7 @@ def test_sync_fit_history_for_the_active_member_enables_its_buttons(presenter):
 
 
 def test_sync_fit_history_for_another_member_leaves_buttons_disabled(presenter):
-    fit_active_series(presenter)
+    fit_lead_series(presenter)
 
     EventBroker().publish(make_history_event(uuid_val="scan-002"))
 
@@ -708,71 +700,66 @@ def test_history_buttons_disabled_while_fitting_every_focused_series(presenter):
     EventBroker().publish(make_history_event())
     assert history_buttons(presenter) == (False, False)
 
-    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
+    stage("scan-001")
     assert history_buttons(presenter) == (True, False)
 
-    EventBroker().publish(ApplyAllChangedEvent(apply_all=True))
+    stage("scan-001", "scan-002")
     assert history_buttons(presenter) == (False, False)
 
 
-def test_switching_active_series_shows_that_members_history(presenter):
+def test_switching_lead_series_shows_that_members_history(presenter):
     focus_two_series(presenter)
-    EventBroker().publish(ApplyAllChangedEvent(apply_all=False))
     EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002")))
+    stage("scan-001")
     EventBroker().publish(make_history_event(uuid_val="scan-002"))
     assert history_buttons(presenter) == (False, False)
 
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan("scan-002"), series=make_series("scan-002")))
+    stage("scan-002")
 
     assert history_buttons(presenter) == (True, False)
 
 
-def test_undo_clicked_publishes_undo_for_the_active_member(presenter):
-    fit_active_series(presenter)
-    received = []
-    EventBroker().register(UndoFitMemberEvent, received.append)
+def test_undo_clicked_asks_the_project_to_undo_the_active_member(presenter):
+    fit_lead_series(presenter)
 
     presenter.handle_undo_fit_clicked()
 
-    assert [(e.fit_uuid, e.source_scan_uuid) for e in received] == [(UUID(value="fit-001"), UUID(value="scan-001"))]
+    presenter._project_model.undo_fit_member.assert_called_once_with(UUID(value="fit-001"), UUID(value="scan-001"))
 
 
-def test_redo_clicked_publishes_redo_for_the_active_member(presenter):
-    fit_active_series(presenter)
-    received = []
-    EventBroker().register(RedoFitMemberEvent, received.append)
+def test_redo_clicked_asks_the_project_to_redo_the_active_member(presenter):
+    fit_lead_series(presenter)
 
     presenter.handle_redo_fit_clicked()
 
-    assert [(e.fit_uuid, e.source_scan_uuid) for e in received] == [(UUID(value="fit-001"), UUID(value="scan-001"))]
+    presenter._project_model.redo_fit_member.assert_called_once_with(UUID(value="fit-001"), UUID(value="scan-001"))
 
 
-def test_undo_clicked_without_a_fit_for_the_active_series_is_noop(presenter):
-    EventBroker().publish(ActivePlotChangedEvent(scan=make_scan(), series=make_series()))
-    received = []
-    EventBroker().register(UndoFitMemberEvent, received.append)
+def test_undo_clicked_without_a_fit_for_the_lead_series_is_noop(presenter):
+    stage("scan-001")
 
     presenter.handle_undo_fit_clicked()
 
-    assert received == []
+    presenter._project_model.undo_fit_member.assert_not_called()
 
 
 def test_fit_removed_disables_history_buttons(presenter):
-    fit_active_series(presenter)
+    fit_lead_series(presenter)
     EventBroker().publish(make_history_event())
 
-    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-001")))
+    EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-001")))
 
     assert history_buttons(presenter) == (False, False)
 
 
 def test_clear_focus_disables_history_and_forgets_known_fits(presenter):
-    fit_active_series(presenter)
+    fit_lead_series(presenter)
     EventBroker().publish(make_history_event())
 
     EventBroker().publish(ClearFocusEvent())
 
     assert history_buttons(presenter) == (False, False)
+    stage("scan-001")
     presenter.handle_perform_fit_clicked()
     assert last_request(presenter).fit_uuid is None
 
@@ -783,3 +770,22 @@ def test_clear_focus_resets_the_view_fields(presenter):
     EventBroker().publish(ClearFocusEvent())
 
     assert len(presenter._view.peak_panels) == 1
+
+
+def test_restaging_the_same_lead_does_not_resync_its_spec(presenter):
+    """A field edit resyncs the stage with the same lead - that must not reload the panel."""
+    stage("scan-001")
+    EventBroker().publish(make_sync_fit_event())
+
+    stage("scan-001")
+
+    presenter._model.sync_fit_spec.assert_not_called()
+
+
+def test_clear_focus_forgets_the_stage(presenter):
+    focus_two_series(presenter)
+
+    EventBroker().publish(ClearFocusEvent())
+
+    presenter.handle_perform_fit_clicked()
+    presenter._model.perform_fit.assert_not_called()

@@ -14,7 +14,7 @@ from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import DownstreamReadyEvent
+from tavi.meta.event.type.presenter_event import StartApplicationEvent
 
 
 class MainPresenter:
@@ -41,7 +41,9 @@ class MainPresenter:
 
         self.data_file_presenter = DataFilePresenter()
 
-        self.fitting_presenter = FittingPresenter(model_dict[FitModelInterface.__name__])
+        self.fitting_presenter = FittingPresenter(
+            model_dict[FitModelInterface.__name__], model_dict["TaviProjectProxy"]
+        )
         self.fit_window_presenter = FitWindowPresenter()
 
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
@@ -57,7 +59,7 @@ class MainPresenter:
         )
 
         self._event_broker = EventBroker()
-        self._event_broker.publish(DownstreamReadyEvent())
+        self._event_broker.publish(StartApplicationEvent())
 
     def exit(self) -> bool:
         """
