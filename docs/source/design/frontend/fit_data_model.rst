@@ -540,4 +540,3 @@ Remove a fit or scan
         EventBroker ->> FittingPresenter: forget fit uuid (next Perform Fit mints a new one)
         EventBroker ->> FitWindowPresenter: close the fit's windows
         EventBroker ->> LoadRawScanPresenter: drop tree node
-
