@@ -4,7 +4,7 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_interface import Event
 
 
-class RawScanAppendEvent(Event):
+class AddRawScanEvent(Event):
     """Indicates a new RawScan has been added to the Project."""
 
     uuid: UUID
@@ -12,7 +12,7 @@ class RawScanAppendEvent(Event):
     friendly_path: str
 
 
-class PlotAppendEvent(Event):
+class AddPlotEvent(Event):
     """Indicates a new Plot has been added to the Project."""
 
     uuid: UUID
@@ -20,27 +20,27 @@ class PlotAppendEvent(Event):
     friendly_path: str
 
 
-class FitAppendEvent(Event):
-    """Indicates a new Fit has been added to the Project. Mirrors PlotAppendEvent."""
+class AddFitEvent(Event):
+    """Indicates a new Fit has been added to the Project. Mirrors AddPlotEvent."""
 
     uuid: UUID
     friendly_name: str
     friendly_path: str
 
 
-class RawScanRemoveEvent(Event):
+class RemoveRawScanEvent(Event):
     """Indicates a RawScan has been removed from the Project and is no longer in TaviData."""
 
     uuid: UUID
 
 
-class PlotRemoveEvent(Event):
+class RemovePlotEvent(Event):
     """Indicates a Plot has been removed from the Project and is no longer in TaviData."""
 
     uuid: UUID
 
 
-class FitRemoveEvent(Event):
+class RemoveFitEvent(Event):
     """Indicates a Fit has been removed from the Project and is no longer in TaviData."""
 
     uuid: UUID
@@ -65,8 +65,8 @@ class RestoreFitMemberEvent(Event):
     """
     Announce that one member of a fit was rolled back or forward to an earlier saved state.
 
-    Published by ``TaviProjectModel`` just before the ``FitRecomputeEvent`` that redraws the member,
-    the same way ``FitFocusEvent`` precedes it: ``FitWindowPresenter`` marks that member's open
+    Published by ``TaviProjectModel`` just before the ``RecomputeFitEvent`` that redraws the member,
+    the same way ``FocusFitEvent`` precedes it: ``FitWindowPresenter`` marks that member's open
     window as pending here, so the resulting ``SyncFitEvent`` refreshes it regardless of subscriber
     registration order.
     """
@@ -75,13 +75,7 @@ class RestoreFitMemberEvent(Event):
     source_scan_uuid: UUID
 
 
-class RawScanLoadingEvent(Event):
-    """loading raw data event."""
-
-    raw_scan_uuid: list[str]
-
-
-class SyncRecentProjects(Event):
+class SyncRecentProjectsEvent(Event):
     """Update list of recent projects."""
 
     recent_projects: list[str]

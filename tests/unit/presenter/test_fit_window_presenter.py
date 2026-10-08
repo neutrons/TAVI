@@ -17,7 +17,7 @@ from tavi.library.data.fit_entry import (
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent, RestoreFitMemberEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent, RemoveRawScanEvent, RestoreFitMemberEvent
 from tavi.meta.event.type.presenter_event import SaveFitEvent, SyncFitEvent
 
 
@@ -116,8 +116,8 @@ def test_init_registers_save_sync_and_removal_events(presenter):
     broker = EventBroker()
     assert presenter.handle_save_fit in broker.registry[SaveFitEvent]
     assert presenter.handle_sync_fit in broker.registry[SyncFitEvent]
-    assert presenter.handle_fit_removed in broker.registry[FitRemoveEvent]
-    assert presenter.handle_raw_scan_removed in broker.registry[RawScanRemoveEvent]
+    assert presenter.handle_fit_removed in broker.registry[RemoveFitEvent]
+    assert presenter.handle_raw_scan_removed in broker.registry[RemoveRawScanEvent]
 
 
 # ---------------------------------------------------------------------------
@@ -253,7 +253,7 @@ def test_fit_removed_closes_its_windows_only(presenter):
     perform_fit(fit_uuid="fit-001")
     perform_fit(fit_uuid="fit-002")
 
-    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-001")))
+    EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-001")))
 
     assert presenter.open_windows() == {key("fit-002", "scan-001"), key("fit-002", "scan-002")}
     assert set(presenter._view.windows) == presenter.open_windows()
@@ -263,7 +263,7 @@ def test_raw_scan_removed_closes_every_window_showing_that_scan(presenter):
     perform_fit(fit_uuid="fit-001")
     perform_fit(fit_uuid="fit-002")
 
-    EventBroker().publish(RawScanRemoveEvent(uuid=UUID(value="scan-001")))
+    EventBroker().publish(RemoveRawScanEvent(uuid=UUID(value="scan-001")))
 
     assert presenter.open_windows() == {key("fit-001", "scan-002"), key("fit-002", "scan-002")}
     assert set(presenter._view.windows) == presenter.open_windows()
@@ -272,8 +272,8 @@ def test_raw_scan_removed_closes_every_window_showing_that_scan(presenter):
 def test_removal_matching_no_window_is_a_noop(presenter):
     perform_fit()
 
-    EventBroker().publish(FitRemoveEvent(uuid=UUID(value="fit-999")))
-    EventBroker().publish(RawScanRemoveEvent(uuid=UUID(value="scan-999")))
+    EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-999")))
+    EventBroker().publish(RemoveRawScanEvent(uuid=UUID(value="scan-999")))
 
     assert len(presenter.open_windows()) == 2
 

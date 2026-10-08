@@ -9,7 +9,7 @@ from neutrons_standard.decorators.singleton import Singleton
 
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 from tavi.meta.multithreading.signal import Signal
 
@@ -51,7 +51,7 @@ class Worker:
             stack_trace = f"{self.call_stack} \n {traceback.format_exc()}"
             error_message = str(e)
             results = ModelResponse(code=ResponseCode.ERROR, message=error_message)
-            self.event_broker.publish(ExceptionEvent(error=NonRecoverableError(error_message, stack_trace)))
+            self.event_broker.publish(ReportErrorEvent(error=NonRecoverableError(error_message, stack_trace)))
 
         self.finished.emit()
         if not isinstance(results, ModelResponse):

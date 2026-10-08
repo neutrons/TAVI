@@ -68,14 +68,14 @@ When it is read
 
 Reads are event-driven rather than happening at import time:
 
-#. ``MainPresenter`` finishes wiring the UI and publishes ``DownstreamReadyEvent``.
+#. ``MainPresenter`` finishes wiring the UI and publishes ``StartApplicationEvent``.
 #. ``TaviProjectModel.sync_on_ready`` calls ``emit_sync_recent_projects()``.
-#. That publishes ``SyncRecentProjects(recent_projects=[...])``.
+#. That publishes ``SyncRecentProjectsEvent(recent_projects=[...])``.
 #. ``FileMenuPresenter.sync_recent_projects`` forwards the list to
    ``FileMenu.init_recent_projects``, which adds one ``QAction`` per entry.
 
 The indirection exists because the model is constructed before any presenter has
-subscribed; ``DownstreamReadyEvent`` is the signal that consumers are ready for
+subscribed; ``StartApplicationEvent`` is the signal that consumers are ready for
 startup state to be pushed.
 
 ``configuration.ini`` — configuration template

@@ -1,7 +1,5 @@
 """Events that Presenters emit."""
 
-from typing import Optional
-
 from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, Scan
@@ -14,67 +12,58 @@ class FocusEvent(Event):
     ids: list[UUID]
 
 
-class DownstreamReadyEvent(Event):
-    """Notify upstream that consumers are ready at startup."""
+class StartApplicationEvent(Event):
+    """Announce that the application's views are built, so models can push their initial state to them."""
 
     pass
 
 
-class RawScanFocusEvent(Event):
+class FocusRawScanEvent(Event):
     """
-    Event to plot a list of raw scans.
+    Add raw scans to the focus.
 
-    ``also_plots`` carries any saved ``Plot``s focused in the same tree multiselect (see
-    ``TaviProjectModel._handle_focus_event``) - ``PlotModel`` folds them into the same preview
-    batch and publishes one merged ``PlotFocusEvent``, so a scan+plot multiselect overlays
-    both instead of one clobbering the other.
+    ``PlotModel`` answers with a ``FocusPlotEvent`` of one preview plot per scan. Like every
+    ``Focus*`` event this only adds: a new selection is cleared first by ``ClearFocusEvent``, so a
+    scan+plot multiselect publishes this and ``FocusPlotEvent`` side by side without either one
+    clobbering the other.
     """
 
     scans: list[RawScan]
-    also_plots: list[Plot] = []
 
 
 class ClearFocusEvent(Event):
     """
     Announce that whatever was focused no longer is - the first half of every new selection.
 
-    Published by ``TaviProjectModel`` first thing on every ``FocusEvent``, ahead of the focus events
-    it routes to, so every subscriber has dropped its state for the old selection before any
-    ``ActivePlotChangedEvent``/``SyncFitEvent`` from the new one arrives. It says nothing about what
-    a subscriber should do with that; ``FittingPresenter``, for one, resets its panel and forgets
-    which fit covers each scan. ``PlotFocusEvent`` can't serve as the cue - ``PlotModel``
-    republishes it for every field edit, which is a refresh of the same focus, not a new one.
+    Published by ``TaviProjectModel`` first thing on every ``FocusEvent``, ahead of the ``Focus*``
+    events it routes to, so every subscriber has dropped its state for the old selection before
+    any of the new one arrives. The stage is part of the focus, so it is cleared with it - no
+    ``ClearStageEvent`` follows. It says nothing about what a subscriber should do with that;
+    ``FittingPresenter``, for one, resets its panel.
     """
 
     pass
 
 
-class FitFocusEvent(Event):
+class FocusFitEvent(Event):
     """
-    Announce that a list of fits is now focused. Mirrors RawScanFocusEvent/PlotFocusEvent.
+    Add fits to the focus. Like every ``Focus*`` event this only adds - see ``ClearFocusEvent``.
 
-    UI-facing only (``PlotterPresenter``/``FittingPresenter``): they clear stale state and mark
-    these uuids as pending a curve. The backend recompute trigger is the separate
-    ``FitRecomputeEvent``, published right after this one - keeping them distinct (rather than
-    having ``FitModel`` also subscribe to this one) guarantees the UI has already marked its
+    ``PlotModel`` adds the series each member was fit against, if not already focused, by
+    publishing a ``FocusPlotEvent`` - so a fit's data is drawn under its curve. ``PlotterPresenter``
+    and ``FittingPresenter`` mark these uuids as pending a curve. The recompute trigger is the
+    separate ``RecomputeFitEvent``, published right after this one - keeping them distinct (rather
+    than having ``FitModel`` also subscribe to this one) guarantees the UI has already marked its
     pending state by the time ``FitModel``'s resulting ``SyncFitEvent`` arrives, regardless of
     subscriber registration order.
-
-    ``exclusive`` is False when this batch's original selection also included raw scans or
-    plots (see ``TaviProjectModel._handle_focus_event``) - subscribers should overlay onto
-    that still-focused scan/plot canvas rather than clearing it.
     """
 
     fits: list[FitEntry]
-    exclusive: bool = True
     scans: dict[UUID, Scan] = {}
-    """The Scan every member of every focused fit points at, same contract as ``PlotFocusEvent.scans``.
-    Every member carries the full ``PlotSeries`` it was fit against - scan, x/y columns and
-    normalization alike - so this is what lets re-focusing a fit redraw the data underneath its
-    curves, and repopulate the Data File tab, instead of leaving them blank."""
+    """The Scan every member of every focused fit points at, same contract as ``FocusPlotEvent.scans``."""
 
 
-class FitRecomputeEvent(Event):
+class RecomputeFitEvent(Event):
     """Ask FitModel to recompute every member of each of these fits against its source series' current data."""
 
     fits: list[FitEntry]
@@ -101,28 +90,9 @@ class SaveFitEvent(Event):
     """In fit order. Every member is a different series."""
 
 
-class UndoFitMemberEvent(Event):
+class FocusPlotEvent(Event):
     """
-    Ask ``TaviProjectModel`` to roll one member of a fit back to the state before its last save.
-
-    Published by ``FittingPresenter`` for the active series only - undo is for dialing one member
-    in, so it is offered only while Perform Fit would refit that member alone.
-    """
-
-    fit_uuid: UUID
-    source_scan_uuid: UUID
-
-
-class RedoFitMemberEvent(Event):
-    """Ask ``TaviProjectModel`` to reapply the member state the last ``UndoFitMemberEvent`` rolled back."""
-
-    fit_uuid: UUID
-    source_scan_uuid: UUID
-
-
-class PlotFocusEvent(Event):
-    """
-    Event to render a list of plots.
+    Add plots to the focus. Like every ``Focus*`` event this only adds - see ``ClearFocusEvent``.
 
     ``scans`` carries the Scan objects every series across ``plots`` points at (by
     ``source_scan_uuid``) — ``RawScan`` today, but any ``Scan`` (e.g. a future
@@ -135,42 +105,20 @@ class PlotFocusEvent(Event):
     scans: dict[UUID, Scan] = {}
 
 
-class FocusActivePlotEvent(Event):
+class SyncPlotEvent(Event):
     """
-    Request to make one already-focused series active, by its source scan's uuid.
+    Sync the UI to new content for the plots already focused - same focus, updated series.
 
-    Handled by both ``TaviProjectModel`` and ``PlotModel`` — each searches its own focused plots
-    (``TaviData.plots`` vs. an unsaved preview in ``PlotModel._last_plots``) for a series whose
-    ``source_scan_uuid`` matches, and no-ops otherwise. A series' source scan is what identifies
-    it - not its containing ``Plot``'s uuid - so one entry can be picked out of an otherwise-fused,
-    multi-series saved plot exactly as it would be among several single-series preview plots. The
-    publisher does not need to know which model currently owns the matching series.
+    Published by ``PlotModel`` after a field edit or a scan removal, carrying every focused plot
+    as it now stands. Kept apart from ``FocusPlotEvent`` because the reactions differ: a refresh
+    replaces what's drawn but must not reset anything a new selection would.
     """
 
-    uuid: UUID
+    plots: list[Plot]
+    scans: dict[UUID, Scan] = {}
 
 
-class ActivePlotChangedEvent(Event):
-    """
-    Event announcing the scan (and series) backing whichever single series is currently "active".
-
-    Selected via the plotter's "Current Plot" dropdown - one entry per series, not per Plot, so a
-    fused multi-series plot still offers each of its series individually. Carries the ``Scan``
-    itself rather than the ``Plot`` and a snapshot to resolve it against, since a ``Plot`` may be
-    an unsaved preview with nowhere persistent to live; consumers that only display data (e.g.
-    the data widget) care about the scan, not the plot's save state. ``None`` means no series is
-    currently active.
-
-    ``series`` is carried alongside the scan so the plotter can resync its own axis/preset fields
-    to whichever series just became active - a plain default-axis scan lookup wouldn't reflect a
-    per-series edit (e.g. "Apply All" off).
-    """
-
-    scan: Optional[Scan] = None
-    series: Optional[PlotSeries] = None
-
-
-class PeakParamsSuggestedEvent(Event):
+class SyncPeakParamsEvent(Event):
     """
     Announce a heuristic initial guess for one peak's amplitude/center/FWHM, from real data.
 
@@ -185,11 +133,11 @@ class PeakParamsSuggestedEvent(Event):
     fwhm: float
 
 
-class BackgroundParamsSuggestedEvent(Event):
+class SyncBackgroundParamsEvent(Event):
     """
     Announce a heuristic initial guess for the background's slope/intercept, from real data.
 
-    Mirrors ``PeakParamsSuggestedEvent``, ``source_scan_uuid`` staleness guard included. Kept a
+    Mirrors ``SyncPeakParamsEvent``, ``source_scan_uuid`` staleness guard included. Kept a
     separate event rather than extra fields on that one, so a peak guess and a background guess
     can never partly overwrite each other's fields in the panel.
     """
@@ -199,7 +147,7 @@ class BackgroundParamsSuggestedEvent(Event):
     intercept: float
 
 
-class FitComponentsVisibilityChangedEvent(Event):
+class SetFitComponentsVisibleEvent(Event):
     """
     Announce that the fitting panel's "Plot Separately" checkbox was toggled.
 
@@ -212,25 +160,12 @@ class FitComponentsVisibilityChangedEvent(Event):
     visible: bool
 
 
-class ShowScanTitleChangedEvent(Event):
-    """
-    Announce that the plotter's "Show Title" checkbox was toggled.
-
-    A display preference, so it names no scan: every series is labelled the same way.
-    ``PlotModel`` owns the answer - ``PlotSeries.scan_name`` is set when a preview plot is
-    built - so it relabels what's currently focused and republishes ``PlotFocusEvent`` rather
-    than the view relabelling artists it doesn't own the names of.
-    """
-
-    show_title: bool
-
-
 class SyncFitEvent(Event):
     """
     Sync the UI to freshly computed members of a fit - the "sync" step of focus -> calculate -> sync.
 
     Published by ``FitModel`` both after Perform Fit and after a saved fit is recomputed for display
-    (``FitRecomputeEvent``). Display only: ``PlotterPresenter``/``Plot1DView`` render each outcome's
+    (``RecomputeFitEvent``). Display only: ``PlotterPresenter``/``Plot1DView`` render each outcome's
     ``curve`` alongside the data it was fit against, ``FittingPresenter`` reflects the active series'
     member in the fitting panel, and ``FitWindowPresenter`` fills the windows of a fit it was just told
     was saved (``SaveFitEvent``). Persisting the fit is ``SaveFitEvent``'s job, not this one's.
@@ -245,16 +180,41 @@ class SyncFitEvent(Event):
     """In fit order. Every outcome is a different series."""
 
 
-class ApplyAllChangedEvent(Event):
+class ClearStageEvent(Event):
     """
-    Announce the plotter's "Apply All" checkbox state.
+    Announce that nothing is staged any more. Mirrors ``ClearFocusEvent`` for the stage.
 
-    ``FittingPresenter`` reads it as "fit every focused series, each seeded from the one before" (a
-    sequential fit) when checked, versus "fit only the series picked in the Current Plot dropdown"
-    when not - the same scope the checkbox already gives the plotter's own field edits.
+    The stage is the part of the focus that edits and fits apply to. Published by
+    ``PlotterPresenter`` before it restages - when "Apply All" is toggled, or when another series
+    is picked in the "Current Plot" dropdown while it's off.
     """
 
-    apply_all: bool
+    pass
+
+
+class StageSeriesEvent(Event):
+    """
+    Add focused series to the stage, by source scan uuid. Like ``Focus*`` events this only adds.
+
+    Staging is the user's choice of what edits and fits apply to: every focused series with
+    "Apply All" checked, only the one picked in the "Current Plot" dropdown without it. Published
+    by ``PlotterPresenter``; ``PlotModel`` tracks the stage and answers with ``SyncStageEvent``.
+    """
+
+    source_scan_uuids: list[UUID]
+
+
+class SyncStageEvent(Event):
+    """
+    Sync the UI to the staged series as they now stand, and the scans backing them.
+
+    Published by ``PlotModel``, which tracks the stage: after ``StageSeriesEvent``, when a field edit
+    changes a staged series, and when a removal drops one. The first series leads - it is the one
+    the plotter's fields, the data tab and the fitting panel show. Empty means nothing is staged.
+    """
+
+    series: list[PlotSeries]
+    scans: dict[UUID, Scan] = {}
 
 
 class SyncFitSpecEvent(Event):

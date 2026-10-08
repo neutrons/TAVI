@@ -21,11 +21,11 @@ from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.exception_event import ExceptionEvent
+from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.presenter_event import (
-    BackgroundParamsSuggestedEvent,
-    FitRecomputeEvent,
-    PeakParamsSuggestedEvent,
+    SyncBackgroundParamsEvent,
+    RecomputeFitEvent,
+    SyncPeakParamsEvent,
     SaveFitEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
@@ -346,7 +346,7 @@ def test_perform_fit_trims_to_range(model):
 
 def test_perform_fit_unsupported_peak_shape_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
 
@@ -361,7 +361,7 @@ def test_perform_fit_unsupported_peak_shape_reports_error(model):
 
 def test_perform_fit_unsupported_background_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
 
@@ -373,7 +373,7 @@ def test_perform_fit_unsupported_background_reports_error(model):
 
 def test_perform_fit_non_numeric_peak_field_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     request = make_request(
         peaks=[
@@ -387,7 +387,7 @@ def test_perform_fit_non_numeric_peak_field_reports_error(model):
 
 def test_perform_fit_non_numeric_range_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     model.perform_fit(make_request(range_min="abc"))
 
@@ -396,7 +396,7 @@ def test_perform_fit_non_numeric_range_reports_error(model):
 
 def test_perform_fit_range_with_too_few_points_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     model.perform_fit(make_request(range_min="4.99", range_max="5.0"))
 
@@ -405,7 +405,7 @@ def test_perform_fit_range_with_too_few_points_reports_error(model):
 
 def test_perform_fit_unloaded_scan_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
 
@@ -425,7 +425,7 @@ def test_perform_fit_guesses_blank_peak_params(model):
     received = []
     EventBroker().register(SyncFitEvent, received.append)
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     request = make_request(
         peaks=[PeakField(shape="Gaussian", amplitude=make_param(""), center=make_param(""), fwhm=make_param(""))]
@@ -624,7 +624,7 @@ def test_sequential_fit_with_every_member_failing_publishes_nothing(model):
 
 def test_multi_series_errors_aggregate_into_one_report_prefixed_by_run_name(model, raw_scans):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     series = make_sequential_scans(raw_scans, count=2)
 
     model.perform_fit(make_request(series=series, range_min="abc"))
@@ -647,7 +647,7 @@ def test_multi_series_fit_reuses_a_supplied_fit_uuid(model, raw_scans):
 
 
 # ---------------------------------------------------------------------------
-# FitRecomputeEvent - recompute a selected fit against live data, never a cached curve
+# RecomputeFitEvent - recompute a selected fit against live data, never a cached curve
 # ---------------------------------------------------------------------------
 
 
@@ -656,7 +656,7 @@ def test_fit_recompute_recomputes_against_current_raw_scan_data(model):
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert len(received) == 1
     assert received[0].fit_uuid == entry.uuid
@@ -672,7 +672,7 @@ def test_fit_recompute_reflects_changed_underlying_data(model, raw_scans):
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert received[0].outcomes[0].member.result.peaks[0].amplitude == pytest.approx(2 * GAUSSIAN_AREA, rel=1e-2)
 
@@ -682,7 +682,7 @@ def test_fit_recompute_unknown_source_scan_is_noop(model):
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert received == []
 
@@ -693,7 +693,7 @@ def test_fit_recompute_publishes_every_member_of_a_multi_member_fit(model, raw_s
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert len(received) == 1
     assert [outcome.member.source_scan_uuid for outcome in received[0].outcomes] == [s.source_scan_uuid for s in series]
@@ -708,7 +708,7 @@ def test_fit_recompute_uses_each_members_own_spec_without_reseeding(model, raw_s
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     first, second = received[0].outcomes
     assert first.member.peaks[0].center.value == str(GAUSSIAN_CENTER)
@@ -723,7 +723,7 @@ def test_fit_recompute_skips_members_whose_scan_is_not_loaded(model, raw_scans):
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert [outcome.member.source_scan_uuid for outcome in received[0].outcomes] == [s.source_scan_uuid for s in series]
 
@@ -737,7 +737,7 @@ def test_fit_recompute_publishes_one_event_per_fit(model, raw_scans):
 
     received = []
     EventBroker().register(SyncFitEvent, received.append)
-    EventBroker().publish(FitRecomputeEvent(fits=entries))
+    EventBroker().publish(RecomputeFitEvent(fits=entries))
 
     assert [event.fit_uuid for event in received] == [UUID(value="fit-a"), UUID(value="fit-b")]
 
@@ -772,7 +772,7 @@ def make_linear_background_request(raw_scans, **overrides) -> FitRequest:
 
 def test_perform_fit_linear_background_is_supported(model, raw_scans):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
 
@@ -849,7 +849,7 @@ def test_perform_fit_linear_background_unconstrained_slope_ignores_its_bounds(mo
 def test_perform_fit_linear_background_unconstrained_ignores_non_numeric_bounds(model, raw_scans):
     """Unchecked means min/max do nothing - not even fail the fit with whatever text is left in them."""
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     fitted_background_slope(model, raw_scans, make_param("", minimum="abc", maximum="xyz"))
 
@@ -858,7 +858,7 @@ def test_perform_fit_linear_background_unconstrained_ignores_non_numeric_bounds(
 
 def test_perform_fit_linear_background_non_numeric_slope_reports_error(model, raw_scans):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
 
@@ -894,7 +894,7 @@ def test_suggest_peak_params_returns_ok(model):
 
 def test_suggest_peak_params_publishes_event(model):
     received = []
-    EventBroker().register(PeakParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncPeakParamsEvent, received.append)
 
     model.suggest_peak_params(make_suggest_request())
 
@@ -904,7 +904,7 @@ def test_suggest_peak_params_publishes_event(model):
 
 def test_suggest_peak_params_finds_center_near_true_peak(model):
     received = []
-    EventBroker().register(PeakParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncPeakParamsEvent, received.append)
 
     model.suggest_peak_params(make_suggest_request())
 
@@ -913,7 +913,7 @@ def test_suggest_peak_params_finds_center_near_true_peak(model):
 
 def test_suggest_peak_params_amplitude_is_positive(model):
     received = []
-    EventBroker().register(PeakParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncPeakParamsEvent, received.append)
 
     model.suggest_peak_params(make_suggest_request())
 
@@ -922,7 +922,7 @@ def test_suggest_peak_params_amplitude_is_positive(model):
 
 def test_suggest_peak_params_fwhm_is_positive(model):
     received = []
-    EventBroker().register(PeakParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncPeakParamsEvent, received.append)
 
     model.suggest_peak_params(make_suggest_request())
 
@@ -932,19 +932,19 @@ def test_suggest_peak_params_fwhm_is_positive(model):
 def test_suggest_peak_params_works_for_lorentzian_and_voigt(model):
     for shape in ("Lorentzian", "Voigt"):
         received = []
-        EventBroker().register(PeakParamsSuggestedEvent, received.append)
+        EventBroker().register(SyncPeakParamsEvent, received.append)
 
         model.suggest_peak_params(make_suggest_request(shape=shape))
 
         assert len(received) == 1
-        EventBroker().registry[PeakParamsSuggestedEvent].remove(received.append)
+        EventBroker().registry[SyncPeakParamsEvent].remove(received.append)
 
 
 def test_suggest_peak_params_unsupported_shape_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     suggested = []
-    EventBroker().register(PeakParamsSuggestedEvent, suggested.append)
+    EventBroker().register(SyncPeakParamsEvent, suggested.append)
 
     model.suggest_peak_params(make_suggest_request(shape="Pseudo-Voigt"))
 
@@ -954,7 +954,7 @@ def test_suggest_peak_params_unsupported_shape_reports_error(model):
 
 def test_suggest_peak_params_non_numeric_range_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     model.suggest_peak_params(make_suggest_request(range_min="abc"))
 
@@ -963,7 +963,7 @@ def test_suggest_peak_params_non_numeric_range_reports_error(model):
 
 def test_suggest_peak_params_range_with_too_few_points_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     model.suggest_peak_params(make_suggest_request(range_min="4.99", range_max="5.0"))
 
@@ -1006,7 +1006,7 @@ def test_suggest_background_params_returns_ok(model):
 
 def test_suggest_background_params_publishes_event(model):
     received = []
-    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncBackgroundParamsEvent, received.append)
 
     model.suggest_background_params(make_suggest_background_request())
 
@@ -1016,7 +1016,7 @@ def test_suggest_background_params_publishes_event(model):
 
 def test_suggest_background_params_recovers_a_straight_line(model):
     received = []
-    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncBackgroundParamsEvent, received.append)
 
     model.suggest_background_params(make_suggest_background_request())
 
@@ -1026,7 +1026,7 @@ def test_suggest_background_params_recovers_a_straight_line(model):
 
 def test_suggest_background_params_honours_the_fitting_range(model):
     received = []
-    EventBroker().register(BackgroundParamsSuggestedEvent, received.append)
+    EventBroker().register(SyncBackgroundParamsEvent, received.append)
     # Outside the range the line bends; a range-respecting guess never sees those points.
     x, y = make_sloped_background_xy()
     y[x > 0] = 100.0
@@ -1038,9 +1038,9 @@ def test_suggest_background_params_honours_the_fitting_range(model):
 
 def test_suggest_background_params_unsupported_background_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
     suggested = []
-    EventBroker().register(BackgroundParamsSuggestedEvent, suggested.append)
+    EventBroker().register(SyncBackgroundParamsEvent, suggested.append)
 
     model.suggest_background_params(make_suggest_background_request(background="Quadratic"))
 
@@ -1050,7 +1050,7 @@ def test_suggest_background_params_unsupported_background_reports_error(model):
 
 def test_suggest_background_params_non_numeric_range_reports_error(model):
     errors = []
-    EventBroker().register(ExceptionEvent, errors.append)
+    EventBroker().register(ReportErrorEvent, errors.append)
 
     model.suggest_background_params(make_suggest_background_request(range_min="abc"))
 
@@ -1085,7 +1085,7 @@ def test_fit_recompute_syncs_without_saving(model, raw_scans):
     EventBroker().register(SaveFitEvent, saved.append)
     EventBroker().register(SyncFitEvent, synced.append)
 
-    EventBroker().publish(FitRecomputeEvent(fits=[entry]))
+    EventBroker().publish(RecomputeFitEvent(fits=[entry]))
 
     assert saved == []
     assert len(synced) == 1

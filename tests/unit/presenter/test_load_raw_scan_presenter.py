@@ -1,19 +1,17 @@
 """Tests for tavi.frontend.presenter.load_raw_scan_presenter."""
 
-from unittest.mock import MagicMock, call, patch
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
-    FitAppendEvent,
-    FitRemoveEvent,
-    PlotAppendEvent,
-    PlotRemoveEvent,
-    RawScanAppendEvent,
-    RawScanRemoveEvent,
+    AddFitEvent,
+    AddPlotEvent,
+    AddRawScanEvent,
+    RemoveFitEvent,
+    RemovePlotEvent,
+    RemoveRawScanEvent,
 )
 from tavi.meta.event.type.presenter_event import FocusEvent
 
@@ -36,28 +34,21 @@ def test_init_registers_raw_scan_append_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.update_treeview_data in broker.registry[RawScanAppendEvent]
-
-
-def test_init_registers_focus_event():
-    presenter, view, model = _make_presenter()
-    broker = EventBroker()
-
-    assert presenter.print_selected in broker.registry[FocusEvent]
+    assert presenter.update_treeview_data in broker.registry[AddRawScanEvent]
 
 
 def test_init_registers_plot_append_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.update_plot_treeview_data in broker.registry[PlotAppendEvent]
+    assert presenter.update_plot_treeview_data in broker.registry[AddPlotEvent]
 
 
 def test_init_registers_fit_append_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.update_fit_treeview_data in broker.registry[FitAppendEvent]
+    assert presenter.update_fit_treeview_data in broker.registry[AddFitEvent]
 
 
 def test_init_hooks_up_select_signal():
@@ -81,7 +72,7 @@ def test_update_treeview_data_calls_add_raw_scan():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="scan-001")
-    event = RawScanAppendEvent(uuid=uuid, friendly_name="My Scan", friendly_path="/exp1")
+    event = AddRawScanEvent(uuid=uuid, friendly_name="My Scan", friendly_path="/exp1")
     presenter.update_treeview_data(event)
 
     view.add_raw_scan.assert_called_once_with(uuid, "My Scan", "/exp1")
@@ -91,7 +82,7 @@ def test_update_treeview_data_updates_inventory():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="scan-002")
-    event = RawScanAppendEvent(uuid=uuid, friendly_name="Scan B", friendly_path="/exp2")
+    event = AddRawScanEvent(uuid=uuid, friendly_name="Scan B", friendly_path="/exp2")
     presenter.update_treeview_data(event)
 
     assert presenter.inventory[uuid] == ("Scan B", "/exp2")
@@ -102,7 +93,7 @@ def test_update_treeview_data_accumulates_multiple_scans():
 
     uuids = [UUID(value=f"u{i}") for i in range(3)]
     for i, uuid in enumerate(uuids):
-        event = RawScanAppendEvent(uuid=uuid, friendly_name=f"Scan{i}", friendly_path=f"/exp{i}")
+        event = AddRawScanEvent(uuid=uuid, friendly_name=f"Scan{i}", friendly_path=f"/exp{i}")
         presenter.update_treeview_data(event)
 
     assert len(presenter.inventory) == 3
@@ -115,7 +106,7 @@ def test_update_treeview_data_via_event_broker():
     broker = EventBroker()
 
     uuid = UUID(value="broker-1")
-    broker.publish(RawScanAppendEvent(uuid=uuid, friendly_name="BrokerScan", friendly_path="/broker"))
+    broker.publish(AddRawScanEvent(uuid=uuid, friendly_name="BrokerScan", friendly_path="/broker"))
 
     view.add_raw_scan.assert_called_once_with(uuid, "BrokerScan", "/broker")
     assert presenter.inventory[uuid] == ("BrokerScan", "/broker")
@@ -130,7 +121,7 @@ def test_update_plot_treeview_data_calls_add_plot():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="plot-001")
-    event = PlotAppendEvent(uuid=uuid, friendly_name="run1_Plot", friendly_path="")
+    event = AddPlotEvent(uuid=uuid, friendly_name="run1_Plot", friendly_path="")
     presenter.update_plot_treeview_data(event)
 
     view.add_plot.assert_called_once_with(uuid, "run1_Plot", "")
@@ -141,7 +132,7 @@ def test_update_plot_treeview_data_via_event_broker():
     broker = EventBroker()
 
     uuid = UUID(value="plot-broker-1")
-    broker.publish(PlotAppendEvent(uuid=uuid, friendly_name="BrokerPlot", friendly_path=""))
+    broker.publish(AddPlotEvent(uuid=uuid, friendly_name="BrokerPlot", friendly_path=""))
 
     view.add_plot.assert_called_once_with(uuid, "BrokerPlot", "")
 
@@ -150,7 +141,7 @@ def test_update_plot_treeview_data_does_not_touch_raw_scan_inventory():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="plot-002")
-    presenter.update_plot_treeview_data(PlotAppendEvent(uuid=uuid, friendly_name="run2_Plot", friendly_path=""))
+    presenter.update_plot_treeview_data(AddPlotEvent(uuid=uuid, friendly_name="run2_Plot", friendly_path=""))
 
     assert uuid not in presenter.inventory
 
@@ -164,7 +155,7 @@ def test_update_fit_treeview_data_calls_add_fit():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="fit-001")
-    event = FitAppendEvent(uuid=uuid, friendly_name="run1_Fit", friendly_path="")
+    event = AddFitEvent(uuid=uuid, friendly_name="run1_Fit", friendly_path="")
     presenter.update_fit_treeview_data(event)
 
     view.add_fit.assert_called_once_with(uuid, "run1_Fit", "")
@@ -175,7 +166,7 @@ def test_update_fit_treeview_data_via_event_broker():
     broker = EventBroker()
 
     uuid = UUID(value="fit-broker-1")
-    broker.publish(FitAppendEvent(uuid=uuid, friendly_name="BrokerFit", friendly_path=""))
+    broker.publish(AddFitEvent(uuid=uuid, friendly_name="BrokerFit", friendly_path=""))
 
     view.add_fit.assert_called_once_with(uuid, "BrokerFit", "")
 
@@ -184,7 +175,7 @@ def test_update_fit_treeview_data_does_not_touch_raw_scan_inventory():
     presenter, view, model = _make_presenter()
 
     uuid = UUID(value="fit-002")
-    presenter.update_fit_treeview_data(FitAppendEvent(uuid=uuid, friendly_name="run2_Fit", friendly_path=""))
+    presenter.update_fit_treeview_data(AddFitEvent(uuid=uuid, friendly_name="run2_Fit", friendly_path=""))
 
     assert uuid not in presenter.inventory
 
@@ -238,21 +229,6 @@ def test_handle_selection_event_empty_selection():
     assert received[0].ids == []
 
 
-# ---------------------------------------------------------------------------
-# print_selected
-# ---------------------------------------------------------------------------
-
-
-def test_print_selected_does_not_raise(capsys):
-    presenter, view, model = _make_presenter()
-
-    event = FocusEvent(ids=[UUID(value="p1"), UUID(value="p2")])
-    presenter.print_selected(event)
-
-    captured = capsys.readouterr()
-    assert "p1" in captured.out
-    assert "p2" in captured.out
-
 
 # ---------------------------------------------------------------------------
 # removal
@@ -263,21 +239,21 @@ def test_init_registers_raw_scan_remove_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.remove_treeview_data in broker.registry[RawScanRemoveEvent]
+    assert presenter.remove_treeview_data in broker.registry[RemoveRawScanEvent]
 
 
 def test_init_registers_plot_remove_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.remove_treeview_data in broker.registry[PlotRemoveEvent]
+    assert presenter.remove_treeview_data in broker.registry[RemovePlotEvent]
 
 
 def test_init_registers_fit_remove_event():
     presenter, view, model = _make_presenter()
     broker = EventBroker()
 
-    assert presenter.remove_treeview_data in broker.registry[FitRemoveEvent]
+    assert presenter.remove_treeview_data in broker.registry[RemoveFitEvent]
 
 
 def test_init_hooks_up_remove_signal():
@@ -308,7 +284,7 @@ def test_remove_treeview_data_removes_from_view():
     presenter, view, model = _make_presenter()
     uuid = UUID(value="u1")
 
-    presenter.remove_treeview_data(RawScanRemoveEvent(uuid=uuid))
+    presenter.remove_treeview_data(RemoveRawScanEvent(uuid=uuid))
 
     view.remove_item.assert_called_once_with(uuid)
 
@@ -316,9 +292,9 @@ def test_remove_treeview_data_removes_from_view():
 def test_remove_treeview_data_drops_inventory_entry():
     presenter, view, model = _make_presenter()
     uuid = UUID(value="u1")
-    presenter.update_treeview_data(RawScanAppendEvent(uuid=uuid, friendly_name="scan", friendly_path="/exp"))
+    presenter.update_treeview_data(AddRawScanEvent(uuid=uuid, friendly_name="scan", friendly_path="/exp"))
 
-    presenter.remove_treeview_data(RawScanRemoveEvent(uuid=uuid))
+    presenter.remove_treeview_data(RemoveRawScanEvent(uuid=uuid))
 
     assert uuid not in presenter.inventory
 
@@ -327,7 +303,7 @@ def test_remove_treeview_data_handles_plot_remove_event():
     presenter, view, model = _make_presenter()
     uuid = UUID(value="p1")
 
-    presenter.remove_treeview_data(PlotRemoveEvent(uuid=uuid))
+    presenter.remove_treeview_data(RemovePlotEvent(uuid=uuid))
 
     view.remove_item.assert_called_once_with(uuid)
 
@@ -336,7 +312,7 @@ def test_remove_treeview_data_handles_fit_remove_event():
     presenter, view, model = _make_presenter()
     uuid = UUID(value="f1")
 
-    presenter.remove_treeview_data(FitRemoveEvent(uuid=uuid))
+    presenter.remove_treeview_data(RemoveFitEvent(uuid=uuid))
 
     view.remove_item.assert_called_once_with(uuid)
 
@@ -344,6 +320,6 @@ def test_remove_treeview_data_handles_fit_remove_event():
 def test_remove_treeview_data_tolerates_uuid_not_in_inventory():
     presenter, view, model = _make_presenter()
 
-    presenter.remove_treeview_data(PlotRemoveEvent(uuid=UUID(value="never-tracked")))
+    presenter.remove_treeview_data(RemovePlotEvent(uuid=UUID(value="never-tracked")))
 
     view.remove_item.assert_called_once()

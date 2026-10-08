@@ -32,6 +32,7 @@ class Plot1DView(QWidget):
 
     fields_focus_changed = Signal()
     render_plots_signal = Signal(list)
+    add_plots_signal = Signal(list)
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
@@ -56,6 +57,7 @@ class Plot1DView(QWidget):
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
+        self.add_plots_signal.connect(self._add_plots)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
         self.append_fit_curve_signal.connect(self._append_fit_curve)
@@ -283,7 +285,13 @@ class Plot1DView(QWidget):
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
-        self._plotted = list(resolved)
+        self._add_plots(resolved)
+
+    def _add_plots(self, resolved: list) -> None:
+        """Draw more series on top of what's already on the canvas (see ``add_plots_signal``)."""
+        if not resolved:
+            return
+        self._plotted += resolved
         self._redraw()
 
     def _sync_axis_labels(self, series_list: list[Any]) -> None:

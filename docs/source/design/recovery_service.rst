@@ -41,7 +41,7 @@ Components:
 - ``TaviError`` - Base exception for all domain errors
 - ``RecoverableError`` - Requires additional system workflow
 - ``NonRecoverableError`` - Stops the current workflow
-- ``ExceptionEvent`` - Event wrapper for exceptions (field: ``error``)
+- ``ReportErrorEvent`` - Event wrapper for exceptions (field: ``error``)
 - ``Worker`` - Thread boundary; captures every backend exception and publishes it
 - ``RecoveryService`` - Central exception router
 - ``ErrorPresenter`` - Frontend error orchestration
@@ -50,7 +50,7 @@ Components:
 
 Flow:
 
-Exception → ``Worker`` → ``ExceptionEvent`` → ``RecoveryService`` → handler → ``ErrorPresenter`` → ``ErrorView`` → ``TaviMessageBox``
+Exception → ``Worker`` → ``ReportErrorEvent`` → ``RecoveryService`` → handler → ``ErrorPresenter`` → ``ErrorView`` → ``TaviMessageBox``
 
 Exception Hierarchy
 -------------------
@@ -103,7 +103,7 @@ The ``RecoveryService`` is responsible for routing exceptions to handlers.
 
 Responsibilities:
 
-- Subscribes to ``ExceptionEvent`` on the ``EventBroker``
+- Subscribes to ``ReportErrorEvent`` on the ``EventBroker``
 - Enforces ``TaviError``-only participation at *registration* time —
   ``register`` raises ``RuntimeError`` for anything that is not a ``TaviError``
   subclass
