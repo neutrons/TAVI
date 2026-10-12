@@ -1,17 +1,103 @@
 """Filter view widget."""
 
+from collections.abc import Callable
 from typing import Any
+from uuid import uuid4
 
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
-    QDoubleSpinBox,
-    QFormLayout,
+    QComboBox,
+    QFrame,
     QGroupBox,
     QHBoxLayout,
+    QLabel,
+    QLineEdit,
     QPushButton,
-    QSpinBox,
+    QScrollArea,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
+
+
+class CriteriaItemWidget(QWidget):
+    """Criteria Item Widget
+    
+    Holds atomic filtering statements
+    """
+
+    operators = ["is", "is not",
+                 "has", "has not",
+                 "=", "!=",
+                 ">", "<",
+                 ">=", "<="]
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        criteria_layout = QHBoxLayout(self)
+
+        self.criteria_key = QLineEdit("key")
+        self.criteria_operator = QComboBox(editable=False)
+        self.criteria_operator.addItems(self.operators)
+        self.criteria_value = QLineEdit("value")
+        self.criteria_delete = QPushButton("X")
+
+        criteria_layout.addWidget(self.criteria_key)
+        criteria_layout.addWidget(self.criteria_operator)
+        criteria_layout.addWidget(self.criteria_value)
+        criteria_layout.addWidget(self.criteria_delete)
+
+    def set_sample(self) -> None:
+        self.criteria_key.setText("scan")
+        self.criteria_key.setReadOnly(True)
+        self.criteria_operator.clear()
+        self.criteria_operator.addItem(">=")
+        self.criteria_value.setText("0")
+        self.criteria_value.setReadOnly(True)
+
+
+class CriteriaSetScrollArea(QScrollArea):
+    """Criteria Set Widget
+    
+    Holds a set of filter statements to create a filter
+    """
+
+    def __init__(self, parent: QWidget | None = None, set_sample: bool = False) -> None:
+        super().__init__(parent)
+        self.setWidgetResizable(True)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        dummy_widget = QWidget()
+        self.setWidget(dummy_widget)
+        self.criteria_list = QVBoxLayout(dummy_widget)
+        self.criteria_list.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        
+        initial_criteria = CriteriaItemWidget()
+        if set_sample:
+            initial_criteria.set_sample()
+        
+        self.criteria_list.addWidget(initial_criteria)
+        self.add_criteria_button = QPushButton("+")
+        if not set_sample:
+            initial_criteria.criteria_delete.clicked.connect(self.delete_criteria(initial_criteria))
+
+            self.add_criteria_button.clicked.connect(self.add_criteria)
+        
+        self.criteria_list.addWidget(self.add_criteria_button)
+
+    def add_criteria(self):
+        new_criteria = CriteriaItemWidget()
+        self.criteria_list.addWidget(new_criteria)
+        new_criteria.criteria_delete.clicked.connect(self.delete_criteria(new_criteria))
+        self.criteria_list.addWidget(self.add_criteria_button)
+        # Re-adding an existing widget just moves it to the end
+
+    def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
+        def _delete_criteria():
+            criteria.hide()
+            self.criteria_list.removeWidget(criteria)
+            criteria.deleteLater()
+        return _delete_criteria
 
 
 class FilterView(QWidget):
@@ -25,28 +111,129 @@ class FilterView(QWidget):
     def _build_ui(self) -> None:
         """Build the filter UI."""
         layout = QVBoxLayout(self)
+        filter_box = QGroupBox()
+        # Box for a nice outline
+        filter_components_layout = QVBoxLayout()
 
-        # Filter section
-        filter_box = QGroupBox("Filter Data")
-        form = QFormLayout()
+        # ---
+        # Upper Filter Controls
+        # ---
+        filter_header_layout = QHBoxLayout()
 
-        self.temp_spin = QDoubleSpinBox()
-        self.temp_spin.setValue(3)
-        self.temp_tol = QDoubleSpinBox()
-        self.temp_tol.setValue(0.01)
+        filter_applied_layout = QHBoxLayout()
+        filter_applied_layout.setDirection(filter_applied_layout.Direction.LeftToRight)
+        # Default but provided for posterity
 
-        self.ipts_spin = QSpinBox()
-        self.ipts_spin.setValue(1234)
+        # Start with the indicator for current filter applied
+        filter_applied_prefix = QLabel("Current Filter:")
+        filter_applied_prefix.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignCenter)
+        filter_applied_layout.addWidget(filter_applied_prefix)
 
-        form.addRow("Temperature =", self.temp_spin)
-        form.addRow("±", self.temp_tol)
-        form.addRow("IPTS =", self.ipts_spin)
+        self.filter_applied_friendly_name = QLabel(" "*5)
+        # This will react to the currently applied filter here or elsewhere
+        # self.filter_applied_friendly_name.setWordWrap(True)
+        self.filter_applied_friendly_name.setFrameStyle(QFrame.Shape.Box)
+        filter_applied_layout.addWidget(self.filter_applied_friendly_name)
 
-        filter_box.setLayout(form)
+        filter_header_layout.addLayout(filter_applied_layout)
+
+        # Next the new, del, and dropdown
+        filter_controls_layout = QHBoxLayout()
+        filter_controls_layout.setDirection(filter_controls_layout.Direction.RightToLeft)
+
+        self.filter_dropdown = QComboBox(
+            editable=True,
+            insertPolicy=QComboBox.InsertPolicy.InsertAtCurrent
+        )
+        self.filter_dropdown.addItem("Sample", uuid4())
+        self.filter_dropdown.editTextChanged.connect(self.immutable_sample_name)
+        filter_controls_layout.addWidget(self.filter_dropdown)
+
+        filter_del = QPushButton("Del")
+        filter_del.clicked.connect(self.del_filter)
+        filter_controls_layout.addWidget(filter_del)
+
+        filter_new = QPushButton("New")
+        filter_new.pressed.connect(self.new_filter)
+        filter_controls_layout.addWidget(filter_new)
+
+        filter_controls_label = QLabel("Filters")
+        filter_controls_layout.addWidget(filter_controls_label)
+
+        filter_header_layout.addLayout(filter_controls_layout)
+
+        # ---
+        # Criteria Controls
+        # ---
+        self.filter_criteria_set_list = QStackedWidget()
+        self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea(set_sample=True))
+        self.filter_dropdown.currentIndexChanged.connect(self.set_stack_to_dropdown)
+
+        # ---
+        # Filter Application Controls
+        # ---
+        self.applied_filter = None
+        filter_footer_layout = QHBoxLayout()
+
+        filter_left_footer = QHBoxLayout()
+        clear_filter_button = QPushButton("Clear Filter")
+        clear_filter_button.clicked.connect(self.clear_filter)
+        filter_left_footer.addWidget(clear_filter_button)
+        filter_footer_layout.addLayout(filter_left_footer)
+
+        filter_right_footer = QHBoxLayout()
+        filter_right_footer.setDirection(filter_right_footer.Direction.RightToLeft)
+        apply_filter_button = QPushButton("Apply Filter")
+        apply_filter_button.clicked.connect(self.apply_filter)
+        filter_right_footer.addWidget(apply_filter_button)
+        filter_footer_layout.addLayout(filter_right_footer)
+
+        # ---
+        # Combine Main Components
+        # ---
+        filter_components_layout.addLayout(filter_header_layout)
+        filter_components_layout.addWidget(self.filter_criteria_set_list)
+        filter_components_layout.addLayout(filter_footer_layout)
+        filter_box.setLayout(filter_components_layout)
         layout.addWidget(filter_box)
 
-        # Buttons
-        btn_layout = QHBoxLayout()
-        btn_layout.addWidget(QPushButton("Clear Filters"))
-        btn_layout.addWidget(QPushButton("Apply Filters"))
-        layout.addLayout(btn_layout)
+    def new_filter(self):
+        filter_index = self.filter_dropdown.count()
+        self.filter_dropdown.addItem(f"FilterName{filter_index}", uuid4())
+        self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea())
+        self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count()-1)
+
+    def del_filter(self):
+        index_for_deletion = self.filter_dropdown.currentIndex()
+        if index_for_deletion == 0:
+            return
+        if self.filter_dropdown.itemData(index_for_deletion) == self.applied_filter:
+            self.clear_filter()
+        self.filter_dropdown.removeItem(index_for_deletion)
+        set_for_deletion = self.filter_criteria_set_list.widget(index_for_deletion)
+        if set_for_deletion is not None:
+            self.filter_criteria_set_list.removeWidget(set_for_deletion)
+        self.filter_dropdown.setCurrentIndex(0)
+
+    def immutable_sample_name(self):
+        sample_text = self.filter_dropdown.itemText(0)
+        if sample_text != "Sample":
+            self.filter_dropdown.setItemText(0, "Sample")
+
+    def set_stack_to_dropdown(self):
+        dropdown_index = self.filter_dropdown.currentIndex()
+        self.filter_criteria_set_list.setCurrentIndex(dropdown_index)
+
+    def apply_filter(self):
+        # Do bundling and sending of filter things here
+        self.applied_filter = self.filter_dropdown.currentData()
+        # Replace below with basing the label on received filter event
+        friendly_name = self.filter_dropdown.currentText()
+        if len(friendly_name) > 30:
+            friendly_name = friendly_name[:30] + "..."
+        self.filter_applied_friendly_name.setText(friendly_name)
+    
+    def clear_filter(self):
+        # Do sending of clearing filter here
+        self.applied_filter = None
+        self.filter_applied_friendly_name.setText(" "*5)
