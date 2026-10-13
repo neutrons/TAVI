@@ -36,16 +36,17 @@ class CriteriaItemWidget(QWidget):
         super().__init__(parent)
         criteria_layout = QHBoxLayout(self)
 
+        self.uuid = uuid4()
         self.criteria_key = QLineEdit("key")
         self.criteria_operator = QComboBox(editable=False)
         self.criteria_operator.addItems(self.operators)
         self.criteria_value = QLineEdit("value")
-        self.criteria_delete = QPushButton("X")
+        self.criteria_delete_button = QPushButton("X")
 
         criteria_layout.addWidget(self.criteria_key)
         criteria_layout.addWidget(self.criteria_operator)
         criteria_layout.addWidget(self.criteria_value)
-        criteria_layout.addWidget(self.criteria_delete)
+        criteria_layout.addWidget(self.criteria_delete_button)
 
     def set_sample(self) -> None:
         self.criteria_key.setText("scan")
@@ -68,34 +69,38 @@ class CriteriaSetScrollArea(QScrollArea):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         dummy_widget = QWidget()
         self.setWidget(dummy_widget)
-        self.criteria_list = QVBoxLayout(dummy_widget)
-        self.criteria_list.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.criteria_list_layout = QVBoxLayout(dummy_widget)
+        self.criteria_list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         
+        self.criteria_store = dict()
         initial_criteria = CriteriaItemWidget()
         if set_sample:
             initial_criteria.set_sample()
         
-        self.criteria_list.addWidget(initial_criteria)
+        self.criteria_store[initial_criteria.uuid.hex] = initial_criteria
+        self.criteria_list_layout.addWidget(initial_criteria)
         self.add_criteria_button = QPushButton("+")
         if not set_sample:
-            initial_criteria.criteria_delete.clicked.connect(self.delete_criteria(initial_criteria))
+            initial_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(initial_criteria))
 
             self.add_criteria_button.clicked.connect(self.add_criteria)
         
-        self.criteria_list.addWidget(self.add_criteria_button)
+        self.criteria_list_layout.addWidget(self.add_criteria_button)
 
     def add_criteria(self):
         new_criteria = CriteriaItemWidget()
-        self.criteria_list.addWidget(new_criteria)
-        new_criteria.criteria_delete.clicked.connect(self.delete_criteria(new_criteria))
-        self.criteria_list.addWidget(self.add_criteria_button)
+        self.criteria_store[new_criteria.uuid.hex] = new_criteria
+        self.criteria_list_layout.addWidget(new_criteria)
+        new_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(new_criteria))
+        self.criteria_list_layout.addWidget(self.add_criteria_button)
         # Re-adding an existing widget just moves it to the end
 
     def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
         def _delete_criteria():
             criteria.hide()
-            self.criteria_list.removeWidget(criteria)
+            self.criteria_store.pop(criteria.uuid.hex)
+            self.criteria_list_layout.removeWidget(criteria)
             criteria.deleteLater()
         return _delete_criteria
 
@@ -149,13 +154,13 @@ class FilterView(QWidget):
         self.filter_dropdown.editTextChanged.connect(self.immutable_sample_name)
         filter_controls_layout.addWidget(self.filter_dropdown)
 
-        filter_del = QPushButton("Del")
-        filter_del.clicked.connect(self.del_filter)
-        filter_controls_layout.addWidget(filter_del)
+        self.filter_del_button = QPushButton("Del")
+        self.filter_del_button.clicked.connect(self.del_filter)
+        filter_controls_layout.addWidget(self.filter_del_button)
 
-        filter_new = QPushButton("New")
-        filter_new.pressed.connect(self.new_filter)
-        filter_controls_layout.addWidget(filter_new)
+        self.filter_new_button = QPushButton("New")
+        self.filter_new_button.pressed.connect(self.new_filter)
+        filter_controls_layout.addWidget(self.filter_new_button)
 
         filter_controls_label = QLabel("Filters")
         filter_controls_layout.addWidget(filter_controls_label)
@@ -176,16 +181,16 @@ class FilterView(QWidget):
         filter_footer_layout = QHBoxLayout()
 
         filter_left_footer = QHBoxLayout()
-        clear_filter_button = QPushButton("Clear Filter")
-        clear_filter_button.clicked.connect(self.clear_filter)
-        filter_left_footer.addWidget(clear_filter_button)
+        self.clear_filter_button = QPushButton("Clear Filter")
+        self.clear_filter_button.clicked.connect(self.clear_filter)
+        filter_left_footer.addWidget(self.clear_filter_button)
         filter_footer_layout.addLayout(filter_left_footer)
 
         filter_right_footer = QHBoxLayout()
         filter_right_footer.setDirection(filter_right_footer.Direction.RightToLeft)
-        apply_filter_button = QPushButton("Apply Filter")
-        apply_filter_button.clicked.connect(self.apply_filter)
-        filter_right_footer.addWidget(apply_filter_button)
+        self.apply_filter_button = QPushButton("Apply Filter")
+        self.apply_filter_button.clicked.connect(self.apply_filter)
+        filter_right_footer.addWidget(self.apply_filter_button)
         filter_footer_layout.addLayout(filter_right_footer)
 
         # ---
