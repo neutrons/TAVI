@@ -2,7 +2,7 @@
 
 import abc
 import math
-from typing import Sequence
+from typing import Optional, Sequence
 from uuid import uuid4
 
 from tavi.library.data.scan import (
@@ -167,15 +167,28 @@ class RebinOps(ProcessOps):
     origin separately is the point: two scans covering the same range interleave and
     merge across the seam, counting as one measurement of it.
 
+    The bin grid is read off the data unless ``start`` and ``finish`` are given, in
+    which case they are the outer bin edges and the grid is theirs alone: points
+    outside ``[start, finish]`` are dropped. A fixed grid is what lets two rebinned
+    scans be compared bin for bin, their data no longer deciding where the bins fall.
+
     The result is therefore in ascending x rather than in the origins' order - the one
     place this operation departs from ``AppendOp``'s contract. Everything else the
     append decided (provenance, the empty metadata, the default axis) still describes
     the rebinned scan and is carried over untouched.
     """
 
-    def __init__(self, tavi_data: TaviData, uuids: Sequence[UUID], columns: Sequence[str], step: float) -> None:
+    def __init__(
+        self,
+        tavi_data: TaviData,
+        uuids: Sequence[UUID],
+        columns: Sequence[str],
+        step: float,
+        start: Optional[float] = None,
+        finish: Optional[float] = None,
+    ) -> None:
         """
-        Store the origins, the columns to carry over and the bin width.
+        Store the origins, the columns to carry over, the bin width and the optional bin range.
 
         Args:
             tavi_data: The pool ``uuids`` are looked up in.
@@ -184,10 +197,17 @@ class RebinOps(ProcessOps):
                 the axis binned on and the first two becoming the result's
                 ``tavimeta.default_axis``.
             step: Bin width along ``columns[0]``.
+            start: Lower outer bin edge along ``columns[0]``. Given together with
+                ``finish``, it fixes the grid and the data no longer decides where the
+                bins fall.
+            finish: Upper outer bin edge along ``columns[0]``, given together with
+                ``start``.
 
         """
         super().__init__(tavi_data, uuids)
         self.step = step
+        self.start = start
+        self.finish = finish
         self._append_op = AppendOp(tavi_data, uuids, columns)
 
     @property
@@ -197,12 +217,14 @@ class RebinOps(ProcessOps):
 
     def validate(self) -> None:
         """
-        Check the bin width, then everything the underlying append requires.
+        Check the bin width and range, then everything the underlying append requires.
 
         Raises:
-            ValueError: If ``step`` is not a positive, finite number, or if fewer than
-                two columns are requested - with one column there is nothing to average
-                and no second name for the default axis.
+            ValueError: If ``step`` is not a positive, finite number; if only one of
+                ``start`` and ``finish`` is given, or either is not finite, or ``finish``
+                does not lie above ``start``; or if fewer than two columns are requested -
+                with one column there is nothing to average and no second name for the
+                default axis.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
 
@@ -210,6 +232,23 @@ class RebinOps(ProcessOps):
         # NaN would pass a bare positivity check and only fail once it reached the binning.
         if not math.isfinite(self.step) or self.step <= 0:
             raise ValueError(f"Rebin step must be a positive, finite number, got {self.step!r}.")
+
+        # one edge on its own says nothing about where the grid ends, so it is a mistake
+        # rather than a half-specified grid to complete from the data.
+        if (self.start is None) != (self.finish is None):
+            raise ValueError(
+                f"Rebin start and finish must be given together, got start={self.start!r}, finish={self.finish!r}."
+            )
+
+        if self.start is not None and self.finish is not None:
+            if not math.isfinite(self.start) or not math.isfinite(self.finish):
+                raise ValueError(
+                    f"Rebin start and finish must be finite numbers, got start={self.start!r}, finish={self.finish!r}."
+                )
+            if self.finish <= self.start:
+                raise ValueError(
+                    f"Rebin finish must be greater than start, got start={self.start!r}, finish={self.finish!r}."
+                )
 
         self._append_op.validate()
 
@@ -228,8 +267,9 @@ class RebinOps(ProcessOps):
             ``TaviData`` is the caller's job.
 
         Raises:
-            ValueError: If ``step`` is not a positive, finite number, or if fewer than
-                two columns are requested.
+            ValueError: If ``step`` is not a positive, finite number, if ``start`` and
+                ``finish`` do not form a usable range, or if fewer than two columns are
+                requested.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
 
@@ -247,17 +287,14 @@ class RebinOps(ProcessOps):
         """
         Bin rows by the first column into bins of width ``step``, averaging every column within each bin.
 
-        Bins are centred on ``min(x) + i * step``, their edges falling half a step either
-        side, so the first centre is the smallest x itself and the first edge is half a
-        step below it. Each point joins the bin whose centre it is nearest, which is why
-        the input need not be sorted, and each bin reports that centre as its x rather
-        than the mean of the x values in it, keeping the output on a regular grid. A point
-        landing exactly between two centres is a tie, broken upwards or downwards by
-        nothing better than float noise; resolving those is what a tolerance rebin is for.
-        Bins no point falls in are dropped rather than zero-filled, zero being a
-        measurement and not an absence. A NaN anywhere in the binned column raises, and a
-        NaN elsewhere poisons its bin's mean - deciding what a missing value means belongs
-        to the loader, not to binning.
+        Where the grid falls is left to ``_bins_from_data`` or, when ``start`` and
+        ``finish`` are given, to ``_bins_from_edges``; both hand back the first bin's
+        centre and the rows belonging to each bin, and from there the two cases are the
+        same operation. Each bin reports its centre as its x rather than the mean of the x
+        values in it, keeping the output on a regular grid. Bins no point falls in are
+        dropped rather than zero-filled, zero being a measurement and not an absence. A
+        NaN anywhere in the binned column raises, and a NaN elsewhere poisons its bin's
+        mean - deciding what a missing value means belongs to the loader, not to binning.
 
         Args:
             columns: {column name: values}, every column the same length.
@@ -267,19 +304,14 @@ class RebinOps(ProcessOps):
 
         """
         x_name = self.columns[0]
-        step = self.step
         x_values = columns[x_name]
         if not x_values:
             return {name: [] for name in columns}
 
-        x_start = min(x_values)
-
-        rows_by_bin: dict[int, list[int]] = {}
-        for row, x_value in enumerate(x_values):
-            # + 0.5 before flooring picks the nearest centre rather than the one below.
-            # Kyle wrote: rows_by_bin stores the index of each bin center and a list of
-            # points that should be grouped to this bin center.
-            rows_by_bin.setdefault(math.floor((x_value - x_start) / step + 0.5), []).append(row)
+        if self.start is not None and self.finish is not None:
+            first_centre, rows_by_bin = self._bins_from_edges(x_values)
+        else:
+            first_centre, rows_by_bin = self._bins_from_data(x_values)
 
         order = sorted(rows_by_bin)
         binned: dict[str, list[float]] = {}
@@ -292,5 +324,67 @@ class RebinOps(ProcessOps):
             binned[name] = means
 
         # bin centres rather than binned means, computed per bin so nothing accumulates.
-        binned[x_name] = [x_start + index * step for index in order]
+        binned[x_name] = [first_centre + index * self.step for index in order]
         return binned
+
+    def _bins_from_data(self, x_values: list[float]) -> tuple[float, dict[int, list[int]]]:
+        """
+        Lay the grid on the data: bins centred on ``min(x) + i * step``, nothing dropped.
+
+        The edges fall half a step either side of each centre, so the first centre is the
+        smallest x itself and the first edge is half a step below it. Each point joins the
+        bin whose centre it is nearest, which is why the input need not be sorted. A point
+        landing exactly between two centres is a tie, broken upwards or downwards by
+        nothing better than float noise; resolving those is what a tolerance rebin is for.
+
+        Args:
+            x_values: The values of the column binned on, in no particular order.
+
+        Returns:
+            The first bin's centre, and {bin index: rows falling in that bin}.
+
+        """
+        x_start = min(x_values)
+
+        rows_by_bin: dict[int, list[int]] = {}
+        for row, x_value in enumerate(x_values):
+            # + 0.5 before flooring picks the nearest centre rather than the one below.
+            # Kyle wrote: rows_by_bin stores the index of each bin center and a list of
+            # points that should be grouped to this bin center.
+            rows_by_bin.setdefault(math.floor((x_value - x_start) / self.step + 0.5), []).append(row)
+
+        return x_start, rows_by_bin
+
+    def _bins_from_edges(self, x_values: list[float]) -> tuple[float, dict[int, list[int]]]:
+        """
+        Lay the grid on ``start``, ``finish`` and ``step``, ignoring where the data happens to lie.
+
+        ``start`` and ``finish`` are outer bin edges, not centres, so the first bin spans
+        ``[start, start + step)`` and reports ``start + step / 2`` as its x. Bins are
+        counted from ``start`` until they cover ``finish``, the last one coming out short
+        when the range is not a whole number of steps, and a point sitting exactly on
+        ``finish`` joins that last bin rather than opening one past the end. Points outside
+        ``[start, finish]`` are dropped: the caller asked for this range, and silently
+        widening it to hold them would undo the point of fixing the grid.
+
+        Args:
+            x_values: The values of the column binned on, in no particular order.
+
+        Returns:
+            The first bin's centre, and {bin index: rows falling in that bin}.
+
+        """
+        start, finish, step = self.start, self.finish, self.step
+        # a range shorter than one step is still one bin, not none.
+        last_index = max(math.ceil((finish - start) / step) - 1, 0)
+
+        rows_by_bin: dict[int, list[int]] = {}
+        for row, x_value in enumerate(x_values):
+            # flooring before the range check so a NaN x still raises here, as it does on
+            # the data-driven grid, instead of being quietly dropped as out of range.
+            index = math.floor((x_value - start) / step)
+            if index < 0 or x_value > finish:
+                continue
+            rows_by_bin.setdefault(min(index, last_index), []).append(row)
+
+        return start + step / 2, rows_by_bin
