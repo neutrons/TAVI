@@ -2,24 +2,33 @@
 
 from unittest.mock import MagicMock
 
-import numpy as np
 import numpy.testing as npt
 import pytest
 
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
-from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary, ParamField, PeakField, PeakResult
+from tavi.library.data.fit_entry import (
+    FitCurve,
+    FitEntry,
+    FitMember,
+    FitOutcome,
+    FitResultSummary,
+    ParamField,
+    PeakField,
+    PeakResult,
+)
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ActivePlotChangedEvent,
+    ApplyAllChangedEvent,
     FitComponentsVisibilityChangedEvent,
-    FitComputedEvent,
     FitFocusEvent,
     FocusActivePlotEvent,
     PlotFocusEvent,
     RawScanFocusEvent,
+    SyncFitEvent,
 )
 
 
@@ -37,10 +46,11 @@ def make_scan(uuid_val="scan-001", x_col="qh", x_vals=None, y_col="en", y_vals=N
     )
 
 
-def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name="en") -> PlotSeries:
+def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name="en", friendly_name=None) -> PlotSeries:
     return PlotSeries(
         source_scan_uuid=UUID(value=uuid_val),
         scan_name=scan_name,
+        friendly_name=friendly_name,
         normalized_by=None,
         x_name=x_name,
         y_name=y_name,
@@ -287,9 +297,7 @@ def test_handle_fields_changed_apply_all_checked_targets_no_uuid(presenter):
 
     presenter.handle_fields_changed()
 
-    presenter._model.update_fields.assert_called_once_with(
-        presenter._view.get_plot_fields(), target_uuid=None
-    )
+    presenter._model.update_fields.assert_called_once_with(presenter._view.get_plot_fields(), target_uuid=None)
 
 
 def test_handle_fields_changed_apply_all_unchecked_targets_active_series(presenter):
@@ -318,12 +326,12 @@ def test_handle_plot_clicked_delegates_to_model(presenter):
 def test_handle_plot_clicked_passes_currently_drawn_fit_uuids(presenter):
     """A fit drawn on the canvas when Save Plot is clicked is stamped onto the new plot."""
     presenter.handle_plot_focus(make_event())
-    event = make_fit_computed_event()
+    event = make_sync_fit_event()
     EventBroker().publish(event)
 
     presenter.handle_plot_clicked()
 
-    presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[event.fit.uuid])
+    presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[event.fit_uuid])
 
 
 # ---------------------------------------------------------------------------
@@ -534,7 +542,7 @@ def test_selecting_dropdown_entry_via_view_publishes_active_plot_focus_event(pre
 
 
 # ---------------------------------------------------------------------------
-# FitComputedEvent - drawing a fit curve on the plot widget
+# SyncFitEvent - drawing a fit curve on the plot widget
 # ---------------------------------------------------------------------------
 
 
@@ -542,34 +550,50 @@ def make_param(value=0) -> ParamField:
     return ParamField(value=str(value), fixed=False, minimum="", maximum="")
 
 
-def make_fit_entry(uuid_val="scan-001") -> FitEntry:
-    return FitEntry(
+def make_member(uuid_val="scan-001") -> FitMember:
+    return FitMember(
         series=make_series(uuid_val, scan_name="my_scan"),
         range_min="0",
         range_max="10",
-        background="None",
+        background="Linear",
         background_constant=make_param(0),
         peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
+        result=FitResultSummary(
+            reduced_chi_squared=0.5,
+            peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
+        ),
     )
 
 
-def make_fit_computed_event(uuid_val="scan-001") -> FitComputedEvent:
-    fit = make_fit_entry(uuid_val)
-    curve = FitCurve(source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
-    result = FitResultSummary(
-        reduced_chi_squared=0.5,
-        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
-    )
-    return FitComputedEvent(fit=fit, curve=curve, result=result)
+def make_fit_entry(uuid_val="scan-001", fit_uuid="fit-001", uuid_vals=None) -> FitEntry:
+    uuid_vals = uuid_vals or (uuid_val,)
+    return FitEntry(uuid=UUID(value=fit_uuid), members=[make_member(v) for v in uuid_vals])
+
+
+def make_curve(uuid_val="scan-001") -> FitCurve:
+    return FitCurve(source_scan_uuid=UUID(value=uuid_val), scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9])
+
+
+def make_outcome(uuid_val="scan-001", with_curve=True) -> FitOutcome:
+    return FitOutcome(member=make_member(uuid_val), curve=make_curve(uuid_val) if with_curve else None)
+
+
+def make_sync_fit_event(uuid_val="scan-001", fit_uuid="fit-001", uuid_vals=None) -> SyncFitEvent:
+    uuid_vals = uuid_vals or (uuid_val,)
+    return SyncFitEvent(fit_uuid=UUID(value=fit_uuid), outcomes=[make_outcome(v) for v in uuid_vals])
+
+
+def make_scans(*uuid_vals) -> dict:
+    return {UUID(value=v): make_scan(v) for v in uuid_vals}
 
 
 def _fit_curve_labels(presenter) -> list[str]:
     return [line.get_label() for line in presenter._view.canvas.axes.lines if "fit" in line.get_label()]
 
 
-def test_init_registers_fit_computed_event(presenter):
+def test_init_registers_sync_fit_event(presenter):
     broker = EventBroker()
-    assert presenter.handle_fit_computed in broker.registry[FitComputedEvent]
+    assert presenter.handle_sync_fit in broker.registry[SyncFitEvent]
 
 
 def test_init_registers_fit_components_visibility_event(presenter):
@@ -591,18 +615,18 @@ def test_fit_components_visibility_event_does_not_refit(presenter):
     assert not presenter._model.method_calls
 
 
-def test_handle_fit_computed_draws_curve_for_a_focused_series(presenter):
+def test_handle_sync_fit_draws_curve_for_a_focused_series(presenter):
     presenter.handle_plot_focus(make_event())
 
-    EventBroker().publish(make_fit_computed_event())
+    EventBroker().publish(make_sync_fit_event())
 
     assert len(_fit_curve_labels(presenter)) == 1
 
 
-def test_handle_fit_computed_ignores_fit_for_an_unfocused_series(presenter):
+def test_handle_sync_fit_ignores_fit_for_an_unfocused_series(presenter):
     presenter.handle_plot_focus(make_event())
 
-    EventBroker().publish(make_fit_computed_event(uuid_val="scan-999"))
+    EventBroker().publish(make_sync_fit_event(uuid_val="scan-999"))
 
     assert _fit_curve_labels(presenter) == []
 
@@ -611,7 +635,7 @@ def test_fit_curve_survives_a_re_render_of_the_same_series(presenter):
     """_render_plots clears the whole canvas on every focus/field-change; the fit must be re-drawn."""
     event = make_event()
     presenter.handle_plot_focus(event)
-    EventBroker().publish(make_fit_computed_event())
+    EventBroker().publish(make_sync_fit_event())
     assert len(_fit_curve_labels(presenter)) == 1
 
     presenter.handle_plot_focus(event)
@@ -621,7 +645,7 @@ def test_fit_curve_survives_a_re_render_of_the_same_series(presenter):
 
 def test_fit_curve_dropped_when_its_series_is_no_longer_focused(presenter):
     presenter.handle_plot_focus(make_event())
-    EventBroker().publish(make_fit_computed_event())
+    EventBroker().publish(make_sync_fit_event())
     assert len(_fit_curve_labels(presenter)) == 1
 
     other_plot = make_plot("plot-999", series=[make_series("scan-999")])
@@ -635,15 +659,15 @@ def test_reselecting_a_plot_with_the_same_attached_fit_does_not_duplicate_its_cu
     """
     Re-focusing a plot whose own ``Plot.fits`` includes a fit already drawn (same source scan,
     same fit uuid, from an earlier focus) must not leave the stale curve on canvas alongside the
-    freshly recomputed one - TaviProjectModel always re-triggers a fresh FitComputedEvent for a
+    freshly recomputed one - TaviProjectModel always re-triggers a fresh SyncFitEvent for a
     plot's own attached fits (see ``_handle_focus_event``), so the stale one must be dropped here.
     """
-    event = make_fit_computed_event()
+    event = make_sync_fit_event()
     presenter.handle_plot_focus(make_event())
     EventBroker().publish(event)
     assert len(_fit_curve_labels(presenter)) == 1
 
-    plot_with_fit = make_plot(fits=[event.fit.uuid])
+    plot_with_fit = make_plot(fits=[event.fit_uuid])
     presenter.handle_plot_focus(make_event(plots=[plot_with_fit]))
     EventBroker().publish(event)
 
@@ -667,13 +691,145 @@ def test_handle_fit_focus_draws_curve_once_recomputed(presenter):
     entry = make_fit_entry()
     presenter.handle_fit_focus(FitFocusEvent(fits=[entry]))
 
-    curve = FitCurve(
-        source_scan_uuid=entry.series.source_scan_uuid, scan_name="my_scan", x=[1.0, 2.0], best_fit=[1.1, 1.9]
-    )
-    result = FitResultSummary(
-        reduced_chi_squared=0.5,
-        peaks=[PeakResult(amplitude=1.0, amplitude_err=None, center=0.0, center_err=None, fwhm=1.0, fwhm_err=None)],
-    )
-    EventBroker().publish(FitComputedEvent(fit=entry, curve=curve, result=result))
+    EventBroker().publish(make_sync_fit_event())
 
     assert len(_fit_curve_labels(presenter)) == 1
+
+
+def test_handle_fit_focus_shows_every_member_series_of_every_fit(presenter):
+    """A sequential fit shows each of its scans, and lists each one in the Current Plot dropdown."""
+    fits = [make_fit_entry(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")), make_fit_entry("scan-003", "fit-3")]
+    scans = make_scans("scan-001", "scan-002", "scan-003")
+
+    presenter.handle_fit_focus(FitFocusEvent(fits=fits, scans=scans))
+
+    assert presenter._focused_series_uuids == [UUID(value=v) for v in ("scan-001", "scan-002", "scan-003")]
+    assert presenter._view.current_plot_combo.count() == 3
+
+
+def test_handle_fit_focus_publishes_active_plot_changed_for_the_first_member(presenter):
+    received = []
+    EventBroker().register(ActivePlotChangedEvent, received.append)
+
+    presenter.handle_fit_focus(
+        FitFocusEvent(
+            fits=[make_fit_entry(uuid_vals=("scan-001", "scan-002"))], scans=make_scans("scan-001", "scan-002")
+        )
+    )
+
+    assert received[-1].series.source_scan_uuid == UUID(value="scan-001")
+
+
+# ---------------------------------------------------------------------------
+# SyncFitEvent - several outcomes at once (a sequential fit)
+# ---------------------------------------------------------------------------
+
+
+def _two_series_event() -> PlotFocusEvent:
+    plot = make_plot(series=[make_series("scan-001"), make_series("scan-002")])
+    return make_event(plots=[plot], scans=make_scans("scan-001", "scan-002"))
+
+
+def test_handle_sync_fit_draws_a_curve_for_every_focused_outcome(presenter):
+    presenter.handle_plot_focus(_two_series_event())
+
+    EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")))
+
+    assert len(_fit_curve_labels(presenter)) == 2
+
+
+def test_handle_sync_fit_skips_outcomes_whose_fit_did_not_run(presenter):
+    """A member whose fit raised has no curve - the others are still drawn."""
+    presenter.handle_plot_focus(_two_series_event())
+    event = SyncFitEvent(
+        fit_uuid=UUID(value="fit-seq"),
+        outcomes=[make_outcome("scan-001"), make_outcome("scan-002", with_curve=False)],
+    )
+
+    EventBroker().publish(event)
+
+    assert len(_fit_curve_labels(presenter)) == 1
+
+
+def test_handle_sync_fit_draws_only_the_focused_outcomes(presenter):
+    presenter.handle_plot_focus(_two_series_event())
+
+    EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-999")))
+
+    assert len(_fit_curve_labels(presenter)) == 1
+
+
+def test_multi_outcome_fit_uuid_is_stamped_onto_a_saved_plot_once(presenter):
+    """A sequential fit draws one curve per scan, but the saved plot references the fit itself once."""
+    presenter.handle_plot_focus(_two_series_event())
+    EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")))
+
+    presenter.handle_plot_clicked()
+
+    presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[UUID(value="fit-seq")])
+
+
+def test_handle_sync_fit_draws_every_member_of_a_fit_selected_from_the_tree(presenter):
+    fit = make_fit_entry(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002"))
+    presenter.handle_fit_focus(FitFocusEvent(fits=[fit], scans=make_scans("scan-001", "scan-002")))
+
+    EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")))
+
+    assert len(_fit_curve_labels(presenter)) == 2
+
+
+# ---------------------------------------------------------------------------
+# Current Plot dropdown labels
+# ---------------------------------------------------------------------------
+
+
+def _dropdown_items(presenter) -> list[str]:
+    combo = presenter._view.current_plot_combo
+    return [combo.itemText(i) for i in range(combo.count())]
+
+
+def test_dropdown_labels_stay_distinct_when_scans_share_a_title(presenter):
+    """With Show Title on, every "sample alignment" run used to show up as the same entry."""
+    plot = make_plot(
+        series=[
+            make_series("scan-001", scan_name="sample alignment", friendly_name="scan0001"),
+            make_series("scan-002", scan_name="sample alignment", friendly_name="scan0002"),
+        ]
+    )
+
+    presenter.handle_plot_focus(make_event(plots=[plot], scans=make_scans("scan-001", "scan-002")))
+
+    assert _dropdown_items(presenter) == ["scan0001 - sample alignment", "scan0002 - sample alignment"]
+
+
+def test_dropdown_label_is_just_the_run_name_when_title_matches_it(presenter):
+    plot = make_plot(series=[make_series("scan-001", scan_name="scan0001", friendly_name="scan0001")])
+
+    presenter.handle_plot_focus(make_event(plots=[plot], scans=make_scans("scan-001")))
+
+    assert _dropdown_items(presenter) == ["scan0001"]
+
+
+def test_dropdown_label_falls_back_to_scan_name_without_a_friendly_name(presenter):
+    """Series saved before friendly_name existed still label by their scan name."""
+    plot = make_plot(series=[make_series("scan-001", scan_name="old_scan")])
+
+    presenter.handle_plot_focus(make_event(plots=[plot], scans=make_scans("scan-001")))
+
+    assert _dropdown_items(presenter) == ["old_scan"]
+
+
+# ---------------------------------------------------------------------------
+# Apply All checkbox
+# ---------------------------------------------------------------------------
+
+
+def test_unchecking_apply_all_publishes_apply_all_changed(presenter):
+    """It also scopes what the fitting panel's Perform Fit covers, so the toggle must travel as an event."""
+    received = []
+    EventBroker().register(ApplyAllChangedEvent, received.append)
+
+    presenter._view.apply_all_checkbox.setChecked(False)
+    presenter._view.apply_all_checkbox.setChecked(True)
+
+    assert [e.apply_all for e in received] == [False, True]

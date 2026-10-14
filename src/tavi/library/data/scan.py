@@ -19,9 +19,14 @@ class UUID:
         return hash(self.value)
 
 
+def new_uuid() -> UUID:
+    """Mint a fresh, unique UUID - the one place TAVI generates them, so the scheme can be swapped here alone."""
+    return UUID(value=str(uuid4()))
+
+
 def UUIDFactory() -> FieldInfo:
     """Return a Pydantic Field that generates a fresh UUID on instantiation."""
-    return Field(default_factory=lambda: UUID(value=str(uuid4())))
+    return Field(default_factory=new_uuid)
 
 
 class ScanData(BaseModel):

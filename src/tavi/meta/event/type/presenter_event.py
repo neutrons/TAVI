@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from tavi.library.data.fit_entry import FitCurve, FitEntry, FitResultSummary
+from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, RawScan, Scan
 from tavi.meta.event.event_interface import Event
@@ -42,7 +42,7 @@ class FitFocusEvent(Event):
     these uuids as pending a curve. The backend recompute trigger is the separate
     ``FitRecomputeEvent``, published right after this one - keeping them distinct (rather than
     having ``FitModel`` also subscribe to this one) guarantees the UI has already marked its
-    pending state by the time ``FitModel``'s resulting ``FitComputedEvent`` arrives, regardless of
+    pending state by the time ``FitModel``'s resulting ``SyncFitEvent`` arrives, regardless of
     subscriber registration order.
 
     ``exclusive`` is False when this batch's original selection also included raw scans or
@@ -53,14 +53,14 @@ class FitFocusEvent(Event):
     fits: list[FitEntry]
     exclusive: bool = True
     scans: dict[UUID, Scan] = {}
-    """The Scan each focused fit's own series points at, same contract as ``PlotFocusEvent.scans``.
-    Every fit carries the full ``PlotSeries`` it was fit against - scan, x/y columns and
+    """The Scan every member of every focused fit points at, same contract as ``PlotFocusEvent.scans``.
+    Every member carries the full ``PlotSeries`` it was fit against - scan, x/y columns and
     normalization alike - so this is what lets re-focusing a fit redraw the data underneath its
-    curve, and repopulate the Data File tab, instead of leaving them blank."""
+    curves, and repopulate the Data File tab, instead of leaving them blank."""
 
 
 class FitRecomputeEvent(Event):
-    """Ask FitModel to recompute each of these fits against its source series' current data."""
+    """Ask FitModel to recompute every member of each of these fits against its source series' current data."""
 
     fits: list[FitEntry]
 
@@ -69,6 +69,21 @@ class SavePlotEvent(Event):
     """Request to save a plot into the project's data store."""
 
     plot: Plot
+
+
+class SaveFitEvent(Event):
+    """
+    Request to save a freshly performed fit's members into the project's data store.
+
+    Published by ``FitModel`` after Perform Fit, just before the matching ``SyncFitEvent`` - never for
+    a recompute, which changes nothing worth saving. ``TaviProjectModel`` merges ``members`` into
+    ``TaviData.fits[fit_uuid]`` by scan, so the members this leaves out stay as they were.
+    ``FitWindowPresenter`` also takes it as the cue that the following sync is a fresh fit.
+    """
+
+    fit_uuid: UUID
+    members: list[FitMember]
+    """In fit order. Every member is a different series."""
 
 
 class PlotFocusEvent(Event):
@@ -126,7 +141,7 @@ class PeakParamsSuggestedEvent(Event):
     Announce a heuristic initial guess for one peak's amplitude/center/FWHM, from real data.
 
     ``source_scan_uuid`` lets the presenter drop a stale reply that arrives after the user has
-    since switched to a different active series - the same staleness concern ``FitComputedEvent``
+    since switched to a different active series - the same staleness concern ``SyncFitEvent``
     guards against.
     """
 
@@ -176,17 +191,45 @@ class ShowScanTitleChangedEvent(Event):
     show_title: bool
 
 
-class FitComputedEvent(Event):
+class SyncFitEvent(Event):
     """
-    Announce a fit result, whether freshly performed or recomputed after being reselected.
+    Sync the UI to freshly computed members of a fit - the "sync" step of focus -> calculate -> sync.
 
-    Two independent subscribers act on this: ``PlotterPresenter``/``Plot1DView`` render ``curve``
-    alongside the data it was fit against and ``FittingPresenter`` reflects ``result`` in the
-    fitting panel; ``TaviProjectModel`` persists ``fit`` (the spec only - never ``curve``) into
-    ``TaviData.fits`` and announces it in the project tree via ``FitAppendEvent`` the first time
-    it sees this uuid. Unlike ``SavePlotEvent`` (one consumer), this one intentionally has several.
+    Published by ``FitModel`` both after Perform Fit and after a saved fit is recomputed for display
+    (``FitRecomputeEvent``). Display only: ``PlotterPresenter``/``Plot1DView`` render each outcome's
+    ``curve`` alongside the data it was fit against, ``FittingPresenter`` reflects the active series'
+    member in the fitting panel, and ``FitWindowPresenter`` fills the windows of a fit it was just told
+    was saved (``SaveFitEvent``). Persisting the fit is ``SaveFitEvent``'s job, not this one's.
+
+    ``outcomes`` may cover only some of the fit's members - refitting one series of a sequential fit
+    syncs just that one - which is why this names the fit by uuid rather than carrying a whole
+    ``FitEntry``.
     """
 
-    fit: FitEntry
-    curve: FitCurve
-    result: FitResultSummary
+    fit_uuid: UUID
+    outcomes: list[FitOutcome]
+    """In fit order. Every outcome is a different series."""
+
+
+class ApplyAllChangedEvent(Event):
+    """
+    Announce the plotter's "Apply All" checkbox state.
+
+    ``FittingPresenter`` reads it as "fit every focused series, each seeded from the one before" (a
+    sequential fit) when checked, versus "fit only the series picked in the Current Plot dropdown"
+    when not - the same scope the checkbox already gives the plotter's own field edits.
+    """
+
+    apply_all: bool
+
+
+class SyncFitSpecEvent(Event):
+    """
+    Sync the fitting panel to one saved member of a fit - its spec and last result - without refitting it.
+
+    Published by ``FitModel.sync_fit_spec`` when a series is picked in the "Current Plot" dropdown
+    and the panel already knows a fit covering it, so switching between plots is cheap.
+    """
+
+    fit_uuid: UUID
+    member: FitMember
