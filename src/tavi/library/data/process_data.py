@@ -111,6 +111,23 @@ def _binned_uncertainty(error_values: Sequence[float], rows: Sequence[int]) -> f
     return math.sqrt(math.fsum(error_values[row] ** 2 for row in rows)) / len(rows)
 
 
+def _norm_suffix(norm: Optional[str], multiplication: float) -> str:
+    """
+    Spell a normalization out for a friendly name, so two normalizations of one scan stay apart.
+
+    Args:
+        norm: Name of the norm column, or ``None`` if the y column was only scaled.
+        multiplication: Scale applied to the y column.
+
+    Returns:
+        The suffix, empty when nothing was done to the y column.
+
+    """
+    if norm is None:
+        return "" if multiplication == 1 else f"_x{multiplication:g}"
+    return f"_norm{norm}" if multiplication == 1 else f"_norm{norm}x{multiplication:g}"
+
+
 class ProcessOps(metaclass=abc.ABCMeta):
     """
     Base class for process operations.
@@ -432,16 +449,11 @@ class EqualStepRebinOps(ProcessOps):
         appended.data.data[ERROR_COLUMN] = _poisson_uncertainty(y_values, norm_values, self.multiplication, self.norm)
         appended.data.data[self.columns[1]] = _renormalized(y_values, norm_values, self.multiplication, self.norm)
         appended.data = ScanData(data=self._bin_equal_step(appended.data.data))
-        appended.tavimeta.friendly_name = f"{appended.tavimeta.friendly_name}_rebin{self.step}{self._norm_suffix()}"
+        suffix = _norm_suffix(self.norm, self.multiplication)
+        appended.tavimeta.friendly_name = f"{appended.tavimeta.friendly_name}_rebin{self.step}{suffix}"
         if self.norm is not None:
             appended.tavimeta.normalization = (self.norm, self.multiplication)
         return appended
-
-    def _norm_suffix(self) -> str:
-        """Spell the normalization out for the friendly name, so two normalizations of one scan stay apart."""
-        if self.norm is None:
-            return "" if self.multiplication == 1 else f"_x{self.multiplication:g}"
-        return f"_norm{self.norm}" if self.multiplication == 1 else f"_norm{self.norm}x{self.multiplication:g}"
 
     def _bin_equal_step(self, appended_data: dict[str, list[float]]) -> dict[str, list[float]]:
         """
@@ -654,6 +666,42 @@ class ToleranceRebinOps(ProcessOps):
             raise ValueError(f"Rebin cannot carry a column named {ERROR_COLUMN!r}, which it computes itself.")
 
         self._append_op.validate()
+
+    def exec(self) -> ProcessedScan:
+        """
+        Append the origins and merge the points that agree along x to within ``tol``.
+
+        Returns:
+            A ``ProcessedScan`` with a fresh uuid, one column per requested column plus an
+            ``error`` column holding the y column's uncertainty, and every origin recorded
+            in ``prov.contributing_scans`` at weight 1 - the merge weights points, not
+            origins. Its friendly name is the appended one suffixed with the tolerance and
+            the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty,
+            a merged scan having no file of its own, and ``tavimeta.normalization`` records
+            ``norm`` and ``multiplication``, this scan's y column now being on that
+            footing. Storing it in ``TaviData`` is the caller's job.
+
+        Raises:
+            ValueError: If ``tol`` or ``multiplication`` is not a positive, finite number,
+                if ``norm`` is not one of the requested columns, if a requested column is
+                named ``error``, if fewer than two columns are requested, if a row's x is
+                not finite, or if a row's ``norm`` value is zero.
+            KeyError: If a uuid is not present in the data pool, or an origin does not
+                carry one of the requested columns.
+
+        """
+        self.validate()
+
+        # the appended scan is a private intermediate, never registered and never returned
+        # in this form, so there is nothing shared to protect by copying it. The
+        # renormalization and the uncertainty both happen inside the merge, which needs the
+        # raw counts and the norm column as they were measured.
+        appended = self._append_op.exec()
+        appended.data = ScanData(data=self._bin_by_tol(appended.data.data))
+        suffix = _norm_suffix(self.norm, self.multiplication)
+        appended.tavimeta.friendly_name = f"{appended.tavimeta.friendly_name}_tol{self.tol}{suffix}"
+        appended.tavimeta.normalization = (self.norm, self.multiplication)
+        return appended
 
     def _bin_by_tol(self, appended_data: dict[str, list[float]]) -> dict[str, list[float]]:
         """

@@ -311,17 +311,9 @@ def test_rebin_raises_on_a_multiplication_that_erases_or_poisons_the_column(mult
         ).exec()
 
 
-class _RunnableToleranceRebin(ToleranceRebinOps):
-    """ToleranceRebinOps with a stub ``exec``, so its ``validate`` can be constructed and called."""
-
-    def exec(self) -> ProcessedScan:
-        """Not what these tests are about - ``validate`` is."""
-        raise NotImplementedError
-
-
-def make_tolerance_rebin(scan, columns=("qh", "detector", "monitor"), **kwargs) -> _RunnableToleranceRebin:
+def make_tolerance_rebin(scan, columns=("qh", "detector", "monitor"), **kwargs) -> ToleranceRebinOps:
     """Build a tolerance rebin over one scan, with usable defaults for everything not under test."""
-    return _RunnableToleranceRebin(
+    return ToleranceRebinOps(
         make_tavi_data(scan), [scan.uuid], list(columns), **{"tol": 0.01, "norm": "monitor", **kwargs}
     )
 
@@ -567,3 +559,76 @@ def test_tolerance_rebin_raises_when_a_requested_column_is_named_error():
 
     with pytest.raises(ValueError, match="cannot carry a column named 'error'"):
         make_tolerance_rebin(scan, columns=("qh", "detector", "monitor", "error")).validate()
+
+
+def test_tolerance_rebin_merges_the_repeated_passes_of_its_origins():
+    """The same position measured in two scans is one point with both counts behind it."""
+    first = make_raw_scan("scan-001", data={"qh": [1.0, 1.1], "detector": [100.0, 50.0], "monitor": [1000.0, 1000.0]})
+    second = make_raw_scan(
+        "scan-002", data={"qh": [1.001, 1.101], "detector": [120.0, 60.0], "monitor": [1000.0, 1000.0]}
+    )
+    tavi_data = make_tavi_data(first, second)
+
+    merged = ToleranceRebinOps(
+        tavi_data, [first.uuid, second.uuid], ["qh", "detector", "monitor"], tol=0.01, norm="monitor"
+    ).exec()
+
+    assert isinstance(merged, ProcessedScan)
+    assert merged.data.qh == pytest.approx([1.0005, 1.1005])
+    assert merged.data.detector == pytest.approx([0.11, 0.055])
+    assert merged.prov.contributing_scans == {first.uuid: 1, second.uuid: 1}
+
+
+def test_tolerance_rebin_names_the_result_after_its_origins_the_tolerance_and_the_normalization():
+    scan = make_countable_scan()
+
+    merged = make_tolerance_rebin(scan, tol=0.01, multiplication=10000).exec()
+
+    assert merged.tavimeta.friendly_name == f"{scan.tavimeta.friendly_name}_tol0.01_normmonitorx10000"
+    assert merged.tavimeta.normalization == ("monitor", 10000)
+
+
+def test_tolerance_rebin_result_has_no_file_of_its_own():
+    merged = make_tolerance_rebin(make_countable_scan()).exec()
+
+    assert merged.prov.raw_file == ""
+    assert merged.tavimeta.friendly_path == ""
+    assert merged.tavimeta.default_axis == ("qh", "detector")
+
+
+def test_tolerance_rebin_gets_its_own_fresh_uuid():
+    scan = make_countable_scan()
+
+    merged = make_tolerance_rebin(scan).exec()
+
+    assert merged.uuid != scan.uuid
+
+
+def test_tolerance_rebin_carries_an_error_column_through_exec():
+    merged = make_tolerance_rebin(make_countable_scan(), multiplication=1000).exec()
+
+    assert merged.data.error == pytest.approx([10.0])
+    assert set(merged.data.data) == {"qh", "detector", "monitor", "error"}
+
+
+def test_tolerance_rebin_leaves_the_scan_pool_untouched():
+    scan = make_countable_scan()
+    tavi_data = make_tavi_data(scan)
+
+    ToleranceRebinOps(tavi_data, [scan.uuid], ["qh", "detector", "monitor"], tol=0.01, norm="monitor").exec()
+
+    assert scan.data.detector == [100.0]
+    assert tavi_data.processed_scans == {}
+
+
+def test_tolerance_rebin_raises_before_producing_anything_when_a_uuid_is_unknown():
+    scan = make_countable_scan()
+
+    with pytest.raises(KeyError):
+        ToleranceRebinOps(
+            make_tavi_data(scan),
+            [scan.uuid, UUID(value="not-loaded")],
+            ["qh", "detector", "monitor"],
+            tol=0.01,
+            norm="monitor",
+        ).exec()
