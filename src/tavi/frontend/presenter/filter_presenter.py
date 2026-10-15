@@ -1,15 +1,17 @@
 """Presenter for the filter panel."""
 
+from typing import Any
+
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.filter_view import FilterView
 from tavi.meta.event.event_broker import EventBroker
 
 
 class FilterPresenter(AbstractPresenter):
-    """Mediates between the filter panel and model"""
+    """Mediates between the filter panel and model."""
 
-    def __init__(self, model) -> None:  # Model will become the relevant FilterModelInterface
-        """Create the view, subscribe to apply filter, and hook up to the Apply and Clear Filter buttons"""
+    def __init__(self, model: Any) -> None:  # Model will become the relevant FilterModelInterface
+        """Create the view, subscribe to apply filter, and hook up to the Apply and Clear Filter buttons."""
         super().__init__()
         self._model = model
 
@@ -25,10 +27,13 @@ class FilterPresenter(AbstractPresenter):
         self._view.clear_filter_button.clicked.connect(self.handle_clear_filter)
 
     def init_view(self) -> None:
+        """Create the filter view."""
         self._view = FilterView()
 
-    def handle_apply_filter(self):
+    def handle_apply_filter(self) -> None:
+        """Manage interactions for filter application."""
         pass
 
-    def handle_clear_filter(self):
+    def handle_clear_filter(self) -> None:
+        """Manage interactions for clearing a filter."""
         pass

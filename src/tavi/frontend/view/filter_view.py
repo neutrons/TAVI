@@ -22,14 +22,15 @@ from qtpy.QtWidgets import (
 
 class CriteriaItemWidget(QWidget):
     """
-    Criteria Item Widget
+    Criteria Item Widget.
 
-    Holds atomic filtering statements
+    Holds atomic filtering statements.
     """
 
     operators = ["is", "is not", "has", "has not", "=", "!=", ">", "<", ">=", "<="]
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Construct individual criteria."""
         super().__init__(parent)
         criteria_layout = QHBoxLayout(self)
 
@@ -46,6 +47,7 @@ class CriteriaItemWidget(QWidget):
         criteria_layout.addWidget(self.criteria_delete_button)
 
     def set_sample(self) -> None:
+        """Set criteria to sample mode: basic values and read-only."""
         self.criteria_key.setText("scan")
         self.criteria_key.setReadOnly(True)
         self.criteria_operator.clear()
@@ -56,12 +58,14 @@ class CriteriaItemWidget(QWidget):
 
 class CriteriaSetScrollArea(QScrollArea):
     """
-    Criteria Set Widget
+    Criteria Set Widget.
 
-    Holds a set of filter statements to create a filter
+    Holds a set of filter statements to create a filter.
+    Handles adding and removing criteria from the set.
     """
 
     def __init__(self, parent: QWidget | None = None, set_sample: bool = False) -> None:
+        """Construct criteria set object."""
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
@@ -85,7 +89,8 @@ class CriteriaSetScrollArea(QScrollArea):
 
         self.criteria_list_layout.addWidget(self.add_criteria_button)
 
-    def add_criteria(self):
+    def add_criteria(self) -> None:
+        """Add an empty criteria to the set."""
         new_criteria = CriteriaItemWidget()
         self.criteria_store[new_criteria.uuid.hex] = new_criteria
         self.criteria_list_layout.addWidget(new_criteria)
@@ -94,7 +99,10 @@ class CriteriaSetScrollArea(QScrollArea):
         # Re-adding an existing widget just moves it to the end
 
     def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
-        def _delete_criteria():
+        """Create a callable to delete a provided criteria."""
+
+        def _delete_criteria() -> None:
+            """Hides and deletes the externally provided criteria from the set."""
             criteria.hide()
             self.criteria_store.pop(criteria.uuid.hex)
             self.criteria_list_layout.removeWidget(criteria)
@@ -197,13 +205,15 @@ class FilterView(QWidget):
         filter_box.setLayout(filter_components_layout)
         layout.addWidget(filter_box)
 
-    def new_filter(self):
+    def new_filter(self) -> None:
+        """Create a new filter in the view."""
         filter_index = self.filter_dropdown.count()
         self.filter_dropdown.addItem(f"FilterName{filter_index}", uuid4())
         self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea())
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
-    def del_filter(self):
+    def del_filter(self) -> None:
+        """Delete the currently highlighted filter."""
         index_for_deletion = self.filter_dropdown.currentIndex()
         if index_for_deletion == 0:
             return
@@ -215,16 +225,19 @@ class FilterView(QWidget):
             self.filter_criteria_set_list.removeWidget(set_for_deletion)
         self.filter_dropdown.setCurrentIndex(0)
 
-    def immutable_sample_name(self):
+    def immutable_sample_name(self) -> None:
+        """Revert any attempt to modify the sample filter name."""
         sample_text = self.filter_dropdown.itemText(0)
         if sample_text != "Sample":
             self.filter_dropdown.setItemText(0, "Sample")
 
-    def set_stack_to_dropdown(self):
+    def set_stack_to_dropdown(self) -> None:
+        """Sync the stacked criteria sets to the currently highlighted filter."""
         dropdown_index = self.filter_dropdown.currentIndex()
         self.filter_criteria_set_list.setCurrentIndex(dropdown_index)
 
-    def apply_filter(self):
+    def apply_filter(self) -> None:
+        """Apply the currently highlighted filter with appropriate messaging."""
         # Do bundling and sending of filter things here
         self.applied_filter = self.filter_dropdown.currentData()
         # Replace below with basing the label on received filter event
@@ -233,7 +246,8 @@ class FilterView(QWidget):
             friendly_name = friendly_name[:30] + "..."
         self.filter_applied_friendly_name.setText(friendly_name)
 
-    def clear_filter(self):
+    def clear_filter(self) -> None:
+        """Clear the currently applied filter with appropriate messaging."""
         # Do sending of clearing filter here
         self.applied_filter = None
         self.filter_applied_friendly_name.setText(" " * 5)
