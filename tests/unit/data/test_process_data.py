@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from tavi.library.data.process_data import AppendOp
+from tavi.library.data.process_data import AppendOp, EqualStepRebinOps, ToleranceRebinOps
 from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
 
@@ -198,3 +198,372 @@ def test_append_leaves_the_scan_pool_untouched():
     assert second.data.qh == [5.0]
     assert set(tavi_data.raw_scans) == {first.uuid, second.uuid}
     assert tavi_data.processed_scans == {}
+
+
+def test_rebin_normalizes_each_point_before_averaging_the_bin():
+    """Two points counted against different monitors share a bin only once each is per-monitor."""
+    scan = make_raw_scan(
+        "scan-001",
+        data={"qh": [1.0, 1.05], "detector": [100.0, 121.0], "monitor": [1000.0, 1100.0]},
+    )
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan),
+        [scan.uuid],
+        ["qh", "detector", "monitor"],
+        step=1.0,
+        norm="monitor",
+        multiplication=1000,
+    ).exec()
+
+    # (100/1000 + 121/1100) / 2 * 1000, both points falling in the bin centred on 1.0.
+    assert rebinned.data.detector == [105.0]
+    assert rebinned.data.qh == [1.0]
+
+
+def test_rebin_without_norm_leaves_the_y_column_as_counts():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    rebinned = EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector", "monitor"], step=1.0).exec()
+
+    assert rebinned.data.detector == [100.0]
+
+
+def test_rebin_applies_multiplication_without_a_norm_column():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0]})
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0, multiplication=2
+    ).exec()
+
+    assert rebinned.data.detector == [200.0]
+
+
+def test_rebin_normalizes_only_the_y_column():
+    scan = make_raw_scan(
+        "scan-001",
+        data={"qh": [2.0], "detector": [100.0], "temp": [300.0], "monitor": [1000.0]},
+    )
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan),
+        [scan.uuid],
+        ["qh", "detector", "temp", "monitor"],
+        step=1.0,
+        norm="monitor",
+    ).exec()
+
+    assert rebinned.data.detector == [0.1]
+    assert rebinned.data.temp == [300.0]
+    assert rebinned.data.monitor == [1000.0]
+    assert rebinned.data.qh == [2.0]
+
+
+def test_rebin_records_the_normalization_it_applied():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan),
+        [scan.uuid],
+        ["qh", "detector", "monitor"],
+        step=1.0,
+        norm="monitor",
+        multiplication=10000,
+    ).exec()
+
+    assert rebinned.tavimeta.normalization == ("monitor", 10000)
+    assert rebinned.tavimeta.friendly_name.endswith("_rebin1.0_normmonitorx10000")
+
+
+def test_rebin_leaves_normalization_unset_when_no_norm_column_is_given():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0]})
+
+    rebinned = EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0).exec()
+
+    assert rebinned.tavimeta.normalization is None
+    assert rebinned.tavimeta.friendly_name.endswith("_rebin1.0")
+
+
+def test_rebin_raises_when_the_norm_column_was_not_requested():
+    """The append drops it, so the division would have nothing to divide by."""
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    with pytest.raises(ValueError, match="must be one of the requested columns"):
+        EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0, norm="monitor").exec()
+
+
+def test_rebin_raises_on_a_point_counted_against_a_zero_norm():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0, 1.1], "detector": [100.0, 121.0], "monitor": [1000.0, 0.0]})
+
+    with pytest.raises(ValueError, match="is zero at row 1"):
+        EqualStepRebinOps(
+            make_tavi_data(scan), [scan.uuid], ["qh", "detector", "monitor"], step=1.0, norm="monitor"
+        ).exec()
+
+
+@pytest.mark.parametrize("multiplication", [0, -1, float("nan"), float("inf")])
+def test_rebin_raises_on_a_multiplication_that_erases_or_poisons_the_column(multiplication):
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0]})
+
+    with pytest.raises(ValueError, match="positive, finite number"):
+        EqualStepRebinOps(
+            make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0, multiplication=multiplication
+        ).exec()
+
+
+class _RunnableToleranceRebin(ToleranceRebinOps):
+    """ToleranceRebinOps with a stub ``exec``, so its ``validate`` can be constructed and called."""
+
+    def exec(self) -> ProcessedScan:
+        """Not what these tests are about - ``validate`` is."""
+        raise NotImplementedError
+
+
+def make_tolerance_rebin(scan, columns=("qh", "detector", "monitor"), **kwargs) -> _RunnableToleranceRebin:
+    """Build a tolerance rebin over one scan, with usable defaults for everything not under test."""
+    return _RunnableToleranceRebin(
+        make_tavi_data(scan), [scan.uuid], list(columns), **{"tol": 0.01, "norm": "monitor", **kwargs}
+    )
+
+
+def make_countable_scan() -> RawScan:
+    """A scan carrying the columns the tolerance rebin tests ask for."""
+    return make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+
+def test_tolerance_rebin_validates_a_usable_operation():
+    make_tolerance_rebin(make_countable_scan(), multiplication=10000).validate()
+
+
+@pytest.mark.parametrize("tol", [0, -0.01, float("nan"), float("inf")])
+def test_tolerance_rebin_raises_on_a_tolerance_that_merges_nothing(tol):
+    with pytest.raises(ValueError, match="tolerance must be a positive, finite number"):
+        make_tolerance_rebin(make_countable_scan(), tol=tol).validate()
+
+
+@pytest.mark.parametrize("multiplication", [0, -1, float("nan"), float("inf")])
+def test_tolerance_rebin_raises_on_a_multiplication_that_erases_or_poisons_the_column(multiplication):
+    with pytest.raises(ValueError, match="multiplication must be a positive, finite number"):
+        make_tolerance_rebin(make_countable_scan(), multiplication=multiplication).validate()
+
+
+def test_tolerance_rebin_raises_when_the_norm_column_was_not_requested():
+    """The append drops it, so the merge would have nothing to weight by."""
+    with pytest.raises(ValueError, match="must be one of the requested columns"):
+        make_tolerance_rebin(make_countable_scan(), columns=("qh", "detector")).validate()
+
+
+def test_tolerance_rebin_raises_without_two_columns_to_form_a_default_axis():
+    with pytest.raises(ValueError, match="at least 2 columns"):
+        make_tolerance_rebin(make_countable_scan(), columns=("monitor",)).validate()
+
+
+def test_tolerance_rebin_raises_when_an_origin_does_not_carry_a_requested_column():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "monitor": [1000.0]})
+
+    with pytest.raises(KeyError, match="detector"):
+        make_tolerance_rebin(scan).validate()
+
+
+def test_bin_by_tol_merges_points_inside_the_window_and_weights_the_centre():
+    """Points within tol/2 of the one opening the bin merge; the longer count pulls the centre."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01, multiplication=1000)
+
+    binned = rebin._bin_by_tol(
+        {"qh": [1.0, 1.005, 1.2], "detector": [100.0, 110.0, 50.0], "monitor": [1000.0, 2000.0, 1000.0]}
+    )
+
+    # normalized y: 100.0, 55.0, 50.0 -> merged mean of the first two, then the loner.
+    assert binned["detector"] == [77.5, 50.0]
+    # (1000*1.0 + 2000*1.005) / 3000, the twice-as-long count at 1.005 pulling it up.
+    assert binned["qh"] == pytest.approx([1.0033333333, 1.2])
+    assert binned["monitor"] == [1500.0, 1000.0]
+
+
+def test_bin_by_tol_leaves_points_further_apart_than_the_window_alone():
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01)
+
+    binned = rebin._bin_by_tol({"qh": [1.0, 1.02], "detector": [100.0, 200.0], "monitor": [1000.0, 1000.0]})
+
+    assert binned["qh"] == pytest.approx([1.0, 1.02])
+    assert binned["detector"] == pytest.approx([0.1, 0.2])
+
+
+def test_bin_by_tol_merges_in_ascending_x_whatever_order_the_rows_arrived_in():
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01)
+
+    binned = rebin._bin_by_tol({"qh": [1.2, 1.0], "detector": [50.0, 100.0], "monitor": [1000.0, 1000.0]})
+
+    assert binned["qh"] == pytest.approx([1.0, 1.2])
+    assert binned["detector"] == pytest.approx([0.1, 0.05])
+
+
+def test_bin_by_tol_anchors_each_bin_rather_than_chaining_a_drift():
+    """Every step is inside tol, so chaining would swallow all four; anchoring breaks at the span."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01)
+
+    binned = rebin._bin_by_tol(
+        {
+            "qh": [1.0, 1.009, 1.018, 1.027],
+            "detector": [10.0, 20.0, 30.0, 40.0],
+            "monitor": [1000.0, 1000.0, 1000.0, 1000.0],
+        }
+    )
+
+    assert binned["qh"] == pytest.approx([1.0045, 1.0225])
+    assert binned["detector"] == pytest.approx([0.015, 0.035])
+
+
+def test_bin_by_tol_merges_a_gap_of_exactly_tol():
+    """The window is inclusive, so tol is the widest a bin can span rather than the first gap that breaks it."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.5)
+
+    binned = rebin._bin_by_tol({"qh": [1.0, 1.5], "detector": [100.0, 300.0], "monitor": [1000.0, 1000.0]})
+
+    assert binned["qh"] == pytest.approx([1.25])
+    assert binned["detector"] == pytest.approx([0.2])
+
+
+def test_bin_by_tol_returns_empty_columns_for_empty_input():
+    rebin = make_tolerance_rebin(make_countable_scan())
+
+    binned = rebin._bin_by_tol({"qh": [], "detector": [], "monitor": []})
+
+    assert binned == {"qh": [], "detector": [], "monitor": [], "error": []}
+
+
+@pytest.mark.parametrize("x_value", [float("nan"), float("inf")])
+def test_bin_by_tol_raises_on_an_x_that_belongs_to_no_bin(x_value):
+    rebin = make_tolerance_rebin(make_countable_scan())
+
+    with pytest.raises(ValueError, match="not a finite number at row 1"):
+        rebin._bin_by_tol({"qh": [1.0, x_value], "detector": [100.0, 100.0], "monitor": [1000.0, 1000.0]})
+
+
+def test_bin_by_tol_raises_on_a_point_counted_against_a_zero_norm():
+    rebin = make_tolerance_rebin(make_countable_scan())
+
+    with pytest.raises(ValueError, match="is zero at row 1"):
+        rebin._bin_by_tol({"qh": [1.0, 1.1], "detector": [100.0, 100.0], "monitor": [1000.0, 0.0]})
+
+
+def test_rebin_carries_the_poisson_uncertainty_of_each_count():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan),
+        [scan.uuid],
+        ["qh", "detector", "monitor"],
+        step=1.0,
+        norm="monitor",
+        multiplication=1000,
+    ).exec()
+
+    # sqrt(100) = 10 counts, normalized alongside the 100 counts it belongs to.
+    assert rebinned.data.error == [10.0]
+    assert rebinned.data.detector == [100.0]
+
+
+def test_rebin_uncertainty_of_an_unnormalized_count_is_its_square_root():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0]})
+
+    rebinned = EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0).exec()
+
+    assert rebinned.data.error == [10.0]
+
+
+def test_rebin_combines_a_bin_s_uncertainties_in_quadrature():
+    """Four equal points are twice as certain as one, which averaging the errors would hide."""
+    scan = make_raw_scan(
+        "scan-001",
+        data={"qh": [1.0, 1.01, 1.02, 1.03], "detector": [100.0, 100.0, 100.0, 100.0]},
+    )
+
+    rebinned = EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector"], step=1.0).exec()
+
+    assert rebinned.data.detector == [100.0]
+    # sqrt(4 * 10**2) / 4, half the 10 each point carries on its own.
+    assert rebinned.data.error == pytest.approx([5.0])
+
+
+def test_rebin_uncertainty_tracks_the_counts_not_the_normalized_value():
+    """Two points of equal normalized y but different counting times keep different errors."""
+    scan = make_raw_scan("scan-001", data={"qh": [1.0, 5.0], "detector": [100.0, 400.0], "monitor": [1000.0, 4000.0]})
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan),
+        [scan.uuid],
+        ["qh", "detector", "monitor"],
+        step=1.0,
+        norm="monitor",
+        multiplication=1000,
+    ).exec()
+
+    assert rebinned.data.detector == pytest.approx([100.0, 100.0])
+    # sqrt(100)/1000*1000 = 10 against sqrt(400)/4000*1000 = 5: four times the counting,
+    # half the uncertainty.
+    assert rebinned.data.error == pytest.approx([10.0, 5.0])
+
+
+def test_rebin_drops_no_requested_column_when_adding_the_error_column():
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    rebinned = EqualStepRebinOps(
+        make_tavi_data(scan), [scan.uuid], ["qh", "detector", "monitor"], step=1.0, norm="monitor"
+    ).exec()
+
+    assert set(rebinned.data.data) == {"qh", "detector", "monitor", "error"}
+
+
+def test_rebin_raises_when_a_requested_column_is_named_error():
+    """Carrying one would be silently replaced by the uncertainty the rebin computes."""
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "error": [5.0]})
+
+    with pytest.raises(ValueError, match="cannot carry a column named 'error'"):
+        EqualStepRebinOps(make_tavi_data(scan), [scan.uuid], ["qh", "detector", "error"], step=1.0).exec()
+
+
+def test_bin_by_tol_carries_the_poisson_uncertainty_of_each_count():
+    rebin = make_tolerance_rebin(make_countable_scan(), multiplication=1000)
+
+    binned = rebin._bin_by_tol({"qh": [1.0], "detector": [100.0], "monitor": [1000.0]})
+
+    # sqrt(100) = 10 counts, normalized alongside the 100 counts it belongs to.
+    assert binned["error"] == pytest.approx([10.0])
+    assert binned["detector"] == pytest.approx([100.0])
+
+
+def test_bin_by_tol_combines_a_merge_s_uncertainties_in_quadrature():
+    """Four equal points are twice as certain as one, which averaging the errors would hide."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01, multiplication=1000)
+
+    binned = rebin._bin_by_tol(
+        {
+            "qh": [1.0, 1.002, 1.004, 1.006],
+            "detector": [100.0, 100.0, 100.0, 100.0],
+            "monitor": [1000.0, 1000.0, 1000.0, 1000.0],
+        }
+    )
+
+    assert binned["detector"] == pytest.approx([100.0])
+    # sqrt(4 * 10**2) / 4, half the 10 each point carries on its own.
+    assert binned["error"] == pytest.approx([5.0])
+
+
+def test_bin_by_tol_uncertainty_tracks_the_counts_not_the_normalized_value():
+    """Two merges of equal normalized y but different counting times keep different errors."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.01, multiplication=1000)
+
+    binned = rebin._bin_by_tol({"qh": [1.0, 5.0], "detector": [100.0, 400.0], "monitor": [1000.0, 4000.0]})
+
+    assert binned["detector"] == pytest.approx([100.0, 100.0])
+    # sqrt(100)/1000*1000 = 10 against sqrt(400)/4000*1000 = 5.
+    assert binned["error"] == pytest.approx([10.0, 5.0])
+
+
+def test_tolerance_rebin_raises_when_a_requested_column_is_named_error():
+    """Carrying one would be silently replaced by the uncertainty the merge computes."""
+    scan = make_raw_scan("scan-001", data={"qh": [1.0], "detector": [100.0], "monitor": [1000.0], "error": [5.0]})
+
+    with pytest.raises(ValueError, match="cannot carry a column named 'error'"):
+        make_tolerance_rebin(scan, columns=("qh", "detector", "monitor", "error")).validate()
