@@ -67,7 +67,10 @@ Method Notes
 * Derive reciprocal-space and angular quantities for a located scan.
 * ``get_delta_q`` also supplies the abscissa used by the
   :ref:`scan browser <scan_browser>` whenever a resolution bar is drawn against
-  an angular motor.
+  an angular motor. Its optional ``origin`` measures the scan from another
+  scan's zero instead of its own middle sample, so a background can be
+  overplotted on the same axis; see :doc:`ornl_spice_loader` for the units that
+  origin carries.
 
 ``create_sample``
 -----------------

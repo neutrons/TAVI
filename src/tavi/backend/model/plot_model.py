@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import find_series_by_source, scans_for_plots
+from tavi.backend.model.plot_resolver import find_series_by_source, fit_series_by_source, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
@@ -18,6 +18,7 @@ from tavi.meta.event.type.presenter_event import (
     PlotFocusEvent,
     RawScanFocusEvent,
     SavePlotEvent,
+    ShowScanTitleChangedEvent,
 )
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
@@ -32,6 +33,9 @@ class PlotModel(PlotModelInterface):
         self._plots = plots
         self._raw_scans = raw_scans
         self._last_plots: list[Plot] = []
+        # Plotter's "Show Title" preference, kept here rather than read back off the view so a
+        # scan focused after the toggle is labelled the same way as the ones already on canvas.
+        self._show_title = True
 
         self._event_broker = EventBroker()
         self._event_broker.register(RawScanFocusEvent, self._handle_raw_scan_focus_event)
@@ -39,6 +43,7 @@ class PlotModel(PlotModelInterface):
         self._event_broker.register(FitFocusEvent, self._handle_fit_focus_event)
         self._event_broker.register(FocusActivePlotEvent, self._handle_active_plot_focus_event)
         self._event_broker.register(RawScanRemoveEvent, self._handle_raw_scan_remove_event)
+        self._event_broker.register(ShowScanTitleChangedEvent, self._handle_show_scan_title_changed_event)
 
     def _handle_raw_scan_remove_event(self, e: RawScanRemoveEvent) -> None:
         """
@@ -79,7 +84,7 @@ class PlotModel(PlotModelInterface):
         """
         if not e.scans and not e.also_plots:
             return
-        preview_plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
+        preview_plots = [self._preview_plot_for_scan(scan, show_title=self._show_title) for scan in e.scans]
         plots = preview_plots + list(e.also_plots)
         self._event_broker.publish(PlotFocusEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
 
@@ -92,7 +97,7 @@ class PlotModel(PlotModelInterface):
         Sync ``_last_plots`` to the series the focused fits were made against.
 
         A fit focused on its own is rendered by ``PlotterPresenter`` straight from the event (each
-        FitEntry carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
+        FitEntry member carries its own PlotSeries), so no ``PlotFocusEvent`` is published for it and
         ``_last_plots`` would otherwise still describe whatever was focused before - leaving a
         subsequent axis/preset edit, or Save Plot, acting on the wrong plot entirely.
 
@@ -105,10 +110,7 @@ class PlotModel(PlotModelInterface):
         """
         if not e.exclusive:
             return
-        series_by_source: dict[UUID, PlotSeries] = {}
-        for fit in e.fits:
-            if fit.series.source_scan_uuid in e.scans:
-                series_by_source.setdefault(fit.series.source_scan_uuid, fit.series)
+        series_by_source = fit_series_by_source(e.fits, e.scans)
         if not series_by_source:
             return
         # One single-series plot per source scan, matching the shape _handle_raw_scan_focus_event
@@ -128,12 +130,25 @@ class PlotModel(PlotModelInterface):
         _, series = match
         self._event_broker.publish(ActivePlotChangedEvent(scan=self._raw_scans[series.source_scan_uuid], series=series))
 
-    def _preview_plot_for_scan(self, scan: RawScan) -> Plot:
-        """Build an unsaved single-series preview plot from one raw scan's default axis."""
+    def _handle_show_scan_title_changed_event(self, e: ShowScanTitleChangedEvent) -> None:
+        """Record the plotter's "Show Title" preference; it applies to the next batch of scans focused."""
+        self._show_title = e.show_title
+
+    def _preview_plot_for_scan(self, scan: RawScan, show_title: bool = False) -> Plot:
+        """
+        Build an unsaved single-series preview plot from one raw scan's default axis.
+
+        ``show_title`` labels the series with the instrument's scan title instead of the
+        friendly name; scans whose metadata carries no title fall back to the friendly name.
+        """
         x_name, y_name = scan.tavimeta.default_axis
+        scan_name = scan.tavimeta.friendly_name
+        if show_title:
+            scan_name = getattr(scan.metadata, "scan_title", scan_name)
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
-            scan_name=scan.tavimeta.friendly_name,
+            scan_name=scan_name,
+            friendly_name=scan.tavimeta.friendly_name,
             normalized_by=None,
             normalized_by_value=None,
             x_name=x_name,

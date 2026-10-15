@@ -111,6 +111,7 @@ class TAS:
         multiply_factor: float = 1.0,
         coh_bar: bool = True,
         save_figure: str = None,
+        background: list[int] = [],
     ) -> None:
         """
         Browse scan with options to show resolution bar.
@@ -154,6 +155,10 @@ class TAS:
             save_figure: File name to save the figure under. When given, the figure
                 is saved instead of shown; the format follows the suffix, defaulting
                 to .png. Shown and not saved when None.
+            background: Background scan numbers, one per entry in scan_list, each
+                overplotted on its scan's subplot. Treated exactly like the scan it
+                accompanies (normalization, scaling, del_q conversion), but never
+                fitted and never given a resolution bar.
 
         """
         resolution_bar_4d = None
@@ -183,6 +188,7 @@ class TAS:
             multiply_factor,
             coh_bar,
             save_figure,
+            background,
         )
 
     def resolution_bar(

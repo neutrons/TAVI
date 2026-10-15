@@ -47,10 +47,38 @@ Main Flow
             RawScanLoadController ->>RawScanLoadController: append to result List
         end
         RawScanLoadController -->>ProjectModel: List[RawScan]
-        ProjectModel ->> ProjectModel : update TaviData.raw_scans
         loop foreach RawScan
-            ProjectModel ->> EventBroker : publish RawScanAppendEvent
+            alt uuid already in TaviData.raw_scans
+                ProjectModel ->> ProjectModel : skip - keep the stored scan, publish nothing
+            else
+                ProjectModel ->> ProjectModel : update TaviData.raw_scans
+                ProjectModel ->> EventBroker : publish RawScanAppendEvent
+            end
         end
+
+
+Re-loading a folder
+-------------------
+
+A folder may be loaded as often as the user likes, including while an
+experiment is still writing to it. ``ProjectModel.load_raw_scan_from_folder``
+decides per scan whether it is new, keyed on the uuid the loader derived from
+the **file's text** (``generate_uuid``, md5):
+
+- **Unchanged file** — same text, same uuid. The scan is skipped: the copy
+  already in ``TaviData.raw_scans`` is kept rather than overwritten (which
+  would discard edits to its writable ``tavimeta``), and no
+  ``RawScanAppendEvent`` is published.
+- **File appended to since the last load** — different text, different uuid.
+  It loads as a *new* scan and is announced normally, so the earlier, shorter
+  scan stays in the project alongside it; plots and fits built on it keep
+  resolving.
+
+Deduplicating here, rather than in the view, is what lets
+``TreeViewWidget.add_item_at_path`` keep its duplicate-uuid guard as a real
+invariant: ``uuid_map`` holds one item per uuid, so a second insert of the same
+uuid would leave the first row orphaned in the tree. A uuid reaching the tree
+twice now means a bug upstream, not a re-load, and it is still raised as such.
 
 
 Classification Flow

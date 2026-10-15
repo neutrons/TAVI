@@ -39,6 +39,8 @@ class Plot1DView(QWidget):
     sync_fields_signal = Signal(object)
     append_fit_curve_signal = Signal(object)
     set_fit_components_visible_signal = Signal(bool)
+    show_title_toggled = Signal(bool)
+    apply_all_toggled = Signal(bool)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
@@ -151,6 +153,7 @@ class Plot1DView(QWidget):
         # Connected before setChecked so the initial True state actually takes effect, rather
         # than firing before anything is listening.
         self.apply_all_checkbox.toggled.connect(self._on_apply_all_toggled)
+        self.apply_all_checkbox.toggled.connect(self.apply_all_toggled.emit)
         self.apply_all_checkbox.setChecked(True)
         plot_controls.addWidget(self.apply_all_checkbox)
         plot_controls.addStretch(1)
@@ -163,6 +166,12 @@ class Plot1DView(QWidget):
         self.hide_label_check = QCheckBox("Hide Label")
         self.hide_label_check.toggled.connect(self._on_hide_label_toggled)
         plot_controls.addWidget(self.hide_label_check)
+        # Unlike "Hide Label", the legend text itself has to be rebuilt by the model that owns
+        # the series, so this only announces the toggle rather than redrawing anything here.
+        self.show_title_check = QCheckBox("Show Title")
+        self.show_title_check.toggled.connect(self.show_title_toggled.emit)
+        self.show_title_check.setChecked(True)
+        plot_controls.addWidget(self.show_title_check)
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 
@@ -302,7 +311,7 @@ class Plot1DView(QWidget):
             return
         for x, y, err, series in resolved:
             self.append_plot(
-                x, y, err, series.scan_name, series.normalized_by, series.x_name, series.y_name, series.error_name
+                x, y, err, series.display_label, series.normalized_by, series.x_name, series.y_name, series.error_name
             )
         # With "Apply All" off, individually-tweaked plots may no longer share a common x/y
         # column - set once, from the whole batch, rather than letting the last append_plot's
@@ -368,6 +377,18 @@ class Plot1DView(QWidget):
     def hookup_plot_combo_changed_signal(self, callback: Callable) -> None:
         """Connect the "Current Plot" dropdown's index-changed signal to callback."""
         self.plot_combo_index_changed.connect(callback)
+
+    def hookup_show_title_signal(self, callback: Callable) -> None:
+        """Connect the "Show Title" checkbox's toggled signal to callback."""
+        self.show_title_toggled.connect(callback)
+
+    def hookup_apply_all_signal(self, callback: Callable) -> None:
+        """Connect the "Apply All" checkbox's toggled signal to callback."""
+        self.apply_all_toggled.connect(callback)
+
+    def is_show_title_checked(self) -> bool:
+        """Return whether series should be labelled with the scan title instead of the friendly name."""
+        return self.show_title_check.isChecked()
 
     def is_apply_all_checked(self) -> bool:
         """Return whether field edits should apply to every focused plot rather than just the active one."""

@@ -2,7 +2,7 @@
 
 import pytest
 
-from tavi.library.data.fit_entry import FitEntry, ParamField, PeakField
+from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
@@ -34,24 +34,19 @@ def make_param(value=0) -> ParamField:
     return ParamField(value=str(value), fixed=False, minimum="", maximum="")
 
 
-def make_fit_entry(uuid_val="fit-001") -> FitEntry:
-    series = PlotSeries(
-        source_scan_uuid=UUID(value="scan-001"),
-        scan_name="test_scan",
-        normalized_by=None,
-        x_name="qh",
-        y_name="en",
-        error_name="error",
-    )
-    return FitEntry(
-        uuid=UUID(value=uuid_val),
-        series=series,
+def make_fit_member(source_uuid="scan-001") -> FitMember:
+    return FitMember(
+        series=make_series(source_uuid),
         range_min="0",
         range_max="10",
         background="None",
         background_constant=make_param(0),
         peaks=[PeakField(shape="Gaussian", amplitude=make_param(1), center=make_param(0), fwhm=make_param(1))],
     )
+
+
+def make_fit_entry(uuid_val="fit-001", source_uuids=("scan-001",)) -> FitEntry:
+    return FitEntry(uuid=UUID(value=uuid_val), members=[make_fit_member(u) for u in source_uuids])
 
 
 def test_fetch_by_uuid_returns_raw_scan():
@@ -171,7 +166,7 @@ def test_purge_leaves_an_unrelated_plot_alone():
 
 
 def test_purge_removes_a_fit_whose_source_scan_goes():
-    """A FitEntry is bound to one series, so it cannot outlive the scan that series points at."""
+    """A fit whose last member's scan goes has nothing left to survive on."""
     scan = make_raw_scan()
     fit = make_fit_entry()
     data = TaviData(raw_scans={scan.uuid: scan}, fits={fit.uuid: fit})
@@ -180,6 +175,44 @@ def test_purge_removes_a_fit_whose_source_scan_goes():
 
     assert data.fits == {}
     assert result.fits == [fit.uuid]
+
+
+def test_purge_prunes_but_keeps_a_two_member_fit():
+    """Removing one run must not destroy the other member of a sequential fit."""
+    gone = make_raw_scan(uuid_val="scan-gone")
+    kept = make_raw_scan(uuid_val="scan-kept")
+    fit = make_fit_entry(source_uuids=("scan-gone", "scan-kept"))
+    data = TaviData(raw_scans={gone.uuid: gone, kept.uuid: kept}, fits={fit.uuid: fit})
+    handle = data.fits
+
+    result = data.purge([gone.uuid])
+
+    assert result.fits == []
+    assert handle is data.fits
+    assert [m.source_scan_uuid for m in data.fits[fit.uuid].members] == [kept.uuid]
+
+
+def test_purge_removes_a_fit_once_its_last_members_scan_goes():
+    gone = make_raw_scan(uuid_val="scan-gone")
+    kept = make_raw_scan(uuid_val="scan-kept")
+    fit = make_fit_entry(source_uuids=("scan-gone", "scan-kept"))
+    data = TaviData(raw_scans={gone.uuid: gone, kept.uuid: kept}, fits={fit.uuid: fit})
+
+    data.purge([gone.uuid])
+    result = data.purge([kept.uuid])
+
+    assert data.fits == {}
+    assert result.fits == [fit.uuid]
+
+
+def test_purge_leaves_an_unrelated_fit_alone():
+    gone = make_raw_scan(uuid_val="scan-gone")
+    fit = make_fit_entry(source_uuids=("scan-other",))
+    data = TaviData(raw_scans={gone.uuid: gone}, fits={fit.uuid: fit})
+
+    data.purge([gone.uuid])
+
+    assert data.fits[fit.uuid] is fit
 
 
 def test_purge_removes_a_fit_selected_directly():

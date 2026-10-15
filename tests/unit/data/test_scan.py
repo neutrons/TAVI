@@ -12,6 +12,8 @@ from tavi.library.data.scan import (
     Scan,
     RawScan,
     ProcessedScan,
+    UUIDFactory,
+    new_uuid,
 )
 
 
@@ -216,3 +218,25 @@ def test_scan_rejects_invalid_provenance_type():
             tavimeta=make_tavimeta(),
             prov="not_provenance",
         )
+
+
+def test_new_uuid_returns_a_uuid():
+    assert isinstance(new_uuid(), UUID)
+
+
+def test_new_uuid_is_unique_per_call():
+    assert len({new_uuid() for _ in range(100)}) == 100
+
+
+def test_uuid_factory_field_generates_through_new_uuid(monkeypatch):
+    """UUIDFactory must route through new_uuid, so swapping the scheme there changes every default uuid."""
+    from pydantic import BaseModel
+
+    import tavi.library.data.scan as scan_module
+
+    monkeypatch.setattr(scan_module, "uuid4", lambda: "fixed")
+
+    class HasUUID(BaseModel):
+        uuid: UUID = UUIDFactory()
+
+    assert HasUUID().uuid == UUID(value="fixed")
