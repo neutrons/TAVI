@@ -21,16 +21,13 @@ from qtpy.QtWidgets import (
 
 
 class CriteriaItemWidget(QWidget):
-    """Criteria Item Widget
-    
+    """
+    Criteria Item Widget
+
     Holds atomic filtering statements
     """
 
-    operators = ["is", "is not",
-                 "has", "has not",
-                 "=", "!=",
-                 ">", "<",
-                 ">=", "<="]
+    operators = ["is", "is not", "has", "has not", "=", "!=", ">", "<", ">=", "<="]
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -58,8 +55,9 @@ class CriteriaItemWidget(QWidget):
 
 
 class CriteriaSetScrollArea(QScrollArea):
-    """Criteria Set Widget
-    
+    """
+    Criteria Set Widget
+
     Holds a set of filter statements to create a filter
     """
 
@@ -72,12 +70,11 @@ class CriteriaSetScrollArea(QScrollArea):
         self.criteria_list_layout = QVBoxLayout(dummy_widget)
         self.criteria_list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        
         self.criteria_store = dict()
         initial_criteria = CriteriaItemWidget()
         if set_sample:
             initial_criteria.set_sample()
-        
+
         self.criteria_store[initial_criteria.uuid.hex] = initial_criteria
         self.criteria_list_layout.addWidget(initial_criteria)
         self.add_criteria_button = QPushButton("+")
@@ -85,7 +82,7 @@ class CriteriaSetScrollArea(QScrollArea):
             initial_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(initial_criteria))
 
             self.add_criteria_button.clicked.connect(self.add_criteria)
-        
+
         self.criteria_list_layout.addWidget(self.add_criteria_button)
 
     def add_criteria(self):
@@ -102,6 +99,7 @@ class CriteriaSetScrollArea(QScrollArea):
             self.criteria_store.pop(criteria.uuid.hex)
             self.criteria_list_layout.removeWidget(criteria)
             criteria.deleteLater()
+
         return _delete_criteria
 
 
@@ -134,7 +132,7 @@ class FilterView(QWidget):
         filter_applied_prefix.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignCenter)
         filter_applied_layout.addWidget(filter_applied_prefix)
 
-        self.filter_applied_friendly_name = QLabel(" "*5)
+        self.filter_applied_friendly_name = QLabel(" " * 5)
         # This will react to the currently applied filter here or elsewhere
         # self.filter_applied_friendly_name.setWordWrap(True)
         self.filter_applied_friendly_name.setFrameStyle(QFrame.Shape.Box)
@@ -146,10 +144,7 @@ class FilterView(QWidget):
         filter_controls_layout = QHBoxLayout()
         filter_controls_layout.setDirection(filter_controls_layout.Direction.RightToLeft)
 
-        self.filter_dropdown = QComboBox(
-            editable=True,
-            insertPolicy=QComboBox.InsertPolicy.InsertAtCurrent
-        )
+        self.filter_dropdown = QComboBox(editable=True, insertPolicy=QComboBox.InsertPolicy.InsertAtCurrent)
         self.filter_dropdown.addItem("Sample", uuid4())
         self.filter_dropdown.editTextChanged.connect(self.immutable_sample_name)
         filter_controls_layout.addWidget(self.filter_dropdown)
@@ -206,7 +201,7 @@ class FilterView(QWidget):
         filter_index = self.filter_dropdown.count()
         self.filter_dropdown.addItem(f"FilterName{filter_index}", uuid4())
         self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea())
-        self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count()-1)
+        self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
     def del_filter(self):
         index_for_deletion = self.filter_dropdown.currentIndex()
@@ -237,8 +232,8 @@ class FilterView(QWidget):
         if len(friendly_name) > 30:
             friendly_name = friendly_name[:30] + "..."
         self.filter_applied_friendly_name.setText(friendly_name)
-    
+
     def clear_filter(self):
         # Do sending of clearing filter here
         self.applied_filter = None
-        self.filter_applied_friendly_name.setText(" "*5)
+        self.filter_applied_friendly_name.setText(" " * 5)
