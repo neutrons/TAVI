@@ -6,11 +6,11 @@ from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
+from tavi.frontend.presenter.filter_presenter import FilterPresenter
 from tavi.frontend.presenter.fit_window_presenter import FitWindowPresenter
 from tavi.frontend.presenter.fitting_presenter import FittingPresenter
 from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
-from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
@@ -41,6 +41,8 @@ class MainPresenter:
 
         self.data_file_presenter = DataFilePresenter()
 
+        self.filter_presenter = FilterPresenter(dict())  # dict() -> appropriate model later
+
         self.fitting_presenter = FittingPresenter(model_dict[FitModelInterface.__name__])
         self.fit_window_presenter = FitWindowPresenter()
 
@@ -53,7 +55,7 @@ class MainPresenter:
             plot_view=self.plotter_presenter.view(),
             data_file_view=self.data_file_presenter.view(),
             fitting_view=self.fitting_presenter.view(),
-            filter_view=FilterView(),
+            filter_view=self.filter_presenter.view(),
         )
 
         self._event_broker = EventBroker()
