@@ -39,7 +39,11 @@ class CriteriaItemWidget(QWidget):
         self.criteria_operator = QComboBox(editable=False)
         self.criteria_operator.addItems(self.operators)
         self.criteria_value = QLineEdit("value")
-        self.criteria_delete_button = QPushButton("X")
+        self.criteria_delete_button = QPushButton()
+
+        style = self.style()
+        trash_icon = style.standardIcon(style.StandardPixmap.SP_TrashIcon)
+        self.criteria_delete_button.setIcon(trash_icon)
 
         criteria_layout.addWidget(self.criteria_key)
         criteria_layout.addWidget(self.criteria_operator)
@@ -54,6 +58,7 @@ class CriteriaItemWidget(QWidget):
         self.criteria_operator.addItem(">=")
         self.criteria_value.setText("0")
         self.criteria_value.setReadOnly(True)
+        self.criteria_delete_button.hide()
 
 
 class CriteriaSetScrollArea(QScrollArea):
@@ -76,8 +81,6 @@ class CriteriaSetScrollArea(QScrollArea):
 
         self.criteria_store = dict()
         initial_criteria = CriteriaItemWidget()
-        if set_sample:
-            initial_criteria.set_sample()
 
         self.criteria_store[initial_criteria.uuid.hex] = initial_criteria
         self.criteria_list_layout.addWidget(initial_criteria)
@@ -88,6 +91,9 @@ class CriteriaSetScrollArea(QScrollArea):
             self.add_criteria_button.clicked.connect(self.add_criteria)
 
         self.criteria_list_layout.addWidget(self.add_criteria_button)
+        if set_sample:
+            initial_criteria.set_sample()
+            self.add_criteria_button.hide()
 
     def add_criteria(self) -> None:
         """Add an empty criteria to the set."""
