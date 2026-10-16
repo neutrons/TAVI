@@ -53,12 +53,13 @@ class CriteriaItemWidget(QWidget):
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
         self.criteria_key.setText("scan")
-        self.criteria_key.setReadOnly(True)
+        self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
         self.criteria_operator.addItem(">=")
+        self.criteria_operator.setEnabled(False)
         self.criteria_value.setText("0")
-        self.criteria_value.setReadOnly(True)
-        self.criteria_delete_button.hide()
+        self.criteria_value.setEnabled(False)
+        self.criteria_delete_button.setEnabled(False)
 
 
 class CriteriaSetScrollArea(QScrollArea):
@@ -93,7 +94,7 @@ class CriteriaSetScrollArea(QScrollArea):
         self.criteria_list_layout.addWidget(self.add_criteria_button)
         if set_sample:
             initial_criteria.set_sample()
-            self.add_criteria_button.hide()
+            self.add_criteria_button.setEnabled(False)
 
     def add_criteria(self) -> None:
         """Add an empty criteria to the set."""
@@ -165,6 +166,7 @@ class FilterView(QWidget):
 
         self.filter_del_button = QPushButton("Del")
         self.filter_del_button.clicked.connect(self.del_filter)
+        self.filter_del_button.setEnabled(False)
         filter_controls_layout.addWidget(self.filter_del_button)
 
         self.filter_new_button = QPushButton("New")
@@ -181,7 +183,7 @@ class FilterView(QWidget):
         # ---
         self.filter_criteria_set_list = QStackedWidget()
         self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea(set_sample=True))
-        self.filter_dropdown.currentIndexChanged.connect(self.set_stack_to_dropdown)
+        self.filter_dropdown.currentIndexChanged.connect(self.propagate_index_change)
 
         # ---
         # Filter Application Controls
@@ -237,9 +239,12 @@ class FilterView(QWidget):
         if sample_text != "Sample":
             self.filter_dropdown.setItemText(0, "Sample")
 
-    def set_stack_to_dropdown(self) -> None:
-        """Sync the stacked criteria sets to the currently highlighted filter."""
+    def propagate_index_change(self) -> None:
+        """Propagate relevant changes from selecting a different filter index."""
         dropdown_index = self.filter_dropdown.currentIndex()
+        self.filter_del_button.setEnabled(True)
+        if dropdown_index == 0:
+            self.filter_del_button.setEnabled(False)
         self.filter_criteria_set_list.setCurrentIndex(dropdown_index)
 
     def apply_filter(self) -> None:
