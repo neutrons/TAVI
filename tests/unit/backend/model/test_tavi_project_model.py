@@ -22,25 +22,26 @@ from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
-    FitAppendEvent,
-    FitRemoveEvent,
-    PlotAppendEvent,
-    PlotRemoveEvent,
-    RawScanAppendEvent,
-    RawScanRemoveEvent,
-    SyncRecentProjects,
+    AddFitEvent,
+    AddPlotEvent,
+    AddRawScanEvent,
+    RemoveFitEvent,
+    RemovePlotEvent,
+    RemoveRawScanEvent,
+    RestoreFitMemberEvent,
+    SyncFitHistoryEvent,
+    SyncRecentProjectsEvent,
 )
 from tavi.meta.event.type.presenter_event import (
-    ActivePlotChangedEvent,
-    DownstreamReadyEvent,
-    FitFocusEvent,
-    FitRecomputeEvent,
-    FocusActivePlotEvent,
+    ClearFocusEvent,
     FocusEvent,
-    PlotFocusEvent,
-    RawScanFocusEvent,
+    FocusFitEvent,
+    FocusPlotEvent,
+    FocusRawScanEvent,
+    RecomputeFitEvent,
     SaveFitEvent,
     SavePlotEvent,
+    StartApplicationEvent,
     SyncFitEvent,
 )
 
@@ -136,7 +137,7 @@ def model():
 
 def test_init_registers_downstream_ready_handler(model):
     broker = EventBroker()
-    assert model.sync_on_ready in broker.registry[DownstreamReadyEvent]
+    assert model.sync_on_ready in broker.registry[StartApplicationEvent]
 
 
 def test_init_registers_focus_event_handler(model):
@@ -194,7 +195,7 @@ def test_load_raw_scan_from_folder_publishes_append_event(model):
     model.raw_scan_load_controller.load_folder.return_value = [scan]
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     model.load_raw_scan_from_folder("/some/folder")
 
     assert len(received) == 1
@@ -220,7 +221,7 @@ def test_load_raw_scan_from_folder_multiple_scans_each_publishes_event(model):
     model.raw_scan_load_controller.load_folder.return_value = scans
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     model.load_raw_scan_from_folder("/some/folder")
 
     assert len(received) == 3
@@ -231,7 +232,7 @@ def test_load_raw_scan_from_folder_empty_folder(model):
     model.raw_scan_load_controller.load_folder.return_value = []
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     model.load_raw_scan_from_folder("/empty/folder")
 
     assert len(received) == 0
@@ -246,7 +247,7 @@ def test_load_raw_scan_from_folder_skips_a_scan_already_loaded(model):
     model.load_raw_scan_from_folder("/some/folder")
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     result = model.load_raw_scan_from_folder("/some/folder")
 
     assert result.code == ResponseCode.OK
@@ -279,7 +280,7 @@ def test_load_raw_scan_from_folder_loads_a_changed_file_as_a_new_scan(model):
     model.raw_scan_load_controller.load_folder.return_value = [grown]
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     model.load_raw_scan_from_folder("/some/folder")
 
     assert [e.uuid for e in received] == [grown.uuid]
@@ -297,7 +298,7 @@ def test_load_raw_scan_from_folder_loads_new_scans_alongside_skipped_ones(model)
     model.raw_scan_load_controller.load_folder.return_value = [known, fresh]
 
     received = []
-    EventBroker().register(RawScanAppendEvent, received.append)
+    EventBroker().register(AddRawScanEvent, received.append)
     model.load_raw_scan_from_folder("/some/folder")
 
     assert [e.uuid for e in received] == [fresh.uuid]
@@ -311,7 +312,7 @@ def test_load_raw_scan_from_folder_loads_new_scans_alongside_skipped_ones(model)
 
 def test_sync_on_ready_calls_emit_sync_recent_projects(model):
     model.emit_sync_recent_projects = MagicMock()
-    model.sync_on_ready(DownstreamReadyEvent())
+    model.sync_on_ready(StartApplicationEvent())
     model.emit_sync_recent_projects.assert_called_once()
 
 
@@ -322,17 +323,17 @@ def test_sync_on_ready_calls_emit_sync_recent_projects(model):
 
 def test_emit_sync_recent_projects_publishes_event(model):
     received = []
-    EventBroker().register(SyncRecentProjects, received.append)
+    EventBroker().register(SyncRecentProjectsEvent, received.append)
 
     model.emit_sync_recent_projects()
 
     assert len(received) == 1
-    assert isinstance(received[0], SyncRecentProjects)
+    assert isinstance(received[0], SyncRecentProjectsEvent)
 
 
 def test_emit_sync_recent_projects_includes_projects_from_settings(model):
     received = []
-    EventBroker().register(SyncRecentProjects, received.append)
+    EventBroker().register(SyncRecentProjectsEvent, received.append)
 
     model.emit_sync_recent_projects()
 
@@ -347,9 +348,9 @@ def test_emit_sync_recent_projects_reads_from_filestore(model):
 
 def test_downstream_ready_event_triggers_sync(model):
     received = []
-    EventBroker().register(SyncRecentProjects, received.append)
+    EventBroker().register(SyncRecentProjectsEvent, received.append)
 
-    EventBroker().publish(DownstreamReadyEvent())
+    EventBroker().publish(StartApplicationEvent())
 
     assert len(received) == 1
 
@@ -364,7 +365,7 @@ def test_handle_focus_event_raw_scan_publishes_raw_scan_focus_event(model):
     model.tavi_data.raw_scans[scan.uuid] = scan
 
     received = []
-    EventBroker().register(RawScanFocusEvent, received.append)
+    EventBroker().register(FocusRawScanEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[scan.uuid]))
 
     assert len(received) == 1
@@ -376,7 +377,7 @@ def test_handle_focus_event_raw_scan_does_not_publish_plot_event(model):
     model.tavi_data.raw_scans[scan.uuid] = scan
 
     plot_received = []
-    EventBroker().register(PlotFocusEvent, plot_received.append)
+    EventBroker().register(FocusPlotEvent, plot_received.append)
     EventBroker().publish(FocusEvent(ids=[scan.uuid]))
 
     assert len(plot_received) == 0
@@ -394,7 +395,7 @@ def test_handle_focus_event_plot_publishes_plot_focus_event(model):
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
-    EventBroker().register(PlotFocusEvent, received.append)
+    EventBroker().register(FocusPlotEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[plot.uuid]))
 
     assert len(received) == 1
@@ -418,7 +419,7 @@ def test_handle_focus_event_plot_publishes_scans_referenced_by_its_series(model)
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
-    EventBroker().register(PlotFocusEvent, received.append)
+    EventBroker().register(FocusPlotEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[plot.uuid]))
 
     assert received[0].scans[plot.series[0].source_scan_uuid].uuid == scan.uuid
@@ -431,7 +432,7 @@ def test_handle_focus_event_plot_does_not_publish_raw_scan_event(model):
     model.tavi_data.plots[plot.uuid] = plot
 
     raw_received = []
-    EventBroker().register(RawScanFocusEvent, raw_received.append)
+    EventBroker().register(FocusRawScanEvent, raw_received.append)
     EventBroker().publish(FocusEvent(ids=[plot.uuid]))
 
     assert len(raw_received) == 0
@@ -447,7 +448,7 @@ def test_handle_focus_event_fit_publishes_fit_focus_event(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitFocusEvent, received.append)
+    EventBroker().register(FocusFitEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
     assert len(received) == 1
@@ -459,7 +460,7 @@ def test_handle_focus_event_fit_publishes_fit_recompute_event(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRecomputeEvent, received.append)
+    EventBroker().register(RecomputeFitEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
     assert len(received) == 1
@@ -469,7 +470,7 @@ def test_handle_focus_event_fit_publishes_fit_recompute_event(model):
 def test_handle_focus_event_fit_publishes_focus_before_recompute(model):
     """
     Regression test for a real bug: FitModel recomputes and publishes SyncFitEvent
-    synchronously while still inside the fit-routing publish call. If FitFocusEvent (which
+    synchronously while still inside the fit-routing publish call. If FocusFitEvent (which
     PlotterPresenter/FittingPresenter use to mark a fit as pending) were published after -
     or as the same event FitModel itself reacts to - FitModel's registration order relative to
     those presenters could make its resulting SyncFitEvent arrive before the presenters had
@@ -480,8 +481,8 @@ def test_handle_focus_event_fit_publishes_focus_before_recompute(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     call_order = []
-    EventBroker().register(FitFocusEvent, lambda e: call_order.append("focus"))
-    EventBroker().register(FitRecomputeEvent, lambda e: call_order.append("recompute"))
+    EventBroker().register(FocusFitEvent, lambda e: call_order.append("focus"))
+    EventBroker().register(RecomputeFitEvent, lambda e: call_order.append("recompute"))
 
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
@@ -494,8 +495,8 @@ def test_handle_focus_event_fit_does_not_publish_plot_or_raw_scan_events(model):
 
     raw_received = []
     plot_received = []
-    EventBroker().register(RawScanFocusEvent, raw_received.append)
-    EventBroker().register(PlotFocusEvent, plot_received.append)
+    EventBroker().register(FocusRawScanEvent, raw_received.append)
+    EventBroker().register(FocusPlotEvent, plot_received.append)
 
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
@@ -513,11 +514,10 @@ def test_handle_focus_event_multi_member_fit_carries_every_member_scan(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitFocusEvent, received.append)
+    EventBroker().register(FocusFitEvent, received.append)
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
     assert set(received[0].scans) == {first.uuid, second.uuid}
-    assert received[0].exclusive is True
 
 
 # ---------------------------------------------------------------------------
@@ -525,27 +525,21 @@ def test_handle_focus_event_multi_member_fit_carries_every_member_scan(model):
 # ---------------------------------------------------------------------------
 
 
-def test_handle_focus_event_mixed_uuids_folds_plots_into_raw_scan_event(model):
-    """
-    A scan+plot multiselect must overlay, not clobber: PlotModel (not tested here) folds a
-    RawScanFocusEvent's ``also_plots`` into one merged PlotFocusEvent publish, so this branch
-    must not also publish its own competing PlotFocusEvent for the same selection.
-    """
+def test_handle_focus_event_mixed_uuids_publishes_one_focus_event_per_type(model):
+    """Focus events only add, so a scan+plot multiselect publishes both side by side, scans first."""
     scan = make_raw_scan()
     plot = make_plot()
     model.tavi_data.raw_scans[scan.uuid] = scan
     model.tavi_data.plots[plot.uuid] = plot
 
-    raw_received = []
-    plot_received = []
-    EventBroker().register(RawScanFocusEvent, raw_received.append)
-    EventBroker().register(PlotFocusEvent, plot_received.append)
+    call_order = []
+    EventBroker().register(FocusRawScanEvent, lambda e: call_order.append(("scans", e.scans)))
+    EventBroker().register(FocusPlotEvent, lambda e: call_order.append(("plots", e.plots)))
 
     EventBroker().publish(FocusEvent(ids=[scan.uuid, plot.uuid]))
 
-    assert len(raw_received) == 1
-    assert raw_received[0].also_plots == [plot]
-    assert len(plot_received) == 0
+    assert [kind for kind, _ in call_order] == ["scans", "plots"]
+    assert call_order[1][1] == [plot]
 
 
 def test_handle_focus_event_refocuses_plots_own_attached_fits(model):
@@ -562,92 +556,26 @@ def test_handle_focus_event_refocuses_plots_own_attached_fits(model):
 
     fit_focus_received = []
     recompute_received = []
-    EventBroker().register(FitFocusEvent, fit_focus_received.append)
-    EventBroker().register(FitRecomputeEvent, recompute_received.append)
+    EventBroker().register(FocusFitEvent, fit_focus_received.append)
+    EventBroker().register(RecomputeFitEvent, recompute_received.append)
 
     EventBroker().publish(FocusEvent(ids=[plot.uuid]))
 
     assert len(fit_focus_received) == 1
     assert fit_focus_received[0].fits == [fit]
-    assert fit_focus_received[0].exclusive is False
     assert recompute_received[0].fits == [fit]
 
 
 def test_handle_focus_event_empty_ids_publishes_nothing(model):
     raw_received = []
     plot_received = []
-    EventBroker().register(RawScanFocusEvent, raw_received.append)
-    EventBroker().register(PlotFocusEvent, plot_received.append)
+    EventBroker().register(FocusRawScanEvent, raw_received.append)
+    EventBroker().register(FocusPlotEvent, plot_received.append)
 
     EventBroker().publish(FocusEvent(ids=[]))
 
     assert len(raw_received) == 0
     assert len(plot_received) == 0
-
-
-# ---------------------------------------------------------------------------
-# _handle_active_plot_focus_event
-# ---------------------------------------------------------------------------
-
-
-def test_init_registers_active_plot_focus_event_handler(model):
-    broker = EventBroker()
-    assert model._handle_active_plot_focus_event in broker.registry[FocusActivePlotEvent]
-
-
-def test_handle_active_plot_focus_event_announces_matching_saved_plots_scan(model):
-    plot = make_plot()
-    scan = make_raw_scan()
-    model.tavi_data.raw_scans[scan.uuid] = scan
-    model.tavi_data.plots[plot.uuid] = plot
-
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
-
-    assert len(received) == 1
-    assert received[0].scan.uuid == scan.uuid
-
-
-def test_handle_active_plot_focus_event_announces_matching_saved_plots_series(model):
-    """The plotter resyncs its axis/preset fields from this - not just the scan's default axis."""
-    plot = make_plot()
-    scan = make_raw_scan()
-    model.tavi_data.raw_scans[scan.uuid] = scan
-    model.tavi_data.plots[plot.uuid] = plot
-
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
-
-    assert received[0].series == plot.series[0]
-
-
-def test_handle_active_plot_focus_event_does_not_republish_plot_focus_event(model):
-    """Switching the active plot must not re-resolve or re-render the whole focused batch."""
-    plot = make_plot()
-    scan = make_raw_scan()
-    model.tavi_data.raw_scans[scan.uuid] = scan
-    model.tavi_data.plots[plot.uuid] = plot
-
-    received = []
-    EventBroker().register(PlotFocusEvent, received.append)
-    EventBroker().publish(FocusActivePlotEvent(uuid=scan.uuid))
-
-    assert received == []
-
-
-def test_handle_active_plot_focus_event_is_a_noop_for_a_uuid_that_is_not_a_saved_plot(model):
-    """
-    A uuid belonging to a preview plot (PlotModel's to handle) or an unknown uuid must not
-    raise here — saved and preview plot uuids never collide, so a miss just means it isn't ours.
-    """
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    EventBroker().publish(FocusActivePlotEvent(uuid=UUID(value="not-a-saved-plot")))
-
-    assert received == []
 
 
 # ---------------------------------------------------------------------------
@@ -672,7 +600,7 @@ def test_handle_save_plot_event_publishes_plot_append_event(model):
     plot = make_plot()
 
     received = []
-    EventBroker().register(PlotAppendEvent, received.append)
+    EventBroker().register(AddPlotEvent, received.append)
     EventBroker().publish(SavePlotEvent(plot=plot))
 
     assert len(received) == 1
@@ -684,7 +612,7 @@ def test_handle_save_plot_event_friendly_name_is_run_name_plus_plot_suffix(model
     plot = make_plot(series=[make_series("run1")])
 
     received = []
-    EventBroker().register(PlotAppendEvent, received.append)
+    EventBroker().register(AddPlotEvent, received.append)
     EventBroker().publish(SavePlotEvent(plot=plot))
 
     assert received[0].friendly_name == "run1_Plot"
@@ -694,7 +622,7 @@ def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(mo
     plot = make_plot(series=[make_series("run1"), make_series("run2")])
 
     received = []
-    EventBroker().register(PlotAppendEvent, received.append)
+    EventBroker().register(AddPlotEvent, received.append)
     EventBroker().publish(SavePlotEvent(plot=plot))
 
     assert received[0].friendly_name == "run1_run2_Plot"
@@ -720,7 +648,7 @@ def test_remove_items_publishes_raw_scan_remove_event(model):
     model.tavi_data.raw_scans[scan.uuid] = scan
 
     received = []
-    EventBroker().register(RawScanRemoveEvent, received.append)
+    EventBroker().register(RemoveRawScanEvent, received.append)
     model.remove_items([scan.uuid])
 
     assert [e.uuid for e in received] == [scan.uuid]
@@ -740,7 +668,7 @@ def test_remove_items_mutates_shared_handle_in_place(model):
 
 def test_remove_items_ignores_unknown_uuid(model):
     received = []
-    EventBroker().register(RawScanRemoveEvent, received.append)
+    EventBroker().register(RemoveRawScanEvent, received.append)
 
     response = model.remove_items([UUID(value="never-loaded")])
 
@@ -754,7 +682,7 @@ def test_remove_items_ignores_duplicate_uuids(model):
     model.tavi_data.raw_scans[scan.uuid] = scan
 
     received = []
-    EventBroker().register(RawScanRemoveEvent, received.append)
+    EventBroker().register(RemoveRawScanEvent, received.append)
     model.remove_items([scan.uuid, scan.uuid])
 
     assert len(received) == 1
@@ -765,7 +693,7 @@ def test_remove_items_removes_plot_directly(model):
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
-    EventBroker().register(PlotRemoveEvent, received.append)
+    EventBroker().register(RemovePlotEvent, received.append)
     model.remove_items([plot.uuid])
 
     assert plot.uuid not in model.tavi_data.plots
@@ -779,7 +707,7 @@ def test_remove_items_removes_plot_whose_only_series_loses_its_scan(model):
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
-    EventBroker().register(PlotRemoveEvent, received.append)
+    EventBroker().register(RemovePlotEvent, received.append)
     model.remove_items([scan.uuid])
 
     assert plot.uuid not in model.tavi_data.plots
@@ -796,7 +724,7 @@ def test_remove_items_prunes_series_but_keeps_multi_series_plot(model):
     model.tavi_data.plots[plot.uuid] = plot
 
     received = []
-    EventBroker().register(PlotRemoveEvent, received.append)
+    EventBroker().register(RemovePlotEvent, received.append)
     model.remove_items([gone.uuid])
 
     assert received == []
@@ -902,7 +830,7 @@ def test_remove_items_removes_fit_directly(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRemoveEvent, received.append)
+    EventBroker().register(RemoveFitEvent, received.append)
     model.remove_items([fit.uuid])
 
     assert fit.uuid not in model.tavi_data.fits
@@ -917,7 +845,7 @@ def test_remove_items_removes_fit_whose_source_scan_is_removed(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRemoveEvent, received.append)
+    EventBroker().register(RemoveFitEvent, received.append)
     model.remove_items([scan.uuid])
 
     assert fit.uuid not in model.tavi_data.fits
@@ -933,7 +861,7 @@ def test_remove_items_leaves_fit_on_unrelated_scan_alone(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRemoveEvent, received.append)
+    EventBroker().register(RemoveFitEvent, received.append)
     model.remove_items([gone.uuid])
 
     assert fit.uuid in model.tavi_data.fits
@@ -948,7 +876,7 @@ def test_remove_items_announces_a_fit_once_when_it_and_its_scan_both_go(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRemoveEvent, received.append)
+    EventBroker().register(RemoveFitEvent, received.append)
     response = model.remove_items([fit.uuid, scan.uuid])
 
     assert response.code == ResponseCode.OK
@@ -978,7 +906,7 @@ def test_remove_items_prunes_one_member_of_a_two_member_fit_and_keeps_it(model):
     model.tavi_data.fits[fit.uuid] = fit
 
     received = []
-    EventBroker().register(FitRemoveEvent, received.append)
+    EventBroker().register(RemoveFitEvent, received.append)
     model.remove_items([gone.uuid])
 
     assert received == []
@@ -1027,7 +955,7 @@ def test_handle_save_fit_event_publishes_fit_append_event(model):
     fit = make_fit_entry()
 
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
     EventBroker().publish(make_save_fit_event(fit))
 
     assert len(received) == 1
@@ -1039,7 +967,7 @@ def test_handle_save_fit_event_friendly_name_is_run_name_plus_fit_suffix(model):
     fit = make_fit_entry(scan_name="run1")
 
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
     EventBroker().publish(make_save_fit_event(fit))
 
     assert received[0].friendly_name == "run1_Fit"
@@ -1051,7 +979,7 @@ def test_handle_save_fit_event_friendly_name_prefers_friendly_name_over_scan_tit
     fit = make_fit_entry(members=[make_fit_member("shared title", friendly_name="run1")])
 
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
     EventBroker().publish(make_save_fit_event(fit))
 
     assert received[0].friendly_name == "run1_Fit"
@@ -1067,7 +995,7 @@ def test_handle_save_fit_event_names_a_multi_member_fit_after_first_and_last_run
     )
 
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
     EventBroker().publish(make_save_fit_event(fit))
 
     assert received[0].friendly_name == "run1-run3_Fit"
@@ -1080,7 +1008,7 @@ def test_handle_save_fit_event_does_not_reannounce_a_refit(model):
     EventBroker().publish(make_save_fit_event(fit))
 
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
     EventBroker().publish(make_save_fit_event(fit))
 
     assert received == []
@@ -1090,7 +1018,7 @@ def test_sync_fit_event_alone_saves_nothing(model):
     """A recompute only syncs the UI - the project is written by SaveFitEvent alone."""
     fit = make_fit_entry()
     received = []
-    EventBroker().register(FitAppendEvent, received.append)
+    EventBroker().register(AddFitEvent, received.append)
 
     EventBroker().publish(SyncFitEvent(fit_uuid=fit.uuid, outcomes=[make_outcome(m) for m in fit.members]))
 
@@ -1130,3 +1058,136 @@ def test_handle_save_fit_event_does_not_cache_the_curve(model):
         assert not hasattr(obj, "best_fit")
         assert not hasattr(obj, "curve")
         assert not hasattr(obj, "x")
+
+
+# ---------------------------------------------------------------------------
+# fit member undo/redo
+# ---------------------------------------------------------------------------
+
+
+def save_refits(fit, *range_maxes):
+    """Save ``fit`` once per ``range_max``, each a refit of its first member - the "dialing in" loop."""
+    member = fit.members[0]
+    for range_max in range_maxes:
+        EventBroker().publish(make_save_fit_event(fit, members=[member.model_copy(update={"range_max": range_max})]))
+
+
+def undo(model, fit, source_uuid="scan-001"):
+    model.undo_fit_member(fit.uuid, UUID(value=source_uuid))
+
+
+def redo(model, fit, source_uuid="scan-001"):
+    model.redo_fit_member(fit.uuid, UUID(value=source_uuid))
+
+
+def stored_range_max(model, fit, index=0):
+    return model.tavi_data.fits[fit.uuid].members[index].range_max
+
+
+def test_first_save_publishes_history_with_nothing_to_undo(model):
+    fit = make_fit_entry()
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    EventBroker().publish(make_save_fit_event(fit))
+
+    assert [(e.source_scan_uuid, e.can_undo, e.can_redo) for e in received] == [(UUID(value="scan-001"), False, False)]
+
+
+def test_refit_makes_the_member_undoable(model):
+    fit = make_fit_entry()
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    save_refits(fit, "1", "2")
+
+    assert (received[-1].can_undo, received[-1].can_redo) == (True, False)
+
+
+def test_undo_restores_the_previous_member_and_redo_reapplies_it(model):
+    fit = make_fit_entry()
+    save_refits(fit, "1", "2")
+
+    undo(model, fit)
+    assert stored_range_max(model, fit) == "1"
+
+    redo(model, fit)
+    assert stored_range_max(model, fit) == "2"
+
+
+def test_undo_publishes_history_restored_then_recompute_of_that_member_only(model):
+    first, second = make_fit_member("run1", source_uuid="scan-001"), make_fit_member("run2", source_uuid="scan-002")
+    fit = make_fit_entry(members=[first, second])
+    EventBroker().publish(make_save_fit_event(fit))
+    save_refits(fit, "5")
+
+    calls = []
+    EventBroker().register(SyncFitHistoryEvent, lambda e: calls.append(("history", e.can_undo, e.can_redo)))
+    EventBroker().register(RestoreFitMemberEvent, lambda e: calls.append(("restored", e.source_scan_uuid)))
+    EventBroker().register(RecomputeFitEvent, lambda e: calls.append(("recompute", e.fits[0].members)))
+    undo(model, fit)
+
+    assert calls[0] == ("history", False, True)
+    assert calls[1] == ("restored", first.source_scan_uuid)
+    assert calls[2][0] == "recompute"
+    assert [m.source_scan_uuid for m in calls[2][1]] == [first.source_scan_uuid]
+    assert calls[2][1][0].range_max == "10"
+
+
+def test_undo_leaves_other_members_alone(model):
+    first, second = make_fit_member("run1", source_uuid="scan-001"), make_fit_member("run2", source_uuid="scan-002")
+    fit = make_fit_entry(members=[first, second])
+    EventBroker().publish(make_save_fit_event(fit))
+    EventBroker().publish(make_save_fit_event(fit, members=[second.model_copy(update={"range_max": "7"})]))
+    save_refits(fit, "5")
+
+    undo(model, fit)
+
+    assert stored_range_max(model, fit, 0) == "10"
+    assert stored_range_max(model, fit, 1) == "7"
+
+
+def test_undo_with_nothing_to_undo_publishes_nothing(model):
+    fit = make_fit_entry()
+    EventBroker().publish(make_save_fit_event(fit))
+    received = []
+    EventBroker().register(RecomputeFitEvent, received.append)
+
+    undo(model, fit)
+    undo(model, make_fit_entry(uuid_val="unknown-fit"))
+
+    assert received == []
+
+
+def test_a_failed_previous_fit_is_not_an_undo_step(model):
+    fit = make_fit_entry()
+    failed = fit.members[0].model_copy(update={"result": None})
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=[failed]))
+    received = []
+    EventBroker().register(SyncFitHistoryEvent, received.append)
+
+    save_refits(fit, "1")
+
+    assert received[-1].can_undo is False
+
+
+def test_removing_a_fit_forgets_its_history(model):
+    fit = make_fit_entry()
+    save_refits(fit, "1", "2")
+
+    model.remove_items([fit.uuid])
+
+    assert not model._fit_history.can_undo((fit.uuid, UUID(value="scan-001")))
+
+
+def test_focus_event_clears_focus_before_routing(model):
+    """Subscribers must let go of the old selection before the new one's chain (here FocusFitEvent) reaches them."""
+    fit = make_fit_entry()
+    model.tavi_data.fits[fit.uuid] = fit
+    call_order = []
+    EventBroker().register(ClearFocusEvent, lambda e: call_order.append("clear"))
+    EventBroker().register(FocusFitEvent, lambda e: call_order.append("focus"))
+
+    EventBroker().publish(FocusEvent(ids=[fit.uuid]))
+
+    assert call_order == ["clear", "focus"]

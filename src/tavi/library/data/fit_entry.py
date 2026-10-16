@@ -10,12 +10,13 @@ from tavi.library.data.scan import UUID, UUIDFactory
 
 
 class ParamField(BaseModel):
-    """One editable parameter row's raw, unparsed text state: value / fixed / min / max."""
+    """One editable parameter row's raw, unparsed text state: value / fixed / min / max / constraint."""
 
     value: str
     fixed: bool
     minimum: str
     maximum: str
+    constrained: bool = False
 
 
 class PeakField(BaseModel):
@@ -109,7 +110,7 @@ class FitEntry(BaseModel):
     of many do.
 
     TAVI must not cache the actual fitted data points: selecting a fit later recomputes its
-    curves fresh (see ``FitRecomputeEvent`` / ``FitModel``) against the source series' current data,
+    curves fresh (see ``RecomputeFitEvent`` / ``FitModel``) against the source series' current data,
     rather than replaying stale points cached at fit time.
     """
 

@@ -52,7 +52,7 @@ Main Flow
                 ProjectModel ->> ProjectModel : skip - keep the stored scan, publish nothing
             else
                 ProjectModel ->> ProjectModel : update TaviData.raw_scans
-                ProjectModel ->> EventBroker : publish RawScanAppendEvent
+                ProjectModel ->> EventBroker : publish AddRawScanEvent
             end
         end
 
@@ -68,7 +68,7 @@ the **file's text** (``generate_uuid``, md5):
 - **Unchanged file** — same text, same uuid. The scan is skipped: the copy
   already in ``TaviData.raw_scans`` is kept rather than overwritten (which
   would discard edits to its writable ``tavimeta``), and no
-  ``RawScanAppendEvent`` is published.
+  ``AddRawScanEvent`` is published.
 - **File appended to since the last load** — different text, different uuid.
   It loads as a *new* scan and is announced normally, so the earlier, shorter
   scan stays in the project alongside it; plots and fits built on it keep

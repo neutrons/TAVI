@@ -19,7 +19,7 @@ Backend Layer
 
 Worker Thread Boundary
     Catches exception, wraps it as a ``TaviError`` (if needed),
-    publishes ``ExceptionEvent``.
+    publishes ``ReportErrorEvent``.
 
 RecoveryService
     Routes exception to registered handler.
@@ -87,7 +87,7 @@ Simplified flow:
        error_message = str(e)
        results = ModelResponse(code=ResponseCode.ERROR, message=error_message)
        self.event_broker.publish(
-           ExceptionEvent(error=NonRecoverableError(error_message, stack_trace))
+           ReportErrorEvent(error=NonRecoverableError(error_message, stack_trace))
        )
 
 Key responsibilities of Worker:
@@ -120,7 +120,7 @@ Key responsibilities of Worker:
    Wiring per-type dispatch through the worker boundary requires teaching
    ``Worker.run`` to re-publish ``TaviError`` instances unchanged.
 
-Note also that ``ExceptionEvent``'s field is named ``error``, not ``e``.
+Note also that ``ReportErrorEvent``'s field is named ``error``, not ``e``.
 
 Step 4 — Register a Handler
 ---------------------------
@@ -160,7 +160,7 @@ This stops the workflow and returns control to the user.
 .. warning::
 
    Do **not** call ``TaviMessageBox`` (or any other Qt widget) directly from a
-   handler. Handlers run on whichever thread published the ``ExceptionEvent`` —
+   handler. Handlers run on whichever thread published the ``ReportErrorEvent`` —
    normally a worker thread — and Qt widgets may only be touched from the GUI
    thread.
 
@@ -200,7 +200,7 @@ The Worker enforces:
 
 - All backend exceptions are captured
 - All errors become ``NonRecoverableError`` instances (see the caveat in Step 3)
-- All errors enter the system through ``ExceptionEvent``
+- All errors enter the system through ``ReportErrorEvent``
 - Backend never interacts directly with UI
 
 After publishing, the worker still emits ``finished`` and then asserts that the

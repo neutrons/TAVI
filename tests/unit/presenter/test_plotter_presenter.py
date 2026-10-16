@@ -21,14 +21,16 @@ from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
-    ActivePlotChangedEvent,
-    ApplyAllChangedEvent,
-    FitComponentsVisibilityChangedEvent,
-    FitFocusEvent,
-    FocusActivePlotEvent,
-    PlotFocusEvent,
-    RawScanFocusEvent,
+    ClearFocusEvent,
+    ClearStageEvent,
+    FocusFitEvent,
+    FocusPlotEvent,
+    FocusRawScanEvent,
+    SetFitComponentsVisibleEvent,
+    StageSeriesEvent,
     SyncFitEvent,
+    SyncPlotEvent,
+    SyncStageEvent,
 )
 
 
@@ -64,14 +66,26 @@ def make_plot(uuid_val="plot-001", series=None, fits=None) -> Plot:
     return Plot(uuid=UUID(value=uuid_val), series=series, fits=fits or [])
 
 
-def make_event(plots=None, scans=None) -> PlotFocusEvent:
+def make_event(plots=None, scans=None, event_type=FocusPlotEvent):
     """A focus event backed by a single default scan/series pair, unless overridden."""
     if plots is None:
         plots = [make_plot()]
     if scans is None:
         scan = make_scan()
         scans = {scan.uuid: scan}
-    return PlotFocusEvent(plots=plots, scans=scans)
+    return event_type(plots=plots, scans=scans)
+
+
+def make_sync_event(plots=None, scans=None) -> SyncPlotEvent:
+    return make_event(plots, scans, event_type=SyncPlotEvent)
+
+
+def stage_events() -> list:
+    """Record every ClearStageEvent/StageSeriesEvent published, in order, as ("clear",) / ("stage", uuids)."""
+    received = []
+    EventBroker().register(ClearStageEvent, lambda e: received.append(("clear",)))
+    EventBroker().register(StageSeriesEvent, lambda e: received.append(("stage", e.source_scan_uuids)))
+    return received
 
 
 @pytest.fixture
@@ -90,9 +104,12 @@ def test_init_view_is_plot1d_view(presenter):
     assert isinstance(presenter._view, Plot1DView)
 
 
-def test_init_registers_plot_focus_event(presenter):
+def test_init_registers_focus_and_stage_events(presenter):
     broker = EventBroker()
-    assert presenter.handle_plot_focus in broker.registry[PlotFocusEvent]
+    assert presenter.handle_clear_focus in broker.registry[ClearFocusEvent]
+    assert presenter.handle_plot_focus in broker.registry[FocusPlotEvent]
+    assert presenter.handle_sync_plot in broker.registry[SyncPlotEvent]
+    assert presenter.handle_sync_stage in broker.registry[SyncStageEvent]
 
 
 def test_init_does_not_hold_scan_or_plot_data(presenter):
@@ -101,27 +118,41 @@ def test_init_does_not_hold_scan_or_plot_data(presenter):
     assert not hasattr(presenter, "_plots")
 
 
+def _two_plot_event(scan_name_a="a", scan_name_b="b", event_type=FocusPlotEvent):
+    plot_a = make_plot("plot-a", series=[make_series("scan-a", scan_name_a)])
+    plot_b = make_plot("plot-b", series=[make_series("scan-b", scan_name_b)])
+    scans = {
+        plot_a.series[0].source_scan_uuid: make_scan(plot_a.series[0].source_scan_uuid.value),
+        plot_b.series[0].source_scan_uuid: make_scan(plot_b.series[0].source_scan_uuid.value),
+    }
+    return plot_a, plot_b, make_event(plots=[plot_a, plot_b], scans=scans, event_type=event_type)
+
+
+def _uuid(value) -> UUID:
+    return UUID(value=value)
+
+
 # ---------------------------------------------------------------------------
-# handle_plot_focus
+# handle_plot_focus - adds to what's drawn
 # ---------------------------------------------------------------------------
 #
 # The presenter resolves each series against the event's OWN ``scans`` snapshot (never a
 # live model handle) and forwards the result to the view. It never calls the model here.
 
 
-def test_handle_plot_focus_clears_plot(presenter):
+def test_handle_plot_focus_adds_without_clearing(presenter):
     presenter._view.clear_plot = MagicMock()
     presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event())
 
-    presenter._view.clear_plot.assert_called_once()
+    presenter._view.clear_plot.assert_not_called()
+    presenter._view.append_plot.assert_called_once()
 
 
 def test_handle_plot_focus_appends_each_series(presenter):
     plots = [make_plot(f"plot-{i:03d}", series=[make_series(f"scan-{i:03d}")]) for i in range(3)]
     scans = {p.series[0].source_scan_uuid: make_scan(p.series[0].source_scan_uuid.value) for p in plots}
-    presenter._view.clear_plot = MagicMock()
     presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(plots=plots, scans=scans))
@@ -132,89 +163,183 @@ def test_handle_plot_focus_appends_each_series(presenter):
 def test_handle_plot_focus_appends_each_series_within_a_multi_series_plot(presenter):
     series = [make_series("scan-001", "a"), make_series("scan-002", "b")]
     scans = {s.source_scan_uuid: make_scan(s.source_scan_uuid.value) for s in series}
-    plot = make_plot(series=series)
-    presenter._view.clear_plot = MagicMock()
     presenter._view.append_plot = MagicMock()
 
-    presenter.handle_plot_focus(make_event(plots=[plot], scans=scans))
+    presenter.handle_plot_focus(make_event(plots=[make_plot(series=series)], scans=scans))
 
     assert presenter._view.append_plot.call_count == 2
 
 
-def test_handle_plot_focus_passes_correct_x(presenter):
-    scan = make_scan(x_vals=[10.0, 20.0, 30.0])
+def test_handle_plot_focus_passes_correct_x_and_y(presenter):
+    scan = make_scan(x_vals=[10.0, 20.0, 30.0], y_vals=[7.0, 8.0, 9.0])
     presenter._view.append_plot = MagicMock()
-    presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(scans={scan.uuid: scan}))
 
     npt.assert_array_equal(presenter._view.append_plot.call_args.args[0], [10.0, 20.0, 30.0])
-
-
-def test_handle_plot_focus_passes_correct_y(presenter):
-    scan = make_scan(y_vals=[7.0, 8.0, 9.0])
-    presenter._view.append_plot = MagicMock()
-    presenter._view.clear_plot = MagicMock()
-
-    presenter.handle_plot_focus(make_event(scans={scan.uuid: scan}))
-
     npt.assert_array_equal(presenter._view.append_plot.call_args.args[1], [7.0, 8.0, 9.0])
 
 
 def test_handle_plot_focus_passes_scan_name(presenter):
-    plot = make_plot(series=[make_series(scan_name="my_special_scan")])
     presenter._view.append_plot = MagicMock()
-    presenter._view.clear_plot = MagicMock()
 
-    presenter.handle_plot_focus(make_event(plots=[plot]))
+    presenter.handle_plot_focus(make_event(plots=[make_plot(series=[make_series(scan_name="my_special_scan")])]))
 
     assert presenter._view.append_plot.call_args.args[3] == "my_special_scan"
 
 
-def test_handle_plot_focus_empty_plots_clears_and_no_append(presenter):
-    presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
-
-    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
-
-    presenter._view.clear_plot.assert_called_once()
-    presenter._view.append_plot.assert_not_called()
-
-
-def test_handle_plot_focus_via_event_broker(presenter):
-    presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
-
-    EventBroker().publish(make_event())
-
-    presenter._view.clear_plot.assert_called_once()
-    presenter._view.append_plot.assert_called_once()
-
-
 def test_handle_plot_focus_never_touches_model(presenter):
     """Resolution reads only the event's own scan snapshot — the model is never called here."""
-    presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
-
     presenter.handle_plot_focus(make_event())
 
     assert not presenter._model.method_calls
 
 
-def test_handle_plot_focus_updates_focused_series_uuids(presenter):
-    plot_a, plot_b, event = _two_plot_event()
+def test_second_focus_adds_its_series_after_the_first(presenter):
+    _, _, event = _two_plot_event()
+    presenter.handle_plot_focus(make_event())
 
     presenter.handle_plot_focus(event)
 
-    assert presenter._focused_series_uuids == [plot_a.series[0].source_scan_uuid, plot_b.series[0].source_scan_uuid]
+    assert presenter._focused_series_uuids == [_uuid("scan-001"), _uuid("scan-a"), _uuid("scan-b")]
+    assert len(presenter._view.canvas.axes.containers) == 3
 
 
-def test_handle_plot_focus_empty_plots_clears_focused_series_uuids(presenter):
-    presenter._focused_series_uuids = [make_series().source_scan_uuid]
+def test_handle_plot_focus_skips_a_series_already_focused(presenter):
+    presenter.handle_plot_focus(make_event())
+    presenter._view.append_plot = MagicMock()
 
-    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
+    presenter.handle_plot_focus(make_event())
+
+    presenter._view.append_plot.assert_not_called()
+    assert presenter._focused_series_uuids == [_uuid("scan-001")]
+
+
+def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
+    """Only uuids may persist between events — Plot/Scan objects are never cached on the presenter."""
+    _, _, event = _two_plot_event()
+
+    presenter.handle_plot_focus(event)
+
+    assert all(isinstance(uuid_, UUID) for uuid_ in presenter._focused_series_uuids)
+
+
+def test_handle_plot_focus_populates_plot_dropdown(presenter):
+    _, _, event = _two_plot_event()
+
+    presenter.handle_plot_focus(event)
+
+    assert _dropdown_items(presenter) == ["a", "b"]
+
+
+# ---------------------------------------------------------------------------
+# handle_plot_focus - staging
+# ---------------------------------------------------------------------------
+
+
+def test_focus_with_apply_all_stages_every_new_series(presenter):
+    received = stage_events()
+    _, _, event = _two_plot_event()
+
+    presenter.handle_plot_focus(event)
+
+    assert received == [("stage", [_uuid("scan-a"), _uuid("scan-b")])]
+
+
+def test_focus_without_apply_all_stages_only_the_first_series_of_a_selection(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    received = stage_events()
+    _, _, event = _two_plot_event()
+
+    presenter.handle_plot_focus(event)
+    presenter.handle_plot_focus(make_event())
+
+    assert received == [("stage", [_uuid("scan-a")])]
+
+
+# ---------------------------------------------------------------------------
+# handle_clear_focus
+# ---------------------------------------------------------------------------
+
+
+def test_clear_focus_empties_canvas_dropdown_and_state(presenter):
+    presenter.handle_plot_focus(make_event())
+    EventBroker().publish(make_sync_fit_event())
+
+    EventBroker().publish(ClearFocusEvent())
+
+    assert len(presenter._view.canvas.axes.lines) == 0
+    assert _dropdown_items(presenter) == []
+    assert presenter._focused_series_uuids == []
+    assert presenter._staged_uuids == []
+    assert presenter._fit_uuid_by_source_uuid == {}
+
+
+def test_clear_focus_resets_controls(presenter):
+    presenter._view.reset_controls_to_defaults = MagicMock()
+
+    EventBroker().publish(ClearFocusEvent())
+
+    presenter._view.reset_controls_to_defaults.assert_called_once()
+
+
+def test_after_clear_focus_the_next_focus_restages(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    presenter.handle_plot_focus(make_event())
+    EventBroker().publish(ClearFocusEvent())
+    received = stage_events()
+
+    _, _, event = _two_plot_event()
+    presenter.handle_plot_focus(event)
+
+    assert received == [("stage", [_uuid("scan-a")])]
+
+
+# ---------------------------------------------------------------------------
+# handle_sync_plot - same focus, new content
+# ---------------------------------------------------------------------------
+
+
+def test_sync_plot_redraws_the_whole_canvas(presenter):
+    presenter.handle_plot_focus(make_event())
+    presenter._view.clear_plot = MagicMock()
+    presenter._view.append_plot = MagicMock()
+
+    presenter.handle_sync_plot(make_sync_event())
+
+    presenter._view.clear_plot.assert_called_once()
+    presenter._view.append_plot.assert_called_once()
+
+
+def test_sync_plot_does_not_reset_controls_or_restage(presenter):
+    presenter.handle_plot_focus(make_event())
+    presenter._view.reset_controls_to_defaults = MagicMock()
+    received = stage_events()
+
+    presenter.handle_sync_plot(make_sync_event())
+
+    presenter._view.reset_controls_to_defaults.assert_not_called()
+    assert received == []
+
+
+def test_sync_plot_restages_when_every_staged_series_was_removed(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    _, plot_b, event = _two_plot_event()
+    presenter.handle_plot_focus(event)  # stages scan-a
+    received = stage_events()
+
+    presenter.handle_sync_plot(make_sync_event(plots=[plot_b], scans={plot_b.series[0].source_scan_uuid: make_scan("scan-b")}))
+
+    assert received == [("clear",), ("stage", [_uuid("scan-b")])]
+
+
+def test_sync_plot_with_nothing_left_empties_the_canvas(presenter):
+    presenter.handle_plot_focus(make_event())
+
+    presenter.handle_sync_plot(SyncPlotEvent(plots=[], scans={}))
 
     assert presenter._focused_series_uuids == []
+    assert _dropdown_items(presenter) == []
 
 
 # ---------------------------------------------------------------------------
@@ -222,33 +347,14 @@ def test_handle_plot_focus_empty_plots_clears_focused_series_uuids(presenter):
 # ---------------------------------------------------------------------------
 
 
-def test_handle_raw_scan_focus_resets_controls(presenter):
-    presenter._view.reset_controls_to_defaults = MagicMock()
-
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[make_scan()]))
-
-    presenter._view.reset_controls_to_defaults.assert_called_once()
-
-
 def test_handle_raw_scan_focus_populates_preset_channel_options_from_scan_columns(presenter):
     scan = make_scan(x_col="qh", y_col="en")
     presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
 
     args = presenter._view.set_preset_channel_options.call_args.args
     assert set(args[0]) == {"qh", "en"}
-
-
-def test_handle_raw_scan_focus_no_scan_selected_still_resets_controls(presenter):
-    """An empty scan list (nothing selected) must not raise — only reset, no channel population."""
-    presenter._view.reset_controls_to_defaults = MagicMock()
-    presenter._view.set_preset_channel_options = MagicMock()
-
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
-
-    presenter._view.reset_controls_to_defaults.assert_called_once()
-    presenter._view.set_preset_channel_options.assert_not_called()
 
 
 def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_has_normalization(presenter):
@@ -258,59 +364,110 @@ def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_ha
     scan.data.data["monitor"] = [1.0, 1.0, 1.0]
     presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
 
     args, kwargs = presenter._view.set_preset_channel_options.call_args
     default = args[1] if len(args) > 1 else kwargs.get("default")
     assert default is None
 
 
-def test_handle_raw_scan_focus_leaves_preset_type_at_reset_default_of_none(presenter):
-    """reset_controls_to_defaults already sets preset type to NONE; the handler must not sync it away from that."""
-    scan = make_scan(x_col="qh", y_col="en")
-    scan.tavimeta.normalization = ("monitor", 1.0)
-    scan.data.data["monitor"] = [1.0, 1.0, 1.0]
-    presenter._view.sync_preset_fields = MagicMock()
+def test_handle_raw_scan_focus_no_scan_selected_does_not_populate_channels(presenter):
+    presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[scan]))
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[]))
 
-    presenter._view.sync_preset_fields.assert_not_called()
-
-
-def test_handle_raw_scan_focus_no_scan_selected_does_not_sync_preset_fields(presenter):
-    presenter._view.sync_preset_fields = MagicMock()
-
-    presenter.handle_raw_scan_focus(RawScanFocusEvent(scans=[]))
-
-    presenter._view.sync_preset_fields.assert_not_called()
+    presenter._view.set_preset_channel_options.assert_not_called()
 
 
 # ---------------------------------------------------------------------------
-# handle_fields_changed / Apply All
+# handle_sync_stage - the lead staged series drives the fields and dropdown
 # ---------------------------------------------------------------------------
 
 
-def test_handle_fields_changed_apply_all_checked_targets_no_uuid(presenter):
-    """Apply All checked (the default) is the existing "update every focused plot" behavior."""
-    presenter.handle_plot_focus(make_event())
-    assert presenter._view.is_apply_all_checked() is True
+def test_sync_stage_syncs_fields_from_the_lead_series(presenter):
+    series = make_series(x_name="fresh_x", y_name="fresh_y")
 
-    presenter.handle_fields_changed()
+    EventBroker().publish(SyncStageEvent(series=[series, make_series("scan-002")]))
 
-    presenter._model.update_fields.assert_called_once_with(presenter._view.get_plot_fields(), target_uuid=None)
+    assert presenter._view.x_axis_edit.text() == "fresh_x"
+    assert presenter._view.y_axis_edit.text() == "fresh_y"
 
 
-def test_handle_fields_changed_apply_all_unchecked_targets_active_series(presenter):
-    plot_a, plot_b, event = _two_plot_event()
+def test_sync_stage_points_the_dropdown_at_the_lead_series(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    _, plot_b, event = _two_plot_event()
     presenter.handle_plot_focus(event)
-    presenter.handle_plot_combo_changed(1)  # active series is now plot_b's
+
+    EventBroker().publish(SyncStageEvent(series=[plot_b.series[0]]))
+
+    assert presenter._view.current_plot_combo.currentIndex() == 1
+
+
+def test_sync_stage_with_nothing_staged_leaves_fields_untouched(presenter):
+    presenter._view.x_axis_edit.setText("kept")
+
+    EventBroker().publish(SyncStageEvent(series=[]))
+
+    assert presenter._view.x_axis_edit.text() == "kept"
+
+
+# ---------------------------------------------------------------------------
+# Restaging - the dropdown and the Apply All checkbox
+# ---------------------------------------------------------------------------
+
+
+def test_picking_a_series_in_the_dropdown_stages_it_alone(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    _, _, event = _two_plot_event()
+    presenter.handle_plot_focus(event)
+    received = stage_events()
+
+    presenter._view.current_plot_combo.setCurrentIndex(1)
+
+    assert received == [("clear",), ("stage", [_uuid("scan-b")])]
+
+
+def test_handle_plot_combo_changed_ignores_out_of_range_index(presenter):
+    presenter.handle_plot_focus(make_event())
+    received = stage_events()
+
+    presenter.handle_plot_combo_changed(5)
+
+    assert received == []
+
+
+def test_unchecking_apply_all_stages_the_lead_series_alone(presenter):
+    _, _, event = _two_plot_event()
+    presenter.handle_plot_focus(event)
+    received = stage_events()
+
     presenter._view.apply_all_checkbox.setChecked(False)
 
+    assert received == [("clear",), ("stage", [_uuid("scan-a")])]
+
+
+def test_checking_apply_all_stages_every_focused_series_lead_first(presenter):
+    presenter._view.apply_all_checkbox.setChecked(False)
+    _, _, event = _two_plot_event()
+    presenter.handle_plot_focus(event)
+    presenter._view.current_plot_combo.setCurrentIndex(1)
+    received = stage_events()
+
+    presenter._view.apply_all_checkbox.setChecked(True)
+
+    assert received == [("clear",), ("stage", [_uuid("scan-b"), _uuid("scan-a")])]
+
+
+# ---------------------------------------------------------------------------
+# handle_fields_changed / Save Plot / Show Title
+# ---------------------------------------------------------------------------
+
+
+def test_handle_fields_changed_updates_the_staged_series(presenter):
+    """The model applies the edit to whatever is staged - the presenter no longer picks a target."""
     presenter.handle_fields_changed()
 
-    presenter._model.update_fields.assert_called_once_with(
-        presenter._view.get_plot_fields(), target_uuid=plot_b.series[0].source_scan_uuid
-    )
+    presenter._model.update_fields.assert_called_once_with(presenter._view.get_plot_fields())
 
 
 def test_handle_plot_clicked_delegates_to_model(presenter):
@@ -332,213 +489,6 @@ def test_handle_plot_clicked_passes_currently_drawn_fit_uuids(presenter):
     presenter.handle_plot_clicked()
 
     presenter._model.save_focused_plots.assert_called_once_with(fit_uuids=[event.fit_uuid])
-
-
-# ---------------------------------------------------------------------------
-# Current Plot dropdown / ActivePlotChangedEvent
-#
-# The presenter holds only uuids between events — never a cached Plot/Scan object. A dropdown
-# switch publishes a single-uuid ``FocusActivePlotEvent``; whichever model actually owns that
-# uuid (saved vs. unsaved preview) resolves it and announces ``ActivePlotChangedEvent`` — the
-# rest of the focused batch is never re-resolved or re-rendered.
-# ---------------------------------------------------------------------------
-
-
-def _two_plot_event(scan_name_a="a", scan_name_b="b"):
-    plot_a = make_plot("plot-a", series=[make_series("scan-a", scan_name_a)])
-    plot_b = make_plot("plot-b", series=[make_series("scan-b", scan_name_b)])
-    scans = {
-        plot_a.series[0].source_scan_uuid: make_scan(plot_a.series[0].source_scan_uuid.value),
-        plot_b.series[0].source_scan_uuid: make_scan(plot_b.series[0].source_scan_uuid.value),
-    }
-    return plot_a, plot_b, make_event(plots=[plot_a, plot_b], scans=scans)
-
-
-def test_handle_plot_focus_populates_plot_dropdown(presenter):
-    _, _, event = _two_plot_event()
-
-    presenter.handle_plot_focus(event)
-
-    items = [presenter._view.current_plot_combo.itemText(i) for i in range(presenter._view.current_plot_combo.count())]
-    assert items == ["a", "b"]
-
-
-def test_handle_plot_focus_publishes_active_plot_changed_for_first_plot(presenter):
-    scan = make_scan("scan-xyz")
-    plot = make_plot("plot-xyz", series=[make_series("scan-xyz")])
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    presenter.handle_plot_focus(make_event(plots=[plot], scans={scan.uuid: scan}))
-
-    assert len(received) == 1
-    assert received[0].scan.uuid == scan.uuid
-
-
-def test_handle_plot_focus_empty_plots_publishes_active_plot_changed_with_no_plot(presenter):
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
-
-    assert len(received) == 1
-    assert received[0].scan is None
-
-
-def test_handle_plot_focus_syncs_fields_from_the_active_plot(presenter):
-    plot_a, plot_b, event = _two_plot_event(scan_name_a="a", scan_name_b="b")
-    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid
-
-    presenter.handle_plot_focus(event)
-
-    assert presenter._view.x_axis_edit.text() == plot_b.series[0].x_name
-    assert presenter._view.y_axis_edit.text() == plot_b.series[0].y_name
-
-
-def test_handle_plot_focus_syncs_fields_from_the_active_plot_not_the_last_one(presenter):
-    """
-    Regression: with Apply All off, ``update_fields(target_uuid=...)`` edits one series and
-    carries the rest through untouched. If that edited series isn't last in the batch, the
-    fields must still reflect it - not the untouched last series' (e.g. default) values.
-    """
-    plot_a = make_plot("plot-a", series=[make_series("scan-a", "a", x_name="edited_x", y_name="edited_y")])
-    plot_b = make_plot("plot-b", series=[make_series("scan-b", "b", x_name="default_x", y_name="default_y")])
-    scans = {
-        plot_a.series[0].source_scan_uuid: make_scan("scan-a", x_col="edited_x", y_col="edited_y"),
-        plot_b.series[0].source_scan_uuid: make_scan("scan-b", x_col="default_x", y_col="default_y"),
-    }
-    presenter._active_series_uuid = plot_a.series[0].source_scan_uuid  # active, but first (not last) in the batch
-
-    presenter.handle_plot_focus(make_event(plots=[plot_a, plot_b], scans=scans))
-
-    assert presenter._view.x_axis_edit.text() == "edited_x"
-    assert presenter._view.y_axis_edit.text() == "edited_y"
-
-
-def test_handle_plot_focus_empty_plots_does_not_touch_fields(presenter):
-    presenter._view.x_axis_edit.setText("untouched")
-
-    presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
-
-    assert presenter._view.x_axis_edit.text() == "untouched"
-
-
-def test_handle_plot_focus_does_not_hold_a_plot_or_scan_cache(presenter):
-    """Only uuids may persist between events — Plot/Scan objects are never cached on the presenter."""
-    _, _, event = _two_plot_event()
-
-    presenter.handle_plot_focus(event)
-
-    assert not hasattr(presenter, "_focused_plots")
-    assert not hasattr(presenter, "_plot_scan_snapshot")
-    assert all(isinstance(uuid_, UUID) for uuid_ in presenter._focused_series_uuids)
-
-
-def test_handle_plot_focus_preserves_active_selection_when_same_plots_refocused(presenter):
-    """Simulates the model re-resolving the same uuids after e.g. a tree-selection FocusEvent replay."""
-    plot_a, plot_b, event = _two_plot_event()
-    presenter.handle_plot_focus(event)
-    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid  # a prior dropdown pick
-
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-    presenter.handle_plot_focus(event)  # same uuids re-focused
-
-    assert received[0].scan.uuid == plot_b.series[0].source_scan_uuid
-
-
-def test_handle_plot_focus_resets_active_selection_on_a_genuinely_new_selection(presenter):
-    plot_a, _, event_ab = _two_plot_event()
-    presenter.handle_plot_focus(event_ab)
-    presenter._active_series_uuid = None  # simulate previous selection no longer present below
-
-    scan_c = make_scan("scan-c")
-    plot_c = make_plot("plot-c", series=[make_series("scan-c")])
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-    presenter.handle_plot_focus(make_event(plots=[plot_c], scans={scan_c.uuid: scan_c}))
-
-    assert received[0].scan.uuid == scan_c.uuid
-
-
-def test_handle_plot_focus_publishes_series_matching_the_active_plot(presenter):
-    """``ActivePlotChangedEvent.series`` must reflect whichever series is active, not just the first."""
-    plot_a, plot_b, event = _two_plot_event()
-    presenter._active_series_uuid = plot_b.series[0].source_scan_uuid
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    presenter.handle_plot_focus(event)
-
-    assert received[0].series == plot_b.series[0]
-
-
-def test_active_plot_changed_event_resyncs_axis_fields(presenter):
-    """
-    Regression: a dropdown switch (see ``handle_plot_combo_changed``) never re-renders, so without
-    this the fields kept showing whichever plot was active before the switch - editing them would
-    then silently target the wrong plot, or "restoring" a value would appear to do nothing.
-    """
-    presenter._view.x_axis_edit.setText("stale")
-    presenter._view.y_axis_edit.setText("stale")
-    series = make_series(x_name="fresh_x", y_name="fresh_y")
-
-    EventBroker().publish(ActivePlotChangedEvent(series=series))
-
-    assert presenter._view.x_axis_edit.text() == "fresh_x"
-    assert presenter._view.y_axis_edit.text() == "fresh_y"
-
-
-def test_active_plot_changed_event_with_no_series_leaves_fields_untouched(presenter):
-    presenter._view.x_axis_edit.setText("kept")
-
-    EventBroker().publish(ActivePlotChangedEvent(series=None))
-
-    assert presenter._view.x_axis_edit.text() == "kept"
-
-
-def test_handle_plot_combo_changed_publishes_active_plot_focus_event(presenter):
-    plot_a, plot_b, event = _two_plot_event()
-    presenter.handle_plot_focus(event)
-    received = []
-    EventBroker().register(FocusActivePlotEvent, received.append)
-
-    presenter.handle_plot_combo_changed(1)
-
-    assert len(received) == 1
-    assert received[0].uuid == plot_b.series[0].source_scan_uuid
-
-
-def test_handle_plot_combo_changed_sets_active_series_uuid(presenter):
-    plot_a, plot_b, event = _two_plot_event()
-    presenter.handle_plot_focus(event)
-
-    presenter.handle_plot_combo_changed(1)
-
-    assert presenter._active_series_uuid == plot_b.series[0].source_scan_uuid
-
-
-def test_handle_plot_combo_changed_ignores_out_of_range_index(presenter):
-    plot = make_plot("plot-a")
-    presenter.handle_plot_focus(make_event(plots=[plot]))
-    received = []
-    EventBroker().register(FocusActivePlotEvent, received.append)
-
-    presenter.handle_plot_combo_changed(5)
-
-    assert received == []
-
-
-def test_selecting_dropdown_entry_via_view_publishes_active_plot_focus_event(presenter, qtbot):
-    """The wiring from the view's combo to the presenter, end-to-end."""
-    plot_a, plot_b, event = _two_plot_event()
-    presenter.handle_plot_focus(event)
-    received = []
-    EventBroker().register(FocusActivePlotEvent, received.append)
-
-    presenter._view.current_plot_combo.setCurrentIndex(1)
-
-    assert received[0].uuid == plot_b.series[0].source_scan_uuid
 
 
 # ---------------------------------------------------------------------------
@@ -598,19 +548,19 @@ def test_init_registers_sync_fit_event(presenter):
 
 def test_init_registers_fit_components_visibility_event(presenter):
     broker = EventBroker()
-    assert presenter.handle_fit_components_visibility in broker.registry[FitComponentsVisibilityChangedEvent]
+    assert presenter.handle_fit_components_visibility in broker.registry[SetFitComponentsVisibleEvent]
 
 
 def test_fit_components_visibility_event_reaches_the_view(presenter, qtbot):
     with qtbot.waitSignal(presenter._view.set_fit_components_visible_signal, timeout=1000) as blocker:
-        EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+        EventBroker().publish(SetFitComponentsVisibleEvent(visible=True))
 
     assert blocker.args == [True]
 
 
 def test_fit_components_visibility_event_does_not_refit(presenter):
     """The components are already drawn - showing them must never go back to the model."""
-    EventBroker().publish(FitComponentsVisibilityChangedEvent(visible=True))
+    EventBroker().publish(SetFitComponentsVisibleEvent(visible=True))
 
     assert not presenter._model.method_calls
 
@@ -631,14 +581,13 @@ def test_handle_sync_fit_ignores_fit_for_an_unfocused_series(presenter):
     assert _fit_curve_labels(presenter) == []
 
 
-def test_fit_curve_survives_a_re_render_of_the_same_series(presenter):
-    """_render_plots clears the whole canvas on every focus/field-change; the fit must be re-drawn."""
-    event = make_event()
-    presenter.handle_plot_focus(event)
+def test_fit_curve_survives_a_sync_of_the_same_series(presenter):
+    """A SyncPlotEvent clears the whole canvas on every field edit; the fit must be re-drawn."""
+    presenter.handle_plot_focus(make_event())
     EventBroker().publish(make_sync_fit_event())
     assert len(_fit_curve_labels(presenter)) == 1
 
-    presenter.handle_plot_focus(event)
+    presenter.handle_sync_plot(make_sync_event())
 
     assert len(_fit_curve_labels(presenter)) == 1
 
@@ -649,75 +598,38 @@ def test_fit_curve_dropped_when_its_series_is_no_longer_focused(presenter):
     assert len(_fit_curve_labels(presenter)) == 1
 
     other_plot = make_plot("plot-999", series=[make_series("scan-999")])
-    other_scan = make_scan("scan-999")
-    presenter.handle_plot_focus(make_event(plots=[other_plot], scans={other_scan.uuid: other_scan}))
+    presenter.handle_sync_plot(make_sync_event(plots=[other_plot], scans=make_scans("scan-999")))
 
     assert _fit_curve_labels(presenter) == []
 
 
-def test_reselecting_a_plot_with_the_same_attached_fit_does_not_duplicate_its_curve(presenter):
-    """
-    Re-focusing a plot whose own ``Plot.fits`` includes a fit already drawn (same source scan,
-    same fit uuid, from an earlier focus) must not leave the stale curve on canvas alongside the
-    freshly recomputed one - TaviProjectModel always re-triggers a fresh SyncFitEvent for a
-    plot's own attached fits (see ``_handle_focus_event``), so the stale one must be dropped here.
-    """
-    event = make_sync_fit_event()
-    presenter.handle_plot_focus(make_event())
-    EventBroker().publish(event)
-    assert len(_fit_curve_labels(presenter)) == 1
-
-    plot_with_fit = make_plot(fits=[event.fit_uuid])
-    presenter.handle_plot_focus(make_event(plots=[plot_with_fit]))
-    EventBroker().publish(event)
-
-    assert len(_fit_curve_labels(presenter)) == 1
-
-
 # ---------------------------------------------------------------------------
-# FitFocusEvent - a fit selected directly from the project tree
+# FocusFitEvent - a fit selected directly from the project tree
 # ---------------------------------------------------------------------------
 
 
-def test_handle_fit_focus_clears_the_canvas(presenter):
-    presenter.handle_plot_focus(make_event())
-
-    presenter.handle_fit_focus(FitFocusEvent(fits=[make_fit_entry()]))
+def test_handle_fit_focus_draws_nothing_itself(presenter):
+    """PlotModel focuses the fit's series through FocusPlotEvent; this only marks the fit pending."""
+    presenter.handle_fit_focus(FocusFitEvent(fits=[make_fit_entry()], scans=make_scans("scan-001")))
 
     assert len(presenter._view.canvas.axes.lines) == 0
+    assert presenter._focused_fit_uuids == {UUID(value="fit-001")}
 
 
 def test_handle_fit_focus_draws_curve_once_recomputed(presenter):
-    entry = make_fit_entry()
-    presenter.handle_fit_focus(FitFocusEvent(fits=[entry]))
+    presenter.handle_fit_focus(FocusFitEvent(fits=[make_fit_entry()]))
 
     EventBroker().publish(make_sync_fit_event())
 
     assert len(_fit_curve_labels(presenter)) == 1
 
 
-def test_handle_fit_focus_shows_every_member_series_of_every_fit(presenter):
-    """A sequential fit shows each of its scans, and lists each one in the Current Plot dropdown."""
-    fits = [make_fit_entry(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")), make_fit_entry("scan-003", "fit-3")]
-    scans = make_scans("scan-001", "scan-002", "scan-003")
+def test_handle_fit_focus_adds_to_fits_already_focused(presenter):
+    presenter.handle_fit_focus(FocusFitEvent(fits=[make_fit_entry()]))
 
-    presenter.handle_fit_focus(FitFocusEvent(fits=fits, scans=scans))
+    presenter.handle_fit_focus(FocusFitEvent(fits=[make_fit_entry("scan-002", "fit-002")]))
 
-    assert presenter._focused_series_uuids == [UUID(value=v) for v in ("scan-001", "scan-002", "scan-003")]
-    assert presenter._view.current_plot_combo.count() == 3
-
-
-def test_handle_fit_focus_publishes_active_plot_changed_for_the_first_member(presenter):
-    received = []
-    EventBroker().register(ActivePlotChangedEvent, received.append)
-
-    presenter.handle_fit_focus(
-        FitFocusEvent(
-            fits=[make_fit_entry(uuid_vals=("scan-001", "scan-002"))], scans=make_scans("scan-001", "scan-002")
-        )
-    )
-
-    assert received[-1].series.source_scan_uuid == UUID(value="scan-001")
+    assert presenter._focused_fit_uuids == {UUID(value="fit-001"), UUID(value="fit-002")}
 
 
 # ---------------------------------------------------------------------------
@@ -725,7 +637,7 @@ def test_handle_fit_focus_publishes_active_plot_changed_for_the_first_member(pre
 # ---------------------------------------------------------------------------
 
 
-def _two_series_event() -> PlotFocusEvent:
+def _two_series_event() -> FocusPlotEvent:
     plot = make_plot(series=[make_series("scan-001"), make_series("scan-002")])
     return make_event(plots=[plot], scans=make_scans("scan-001", "scan-002"))
 
@@ -771,7 +683,7 @@ def test_multi_outcome_fit_uuid_is_stamped_onto_a_saved_plot_once(presenter):
 
 def test_handle_sync_fit_draws_every_member_of_a_fit_selected_from_the_tree(presenter):
     fit = make_fit_entry(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002"))
-    presenter.handle_fit_focus(FitFocusEvent(fits=[fit], scans=make_scans("scan-001", "scan-002")))
+    presenter.handle_fit_focus(FocusFitEvent(fits=[fit], scans=make_scans("scan-001", "scan-002")))
 
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")))
 
@@ -820,16 +732,11 @@ def test_dropdown_label_falls_back_to_scan_name_without_a_friendly_name(presente
 
 
 # ---------------------------------------------------------------------------
-# Apply All checkbox
+# Show Title
 # ---------------------------------------------------------------------------
 
 
-def test_unchecking_apply_all_publishes_apply_all_changed(presenter):
-    """It also scopes what the fitting panel's Perform Fit covers, so the toggle must travel as an event."""
-    received = []
-    EventBroker().register(ApplyAllChangedEvent, received.append)
+def test_show_title_toggle_calls_the_plot_model(presenter):
+    presenter.handle_show_title_toggled(False)
 
-    presenter._view.apply_all_checkbox.setChecked(False)
-    presenter._view.apply_all_checkbox.setChecked(True)
-
-    assert [e.apply_all for e in received] == [False, True]
+    presenter._model.set_show_title.assert_called_once_with(False)
