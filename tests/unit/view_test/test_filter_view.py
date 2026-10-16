@@ -97,18 +97,19 @@ def test_initial_criteria_item(view):
 
         assert criteria.criteria_key is not None
         assert criteria.criteria_key.text() == "scan"
-        assert criteria.criteria_key.isReadOnly()
+        assert not criteria.criteria_key.isEnabled()
 
         assert criteria.criteria_operator is not None
         assert criteria.criteria_operator.count() == 1
         assert criteria.criteria_operator.currentText() == ">="
-        assert not criteria.criteria_operator.isEditable()
+        assert not criteria.criteria_operator.isEnabled()
 
         assert criteria.criteria_value is not None
         assert criteria.criteria_value.text() == "0"
-        assert criteria.criteria_value.isReadOnly()
+        assert not criteria.criteria_value.isEnabled()
 
         assert criteria.criteria_delete_button is not None
+        assert not criteria.criteria_delete_button.isEnabled()
 
 
 # ---------------------------------------------------------------------------
@@ -289,6 +290,14 @@ def test_friendly_name_editing_ignores_sample(view):
     assert view.filter_dropdown.currentText() == "Sample"
     view.filter_dropdown.setItemText(0, "NotSample")
     assert view.filter_dropdown.currentText() == "Sample"
+
+
+def test_dropdown_toggles_filter_delete_button(view):
+    assert not view.filter_del_button.isEnabled()
+    view.new_filter()
+    assert view.filter_del_button.isEnabled()
+    view.filter_dropdown.setCurrentIndex(0)
+    assert not view.filter_del_button.isEnabled()
 
 
 def test_dropdown_toggles_criteria_set(view):
