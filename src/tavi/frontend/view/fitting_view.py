@@ -21,14 +21,14 @@ from qtpy.QtWidgets import (
 )
 
 from tavi.library.data.fit_entry import (
-    FitRequest,
+    FitMember,
     FitResultSummary,
+    FitSpec,
     ParamField,
     PeakField,
     SuggestBackgroundParamsRequest,
     SuggestPeakParamsRequest,
 )
-from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
 COLUMN_HEADERS = ["", "value", "", "std", "fix", "min", "max", "constraint"]
@@ -230,6 +230,7 @@ class FittingView(QWidget):
     set_background_params_signal = Signal(float, float)
     set_fitting_range_signal = Signal(float, float)
     set_fit_result_signal = Signal(object)
+    set_fit_member_signal = Signal(object)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct fitting view."""
@@ -247,6 +248,7 @@ class FittingView(QWidget):
         self.set_background_params_signal.connect(self._set_background_params)
         self.set_fitting_range_signal.connect(self._set_fitting_range)
         self.set_fit_result_signal.connect(self._set_fit_result)
+        self.set_fit_member_signal.connect(self._set_fit_member)
 
     def _build_ui(self) -> None:
         """Build the 1D fitting UI."""
@@ -383,22 +385,10 @@ class FittingView(QWidget):
         """Connect the Plot Separately checkbox's toggled signal to callback."""
         self.plot_separately_toggled.connect(callback)
 
-    def get_fit_request(
-        self,
-        series: PlotSeries,
-        x: list[float],
-        y: list[float],
-        err: list[float],
-        fit_uuid: Optional[UUID] = None,
-    ) -> FitRequest:
-        """Build a FitRequest from the view's current background/peak field state and already-resolved data."""
+    def get_fit_spec(self) -> FitSpec:
+        """Read the panel's current range/background/peak field state into a FitSpec, unparsed."""
         slope_row, intercept_row = self.background_table.rows
-        return FitRequest(
-            series=series,
-            x=list(x),
-            y=list(y),
-            err=list(err),
-            fit_uuid=fit_uuid,
+        return FitSpec(
             range_min=self.min_edit.text(),
             range_max=self.max_edit.text(),
             background=self.background_combo.currentText(),
@@ -471,7 +461,7 @@ class FittingView(QWidget):
 
     def _set_fit_result(self, result: FitResultSummary) -> None:
         """Read a fit's value/uncertainty back into the same value/std columns used to request it."""
-        # Mirrors get_fit_request: peaks go out in panel order, so they come back in panel order.
+        # Mirrors get_fit_spec: peaks go out in panel order, so they come back in panel order.
         # zip stops at the shorter of the two, which keeps a result computed before the spinbox
         # changed from writing into a panel that no longer exists.
         for panel, peak in zip(self.peak_panels, result.peaks):
@@ -488,6 +478,41 @@ class FittingView(QWidget):
                 self._set_value_and_std(slope_row, result.background_slope, result.background_slope_err)
 
         self._set_chi_squared(result.reduced_chi_squared)
+
+    def _set_fit_member(self, member: FitMember) -> None:
+        """
+        Show one saved member in the panel: the spec it was fit with, overlaid with what that fit produced.
+
+        The inverse of ``get_fit_spec`` - picking a member of a sequential fit in the Current Plot
+        dropdown reloads exactly the shapes, bounds, fixed flags and range it was fit with, so a
+        Perform Fit from here refits that member as it stands rather than as the panel last was.
+        """
+        self.min_edit.setText(member.range_min)
+        self.max_edit.setText(member.range_max)
+        self.background_combo.setCurrentText(member.background)
+        slope_row, intercept_row = self.background_table.rows
+        self._set_param_field(slope_row, member.background_slope)
+        self._set_param_field(intercept_row, member.background_constant)
+
+        # Resizes the peak stack through _on_num_peaks_changed, the same as the user spinning it.
+        self.num_peaks_spin.setValue(max(1, len(member.peaks)))
+        for panel, peak in zip(self.peak_panels, member.peaks):
+            panel.peak_shape_combo.setCurrentText(peak.shape)
+            amplitude_row, center_row, fwhm_row = panel.peak_table.rows
+            self._set_param_field(amplitude_row, peak.amplitude)
+            self._set_param_field(center_row, peak.center)
+            self._set_param_field(fwhm_row, peak.fwhm)
+
+        if member.result is not None:
+            self._set_fit_result(member.result)
+
+    def _set_param_field(self, row: ParamRow, field: ParamField) -> None:
+        """Write one ParamField back into its row - the inverse of ``_param_field``; std is left blank."""
+        row.value_edit.setText(field.value)
+        row.std_edit.setText("")
+        row.fix_check.setChecked(field.fixed)
+        row.min_edit.setText(field.minimum)
+        row.max_edit.setText(field.maximum)
 
     def _set_value_and_std(self, row: ParamRow, value: float, std: Optional[float]) -> None:
         """Write a fitted value and its 1-sigma uncertainty (blank if not estimated) into one param row."""

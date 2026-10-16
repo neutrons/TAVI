@@ -1,6 +1,10 @@
 """Model for computing 1D peak fits."""
 
 import math
+import threading
+from collections.abc import Generator
+from contextlib import contextmanager
+from types import SimpleNamespace
 from typing import Any, Optional
 
 import numpy as np
@@ -9,7 +13,10 @@ from tavi.backend.model.interface.fit_model_interface import FitModelInterface
 from tavi.backend.model.plot_resolver import resolve_series
 from tavi.library.data.fit_entry import (
     FitCurve,
+    FitData,
     FitEntry,
+    FitMember,
+    FitOutcome,
     FitRequest,
     FitResultSummary,
     FitSpec,
@@ -20,16 +27,18 @@ from tavi.library.data.fit_entry import (
     SuggestPeakParamsRequest,
 )
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.scan import UUID, RawScan
+from tavi.library.data.scan import UUID, RawScan, new_uuid
 from tavi.library.fit import Fit, FitPackage, ModelName
 from tavi.library.fit.fit import FitResult
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ExceptionEvent
 from tavi.meta.event.type.presenter_event import (
     BackgroundParamsSuggestedEvent,
-    FitComputedEvent,
     FitRecomputeEvent,
     PeakParamsSuggestedEvent,
+    SaveFitEvent,
+    SyncFitEvent,
+    SyncFitSpecEvent,
 )
 from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 
@@ -59,68 +68,152 @@ def _peak_prefix(index: int) -> str:
     return f"peak{index + 1}_"
 
 
-class FitModel(FitModelInterface):
-    """Computes a peak fit from an already-resolved (x, y, err) series and announces the result."""
+# A seed this far below the data's own scale is a fit that landed on (numerically) zero. lmfit's
+# finite-difference step is proportional to the starting value, so seeding the next member with,
+# say, 9e-14 leaves that parameter effectively frozen for the rest of the chain; starting from
+# exactly 0 instead makes the fitter fall back to an absolute step.
+_SEED_ZERO_FRACTION = 1e-6
 
-    def __init__(self, raw_scans: dict[UUID, RawScan]) -> None:
-        """Init with a live handle into TaviData's raw_scans storage, for recomputing a selected fit."""
+
+def _seeded_value(field: ParamField, value: Optional[float], scale: float) -> ParamField:
+    """Return ``field`` starting from ``value`` instead, keeping its fixed flag and bounds."""
+    if value is None:
+        return field
+    if abs(value) < _SEED_ZERO_FRACTION * scale:
+        value = 0.0
+    return field.model_copy(update={"value": repr(float(value))})
+
+
+def _seeded_spec(spec: FitSpec, result: FitResultSummary, data: FitData) -> FitSpec:
+    """Return ``spec`` with every value replaced by ``result``'s - how one sequential member seeds the next."""
+    x_scale = float(np.max(np.abs(data.x))) if data.x else 0.0
+    x_span = float(np.ptp(data.x)) if data.x else 0.0
+    y_scale = float(np.max(np.abs(data.y))) if data.y else 0.0
+    slope_scale = y_scale / x_span if x_span else y_scale
+    peaks = [
+        peak.model_copy(
+            update={
+                "amplitude": _seeded_value(peak.amplitude, fitted.amplitude, y_scale * x_span),
+                "center": _seeded_value(peak.center, fitted.center, x_scale),
+                "fwhm": _seeded_value(peak.fwhm, fitted.fwhm, x_span),
+            }
+        )
+        for peak, fitted in zip(spec.peaks, result.peaks)
+    ]
+    return spec.model_copy(
+        update={
+            "peaks": peaks,
+            "background_constant": _seeded_value(spec.background_constant, result.background_constant, y_scale),
+            "background_slope": _seeded_value(spec.background_slope, result.background_slope, slope_scale),
+        }
+    )
+
+
+class FitModel(FitModelInterface):
+    """Fits one or more series against a peak/background spec and announces the result."""
+
+    def __init__(self, raw_scans: dict[UUID, RawScan], fits: dict[UUID, FitEntry]) -> None:
+        """Init with live handles into TaviData's raw_scans (to resolve each series' data) and fits (to sync specs)."""
         self._raw_scans = raw_scans
+        self._fits = fits
+        # Set while fitting a batch, so each member's validation failures are gathered into one
+        # report instead of popping one error dialog per scan. Thread-local because perform_fit
+        # runs on the proxy's worker while a recompute runs on whichever thread published it.
+        self._error_sink = threading.local()
         self._event_broker = EventBroker()
         self._event_broker.register(FitRecomputeEvent, self._handle_fit_recompute_event)
 
     def perform_fit(self, request: FitRequest) -> ModelResponse:
-        """Run a fresh fit from an already-resolved request and publish a FitComputedEvent on success."""
-        x = np.array(request.x)
-        y = np.array(request.y)
-        err = np.array(request.err)
+        """
+        Fit each of ``request.series`` in order, then publish the members as one ``SaveFitEvent`` and ``SyncFitEvent``.
 
-        computed = self._run_fit(request, x, y, err)
-        if computed is None:
-            return ModelResponse(code=ResponseCode.OK)
-        curve_x, result = computed
+        With ``seed_from_previous`` set, every series after the first starts from the last
+        successful fit's values - the sequential fit. A member whose fit fails is still published
+        (with no result) so the user can fix and refit it alone, unless every member failed, in
+        which case there's nothing to save and nothing is published.
+        """
+        spec: FitSpec = request.spec
+        outcomes: list[FitOutcome] = []
+        with self._collecting_errors(len(request.series) > 1) as errors:
+            for series in request.series:
+                member = FitMember(series=series, **spec.model_dump())
+                errors.label = series.run_name
+                outcome = self._compute_member(member)
+                outcomes.append(outcome)
+                if request.seed_from_previous and outcome.member.result is not None and outcome.data is not None:
+                    spec = _seeded_spec(spec, outcome.member.result, outcome.data)
 
-        fit_entry = FitEntry(
-            series=request.series,
-            range_min=request.range_min,
-            range_max=request.range_max,
-            background=request.background,
-            background_constant=request.background_constant,
-            background_slope=request.background_slope,
-            peaks=request.peaks,
-        )
-        if request.fit_uuid is not None:
-            # Refitting a series the panel already has a fit for: keep that uuid so the new spec
-            # replaces it in TaviData.fits, instead of each click leaving another fit behind.
-            fit_entry = fit_entry.model_copy(update={"uuid": request.fit_uuid})
-        self._publish_fit_computed(fit_entry, curve_x, result)
+        if any(outcome.member.result is not None for outcome in outcomes):
+            fit_uuid = request.fit_uuid if request.fit_uuid is not None else new_uuid()
+            # Saved first, so the fit windows know the sync that follows is a fresh fit.
+            self._event_broker.publish(
+                SaveFitEvent(fit_uuid=fit_uuid, members=[outcome.member for outcome in outcomes])
+            )
+            self._event_broker.publish(SyncFitEvent(fit_uuid=fit_uuid, outcomes=outcomes))
+        return ModelResponse(code=ResponseCode.OK)
+
+    def sync_fit_spec(self, fit_uuid: UUID, source_scan_uuid: UUID) -> ModelResponse:
+        """Publish one saved member's spec and result for the fitting panel - a miss means the fit or member is gone."""
+        fit = self._fits.get(fit_uuid)
+        member = fit.member_for(source_scan_uuid) if fit is not None else None
+        if member is not None:
+            self._event_broker.publish(SyncFitSpecEvent(fit_uuid=fit_uuid, member=member))
         return ModelResponse(code=ResponseCode.OK)
 
     def _handle_fit_recompute_event(self, e: FitRecomputeEvent) -> None:
-        """Recompute each selected fit against its source series' current data - never against a cached curve."""
+        """Recompute every member of each selected fit from its own stored spec - never a cached curve, never re-seeded."""
         for fit in e.fits:
-            if fit.series.source_scan_uuid not in self._raw_scans:
-                continue
-            x, y, err = resolve_series(fit.series, self._raw_scans)
-            computed = self._run_fit(fit, x, y, err)
-            if computed is None:
-                continue
-            curve_x, result = computed
-            self._publish_fit_computed(fit, curve_x, result)
+            members = [member for member in fit.members if member.source_scan_uuid in self._raw_scans]
+            with self._collecting_errors(len(members) > 1) as errors:
+                outcomes = []
+                for member in members:
+                    errors.label = member.series.run_name
+                    outcomes.append(self._compute_member(member))
+            if any(outcome.member.result is not None for outcome in outcomes):
+                self._event_broker.publish(SyncFitEvent(fit_uuid=fit.uuid, outcomes=outcomes))
 
-    def _publish_fit_computed(self, fit_entry: FitEntry, curve_x: np.ndarray, result: FitResult) -> None:
-        """Build the transient curve/result payloads and publish them alongside the (cacheable) spec."""
+    def _compute_member(self, member: FitMember) -> FitOutcome:
+        """Resolve one member's series, fit it, and return its outcome - with no result if the fit failed."""
+        if member.source_scan_uuid not in self._raw_scans:
+            self._report_error(f"Scan '{member.series.run_name}' is no longer loaded.")
+            return FitOutcome(member=member.model_copy(update={"result": None}))
+        x, y, err = resolve_series(member.series, self._raw_scans)
+        computed = self._run_fit(member, x, y, err)
+        if computed is None:
+            return FitOutcome(member=member.model_copy(update={"result": None}))
+        curve_x, result = computed
+
         # best_fit is evaluated only at the scan's own points, which draws as straight segments
         # on a coarse scan - re-evaluate on a fine grid, the same way browser.py plots a fit.
         x_fine = np.linspace(curve_x.min(), curve_x.max(), 300)
         curve = FitCurve(
-            source_scan_uuid=fit_entry.series.source_scan_uuid,
-            scan_name=fit_entry.series.scan_name,
+            source_scan_uuid=member.source_scan_uuid,
+            scan_name=member.series.display_label,
             x=x_fine.tolist(),
             best_fit=result.raw.eval(x=x_fine).tolist(),
             components=self._evaluate_components(result, x_fine),
         )
-        summary = self._build_result_summary(fit_entry, result)
-        self._event_broker.publish(FitComputedEvent(fit=fit_entry, curve=curve, result=summary))
+        summary = self._build_result_summary(member, result)
+        return FitOutcome(
+            member=member.model_copy(update={"result": summary}),
+            curve=curve,
+            data=FitData(x=x.tolist(), y=y.tolist(), err=err.tolist()),
+        )
+
+    @contextmanager
+    def _collecting_errors(self, enabled: bool) -> Generator[Any, None, None]:
+        """Gather ``_report_error`` messages, each prefixed by ``sink.label``, into one report when ``enabled``."""
+        if not enabled:
+            yield SimpleNamespace(label="")
+            return
+        sink = SimpleNamespace(label="", messages=[])
+        self._error_sink.current = sink
+        try:
+            yield sink
+        finally:
+            self._error_sink.current = None
+            if sink.messages:
+                self._publish_error("\n".join(sink.messages))
 
     def _evaluate_components(self, result: FitResult, x_fine: np.ndarray) -> dict[str, list[float]]:
         """Evaluate each model component separately over ``x_fine``, the way browser.py's show_components does."""
@@ -130,10 +223,10 @@ class FitModel(FitModelInterface):
             return {}
         return {prefix: np.asarray(values).tolist() for prefix, values in result.raw.eval_components(x=x_fine).items()}
 
-    def _build_result_summary(self, fit_entry: FitEntry, result: FitResult) -> FitResultSummary:
+    def _build_result_summary(self, spec: FitSpec, result: FitResult) -> FitResultSummary:
         """Read every fitted peak (and, if present, the background) out of a FitResult."""
         peaks = []
-        for index in range(len(fit_entry.peaks)):
+        for index in range(len(spec.peaks)):
             peak = result[_peak_prefix(index)]
             peaks.append(
                 PeakResult(
@@ -146,7 +239,7 @@ class FitModel(FitModelInterface):
                 )
             )
         summary_kwargs: dict[str, Any] = dict(reduced_chi_squared=result.reduced_chi_squared, peaks=peaks)
-        if fit_entry.background == _BACKGROUND:
+        if spec.background == _BACKGROUND:
             background = result["bg_"]
             summary_kwargs["background_constant"] = background["intercept"]
             summary_kwargs["background_constant_err"] = background.errors["intercept"]
@@ -384,4 +477,11 @@ class FitModel(FitModelInterface):
 
     def _report_error(self, message: str) -> None:
         """Surface a fit validation failure to the user instead of failing silently."""
+        sink = getattr(self._error_sink, "current", None)
+        if sink is not None:
+            sink.messages.append(f"{sink.label}: {message}")
+            return
+        self._publish_error(message)
+
+    def _publish_error(self, message: str) -> None:
         self._event_broker.publish(ExceptionEvent(error=NonRecoverableError(message, "")))

@@ -15,3 +15,4 @@ of the features of Frontend.
    visualization_flow
    plot_data_model
    data_file_view
+   fit_data_model

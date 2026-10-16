@@ -10,6 +10,7 @@ never a live handle into a model's storage. ``source_scan_uuid`` may point at an
 
 import numpy as np
 
+from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Scan
 
@@ -50,3 +51,18 @@ def find_series_by_source(plots: list[Plot], source_scan_uuid: UUID) -> tuple[Pl
             if series.source_scan_uuid == source_scan_uuid:
                 return plot, series
     return None
+
+
+def fit_series_by_source(fits: list[FitEntry], scans: dict[UUID, Scan]) -> dict[UUID, PlotSeries]:
+    """
+    Return the series behind every member of ``fits``, one per source scan, in fit and member order.
+
+    Two members on the same scan describe the same data, and drawing it twice would just overplot
+    it - first one wins. Members whose scan isn't in ``scans`` are skipped: there's nothing to draw.
+    """
+    series_by_source: dict[UUID, PlotSeries] = {}
+    for fit in fits:
+        for member in fit.members:
+            if member.source_scan_uuid in scans:
+                series_by_source.setdefault(member.source_scan_uuid, member.series)
+    return series_by_source

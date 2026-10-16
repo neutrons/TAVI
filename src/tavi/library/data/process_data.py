@@ -2,7 +2,6 @@
 
 import abc
 from typing import Sequence
-from uuid import uuid4
 
 from tavi.library.data.scan import (
     UUID,
@@ -11,6 +10,7 @@ from tavi.library.data.scan import (
     ScanData,
     ScanMetadata,
     TaviMetadata,
+    new_uuid,
 )
 from tavi.library.data.tavi_data import TaviData
 
@@ -126,7 +126,7 @@ class AppendOp(ProcessOps):
         # create a processed_scan object with a new uuid. Every requested column is
         # present even with no origins, so default_axis always names a real column.
         processed_scan = ProcessedScan(
-            uuid=UUID(value=str(uuid4())),
+            uuid=new_uuid(),
             data=ScanData(data={column: [] for column in self.columns}),
             metadata=ScanMetadata(),
             tavimeta=TaviMetadata(

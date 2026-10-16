@@ -66,6 +66,14 @@ plotted against :ref:`del_q <resolution_bar>`. It stops there -- a background ru
 is never fitted and never carries a resolution bar, so ``fit_results`` and
 ``res_mat_4d`` describe only the scans in ``scan_list``.
 
+On a :math:`\Delta q` axis the two also share a **zero**. Each scan would
+otherwise be measured from its own middle sample, so a background sampled over a
+different range -- more points, a wider sweep -- would be drawn shifted against
+the signal it is meant to be subtracted from. ``browse_scans`` reads the origin
+off the scan with ``experiment.get_delta_q_origin(...)`` and passes it as the
+``origin`` of the background's ``get_delta_q(...)``, which pins both curves to
+the same abscissa.
+
 
 Fits and Components
 ===================

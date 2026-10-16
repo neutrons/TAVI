@@ -1,14 +1,12 @@
 """Tests for Plot1DView."""
 
-from types import SimpleNamespace
-
 import numpy as np
 import pytest
 from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.fit_entry import FitCurve
-from tavi.library.data.plot import PlotFields
+from tavi.library.data.plot import PlotFields, PlotSeries
 from tavi.library.data.scan import UUID
 
 
@@ -67,7 +65,11 @@ def test_append_plot_adds_container_to_axes(view):
         np.array([1.0, 2.0, 3.0]),
         np.array([4.0, 5.0, 6.0]),
         np.array([0.1, 0.1, 0.1]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     assert len(view.canvas.axes.containers) > 0
 
@@ -77,7 +79,11 @@ def test_append_plot_sets_xlabel(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     assert view.canvas.axes.get_xlabel() == "qh"
 
@@ -87,7 +93,11 @@ def test_append_plot_sets_ylabel_with_normalization(view):
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     ylabel = view.canvas.axes.get_ylabel()
     assert "en" in ylabel
@@ -99,7 +109,11 @@ def test_append_plot_sets_ylabel_without_normalization(view):
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
-        "scan1", None, "qh", "en", "err",
+        "scan1",
+        None,
+        "qh",
+        "en",
+        "err",
     )
     assert view.canvas.axes.get_ylabel() == "en"
 
@@ -109,7 +123,11 @@ def test_append_plot_label_uses_scan_name(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "my_scan", "monitor", "qh", "en", "err",
+        "my_scan",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     labels = [c.get_label() for c in view.canvas.axes.containers]
     assert any("my_scan" in lbl for lbl in labels)
@@ -121,7 +139,11 @@ def test_append_plot_multiple_calls_adds_multiple_containers(view):
             np.array([1.0, 2.0]),
             np.array([float(i), float(i + 1)]),
             np.array([0.0, 0.0]),
-            f"scan{i}", "monitor", "qh", "en", "err",
+            f"scan{i}",
+            "monitor",
+            "qh",
+            "en",
+            "err",
         )
     assert len(view.canvas.axes.containers) == 3
 
@@ -136,7 +158,11 @@ def test_clear_plot_removes_containers(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     view.clear_plot()
     assert len(view.canvas.axes.containers) == 0
@@ -147,7 +173,11 @@ def test_clear_plot_removes_lines(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     view.clear_plot()
     assert len(view.canvas.axes.lines) == 0
@@ -163,7 +193,11 @@ def test_clear_plot_resets_toolbar_view_history(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "scan1", "monitor", "qh", "en", "err",
+        "scan1",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     # Stand in for a user zoom: matplotlib records the home view on the nav stack.
     view.toolbar.push_current()
@@ -175,15 +209,11 @@ def test_clear_plot_resets_toolbar_view_history(view):
 
 
 def test_render_plots_home_view_follows_the_new_plot(view):
-    view._render_plots(
-        [(np.array([0.0, 10.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())]
-    )
+    view._render_plots([(np.array([0.0, 10.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())])
     view.canvas.axes.set_xlim(4.0, 5.0)  # user zooms in
     view.toolbar.push_current()
 
-    view._render_plots(
-        [(np.array([100.0, 200.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())]
-    )
+    view._render_plots([(np.array([100.0, 200.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())])
     new_xlim = view.canvas.axes.get_xlim()
     view.toolbar.home()
 
@@ -342,9 +372,12 @@ def _series(
     x_name="qh",
     y_name="en",
     error_name="err",
+    friendly_name=None,
 ):
-    return SimpleNamespace(
+    return PlotSeries(
+        source_scan_uuid=UUID(value=friendly_name or scan_name),
         scan_name=scan_name,
+        friendly_name=friendly_name,
         normalized_by=normalized_by,
         normalized_by_value=normalized_by_value,
         x_name=x_name,
@@ -355,7 +388,14 @@ def _series(
 
 def test_render_plots_clears_then_plots_each_series(view):
     view.append_plot(
-        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+        np.array([1.0]),
+        np.array([2.0]),
+        np.array([0.0]),
+        "old",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     resolved = [
         (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(scan_name="a")),
@@ -369,14 +409,34 @@ def test_render_plots_clears_then_plots_each_series(view):
     assert "old" not in labels
 
 
+def test_render_plots_legend_tells_apart_series_sharing_a_scan_title(view):
+    """With "Show Title" on, scan_name is the shared title - the legend must still name each run."""
+    resolved = [
+        (
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
+            _series("sample alignment", friendly_name=run),
+        )
+        for run in ("scan0001", "scan0002")
+    ]
+    view._render_plots(resolved)
+    labels = [c.get_label() for c in view.canvas.axes.containers]
+    assert labels == ["scan0001 - sample alignment", "scan0002 - sample alignment"]
+
+
 def test_render_plots_sets_single_axis_label_when_all_series_share_it(view):
     resolved = [
         (
-            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
             _series(x_name="qh", y_name="en", normalized_by=None),
         ),
         (
-            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
             _series(x_name="qh", y_name="en", normalized_by=None),
         ),
     ]
@@ -389,11 +449,15 @@ def test_render_plots_combines_axis_labels_when_series_units_differ(view):
     """Apply All off lets individually-tweaked plots diverge - the axis label must surface that, not hide it."""
     resolved = [
         (
-            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
             _series(x_name="qh", y_name="en", normalized_by=None),
         ),
         (
-            np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]),
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([0.0, 0.0]),
             _series(x_name="qk", y_name="ei", normalized_by=None),
         ),
     ]
@@ -480,7 +544,14 @@ def test_render_plots_signal_emits_to_render_plots(view, qtbot):
 
 def test_render_plots_empty_list_only_clears(view):
     view.append_plot(
-        np.array([1.0]), np.array([2.0]), np.array([0.0]), "old", "monitor", "qh", "en", "err",
+        np.array([1.0]),
+        np.array([2.0]),
+        np.array([0.0]),
+        "old",
+        "monitor",
+        "qh",
+        "en",
+        "err",
     )
     view._render_plots([])
     assert len(view.canvas.axes.containers) == 0
@@ -514,9 +585,15 @@ def test_get_plot_fields_rebin_mode_equal_step(view):
 
 def test_get_plot_fields_contains_all_expected_keys(view):
     assert set(PlotFields.model_fields) == {
-        "y_axis", "x_axis", "rebin_mode",
-        "rebin_start", "rebin_stop", "rebin_step",
-        "preset_type", "preset_channel", "preset_value",
+        "y_axis",
+        "x_axis",
+        "rebin_mode",
+        "rebin_start",
+        "rebin_stop",
+        "rebin_step",
+        "preset_type",
+        "preset_channel",
+        "preset_value",
     }
 
 
@@ -938,8 +1015,10 @@ def test_toggling_on_an_empty_canvas_is_harmless(view):
 
 
 def test_legend_is_unchanged_while_plot_separately_is_off(view):
-    """An invisible line still shows up in matplotlib's legend, so the plot has to read exactly
-    as it did before components existed - one "<scan> fit" entry, nothing else."""
+    """
+    An invisible line still shows up in matplotlib's legend, so the plot has to read exactly
+    as it did before components existed - one "<scan> fit" entry, nothing else.
+    """
     view._append_fit_curve(make_fit_curve_with_components())
 
     assert [text.get_text() for text in view.canvas.axes.get_legend().get_texts()] == ["my_scan fit"]
@@ -1056,7 +1135,11 @@ def test_append_fit_curve_survives_alongside_a_data_series(view):
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
-        "my_scan", None, "qh", "en", "err",
+        "my_scan",
+        None,
+        "qh",
+        "en",
+        "err",
     )
     lines_before = len(view.canvas.axes.lines)
 

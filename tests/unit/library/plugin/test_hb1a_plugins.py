@@ -163,7 +163,7 @@ def test_export_intensity_incom_codes_the_two_branches_apart(tmp_path):
 
 
 def test_export_intensity_incom_writes_the_columns_its_header_declares(tmp_path):
-    """The code sits between the hkl and the intensity, as the (3i5,i4,2f8.2,3f8.2) line says."""
+    """The code sits between the hkl and the intensity, as the (3i5,i4,2f8.2,i4) line says."""
     wavevector = (0.0, 0.0, 0.13)
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], wavevector)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], wavevector)
@@ -173,9 +173,9 @@ def test_export_intensity_incom_writes_the_columns_its_header_declares(tmp_path)
 
     lines = target.read_text().splitlines()
     lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
-    assert lines[1] == "(3i5,i4,2f8.2,3f8.2)"
-    assert lines[6] == f"    1    0    0   1{10.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}"
-    assert lines[7] == f"    1    0    0   2{11.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}"
+    assert lines[1] == "(3i5,i4,2f8.2,i4)"
+    assert lines[6] == f"    1    0    0   1{10.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}   1"
+    assert lines[7] == f"    1    0    0   2{11.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}   1"
 
 
 def test_export_intensity_incom_declares_both_propagation_vectors(tmp_path):
@@ -231,7 +231,7 @@ def test_export_intensity_incom_rejects_signed_codes_for_mismatched_wavevectors(
 
 
 def test_export_intensity_keeps_its_own_format_line_and_column_order(tmp_path):
-    """The commensurate export is unchanged by the incommensurate one: code last, no k block."""
+    """The commensurate export carries no code field and no k block, just the trailing weight."""
     wavevector = (0.0, 0.0, 0.0)
     hkls, fit_results, res_4ds, _ = make_branch([(1.0, 0.0, 0.0), (2.0, 0.0, 0.0)], [10.0, 20.0], wavevector)
     target = tmp_path / "com.int"
@@ -240,10 +240,53 @@ def test_export_intensity_keeps_its_own_format_line_and_column_order(tmp_path):
 
     lines = target.read_text().splitlines()
     lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
-    assert lines[1] == "(3i5,2f8.2,i4,3f8.2)"
+    assert lines[1] == "(3i5,2f8.2,i4)"
     assert len(lines) == 5  # three header lines, then one line per peak - no k-vector block
     assert lines[3] == f"    1    0    0{10.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}   1"
     assert lines[4] == f"    2    0    0{20.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}   1"
+
+
+def test_export_intensity_declares_the_wavevector_its_background_subtraction_leaves(tmp_path):
+    """A background-subtracted export is magnetic, so it declares a k vector its lines index."""
+    hkls, fit_results, res_4ds, _ = make_branch([(1.0, 0.0, 0.0)], [10.0], (0.0, 0.0, 0.0))
+    backgrounds = [make_fit_result(4.0, 1.0)]
+    target = tmp_path / "mag.int"
+
+    VERITAS.export_intensity(
+        "title",
+        hkls,
+        fit_results,
+        res_4ds,
+        "s1",
+        str(target),
+        background_results=backgrounds,
+        wavevector=(0.0, 0.0, 0.5),
+    )
+
+    lines = target.read_text().splitlines()
+    lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
+    assert lines[1] == "(3i5,i4,2f8.2,i4)"
+    assert lines[3] == "1"
+    assert lines[4] == "0 0 0.5"
+    # The amplitudes subtract while their errors add in quadrature.
+    intensity, err = (10.0 - 4.0) / lorentz_factor, np.sqrt(2.0) / lorentz_factor
+    assert lines[5] == f"    1    0    0   1{intensity:8.2f}{err:8.2f}   1"
+
+
+def test_export_intensity_requires_a_wavevector_to_write_a_background_subtracted_file(tmp_path):
+    """The declared k vector cannot be guessed, so writing one without it is refused."""
+    hkls, fit_results, res_4ds, _ = make_branch([(1.0, 0.0, 0.0)], [10.0], (0.0, 0.0, 0.0))
+
+    with pytest.raises(ValueError, match="wavevector must be given"):
+        VERITAS.export_intensity(
+            "title",
+            hkls,
+            fit_results,
+            res_4ds,
+            "s1",
+            str(tmp_path / "mag.int"),
+            background_results=[make_fit_result(4.0, 1.0)],
+        )
 
 
 def test_export_intensity_incom_rejects_unknown_axis():

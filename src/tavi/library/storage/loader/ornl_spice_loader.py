@@ -439,11 +439,14 @@ class ORNLSpiceLoader(AbstractLoader):
         scan_num: int,
         IPTS: Optional[int] = None,
         exp_num: Optional[int] = None,
+        origin: Optional[float] = None,
     ) -> np.ndarray:
         """Get delta q of a scan."""
         scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
         try:
-            qs = scan.data.q
+            # Columns come back as lists, so go through np.asarray to get
+            # element-wise arithmetic instead of concatenation.
+            qs = np.asarray(scan.data.q)
         except AttributeError:
             # e is always present. Columns come back as lists, so go through
             # np.asarray to get element-wise arithmetic instead of concatenation.
@@ -479,6 +482,8 @@ class ORNLSpiceLoader(AbstractLoader):
         mid_idx = (len(qs) - 1) // 2
 
         if q_diff > 1.1e-4:  # q changing, must be a th2th scan
+            if origin:
+                return qs - origin
             return qs - qs[mid_idx]
         else:  # q not changing, must be a s1 scan
             q_abs = np.mean(qs)
@@ -489,7 +494,70 @@ class ORNLSpiceLoader(AbstractLoader):
                 angles = np.asanyarray(scan.data.omega)
             else:
                 raise AttributeError("No s1 or omega in data. Can't calculate delta q")
+
+            if origin:
+                return np.radians(angles - origin) * q_abs
             return np.radians(angles - angles[mid_idx]) * q_abs
+
+    def get_delta_q_origin(
+        self,
+        tavi_data: TaviData,
+        scan_num: int,
+        IPTS: Optional[int] = None,
+        exp_num: Optional[int] = None,
+    ) -> float:
+        """Get the origin get_delta_q measures a scan from, in |q| for a th2th scan and in degrees for a rocking one."""
+        scan = self.get_data_from_scan_number(tavi_data=tavi_data, scan_num=scan_num, IPTS=IPTS, exp_num=exp_num)
+        try:
+            # Columns come back as lists, so go through np.asarray to get
+            # element-wise arithmetic instead of concatenation.
+            qs = np.asarray(scan.data.q)
+        except AttributeError:
+            # e is always present. Columns come back as lists, so go through
+            # np.asarray to get element-wise arithmetic instead of concatenation.
+            es = np.asarray(scan.data.e)
+
+            # This part assumes at least ei or ef is present in ornl spice data. If neither exists, the data is corrupt from daq side.
+
+            # If "ei" in ornl spice data, create from data
+            if "ei" in scan.data.data:
+                eis = np.asarray(scan.data.ei)
+            # else calculate using efs
+            else:
+                eis = es + np.asarray(scan.data.ef)
+
+            # If "ef" in ornl spice data, create from data
+            if "ef" in scan.data.data:
+                efs = np.asarray(scan.data.ef)
+            # else calculate using eis
+            else:
+                efs = np.asarray(eis) - es
+
+            kis = np.array([SE2K(ei) for ei in eis])
+            kfs = np.array([SE2K(ef) for ef in efs])
+            two_thetas = scan.data.s2 if "s2" in dir(scan.data) else scan.data._2theta
+            qs = np.array(
+                [
+                    get_side_from_triangle(ki, kf, np.radians(two_theta))
+                    for ki, kf, two_theta in zip(kis, kfs, two_thetas)
+                ]
+            )
+
+        q_diff = np.max(qs) - np.min(qs)
+        mid_idx = (len(qs) - 1) // 2
+
+        if q_diff > 1.1e-4:  # q changing, must be a th2th scan
+            return qs[mid_idx]
+        else:  # q not changing, must be a s1 scan
+            q_abs = np.mean(qs)
+
+            if "s1" in dir(scan.data):  # using "s1" by default
+                angles = np.asanyarray(scan.data.s1)
+            elif "omega" in dir(scan.data):
+                angles = np.asanyarray(scan.data.omega)
+            else:
+                raise AttributeError("No s1 or omega in data. Can't calculate delta q")
+            return angles[mid_idx]
 
     def get_data_from_scan_number(
         self,

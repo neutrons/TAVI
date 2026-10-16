@@ -184,7 +184,7 @@ produced the currently-focused batch:
 or a linear scan over ``self._last_plots``) and returns without publishing if
 the uuid isn't one of its own, rather than indexing straight in and letting a
 miss raise. This works because saved-plot uuids (freshly minted via
-``uuid4()`` on save) and preview-plot uuids (borrowed from the ``RawScan``
+``new_uuid()`` on save) and preview-plot uuids (borrowed from the ``RawScan``
 they preview — see `Preview plots are keyed by their source scan's uuid`_
 below) never collide: exactly one model ever recognizes a given uuid as its
 own, so the presenter never has to guess which model to ask, and neither
