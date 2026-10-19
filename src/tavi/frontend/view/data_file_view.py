@@ -6,6 +6,7 @@ from qtpy.QtCore import Qt, Signal
 from qtpy.QtGui import QGuiApplication, QKeySequence
 from qtpy.QtWidgets import (
     QAbstractButton,
+    QAbstractItemView,
     QAction,
     QCheckBox,
     QHBoxLayout,
@@ -259,8 +260,9 @@ class DataFileView(QWidget):
     def _finalize_metadata_table(self, table: QTableWidget) -> None:
         """Apply shared header/sizing styling to a metadata tab's table."""
         header = table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         header.hide()
 
+        table.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         table.verticalHeader().hide()
         self._enable_copy(table)
