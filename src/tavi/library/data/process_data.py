@@ -10,6 +10,7 @@ from tavi.library.data.scan import (
     UUID,
     ProcessedScan,
     Provenance,
+    RawScan,
     ScanData,
     ScanMetadata,
     TaviMetadata,
@@ -22,148 +23,18 @@ from tavi.library.data.tavi_data import TaviData
 ERROR_COLUMN = "error"
 
 
-def _renormalized(
-    y_values: Sequence[float],
-    norm_values: Optional[Sequence[float]],
-    multiplication: float,
-    norm: Optional[str],
-) -> list[float]:
-    """
-    Divide a y column row by row by its norm column and apply the overall scale.
-
-    Shared by the rebinning operations, which both run this over the appended rows before
-    merging any of them, so that each point is reduced to its own counting footing while
-    the row it was measured in is still identifiable. A ``norm`` value of zero raises
-    rather than producing an infinity: a point counted against nothing has no normalized
-    value, and letting it through would take its whole bin's mean with it.
-
-    Args:
-        y_values: The column to renormalize.
-        norm_values: The column it is divided by, row for row, or ``None`` to scale only.
-        multiplication: Scale applied after the division.
-        norm: Name of the norm column, for the error message.
-
-    Returns:
-        The renormalized column, in the order it came in.
-
-    Raises:
-        ValueError: If a row's ``norm`` value is zero.
-
-    """
-    if norm_values is None:
-        return [value * multiplication for value in y_values]
-
-    renormalized = []
-    for row, (value, norm_value) in enumerate(zip(y_values, norm_values)):
-        if norm_value == 0:
-            raise ValueError(f"Rebin normalization column {norm!r} is zero at row {row}.")
-        renormalized.append(value * multiplication / norm_value)
-    return renormalized
-
-
-def _poisson_uncertainty(
-    y_values: Sequence[float],
-    norm_values: Optional[Sequence[float]],
-    multiplication: float,
-    norm: Optional[str],
-) -> list[float]:
-    """
-    Take each raw count's Poisson uncertainty and put it through the same normalization as the count.
-
-    ``sqrt(|counts|)`` is the uncertainty a counting measurement carries, which is what the
-    plotting layer assumes of a y column it is handed without one. The rebinning operations
-    compute it themselves instead: once a bin holds several counts combined, its
-    uncertainty is no longer recoverable from the value it reports.
-
-    Args:
-        y_values: The raw counts, before any renormalization has overwritten them.
-        norm_values: The column they are divided by, row for row, or ``None`` to scale only.
-        multiplication: Scale applied after the division.
-        norm: Name of the norm column, for the error message.
-
-    Returns:
-        The per-point uncertainty, in the order the counts came in.
-
-    Raises:
-        ValueError: If a row's ``norm`` value is zero.
-
-    """
-    return _renormalized([math.sqrt(abs(value)) for value in y_values], norm_values, multiplication, norm)
-
-
-def _renormalized_data(
-    appended_data: dict[str, list[float]],
-    y_name: str,
-    norm: Optional[str],
-    multiplication: float,
-) -> dict[str, list[float]]:
-    """
-    Put the y column on its per-``norm`` footing and add the uncertainty column beside it.
-
-    The step both rebinning operations take between appending and binning, so that each
-    point is reduced to its own counting footing while the row it was measured in is still
-    identifiable. Returning a new dict rather than writing through the one it was handed
-    keeps the raw counts readable for as long as the caller holds them.
-
-    Args:
-        appended_data: {column name: values}, every column the same length, y still
-            holding the raw counts.
-        y_name: Name of the column to renormalize.
-        norm: Name of the column it is divided by, row for row, or ``None`` to scale only.
-        multiplication: Scale applied after the division.
-
-    Returns:
-        The same columns plus ``error``, with y renormalized.
-
-    Raises:
-        ValueError: If a row's ``norm`` value is zero.
-
-    """
-    y_values = appended_data[y_name]
-    norm_values = None if norm is None else appended_data[norm]
-
-    renormalized = dict(appended_data)
-    # the uncertainty is read off the raw counts, so it is computed before the
-    # renormalization overwrites them.
-    renormalized[ERROR_COLUMN] = _poisson_uncertainty(y_values, norm_values, multiplication, norm)
-    renormalized[y_name] = _renormalized(y_values, norm_values, multiplication, norm)
-    return renormalized
-
-
-def _binned_uncertainty(error_values: Sequence[float], rows: Sequence[int]) -> float:
-    """
-    Combine one bin's per-point uncertainties into the uncertainty of the mean it reports.
-
-    Independent uncertainties add in quadrature, and the bin reports a mean rather than a
-    sum, so the total is divided by the number of points: a bin holding four equally
-    certain points is twice as certain as any one of them, which averaging the
-    uncertainties instead would hide.
-
-    Args:
-        error_values: The per-point uncertainty column.
-        rows: The rows falling in this bin.
-
-    Returns:
-        The uncertainty of the bin's mean.
-
-    """
-    return math.sqrt(math.fsum(error_values[row] ** 2 for row in rows)) / len(rows)
-
-
-def _norm_suffix(norm: Optional[str], multiplication: float) -> str:
+def _norm_suffix(norm: str, multiplication: float) -> str:
     """
     Spell a normalization out for a friendly name, so two normalizations of one scan stay apart.
 
     Args:
-        norm: Name of the norm column, or ``None`` if the y column was only scaled.
+        norm: Name of the column the y column was put on a per-unit footing against.
         multiplication: Scale applied to the y column.
 
     Returns:
-        The suffix, empty when nothing was done to the y column.
+        The suffix, naming the norm column and, unless it is 1, the scale.
 
     """
-    if norm is None:
-        return "" if multiplication == 1 else f"_x{multiplication:g}"
     return f"_norm{norm}" if multiplication == 1 else f"_norm{norm}x{multiplication:g}"
 
 
@@ -328,20 +199,25 @@ class EqualStepRebinOps(ProcessOps):
     append decided (provenance, the empty metadata, the default axis) still describes
     the rebinned scan and is carried over untouched.
 
-    ``norm`` and ``multiplication`` renormalize the y column (``columns[1]``) on the way
-    through: each appended row's y is divided by that row's ``norm`` value and scaled by
-    ``multiplication``, before any binning happens, matching how
-    ``tavi.library.plot.browser`` normalizes a plotted scan. Normalizing per point rather
-    than per bin is what lets points counted against different monitors share a bin - each
-    is reduced to the same per-monitor footing first, and the bin then averages like with
-    like.
+    A bin combines its rows the way one longer measurement would: the y column
+    (``columns[1]``) reports ``multiplication * sum(counts) / sum(norm)`` over the rows of
+    the bin, and the ``norm`` column reports that ``sum(norm)``, the counting the bin
+    stands on. Summing counts and monitor separately, rather than averaging each row's
+    already-normalized y, is what makes a long count outweigh a short one at the same
+    position instead of the two casting equal votes. Columns that are neither y nor
+    ``norm`` - a temperature, say - are plain unweighted means, ``multiplication`` being a
+    count scale that means nothing applied to them.
 
-    The result carries one column the origins did not: ``error``, the y column's
-    uncertainty, taken as ``sqrt(|counts|)`` per point, normalized alongside the count it
-    belongs to and combined in quadrature within each bin. The plotting layer derives a
-    series' error bars from its y where no uncertainty is stored, which stops working the
-    moment a bin reports a mean of several counts - so a rebinned scan has to carry its
-    own.
+    Reading raw counts against the monitor they were counted with is only sound on data
+    nothing has already reduced, so every origin must be a ``RawScan``: an appended or
+    previously rebinned scan is refused.
+
+    The result carries one column the origins did not: ``error``, the uncertainty of the
+    value its bin reports, ``multiplication * sqrt(sum(counts)) / sum(norm)``. That is the
+    Poisson uncertainty of the summed counts put through the same normalization as the sum
+    itself. The plotting layer derives a series' error bars from its y where no uncertainty
+    is stored, which stops working the moment a bin reports counts per monitor rather than
+    counts - so a rebinned scan has to carry its own.
     """
 
     def __init__(
@@ -349,10 +225,10 @@ class EqualStepRebinOps(ProcessOps):
         tavi_data: TaviData,
         uuids: Sequence[UUID],
         columns: Sequence[str],
+        norm: str,
         step: float,
         start: Optional[float] = None,
         finish: Optional[float] = None,
-        norm: Optional[str] = None,
         multiplication: float = 1,
     ) -> None:
         """
@@ -364,19 +240,19 @@ class EqualStepRebinOps(ProcessOps):
             columns: Names of the columns to carry over. At least two, the first being
                 the axis binned on and the first two becoming the result's
                 ``tavimeta.default_axis``.
+            norm: Name of the column each bin is weighted by - typically the monitor or
+                time its points were counted against. Required, the binning having no
+                unweighted form, and it must itself be one of ``columns``, since the
+                weighting happens after the append has dropped everything else.
             step: Bin width along ``columns[0]``.
             start: Lower outer bin edge along ``columns[0]``. Given together with
                 ``finish``, it fixes the grid and the data no longer decides where the
                 bins fall.
             finish: Upper outer bin edge along ``columns[0]``, given together with
                 ``start``.
-            norm: Name of the column ``columns[1]`` is divided by, row by row - typically
-                the monitor or time each point was counted against. It must itself be one
-                of ``columns``, since the division happens after the append. No division
-                when ``None``.
-            multiplication: Scale applied to ``columns[1]`` after the division, so that
-                e.g. ``norm="monitor", multiplication=10000`` reads as counts per 10000
-                monitor counts. Applied whether or not ``norm`` is given.
+            multiplication: Scale applied to the per-``norm`` y column, so that e.g.
+                ``norm="monitor", multiplication=10000`` reads as counts per 10000 monitor
+                counts. It scales ``error`` alongside y, and no other column.
 
         """
         super().__init__(tavi_data, uuids)
@@ -400,12 +276,12 @@ class EqualStepRebinOps(ProcessOps):
             ValueError: If ``step`` is not a positive, finite number; if only one of
                 ``start`` and ``finish`` is given, or either is not finite, or ``finish``
                 does not lie above ``start``; if ``multiplication`` is not a positive,
-                finite number; if ``norm`` is not one of the requested columns, or is the
-                y column it would normalize; if a requested column is named ``error``,
-                which the operation computes itself;
-                or if fewer than two columns are requested - with one column there is
-                nothing to average, no second name for the default axis and no y column to
-                normalize.
+                finite number; if ``norm`` is empty, is not one of the requested columns,
+                or is the y column it would weight; if a requested column is named
+                ``error``, which the operation computes itself; if fewer than two columns
+                are requested - with one column there is nothing to combine, no second
+                name for the default axis and no y column to normalize; or if an origin is
+                not a ``RawScan``, its counts having already been reduced.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
 
@@ -436,9 +312,11 @@ class EqualStepRebinOps(ProcessOps):
         if not math.isfinite(self.multiplication) or self.multiplication <= 0:
             raise ValueError(f"Rebin multiplication must be a positive, finite number, got {self.multiplication!r}.")
 
+        if not self.norm:
+            raise ValueError("Binning data require a normalization column, either mcu or time.")
         # the append drops every column it was not asked for, so a norm column left out of
-        # columns would be gone by the time the division needs it.
-        if self.norm is not None and self.norm not in self.columns:
+        # columns would be gone by the time the weighting needs it.
+        if self.norm not in self.columns:
             raise ValueError(
                 f"Rebin normalization column {self.norm!r} must be one of the requested columns {list(self.columns)}."
             )
@@ -451,34 +329,41 @@ class EqualStepRebinOps(ProcessOps):
         self._append_op.validate()
 
         # checked after the append, which is what guarantees there is a second column to
-        # name. Dividing the y column by itself leaves nothing but the scale behind.
-        if self.norm is not None and self.norm == self.columns[1]:
+        # name. Weighting the y column by itself leaves nothing but the scale behind.
+        if self.norm == self.columns[1]:
             raise ValueError(f"Rebin normalization column {self.norm!r} cannot be the y column it normalizes.")
+
+        # the bins read raw counts against the monitor they were counted with, which a
+        # scan some earlier operation has already combined or normalized no longer holds.
+        for uuid in self.uuids:
+            scan = self.tavi_data.fetch_by_uuid(uuid)
+            if not isinstance(scan, RawScan):
+                raise ValueError(
+                    f"Rebin can only operate on raw data, but {scan.tavimeta.friendly_name!r} "
+                    f"({uuid.value}) is already processed."
+                )
 
     def exec(self) -> ProcessedScan:
         """
-        Append the origins, renormalize the y column, and average each bin of width ``step``.
+        Append the origins, then combine each bin of width ``step`` into one point.
 
         Returns:
             A ``ProcessedScan`` with a fresh uuid, one column per requested column plus an
-            ``error`` column holding the y column's uncertainty, and
-            every origin recorded in ``prov.contributing_scans`` at weight 1 - binning
-            averages within bins, it does not reweight origins. Its friendly name is the
-            appended one suffixed with the step and, when given, the normalization.
-            ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty, a rebinned scan
-            having no file of its own. ``tavimeta.normalization`` records ``norm`` and
-            ``multiplication`` when a normalization was applied, this scan's y column now
-            being on that footing, and is left unset otherwise, a bin's mean counts no
-            longer satisfying an origin's monitor normalization. Storing it in
-            ``TaviData`` is the caller's job.
+            ``error`` column holding the uncertainty of each bin's y, and every origin
+            recorded in ``prov.contributing_scans`` at weight 1 - the bins weight points,
+            not origins. Its friendly name is the appended one suffixed with the step and
+            the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty,
+            a rebinned scan having no file of its own, and ``tavimeta.normalization``
+            records ``norm`` and ``multiplication``, this scan's y column now being on that
+            footing. Storing it in ``TaviData`` is the caller's job.
 
         Raises:
             ValueError: If ``step`` is not a positive, finite number, if ``start`` and
                 ``finish`` do not form a usable range, if ``multiplication`` is not a
-                positive, finite number, if ``norm`` is not one of the requested columns or
-                is the y column itself,
-                if a requested column is named ``error``, if fewer than two columns are
-                requested, or if a row's ``norm`` value is zero.
+                positive, finite number, if ``norm`` is empty, is not one of the requested
+                columns or is the y column itself, if a requested column is named
+                ``error``, if fewer than two columns are requested, if an origin is not a
+                ``RawScan``, or if a row's ``norm`` value is zero.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
 
@@ -488,59 +373,80 @@ class EqualStepRebinOps(ProcessOps):
         # the appended scan is a private intermediate, never registered and never
         # returned in this form, so there is nothing shared to protect by copying it.
         appended = self._append_op.exec()
-        renormalized = _renormalized_data(appended.data.data, self.columns[1], self.norm, self.multiplication)
-        appended.data = ScanData(data=self._bin_equal_step(renormalized))
+        appended.data = ScanData(data=self._bin_equal_step(appended.data.data))
         suffix = _norm_suffix(self.norm, self.multiplication)
         appended.tavimeta.friendly_name = f"{appended.tavimeta.friendly_name}_rebin{self.step}{suffix}"
-        if self.norm is not None:
-            appended.tavimeta.normalization = (self.norm, self.multiplication)
+        appended.tavimeta.normalization = (self.norm, self.multiplication)
         return appended
 
-    def _bin_equal_step(self, renormalized_data: dict[str, list[float]]) -> dict[str, list[float]]:
+    def _bin_equal_step(self, appended_data: dict[str, list[float]]) -> dict[str, list[float]]:
         """
-        Bin rows by the first column into bins of width ``step``, averaging every column within each bin.
+        Bin rows by the first column into bins of width ``step``, combining the rows of each bin.
 
         Where the grid falls is left to ``_bins_from_data`` or, when ``start`` and
         ``finish`` are given, to ``_bins_from_edges``; both hand back the first bin's
         centre and the rows belonging to each bin, and from there the two cases are the
         same operation. Each bin reports its centre as its x rather than the mean of the x
-        values in it, keeping the output on a regular grid. The ``error`` column is the
-        other exception: uncertainties combine in quadrature over the points of a bin and
-        then divide by their number, which is the uncertainty of the mean the bin reports
-        rather than the mean of the uncertainties that went into it. Bins no point falls in
-        are dropped rather than zero-filled, zero being a measurement and not an absence. A
-        NaN anywhere in the binned column raises, and a NaN elsewhere poisons its bin's
-        mean - deciding what a missing value means belongs to the loader, not to binning.
+        values in it, keeping the output on a regular grid.
+
+        Every other column is reduced one of three ways. The y column is the
+        monitor-weighted ``multiplication * sum(counts) / sum(norm)``; the ``norm`` column
+        is that ``sum(norm)``, so the result still records what each point was counted
+        against; and anything else is a plain mean, a count scale meaning nothing applied
+        to a temperature. ``error`` is computed from the same two sums as y. Bins no point
+        falls in are dropped rather than zero-filled, zero being a measurement and not an
+        absence. A NaN in the binned column raises, and a NaN elsewhere poisons its bin -
+        deciding what a missing value means belongs to the loader, not to binning.
 
         Args:
-            renormalized_data: {column name: values}, every column the same length,
-                including the ``error`` column, with y already on its per-``norm`` footing.
+            appended_data: {column name: values}, every column the same length, y still
+                holding the raw counts the append laid end to end.
 
         Returns:
-            The same column names, each holding one value per non-empty bin.
+            The requested columns plus ``error``, each holding one value per non-empty bin.
+
+        Raises:
+            ValueError: If a row's ``norm`` value is zero.
 
         """
-        x_name = self.columns[0]
-        x_values = renormalized_data[x_name]
+        x_name, y_name = self.columns[0], self.columns[1]
+        x_values = appended_data[x_name]
+        y_values = appended_data[y_name]
         if not x_values:
-            return {name: [] for name in renormalized_data}
+            return {name: [] for name in (*appended_data, ERROR_COLUMN)}
+
+        norm_values = appended_data[self.norm]
+        # a point counted against nothing has no per-monitor value, and a bin it falls in
+        # would divide by a weight it contributed nothing to.
+        for row, norm_value in enumerate(norm_values):
+            if norm_value == 0:
+                raise ValueError(f"Rebin normalization column {self.norm!r} is zero at row {row}.")
 
         if self.start is not None and self.finish is not None:
             first_centre, rows_by_bin = self._bins_from_edges(x_values)
         else:
             first_centre, rows_by_bin = self._bins_from_data(x_values)
-
         order = sorted(rows_by_bin)
-        binned: dict[str, list[float]] = {}
-        for name, values in renormalized_data.items():
-            combined = []
-            for index in order:
-                rows = rows_by_bin[index]
-                if name == ERROR_COLUMN:
-                    combined.append(_binned_uncertainty(values, rows))
+        binned: dict[str, list[float]] = {name: [] for name in (*appended_data, ERROR_COLUMN)}
+        # looping per bin, so the bin's total norm is weighed once and shared by every column
+        for index in order:
+            rows = rows_by_bin[index]
+            weights = math.fsum(norm_values[row] for row in rows)
+            for name, values in appended_data.items():
+                if name == x_name:
+                    continue
+                elif name == y_name:
+                    # y column, multiply weighted sum of intensity and write error column
+                    binned[name].append(self.multiplication * math.fsum(values[row] for row in rows) / weights)
+                    binned[ERROR_COLUMN].append(
+                        self.multiplication * math.sqrt(math.fsum(y_values[row] for row in rows)) / weights
+                    )
+                elif name == self.norm:
+                    binned[name].append(weights)
                 else:
-                    combined.append(math.fsum(values[row] for row in rows) / len(rows))
-            binned[name] = combined
+                    # for other columns which are not norm and y, the multiplication doesn't
+                    # apply (why multiply temperature), just taking the average.
+                    binned[name].append(math.fsum(values[row] for row in rows) / len(rows))
 
         # bin centres rather than binned means, computed per bin so nothing accumulates.
         binned[x_name] = [first_centre + index * self.step for index in order]
@@ -620,16 +526,22 @@ class ToleranceRebinOps(ProcessOps):
     positions call for - the same point measured twice is one point with twice the counting
     time, not two neighbouring bins on an imposed grid.
 
-    ``norm`` names the column the merge is weighted by - the monitor or time a point was
-    counted against - so that a long count and a short one at the same position combine as
-    the single longer measurement they amount to, rather than as two equal votes.
-    ``multiplication`` then scales the merged y column, as it does in
-    ``EqualStepRebinOps``, putting it on a readable per-``multiplication``-``norm`` footing.
+    A merge combines its rows exactly as an equal-step bin does: the y column
+    (``columns[1]``) reports ``multiplication * sum(counts) / sum(norm)``, the ``norm``
+    column reports that ``sum(norm)``, and anything else is a plain unweighted mean. A long
+    count and a short one at the same position therefore combine as the single longer
+    measurement they amount to, rather than as two equal votes. Only the x column differs
+    from an equal-step rebin, there being no grid to report a centre from: it is the
+    ``norm``-weighted mean of the x values merged into it.
+
+    Reading raw counts against the monitor they were counted with is only sound on data
+    nothing has already reduced, so every origin must be a ``RawScan``: an appended or
+    previously rebinned scan is refused.
 
     The result carries an ``error`` column the origins did not, on the same terms as an
-    equal-step rebin: the y column's ``sqrt(|counts|)`` uncertainty, normalized alongside
-    the count it belongs to and combined in quadrature within each merge, since a merged
-    point's uncertainty is no longer recoverable from the value it reports.
+    equal-step rebin: ``multiplication * sqrt(sum(counts)) / sum(norm)``, the Poisson
+    uncertainty of the summed counts put through the same normalization as the sum itself,
+    since a merged point's uncertainty is no longer recoverable from the value it reports.
     """
 
     def __init__(
@@ -637,8 +549,8 @@ class ToleranceRebinOps(ProcessOps):
         tavi_data: TaviData,
         uuids: Sequence[UUID],
         columns: Sequence[str],
-        tol: float,
         norm: str,
+        tol: float,
         multiplication: float = 1,
     ) -> None:
         """
@@ -650,12 +562,14 @@ class ToleranceRebinOps(ProcessOps):
             columns: Names of the columns to carry over. At least two, the first being
                 the axis merged on and the first two becoming the result's
                 ``tavimeta.default_axis``.
+            norm: Name of the column each merge is weighted by - typically the monitor or
+                time its points were counted against. Required, the merge having no
+                unweighted form, and it must itself be one of ``columns``, since the
+                weighting happens after the append has dropped everything else.
             tol: How close two ``columns[0]`` values must be to count as the same point.
-            norm: Name of the column the merge is weighted by, typically the monitor or
-                time each point was counted against.
-            multiplication: Scale applied to ``columns[1]`` once it has been put on a
-                per-``norm`` footing, so that e.g. ``norm="monitor",
-                multiplication=10000`` reads as counts per 10000 monitor counts.
+            multiplication: Scale applied to the per-``norm`` y column, so that e.g.
+                ``norm="monitor", multiplication=10000`` reads as counts per 10000 monitor
+                counts. It scales ``error`` alongside y, and no other column.
 
         """
         super().__init__(tavi_data, uuids)
@@ -676,12 +590,12 @@ class ToleranceRebinOps(ProcessOps):
         Raises:
             ValueError: If ``tol`` is not a positive, finite number - a zero tolerance
                 merges only bit-identical floats and a negative one merges nothing at all;
-                if ``multiplication`` is not a positive, finite number; if ``norm`` is not
-                one of the requested columns, or is the y column it would normalize; if a
-                requested column is named ``error``,
-                which the operation computes itself; or if fewer than two columns are
-                requested - with one column there is no y column to merge and no second
-                name for the default axis.
+                if ``multiplication`` is not a positive, finite number; if ``norm`` is
+                empty, is not one of the requested columns, or is the y column it would
+                weight; if a requested column is named ``error``, which the operation
+                computes itself; if fewer than two columns are requested - with one column
+                there is no y column to merge and no second name for the default axis; or
+                if an origin is not a ``RawScan``, its counts having already been reduced.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
 
@@ -695,8 +609,10 @@ class ToleranceRebinOps(ProcessOps):
         if not math.isfinite(self.multiplication) or self.multiplication <= 0:
             raise ValueError(f"Rebin multiplication must be a positive, finite number, got {self.multiplication!r}.")
 
+        if not self.norm:
+            raise ValueError("Binning data require a normalization column, either mcu or time.")
         # the append drops every column it was not asked for, so a norm column left out of
-        # columns would be gone by the time the merge needs to weight by it.
+        # columns would be gone by the time the merge needs to weigh by it.
         if self.norm not in self.columns:
             raise ValueError(
                 f"Rebin normalization column {self.norm!r} must be one of the requested columns {list(self.columns)}."
@@ -710,10 +626,20 @@ class ToleranceRebinOps(ProcessOps):
         self._append_op.validate()
 
         # checked after the append, which is what guarantees there is a second column to
-        # name. The merge weights by norm after the renormalization has rewritten y, so a y
-        # column normalized by itself would be weighted by its own scaled result.
+        # name. A y column weighted by itself collapses to the scale alone, every merge
+        # reporting multiplication whatever was counted.
         if self.norm == self.columns[1]:
             raise ValueError(f"Rebin normalization column {self.norm!r} cannot be the y column it normalizes.")
+
+        # the merges read raw counts against the monitor they were counted with, which a
+        # scan some earlier operation has already combined or normalized no longer holds.
+        for uuid in self.uuids:
+            scan = self.tavi_data.fetch_by_uuid(uuid)
+            if not isinstance(scan, RawScan):
+                raise ValueError(
+                    f"Rebin can only operate on raw data, but {scan.tavimeta.friendly_name!r} "
+                    f"({uuid.value}) is already processed."
+                )
 
     def exec(self) -> ProcessedScan:
         """
@@ -721,19 +647,19 @@ class ToleranceRebinOps(ProcessOps):
 
         Returns:
             A ``ProcessedScan`` with a fresh uuid, one column per requested column plus an
-            ``error`` column holding the y column's uncertainty, and every origin recorded
-            in ``prov.contributing_scans`` at weight 1 - the merge weights points, not
-            origins. Its friendly name is the appended one suffixed with the tolerance and
-            the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty,
-            a merged scan having no file of its own, and ``tavimeta.normalization`` records
-            ``norm`` and ``multiplication``, this scan's y column now being on that
+            ``error`` column holding the uncertainty of each merge's y, and every origin
+            recorded in ``prov.contributing_scans`` at weight 1 - the merge weights points,
+            not origins. Its friendly name is the appended one suffixed with the tolerance
+            and the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are
+            empty, a merged scan having no file of its own, and ``tavimeta.normalization``
+            records ``norm`` and ``multiplication``, this scan's y column now being on that
             footing. Storing it in ``TaviData`` is the caller's job.
 
         Raises:
             ValueError: If ``tol`` or ``multiplication`` is not a positive, finite number,
-                if ``norm`` is not one of the requested columns or is the y column itself,
-                if a requested column is named ``error``,
-                if fewer than two columns are requested, if a row's x is
+                if ``norm`` is empty, is not one of the requested columns or is the y
+                column itself, if a requested column is named ``error``, if fewer than two
+                columns are requested, if an origin is not a ``RawScan``, if a row's x is
                 not finite, or if a row's ``norm`` value is zero.
             KeyError: If a uuid is not present in the data pool, or an origin does not
                 carry one of the requested columns.
@@ -744,56 +670,71 @@ class ToleranceRebinOps(ProcessOps):
         # the appended scan is a private intermediate, never registered and never returned
         # in this form, so there is nothing shared to protect by copying it.
         appended = self._append_op.exec()
-        renormalized = _renormalized_data(appended.data.data, self.columns[1], self.norm, self.multiplication)
-        appended.data = ScanData(data=self._bin_by_tol(renormalized))
+        appended.data = ScanData(data=self._bin_by_tol(appended.data.data))
         suffix = _norm_suffix(self.norm, self.multiplication)
         appended.tavimeta.friendly_name = f"{appended.tavimeta.friendly_name}_tol{self.tol}{suffix}"
         appended.tavimeta.normalization = (self.norm, self.multiplication)
         return appended
 
-    def _bin_by_tol(self, renormalized_data: dict[str, list[float]]) -> dict[str, list[float]]:
+    def _bin_by_tol(self, appended_data: dict[str, list[float]]) -> dict[str, list[float]]:
         """
-        Merge rows whose first column agrees to within ``tol``, averaging every column within each merge.
+        Merge rows whose first column agrees to within ``tol``, combining the rows of each merge.
 
-        Two columns are reduced differently from the rest. The x column reports the
-        ``norm``-weighted mean of the x values merged into it rather than either their
-        plain mean or a grid position: a merged point sits where the counting actually
-        happened, so the longer of two counts at nearly the same position pulls it. The
-        ``error`` column combines in quadrature over the points of a merge and then divides
-        by their number, that being the uncertainty of the mean the merge reports. Merges
-        come out in ascending x rather than in the origins' order, as they do for an
-        equal-step rebin. A NaN or infinite x raises - deciding what a missing value means
-        belongs to the loader, not to binning - while a NaN elsewhere poisons its merge's
-        mean.
+        The x column reports the ``norm``-weighted mean of the x values merged into it
+        rather than either their plain mean or a grid position: a merged point sits where
+        the counting actually happened, so the longer of two counts at nearly the same
+        position pulls it.
+
+        Every other column is reduced as it is for an equal-step rebin - the y column as
+        the monitor-weighted ``multiplication * sum(counts) / sum(norm)``, the ``norm``
+        column as that ``sum(norm)``, anything else as a plain mean - with ``error``
+        computed from the same two sums as y. Merges come out in ascending x rather than in
+        the origins' order. A NaN or infinite x raises - deciding what a missing value
+        means belongs to the loader, not to binning - while a NaN elsewhere poisons its
+        merge.
 
         Args:
-            renormalized_data: {column name: values}, every column the same length,
-                including the ``error`` column, with y already on its per-``norm`` footing
-                so that rows counted against different monitors average as like with like.
+            appended_data: {column name: values}, every column the same length, y still
+                holding the raw counts the append laid end to end.
 
         Returns:
-            The same column names, each holding one value per merge.
+            The requested columns plus ``error``, each holding one value per merge.
 
         Raises:
-            ValueError: If a row's x is not finite.
+            ValueError: If a row's x is not finite, or a row's ``norm`` value is zero.
 
         """
-        x_name = self.columns[0]
-        x_values = renormalized_data[x_name]
+        x_name, y_name = self.columns[0], self.columns[1]
+        x_values = appended_data[x_name]
+        y_values = appended_data[y_name]
         if not x_values:
-            return {name: [] for name in renormalized_data}
+            return {name: [] for name in (*appended_data, ERROR_COLUMN)}
 
-        norm_values = renormalized_data[self.norm]
-        binned: dict[str, list[float]] = {name: [] for name in renormalized_data}
+        norm_values = appended_data[self.norm]
+        # a point counted against nothing has no per-monitor value, and a merge it falls in
+        # would divide by a weight it contributed nothing to.
+        for row, norm_value in enumerate(norm_values):
+            if norm_value == 0:
+                raise ValueError(f"Rebin normalization column {self.norm!r} is zero at row {row}.")
+
+        binned: dict[str, list[float]] = {name: [] for name in (*appended_data, ERROR_COLUMN)}
         for rows in self._rows_by_bin(x_values):
-            for name, values in renormalized_data.items():
+            weights = math.fsum(norm_values[row] for row in rows)
+            for name, values in appended_data.items():
                 if name == x_name:
                     continue
-                if name == ERROR_COLUMN:
-                    binned[name].append(_binned_uncertainty(values, rows))
+                elif name == y_name:
+                    # y column, multiply weighted sum of intensity and write error column
+                    binned[name].append(self.multiplication * math.fsum(values[row] for row in rows) / weights)
+                    binned[ERROR_COLUMN].append(
+                        self.multiplication * math.sqrt(math.fsum(y_values[row] for row in rows)) / weights
+                    )
+                elif name == self.norm:
+                    binned[name].append(weights)
                 else:
+                    # for other columns which are not norm and y, the multiplication doesn't
+                    # apply (why multiply temperature), just taking the average.
                     binned[name].append(math.fsum(values[row] for row in rows) / len(rows))
-            weights = math.fsum(norm_values[row] for row in rows)
             binned[x_name].append(math.fsum(norm_values[row] * x_values[row] for row in rows) / weights)
         return binned
 

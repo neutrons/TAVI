@@ -157,6 +157,13 @@ handed. A ``ProcessedScan`` may itself be an origin for the next combination,
 which is why uuids resolve through ``fetch_by_uuid`` rather than against
 ``raw_scans`` alone.
 
+The rebinning operations are the exception: ``EqualStepRebinOps`` and
+``ToleranceRebinOps`` reduce each bin by summing raw counts against the monitor
+they were counted with, which is only meaningful on data nothing has already
+reduced, so they refuse any origin that is not a ``RawScan``. Chaining is still
+available in the other direction — a rebinned scan is an ordinary
+``ProcessedScan`` and may be appended, plotted or fitted like any other.
+
 Every origin must carry every requested column
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
