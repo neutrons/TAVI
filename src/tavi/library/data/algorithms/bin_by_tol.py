@@ -134,15 +134,8 @@ class ToleranceRebinOps(ProcessOps):
         x_name, y_name = self.columns[0], self.columns[1]
         x_values = appended_data[x_name]
         y_values = appended_data[y_name]
-        if not x_values:
-            return {name: [] for name in (*appended_data, ERROR_COLUMN)}
 
         norm_values = appended_data[self.norm]
-        # a point counted against nothing has no per-monitor value, and a merge it falls in
-        # would divide by a weight it contributed nothing to.
-        for row, norm_value in enumerate(norm_values):
-            if norm_value == 0:
-                raise ValueError(f"Rebin normalization column {self.norm!r} is zero at row {row}.")
 
         binned: dict[str, list[float]] = {name: [] for name in (*appended_data, ERROR_COLUMN)}
         for rows in self._rows_by_bin(x_values):

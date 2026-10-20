@@ -143,15 +143,8 @@ class EqualStepRebinOps(ProcessOps):
         x_name, y_name = self.columns[0], self.columns[1]
         x_values = appended_data[x_name]
         y_values = appended_data[y_name]
-        if not x_values:
-            return {name: [] for name in (*appended_data, ERROR_COLUMN)}
 
         norm_values = appended_data[self.norm]
-        # a point counted against nothing has no per-monitor value, and a bin it falls in
-        # would divide by a weight it contributed nothing to.
-        for row, norm_value in enumerate(norm_values):
-            if norm_value == 0:
-                raise ValueError(f"Rebin normalization column {self.norm!r} is zero at row {row}.")
 
         first_centre, rows_by_bin = self._bins_from_edges(x_values)
 
@@ -191,6 +184,9 @@ class EqualStepRebinOps(ProcessOps):
         beyond the extreme x, which centres the outermost bin on it and drops nothing -
         deriving the edges is what lets one routine serve the fixed and data-driven grids
         alike. Returns the first bin's centre and {bin index: rows falling in that bin}.
+
+        If the last point is on the boundary, it'll be binned to the last bin. If the bin edge is slightly
+        greater than last data point. The last data point will be binned to next bin center.
         """
         # an edge of 0.0 is an ordinary edge, so the fallback turns on being given nothing
         # at all rather than on falsiness.
