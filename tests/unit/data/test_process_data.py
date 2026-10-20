@@ -482,11 +482,22 @@ def test_rebin_raises_without_two_columns_to_form_a_default_axis():
         make_equal_step_rebin(make_countable_scan(), columns=("monitor",)).validate()
 
 
-def test_rebin_raises_on_a_point_counted_against_a_zero_norm():
-    """A point counted against nothing has no per-monitor value to contribute."""
+def test_rebin_absorbs_a_zero_norm_point_that_shares_its_bin():
+    """A point counted against nothing carries no weight, so its bin stands on the rest."""
     scan = make_countable_scan(data={"qh": [1.0, 1.1], "detector": [100.0, 121.0], "monitor": [1000.0, 0.0]})
 
-    with pytest.raises(ValueError, match="is zero at row 1"):
+    rebinned = make_equal_step_rebin(scan).exec()
+
+    # both rows land in one bin, whose weight is the 1000 the first was counted against.
+    assert rebinned.data.detector == pytest.approx([221 / 1000])
+    assert rebinned.data.monitor == pytest.approx([1000.0])
+
+
+def test_rebin_raises_on_a_bin_counted_against_nothing_at_all():
+    """A bin with no counting behind it has no per-monitor value to report."""
+    scan = make_countable_scan(data={"qh": [1.0, 5.0], "detector": [100.0, 121.0], "monitor": [1000.0, 0.0]})
+
+    with pytest.raises(ZeroDivisionError):
         make_equal_step_rebin(scan).exec()
 
 
@@ -651,11 +662,23 @@ def test_bin_by_tol_raises_on_an_x_that_belongs_to_no_bin(x_value):
         rebin._bin_by_tol({"qh": [1.0, x_value], "detector": [100.0, 100.0], "monitor": [1000.0, 1000.0]})
 
 
-def test_bin_by_tol_raises_on_a_point_counted_against_a_zero_norm():
+def test_bin_by_tol_raises_on_a_merge_counted_against_nothing_at_all():
+    """Unlike an equal-step bin, tol leaves the zero-norm point alone in a merge of its own."""
     rebin = make_tolerance_rebin(make_countable_scan())
 
-    with pytest.raises(ValueError, match="is zero at row 1"):
+    with pytest.raises(ZeroDivisionError):
         rebin._bin_by_tol({"qh": [1.0, 1.1], "detector": [100.0, 100.0], "monitor": [1000.0, 0.0]})
+
+
+def test_bin_by_tol_absorbs_a_zero_norm_point_that_shares_its_merge():
+    """Within tol the zero-norm point merges, carrying no weight of its own."""
+    rebin = make_tolerance_rebin(make_countable_scan(), tol=0.5, multiplication=1000)
+
+    binned = rebin._bin_by_tol({"qh": [1.0, 1.1], "detector": [100.0, 121.0], "monitor": [1000.0, 0.0]})
+
+    assert binned["detector"] == pytest.approx([1000 * 221 / 1000])
+    # the merge sits where the counting happened, the weightless point not pulling it.
+    assert binned["qh"] == pytest.approx([1.0])
 
 
 def test_tolerance_rebin_merges_the_repeated_passes_of_its_origins():
