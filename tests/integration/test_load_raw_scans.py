@@ -11,8 +11,10 @@ from neutrons_standard.config import Resource
 import pytest
 
 from tavi.backend.model.application_model import ApplicationModel
+from tavi.backend.model.filter_model import FilterModel
 from tavi.backend.model.fit_model import FitModel
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
+from tavi.backend.model.interface.filter_model_interface import FilterModelInterface, FilterModelProxy
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface, FitModelProxy
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface, PlotModelProxy
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
@@ -58,6 +60,7 @@ class TestLoadRawScans(IntegrationTest):
             ApplicationModelInterface.__name__: ApplicationModelProxy(application_model),
             PlotModelInterface.__name__: PlotModelProxy(plot_model),
             FitModelInterface.__name__: FitModelProxy(fit_model),
+            FilterModelInterface.__name__: FilterModelProxy(FilterModel(tavi_project_model.get_filters_handle())),
         }
 
         main_presenter = MainPresenter(dict_of_model)

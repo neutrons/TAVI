@@ -261,7 +261,7 @@ under the stated condition, or that end in UI state rather than another event.
         SyncFitHistoryEvent:::event
         RestoreFitMemberEvent:::event
 
-        tree -- LoadRawScanPresenter --> FocusEvent
+        tree -- ProjectPresenter --> FocusEvent
         FocusEvent -- "TaviProjectModel: always, before routing" --> ClearFocusEvent
         ClearFocusEvent -. "FittingPresenter: reset panel, forget scan-to-fit map and stage" .-> panel
         ClearFocusEvent -. "PlotModel: forget focus and stage" .-> lastplots[(focus and stage)]
@@ -300,7 +300,7 @@ under the stated condition, or that end in UI state rather than another event.
         undocall -- "(2nd)" --> RestoreFitMemberEvent
         undocall -- "restored member only (3rd)" --> RecomputeFitEvent
         RestoreFitMemberEvent -. "FitWindowPresenter: note window, only if open" .-> windows
-        AddFitEvent -- LoadRawScanPresenter --> treenode[(tree /Fits node)]
+        AddFitEvent -- ProjectPresenter --> treenode[(tree /Fits node)]
         SyncFitEvent -. "PlotterPresenter: append curves" .-> canvas[(main plotter)]
         SyncFitEvent -. "FittingPresenter: map staged scans to fit, load lead's member" .-> panel[(fitting panel)]
         SyncFitEvent -. "FitWindowPresenter: noted windows only" .-> windows
@@ -373,7 +373,7 @@ Run a sequential fit
         participant TaviProjectModel
         participant PlotterPresenter
         participant FitWindowPresenter
-        participant LoadRawScanPresenter
+        participant ProjectPresenter
 
         Note over FittingPresenter: SyncStageEvent staged s1..sn ("Apply All" checked)
         User ->> FittingView: Perform Fit
@@ -385,7 +385,7 @@ Run a sequential fit
         FitModel ->> EventBroker: SaveFitEvent(fit_uuid, members=[m1..mn])
         EventBroker ->> TaviProjectModel: store FitEntry
         TaviProjectModel ->> EventBroker: AddFitEvent (new uuid only)
-        EventBroker ->> LoadRawScanPresenter: add node under /Fits
+        EventBroker ->> ProjectPresenter: add node under /Fits
         EventBroker ->> FitWindowPresenter: note a window per member
         FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[o1..on])
         EventBroker ->> PlotterPresenter: draw each curve on the main canvas
@@ -404,7 +404,7 @@ window opens and any open window is left as it was.
 
     sequenceDiagram
         participant User
-        participant LoadRawScanPresenter
+        participant ProjectPresenter
         participant EventBroker
         participant TaviProjectModel
         participant PlotterPresenter
@@ -413,8 +413,8 @@ window opens and any open window is left as it was.
         participant FitModel
         participant FitWindowPresenter
 
-        User ->> LoadRawScanPresenter: select fit in tree
-        LoadRawScanPresenter ->> EventBroker: FocusEvent(ids)
+        User ->> ProjectPresenter: select fit in tree
+        ProjectPresenter ->> EventBroker: FocusEvent(ids)
         EventBroker ->> TaviProjectModel: resolve ids to FitEntry
         TaviProjectModel ->> EventBroker: ClearFocusEvent
         EventBroker ->> PlotModel: forget focus and stage
@@ -523,20 +523,21 @@ Remove a fit or scan
 
     sequenceDiagram
         participant User
-        participant LoadRawScanPresenter
+        participant ProjectPresenter
         participant TaviProjectModel
         participant EventBroker
         participant FittingPresenter
         participant FitWindowPresenter
 
-        User ->> LoadRawScanPresenter: remove items
-        LoadRawScanPresenter ->> TaviProjectModel: remove_items(uuids)
+        User ->> ProjectPresenter: remove items
+        ProjectPresenter ->> TaviProjectModel: remove_items(uuids)
         TaviProjectModel ->> TaviProjectModel: TaviData.purge - drop members of removed scans, fits left empty
         TaviProjectModel ->> TaviProjectModel: forget undo history of removed fits and scans
         TaviProjectModel ->> EventBroker: RemoveRawScanEvent per scan
         EventBroker ->> FitWindowPresenter: close every window on that scan
-        EventBroker ->> LoadRawScanPresenter: drop tree node
+        EventBroker ->> ProjectPresenter: drop tree node
         TaviProjectModel ->> EventBroker: RemoveFitEvent per fit removed or emptied
         EventBroker ->> FittingPresenter: forget fit uuid (next Perform Fit mints a new one)
         EventBroker ->> FitWindowPresenter: close the fit's windows
-        EventBroker ->> LoadRawScanPresenter: drop tree node
+        EventBroker ->> ProjectPresenter: drop tree node
+

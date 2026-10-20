@@ -80,7 +80,7 @@ Presenters
 .. autoclass:: tavi.frontend.presenter.file_menu_presenter.FileMenuPresenter
    :members:
 
-.. autoclass:: tavi.frontend.presenter.load_raw_scan_presenter.LoadRawScanPresenter
+.. autoclass:: tavi.frontend.presenter.project_presenter.ProjectPresenter
    :members:
 
 .. autoclass:: tavi.frontend.presenter.plotter_presenter.PlotterPresenter

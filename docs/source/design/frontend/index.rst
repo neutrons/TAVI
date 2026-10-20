@@ -16,3 +16,4 @@ of the features of Frontend.
    plot_data_model
    data_file_view
    fit_data_model
+   filter_model

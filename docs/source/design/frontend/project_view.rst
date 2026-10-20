@@ -47,7 +47,7 @@ Loading raw scans triggers the following sequence:
         ↓
     EventBroker
         ↓
-    LoadRawScanPresenter.update_treeview_data
+    ProjectPresenter.update_treeview_data
         ↓
     ProjectView.add_raw_scan
         ↓
@@ -89,10 +89,10 @@ This event is the sole contract between backend data loading and UI updates.
 Presenter Responsibilities
 --------------------------
 
-The ``LoadRawScanPresenter``:
+The ``ProjectPresenter``:
 
-- Registers with the ``EventBroker`` for ``AddRawScanEvent``
-- Maintains a local ``inventory`` of loaded scans
+- Registers with the ``EventBroker`` for the project's add, remove and clear events
+- Holds no project data of its own: the tree is a view of what ``TaviProjectModel`` lists
 - Translates events into view updates
 
 On event:
@@ -243,7 +243,7 @@ The flow is:
 1. ``PlotterPresenter`` publishes ``SavePlotEvent`` with the plot to save
 2. ``TaviProjectModel`` stores it in ``TaviData.plots`` and emits
    ``AddPlotEvent``
-3. ``LoadRawScanPresenter`` listens and forwards to the view
+3. ``ProjectPresenter`` listens and forwards to the view
 4. View updates the Project Tree
 
 Data Flow
@@ -261,7 +261,7 @@ Data Flow
         ↓
     EventBroker
         ↓
-    LoadRawScanPresenter.update_plot_treeview_data
+    ProjectPresenter.update_plot_treeview_data
         ↓
     ProjectView.add_plot
         ↓
@@ -287,7 +287,7 @@ the plot's own series (each line's run name, joined with ``_``, plus a
 Presenter Responsibilities
 ---------------------------
 
-``LoadRawScanPresenter`` registers a second handler alongside
+``ProjectPresenter`` registers a second handler alongside
 ``update_treeview_data``:
 
 .. code-block:: python
@@ -297,8 +297,7 @@ Presenter Responsibilities
     def update_plot_treeview_data(self, event: AddPlotEvent) -> None:
         self._view.add_plot(event.uuid, event.friendly_name, event.friendly_path)
 
-Unlike ``update_treeview_data``, this does **not** touch ``self.inventory`` —
-that tracking is raw-scan-specific.
+This only forwards to the view, the same as ``update_treeview_data``.
 
 View Responsibilities
 ----------------------

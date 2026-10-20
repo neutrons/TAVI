@@ -2,6 +2,8 @@
 
 import pytest
 
+from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
@@ -245,3 +247,33 @@ def test_purge_cascades_to_plots_and_fits_together():
 
     assert (result.raw_scans, result.plots, result.fits) == ([scan.uuid], [plot.uuid], [fit.uuid])
     assert (data.raw_scans, data.plots, data.fits) == ({}, {}, {})
+
+
+# ---------------------------------------------------------------------------
+# filter_raw_scans
+# ---------------------------------------------------------------------------
+
+
+def make_numbered_scan(uuid_val: str, scan_number: str) -> RawScan:
+    return make_raw_scan(uuid_val).model_copy(update={"metadata": ScanMetadata(data={"scan": scan_number})})
+
+
+def make_scan_filter(operator: FilterOperator, value: str) -> ScanFilter:
+    return ScanFilter(name="Filter", criteria=[FilterCriterion(key="scan", operator=operator, value=value)])
+
+
+def test_filter_raw_scans_without_filters_returns_every_scan_in_load_order():
+    scans = [make_numbered_scan("b", "2"), make_numbered_scan("a", "1")]
+    data = TaviData(raw_scans={scan.uuid: scan for scan in scans})
+
+    assert data.filter_raw_scans([]) == [UUID(value="b"), UUID(value="a")]
+
+
+def test_filter_raw_scans_keeps_only_scans_passing_every_filter():
+    scans = [make_numbered_scan(f"s{n}", str(n)) for n in range(1, 6)]
+    data = TaviData(raw_scans={scan.uuid: scan for scan in scans})
+    at_least_two = make_scan_filter(FilterOperator.GREATER_EQUAL, "2")
+    below_four = make_scan_filter(FilterOperator.LESS, "4")
+
+    assert data.filter_raw_scans([at_least_two, below_four]) == [UUID(value="s2"), UUID(value="s3")]
+

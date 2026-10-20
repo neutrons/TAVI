@@ -192,14 +192,21 @@ Event lexicon
      - Empty a set so it can be rebuilt. Always paired with the additive verb
        for the same set. Clearing the focus also clears the stage, since the
        stage is part of the focus.
-     - ``ClearFocusEvent``, ``ClearStageEvent``
+     - ``ClearFocusEvent``, ``ClearStageEvent``, ``ClearFilterEvent``,
+       ``ClearRawScansEvent``
+   * - Apply
+     - Add a filter to those narrowing which scans the project lists. Like
+       focus, applying only adds: each applied filter narrows the list
+       further, and replacing the applied filter is a clear and then an apply.
+     - ``ApplyFilterEvent``
    * - Sync
      - A model's answer: "this is how X stands now". Display only. Carries the
        data the UI needs, so presenters never reach into a model. Sent after
        the state changes, whatever changed it.
      - ``SyncPlotEvent``, ``SyncStageEvent``, ``SyncFitEvent``,
        ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
-       ``SyncBackgroundParamsEvent``, ``SyncRecentProjectsEvent``
+       ``SyncBackgroundParamsEvent``, ``SyncRecentProjectsEvent``,
+       ``SyncFilterValidationEvent``
    * - Recompute
      - Ask the model that computes X to compute it again for display. Never
        writes to the project.
@@ -208,9 +215,13 @@ Event lexicon
      - Write X into the project (``TaviData``).
      - ``SavePlotEvent``, ``SaveFitEvent``
    * - Add / Remove
-     - Announce that X has entered or left the project.
+     - Announce that X has entered or left the project. A raw scan is also
+       added when it starts passing the applied filters again, after a
+       ``ClearRawScansEvent``: Add means "listed", while only Remove means
+       the scan left ``TaviData``.
      - ``AddRawScanEvent``, ``AddPlotEvent``, ``AddFitEvent``,
-       ``RemoveRawScanEvent``, ``RemovePlotEvent``, ``RemoveFitEvent``
+       ``AddFilterEvent``, ``RemoveRawScanEvent``, ``RemovePlotEvent``,
+       ``RemoveFitEvent``, ``RemoveFilterEvent``
    * - Restore
      - Announce that X was put back to an earlier saved state.
      - ``RestoreFitMemberEvent``
@@ -275,7 +286,8 @@ A request that exactly one model answers, because it changes state only that
 model owns, is many to one. It is a direct call through that model's
 ``Proxy`` instead, such as ``PlotModel.update_fields``,
 ``PlotModel.set_show_title``, ``FitModel.perform_fit``,
-``FitModel.sync_fit_spec`` and ``TaviProjectModel.undo_fit_member``. The
+``FitModel.sync_fit_spec``, ``TaviProjectModel.undo_fit_member`` and
+``FilterModel.apply_filter``. The
 model then announces the result with a sync event, which every interested
 subscriber receives. Broadcasting such a request would only add a hop, and
 would hide who is responsible for answering it.
@@ -297,7 +309,7 @@ Event catalog
      - Subscribed by
      - Purpose
    * - ``FocusEvent``
-     - ``LoadRawScanPresenter``
+     - ``ProjectPresenter``
      - ``TaviProjectModel``
      - Tree selection, as bare uuids
    * - ``ClearFocusEvent``
@@ -367,17 +379,37 @@ Event catalog
      - Write into ``TaviData``
    * - ``AddRawScanEvent``, ``AddPlotEvent``, ``AddFitEvent``
      - ``TaviProjectModel``
-     - ``LoadRawScanPresenter``
+     - ``ProjectPresenter``
      - Item entered the project
    * - ``RemoveRawScanEvent``, ``RemovePlotEvent``, ``RemoveFitEvent``
      - ``TaviProjectModel``
-     - ``LoadRawScanPresenter``, and ``PlotModel``, ``FittingPresenter``,
+     - ``ProjectPresenter``, and ``PlotModel``, ``FittingPresenter``,
        ``FitWindowPresenter`` where they hold that kind of item
      - Item left the project
+   * - ``AddFilterEvent``, ``RemoveFilterEvent``
+     - ``FilterModel``
+     - ``FilterPresenter``
+     - Filter saved to or removed from the project; not shown in the tree
    * - ``SyncRecentProjectsEvent``
      - ``TaviProjectModel``
      - ``FileMenuPresenter``
      - The recent-projects list
+   * - ``ApplyFilterEvent``
+     - ``FilterModel``
+     - ``TaviProjectModel``, ``FilterPresenter``
+     - Narrow the project's scan list by a filter
+   * - ``ClearFilterEvent``
+     - ``FilterModel``
+     - ``TaviProjectModel``, ``FilterPresenter``
+     - Stop narrowing the project's scan list
+   * - ``ClearRawScansEvent``
+     - ``TaviProjectModel``
+     - ``ProjectPresenter``
+     - Unlist every raw scan before relisting those that pass the filters
+   * - ``SyncFilterValidationEvent``
+     - ``FilterModel``
+     - ``FilterPresenter``
+     - Why a filter cannot be applied
    * - ``ReportErrorEvent``
      - Models, ``WorkerPool``
      - ``RecoveryService``

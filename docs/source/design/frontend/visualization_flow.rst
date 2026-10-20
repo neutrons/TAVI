@@ -69,7 +69,7 @@ Event summary
 =========================  =========================  ==========================================================
 Event                      Published by               Meaning
 =========================  =========================  ==========================================================
-``FocusEvent``             ``LoadRawScanPresenter``   The tree selection changed; ids of every selected item.
+``FocusEvent``             ``ProjectPresenter``   The tree selection changed; ids of every selected item.
 ``ClearFocusEvent``        ``TaviProjectModel``       Nothing is focused any more (stage included).
 ``FocusRawScanEvent``      ``TaviProjectModel``       Add these raw scans to the focus.
 ``FocusPlotEvent``         ``TaviProjectModel``,      Add these plots to the focus.
@@ -93,7 +93,7 @@ All" checked. A selection of only one type simply skips the other branch.
 
     sequenceDiagram
         participant User
-        participant LoadRawScanPresenter
+        participant ProjectPresenter
         participant EventBroker
         participant TaviProjectModel
         participant PlotModel
@@ -101,8 +101,8 @@ All" checked. A selection of only one type simply skips the other branch.
         participant Plot1DView
         participant DataFilePresenter
 
-        User ->> LoadRawScanPresenter: selects scan and plot nodes (in selection order)
-        LoadRawScanPresenter ->> EventBroker: FocusEvent(ids)
+        User ->> ProjectPresenter: selects scan and plot nodes (in selection order)
+        ProjectPresenter ->> EventBroker: FocusEvent(ids)
 
         EventBroker ->> TaviProjectModel: handle focus event
         TaviProjectModel ->> EventBroker: ClearFocusEvent
@@ -230,7 +230,7 @@ plot in the project.
         participant PlotModel
         participant EventBroker
         participant TaviProjectModel
-        participant LoadRawScanPresenter
+        participant ProjectPresenter
 
         User ->> Plot1DView: clicks "Add Plot"
         Plot1DView ->> PlotterPresenter: plot_clicked
@@ -239,7 +239,7 @@ plot in the project.
         PlotModel ->> EventBroker: SavePlotEvent(plot)
         EventBroker ->> TaviProjectModel: store in TaviData.plots
         TaviProjectModel ->> EventBroker: AddPlotEvent(uuid, friendly_name, friendly_path="")
-        EventBroker ->> LoadRawScanPresenter: add the node under /Plots
+        EventBroker ->> ProjectPresenter: add the node under /Plots
 
 The new ``Plot`` always gets a fresh uuid, so clicking **Add Plot** twice on
 the same focus creates two independent entries rather than overwriting one.

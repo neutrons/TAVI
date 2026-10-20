@@ -17,9 +17,19 @@ from tavi.library.data.scan import UUID
 
 
 class ProjectView(QWidget):
-    """Main widget."""
+    """
+    Main widget.
+
+    Every change to the tree goes through a signal, because the presenter calls these from whichever
+    model worker thread published the event, and Qt widgets may only be touched on the GUI thread.
+    """
 
     update_tree_signal = Signal(list)
+    add_raw_scan_signal = Signal(object, str, str)
+    add_plot_signal = Signal(object, str, str)
+    add_fit_signal = Signal(object, str, str)
+    remove_item_signal = Signal(object)
+    clear_raw_scans_signal = Signal()
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -43,6 +53,14 @@ class ProjectView(QWidget):
             self.tree_widget.add_tree_data,
             type=Qt.QueuedConnection,  # run safely on GUI thread
         )
+        # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from a
+        # worker thread. Queued calls from one thread run in emit order, so a relist's clear always
+        # lands before its adds.
+        self.add_raw_scan_signal.connect(self.tree_widget.add_raw_scan)
+        self.add_plot_signal.connect(self.tree_widget.add_plot)
+        self.add_fit_signal.connect(self.tree_widget.add_fit)
+        self.remove_item_signal.connect(self.tree_widget.remove_item)
+        self.clear_raw_scans_signal.connect(self.tree_widget.clear_raw_scans)
 
     def hookup_select_signal(self, callback: Callable) -> None:
         """Connect selection signal to callback."""
@@ -53,24 +71,28 @@ class ProjectView(QWidget):
         self.tree_widget.remove_requested.connect(callback)
 
     def remove_item(self, uuid: UUID) -> None:
-        """Remove an item from the view."""
-        self.tree_widget.remove_item(uuid)
+        """Remove an item from the view, from any thread."""
+        self.remove_item_signal.emit(uuid)
 
     def get_selected_items(self) -> list[UUID]:
         """Get list of selected item UUIDs."""
         return self.tree_widget.get_selected_items()
 
+    def clear_raw_scans(self) -> None:
+        """Remove every raw scan from the view, from any thread."""
+        self.clear_raw_scans_signal.emit()
+
     def add_raw_scan(self, uuid: UUID, name: str, path: str) -> None:
-        """Add a raw scan to the view."""
-        self.tree_widget.add_raw_scan(uuid, name, path)
+        """Add a raw scan to the view, from any thread."""
+        self.add_raw_scan_signal.emit(uuid, name, path)
 
     def add_plot(self, uuid: UUID, name: str, path: str) -> None:
-        """Add a plot to the view."""
-        self.tree_widget.add_plot(uuid, name, path)
+        """Add a plot to the view, from any thread."""
+        self.add_plot_signal.emit(uuid, name, path)
 
     def add_fit(self, uuid: UUID, name: str, path: str) -> None:
-        """Add a fit to the view."""
-        self.tree_widget.add_fit(uuid, name, path)
+        """Add a fit to the view, from any thread."""
+        self.add_fit_signal.emit(uuid, name, path)
 
     def update_add_tree_data(self, event_list: list[str]) -> None:
         """Invoke update_tree_signal to process data coming in from a different thread."""
@@ -251,6 +273,21 @@ class TreeViewWidget(QWidget):
         parent = item.parent()
         self._remove_index(item.index())
         self._prune_empty_folders(parent)
+
+    def clear_raw_scans(self) -> None:
+        """Remove every raw scan and folder under the Raw root, leaving the root itself and the other roots."""
+        raw_root = self.path_map["/Raw"]
+        # The model clears the focus before relisting, so dropping the selection must not publish a
+        # FocusEvent of its own from inside that chain.
+        selection_model = self.treeView.selectionModel()
+        selection_model.blockSignals(True)
+        try:
+            selection_model.clearSelection()
+            self._selection_order.clear()
+            for row in reversed(range(raw_root.rowCount())):
+                self.remove_entry(raw_root.child(row).index())
+        finally:
+            selection_model.blockSignals(False)
 
     def _prune_empty_folders(self, item: Optional[StandardItem]) -> None:
         """Walk up from a removed item deleting folders left childless, stopping at the fixed roots."""
