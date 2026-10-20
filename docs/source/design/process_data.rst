@@ -5,7 +5,9 @@ ProcessOps
 
    Abstract base for operations that build derived :class:`ProcessedScan`
    objects from scans a project has already loaded. Lives in
-   ``tavi.library.data.process_data``.
+   ``tavi.library.data.process_op``; each concrete operation is a module of its
+   own under ``tavi.library.data.algorithms`` — ``append_ops.AppendOp``,
+   ``equal_step_bin.EqualStepRebinOps`` and ``bin_by_tol.ToleranceRebinOps``.
 
    :param tavi_data: The project data holding the raw and processed scans that
       uuids are resolved against, via ``TaviData.fetch_by_uuid``.

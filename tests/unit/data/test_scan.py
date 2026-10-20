@@ -32,8 +32,10 @@ def make_provenance() -> Provenance:
         contributing_scans={UUID(value="scan-001"): 1},
     )
 
-def make_uuid()->UUID:
-    return UUID(value = "scan-001")
+
+def make_uuid() -> UUID:
+    return UUID(value="scan-001")
+
 
 def make_scan() -> Scan:
     return Scan(
@@ -43,6 +45,7 @@ def make_scan() -> Scan:
         tavimeta=make_tavimeta(),
         prov=make_provenance(),
     )
+
 
 def make_raw_scan() -> RawScan:
     return RawScan(
@@ -98,7 +101,7 @@ def test_raw_scan_uuid_is_read_only():
     raw_scan = make_raw_scan()
 
     with pytest.raises(ValidationError):
-        raw_scan.uuid = UUID(value ="scan-002")
+        raw_scan.uuid = UUID(value="scan-002")
 
 
 def test_raw_scan_data_is_read_only():

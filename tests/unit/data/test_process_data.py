@@ -5,7 +5,9 @@ import math
 import numpy as np
 import pytest
 
-from tavi.library.data.process_data import AppendOp, EqualStepRebinOps, ToleranceRebinOps
+from tavi.library.data.algorithms.append_ops import AppendOp
+from tavi.library.data.algorithms.bin_by_tol import ToleranceRebinOps
+from tavi.library.data.algorithms.equal_step_bin import EqualStepRebinOps
 from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
 
@@ -254,14 +256,15 @@ def test_rebin_reports_the_total_counting_in_the_norm_column():
 
 
 def test_rebin_averages_columns_that_are_neither_y_nor_norm():
-    """A count scale means nothing applied to a temperature, which is a plain mean of the bin."""
+    """A count scale means nothing applied to a temperature, which is a norm-weighted mean of the bin."""
     scan = make_countable_scan(
         data={"qh": [1.0, 1.05], "detector": [100.0, 121.0], "monitor": [1000.0, 1100.0], "temp": [300.0, 310.0]}
     )
 
     rebinned = make_equal_step_rebin(scan, columns=("qh", "detector", "monitor", "temp"), multiplication=1000).exec()
 
-    assert rebinned.data.temp == pytest.approx([305.0])
+    # (1000*300 + 1100*310) / 2100, the longer count at 310 pulling it above the plain 305.
+    assert rebinned.data.temp == pytest.approx([641000 / 2100])
 
 
 def test_rebin_reports_each_bin_centre_rather_than_the_mean_of_its_x_values():
@@ -413,11 +416,28 @@ def test_rebin_raises_on_a_step_that_defines_no_grid(step):
         make_equal_step_rebin(make_countable_scan(), step=step).validate()
 
 
-@pytest.mark.parametrize(("start", "finish"), [(1.0, None), (None, 1.0)])
-def test_rebin_raises_when_only_one_bin_edge_is_given(start, finish):
-    """One edge on its own says nothing about where the grid ends."""
-    with pytest.raises(ValueError, match="start and finish must be given together"):
-        make_equal_step_rebin(make_countable_scan(), start=start, finish=finish).validate()
+def test_rebin_reads_a_missing_bin_edge_off_the_data():
+    """One edge fixes its own end of the grid; the other is derived and drops nothing."""
+    scan = make_countable_scan(data={"qh": [1.0, 2.0, 3.0], "detector": [10.0, 20.0, 30.0], "monitor": [1000.0] * 3})
+
+    from_start = make_equal_step_rebin(scan, start=1.5).exec()
+    to_finish = make_equal_step_rebin(scan, finish=2.5).exec()
+
+    # 1.5 is an outer edge, so 1.0 falls below it, and the derived finish covers 3.0.
+    assert from_start.data.qh == pytest.approx([2.0, 3.0])
+    # likewise 3.0 lies above 2.5, and the derived start reaches down to 1.0.
+    assert to_finish.data.qh == pytest.approx([1.0, 2.0])
+
+
+def test_rebin_treats_a_zero_bin_edge_as_an_edge_rather_than_an_omission():
+    """0.0 is an ordinary edge on an energy axis, and must not read as 'no edge given'."""
+    scan = make_countable_scan(data={"qh": [1.0, 2.0, 3.0], "detector": [10.0, 20.0, 30.0], "monitor": [1000.0] * 3})
+
+    rebinned = make_equal_step_rebin(scan, start=0.0, finish=2.0).exec()
+
+    # a derived start would have sat at 0.5 and put 1.0 and 2.0 in bins of their own.
+    assert rebinned.data.qh == pytest.approx([1.5])
+    assert rebinned.data.monitor == pytest.approx([2000.0])
 
 
 def test_rebin_raises_when_the_bin_range_runs_backwards():
