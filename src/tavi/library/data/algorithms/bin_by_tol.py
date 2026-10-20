@@ -18,31 +18,17 @@ from tavi.library.data.tavi_data import TaviData
 
 class ToleranceRebinOps(ProcessOps):
     """
-    Append several scans, then merge points that agree along the x axis to within ``tol``.
+    Append several scans, then merge points that agree along ``columns[0]`` to within ``tol``.
 
-    The origins' columns are laid end to end by an ``AppendOp`` first, and points of the
-    appended result whose ``columns[0]`` values fall within ``tol`` of each other are then
-    merged into one. Unlike an equal-step rebin there is no grid: the bins are wherever the
-    measurement actually put them, which is what repeated passes over the same nominal
-    positions call for - the same point measured twice is one point with twice the counting
-    time, not two neighbouring bins on an imposed grid.
+    Unlike an equal-step rebin there is no grid: the bins are wherever the measurement put
+    them, which is what repeated passes over the same nominal positions call for - the same
+    point measured twice is one point with twice the counting time, not two neighbouring
+    bins on an imposed grid. A merge combines its rows exactly as an equal-step bin does,
+    and carries the same ``error`` column; only x differs, there being no grid to report a
+    centre from, and it is the ``norm``-weighted mean of the x values merged into it.
 
-    A merge combines its rows exactly as an equal-step bin does: the y column
-    (``columns[1]``) reports ``multiplication * sum(counts) / sum(norm)``, the ``norm``
-    column reports that ``sum(norm)``, and anything else is a ``norm``-weighted mean. A long
-    count and a short one at the same position therefore combine as the single longer
-    measurement they amount to, rather than as two equal votes. Only the x column differs
-    from an equal-step rebin, there being no grid to report a centre from: it is the
-    ``norm``-weighted mean of the x values merged into it.
-
-    Reading raw counts against the monitor they were counted with is only sound on data
-    nothing has already reduced, so every origin must be a ``RawScan``: an appended or
-    previously rebinned scan is refused.
-
-    The result carries an ``error`` column the origins did not, on the same terms as an
-    equal-step rebin: ``multiplication * sqrt(sum(counts)) / sum(norm)``, the Poisson
-    uncertainty of the summed counts put through the same normalization as the sum itself,
-    since a merged point's uncertainty is no longer recoverable from the value it reports.
+    Every origin must be a ``RawScan``, raw counts against their monitor being meaningless
+    on data something has already reduced.
     """
 
     def __init__(
@@ -57,21 +43,10 @@ class ToleranceRebinOps(ProcessOps):
         """
         Store the origins, the columns to carry over, the merge tolerance, the weighting column and the scale.
 
-        Args:
-            tavi_data: The pool ``uuids`` are looked up in.
-            uuids: Origin scan uuids, in the order their rows should be appended.
-            columns: Names of the columns to carry over. At least two, the first being
-                the axis merged on and the first two becoming the result's
-                ``tavimeta.default_axis``.
-            norm: Name of the column each merge is weighted by - typically the monitor or
-                time its points were counted against. Required, the merge having no
-                unweighted form, and it must itself be one of ``columns``, since the
-                weighting happens after the append has dropped everything else.
-            tol: How close two ``columns[0]`` values must be to count as the same point.
-            multiplication: Scale applied to the per-``norm`` y column, so that e.g.
-                ``norm="monitor", multiplication=10000`` reads as counts per 10000 monitor
-                counts. It scales ``error`` alongside y, and no other column.
-
+        ``tol`` is how close two ``columns[0]`` values must be to count as the same point.
+        ``norm`` names the column each merge is weighted by - the monitor or time its
+        points were counted against - and must itself be one of ``columns``.
+        ``multiplication`` scales the per-``norm`` y column and its ``error``.
         """
         super().__init__(tavi_data, uuids)
         self.tol = tol
@@ -85,22 +60,7 @@ class ToleranceRebinOps(ProcessOps):
         return self._append_op.columns
 
     def validate(self) -> None:
-        """
-        Check the tolerance and the normalization, then everything the underlying append requires.
-
-        Raises:
-            ValueError: If ``tol`` is not a positive, finite number - a zero tolerance
-                merges only bit-identical floats and a negative one merges nothing at all;
-                if ``multiplication`` is not a positive, finite number; if ``norm`` is
-                empty, is not one of the requested columns, or is the y column it would
-                weight; if a requested column is named ``error``, which the operation
-                computes itself; if fewer than two columns are requested - with one column
-                there is no y column to merge and no second name for the default axis; or
-                if an origin is not a ``RawScan``, its counts having already been reduced.
-            KeyError: If a uuid is not present in the data pool, or an origin does not
-                carry one of the requested columns.
-
-        """
+        """Check the tolerance and the normalization, then everything the underlying append requires."""
         # NaN would pass a bare positivity check and only fail once it reached the merge.
         if not math.isfinite(self.tol) or self.tol <= 0:
             raise ValueError(f"Rebin tolerance must be a positive, finite number, got {self.tol!r}.")
@@ -146,25 +106,10 @@ class ToleranceRebinOps(ProcessOps):
         """
         Append the origins and merge the points that agree along x to within ``tol``.
 
-        Returns:
-            A ``ProcessedScan`` with a fresh uuid, one column per requested column plus an
-            ``error`` column holding the uncertainty of each merge's y, and every origin
-            recorded in ``prov.contributing_scans`` at weight 1 - the merge weights points,
-            not origins. Its friendly name is the appended one suffixed with the tolerance
-            and the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are
-            empty, a merged scan having no file of its own, and ``tavimeta.normalization``
-            records ``norm`` and ``multiplication``, this scan's y column now being on that
-            footing. Storing it in ``TaviData`` is the caller's job.
-
-        Raises:
-            ValueError: If ``tol`` or ``multiplication`` is not a positive, finite number,
-                if ``norm`` is empty, is not one of the requested columns or is the y
-                column itself, if a requested column is named ``error``, if fewer than two
-                columns are requested, if an origin is not a ``RawScan``, if a row's x is
-                not finite, or if a row's ``norm`` value is zero.
-            KeyError: If a uuid is not present in the data pool, or an origin does not
-                carry one of the requested columns.
-
+        The result carries every requested column plus ``error``, every origin at weight 1
+        in ``prov.contributing_scans`` (the merge weights points, not origins), and records
+        ``norm`` and ``multiplication`` in ``tavimeta.normalization``. Storing it is the
+        caller's job.
         """
         self.validate()
 
@@ -182,28 +127,9 @@ class ToleranceRebinOps(ProcessOps):
         Merge rows whose first column agrees to within ``tol``, combining the rows of each merge.
 
         The x column reports the ``norm``-weighted mean of the x values merged into it
-        rather than either their plain mean or a grid position: a merged point sits where
-        the counting actually happened, so the longer of two counts at nearly the same
-        position pulls it.
-
-        Every other column is reduced as it is for an equal-step rebin - the y column as
-        the monitor-weighted ``multiplication * sum(counts) / sum(norm)``, the ``norm``
-        column as that ``sum(norm)``, anything else as a ``norm``-weighted mean - with ``error``
-        computed from the same two sums as y. Merges come out in ascending x rather than in
-        the origins' order. A NaN or infinite x raises - deciding what a missing value
-        means belongs to the loader, not to binning - while a NaN elsewhere poisons its
-        merge.
-
-        Args:
-            appended_data: {column name: values}, every column the same length, y still
-                holding the raw counts the append laid end to end.
-
-        Returns:
-            The requested columns plus ``error``, each holding one value per merge.
-
-        Raises:
-            ValueError: If a row's x is not finite, or a row's ``norm`` value is zero.
-
+        rather than their plain mean or a grid position: a merged point sits where the
+        counting actually happened. Merges come out in ascending x rather than in the
+        origins' order.
         """
         x_name, y_name = self.columns[0], self.columns[1]
         x_values = appended_data[x_name]
@@ -245,20 +171,9 @@ class ToleranceRebinOps(ProcessOps):
 
         A bin is the window a data point carries with it, not a cell of a grid: the row
         that opens one sets the window, and the rows that follow join while they lie no
-        more than ``tol`` above it - which is what keeps every pair within a bin agreeing
-        to within ``tol``, as ``tol`` promises. Measuring against the previous row instead
-        would let a slow drift chain arbitrarily many points into one bin, each step small
-        while the span grows without limit.
-
-        Args:
-            x_values: The values of the column merged on, in no particular order.
-
-        Returns:
-            The rows of each merge, the merges in ascending x.
-
-        Raises:
-            ValueError: If a row's x is not finite.
-
+        more than ``tol`` above it, which keeps every pair within a bin agreeing to within
+        ``tol`` as ``tol`` promises. Measuring against the previous row instead would let a
+        slow drift chain arbitrarily many points into one bin.
         """
         for row, x_value in enumerate(x_values):
             # a NaN compares False against everything, so it would silently join whichever

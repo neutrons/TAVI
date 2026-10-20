@@ -19,40 +19,19 @@ class AppendOp(ProcessOps):
     """
     Append several scans into one, column by column.
 
-    Columns not named in ``columns`` are dropped, and nothing is carried over
-    from the origins' ``metadata`` or ``normalization``, which describe one
-    origin rather than the combination.
-
-    Every requested column must be carried by every origin, so that the result's
-    columns come out the same length and its rows stay aligned. A uuid listed
-    twice is still permitted: it appends its rows twice while
-    ``prov.contributing_scans`` keeps a single entry.
+    Columns not named in ``columns`` are dropped, and the origins' ``metadata`` and
+    ``normalization`` are not carried over, describing one origin rather than the
+    combination. Every requested column must be carried by every origin, so that the
+    result's rows stay aligned.
     """
 
     def __init__(self, tavi_data: TaviData, uuids: Sequence[UUID], columns: Sequence[str]) -> None:
-        """
-        Store the origins and the columns to carry over.
-
-        Args:
-            tavi_data: The pool ``uuids`` are looked up in.
-            uuids: Origin scan uuids, in the order their rows should be appended.
-            columns: Names of the columns to carry over. At least two, the first
-                two becoming the result's ``tavimeta.default_axis``.
-
-        """
+        """Store the origins, and the columns to carry over - at least two, the first two becoming the default axis."""
         super().__init__(tavi_data, uuids)
         self.columns = columns
 
     def validate(self) -> None:
-        """
-        Check that there are enough columns to form a default axis and that every origin carries them.
-
-        Raises:
-            ValueError: If fewer than two columns are requested.
-            KeyError: If a uuid is not present in the data pool, or an origin
-                does not carry one of the requested columns.
-
-        """
+        """Check that there are enough columns to form a default axis and that every origin carries them."""
         if len(self.columns) < 2:
             raise ValueError("Append data need at least 2 columns.")
 
@@ -69,18 +48,8 @@ class AppendOp(ProcessOps):
         """
         Lay the origins' columns end to end into one new scan.
 
-        Returns:
-            A ``ProcessedScan`` with a fresh uuid, every origin recorded in
-            ``prov.contributing_scans`` at weight 1, and their friendly names
-            joined with ``+``. ``prov.raw_file`` and ``tavimeta.friendly_path``
-            are empty, a combined scan having no file of its own. Storing it in
-            ``TaviData`` is the caller's job.
-
-        Raises:
-            ValueError: If fewer than two columns are requested.
-            KeyError: If a uuid is not present in the data pool, or an origin
-                does not carry one of the requested columns.
-
+        The result has a fresh uuid, every origin at weight 1 in ``prov.contributing_scans``
+        and their friendly names joined with ``+``. Storing it is the caller's job.
         """
         self.validate()
 

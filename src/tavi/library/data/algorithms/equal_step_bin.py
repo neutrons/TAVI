@@ -16,45 +16,19 @@ from tavi.library.data.tavi_data import TaviData
 
 class EqualStepRebinOps(ProcessOps):
     """
-    Append several scans, then rebin the result onto a coarser x axis.
+    Append several scans, then rebin the result along ``columns[0]`` into bins of width ``step``.
 
-    The origins' columns are laid end to end by an ``AppendOp`` first, and the
-    appended rows are then binned along ``columns[0]`` in bins of width ``step``, every
-    other column averaged within each bin. Binning a combination rather than each
-    origin separately is the point: two scans covering the same range interleave and
-    merge across the seam, counting as one measurement of it.
+    Binning the combination rather than each origin is the point: two scans covering the
+    same range interleave and merge across the seam, counting as one measurement of it.
+    Each bin combines its rows the way one longer measurement would - y
+    (``columns[1]``) as ``multiplication * sum(counts) / sum(norm)``, ``norm`` as that
+    ``sum(norm)``, every other column as a ``norm``-weighted mean - and carries an
+    ``error`` column the origins did not, ``multiplication * sqrt(sum(counts)) / sum(norm)``.
 
-    ``start`` and ``finish`` are the outer bin edges, and points outside them are
-    dropped. Either may be left out and is then read off the data, half a step beyond
-    the extreme x so that the outermost bin is centred on it; with both left out the
-    grid is the data's alone. Fixing an edge is what lets two rebinned scans be compared
-    bin for bin, their data no longer deciding where the bins fall.
-
-    The result is therefore in ascending x rather than in the origins' order - the one
-    place this operation departs from ``AppendOp``'s contract. Everything else the
-    append decided (provenance, the empty metadata, the default axis) still describes
-    the rebinned scan and is carried over untouched.
-
-    A bin combines its rows the way one longer measurement would: the y column
-    (``columns[1]``) reports ``multiplication * sum(counts) / sum(norm)`` over the rows of
-    the bin, and the ``norm`` column reports that ``sum(norm)``, the counting the bin
-    stands on. Summing counts and monitor separately, rather than averaging each row's
-    already-normalized y, is what makes a long count outweigh a short one at the same
-    position instead of the two casting equal votes. Columns that are neither y nor
-    ``norm`` - a temperature, say - are means weighted by ``norm`` for the same reason, so
-    that a reading taken over a longer count carries more of the bin; ``multiplication``
-    is a count scale and is not applied to them.
-
-    Reading raw counts against the monitor they were counted with is only sound on data
-    nothing has already reduced, so every origin must be a ``RawScan``: an appended or
-    previously rebinned scan is refused.
-
-    The result carries one column the origins did not: ``error``, the uncertainty of the
-    value its bin reports, ``multiplication * sqrt(sum(counts)) / sum(norm)``. That is the
-    Poisson uncertainty of the summed counts put through the same normalization as the sum
-    itself. The plotting layer derives a series' error bars from its y where no uncertainty
-    is stored, which stops working the moment a bin reports counts per monitor rather than
-    counts - so a rebinned scan has to carry its own.
+    ``start`` and ``finish`` are the outer bin edges; either left out is read off the data.
+    Every origin must be a ``RawScan``, raw counts against their monitor being meaningless
+    on data something has already reduced. The result comes out in ascending x, the one
+    place this departs from ``AppendOp``'s contract.
     """
 
     def __init__(
@@ -71,26 +45,10 @@ class EqualStepRebinOps(ProcessOps):
         """
         Store the origins, the columns to carry over, the bin width, the optional bin range and the normalization.
 
-        Args:
-            tavi_data: The pool ``uuids`` are looked up in.
-            uuids: Origin scan uuids, in the order their rows should be appended.
-            columns: Names of the columns to carry over. At least two, the first being
-                the axis binned on and the first two becoming the result's
-                ``tavimeta.default_axis``.
-            norm: Name of the column each bin is weighted by - typically the monitor or
-                time its points were counted against. Required, the binning having no
-                unweighted form, and it must itself be one of ``columns``, since the
-                weighting happens after the append has dropped everything else.
-            step: Bin width along ``columns[0]``.
-            start: Lower outer bin edge along ``columns[0]``. Left out, it is read off the
-                data as half a step below the smallest x, so that the data decides where
-                the bins fall.
-            finish: Upper outer bin edge along ``columns[0]``. Left out, it is read off the
-                data as half a step above the largest x.
-            multiplication: Scale applied to the per-``norm`` y column, so that e.g.
-                ``norm="monitor", multiplication=10000`` reads as counts per 10000 monitor
-                counts. It scales ``error`` alongside y, and no other column.
-
+        ``norm`` names the column each bin is weighted by - the monitor or time its points
+        were counted against - and must itself be one of ``columns``. ``multiplication``
+        scales the per-``norm`` y column and its ``error``, so that e.g.
+        ``norm="monitor", multiplication=10000`` reads as counts per 10000 monitor counts.
         """
         super().__init__(tavi_data, uuids)
         self.step = step
@@ -106,23 +64,7 @@ class EqualStepRebinOps(ProcessOps):
         return self._append_op.columns
 
     def validate(self) -> None:
-        """
-        Check the bin width, range and normalization, then everything the underlying append requires.
-
-        Raises:
-            ValueError: If ``step`` is not a positive, finite number; if ``start`` and
-                ``finish`` are both given and ``finish`` does not lie above ``start``; if
-                ``multiplication`` is not a positive,
-                finite number; if ``norm`` is empty, is not one of the requested columns,
-                or is the y column it would weight; if a requested column is named
-                ``error``, which the operation computes itself; if fewer than two columns
-                are requested - with one column there is nothing to combine, no second
-                name for the default axis and no y column to normalize; or if an origin is
-                not a ``RawScan``, its counts having already been reduced.
-            KeyError: If a uuid is not present in the data pool, or an origin does not
-                carry one of the requested columns.
-
-        """
+        """Check the bin width, range and normalization, then everything the underlying append requires."""
         # NaN would pass a bare positivity check and only fail once it reached the binning.
         if not math.isfinite(self.step) or self.step <= 0:
             raise ValueError(f"Rebin step must be a positive, finite number, got {self.step!r}.")
@@ -174,26 +116,10 @@ class EqualStepRebinOps(ProcessOps):
         """
         Append the origins, then combine each bin of width ``step`` into one point.
 
-        Returns:
-            A ``ProcessedScan`` with a fresh uuid, one column per requested column plus an
-            ``error`` column holding the uncertainty of each bin's y, and every origin
-            recorded in ``prov.contributing_scans`` at weight 1 - the bins weight points,
-            not origins. Its friendly name is the appended one suffixed with the step and
-            the normalization. ``prov.raw_file`` and ``tavimeta.friendly_path`` are empty,
-            a rebinned scan having no file of its own, and ``tavimeta.normalization``
-            records ``norm`` and ``multiplication``, this scan's y column now being on that
-            footing. Storing it in ``TaviData`` is the caller's job.
-
-        Raises:
-            ValueError: If ``step`` is not a positive, finite number, if ``start`` and
-                ``finish`` do not form a usable range, if ``multiplication`` is not a
-                positive, finite number, if ``norm`` is empty, is not one of the requested
-                columns or is the y column itself, if a requested column is named
-                ``error``, if fewer than two columns are requested, if an origin is not a
-                ``RawScan``, or if a row's ``norm`` value is zero.
-            KeyError: If a uuid is not present in the data pool, or an origin does not
-                carry one of the requested columns.
-
+        The result carries every requested column plus ``error``, every origin at weight 1
+        in ``prov.contributing_scans`` (bins weight points, not origins), and records
+        ``norm`` and ``multiplication`` in ``tavimeta.normalization``. Storing it is the
+        caller's job.
         """
         self.validate()
 
@@ -210,30 +136,9 @@ class EqualStepRebinOps(ProcessOps):
         """
         Bin rows by the first column into bins of width ``step``, combining the rows of each bin.
 
-        Where the grid falls is left to ``_bins_from_edges``, which derives whichever of
-        ``start`` and ``finish`` was not given from the data and hands back the first bin's
-        centre and the rows belonging to each bin. Each bin reports its centre as its x
-        rather than the mean of the x values in it, keeping the output on a regular grid.
-
-        Every other column is reduced one of three ways. The y column is the
-        monitor-weighted ``multiplication * sum(counts) / sum(norm)``; the ``norm`` column
-        is that ``sum(norm)``, so the result still records what each point was counted
-        against; and anything else is a ``norm``-weighted mean, a count scale meaning
-        nothing applied to a temperature. ``error`` is computed from the same two sums as y. Bins no point
-        falls in are dropped rather than zero-filled, zero being a measurement and not an
-        absence. A NaN in the binned column raises, and a NaN elsewhere poisons its bin -
-        deciding what a missing value means belongs to the loader, not to binning.
-
-        Args:
-            appended_data: {column name: values}, every column the same length, y still
-                holding the raw counts the append laid end to end.
-
-        Returns:
-            The requested columns plus ``error``, each holding one value per non-empty bin.
-
-        Raises:
-            ValueError: If a row's ``norm`` value is zero.
-
+        Each bin reports its centre as its x rather than the mean of the x values in it,
+        keeping the output on a regular grid. Bins no point falls in are dropped rather
+        than zero-filled, zero being a measurement and not an absence.
         """
         x_name, y_name = self.columns[0], self.columns[1]
         x_values = appended_data[x_name]
@@ -280,26 +185,12 @@ class EqualStepRebinOps(ProcessOps):
         """
         Lay the grid on ``start``, ``finish`` and ``step``, falling back to the data for either edge.
 
-        ``start`` and ``finish`` are outer bin edges, not centres, so the first bin spans
-        ``[start, start + step)`` and reports ``start + step / 2`` as its x. Bins are
-        counted from ``start`` until they cover ``finish``, the last one coming out short
-        when the range is not a whole number of steps, and a point sitting exactly on
-        ``finish`` joins that last bin rather than opening one past the end. Points outside
-        ``[start, finish]`` are dropped: the caller asked for this range, and silently
-        widening it to hold them would undo the point of fixing the grid.
-
-        An edge left out is read off the data instead - half a step beyond the smallest or
-        largest x, which puts the outermost bins' centres on those values and drops
-        nothing. Deriving the edges rather than binning the data-driven case separately is
-        what keeps one grid routine: with both left out, each point lands in the bin whose
-        centre it is nearest, the data-driven grid this once computed on its own.
-
-        Args:
-            x_values: The values of the column binned on, in no particular order.
-
-        Returns:
-            The first bin's centre, and {bin index: rows falling in that bin}.
-
+        The edges are outer bin edges, not centres, so the first bin spans
+        ``[start, start + step)`` and reports ``start + step / 2`` as its x; points outside
+        ``[start, finish]`` are dropped. An edge left out is read off the data half a step
+        beyond the extreme x, which centres the outermost bin on it and drops nothing -
+        deriving the edges is what lets one routine serve the fixed and data-driven grids
+        alike. Returns the first bin's centre and {bin index: rows falling in that bin}.
         """
         # an edge of 0.0 is an ordinary edge, so the fallback turns on being given nothing
         # at all rather than on falsiness.
