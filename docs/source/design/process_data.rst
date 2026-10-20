@@ -5,7 +5,9 @@ ProcessOps
 
    Abstract base for operations that build derived :class:`ProcessedScan`
    objects from scans a project has already loaded. Lives in
-   ``tavi.library.data.process_data``.
+   ``tavi.library.data.process_op``; each concrete operation is a module of its
+   own under ``tavi.library.data.algorithms`` — ``append_ops.AppendOp``,
+   ``equal_step_bin.EqualStepRebinOps`` and ``bin_by_tol.ToleranceRebinOps``.
 
    :param tavi_data: The project data holding the raw and processed scans that
       uuids are resolved against, via ``TaviData.fetch_by_uuid``.
@@ -156,6 +158,13 @@ the model layer owns ``TaviData`` — an operation only ever reads the pool it w
 handed. A ``ProcessedScan`` may itself be an origin for the next combination,
 which is why uuids resolve through ``fetch_by_uuid`` rather than against
 ``raw_scans`` alone.
+
+The rebinning operations are the exception: ``EqualStepRebinOps`` and
+``ToleranceRebinOps`` reduce each bin by summing raw counts against the monitor
+they were counted with, which is only meaningful on data nothing has already
+reduced, so they refuse any origin that is not a ``RawScan``. Chaining is still
+available in the other direction — a rebinned scan is an ordinary
+``ProcessedScan`` and may be appended, plotted or fitted like any other.
 
 Every origin must carry every requested column
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
