@@ -138,10 +138,10 @@ class TaviView(QMainWindow):
         layout = QVBoxLayout(widget)
 
         self.project_view = project_view
-        layout.addWidget(self.project_view)
+        layout.addWidget(self.project_view, stretch=2)
 
         self.filter_view = filter_view
-        layout.addWidget(self.filter_view)
+        layout.addWidget(self.filter_view, stretch=1)
 
         return widget
 
