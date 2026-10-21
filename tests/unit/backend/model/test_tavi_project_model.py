@@ -7,6 +7,8 @@ import pytest
 from tavi.backend.model.plot_model import PlotModel
 from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.backend.model.tavi_project_model import TaviProjectModel
+from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.library.data.fit_entry import (
     FitCurve,
     FitEntry,
@@ -25,6 +27,9 @@ from tavi.meta.event.type.model_event import (
     AddFitEvent,
     AddPlotEvent,
     AddRawScanEvent,
+    ApplyFilterEvent,
+    ClearFilterEvent,
+    ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
     RemoveRawScanEvent,
@@ -1191,3 +1196,100 @@ def test_focus_event_clears_focus_before_routing(model):
     EventBroker().publish(FocusEvent(ids=[fit.uuid]))
 
     assert call_order == ["clear", "focus"]
+
+
+# ---------------------------------------------------------------------------
+# ApplyFilterEvent / ClearFilterEvent
+# ---------------------------------------------------------------------------
+
+
+def make_numbered_scan(uuid_val: str, scan_number: str) -> RawScan:
+    return make_raw_scan(uuid_val).model_copy(update={"metadata": ScanMetadata(data={"scan": scan_number})})
+
+
+def make_scan_filter(operator=FilterOperator.GREATER, value="1") -> ScanFilter:
+    return ScanFilter(name="Filter", criteria=[FilterCriterion(key="scan", operator=operator, value=value)])
+
+
+def store_numbered_scans(model, count=3):
+    for n in range(1, count + 1):
+        scan = make_numbered_scan(f"s{n}", str(n))
+        model.tavi_data.raw_scans[scan.uuid] = scan
+
+
+def record_listing(model):
+    """Record, in order, the focus clears and raw scan listing events the model publishes."""
+    received = []
+    for event_type in (ClearFocusEvent, ClearRawScansEvent, AddRawScanEvent):
+        EventBroker().register(event_type, received.append)
+    return received
+
+
+def listed_uuids(received):
+    return [e.uuid for e in received if isinstance(e, AddRawScanEvent)]
+
+
+def test_apply_filter_event_clears_focus_and_listing_then_lists_passing_scans(model):
+    store_numbered_scans(model)
+    received = record_listing(model)
+
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter()))
+
+    assert [type(e) for e in received] == [ClearFocusEvent, ClearRawScansEvent, AddRawScanEvent, AddRawScanEvent]
+    assert listed_uuids(received) == [UUID(value="s2"), UUID(value="s3")]
+
+
+def test_apply_filter_event_keeps_every_scan_in_the_project(model):
+    store_numbered_scans(model)
+
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter()))
+
+    assert len(model.tavi_data.raw_scans) == 3
+
+
+def test_apply_filter_events_narrow_together_until_cleared(model):
+    store_numbered_scans(model)
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter(FilterOperator.GREATER, "1")))
+    received = record_listing(model)
+
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter(FilterOperator.LESS, "3")))
+
+    assert listed_uuids(received) == [UUID(value="s2")]
+
+
+def test_clear_filter_event_relists_every_scan(model):
+    store_numbered_scans(model)
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter()))
+    received = record_listing(model)
+
+    EventBroker().publish(ClearFilterEvent())
+
+    assert [type(e) for e in received[:2]] == [ClearFocusEvent, ClearRawScansEvent]
+    assert listed_uuids(received) == [UUID(value=f"s{n}") for n in range(1, 4)]
+    assert model._applied_filters == []
+
+
+def test_relisted_scan_carries_its_name_and_path(model):
+    store_numbered_scans(model, count=1)
+    received = record_listing(model)
+
+    EventBroker().publish(ClearFilterEvent())
+
+    scan = model.tavi_data.raw_scans[UUID(value="s1")]
+    assert received[-1] == AddRawScanEvent(
+        uuid=scan.uuid, friendly_name=scan.tavimeta.friendly_name, friendly_path=scan.tavimeta.friendly_path
+    )
+
+
+def test_load_while_filtered_stores_every_scan_but_lists_only_passing_ones(model):
+    EventBroker().publish(ApplyFilterEvent(filter=make_scan_filter()))
+    model.raw_scan_load_controller = MagicMock()
+    scans = [make_numbered_scan("s1", "1"), make_numbered_scan("s2", "2")]
+    model.raw_scan_load_controller.load_folder.return_value = scans
+    received = record_listing(model)
+
+    model.load_raw_scan_from_folder("/some/folder")
+
+    assert set(model.tavi_data.raw_scans) == {UUID(value="s1"), UUID(value="s2")}
+    assert [type(e) for e in received] == [AddRawScanEvent]
+    assert listed_uuids(received) == [UUID(value="s2")]

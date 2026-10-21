@@ -26,6 +26,16 @@ backend:
         # Undo is for dialing one fit member in, not an audit trail - a handful of steps back is
         # plenty, and anything older is dropped first.
         size-limit: 10  # undo steps per fit member
+filter:
+  # The built-in, read-only filter every project starts with. Shared by the filter panel and the
+  # library, so both name and recognise it the same way without the view importing the library's.
+  sample:
+    uuid: sample-filter
+    name: Sample
+    criterion:
+      key: scan
+      operator: ">="
+      value: "0"
 
 ORNL:
   spice:

@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
@@ -24,6 +25,8 @@ class TaviData(BaseModel):
     plots: dict[UUID, Plot] = Field(default_factory=dict)
     processed_scans: dict[UUID, ProcessedScan] = Field(default_factory=dict)
     fits: dict[UUID, FitEntry] = Field(default_factory=dict)
+    # Saved filters only; the built-in Sample filter is never stored, so it can't be removed or saved over.
+    filters: dict[UUID, ScanFilter] = Field(default_factory=dict)
 
     def all_scans(self) -> dict[UUID, Scan]:
         """Return every scan, raw and derived, in one lookup - what ``ProcessOps`` resolves uuids against."""
@@ -36,6 +39,10 @@ class TaviData(BaseModel):
                 return store[uuid]
 
         raise KeyError(f"No such UUID {uuid} available in TaviData for any type.")
+
+    def filter_raw_scans(self, filters: list[ScanFilter]) -> list[UUID]:
+        """Return the uuids of the raw scans that pass every filter, in load order; no filters passes them all."""
+        return [uuid for uuid, scan in self.raw_scans.items() if all(f.matches(scan) for f in filters)]
 
     def purge(self, uuids: list[UUID]) -> PurgeResult:
         """

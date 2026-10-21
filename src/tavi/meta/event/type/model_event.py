@@ -1,11 +1,12 @@
 """New Raw Scan Event module."""
 
+from tavi.library.data.filter import ScanFilter
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_interface import Event
 
 
 class AddRawScanEvent(Event):
-    """Indicates a new RawScan has been added to the Project."""
+    """Indicates a RawScan is listed in the Project: newly loaded, or passing a newly applied filter."""
 
     uuid: UUID
     friendly_name: str
@@ -28,6 +29,28 @@ class AddFitEvent(Event):
     friendly_path: str
 
 
+class AddFilterEvent(Event):
+    """
+    Indicates ``FilterModel`` has saved a new filter to the Project. Filters are not listed in the project tree.
+
+    Carries the whole filter, not just its name, because the filter panel shows its criteria too.
+    """
+
+    filter: ScanFilter
+
+
+class ClearRawScansEvent(Event):
+    """
+    Announce that no raw scan is listed any more - the first half of relisting them, paired with ``AddRawScanEvent``.
+
+    Published by ``TaviProjectModel`` when the applied filters change, after ``ClearFocusEvent`` and before
+    one ``AddRawScanEvent`` per raw scan that passes them. The scans stay in ``TaviData``: nothing has left
+    the project, which is what ``RemoveRawScanEvent`` would mean.
+    """
+
+    pass
+
+
 class RemoveRawScanEvent(Event):
     """Indicates a RawScan has been removed from the Project and is no longer in TaviData."""
 
@@ -42,6 +65,12 @@ class RemovePlotEvent(Event):
 
 class RemoveFitEvent(Event):
     """Indicates a Fit has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
+class RemoveFilterEvent(Event):
+    """Indicates ``FilterModel`` has removed a filter from the Project and it is no longer in TaviData."""
 
     uuid: UUID
 
@@ -79,3 +108,38 @@ class SyncRecentProjectsEvent(Event):
     """Update list of recent projects."""
 
     recent_projects: list[str]
+
+
+class ApplyFilterEvent(Event):
+    """
+    Add a filter to those narrowing which scans the project lists.
+
+    Published by ``FilterModel``. Like ``Focus*`` events this only adds: every applied filter narrows
+    the list further, so replacing the applied filter is a ``ClearFilterEvent`` followed by this one.
+    ``TaviProjectModel`` answers by relisting the raw scans that pass - see ``ClearRawScansEvent``.
+    """
+
+    filter: ScanFilter
+
+
+class ClearFilterEvent(Event):
+    """
+    Announce that no filter narrows the project's scan list any more. Mirrors ``ClearFocusEvent`` for filters.
+
+    Published by ``FilterModel`` when the applied filter is cleared, removed from the project, or about to
+    be replaced. ``TaviProjectModel`` answers by relisting every raw scan - see ``ClearRawScansEvent``.
+    """
+
+    pass
+
+
+class SyncFilterValidationEvent(Event):
+    """
+    Announce why a filter cannot be applied - or, with ``errors`` empty, that it can.
+
+    Published by ``FilterModel`` for ``validate_filter``, and for ``apply_filter`` when the selected filter
+    is invalid and so was not applied.
+    """
+
+    filter_uuid: UUID
+    errors: list[str]

@@ -2,9 +2,9 @@
 
 from collections.abc import Callable
 from typing import Any
-from uuid import uuid4
 
-from qtpy.QtCore import Qt
+from neutrons_standard.config import Config
+from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import (
     QComboBox,
     QFrame,
@@ -18,6 +18,11 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from tavi.library.data.scan import UUID, new_uuid
+
+Criterion = tuple[str, str, str]
+"""One criterion as the panel shows it: (key, operator, value)."""
 
 
 class CriteriaItemWidget(QWidget):
@@ -34,11 +39,13 @@ class CriteriaItemWidget(QWidget):
         super().__init__(parent)
         criteria_layout = QHBoxLayout(self)
 
-        self.uuid = uuid4()
-        self.criteria_key = QLineEdit("key")
+        self.uuid = new_uuid()
+        self.criteria_key = QLineEdit()
+        self.criteria_key.setPlaceholderText("key")
         self.criteria_operator = QComboBox(editable=False)
         self.criteria_operator.addItems(self.operators)
-        self.criteria_value = QLineEdit("value")
+        self.criteria_value = QLineEdit()
+        self.criteria_value.setPlaceholderText("value")
         self.criteria_delete_button = QPushButton()
 
         style = self.style()
@@ -50,14 +57,25 @@ class CriteriaItemWidget(QWidget):
         criteria_layout.addWidget(self.criteria_value)
         criteria_layout.addWidget(self.criteria_delete_button)
 
+    def set_criterion(self, criterion: Criterion) -> None:
+        """Show ``criterion`` in the key, operator and value fields."""
+        key, operator, value = criterion
+        self.criteria_key.setText(key)
+        self.criteria_operator.setCurrentText(operator)
+        self.criteria_value.setText(value)
+
+    def criterion(self) -> Criterion:
+        """Return the key, operator and value as currently entered."""
+        return self.criteria_key.text(), self.criteria_operator.currentText(), self.criteria_value.text()
+
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
-        self.criteria_key.setText("scan")
+        self.criteria_key.setText(Config["filter.sample.criterion.key"])
         self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
-        self.criteria_operator.addItem(">=")
+        self.criteria_operator.addItem(Config["filter.sample.criterion.operator"])
         self.criteria_operator.setEnabled(False)
-        self.criteria_value.setText("0")
+        self.criteria_value.setText(str(Config["filter.sample.criterion.value"]))
         self.criteria_value.setEnabled(False)
         self.criteria_delete_button.setEnabled(False)
 
@@ -70,8 +88,10 @@ class CriteriaSetScrollArea(QScrollArea):
     Handles adding and removing criteria from the set.
     """
 
-    def __init__(self, parent: QWidget | None = None, set_sample: bool = False) -> None:
-        """Construct criteria set object."""
+    def __init__(
+        self, parent: QWidget | None = None, set_sample: bool = False, criteria: list[Criterion] | None = None
+    ) -> None:
+        """Construct a criteria set showing ``criteria``, or one blank criterion if none are given."""
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
@@ -81,29 +101,34 @@ class CriteriaSetScrollArea(QScrollArea):
         self.criteria_list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.criteria_store = dict()
-        initial_criteria = CriteriaItemWidget()
-
-        self.criteria_store[initial_criteria.uuid.hex] = initial_criteria
-        self.criteria_list_layout.addWidget(initial_criteria)
         self.add_criteria_button = QPushButton("+")
-        if not set_sample:
-            initial_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(initial_criteria))
-
-            self.add_criteria_button.clicked.connect(self.add_criteria)
-
         self.criteria_list_layout.addWidget(self.add_criteria_button)
-        if set_sample:
-            initial_criteria.set_sample()
-            self.add_criteria_button.setEnabled(False)
 
-    def add_criteria(self) -> None:
-        """Add an empty criteria to the set."""
+        if set_sample:
+            sample_criteria = CriteriaItemWidget()
+            sample_criteria.set_sample()
+            self.criteria_store[sample_criteria.uuid] = sample_criteria
+            self.criteria_list_layout.insertWidget(0, sample_criteria)
+            self.add_criteria_button.setEnabled(False)
+            return
+
+        self.add_criteria_button.clicked.connect(self.add_criteria)
+        for criterion in criteria if criteria is not None else [("", "is", "")]:
+            self.add_criteria().set_criterion(criterion)
+
+    def add_criteria(self) -> CriteriaItemWidget:
+        """Add an empty criteria to the set and return it."""
         new_criteria = CriteriaItemWidget()
-        self.criteria_store[new_criteria.uuid.hex] = new_criteria
+        self.criteria_store[new_criteria.uuid] = new_criteria
         self.criteria_list_layout.addWidget(new_criteria)
         new_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(new_criteria))
         self.criteria_list_layout.addWidget(self.add_criteria_button)
         # Re-adding an existing widget just moves it to the end
+        return new_criteria
+
+    def criteria(self) -> list[Criterion]:
+        """Return every criterion in the set, in the order shown."""
+        return [item.criterion() for item in self.criteria_store.values()]
 
     def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
         """Create a callable to delete a provided criteria."""
@@ -111,7 +136,7 @@ class CriteriaSetScrollArea(QScrollArea):
         def _delete_criteria() -> None:
             """Hides and deletes the externally provided criteria from the set."""
             criteria.hide()
-            self.criteria_store.pop(criteria.uuid.hex)
+            self.criteria_store.pop(criteria.uuid)
             self.criteria_list_layout.removeWidget(criteria)
             criteria.deleteLater()
 
@@ -119,12 +144,33 @@ class CriteriaSetScrollArea(QScrollArea):
 
 
 class FilterView(QWidget):
-    """Filter panel widget."""
+    """
+    Filter panel widget.
+
+    Shows the filters ``FilterPresenter`` tells it about; its buttons only report what the user asked for.
+    Emit the ``*_signal`` signals rather than calling their slots, so updates published from a model's
+    worker thread land on the GUI thread.
+    """
+
+    DEFAULT_APPLIED_TEXT = "Default Applied"
+
+    add_filter_signal = Signal(object, str, list)
+    remove_filter_signal = Signal(object)
+    show_applied_filter_signal = Signal(str)
+    show_default_applied_signal = Signal()
+    show_validation_errors_signal = Signal(list)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct filter view."""
         super().__init__(parent)
         self._build_ui()
+        # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
+        # a worker thread (FilterModel/TaviProjectModel running behind their Proxy).
+        self.add_filter_signal.connect(self._add_filter)
+        self.remove_filter_signal.connect(self._remove_filter)
+        self.show_applied_filter_signal.connect(self._show_applied_filter)
+        self.show_default_applied_signal.connect(self._show_default_applied)
+        self.show_validation_errors_signal.connect(self._show_validation_errors)
 
     def _build_ui(self) -> None:
         """Build the filter UI."""
@@ -147,10 +193,12 @@ class FilterView(QWidget):
         filter_applied_prefix.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignCenter)
         filter_applied_layout.addWidget(filter_applied_prefix)
 
-        self.filter_applied_friendly_name = QLabel(" " * 5)
+        self.filter_applied_friendly_name = QLabel(self.DEFAULT_APPLIED_TEXT)
         # This will react to the currently applied filter here or elsewhere
         # self.filter_applied_friendly_name.setWordWrap(True)
         self.filter_applied_friendly_name.setFrameStyle(QFrame.Shape.Box)
+        # Greyed out while no filter is applied, so the default doesn't read as a saved filter's name.
+        self.filter_applied_friendly_name.setEnabled(False)
         filter_applied_layout.addWidget(self.filter_applied_friendly_name)
 
         filter_header_layout.addLayout(filter_applied_layout)
@@ -160,17 +208,15 @@ class FilterView(QWidget):
         filter_controls_layout.setDirection(filter_controls_layout.Direction.RightToLeft)
 
         self.filter_dropdown = QComboBox(editable=True, insertPolicy=QComboBox.InsertPolicy.InsertAtCurrent)
-        self.filter_dropdown.addItem("Sample", uuid4())
+        self.filter_dropdown.addItem(Config["filter.sample.name"], UUID(value=Config["filter.sample.uuid"]))
         self.filter_dropdown.editTextChanged.connect(self.immutable_sample_name)
         filter_controls_layout.addWidget(self.filter_dropdown)
 
         self.filter_del_button = QPushButton("Del")
-        self.filter_del_button.clicked.connect(self.del_filter)
         self.filter_del_button.setEnabled(False)
         filter_controls_layout.addWidget(self.filter_del_button)
 
         self.filter_new_button = QPushButton("New")
-        self.filter_new_button.pressed.connect(self.new_filter)
         filter_controls_layout.addWidget(self.filter_new_button)
 
         filter_controls_label = QLabel("Filters")
@@ -188,19 +234,16 @@ class FilterView(QWidget):
         # ---
         # Filter Application Controls
         # ---
-        self.applied_filter = None
         filter_footer_layout = QHBoxLayout()
 
         filter_left_footer = QHBoxLayout()
         self.clear_filter_button = QPushButton("Clear Filter")
-        self.clear_filter_button.clicked.connect(self.clear_filter)
         filter_left_footer.addWidget(self.clear_filter_button)
         filter_footer_layout.addLayout(filter_left_footer)
 
         filter_right_footer = QHBoxLayout()
         filter_right_footer.setDirection(filter_right_footer.Direction.RightToLeft)
-        self.apply_filter_button = QPushButton("Apply Filter")
-        self.apply_filter_button.clicked.connect(self.apply_filter)
+        self.apply_filter_button = QPushButton("Save && Apply Filter")
         filter_right_footer.addWidget(self.apply_filter_button)
         filter_footer_layout.addLayout(filter_right_footer)
 
@@ -209,35 +252,60 @@ class FilterView(QWidget):
         # ---
         filter_components_layout.addLayout(filter_header_layout)
         filter_components_layout.addWidget(self.filter_criteria_set_list)
+        self.filter_validation_errors = QLabel()
+        self.filter_validation_errors.setWordWrap(True)
+        self.filter_validation_errors.setStyleSheet("color: red")
+        self.filter_validation_errors.hide()
+        filter_components_layout.addWidget(self.filter_validation_errors)
         filter_components_layout.addLayout(filter_footer_layout)
         filter_box.setLayout(filter_components_layout)
         layout.addWidget(filter_box)
 
-    def new_filter(self) -> None:
-        """Create a new filter in the view."""
-        filter_index = self.filter_dropdown.count()
-        self.filter_dropdown.addItem(f"FilterName{filter_index}", uuid4())
-        self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea())
+    def current_filter_uuid(self) -> UUID:
+        """Return the uuid of the filter picked in the dropdown."""
+        return self.filter_dropdown.currentData()
+
+    def current_filter_name(self) -> str:
+        """Return the picked filter's name as currently entered."""
+        return self.filter_dropdown.currentText()
+
+    def current_criteria(self) -> list[Criterion]:
+        """Return the picked filter's criteria as currently entered."""
+        return self.filter_criteria_set_list.currentWidget().criteria()
+
+    def filter_count(self) -> int:
+        """Return how many filters the dropdown lists, Sample included."""
+        return self.filter_dropdown.count()
+
+    def _add_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+        """List a filter and pick it. Use ``add_filter_signal``."""
+        self.filter_dropdown.addItem(name, uuid)
+        self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea(criteria=criteria))
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
-    def del_filter(self) -> None:
-        """Delete the currently highlighted filter."""
-        index_for_deletion = self.filter_dropdown.currentIndex()
-        if index_for_deletion == 0:
+    def _remove_filter(self, uuid: UUID) -> None:
+        """Stop listing a filter, falling back to Sample. Use ``remove_filter_signal``."""
+        # Not findData: Qt compares wrapped Python objects by identity, and this uuid is an event's copy.
+        index = -1
+        for cursor in range(self.filter_dropdown.count()):
+            if self.filter_dropdown.itemData(cursor) == uuid:
+                index = cursor
+                break
+        if index <= 0:
             return
-        if self.filter_dropdown.itemData(index_for_deletion) == self.applied_filter:
-            self.clear_filter()
-        self.filter_dropdown.removeItem(index_for_deletion)
-        set_for_deletion = self.filter_criteria_set_list.widget(index_for_deletion)
-        if set_for_deletion is not None:
-            self.filter_criteria_set_list.removeWidget(set_for_deletion)
+        # Pick Sample first, so removing the item doesn't briefly pick whichever filter sits next to it.
         self.filter_dropdown.setCurrentIndex(0)
+        self.filter_dropdown.removeItem(index)
+        criteria_set = self.filter_criteria_set_list.widget(index)
+        if criteria_set is not None:
+            self.filter_criteria_set_list.removeWidget(criteria_set)
+            criteria_set.deleteLater()
 
     def immutable_sample_name(self) -> None:
         """Revert any attempt to modify the sample filter name."""
-        sample_text = self.filter_dropdown.itemText(0)
-        if sample_text != "Sample":
-            self.filter_dropdown.setItemText(0, "Sample")
+        sample_name = Config["filter.sample.name"]
+        if self.filter_dropdown.itemText(0) != sample_name:
+            self.filter_dropdown.setItemText(0, sample_name)
 
     def propagate_index_change(self) -> None:
         """Propagate relevant changes from selecting a different filter index."""
@@ -247,18 +315,21 @@ class FilterView(QWidget):
             self.filter_del_button.setEnabled(False)
         self.filter_criteria_set_list.setCurrentIndex(dropdown_index)
 
-    def apply_filter(self) -> None:
-        """Apply the currently highlighted filter with appropriate messaging."""
-        # Do bundling and sending of filter things here
-        self.applied_filter = self.filter_dropdown.currentData()
-        # Replace below with basing the label on received filter event
-        friendly_name = self.filter_dropdown.currentText()
-        if len(friendly_name) > 30:
-            friendly_name = friendly_name[:30] + "..."
-        self.filter_applied_friendly_name.setText(friendly_name)
+    def _show_applied_filter(self, name: str) -> None:
+        """Name the applied filter. Use ``show_applied_filter_signal``."""
+        if self.filter_dropdown.currentText() == name:
+            self.filter_dropdown.setItemText(self.filter_dropdown.currentIndex(), name)
+        if len(name) > 30:
+            name = name[:30] + "..."
+        self.filter_applied_friendly_name.setText(name)
+        self.filter_applied_friendly_name.setEnabled(True)
 
-    def clear_filter(self) -> None:
-        """Clear the currently applied filter with appropriate messaging."""
-        # Do sending of clearing filter here
-        self.applied_filter = None
-        self.filter_applied_friendly_name.setText(" " * 5)
+    def _show_default_applied(self) -> None:
+        """Show that no filter is applied. Use ``show_default_applied_signal``."""
+        self.filter_applied_friendly_name.setText(self.DEFAULT_APPLIED_TEXT)
+        self.filter_applied_friendly_name.setEnabled(False)
+
+    def _show_validation_errors(self, errors: list[str]) -> None:
+        """Show why the filter could not be applied, or hide the message if ``errors`` is empty."""
+        self.filter_validation_errors.setText("\n".join(errors))
+        self.filter_validation_errors.setVisible(bool(errors))

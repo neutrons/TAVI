@@ -3,7 +3,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from qtpy.QtCore import QPoint, Qt
+from qtpy.QtCore import QItemSelectionModel, QPoint, Qt
 from qtpy.QtGui import QColor
 from qtpy.QtWidgets import QMenu
 
@@ -679,3 +679,94 @@ def test_reload_same_folder_after_remove_item_round_trip(qtbot):
     w.add_raw_scan(UUID(value="second2"), "scan2", "/IPTS-1091")
 
     assert w.path_map["/Raw/IPTS-1091"].rowCount() == 2
+
+
+# ---------------------------------------------------------------------------
+# TreeViewWidget — clear_raw_scans
+# ---------------------------------------------------------------------------
+
+
+def make_tree_with_two_folders(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="a1"), "a1", "/exp1")
+    w.add_raw_scan(UUID(value="a2"), "a2", "/exp1")
+    w.add_raw_scan(UUID(value="b1"), "b1", "/exp2")
+    w.add_plot(UUID(value="p1"), "p1", "")
+    return w
+
+
+def test_clear_raw_scans_removes_every_raw_scan_and_folder(qtbot):
+    w = make_tree_with_two_folders(qtbot)
+
+    w.clear_raw_scans()
+
+    assert w.path_map["/Raw"].rowCount() == 0
+    assert not any(UUID(value=v) in w.uuid_map for v in ("a1", "a2", "b1"))
+    assert not any(path.startswith("/Raw/") for path in w.path_map)
+
+
+def test_clear_raw_scans_keeps_roots_and_plots(qtbot):
+    w = make_tree_with_two_folders(qtbot)
+
+    w.clear_raw_scans()
+
+    assert all(root in w.path_map for root in TreeViewWidget.ROOT_PATHS)
+    assert UUID(value="p1") in w.uuid_map
+
+
+def test_clear_raw_scans_allows_relisting_the_same_scans(qtbot):
+    w = make_tree_with_two_folders(qtbot)
+    w.clear_raw_scans()
+
+    w.add_raw_scan(UUID(value="a1"), "a1", "/exp1")
+
+    assert UUID(value="a1") in w.uuid_map
+    assert "/Raw/exp1" in w.path_map
+
+
+def test_clear_raw_scans_drops_selection_without_signalling(qtbot):
+    w = make_tree_with_two_folders(qtbot)
+    w.treeView.selectionModel().select(w.uuid_map[UUID(value="a1")].index(), QItemSelectionModel.Select)
+    signalled = []
+    w.selected_signal.connect(lambda: signalled.append(True))
+
+    w.clear_raw_scans()
+
+    assert w.get_selected_items() == []
+    assert signalled == []
+
+
+# ---------------------------------------------------------------------------
+# ProjectView — updates from a model's worker thread
+# ---------------------------------------------------------------------------
+
+
+def test_project_view_tree_updates_from_a_worker_thread_land_on_gui_thread_in_order(qtbot):
+    import threading
+
+    view = ProjectView()
+    qtbot.addWidget(view)
+    gui_thread = threading.current_thread()
+    seen_threads = []
+    original_add = view.tree_widget.add_raw_scan
+
+    def record_add(*args):
+        seen_threads.append(threading.current_thread())
+        original_add(*args)
+
+    view.add_raw_scan_signal.disconnect()
+    view.add_raw_scan_signal.connect(record_add)
+
+    def relist():
+        view.add_raw_scan(UUID(value="a1"), "a1", "/exp1")
+        view.clear_raw_scans()
+        view.add_raw_scan(UUID(value="a1"), "a1", "/exp1")
+
+    worker = threading.Thread(target=relist)
+    worker.start()
+    worker.join()
+
+    qtbot.waitUntil(lambda: len(seen_threads) == 2)
+    assert seen_threads == [gui_thread, gui_thread]
+    assert UUID(value="a1") in view.tree_widget.uuid_map

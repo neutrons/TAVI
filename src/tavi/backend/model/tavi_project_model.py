@@ -11,6 +11,7 @@ from ruamel.yaml import YAML
 from tavi.backend.model.fit_history import FitHistory
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.backend.model.plot_resolver import scans_for_plots
+from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
@@ -23,6 +24,9 @@ from tavi.meta.event.type.model_event import (
     AddFitEvent,
     AddPlotEvent,
     AddRawScanEvent,
+    ApplyFilterEvent,
+    ClearFilterEvent,
+    ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
     RemoveRawScanEvent,
@@ -52,17 +56,22 @@ class TaviProjectModel(TaviProjectInterface):
     def __init__(self, filestore: Filestore) -> None:
         """Init tavi data."""
         self.filestore = filestore
-        self.tavi_data: TaviData = TaviData(raw_scans={}, plots={}, fits={})
+        self.tavi_data: TaviData = TaviData(raw_scans={}, plots={}, fits={}, filters={})
         self._event_broker: EventBroker = EventBroker()
         self.raw_scan_load_controller: RawScanLoadController = RawScanLoadController()
         # Session-only: earlier states of each fit member, for undo/redo. Kept beside TaviData
         # rather than in it, so dialing a fit in never grows the saved project.
         self._fit_history = FitHistory()
+        # Every filter FilterModel has applied since it last cleared, as announced. What the project
+        # lists is decided here, so the tree only ever mirrors AddRawScanEvent/ClearRawScansEvent.
+        self._applied_filters: list[ScanFilter] = []
 
         self._event_broker.register(StartApplicationEvent, self.sync_on_ready)
         self._event_broker.register(FocusEvent, self._handle_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
         self._event_broker.register(SaveFitEvent, self._handle_save_fit_event)
+        self._event_broker.register(ApplyFilterEvent, self._handle_apply_filter_event)
+        self._event_broker.register(ClearFilterEvent, self._handle_clear_filter_event)
 
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
@@ -76,10 +85,19 @@ class TaviProjectModel(TaviProjectInterface):
         """Return reference to the fits dict."""
         return self.tavi_data.fits
 
+    def get_filters_handle(self) -> dict:
+        """Return reference to the filters dict."""
+        return self.tavi_data.filters
+
     def load_raw_scan_from_folder(self, folder: str) -> ModelResponse:
-        """Load a folder containing raw scans, skipping any whose file content is already in the project."""
+        """
+        Load a folder containing raw scans, skipping any whose file content is already in the project.
+
+        Every new scan is stored, but only those passing the applied filters are announced: the rest are
+        listed once the filters that hide them are cleared.
+        """
         raw_scans: list[RawScan] = self.raw_scan_load_controller.load_folder(folder)
-        events = []
+        new_scans: list[RawScan] = []
         for scan in raw_scans:
             # A raw scan's uuid is the md5 of its file text: an identical uuid is an unchanged
             # file, so the stored copy is kept (preserving edits to its writable tavimeta). A
@@ -88,14 +106,12 @@ class TaviProjectModel(TaviProjectInterface):
                 logger.info(f"Skipping already-loaded scan {scan.tavimeta.friendly_name!r} ({scan.uuid.value}).")
                 continue
             self.tavi_data.raw_scans[scan.uuid] = scan
-            events.append(
-                AddRawScanEvent(
-                    uuid=scan.uuid, friendly_name=scan.tavimeta.friendly_name, friendly_path=scan.tavimeta.friendly_path
-                )
-            )
+            new_scans.append(scan)
 
-        for event in events:
-            self._event_broker.publish(event)
+        passing = set(self.tavi_data.filter_raw_scans(self._applied_filters))
+        for scan in new_scans:
+            if scan.uuid in passing:
+                self._publish_add_raw_scan(scan)
 
         return ModelResponse(code=ResponseCode.OK)
 
@@ -131,6 +147,35 @@ class TaviProjectModel(TaviProjectInterface):
         settings = yaml.load(raw_settings_yml)
         settings_dict = dict(settings)
         return settings_dict["TAVI"]["recent"]["projects"]
+
+    def _handle_apply_filter_event(self, e: ApplyFilterEvent) -> None:
+        """Narrow the project's scan list by one more filter and relist what still passes."""
+        self._applied_filters.append(e.filter)
+        self._relist_raw_scans()
+
+    def _handle_clear_filter_event(self, _: ClearFilterEvent) -> None:
+        """Stop narrowing the project's scan list and relist every raw scan."""
+        self._applied_filters = []
+        self._relist_raw_scans()
+
+    def _relist_raw_scans(self) -> None:
+        """
+        Clear the focus and the listed raw scans, then list each raw scan that passes the applied filters.
+
+        The focus goes first because it may hold scans that no longer pass - a user who filters wants
+        to stop looking at what the filter excludes - and the tree's selection is lost with its rows.
+        """
+        self._event_broker.publish(ClearFocusEvent())
+        self._event_broker.publish(ClearRawScansEvent())
+        for uuid in self.tavi_data.filter_raw_scans(self._applied_filters):
+            self._publish_add_raw_scan(self.tavi_data.raw_scans[uuid])
+
+    def _publish_add_raw_scan(self, scan: RawScan) -> None:
+        self._event_broker.publish(
+            AddRawScanEvent(
+                uuid=scan.uuid, friendly_name=scan.tavimeta.friendly_name, friendly_path=scan.tavimeta.friendly_path
+            )
+        )
 
     def _handle_save_plot_event(self, e: SavePlotEvent) -> None:
         """Record a presenter-submitted plot in ``tavi_data`` and announce it."""

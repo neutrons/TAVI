@@ -1,6 +1,7 @@
 """Main presenter for tavi."""
 
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
+from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
@@ -9,8 +10,8 @@ from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.filter_presenter import FilterPresenter
 from tavi.frontend.presenter.fit_window_presenter import FitWindowPresenter
 from tavi.frontend.presenter.fitting_presenter import FittingPresenter
-from tavi.frontend.presenter.load_raw_scan_presenter import LoadRawScanPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
+from tavi.frontend.presenter.project_presenter import ProjectPresenter
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
@@ -34,14 +35,14 @@ class MainPresenter:
         self.menu_bar = MainMenuBar(self._view, file_menu_view=self.file_menu_presenter._view)
         self._view.install_menu_bar(self.menu_bar)
 
-        self.load_raw_scan_presenter = LoadRawScanPresenter(model_dict["TaviProjectProxy"])
-        self.project_view = self.load_raw_scan_presenter.view()
+        self.project_presenter = ProjectPresenter(model_dict["TaviProjectProxy"])
+        self.project_view = self.project_presenter.view()
 
         self.plotter_presenter = PlotterPresenter(model_dict[PlotModelInterface.__name__])
 
         self.data_file_presenter = DataFilePresenter()
 
-        self.filter_presenter = FilterPresenter(dict())  # dict() -> appropriate model later
+        self.filter_presenter = FilterPresenter(model_dict[FilterModelInterface.__name__])
 
         self.fitting_presenter = FittingPresenter(
             model_dict[FitModelInterface.__name__], model_dict["TaviProjectProxy"]
@@ -53,7 +54,7 @@ class MainPresenter:
         self.error_view.setParent(self._view)
 
         self._view.build_ui(
-            project_view=self.load_raw_scan_presenter.view(),
+            project_view=self.project_presenter.view(),
             plot_view=self.plotter_presenter.view(),
             data_file_view=self.data_file_presenter.view(),
             fitting_view=self.fitting_presenter.view(),

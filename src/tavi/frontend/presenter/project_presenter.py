@@ -1,4 +1,4 @@
-"""Load raw scan presenter."""
+"""Project presenter."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from tavi.meta.event.type.model_event import (
     AddFitEvent,
     AddPlotEvent,
     AddRawScanEvent,
+    ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
     RemoveRawScanEvent,
@@ -18,26 +19,26 @@ from tavi.meta.event.type.model_event import (
 from tavi.meta.event.type.presenter_event import FocusEvent
 
 
-class LoadRawScanPresenter(AbstractPresenter):
+class ProjectPresenter(AbstractPresenter):
     """
-    Presenter responsible for data loading.
+    Presenter for the project tree.
 
-    Mediating dataloading-related updates between the
-    model (`TaviProjectInterface`) and the project_view (`ProjectView`).
+    Mirrors what ``TaviProjectModel`` lists - raw scans, plots and fits - into the ``ProjectView``,
+    and turns tree selections and removal requests into a ``FocusEvent`` and ``remove_items`` call.
 
     Attributes
     ----------
     _view : ProjectView
-        The load view associated with this presenter.
+        The project tree view associated with this presenter.
     _model : TaviProjectInterface
-        The model providing metadata updates.
+        The project model that answers removal requests.
     event_broker : EventBroker
-        The event system used to subscribe to different loading data update events.
+        The event system used to subscribe to the project's add, remove and clear events.
 
     """
 
     def __init__(self, model: TaviProjectInterface) -> None:
-        """Initialize the metadata presenter and register for `meta_data` events."""
+        """Initialize the project presenter and register for the project's listing events."""
         super().__init__()
         self._model = model
         self.event_broker = EventBroker()
@@ -47,7 +48,7 @@ class LoadRawScanPresenter(AbstractPresenter):
         self.event_broker.register(RemoveRawScanEvent, self.remove_treeview_data)
         self.event_broker.register(RemovePlotEvent, self.remove_treeview_data)
         self.event_broker.register(RemoveFitEvent, self.remove_treeview_data)
-        self.inventory: dict[UUID, tuple[str, str]] = {}
+        self.event_broker.register(ClearRawScansEvent, self.clear_raw_scan_treeview_data)
 
         self._view.hookup_select_signal(self.handle_selection_event)
         self._view.hookup_remove_signal(self.handle_remove_request)
@@ -59,7 +60,6 @@ class LoadRawScanPresenter(AbstractPresenter):
     def update_treeview_data(self, event: AddRawScanEvent) -> None:
         """Update the treeview GUI after loading complete."""
         self._view.add_raw_scan(event.uuid, event.friendly_name, event.friendly_path)
-        self.inventory[event.uuid] = (event.friendly_name, event.friendly_path)
 
     def update_plot_treeview_data(self, event: AddPlotEvent) -> None:
         """Update the treeview GUI after a plot is added."""
@@ -76,7 +76,10 @@ class LoadRawScanPresenter(AbstractPresenter):
     def remove_treeview_data(self, event: RemoveRawScanEvent | RemovePlotEvent | RemoveFitEvent) -> None:
         """Drop an item from the treeview once the model reports it gone from the project."""
         self._view.remove_item(event.uuid)
-        self.inventory.pop(event.uuid, None)
+
+    def clear_raw_scan_treeview_data(self, _: ClearRawScansEvent) -> None:
+        """Drop every raw scan from the treeview, ahead of the model relisting the ones that pass its filters."""
+        self._view.clear_raw_scans()
 
     def handle_selection_event(self) -> None:
         """Handle selection event by publishing focus event."""

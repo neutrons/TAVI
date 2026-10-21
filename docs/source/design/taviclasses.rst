@@ -43,6 +43,8 @@ handles application-level concerns such as writing error logs.
         +dict~UUID,RawScan~ raw_scans
         +dict~UUID,ProcessedScan~ processed_scans
         +dict~UUID,Plot~ plots
+        +dict~UUID,FitEntry~ fits
+        +dict~UUID,ScanFilter~ filters
         +all_scans() dict~UUID,Scan~
         +fetch_by_uuid(uuid) RawScan|ProcessedScan|Plot
     }
@@ -173,11 +175,11 @@ exposes the result through ``view()``.
  classDiagram
     MainPresenter "1" --> "1" TaviView
     MainPresenter "1" --> "1" FileMenuPresenter
-    MainPresenter "1" --> "1" LoadRawScanPresenter
+    MainPresenter "1" --> "1" ProjectPresenter
     MainPresenter "1" --> "1" PlotterPresenter
     MainPresenter "1" --> "1" DataFilePresenter
     MainPresenter "1" --> "1" ErrorPresenter
-    AbstractPresenter <|-- LoadRawScanPresenter
+    AbstractPresenter <|-- ProjectPresenter
     AbstractPresenter <|-- PlotterPresenter
     AbstractPresenter <|-- DataFilePresenter
     AbstractPresenter <|-- ErrorPresenter
@@ -200,8 +202,7 @@ exposes the result through ``view()``.
         +exit()
     }
 
-    class LoadRawScanPresenter{
-        -dict~UUID,tuple~ inventory
+    class ProjectPresenter{
         +update_treeview_data(AddRawScanEvent)
         +update_plot_treeview_data(AddPlotEvent)
         +handle_selection_event()
@@ -294,7 +295,7 @@ Loading a folder
         Model->>Model: store each scan in TaviData.raw_scans
         loop per scan
             Model->>Broker: publish AddRawScanEvent
-            Broker->>Tree: LoadRawScanPresenter.update_treeview_data
+            Broker->>Tree: ProjectPresenter.update_treeview_data
         end
 
 The loading machinery itself — classification, loader selection, batching — is

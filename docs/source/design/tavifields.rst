@@ -144,10 +144,17 @@ re-triggers ``fields_focus_changed`` and loops back into the model.
 Filter Panel
 ============
 
-``FilterView`` renders Temperature, a ± tolerance, and an IPTS number, plus
-**Clear Filters** and **Apply Filters** buttons. The widgets exist and hold
-default values (3, 0.01, 1234), but nothing is wired to a presenter or model yet
-— the panel is a layout placeholder.
+``FilterView`` lists the saved filters in a dropdown (the read-only **Sample**
+filter first) with **New** and **Del** buttons, the picked filter's criteria
+(key, operator, value) below, an error message shown only when a filter can't be
+applied, and **Clear Filter** and **Apply Filter** buttons. The "Current Filter"
+field names the applied filter, or reads "Default Applied", greyed out, when
+none is.
+
+The view keeps no filters of its own: every button goes through
+``FilterPresenter`` to ``FilterModel``, and the panel changes only when the
+model's events come back. Saved filters live in ``TaviData.filters``; see
+:doc:`frontend/filter_model`.
 
 Data File Panel
 ===============
