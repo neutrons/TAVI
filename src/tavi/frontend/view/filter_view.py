@@ -2,7 +2,6 @@
 
 from collections.abc import Callable
 from typing import Any
-from uuid import uuid4
 
 from neutrons_standard.config import Config
 from qtpy.QtCore import Qt, Signal
@@ -20,7 +19,7 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, new_uuid
 
 Criterion = tuple[str, str, str]
 """One criterion as the panel shows it: (key, operator, value)."""
@@ -40,7 +39,7 @@ class CriteriaItemWidget(QWidget):
         super().__init__(parent)
         criteria_layout = QHBoxLayout(self)
 
-        self.uuid = uuid4()
+        self.uuid = new_uuid()
         self.criteria_key = QLineEdit()
         self.criteria_key.setPlaceholderText("key")
         self.criteria_operator = QComboBox(editable=False)
@@ -108,7 +107,7 @@ class CriteriaSetScrollArea(QScrollArea):
         if set_sample:
             sample_criteria = CriteriaItemWidget()
             sample_criteria.set_sample()
-            self.criteria_store[sample_criteria.uuid.hex] = sample_criteria
+            self.criteria_store[sample_criteria.uuid] = sample_criteria
             self.criteria_list_layout.insertWidget(0, sample_criteria)
             self.add_criteria_button.setEnabled(False)
             return
@@ -120,7 +119,7 @@ class CriteriaSetScrollArea(QScrollArea):
     def add_criteria(self) -> CriteriaItemWidget:
         """Add an empty criteria to the set and return it."""
         new_criteria = CriteriaItemWidget()
-        self.criteria_store[new_criteria.uuid.hex] = new_criteria
+        self.criteria_store[new_criteria.uuid] = new_criteria
         self.criteria_list_layout.addWidget(new_criteria)
         new_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(new_criteria))
         self.criteria_list_layout.addWidget(self.add_criteria_button)
@@ -137,7 +136,7 @@ class CriteriaSetScrollArea(QScrollArea):
         def _delete_criteria() -> None:
             """Hides and deletes the externally provided criteria from the set."""
             criteria.hide()
-            self.criteria_store.pop(criteria.uuid.hex)
+            self.criteria_store.pop(criteria.uuid)
             self.criteria_list_layout.removeWidget(criteria)
             criteria.deleteLater()
 

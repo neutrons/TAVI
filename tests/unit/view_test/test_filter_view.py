@@ -1,6 +1,4 @@
 """Tests for tavi.frontend.view.filter_view."""
-from uuid import UUID as WidgetUUID
-
 import pytest
 
 from tavi.frontend.view.filter_view import (
@@ -106,7 +104,7 @@ def test_initial_criteria_item(view):
         criteria: CriteriaItemWidget
 
         assert criteria.uuid is not None
-        assert isinstance(criteria.uuid, WidgetUUID)
+        assert isinstance(criteria.uuid, UUID)
 
         assert criteria.criteria_key is not None
         assert criteria.criteria_key.text() == "scan"
