@@ -244,7 +244,7 @@ class FilterView(QWidget):
 
         filter_right_footer = QHBoxLayout()
         filter_right_footer.setDirection(filter_right_footer.Direction.RightToLeft)
-        self.apply_filter_button = QPushButton("Apply Filter")
+        self.apply_filter_button = QPushButton("Save && Apply Filter")
         filter_right_footer.addWidget(self.apply_filter_button)
         filter_footer_layout.addLayout(filter_right_footer)
 
