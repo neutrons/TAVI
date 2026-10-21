@@ -286,7 +286,11 @@ class FilterView(QWidget):
     def _remove_filter(self, uuid: UUID) -> None:
         """Stop listing a filter, falling back to Sample. Use ``remove_filter_signal``."""
         # Not findData: Qt compares wrapped Python objects by identity, and this uuid is an event's copy.
-        index = next((i for i in range(self.filter_dropdown.count()) if self.filter_dropdown.itemData(i) == uuid), -1)
+        index = -1
+        for cursor in range(self.filter_dropdown.count()):
+            if self.filter_dropdown.itemData(cursor) == uuid:
+                index = cursor
+                break
         if index <= 0:
             return
         # Pick Sample first, so removing the item doesn't briefly pick whichever filter sits next to it.
