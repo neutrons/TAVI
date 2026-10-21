@@ -42,7 +42,7 @@ def app(qtbot):
     plot_model = PlotModel(data.plots, data.raw_scans)
     fit_model = FitModel(data.raw_scans, data.fits)
     plotter = PlotterPresenter(plot_model)
-    fitting = FittingPresenter(fit_model)
+    fitting = FittingPresenter(fit_model, project)
     qtbot.addWidget(plotter._view)
     qtbot.addWidget(fitting._view)
     return project, fitting._view, plotter._view
@@ -143,3 +143,36 @@ def test_undo_draws_the_same_canvas_as_reselecting_the_fit(app):
     select(fit_uuid.value)
 
     assert canvas(plotter_view) == after_undo
+
+
+def test_mixed_scan_and_fit_selection_stays_within_the_broker_depth(app):
+    project, view, _plotter_view = app
+    select("scan-001")
+    fit_with_range_max(view, "5")
+    (fit_uuid,) = project.tavi_data.fits
+
+    select("scan-002", fit_uuid.value)
+
+    assert history_buttons(view) == (False, False)
+
+
+def test_apply_all_off_then_picking_a_series_stages_it_alone(app):
+    project, view, plotter_view = app
+    select("scan-001", "scan-002")
+    plotter_view.apply_all_checkbox.setChecked(False)
+
+    plotter_view.current_plot_combo.setCurrentIndex(1)
+    view.perform_fit_btn.click()
+
+    (fit,) = project.tavi_data.fits.values()
+    assert [m.source_scan_uuid.value for m in fit.members] == ["scan-002"]
+
+
+def test_apply_all_fits_every_selected_scan_in_sequence(app):
+    project, view, _plotter_view = app
+    select("scan-001", "scan-002")
+
+    view.perform_fit_btn.click()
+
+    (fit,) = project.tavi_data.fits.values()
+    assert [m.source_scan_uuid.value for m in fit.members] == ["scan-001", "scan-002"]
