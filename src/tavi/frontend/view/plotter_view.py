@@ -2,7 +2,6 @@
 
 from typing import Any, Callable, Optional
 
-import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -45,13 +44,13 @@ class Plot1DView(QWidget):
     def __init__(self, parent: Any = None) -> None:
         """Construct 1D plotter view."""
         super().__init__(parent)
-        # The fit curve currently drawn for each source scan, so a refit of that series can drop
-        # its own line before drawing the new one - matplotlib would otherwise keep every
-        # superseded curve (and its legend entry) on the axes.
-        self._fit_lines: dict[str, Any] = {}
-        # Per source scan, one dashed line per model component prefix, kept so "Plot Separately"
-        # can toggle their visibility without the fits having to be recomputed.
-        self._fit_component_lines: dict[str, dict[str, Any]] = {}
+        # What the canvas shows, kept so every change redraws it from scratch through _redraw.
+        # Patching live artists instead lets matplotlib's own accumulated state (data limits,
+        # color cycle, legend) leak in, so the same series and fits would draw differently
+        # depending on how they got there.
+        self._plotted: list[tuple] = []
+        # Keyed by source scan uuid, so a refit or undo of a series replaces its own curve.
+        self._fit_curves: dict[str, FitCurve] = {}
         self._show_components = False
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
@@ -187,87 +186,68 @@ class Plot1DView(QWidget):
         layout.addWidget(self.canvas)
         layout.addWidget(self.toolbar)
 
-    def append_plot(
-        self,
-        x: np.ndarray,
-        y: np.ndarray,
-        err: np.ndarray,
-        scan_name: str,
-        normalized_by: str,
-        x_name: str,
-        y_name: str,
-        error_name: str,
-    ) -> None:
-        """Append a scan to the plot."""
+    def _redraw(self) -> None:
+        """
+        Rebuild the whole canvas from the scene: every series, then every fit curve and its components.
+
+        A user's pan/zoom is kept - while judging a fit the zoomed-in detail is the point - but
+        otherwise the limits come from exactly what is drawn now, never from what was drawn before.
+        """
         ax = self.canvas.axes
-        label = f"{scan_name}"
-        ax.errorbar(x, y, yerr=err, label=label, fmt="o", capsize=3)
-        ax.set_xlabel(x_name)
-        ax.set_ylabel(f"{y_name} / {normalized_by}" if normalized_by else y_name)
+        # Pan, zoom and set_xlim all switch autoscaling off, so that is how a user-chosen view shows.
+        user_view = None
+        if not (ax.get_autoscalex_on() and ax.get_autoscaley_on()):
+            user_view = (ax.get_xlim(), ax.get_ylim())
+        ax.cla()
+        colors = self._series_colors()
+        for x, y, err, series in self._plotted:
+            ax.errorbar(
+                x,
+                y,
+                yerr=err,
+                label=series.display_label,
+                fmt="o",
+                capsize=3,
+                color=colors[series.source_scan_uuid.value],
+            )
+        for fit in self._fit_curves.values():
+            ax.plot(fit.x, fit.best_fit, "-", color=colors[fit.source_scan_uuid.value], label=f"{fit.scan_name} fit")
+        # Only drawn while shown: an invisible line would still stretch the autoscaled limits.
+        if self._show_components:
+            component_index = len(colors)
+            for fit in self._fit_curves.values():
+                for prefix, values in fit.components.items():
+                    label = f"{fit.scan_name} {prefix.rstrip('_') or 'component'}"
+                    ax.plot(fit.x, values, "--", lw=1, color=f"C{component_index}", label=label)
+                    component_index += 1
+        if user_view is not None:
+            ax.set_xlim(*user_view[0])
+            ax.set_ylim(*user_view[1])
+        self._sync_axis_labels([series for *_, series in self._plotted])
         self._refresh_legend()
         self.canvas.draw()
+
+    def _series_colors(self) -> dict[str, str]:
+        """
+        Pin one color per source scan from its place in the scene, shared by its data and its fit.
+
+        Taken from the order things were added rather than matplotlib's color cycle, which only
+        moves forward and would recolor a series every time it is redrawn.
+        """
+        colors: dict[str, str] = {}
+        for source_uuid in [series.source_scan_uuid.value for *_, series in self._plotted] + list(self._fit_curves):
+            colors.setdefault(source_uuid, f"C{len(colors)}")
+        return colors
 
     def _append_fit_curve(self, fit: FitCurve) -> None:
-        """Draw a fit's evaluated curve as a solid line, replacing whatever was drawn for that series."""
-        ax = self.canvas.axes
-        superseded = self._fit_lines.pop(fit.source_scan_uuid.value, None)
-        # Removing a line doesn't rewind the axes' property cycle, so an unqualified plot() would
-        # hand each refit the next color - reuse the superseded curve's own. None (the first fit
-        # for this series) reads as "unset" and takes the next cycle color, as before.
-        color = superseded.get_color() if superseded is not None else None
-        if superseded is not None:
-            superseded.remove()
-        (line,) = ax.plot(fit.x, fit.best_fit, "-", color=color, label=f"{fit.scan_name} fit")
-        self._fit_lines[fit.source_scan_uuid.value] = line
-        self._append_fit_components(fit)
-        # Rebuilt after the swap, so the dropped curve's entry goes with it.
-        self._refresh_legend()
-        self.canvas.draw()
-
-    def _append_fit_components(self, fit: FitCurve) -> None:
-        """Draw each of a fit's components as its own dashed line, mirroring browser.py's show_components."""
-        ax = self.canvas.axes
-        superseded = self._fit_component_lines.pop(fit.source_scan_uuid.value, {})
-        lines = {}
-        for prefix, values in fit.components.items():
-            # Same color rule as the composite curve: a component keeps the color it was first
-            # drawn in, so a refit doesn't shuffle every component's color.
-            previous = superseded.pop(prefix, None)
-            color = previous.get_color() if previous is not None else None
-            if previous is not None:
-                previous.remove()
-            (line,) = ax.plot(fit.x, values, "--", lw=1, color=color)
-            line.set_label(f"{fit.scan_name} {prefix.rstrip('_') or 'component'}")
-            self._set_component_visible(line, self._show_components)
-            lines[prefix] = line
-        # Whatever the previous fit had and this one doesn't (a peak the user removed, or a
-        # background switched off) has no line to be replaced by, so drop it here.
-        for orphan in superseded.values():
-            orphan.remove()
-        self._fit_component_lines[fit.source_scan_uuid.value] = lines
-
-    def _set_component_visible(self, line: Any, visible: bool) -> None:
-        """
-        Show or hide one component line, leaving the legend exactly as it was while they're off.
-
-        Matplotlib keeps an invisible artist in the legend, so hiding the line is not enough - a
-        leading underscore is what actually excludes it. The label is stored carrying that marker,
-        so exactly one leading underscore is stripped back off to recover the original.
-        """
-        stored = line.get_label()
-        base = stored[1:] if stored.startswith("_") else stored
-        line.set_label(base if visible else f"_{base}")
-        line.set_visible(visible)
+        """Show a fit's evaluated curve, replacing whatever was shown for that series."""
+        self._fit_curves[fit.source_scan_uuid.value] = fit
+        self._redraw()
 
     def _set_fit_components_visible(self, visible: bool) -> None:
-        """Show or hide every drawn fit component, without re-running or redrawing the fits themselves."""
+        """Show or hide every fit's components - the curves are already known, so nothing refits."""
         self._show_components = visible
-        for lines in self._fit_component_lines.values():
-            for line in lines.values():
-                self._set_component_visible(line, visible)
-        # The components just entered or left the legend, so it has to be rebuilt.
-        self._refresh_legend()
-        self.canvas.draw()
+        self._redraw()
 
     def _on_hide_label_toggled(self, _hidden: bool) -> None:
         """Drop or restore the legend when "Hide Label" is toggled - the plotted data is untouched."""
@@ -278,11 +258,8 @@ class Plot1DView(QWidget):
         """
         Rebuild the legend from whatever is currently labelled, or drop it entirely.
 
-        Every caller that adds or relabels an artist goes through here rather than calling
-        ``legend()`` itself, so "Hide Label" survives the next plot or fit instead of the legend
-        quietly coming back. It also covers the two cases a bare ``legend()`` handles badly:
-        matplotlib warns rather than no-ops when nothing on the axes carries a label, and an
-        existing legend outlives the last labelled artist unless it is removed by hand.
+        Matplotlib warns rather than no-ops when nothing on the axes carries a label, so an empty
+        canvas gets no legend at all.
         """
         ax = self.canvas.axes
         if self.hide_label_check.isChecked() or not ax.get_legend_handles_labels()[0]:
@@ -292,34 +269,30 @@ class Plot1DView(QWidget):
         ax.legend()
 
     def clear_plot(self) -> None:
-        """Clear all data from the plot."""
+        """Clear all data from the plot, and the view history that went with it."""
+        self._plotted = []
+        self._fit_curves = {}
+        # cla() turns autoscaling back on, so the next plot isn't held to this one's zoom.
         self.canvas.axes.cla()
-        # cla() already discarded the lines themselves - keeping handles to them would leave
-        # _append_fit_curve trying to remove artists that are no longer on the axes.
-        self._fit_lines.clear()
-        self._fit_component_lines.clear()
         # Drop the toolbar's view history along with the data. Matplotlib captures the
         # "Home" view lazily on the first pan/zoom, so without this the next plot's Home
         # button would restore the *previous* plot's axis limits.
         self.toolbar.update()
-        self.canvas.draw()
+        self._redraw()
 
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
         self.clear_plot()
-        if not resolved:
-            return
-        for x, y, err, series in resolved:
-            self.append_plot(
-                x, y, err, series.display_label, series.normalized_by, series.x_name, series.y_name, series.error_name
-            )
-        # With "Apply All" off, individually-tweaked plots may no longer share a common x/y
-        # column - set once, from the whole batch, rather than letting the last append_plot's
-        # single-series label silently hide that the others are on different units.
-        self._sync_axis_labels([series for *_, series in resolved])
+        self._plotted = list(resolved)
+        self._redraw()
 
     def _sync_axis_labels(self, series_list: list[Any]) -> None:
-        """Set the axes' x/y labels from every plotted series, flagging it when their units differ."""
+        """
+        Set the axes' x/y labels from every plotted series, flagging it when their units differ.
+
+        Staged edits may leave plots no longer sharing a common x/y column - set from everything
+        drawn, rather than letting one series' label silently hide that the others differ.
+        """
         ax = self.canvas.axes
         ax.set_xlabel(self._combined_axis_label(series.x_name for series in series_list))
         ax.set_ylabel(
@@ -328,7 +301,6 @@ class Plot1DView(QWidget):
                 for series in series_list
             )
         )
-        self.canvas.draw()
 
     def _combined_axis_label(self, names: Any) -> str:
         """A single shared name as-is; multiple distinct names joined so mixed units are visible, not hidden."""

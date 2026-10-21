@@ -34,6 +34,21 @@ class RawScanFocusEvent(Event):
     also_plots: list[Plot] = []
 
 
+class ClearFocusEvent(Event):
+    """
+    Announce that whatever was focused no longer is - the first half of every new selection.
+
+    Published by ``TaviProjectModel`` first thing on every ``FocusEvent``, ahead of the focus events
+    it routes to, so every subscriber has dropped its state for the old selection before any
+    ``ActivePlotChangedEvent``/``SyncFitEvent`` from the new one arrives. It says nothing about what
+    a subscriber should do with that; ``FittingPresenter``, for one, resets its panel and forgets
+    which fit covers each scan. ``PlotFocusEvent`` can't serve as the cue - ``PlotModel``
+    republishes it for every field edit, which is a refresh of the same focus, not a new one.
+    """
+
+    pass
+
+
 class FitFocusEvent(Event):
     """
     Announce that a list of fits is now focused. Mirrors RawScanFocusEvent/PlotFocusEvent.
@@ -84,6 +99,25 @@ class SaveFitEvent(Event):
     fit_uuid: UUID
     members: list[FitMember]
     """In fit order. Every member is a different series."""
+
+
+class UndoFitMemberEvent(Event):
+    """
+    Ask ``TaviProjectModel`` to roll one member of a fit back to the state before its last save.
+
+    Published by ``FittingPresenter`` for the active series only - undo is for dialing one member
+    in, so it is offered only while Perform Fit would refit that member alone.
+    """
+
+    fit_uuid: UUID
+    source_scan_uuid: UUID
+
+
+class RedoFitMemberEvent(Event):
+    """Ask ``TaviProjectModel`` to reapply the member state the last ``UndoFitMemberEvent`` rolled back."""
+
+    fit_uuid: UUID
+    source_scan_uuid: UUID
 
 
 class PlotFocusEvent(Event):
@@ -171,8 +205,8 @@ class FitComponentsVisibilityChangedEvent(Event):
 
     Purely a display preference, so it carries no fit identity: every drawn fit's components
     show or hide together. ``FitCurve`` always carries its components, whether or not they are
-    currently shown, so ``PlotterPresenter`` answers this by toggling artists already on the
-    canvas rather than asking ``FitModel`` to recompute anything.
+    currently shown, so ``PlotterPresenter`` answers this by redrawing the curves the view
+    already has rather than asking ``FitModel`` to recompute anything.
     """
 
     visible: bool

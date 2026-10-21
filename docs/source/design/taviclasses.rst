@@ -137,8 +137,8 @@ presenter layer owns them and passes them in through ``build_ui``.
     class Plot1DView{
         +Signal fields_focus_changed
         +Signal render_plots_signal
+        +Signal append_fit_curve_signal
         +Signal plot_clicked
-        +append_plot(x, y, err, ...)
         +get_plot_fields() PlotFields
         +sync_preset_fields(...)
         +reset_controls_to_defaults()

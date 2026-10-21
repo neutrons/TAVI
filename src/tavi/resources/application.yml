@@ -12,6 +12,14 @@ library:
   filestore:
     raw:
       size-limit: 1  # MB
+backend:
+  model:
+    fit:
+      history:
+        # Undo is for dialing one fit member in, not an audit trail - a handful of steps back is
+        # plenty, and anything older is dropped first.
+        size-limit: 10  # undo steps per fit member
+
 ORNL:
   spice:
     file:

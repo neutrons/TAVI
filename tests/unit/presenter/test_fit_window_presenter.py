@@ -17,7 +17,7 @@ from tavi.library.data.fit_entry import (
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent
+from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent, RestoreFitMemberEvent
 from tavi.meta.event.type.presenter_event import SaveFitEvent, SyncFitEvent
 
 
@@ -285,3 +285,33 @@ def test_open_windows_returns_a_copy(presenter):
     presenter.open_windows().clear()
 
     assert len(presenter.open_windows()) == 2
+
+
+# ---------------------------------------------------------------------------
+# handle_restore_fit_member - undo/redo
+# ---------------------------------------------------------------------------
+
+
+def restore_member(uuid_val="scan-001", reduced_chi_squared=0.5) -> None:
+    """Publish what an undo does: announce the restored member, then recompute just it."""
+    EventBroker().publish(RestoreFitMemberEvent(fit_uuid=UUID(value="fit-001"), source_scan_uuid=UUID(value=uuid_val)))
+    recompute_fit(uuid_vals=(uuid_val,), reduced_chi_squared=reduced_chi_squared)
+
+
+def test_restored_member_refreshes_its_open_window(presenter):
+    perform_fit()
+    window = presenter._view.windows[key(uuid_val="scan-001")]
+
+    restore_member(reduced_chi_squared=0.75)
+
+    assert window.status_label.text() == "χ2 = 0.75"
+
+
+def test_restored_member_does_not_reopen_a_closed_window(presenter):
+    perform_fit()
+    presenter._view.windows[key(uuid_val="scan-001")].close()
+
+    restore_member()
+
+    assert key(uuid_val="scan-001") not in presenter.open_windows()
+    assert key(uuid_val="scan-001") not in presenter._view.windows

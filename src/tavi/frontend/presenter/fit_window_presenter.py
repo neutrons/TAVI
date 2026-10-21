@@ -4,7 +4,7 @@ from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.fit_window_view import FitWindowKey, FitWindowsView
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent
+from tavi.meta.event.type.model_event import FitRemoveEvent, RawScanRemoveEvent, RestoreFitMemberEvent
 from tavi.meta.event.type.presenter_event import SaveFitEvent, SyncFitEvent
 
 
@@ -16,8 +16,8 @@ class FitWindowPresenter(AbstractPresenter):
     already on the main plotter, so only a sequential fit being run - several scans fit at once by
     Perform Fit - opens windows. Only a fit that was just saved (``SaveFitEvent``) touches windows at
     all, so browsing a saved fit from the project tree - a recompute, synced but never saved - shows
-    it on the main plotter only. Refitting one member refreshes its window if it's open, but never
-    reopens one the user closed.
+    it on the main plotter only. Refitting one member - or undoing/redoing it - refreshes its window
+    if it's open, but never reopens one the user closed.
     """
 
     def __init__(self) -> None:
@@ -32,6 +32,7 @@ class FitWindowPresenter(AbstractPresenter):
 
         self._event_broker = EventBroker()
         self._event_broker.register(SaveFitEvent, self.handle_save_fit)
+        self._event_broker.register(RestoreFitMemberEvent, self.handle_restore_fit_member)
         self._event_broker.register(SyncFitEvent, self.handle_sync_fit)
         self._event_broker.register(FitRemoveEvent, self.handle_fit_removed)
         self._event_broker.register(RawScanRemoveEvent, self.handle_raw_scan_removed)
@@ -55,8 +56,13 @@ class FitWindowPresenter(AbstractPresenter):
         }
         self._pending[e.fit_uuid] = (sources, open_missing)
 
+    def handle_restore_fit_member(self, e: RestoreFitMemberEvent) -> None:
+        """Note that an undone/redone member's window, if open, should take the recompute that follows."""
+        if (e.fit_uuid, e.source_scan_uuid) in self._open_windows:
+            self._pending[e.fit_uuid] = ({e.source_scan_uuid}, False)
+
     def handle_sync_fit(self, e: SyncFitEvent) -> None:
-        """Open or refresh the windows noted for a just-saved fit; a sync with nothing pending is a recompute, ignored."""
+        """Open or refresh the windows noted for a just-saved or restored fit; any other recompute is ignored."""
         pending = self._pending.pop(e.fit_uuid, None)
         if pending is None:
             return

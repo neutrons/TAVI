@@ -46,6 +46,35 @@ class FitRemoveEvent(Event):
     uuid: UUID
 
 
+class SyncFitHistoryEvent(Event):
+    """
+    Announce whether one member of a fit can now be undone or redone.
+
+    Published by ``TaviProjectModel`` whenever a member's history moves - a save pushes a step, an
+    undo/redo moves one between stacks - so ``FittingPresenter`` can enable its Undo/Redo buttons
+    without asking the model, keeping only these flags per member.
+    """
+
+    fit_uuid: UUID
+    source_scan_uuid: UUID
+    can_undo: bool
+    can_redo: bool
+
+
+class RestoreFitMemberEvent(Event):
+    """
+    Announce that one member of a fit was rolled back or forward to an earlier saved state.
+
+    Published by ``TaviProjectModel`` just before the ``FitRecomputeEvent`` that redraws the member,
+    the same way ``FitFocusEvent`` precedes it: ``FitWindowPresenter`` marks that member's open
+    window as pending here, so the resulting ``SyncFitEvent`` refreshes it regardless of subscriber
+    registration order.
+    """
+
+    fit_uuid: UUID
+    source_scan_uuid: UUID
+
+
 class RawScanLoadingEvent(Event):
     """loading raw data event."""
 

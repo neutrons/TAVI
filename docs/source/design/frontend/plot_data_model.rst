@@ -158,6 +158,23 @@ model, never a stored handle:
         resolved = [(*resolve_series(series, e.scans), series) for plot in e.plots for series in plot.series]
         self._view.render_plots_signal.emit(resolved)
 
+Fit curves reach the view separately (``append_fit_curve_signal``), and
+"Plot Separately" toggles their components (``set_fit_components_visible_signal``).
+Each of these only updates the view's scene — the series and fit curves it is
+showing — and then redraws the whole canvas from that scene through one
+method, ``Plot1DView._redraw``. Patching live matplotlib artists instead
+(removing one fit line, adding its replacement) lets matplotlib's accumulated
+state leak into the result: data limits only grow, and the color cycle only
+moves forward. A fit undone back to a tame curve then kept the axes its
+overshooting predecessor had stretched, while reselecting the same fit from
+the tree drew it correctly. With one draw path the canvas depends only on what
+is shown, not on how it got there. Colors are pinned per source scan from the
+scene's order (a fit shares its series' color), hidden components are not
+drawn at all (an invisible line still stretches the autoscaled limits), and a
+user's pan/zoom is kept across a refit, since judging a fit usually means
+zooming into its detail; a new focus or sync clears it along with the
+toolbar's view history.
+
 The view never sees a scan, a live model, or a ``PlotSeries`` from storage —
 only the resolved arrays and the ``PlotSeries`` snapshot carrying the
 display strings (``scan_name``, ``x_name``, ``y_name``, ``normalized_by``,
@@ -242,13 +259,10 @@ different ``source_scan_uuid``. Nothing about ``Plot`` changes:
     # The publishing model attaches both referenced scans to the event...
     scans = scans_for_plots([plot], {scan_1.uuid: scan_1, scan_2.uuid: scan_2})
 
-    # ...and PlotterPresenter resolves + appends each series independently
-    # against that snapshot, so both end up as separate error-bar containers
-    # on the same axes.
-    for series in plot.series:
-        x, y, err = resolve_series(series, scans)
-        view.append_plot(x, y, err, series.scan_name, series.normalized_by,
-                          series.x_name, series.y_name, series.error_name)
+    # ...and PlotterPresenter resolves each series independently against
+    # that snapshot, so both end up as separate error-bar containers on the
+    # same axes.
+    view.render_plots_signal.emit([(*resolve_series(s, scans), s) for s in plot.series])
 
 Future Direction
 ------------------
