@@ -314,6 +314,8 @@ class FilterView(QWidget):
 
     def _show_applied_filter(self, name: str) -> None:
         """Name the applied filter. Use ``show_applied_filter_signal``."""
+        if self.filter_dropdown.currentText() == name:
+            self.filter_dropdown.setItemText(self.filter_dropdown.currentIndex(), name)
         if len(name) > 30:
             name = name[:30] + "..."
         self.filter_applied_friendly_name.setText(name)
