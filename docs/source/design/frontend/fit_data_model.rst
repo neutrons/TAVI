@@ -143,7 +143,7 @@ one scan at a time, but only from the active series - undo is for dialing one
 member in. Other choices:
 
 * History is linear. Saving after an undo clears that member's redo stack.
-* Each member keeps at most ``FIT_HISTORY_LIMIT`` (10) states, and the oldest
+* Each member keeps at most ``backend.model.fit.history.size-limit`` (10, in ``application.yml``) states, and the oldest
   is dropped first.
 * A failed fit (``result=None``) is not recorded as a step, since there is no
   fit to go back to.

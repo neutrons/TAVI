@@ -17,6 +17,25 @@ def view(qtbot):
     return v
 
 
+def append_plot(view, x, y, err, scan_name, normalized_by, x_name, y_name, error_name):
+    """Draw one more series alongside what's on the canvas, through the view's one render path."""
+    series = PlotSeries(
+        source_scan_uuid=UUID(value=scan_name),
+        scan_name=scan_name,
+        normalized_by=normalized_by,
+        normalized_by_value=1.0 if normalized_by else None,
+        x_name=x_name,
+        y_name=y_name,
+        error_name=error_name,
+    )
+    add_plots(view, [(x, y, err, series)])
+
+
+def add_plots(view, resolved):
+    """Re-render what's on the canvas plus ``resolved``, the way a focus of more series does."""
+    view._render_plots(view._plotted + list(resolved))
+
+
 # ---------------------------------------------------------------------------
 # Construction
 # ---------------------------------------------------------------------------
@@ -61,7 +80,8 @@ def test_rebin_edits_disabled(view):
 
 
 def test_append_plot_adds_container_to_axes(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0, 3.0]),
         np.array([4.0, 5.0, 6.0]),
         np.array([0.1, 0.1, 0.1]),
@@ -75,7 +95,8 @@ def test_append_plot_adds_container_to_axes(view):
 
 
 def test_append_plot_sets_xlabel(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -89,7 +110,8 @@ def test_append_plot_sets_xlabel(view):
 
 
 def test_append_plot_sets_ylabel_with_normalization(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
@@ -105,7 +127,8 @@ def test_append_plot_sets_ylabel_with_normalization(view):
 
 
 def test_append_plot_sets_ylabel_without_normalization(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
@@ -119,7 +142,8 @@ def test_append_plot_sets_ylabel_without_normalization(view):
 
 
 def test_append_plot_label_uses_scan_name(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -135,7 +159,8 @@ def test_append_plot_label_uses_scan_name(view):
 
 def test_append_plot_multiple_calls_adds_multiple_containers(view):
     for i in range(3):
-        view.append_plot(
+        append_plot(
+            view,
             np.array([1.0, 2.0]),
             np.array([float(i), float(i + 1)]),
             np.array([0.0, 0.0]),
@@ -154,7 +179,8 @@ def test_append_plot_multiple_calls_adds_multiple_containers(view):
 
 
 def test_clear_plot_removes_containers(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -169,7 +195,8 @@ def test_clear_plot_removes_containers(view):
 
 
 def test_clear_plot_removes_lines(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -189,7 +216,8 @@ def test_clear_plot_on_empty_does_not_raise(view):
 
 def test_clear_plot_resets_toolbar_view_history(view):
     """Home must return to the new plot's limits, not a previous plot's zoomed view."""
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -387,7 +415,8 @@ def _series(
 
 
 def test_render_plots_clears_then_plots_each_series(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
@@ -543,7 +572,8 @@ def test_render_plots_signal_emits_to_render_plots(view, qtbot):
 
 
 def test_render_plots_empty_list_only_clears(view):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0]),
         np.array([2.0]),
         np.array([0.0]),
@@ -871,7 +901,8 @@ def test_fit_curves_for_different_series_are_drawn_side_by_side(view):
 
 
 def plot_one_scan(view, scan_name="my_scan"):
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -967,26 +998,32 @@ def test_unchecking_hide_label_restores_every_label_drawn_while_hidden(view):
 
 
 def test_fit_components_are_drawn_as_dashed_lines(view):
+    view._set_fit_components_visible(True)
     view._append_fit_curve(make_fit_curve_with_components())
 
     assert len(component_lines(view)) == 2
 
 
-def test_fit_components_are_hidden_until_plot_separately_is_checked(view):
-    """The components are always drawn so toggling is instant - but they start invisible."""
+def test_fit_components_are_not_drawn_until_plot_separately_is_checked(view):
     view._append_fit_curve(make_fit_curve_with_components())
 
-    assert all(not line.get_visible() for line in component_lines(view))
+    assert component_lines(view) == []
 
 
-def test_set_fit_components_visible_reveals_them_without_redrawing(view):
+def test_set_fit_components_visible_reveals_them_without_a_refit(view):
+    """The view already holds the fit's components, so showing them needs no new SyncFitEvent."""
     view._append_fit_curve(make_fit_curve_with_components())
-    lines_before = list(view.canvas.axes.lines)
 
     view._set_fit_components_visible(True)
 
-    assert all(line.get_visible() for line in component_lines(view))
-    assert list(view.canvas.axes.lines) == lines_before
+    assert len(component_lines(view)) == 2
+
+
+def test_hidden_fit_components_do_not_stretch_the_axes(view):
+    """An invisible line still counts toward autoscaling, so hidden components must not be drawn at all."""
+    view._append_fit_curve(make_fit_curve_with_components(components={"peak1_": [100.0, 200.0, 300.0]}))
+
+    assert view.canvas.axes.get_ylim()[1] < 100.0
 
 
 def test_set_fit_components_visible_false_hides_them_again(view):
@@ -995,16 +1032,16 @@ def test_set_fit_components_visible_false_hides_them_again(view):
 
     view._set_fit_components_visible(False)
 
-    assert all(not line.get_visible() for line in component_lines(view))
+    assert component_lines(view) == []
 
 
-def test_components_drawn_after_toggling_on_are_visible_immediately(view):
+def test_components_drawn_after_toggling_on_are_shown_immediately(view):
     """A fit performed while the box is already checked must not come up hidden."""
     view._set_fit_components_visible(True)
 
     view._append_fit_curve(make_fit_curve_with_components())
 
-    assert all(line.get_visible() for line in component_lines(view))
+    assert len(component_lines(view)) == 2
 
 
 def test_toggling_on_an_empty_canvas_is_harmless(view):
@@ -1051,6 +1088,7 @@ def test_components_label_is_the_prefix_without_its_trailing_underscore(view):
 
 
 def test_refitting_replaces_the_components_rather_than_stacking_them(view):
+    view._set_fit_components_visible(True)
     view._append_fit_curve(make_fit_curve_with_components())
     view._append_fit_curve(make_fit_curve_with_components())
 
@@ -1058,6 +1096,7 @@ def test_refitting_replaces_the_components_rather_than_stacking_them(view):
 
 
 def test_refitting_keeps_each_component_the_same_color(view):
+    view._set_fit_components_visible(True)
     view._append_fit_curve(make_fit_curve_with_components())
     colors_before = {line.get_label(): line.get_color() for line in component_lines(view)}
 
@@ -1089,10 +1128,11 @@ def test_set_fit_components_visible_signal_emits_to_the_handler(view, qtbot):
     with qtbot.waitSignal(view.set_fit_components_visible_signal, timeout=1000):
         view.set_fit_components_visible_signal.emit(True)
 
-    assert all(line.get_visible() for line in component_lines(view))
+    assert len(component_lines(view)) == 2
 
 
 def test_clear_plot_drops_the_remembered_fit_components(view):
+    view._set_fit_components_visible(True)
     view._append_fit_curve(make_fit_curve_with_components())
     view.clear_plot()
 
@@ -1131,7 +1171,8 @@ def test_append_fit_curve_signal_emits_to_append_fit_curve(view, qtbot):
 
 def test_append_fit_curve_survives_alongside_a_data_series(view):
     """append_plot's errorbar series and the fit curve coexist - neither call clears the other's artists."""
-    view.append_plot(
+    append_plot(
+        view,
         np.array([1.0, 2.0]),
         np.array([3.0, 4.0]),
         np.array([0.0, 0.0]),
@@ -1149,3 +1190,79 @@ def test_append_fit_curve_survives_alongside_a_data_series(view):
     assert len(view.canvas.axes.lines) == lines_before + 1
     labels = [line.get_label() for line in view.canvas.axes.lines]
     assert any("my_scan" in lbl and "fit" in lbl for lbl in labels)
+
+
+# ---------------------------------------------------------------------------
+# one draw path - the canvas depends only on what is shown, not how it got there
+# ---------------------------------------------------------------------------
+
+
+def plot_fit_series(view):
+    """Plot the series make_fit_curve's default curves are fit against."""
+    add_plots(
+        view,
+        [
+            (
+                np.array([1.0, 2.0, 3.0]),
+                np.array([1.0, 2.0, 3.0]),
+                np.array([0.1, 0.1, 0.1]),
+                _series(friendly_name="scan-001"),
+            )
+        ],
+    )
+
+
+def test_replacing_a_fit_shrinks_the_axes_it_had_stretched(view):
+    """Undo of a fit that overshot the data must not leave the axes sized for the overshoot."""
+    plot_fit_series(view)
+    view._append_fit_curve(make_fit_curve(best_fit=[1.0, 500.0, 3.0]))
+
+    view._append_fit_curve(make_fit_curve(best_fit=[1.1, 2.1, 3.1]))
+
+    assert view.canvas.axes.get_ylim()[1] < 10.0
+
+
+def test_a_replaced_fit_draws_the_same_limits_as_one_focused_fresh(view, qtbot):
+    """Undo/refit and reselecting the fit must land on the same canvas."""
+    plot_fit_series(view)
+    view._append_fit_curve(make_fit_curve(best_fit=[1.0, 500.0, 3.0]))
+    view._append_fit_curve(make_fit_curve(best_fit=[1.1, 2.1, 3.1]))
+    replaced = (view.canvas.axes.get_xlim(), view.canvas.axes.get_ylim())
+
+    fresh = Plot1DView()
+    qtbot.addWidget(fresh)
+    plot_fit_series(fresh)
+    fresh._append_fit_curve(make_fit_curve(best_fit=[1.1, 2.1, 3.1]))
+
+    assert replaced == (fresh.canvas.axes.get_xlim(), fresh.canvas.axes.get_ylim())
+
+
+def test_a_users_zoom_survives_a_refit(view):
+    """Judging a fit means zooming into its detail - a refit must not throw that view away."""
+    plot_fit_series(view)
+    view._append_fit_curve(make_fit_curve())
+    view.canvas.axes.set_xlim(1.5, 2.5)  # what pan/zoom does: set limits, autoscaling off
+    view.canvas.axes.set_ylim(1.8, 2.2)
+
+    view._append_fit_curve(make_fit_curve(best_fit=[1.0, 500.0, 3.0]))
+
+    assert view.canvas.axes.get_xlim() == (1.5, 2.5)
+    assert view.canvas.axes.get_ylim() == (1.8, 2.2)
+
+
+def test_a_users_zoom_does_not_outlive_a_new_focus(view):
+    plot_fit_series(view)
+    view.canvas.axes.set_xlim(1.5, 2.5)
+
+    view._render_plots([(np.array([100.0, 200.0]), np.array([0.0, 1.0]), np.array([0.0, 0.0]), _series())])
+
+    assert view.canvas.axes.get_xlim()[0] < 100.0 < 200.0 < view.canvas.axes.get_xlim()[1]
+
+
+def test_a_fit_is_drawn_in_its_own_series_color(view):
+    plot_fit_series(view)
+    view._append_fit_curve(make_fit_curve())
+
+    (container,) = view.canvas.axes.containers
+    (fit_line,) = [line for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]
+    assert container.lines[0].get_color() == fit_line.get_color()

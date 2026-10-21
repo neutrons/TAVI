@@ -1,5 +1,7 @@
 """Tests for FitHistory."""
 
+from neutrons_standard.config import Config
+
 from tavi.backend.model.fit_history import FitHistory
 from tavi.library.data.fit_entry import FitMember, ParamField, PeakField
 from tavi.library.data.plot import PlotSeries
@@ -106,3 +108,15 @@ def test_forget_drops_by_fit_and_by_scan():
     history.forget(fit_uuids={other_fit})
     assert not history.can_undo((other_fit, UUID(value="scan-003")))
     assert history.can_undo(key("scan-002"))
+
+
+def test_limit_defaults_to_the_configured_size_limit():
+    history = FitHistory()
+    for range_max in range(Config["backend.model.fit.history.size-limit"] + 1):
+        history.record(FIT, make_member(str(range_max)))
+
+    steps = 0
+    current = make_member("current")
+    while (current := history.undo(FIT, current)) is not None:
+        steps += 1
+    assert steps == Config["backend.model.fit.history.size-limit"]

@@ -205,8 +205,8 @@ class FitComponentsVisibilityChangedEvent(Event):
 
     Purely a display preference, so it carries no fit identity: every drawn fit's components
     show or hide together. ``FitCurve`` always carries its components, whether or not they are
-    currently shown, so ``PlotterPresenter`` answers this by toggling artists already on the
-    canvas rather than asking ``FitModel`` to recompute anything.
+    currently shown, so ``PlotterPresenter`` answers this by redrawing the curves the view
+    already has rather than asking ``FitModel`` to recompute anything.
     """
 
     visible: bool

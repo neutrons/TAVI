@@ -111,7 +111,6 @@ def test_init_does_not_hold_scan_or_plot_data(presenter):
 
 def test_handle_plot_focus_clears_plot(presenter):
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event())
 
@@ -122,11 +121,10 @@ def test_handle_plot_focus_appends_each_series(presenter):
     plots = [make_plot(f"plot-{i:03d}", series=[make_series(f"scan-{i:03d}")]) for i in range(3)]
     scans = {p.series[0].source_scan_uuid: make_scan(p.series[0].source_scan_uuid.value) for p in plots}
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(plots=plots, scans=scans))
 
-    assert presenter._view.append_plot.call_count == 3
+    assert len(presenter._view.canvas.axes.containers) == 3
 
 
 def test_handle_plot_focus_appends_each_series_within_a_multi_series_plot(presenter):
@@ -134,67 +132,62 @@ def test_handle_plot_focus_appends_each_series_within_a_multi_series_plot(presen
     scans = {s.source_scan_uuid: make_scan(s.source_scan_uuid.value) for s in series}
     plot = make_plot(series=series)
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(plots=[plot], scans=scans))
 
-    assert presenter._view.append_plot.call_count == 2
+    assert len(presenter._view.canvas.axes.containers) == 2
 
 
 def test_handle_plot_focus_passes_correct_x(presenter):
     scan = make_scan(x_vals=[10.0, 20.0, 30.0])
-    presenter._view.append_plot = MagicMock()
     presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(scans={scan.uuid: scan}))
 
-    npt.assert_array_equal(presenter._view.append_plot.call_args.args[0], [10.0, 20.0, 30.0])
+    (container,) = presenter._view.canvas.axes.containers
+    npt.assert_array_equal(container.lines[0].get_xdata(), [10.0, 20.0, 30.0])
 
 
 def test_handle_plot_focus_passes_correct_y(presenter):
     scan = make_scan(y_vals=[7.0, 8.0, 9.0])
-    presenter._view.append_plot = MagicMock()
     presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(scans={scan.uuid: scan}))
 
-    npt.assert_array_equal(presenter._view.append_plot.call_args.args[1], [7.0, 8.0, 9.0])
+    (container,) = presenter._view.canvas.axes.containers
+    npt.assert_array_equal(container.lines[0].get_ydata(), [7.0, 8.0, 9.0])
 
 
 def test_handle_plot_focus_passes_scan_name(presenter):
     plot = make_plot(series=[make_series(scan_name="my_special_scan")])
-    presenter._view.append_plot = MagicMock()
     presenter._view.clear_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event(plots=[plot]))
 
-    assert presenter._view.append_plot.call_args.args[3] == "my_special_scan"
+    assert [c.get_label() for c in presenter._view.canvas.axes.containers] == ["my_special_scan"]
 
 
 def test_handle_plot_focus_empty_plots_clears_and_no_append(presenter):
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(PlotFocusEvent(plots=[], scans={}))
 
     presenter._view.clear_plot.assert_called_once()
-    presenter._view.append_plot.assert_not_called()
+    assert len(presenter._view.canvas.axes.containers) == 0
 
 
 def test_handle_plot_focus_via_event_broker(presenter):
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     EventBroker().publish(make_event())
 
     presenter._view.clear_plot.assert_called_once()
-    presenter._view.append_plot.assert_called_once()
+    assert len(presenter._view.canvas.axes.containers) == 1
 
 
 def test_handle_plot_focus_never_touches_model(presenter):
     """Resolution reads only the event's own scan snapshot — the model is never called here."""
     presenter._view.clear_plot = MagicMock()
-    presenter._view.append_plot = MagicMock()
 
     presenter.handle_plot_focus(make_event())
 

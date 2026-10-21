@@ -4,12 +4,10 @@ from collections import deque
 from collections.abc import Callable, Container
 from typing import Optional
 
+from neutrons_standard.config import Config
+
 from tavi.library.data.fit_entry import FitMember
 from tavi.library.data.scan import UUID
-
-# Undo is for dialing one member in, not an audit trail - a handful of steps back is plenty, and
-# anything older is dropped first.
-FIT_HISTORY_LIMIT = 10
 
 FitMemberKey = tuple[UUID, UUID]
 """(fit uuid, source scan uuid) - a member's identity inside its fit is its source scan."""
@@ -18,9 +16,9 @@ FitMemberKey = tuple[UUID, UUID]
 class FitHistory:
     """Undo/redo stacks of earlier saved states, one pair per member of a fit."""
 
-    def __init__(self, limit: int = FIT_HISTORY_LIMIT) -> None:
-        """Init empty stacks, each keeping at most ``limit`` states."""
-        self._limit = limit
+    def __init__(self, limit: Optional[int] = None) -> None:
+        """Init empty stacks, each keeping at most ``limit`` states - ``backend.model.fit.history.size-limit`` if unset."""
+        self._limit = limit if limit is not None else Config["backend.model.fit.history.size-limit"]
         self._undo: dict[FitMemberKey, deque[FitMember]] = {}
         self._redo: dict[FitMemberKey, deque[FitMember]] = {}
 
