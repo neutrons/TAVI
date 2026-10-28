@@ -26,6 +26,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusFitEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
+    SyncCosineParamsEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
     SyncPeakParamsEvent,
@@ -584,6 +585,41 @@ def test_handle_peak_params_suggested_noop_when_nothing_active(presenter):
 
     EventBroker().publish(
         SyncPeakParamsEvent(source_scan_uuid=UUID(value="scan-001"), amplitude=5.0, center=1.5, fwhm=0.75)
+    )
+
+    assert amplitude_row.value_edit.text() == "unchanged"
+
+
+# ---------------------------------------------------------------------------
+# handle_cosine_params_suggested
+# ---------------------------------------------------------------------------
+
+
+def test_handle_cosine_params_suggested_fills_cosine_table_for_lead_series(presenter, qtbot):
+    stage("scan-001")
+    presenter._view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    with qtbot.waitSignal(presenter._view.set_cosine_params_signal, timeout=1000):
+        EventBroker().publish(
+            SyncCosineParamsEvent(
+                source_scan_uuid=UUID(value="scan-001"), amplitude=3.0, frequency=2.5, phase=0.4, offset=7.0
+            )
+        )
+
+    rows = presenter._view.peak_panels[0].peak_table.rows
+    assert [row.value_edit.text() for row in rows] == ["3", "2.5", "0.4", "7"]
+
+
+def test_handle_cosine_params_suggested_ignores_suggestion_for_a_different_series(presenter):
+    stage("scan-001")
+    presenter._view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+    amplitude_row = presenter._view.peak_panels[0].peak_table.rows[0]
+    amplitude_row.value_edit.setText("unchanged")
+
+    EventBroker().publish(
+        SyncCosineParamsEvent(
+            source_scan_uuid=UUID(value="scan-999"), amplitude=3.0, frequency=2.5, phase=0.4, offset=7.0
+        )
     )
 
     assert amplitude_row.value_edit.text() == "unchanged"

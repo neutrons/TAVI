@@ -17,6 +17,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusFitEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
+    SyncCosineParamsEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
     SyncPeakParamsEvent,
@@ -55,6 +56,7 @@ class FittingPresenter(AbstractPresenter):
         self._event_broker.register(FocusFitEvent, self.handle_fit_focus)
         self._event_broker.register(SyncFitEvent, self.handle_sync_fit)
         self._event_broker.register(SyncPeakParamsEvent, self.handle_peak_params_suggested)
+        self._event_broker.register(SyncCosineParamsEvent, self.handle_cosine_params_suggested)
         self._event_broker.register(SyncBackgroundParamsEvent, self.handle_background_params_suggested)
         self._event_broker.register(SyncFitSpecEvent, self.handle_sync_fit_spec)
         self._event_broker.register(RemoveFitEvent, self.handle_fit_removed)
@@ -252,6 +254,12 @@ class FittingPresenter(AbstractPresenter):
         if self._lead_series is None or e.source_scan_uuid != self._lead_series.source_scan_uuid:
             return
         self._view.set_peak_params_signal.emit(e.amplitude, e.center, e.fwhm)
+
+    def handle_cosine_params_suggested(self, e: SyncCosineParamsEvent) -> None:
+        """Fill the cosine table with a suggested guess, but only if it's against the lead series."""
+        if self._lead_series is None or e.source_scan_uuid != self._lead_series.source_scan_uuid:
+            return
+        self._view.set_cosine_params_signal.emit(e.amplitude, e.frequency, e.phase, e.offset)
 
     def handle_suggest_background_clicked(self) -> None:
         """

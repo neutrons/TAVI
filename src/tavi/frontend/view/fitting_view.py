@@ -21,6 +21,7 @@ from qtpy.QtWidgets import (
 )
 
 from tavi.library.data.fit_entry import (
+    CosineField,
     FitMember,
     FitResultSummary,
     FitSpec,
@@ -40,6 +41,7 @@ COLUMN_HEADERS = ["", "value", "", "std", "fix", "min", "max", "constraint"]
 PEAK_EXPRESSIONS = {
     "Gaussian": "y = A / (sigma sqrt(2pi)) exp( -(x - mu)^2 / (2 sigma^2) )",
     "Lorentzian": "y = (A / pi) [ sigma / ( (x - mu)^2 + sigma^2 ) ]",
+    "Cosine": "y = A cos( w (x + phi) ) + d0",
 }
 
 
@@ -48,7 +50,19 @@ PEAK_EXPRESSIONS = {
 # to fit inside.
 BACKGROUND_LABELS = ["k =", "x0 ="]
 BACKGROUND_DEFAULTS = [(0, 0, "", ""), (0, 0, "", "")]
+PEAK_LABELS = ["Int. Inten.", "Center", "FWHM"]
 PEAK_DEFAULTS = [(0, 0, "", ""), (1, 0, "", ""), (1, 0, "", "")]
+
+# A cosine is periodic, not peaked: it has no center or width to report, so it swaps the whole
+# trio for its own four parameters (seeded at CosineModel's own defaults) rather than relabelling
+# rows that would no longer mean what the fit reads out of them.
+COSINE_LABELS = ["Amplitude", "Frequency", "Phase", "Offset"]
+COSINE_DEFAULTS = [(1, 0, "", ""), (1, 0, "", ""), (0, 0, "", ""), (0, 0, "", "")]
+
+# Shapes whose parameters are not the peak trio, as {shape: (labels, defaults)}. A shape absent
+# here keeps PEAK_LABELS - the only parameter set FitSpec.peaks can carry today, which is why
+# PeakPanel.has_standard_peak_params gates every read and write of those three slots.
+PEAK_SHAPE_ROWS = {"Cosine": (COSINE_LABELS, COSINE_DEFAULTS)}
 
 
 @dataclass
@@ -172,7 +186,7 @@ class PeakPanel(QWidget):
         shape_row.setContentsMargins(0, 0, 0, 0)
         shape_row.addWidget(QLabel("Peak shape"))
         self.peak_shape_combo = QComboBox()
-        self.peak_shape_combo.addItems(["Gaussian", "Lorentzian", "Custom"])
+        self.peak_shape_combo.addItems(["Gaussian", "Lorentzian", "Cosine", "Custom"])
         self.peak_shape_combo.currentTextChanged.connect(self._on_peak_shape_changed)
         shape_row.addWidget(self.peak_shape_combo)
         shape_row.addStretch()
@@ -196,18 +210,21 @@ class PeakPanel(QWidget):
         expr_row.addWidget(self.peak_expr)
         layout.addWidget(self.peak_expr_row)
 
-        self.peak_table = ParamTable(
-            row_labels=["Int. Inten.", "Center", "FWHM"],
-            defaults=PEAK_DEFAULTS,
-        )
+        self.peak_table = ParamTable(row_labels=PEAK_LABELS, defaults=PEAK_DEFAULTS)
         layout.addWidget(self.peak_table)
 
         # Seed the field from whichever shape the combo starts on, rather than duplicating one
         # shape's expression here as a literal that could drift from PEAK_EXPRESSIONS.
         self._on_peak_shape_changed(self.peak_shape_combo.currentText())
 
+    def has_standard_peak_params(self) -> bool:
+        """Whether the table holds the (Int. Inten., Center, FWHM) trio that ``PeakField`` carries."""
+        return self.peak_shape_combo.currentText() not in PEAK_SHAPE_ROWS
+
     def _on_peak_shape_changed(self, shape: str) -> None:
         """Show a built-in shape's functional form read-only, or hand the field to the user for "Custom"."""
+        self._sync_param_rows(shape)
+
         if shape == "Custom":
             self.peak_expr.setReadOnly(False)
             self.peak_expr.setText(self._custom_peak_expr)
@@ -222,6 +239,15 @@ class PeakPanel(QWidget):
         self.peak_expr.setText(expression)
         self.peak_expr_row.setVisible(bool(expression))
 
+    def _sync_param_rows(self, shape: str) -> None:
+        """Rebuild the parameter table when the new shape's parameters differ from the ones on screen."""
+        labels, defaults = PEAK_SHAPE_ROWS.get(shape, (PEAK_LABELS, PEAK_DEFAULTS))
+        if [row.label.text() for row in self.peak_table.rows] == labels:
+            # Shapes sharing a parameter set (Gaussian <-> Lorentzian <-> Custom) keep whatever
+            # was typed; only a genuine change of parameters is worth discarding it for.
+            return
+        self.peak_table.set_rows(labels, defaults)
+
 
 class FittingView(QWidget):
     """1D fitting panel widget: fitting range, background, per-peak parameters, and fit controls."""
@@ -234,6 +260,7 @@ class FittingView(QWidget):
     plot_separately_toggled = Signal(bool)
     set_chi_squared_signal = Signal(float)
     set_peak_params_signal = Signal(float, float, float)
+    set_cosine_params_signal = Signal(float, float, float, float)
     set_background_params_signal = Signal(float, float)
     set_fitting_range_signal = Signal(float, float)
     set_fit_result_signal = Signal(object)
@@ -256,6 +283,7 @@ class FittingView(QWidget):
         # a worker thread (FitModel running behind FitModelProxy).
         self.set_chi_squared_signal.connect(self._set_chi_squared)
         self.set_peak_params_signal.connect(self._set_peak_params)
+        self.set_cosine_params_signal.connect(self._set_cosine_params)
         self.set_background_params_signal.connect(self._set_background_params)
         self.set_fitting_range_signal.connect(self._set_fitting_range)
         self.set_fit_result_signal.connect(self._set_fit_result)
@@ -297,7 +325,9 @@ class FittingView(QWidget):
         top_row = QHBoxLayout()
         top_row.addWidget(QLabel("Background"))
         self.background_combo = QComboBox()
-        self.background_combo.addItems(["Linear"])
+        # "None" fits the peaks alone - which a Cosine needs, since its own offset d0 and a linear
+        # background's constant are the same number twice, and a fit cannot tell them apart.
+        self.background_combo.addItems(["Linear", "None"])
         top_row.addWidget(self.background_combo)
         top_row.addStretch()
         self.suggest_background_btn = QPushButton("Suggest Params.")
@@ -422,10 +452,29 @@ class FittingView(QWidget):
         )
 
     def _peak_field(self, panel: PeakPanel) -> PeakField:
-        """Read one peak panel's shape and raw table text into a PeakField."""
+        """
+        Read one peak panel's shape and raw table text into a PeakField.
+
+        A Cosine's rows are its own four parameters, which go out as a ``CosineField`` instead of
+        the peak trio - the shape's parameters travel under their own names, not in slots that
+        would mean something else.
+        """
+        shape = panel.peak_shape_combo.currentText()
+        if not panel.has_standard_peak_params():
+            amplitude_row, frequency_row, phase_row, offset_row = panel.peak_table.rows
+            return PeakField(
+                shape=shape,
+                cosine=CosineField(
+                    amplitude=self._param_field(amplitude_row),
+                    frequency=self._param_field(frequency_row),
+                    phase=self._param_field(phase_row),
+                    offset=self._param_field(offset_row),
+                ),
+            )
+
         amplitude_row, center_row, fwhm_row = panel.peak_table.rows
         return PeakField(
-            shape=panel.peak_shape_combo.currentText(),
+            shape=shape,
             amplitude=self._param_field(amplitude_row),
             center=self._param_field(center_row),
             fwhm=self._param_field(fwhm_row),
@@ -469,10 +518,24 @@ class FittingView(QWidget):
 
     def _set_peak_params(self, amplitude: float, center: float, fwhm: float) -> None:
         """Fill the requesting peak's value column with a suggested starting guess."""
-        amplitude_row, center_row, fwhm_row = self._suggest_target().peak_table.rows
+        panel = self._suggest_target()
+        if not panel.has_standard_peak_params():
+            # The panel switched to a shape with other parameters while the guess was in flight;
+            # its rows are not the three this reply carries.
+            return
+        amplitude_row, center_row, fwhm_row = panel.peak_table.rows
         amplitude_row.value_edit.setText(f"{amplitude:.4g}")
         center_row.value_edit.setText(f"{center:.4g}")
         fwhm_row.value_edit.setText(f"{fwhm:.4g}")
+
+    def _set_cosine_params(self, amplitude: float, frequency: float, phase: float, offset: float) -> None:
+        """Fill the requesting cosine's value column with a suggested starting guess."""
+        panel = self._suggest_target()
+        if panel.has_standard_peak_params():
+            # The panel left the cosine while the guess was in flight; its rows are a peak's now.
+            return
+        for row, value in zip(panel.peak_table.rows, (amplitude, frequency, phase, offset)):
+            row.value_edit.setText(f"{value:.4g}")
 
     def _param_field(self, row: ParamRow) -> ParamField:
         """Read one ParamTable row's raw text/checked state into a ParamField."""
@@ -490,10 +553,14 @@ class FittingView(QWidget):
         # zip stops at the shorter of the two, which keeps a result computed before the spinbox
         # changed from writing into a panel that no longer exists.
         for panel, peak in zip(self.peak_panels, result.peaks):
-            amplitude_row, center_row, fwhm_row = panel.peak_table.rows
-            self._set_value_and_std(amplitude_row, peak.amplitude, peak.amplitude_err)
-            self._set_value_and_std(center_row, peak.center, peak.center_err)
-            self._set_value_and_std(fwhm_row, peak.fwhm, peak.fwhm_err)
+            # One row per parameter the fitted shape actually has, in panel row order. A count
+            # that doesn't match means the panel's shape changed since this fit ran, so these
+            # values name rows that are no longer there - better none than the wrong ones.
+            values = peak.named_values()
+            if len(values) != len(panel.peak_table.rows):
+                continue
+            for row, (_name, value, std) in zip(panel.peak_table.rows, values):
+                self._set_value_and_std(row, value, std)
 
         if result.background_constant is not None:
             slope_row, intercept_row = self.background_table.rows
@@ -522,7 +589,16 @@ class FittingView(QWidget):
         # Resizes the peak stack through _on_num_peaks_changed, the same as the user spinning it.
         self.num_peaks_spin.setValue(max(1, len(member.peaks)))
         for panel, peak in zip(self.peak_panels, member.peaks):
+            # Re-seeds the table to that shape's rows, so the fields below land in the set the
+            # member was actually fit with.
             panel.peak_shape_combo.setCurrentText(peak.shape)
+            if peak.cosine is not None:
+                cosine_fields = [peak.cosine.amplitude, peak.cosine.frequency, peak.cosine.phase, peak.cosine.offset]
+                for row, field in zip(panel.peak_table.rows, cosine_fields):
+                    self._set_param_field(row, field)
+                continue
+            if peak.amplitude is None or peak.center is None or peak.fwhm is None:
+                continue
             amplitude_row, center_row, fwhm_row = panel.peak_table.rows
             self._set_param_field(amplitude_row, peak.amplitude)
             self._set_param_field(center_row, peak.center)

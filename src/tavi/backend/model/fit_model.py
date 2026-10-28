@@ -36,6 +36,7 @@ from tavi.meta.event.type.presenter_event import (
     RecomputeFitEvent,
     SaveFitEvent,
     SyncBackgroundParamsEvent,
+    SyncCosineParamsEvent,
     SyncFitEvent,
     SyncFitSpecEvent,
     SyncPeakParamsEvent,
@@ -56,7 +57,12 @@ _PEAK_SHAPES = {
     "Gaussian": ModelName.Gaussian,
     "Lorentzian": ModelName.Lorentzian,
     "Voigt": ModelName.Voigt,
+    "Cosine": ModelName.Cosine,
 }
+
+# A cosine is fit under its own parameter names rather than the peak trio, so every place that
+# reads a peak's parameters branches on this one shape (see PeakField/PeakResult).
+_COSINE_PARAMS = ("amplitude", "frequency", "phase", "offset")
 
 # The only background the panel offers. A flat background is this one with its slope fixed to
 # zero, which the table's "fix" checkbox already expresses - no separate model needed.
@@ -84,22 +90,42 @@ def _seeded_value(field: ParamField, value: Optional[float], scale: float) -> Pa
     return field.model_copy(update={"value": repr(float(value))})
 
 
+def _seeded_peak(peak: PeakField, fitted: PeakResult, y_scale: float, x_scale: float, x_span: float) -> PeakField:
+    """Return ``peak`` starting from ``fitted``'s values, under whichever parameter set its shape fits."""
+    if peak.cosine is not None:
+        # A cosine's amplitude is a height (y_scale), not an integrated intensity; its frequency's
+        # own scale is the one cycle across the data that CosineModel.guess falls back to.
+        one_cycle = 2 * np.pi / x_span if x_span else 1.0
+        return peak.model_copy(
+            update={
+                "cosine": peak.cosine.model_copy(
+                    update={
+                        "amplitude": _seeded_value(peak.cosine.amplitude, fitted.amplitude, y_scale),
+                        "frequency": _seeded_value(peak.cosine.frequency, fitted.frequency, one_cycle),
+                        "phase": _seeded_value(peak.cosine.phase, fitted.phase, x_span),
+                        "offset": _seeded_value(peak.cosine.offset, fitted.offset, y_scale),
+                    }
+                )
+            }
+        )
+    if peak.amplitude is None or peak.center is None or peak.fwhm is None:
+        return peak
+    return peak.model_copy(
+        update={
+            "amplitude": _seeded_value(peak.amplitude, fitted.amplitude, y_scale * x_span),
+            "center": _seeded_value(peak.center, fitted.center, x_scale),
+            "fwhm": _seeded_value(peak.fwhm, fitted.fwhm, x_span),
+        }
+    )
+
+
 def _seeded_spec(spec: FitSpec, result: FitResultSummary, data: FitData) -> FitSpec:
     """Return ``spec`` with every value replaced by ``result``'s - how one sequential member seeds the next."""
     x_scale = float(np.max(np.abs(data.x))) if data.x else 0.0
     x_span = float(np.ptp(data.x)) if data.x else 0.0
     y_scale = float(np.max(np.abs(data.y))) if data.y else 0.0
     slope_scale = y_scale / x_span if x_span else y_scale
-    peaks = [
-        peak.model_copy(
-            update={
-                "amplitude": _seeded_value(peak.amplitude, fitted.amplitude, y_scale * x_span),
-                "center": _seeded_value(peak.center, fitted.center, x_scale),
-                "fwhm": _seeded_value(peak.fwhm, fitted.fwhm, x_span),
-            }
-        )
-        for peak, fitted in zip(spec.peaks, result.peaks)
-    ]
+    peaks = [_seeded_peak(peak, fitted, y_scale, x_scale, x_span) for peak, fitted in zip(spec.peaks, result.peaks)]
     return spec.model_copy(
         update={
             "peaks": peaks,
@@ -226,8 +252,15 @@ class FitModel(FitModelInterface):
     def _build_result_summary(self, spec: FitSpec, result: FitResult) -> FitResultSummary:
         """Read every fitted peak (and, if present, the background) out of a FitResult."""
         peaks = []
-        for index in range(len(spec.peaks)):
+        for index, spec_peak in enumerate(spec.peaks):
             peak = result[_peak_prefix(index)]
+            if spec_peak.shape == "Cosine":
+                values: dict[str, Any] = {}
+                for name in _COSINE_PARAMS:
+                    values[name] = peak[name]
+                    values[f"{name}_err"] = peak.errors[name]
+                peaks.append(PeakResult(**values))
+                continue
             peaks.append(
                 PeakResult(
                     amplitude=peak["amplitude"],
@@ -261,6 +294,15 @@ class FitModel(FitModelInterface):
             return ModelResponse(code=ResponseCode.OK)
 
         guess = Fit(FitPackage.lmfit).guess(x, y, shape, prefix="peak_")
+        if shape is ModelName.Cosine:
+            self._event_broker.publish(
+                SyncCosineParamsEvent(
+                    source_scan_uuid=request.source_scan_uuid,
+                    **{name: guess[name] for name in _COSINE_PARAMS},
+                )
+            )
+            return ModelResponse(code=ResponseCode.OK)
+
         self._event_broker.publish(
             SyncPeakParamsEvent(
                 source_scan_uuid=request.source_scan_uuid,
@@ -410,6 +452,12 @@ class FitModel(FitModelInterface):
         shape = self._resolve_peak_shape(peak.shape)
         if shape is None:
             return None
+        if shape is ModelName.Cosine:
+            return self._build_cosine(peak, prefix, x, y)
+
+        if peak.amplitude is None or peak.center is None or peak.fwhm is None:
+            self._report_error(f"Peak shape '{peak.shape}' is missing its amplitude/center/FWHM parameters.")
+            return None
 
         amplitude = self._parse_param("amplitude", peak.amplitude)
         center = self._parse_param("center", peak.center)
@@ -444,6 +492,41 @@ class FitModel(FitModelInterface):
                     "amplitude": self._bounds(not peak.amplitude.fixed, amplitude_min, amplitude_max),
                     "center": self._bounds(not peak.center.fixed, center_min, center_max),
                     "sigma": self._bounds(not peak.fwhm.fixed, sigma_min, sigma_max),
+                },
+            },
+        )
+
+    def _build_cosine(
+        self, peak: PeakField, prefix: str, x: np.ndarray, y: np.ndarray
+    ) -> Optional[tuple[ModelName, dict[str, Any]]]:
+        """
+        Return the Cosine component ``A*cos(w*(x + phi)) + d0`` under ``prefix``, or None on error.
+
+        Blank rows fall back to ``CosineModel``'s own guess rather than a default: a cosine
+        started at the wrong period has no gradient pointing toward the right one, so a seeded
+        frequency matters far more here than a seeded center does for a peak.
+        """
+        if peak.cosine is None:
+            self._report_error("A Cosine needs its amplitude/frequency/phase/offset parameters.")
+            return None
+
+        parsed = {name: self._parse_param(name, getattr(peak.cosine, name)) for name in _COSINE_PARAMS}
+        if any(value is None for value in parsed.values()):
+            return None
+
+        values = {name: parsed[name][0] for name in _COSINE_PARAMS}
+        if any(value is None for value in values.values()):
+            guess = Fit(FitPackage.lmfit).guess(x, y, ModelName.Cosine, prefix=prefix)
+            values = {name: guess[name] if values[name] is None else values[name] for name in _COSINE_PARAMS}
+
+        return (
+            ModelName.Cosine,
+            {
+                "prefix": prefix,
+                **values,
+                "set": {
+                    name: self._bounds(not getattr(peak.cosine, name).fixed, parsed[name][1], parsed[name][2])
+                    for name in _COSINE_PARAMS
                 },
             },
         )

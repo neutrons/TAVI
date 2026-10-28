@@ -19,13 +19,30 @@ class ParamField(BaseModel):
     constrained: bool = False
 
 
+class CosineField(BaseModel):
+    """A Cosine component's four raw parameter rows: ``A*cos(w*(x + phi)) + d0``."""
+
+    amplitude: ParamField
+    frequency: ParamField
+    phase: ParamField
+    offset: ParamField
+
+
 class PeakField(BaseModel):
-    """The peak box's raw field state, keyed to what ``Fit.fit`` needs (amplitude, center, width)."""
+    """
+    One peak box's raw field state: its shape, and the parameters that shape actually has.
+
+    A peak shape (Gaussian, Lorentzian, Voigt) fills amplitude/center/fwhm - what ``Fit.fit``
+    needs for a peak. A Cosine is periodic rather than peaked, with no center or width to give,
+    so it fills ``cosine`` instead and leaves the trio unset; the two sets stay apart rather than
+    sharing slots, so no reader has to know which shape renamed what.
+    """
 
     shape: str
-    amplitude: ParamField
-    center: ParamField
-    fwhm: ParamField
+    amplitude: Optional[ParamField] = None
+    center: Optional[ParamField] = None
+    fwhm: Optional[ParamField] = None
+    cosine: Optional[CosineField] = None
 
 
 class FitSpec(BaseModel):
@@ -52,14 +69,34 @@ class FitSpec(BaseModel):
 
 
 class PeakResult(BaseModel):
-    """One fitted peak's values and 1-sigma uncertainties."""
+    """
+    One fitted component's values and 1-sigma uncertainties, under the names its own shape fits.
+
+    Mirrors ``PeakField``: a peak shape fills center/fwhm, a Cosine fills frequency/phase/offset,
+    and both fill amplitude. A parameter the fitted shape doesn't have reads back as ``None``.
+    """
 
     amplitude: float
-    amplitude_err: Optional[float]
-    center: float
-    center_err: Optional[float]
-    fwhm: float
-    fwhm_err: Optional[float]
+    amplitude_err: Optional[float] = None
+    center: Optional[float] = None
+    center_err: Optional[float] = None
+    fwhm: Optional[float] = None
+    fwhm_err: Optional[float] = None
+    frequency: Optional[float] = None
+    frequency_err: Optional[float] = None
+    phase: Optional[float] = None
+    phase_err: Optional[float] = None
+    offset: Optional[float] = None
+    offset_err: Optional[float] = None
+
+    def named_values(self) -> list[tuple[str, float, Optional[float]]]:
+        """Every parameter this result actually carries, as ``(name, value, 1-sigma)``, for display."""
+        names = ("amplitude", "center", "fwhm", "frequency", "phase", "offset")
+        return [
+            (name, getattr(self, name), getattr(self, f"{name}_err"))
+            for name in names
+            if getattr(self, name) is not None
+        ]
 
 
 class FitResultSummary(BaseModel):
