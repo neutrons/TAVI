@@ -146,3 +146,37 @@ def test_series_display_label_is_just_the_run_name_when_no_title_is_shown():
     series = make_series(scan_name="scan0001", friendly_name="scan0001")
 
     assert series.display_label == "scan0001"
+
+
+def test_series_without_an_expanded_channel_has_no_channel_label():
+    series = make_series()
+
+    assert series.channel_label is None
+
+
+def test_series_channel_label_is_the_expanded_y_over_preset_channel():
+    series = make_series(y_name="detector*", normalized_by="monitor*")
+    expanded = series.model_copy(update={"y_channel": "detector_2", "normalized_by_channel": "monitor_2"})
+
+    assert expanded.channel_label == "detector_2/monitor_2"
+
+
+def test_series_channel_label_is_the_expanded_y_alone_when_unnormalized():
+    series = make_series(y_name="detector*", normalized_by=None)
+    expanded = series.model_copy(update={"y_channel": "detector_2"})
+
+    assert expanded.channel_label == "detector_2"
+
+
+def test_series_display_label_names_the_channel_that_tells_expanded_curves_apart():
+    series = make_series(scan_name="scan0001", friendly_name="scan0001", y_name="detector*", normalized_by="monitor*")
+    expanded = series.model_copy(update={"y_channel": "detector_1", "normalized_by_channel": "monitor_1"})
+
+    assert expanded.display_label == "scan0001 detector_1/monitor_1"
+
+
+def test_series_plotted_names_fall_back_to_the_fields_as_typed():
+    series = make_series(y_name="en", normalized_by="monitor")
+
+    assert series.plotted_y_name == "en"
+    assert series.plotted_normalized_by == "monitor"

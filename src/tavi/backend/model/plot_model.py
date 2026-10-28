@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import fit_series_by_source, scans_for_plots
+from tavi.backend.model.plot_resolver import channel_pairs, fit_series_by_source, scans_for_plots
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
@@ -241,21 +241,26 @@ class PlotModel(PlotModelInterface):
         """Build the ``model_copy()`` update dict for one series against its source scan, or None if invalid."""
         x_name = fields.x_axis.strip()
         y_name = fields.y_axis.strip()
-        if x_name not in scan.data.data or y_name not in scan.data.data:
-            self._report_error(f"Column '{x_name}' or '{y_name}' not found in scan data.")
+        if x_name not in scan.data.data:
+            self._report_error(f"Column '{x_name}' not found in scan data.")
             return None
 
         norm_channel, norm_value = None, None
         if fields.preset_type == PresetType.NORMALIZE:
             norm_channel = fields.preset_channel.strip()
-            if norm_channel not in scan.data.data:
-                self._report_error(f"Normalization column '{norm_channel}' not found in scan data.")
-                return None
             try:
                 norm_value = float(fields.preset_value.strip())
             except ValueError:
                 self._report_error(f"Normalization value '{fields.preset_value}' is not a number.")
                 return None
+
+        # Validated, not kept: the names are stored as typed, wildcards and all, and expanded
+        # against each scan at draw time (``expand_series``).
+        try:
+            channel_pairs(scan.data.data, y_name, norm_channel)
+        except ValueError as error:
+            self._report_error(str(error))
+            return None
 
         return {
             "x_name": x_name,

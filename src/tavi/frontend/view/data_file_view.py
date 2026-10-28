@@ -56,6 +56,12 @@ class DataFileView(QWidget):
         self.variable_table.setAlternatingRowColors(True)
         self.variable_table.setHorizontalHeaderLabels(["Variables"])
         self.variable_table.setCornerButtonEnabled(True)
+        # A column name is an identifier, not prose: "det_hi_res_ban..." names nothing, so the
+        # name is shown whole and the pane scrolls to it instead of eliding it to fit.
+        self.variable_table.setTextElideMode(Qt.TextElideMode.ElideNone)
+        self.variable_table.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.variable_table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.variable_table.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.variable_table.verticalHeader().setMinimumWidth(20)
         self.variable_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
 
@@ -171,6 +177,10 @@ class DataFileView(QWidget):
             item = self._add_row(self.variable_table, name)
             item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
             item.setCheckState(Qt.CheckState.Checked)
+        # Widened to the longest name rather than left at the default width, so the names are
+        # readable without dragging the splitter. The section stays Interactive, so a user who
+        # narrows it still gets the whole name - clipped by the scroll area, never elided.
+        self.variable_table.resizeColumnToContents(0)
 
     def _on_variable_check_changed(self, item: QTableWidgetItem) -> None:
         """Show/hide the data table column matching a toggled variable's name."""

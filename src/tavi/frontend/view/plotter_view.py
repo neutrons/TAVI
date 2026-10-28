@@ -213,7 +213,7 @@ class Plot1DView(QWidget):
                 label=series.display_label,
                 fmt="o",
                 capsize=3,
-                color=colors[series.source_scan_uuid.value],
+                color=colors[self._color_key(series)],
             )
         for fit in self._fit_curves.values():
             ax.plot(fit.x, fit.best_fit, "-", color=colors[fit.source_scan_uuid.value], label=f"{fit.scan_name} fit")
@@ -232,6 +232,13 @@ class Plot1DView(QWidget):
         self._refresh_legend()
         self.canvas.draw()
 
+    @staticmethod
+    def _color_key(series: Any) -> str:
+        """What shares a color: one scan, or one expanded channel of it when a wildcard draws several."""
+        if series.channel_label is None:
+            return series.source_scan_uuid.value
+        return f"{series.source_scan_uuid.value} {series.channel_label}"
+
     def _series_colors(self) -> dict[str, str]:
         """
         Pin one color per source scan from its place in the scene, shared by its data and its fit.
@@ -240,8 +247,8 @@ class Plot1DView(QWidget):
         moves forward and would recolor a series every time it is redrawn.
         """
         colors: dict[str, str] = {}
-        for source_uuid in [series.source_scan_uuid.value for *_, series in self._plotted] + list(self._fit_curves):
-            colors.setdefault(source_uuid, f"C{len(colors)}")
+        for key in [self._color_key(series) for *_, series in self._plotted] + list(self._fit_curves):
+            colors.setdefault(key, f"C{len(colors)}")
         return colors
 
     def _append_fit_curve(self, fit: FitCurve) -> None:

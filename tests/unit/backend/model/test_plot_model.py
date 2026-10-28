@@ -4,6 +4,7 @@ from tavi.backend.model.plot_model import PlotModel
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.model_event import RemoveRawScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
@@ -833,3 +834,97 @@ def test_set_show_title_records_the_preference_for_the_next_focused_scans():
     model.set_show_title(False)
 
     assert model._show_title is False
+
+
+def make_multichannel_scan(uuid_val="scan-001") -> RawScan:
+    """A scan with a numbered detector bank and its monitors, the shape a wildcard name is for."""
+    scan = make_raw_scan(x_col="qh", y_col="en", uuid_val=uuid_val)
+    scan.data.data.update(
+        {
+            "detector_1": [1.0, 2.0, 3.0],
+            "detector_2": [4.0, 5.0, 6.0],
+            "monitor_1": [1.0, 1.0, 1.0],
+            "monitor_2": [2.0, 2.0, 2.0],
+        }
+    )
+    return scan
+
+
+class TestPlotModelWildcards(unittest.TestCase):
+    """update_fields validates a wildcard against each staged scan, and stores it as typed."""
+
+    def setUp(self):
+        self.broker = EventBroker()
+        self.raw_scans = {}
+        self.model = PlotModel(plots=[], raw_scans=self.raw_scans)
+        self.scan = make_multichannel_scan()
+        self.raw_scans[self.scan.uuid] = self.scan
+        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[self.scan]))
+        self.received: list[SyncPlotEvent] = []
+        self.broker.register(SyncPlotEvent, self.received.append)
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=self.model._focused_uuids()))
+
+    def test_update_fields_stores_a_wildcard_y_axis_as_typed(self):
+        """The pattern is the user's intent - it is kept, and expanded per scan at draw time."""
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="detector*"))
+
+        assert response.code.name == "OK"
+        assert self.received[-1].plots[0].series[0].y_name == "detector*"
+
+    def test_update_fields_stores_a_wildcard_preset_channel_as_typed(self):
+        self.model.update_fields(
+            make_plot_fields(
+                x_axis="qh",
+                y_axis="detector*",
+                preset_type="normalize",
+                preset_channel="monitor*",
+                preset_value="1",
+            )
+        )
+
+        series = self.received[-1].plots[0].series[0]
+        assert (series.normalized_by, series.normalized_by_value) == ("monitor*", 1.0)
+
+    def test_update_fields_rejects_a_wildcard_matching_no_column(self):
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="nonexistent*"))
+
+        assert response.code.name == "OK"
+        assert len(self.received) == 0
+
+    def test_update_fields_rejects_wildcards_that_cannot_be_paired_up(self):
+        self.scan.data.data["detector_3"] = [7.0, 8.0, 9.0]
+
+        response = self.model.update_fields(
+            make_plot_fields(
+                x_axis="qh",
+                y_axis="detector*",
+                preset_type="normalize",
+                preset_channel="monitor*",
+                preset_value="1",
+            )
+        )
+
+        assert response.code.name == "OK"
+        assert len(self.received) == 0
+
+    def test_update_fields_rejects_a_wildcard_one_staged_run_cannot_match(self):
+        """Runs with different detector banks: a pattern that matches only one must not half-apply."""
+        other = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
+        self.raw_scans[other.uuid] = other
+        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[other]))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=self.model._focused_uuids()))
+        self.received.clear()
+
+        response = self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="detector*"))
+
+        assert response.code.name == "OK"
+        assert len(self.received) == 0
+
+    def test_update_fields_reports_why_a_wildcard_was_rejected(self):
+        errors: list = []
+        self.broker.register(ReportErrorEvent, errors.append)
+
+        self.model.update_fields(make_plot_fields(x_axis="qh", y_axis="nonexistent*"))
+
+        assert len(errors) == 1
+        assert "nonexistent*" in str(errors[0].error)

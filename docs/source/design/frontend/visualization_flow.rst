@@ -215,6 +215,40 @@ owns series labels, so there is no one else to tell. It applies to the next
 scans focused.
 
 
+Wildcard channels — one series, many curves
+-------------------------------------------
+
+A Y-Axis or Preset Channel name ending in ``*`` names every column it
+prefixes, so a whole detector bank is plotted by typing ``detector*``
+rather than one channel at a time. Both names may carry one: ``detector*``
+over ``monitor*`` pairs the channels elementwise in sorted order —
+``detector_1/monitor_1``, ``detector_2/monitor_2`` — which is why
+``matching_columns`` sorts numbered channels numerically rather than
+lexically. A wildcard matching a single column (one monitor for the whole
+bank) is reused for every pair; two that match several columns each must
+match the same number, or the edit is rejected whole.
+
+The expansion happens **at draw time only**, in
+``plot_resolver.expand_series``:
+
+- ``PlotModel`` stores the name the user typed, wildcard and all, and only
+  *validates* it against each staged scan (``channel_pairs`` raises, the
+  model reports and changes nothing). Scans with different detector banks
+  therefore each expand the same pattern to their own channels.
+- ``PlotterPresenter._resolve`` expands each focused series into one
+  concrete ``PlotSeries`` copy per channel pair, each carrying
+  ``y_channel``/``normalized_by_channel`` — the copies keep ``y_name`` and
+  ``normalized_by`` as typed, so the fields panel and the axis labels still
+  show the pattern.
+- The canvas tells the copies apart by ``PlotSeries.channel_label``
+  (``"y-axis/preset channel"``), which is appended to the legend label and
+  keys the per-curve color.
+
+What is *focused* and *staged* is unchanged: one series per scan, one
+"Current Plot" entry, one series saved by **Add Plot**. A fit resolves a
+pattern it was handed unexpanded against the first channel it names.
+
+
 Add Plot — Saving a New Plot Entry
 ----------------------------------
 
@@ -374,6 +408,20 @@ item and reselecting it moves it to the end. Within each item type this
 determines the order series appear in the "Current Plot" dropdown and, with
 "Apply All" off, which one is staged by default (the first). Across types,
 raw scans are focused before saved plots, and fits last.
+
+A wildcard expands into curves, not into series
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``detector*`` could have been expanded in ``PlotModel``, turning one staged
+series into one ``PlotSeries`` per channel. It isn't, because a series'
+``source_scan_uuid`` is its identity everywhere else — the stage, the
+"Current Plot" dropdown, ``Plot.without_scans``, the fit curves keyed by the
+series they were fit against — and forty-eight series sharing one scan uuid
+breaks all of it. Expanding in ``PlotterPresenter._resolve`` instead keeps
+the pattern the one thing that is focused, staged, edited and saved, and
+makes the channels purely what gets drawn. The copies it makes never leave
+the canvas, so a saved plot stores the pattern and re-expands it on the
+scan it is focused against next.
 
 Depth budget
 ~~~~~~~~~~~~

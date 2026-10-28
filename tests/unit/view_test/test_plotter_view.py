@@ -1423,3 +1423,54 @@ def test_a_fit_is_drawn_in_its_own_series_color(view):
     (container,) = view.canvas.axes.containers
     (fit_line,) = [line for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]
     assert container.lines[0].get_color() == fit_line.get_color()
+
+
+# ---------------------------------------------------------------------------
+# expanded wildcard channels on the canvas
+# ---------------------------------------------------------------------------
+
+
+def add_expanded_channels(view, channels, scan_name="scan1", y_name="detector*", normalized_by="monitor*"):
+    """Draw the curves one wildcard series expands into, as the presenter hands them over."""
+    resolved = []
+    for index, (y_channel, norm_channel) in enumerate(channels):
+        series = _series(scan_name=scan_name, y_name=y_name, normalized_by=normalized_by).model_copy(
+            update={"y_channel": y_channel, "normalized_by_channel": norm_channel}
+        )
+        resolved.append(
+            (
+                np.array([1.0, 2.0, 3.0]),
+                np.array([1.0, 2.0, 3.0]) + index,
+                np.array([0.1, 0.1, 0.1]),
+                series,
+            )
+        )
+    add_plots(view, resolved)
+
+
+def test_expanded_channels_of_one_scan_each_get_their_own_color(view):
+    """Curves off one wildcard share a scan, so the per-scan color would make them one blur."""
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    colors = [container[0].get_color() for container in view.canvas.axes.containers]
+    assert len(set(colors)) == 2
+
+
+def test_expanded_channels_are_labelled_by_y_axis_over_preset_channel(view):
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    labels = [line.get_label() for line in view.canvas.axes.get_legend_handles_labels()[0]]
+    assert labels == ["scan1 detector_1/monitor_1", "scan1 detector_2/monitor_2"]
+
+
+def test_expanded_channels_keep_the_axis_label_the_user_typed(view):
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    assert view.canvas.axes.get_ylabel() == "detector* / monitor*"
+
+
+def test_a_fit_on_a_scan_drawn_as_expanded_channels_still_renders(view):
+    add_expanded_channels(view, [("detector_1", None), ("detector_2", None)], normalized_by=None)
+    view._append_fit_curve(make_fit_curve(uuid_val="scan1"))
+
+    assert [line.get_label() for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]
