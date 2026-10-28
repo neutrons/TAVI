@@ -2,8 +2,22 @@
 
 import pytest
 
-from tavi.frontend.view.fitting_view import PEAK_EXPRESSIONS, FittingView, ParamTable
-from tavi.library.data.fit_entry import FitMember, FitResultSummary, FitSpec, ParamField, PeakField, PeakResult
+from tavi.frontend.view.fitting_view import (
+    COSINE_LABELS,
+    PEAK_EXPRESSIONS,
+    PEAK_LABELS,
+    FittingView,
+    ParamTable,
+)
+from tavi.library.data.fit_entry import (
+    CosineField,
+    FitMember,
+    FitResultSummary,
+    FitSpec,
+    ParamField,
+    PeakField,
+    PeakResult,
+)
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
@@ -196,6 +210,216 @@ def test_custom_equation_survives_switching_shapes(view):
     panel.peak_shape_combo.setCurrentText("Custom")
 
     assert panel.peak_expr.text() == "a * exp(-(x - c)**2)"
+
+
+# ---------------------------------------------------------------------------
+# Cosine shape
+# ---------------------------------------------------------------------------
+
+
+def make_cosine_result(amplitude=3.0, frequency=2.5, phase=0.4, offset=7.0) -> PeakResult:
+    return PeakResult(
+        amplitude=amplitude,
+        amplitude_err=0.1,
+        frequency=frequency,
+        frequency_err=0.2,
+        phase=phase,
+        phase_err=0.3,
+        offset=offset,
+        offset_err=0.4,
+    )
+
+
+def test_cosine_is_offered_in_the_peak_shape_combo(view):
+    combo = view.peak_panels[0].peak_shape_combo
+
+    assert [combo.itemText(i) for i in range(combo.count())] == ["Gaussian", "Lorentzian", "Cosine", "Custom"]
+
+
+def test_cosine_shows_its_expression_read_only(view):
+    panel = view.peak_panels[0]
+
+    panel.peak_shape_combo.setCurrentText("Cosine")
+
+    assert panel.peak_expr.text() == PEAK_EXPRESSIONS["Cosine"]
+    assert panel.peak_expr.isReadOnly()
+
+
+def test_cosine_relabels_the_table_to_its_own_four_parameters(view):
+    panel = view.peak_panels[0]
+
+    panel.peak_shape_combo.setCurrentText("Cosine")
+
+    assert [row.label.text() for row in panel.peak_table.rows] == COSINE_LABELS
+
+
+def test_leaving_cosine_restores_the_peak_rows(view):
+    panel = view.peak_panels[0]
+    panel.peak_shape_combo.setCurrentText("Cosine")
+
+    panel.peak_shape_combo.setCurrentText("Gaussian")
+
+    assert [row.label.text() for row in panel.peak_table.rows] == PEAK_LABELS
+
+
+def test_cosine_rows_are_seeded_from_its_defaults(view):
+    panel = view.peak_panels[0]
+
+    panel.peak_shape_combo.setCurrentText("Cosine")
+
+    assert [row.value_edit.text() for row in panel.peak_table.rows] == ["1", "1", "0", "0"]
+
+
+def test_switching_between_peak_shapes_keeps_typed_values(view):
+    """Gaussian and Lorentzian share a parameter set, so the table is not rebuilt under the user."""
+    panel = view.peak_panels[0]
+    panel.peak_table.rows[1].value_edit.setText("1.25")
+
+    panel.peak_shape_combo.setCurrentText("Lorentzian")
+
+    assert panel.peak_table.rows[1].value_edit.text() == "1.25"
+
+
+def test_only_the_switched_panel_is_relabelled(view):
+    view.num_peaks_spin.setValue(2)
+
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    assert [row.label.text() for row in view.peak_panels[1].peak_table.rows] == PEAK_LABELS
+
+
+def test_get_fit_spec_reads_a_cosine_as_its_own_four_parameters(view):
+    panel = view.peak_panels[0]
+    panel.peak_shape_combo.setCurrentText("Cosine")
+    for row, text in zip(panel.peak_table.rows, ("3", "2.5", "0.4", "7")):
+        row.value_edit.setText(text)
+
+    peak = view.get_fit_spec().peaks[0]
+
+    assert peak.shape == "Cosine"
+    assert peak.cosine.amplitude.value == "3"
+    assert peak.cosine.frequency.value == "2.5"
+    assert peak.cosine.phase.value == "0.4"
+    assert peak.cosine.offset.value == "7"
+
+
+def test_get_fit_spec_leaves_the_peak_trio_unset_for_a_cosine(view):
+    """A cosine has no center or width, so it must not report blanks as if it had."""
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    peak = view.get_fit_spec().peaks[0]
+
+    assert (peak.amplitude, peak.center, peak.fwhm) == (None, None, None)
+
+
+def test_a_cosine_row_carries_its_fix_and_bounds(view):
+    panel = view.peak_panels[0]
+    panel.peak_shape_combo.setCurrentText("Cosine")
+    frequency_row = panel.peak_table.rows[1]
+    frequency_row.fix_check.setChecked(True)
+    frequency_row.min_edit.setText("2")
+    frequency_row.max_edit.setText("3")
+
+    frequency = view.get_fit_spec().peaks[0].cosine.frequency
+
+    assert frequency.fixed is True
+    assert (frequency.minimum, frequency.maximum) == ("2", "3")
+
+
+def test_background_can_be_turned_off(view):
+    """A cosine's offset and a linear background's constant are the same number, so "None" is offered."""
+    combo = view.background_combo
+
+    assert [combo.itemText(i) for i in range(combo.count())] == ["Linear", "None"]
+
+
+def test_get_fit_spec_reads_a_background_of_none(view):
+    view.background_combo.setCurrentText("None")
+
+    assert view.get_fit_spec().background == "None"
+
+
+def test_set_fit_result_fills_a_cosine_panel(view):
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    view._set_fit_result(make_result(peaks=[make_cosine_result()]))
+
+    rows = view.peak_panels[0].peak_table.rows
+    assert [row.value_edit.text() for row in rows] == ["3", "2.5", "0.4", "7"]
+    assert [row.std_edit.text() for row in rows] == ["0.1", "0.2", "0.3", "0.4"]
+
+
+def test_set_fit_result_skips_a_panel_whose_shape_changed(view):
+    """A peak result has no row to land in once the panel is showing a cosine's four."""
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    view._set_fit_result(make_result())
+
+    assert [row.value_edit.text() for row in view.peak_panels[0].peak_table.rows] == ["1", "1", "0", "0"]
+
+
+def test_set_fit_member_restores_a_cosine(view):
+    peak = PeakField(
+        shape="Cosine",
+        cosine=CosineField(
+            amplitude=make_param("3"),
+            frequency=make_param("2.5", fixed=True),
+            phase=make_param("0.4"),
+            offset=make_param("7", minimum="0", maximum="10"),
+        ),
+    )
+
+    view._set_fit_member(make_member(peaks=[peak]))
+
+    rows = view.peak_panels[0].peak_table.rows
+    assert view.peak_panels[0].peak_shape_combo.currentText() == "Cosine"
+    assert [row.value_edit.text() for row in rows] == ["3", "2.5", "0.4", "7"]
+    assert rows[1].fix_check.isChecked()
+    assert (rows[3].min_edit.text(), rows[3].max_edit.text()) == ("0", "10")
+
+
+def test_a_cosine_member_round_trips_through_get_fit_spec(view):
+    peak = PeakField(
+        shape="Cosine",
+        cosine=CosineField(
+            amplitude=make_param("3"),
+            frequency=make_param("2.5", fixed=True),
+            phase=make_param("0.4"),
+            offset=make_param("7", minimum="0", maximum="10"),
+        ),
+    )
+    member = make_member(peaks=[peak])
+
+    view._set_fit_member(member)
+
+    assert view.get_fit_spec().peaks == [peak]
+
+
+def test_set_cosine_params_fills_the_requesting_panel(view):
+    view.num_peaks_spin.setValue(2)
+    view.peak_panels[1].peak_shape_combo.setCurrentText("Cosine")
+    view.peak_panels[1].suggest_btn.click()
+
+    view._set_cosine_params(3.0, 2.5, 0.4, 7.0)
+
+    assert [row.value_edit.text() for row in view.peak_panels[1].peak_table.rows] == ["3", "2.5", "0.4", "7"]
+
+
+def test_set_cosine_params_skips_a_panel_that_left_the_cosine(view):
+    view.peak_panels[0].suggest_btn.click()
+
+    view._set_cosine_params(3.0, 2.5, 0.4, 7.0)
+
+    assert [row.value_edit.text() for row in view.peak_panels[0].peak_table.rows] == ["0", "1", "1"]
+
+
+def test_set_peak_params_skips_a_cosine_panel(view):
+    view.peak_panels[0].suggest_btn.click()
+    view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
+
+    view._set_peak_params(5.0, 1.5, 0.75)
+
+    assert [row.value_edit.text() for row in view.peak_panels[0].peak_table.rows] == ["1", "1", "0", "0"]
 
 
 # ---------------------------------------------------------------------------

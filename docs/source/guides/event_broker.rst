@@ -205,8 +205,8 @@ Event lexicon
        the state changes, whatever changed it.
      - ``SyncPlotEvent``, ``SyncStageEvent``, ``SyncFitEvent``,
        ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
-       ``SyncBackgroundParamsEvent``, ``SyncRecentProjectsEvent``,
-       ``SyncFilterValidationEvent``
+       ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
+       ``SyncRecentProjectsEvent``, ``SyncFilterValidationEvent``
    * - Recompute
      - Ask the model that computes X to compute it again for display. Never
        writes to the project.
@@ -365,10 +365,12 @@ Event catalog
      - ``TaviProjectModel``
      - ``FitWindowPresenter``
      - A member was undone or redone
-   * - ``SyncPeakParamsEvent``, ``SyncBackgroundParamsEvent``
+   * - ``SyncPeakParamsEvent``, ``SyncCosineParamsEvent``,
+       ``SyncBackgroundParamsEvent``
      - ``FitModel``
      - ``FittingPresenter``
-     - Suggested starting parameters
+     - Suggested starting parameters, one event per parameter set so two
+       guesses can never half-overwrite each other's fields
    * - ``SetFitComponentsVisibleEvent``
      - ``FittingPresenter``
      - ``PlotterPresenter``

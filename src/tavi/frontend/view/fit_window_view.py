@@ -77,9 +77,10 @@ class FitWindow(QWidget):
         rows: list[tuple[str, float, Optional[float]]] = []
         if result is not None:
             for index, peak in enumerate(result.peaks, start=1):
-                rows.append((f"peak{index} amplitude", peak.amplitude, peak.amplitude_err))
-                rows.append((f"peak{index} center", peak.center, peak.center_err))
-                rows.append((f"peak{index} FWHM", peak.fwhm, peak.fwhm_err))
+                # Named by the fitted shape's own parameters - a cosine lists frequency/phase/
+                # offset where a peak lists center/FWHM.
+                for name, value, std in peak.named_values():
+                    rows.append((f"peak{index} {name}", value, std))
             if result.background_constant is not None:
                 rows.append(("background x0", result.background_constant, result.background_constant_err))
             if result.background_slope is not None:

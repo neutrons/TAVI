@@ -7,6 +7,8 @@ from typing import Any, Optional
 import lmfit
 import numpy as np
 
+from tavi.library.fit.cosine import CosineModel
+
 
 class FitPackage(Enum):
     """Supported fitting backends."""
@@ -22,6 +24,7 @@ class ModelName(Enum):
     Voigt = "Voigt"
     Custom = "Custom defined model"
     Linear = "linear model"
+    Cosine = "Cosine model"
 
 
 # @dataclass
@@ -147,7 +150,8 @@ class Fit:
         all. This delegates to lmfit's own peak-finding heuristic (``Model.guess``) instead.
 
         Returns bare parameter names (the prefix stripped), e.g. ``{"amplitude", "center",
-        "sigma"}`` for a Gaussian/Lorentzian/Voigt, or ``{"slope", "intercept"}`` for a Linear.
+        "sigma"}`` for a Gaussian/Lorentzian/Voigt, ``{"slope", "intercept"}`` for a Linear,
+        or ``{"amplitude", "frequency", "phase", "offset"}`` for a Cosine.
         """
         if self.package != FitPackage.lmfit:
             raise ValueError(f"Package {self.package} not supported yet.")
@@ -182,7 +186,9 @@ class Fit:
                 - ``guess``: if truthy, let the model guess initial parameters
                   from the data instead of using explicit values.
                 - ``center`` / ``sigma`` / ``amplitude``: initial values used
-                  when ``guess`` is not set.
+                  when ``guess`` is not set (peak shapes), or ``slope`` /
+                  ``intercept`` for a Linear, or ``amplitude`` / ``frequency``
+                  / ``phase`` / ``offset`` for a Cosine - all four required.
                 - ``set``: optional ``{param_name: options}`` mapping applied on
                   top of the initial values, where ``options`` is forwarded to
                   :meth:`lmfit.Parameter.set`. Use it to fix a parameter
@@ -234,6 +240,15 @@ class Fit:
                             intercept=initial_params["intercept"],
                         )
                     )
+                elif {"amplitude", "frequency", "phase", "offset"} <= initial_params.keys():
+                    params.update(
+                        model.make_params(
+                            amplitude=initial_params["amplitude"],
+                            frequency=initial_params["frequency"],
+                            phase=initial_params["phase"],
+                            offset=initial_params["offset"],
+                        )
+                    )
                 else:
                     raise ValueError("Perhaps you are trying to set initial parameters for a function not supported?")
 
@@ -266,6 +281,8 @@ class Fit:
                 return lmfit.models.VoigtModel(prefix=prefix)
             case ModelName.Linear:
                 return lmfit.models.LinearModel(prefix=prefix)
+            case ModelName.Cosine:
+                return CosineModel(prefix=prefix)
             case ModelName.Custom:
                 raise ValueError("Need to think about how to parse a custom defined function in lmfit.")
             case _:

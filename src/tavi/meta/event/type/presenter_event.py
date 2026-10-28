@@ -133,6 +133,22 @@ class SyncPeakParamsEvent(Event):
     fwhm: float
 
 
+class SyncCosineParamsEvent(Event):
+    """
+    Announce a heuristic initial guess for one Cosine's amplitude/frequency/phase/offset, from real data.
+
+    A cosine's parameters are not a peak's, so this is its own event rather than optional extra
+    fields on ``SyncPeakParamsEvent`` - the same reasoning that keeps the background guess
+    separate. ``source_scan_uuid`` is the same staleness guard.
+    """
+
+    source_scan_uuid: UUID
+    amplitude: float
+    frequency: float
+    phase: float
+    offset: float
+
+
 class SyncBackgroundParamsEvent(Event):
     """
     Announce a heuristic initial guess for the background's slope/intercept, from real data.

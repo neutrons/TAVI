@@ -8,6 +8,7 @@ import pytest
 
 from tavi.backend.model.fit_model import FitModel
 from tavi.library.data.fit_entry import (
+    CosineField,
     FitEntry,
     FitMember,
     FitRequest,
@@ -24,6 +25,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.presenter_event import (
     SyncBackgroundParamsEvent,
+    SyncCosineParamsEvent,
     RecomputeFitEvent,
     SyncPeakParamsEvent,
     SaveFitEvent,
@@ -1142,3 +1144,180 @@ def test_sync_fit_spec_reads_the_live_fits_handle(model, fits):
     model.sync_fit_spec(entry.uuid, member.source_scan_uuid)
 
     assert len(received) == 1
+
+
+# ---------------------------------------------------------------------------
+# Cosine shape
+# ---------------------------------------------------------------------------
+
+COSINE_AMPLITUDE = 3.0
+COSINE_FREQUENCY = 2.5
+COSINE_PHASE = 0.4
+COSINE_OFFSET = 7.0
+
+
+def make_cosine_xy(n=200):
+    x = np.linspace(0.0, 10.0, n)
+    y = COSINE_AMPLITUDE * np.cos(COSINE_FREQUENCY * (x + COSINE_PHASE)) + COSINE_OFFSET
+    return x, y
+
+
+def make_cosine_peak(amplitude="", frequency="", phase="", offset="", **field_kwargs) -> PeakField:
+    """A Cosine peak field; a blank parameter asks FitModel to guess that one from the data."""
+    return PeakField(
+        shape="Cosine",
+        cosine=CosineField(
+            amplitude=make_param(amplitude, **field_kwargs.get("amplitude_opts", {})),
+            frequency=make_param(frequency, **field_kwargs.get("frequency_opts", {})),
+            phase=make_param(phase, **field_kwargs.get("phase_opts", {})),
+            offset=make_param(offset, **field_kwargs.get("offset_opts", {})),
+        ),
+    )
+
+
+@pytest.fixture
+def cosine_model(fits):
+    """A FitModel whose only scan is a clean cosine, with the panel's full x-range."""
+    x, y = make_cosine_xy()
+    scans = {}
+    put_scans(scans, make_scan(x=x, y=y))
+    return FitModel(raw_scans=scans, fits=fits)
+
+
+def cosine_request(peak=None, **spec_overrides):
+    return make_request(range_min="0", range_max="10", peaks=[peak or make_cosine_peak()], **spec_overrides)
+
+
+def test_perform_fit_recovers_a_cosine_from_blank_fields(cosine_model):
+    """Every parameter blank: FitModel falls back to CosineModel's own guess, which finds the period."""
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    cosine_model.perform_fit(cosine_request())
+
+    peak = received[0].outcomes[0].member.result.peaks[0]
+    assert peak.amplitude == pytest.approx(COSINE_AMPLITUDE, abs=1e-3)
+    assert peak.frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-3)
+    assert peak.offset == pytest.approx(COSINE_OFFSET, abs=1e-3)
+
+
+def test_cosine_result_carries_no_peak_parameters(cosine_model):
+    """A cosine has no center or width, so those read back as None rather than a stand-in number."""
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    cosine_model.perform_fit(cosine_request())
+
+    peak = received[0].outcomes[0].member.result.peaks[0]
+    assert peak.center is None
+    assert peak.fwhm is None
+    assert [name for name, _value, _std in peak.named_values()] == ["amplitude", "frequency", "phase", "offset"]
+
+
+def test_perform_fit_uses_explicit_cosine_values(cosine_model):
+    """Explicit starting values are honored, the same as a peak's."""
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    cosine_model.perform_fit(cosine_request(make_cosine_peak(amplitude=2.0, frequency=2.4, phase=0.0, offset=6.0)))
+
+    peak = received[0].outcomes[0].member.result.peaks[0]
+    assert peak.frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-3)
+
+
+def test_a_fixed_cosine_parameter_stays_put(cosine_model):
+    """The table's fix checkbox freezes a cosine parameter like any other."""
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    peak = make_cosine_peak(amplitude=2.0, frequency=2.0, phase=0.0, offset=6.0, frequency_opts={"fixed": True})
+    cosine_model.perform_fit(cosine_request(peak))
+
+    assert received[0].outcomes[0].member.result.peaks[0].frequency == pytest.approx(2.0)
+
+
+def test_cosine_fits_over_a_linear_background(cosine_model):
+    """A cosine composes with the Linear background, as its own component."""
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    cosine_model.perform_fit(cosine_request(background="Linear", background_constant=make_param("")))
+
+    result = received[0].outcomes[0].member.result
+    assert result.peaks[0].frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-2)
+    assert result.background_slope == pytest.approx(0.0, abs=1e-2)
+
+
+def test_cosine_without_its_parameters_is_reported(model):
+    """A Cosine peak field with no cosine block is a bad request, not a crash."""
+    errors = []
+    EventBroker().register(ReportErrorEvent, errors.append)
+
+    model.perform_fit(make_request(peaks=[PeakField(shape="Cosine")]))
+
+    assert len(errors) == 1
+
+
+def test_suggest_params_publishes_a_cosine_guess(cosine_model):
+    """A cosine's Suggest Params. answers on its own event, with its own four parameters."""
+    received = []
+    EventBroker().register(SyncCosineParamsEvent, received.append)
+    x, y = make_cosine_xy()
+
+    cosine_model.suggest_peak_params(
+        SuggestPeakParamsRequest(
+            source_scan_uuid=UUID(value="scan-001"),
+            x=x.tolist(),
+            y=y.tolist(),
+            range_min="0",
+            range_max="10",
+            shape="Cosine",
+        )
+    )
+
+    assert len(received) == 1
+    assert received[0].frequency == pytest.approx(COSINE_FREQUENCY, abs=0.1)
+    assert received[0].offset == pytest.approx(COSINE_OFFSET, abs=0.1)
+
+
+def test_suggest_params_for_a_peak_still_uses_the_peak_event(model):
+    """The cosine branch must not swallow a peak shape's guess."""
+    received = []
+    EventBroker().register(SyncPeakParamsEvent, received.append)
+    x, y = make_gaussian_xy()
+
+    model.suggest_peak_params(
+        SuggestPeakParamsRequest(
+            source_scan_uuid=UUID(value="scan-001"),
+            x=x.tolist(),
+            y=y.tolist(),
+            range_min="-5",
+            range_max="5",
+            shape="Gaussian",
+        )
+    )
+
+    assert len(received) == 1
+    assert received[0].center == pytest.approx(GAUSSIAN_CENTER, abs=0.1)
+
+
+def test_sequential_cosine_fit_seeds_the_next_member(cosine_model, raw_scans):
+    """A sequential fit carries a cosine's fitted values into the next series' starting values."""
+    x, y = make_cosine_xy()
+    put_scans(cosine_model._raw_scans, make_scan(uuid_val="scan-002", x=x, y=y * 1.1))
+    received = []
+    EventBroker().register(SyncFitEvent, received.append)
+
+    cosine_model.perform_fit(
+        make_request(
+            series=[make_series(), make_series(uuid_val="scan-002")],
+            seed_from_previous=True,
+            range_min="0",
+            range_max="10",
+            peaks=[make_cosine_peak()],
+        )
+    )
+
+    second = received[0].outcomes[1].member
+    assert second.peaks[0].cosine.frequency.value != ""
+    assert second.result.peaks[0].frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-2)
