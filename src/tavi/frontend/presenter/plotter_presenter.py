@@ -82,9 +82,11 @@ class PlotterPresenter(AbstractPresenter):
         self._focused_fit_uuids = set()
 
     def handle_raw_scan_focus(self, e: FocusRawScanEvent) -> None:
-        """Offer the first focused scan's columns as preset channels."""
+        """Offer the first focused scan's columns as axis and preset-channel choices."""
         if e.scans:
-            self._view.set_preset_channel_options(list(e.scans[0].data.data.keys()))
+            columns = list(e.scans[0].data.data.keys())
+            self._view.set_axis_options(columns)
+            self._view.set_preset_channel_options(columns)
 
     def handle_plot_focus(self, e: FocusPlotEvent) -> None:
         """
