@@ -114,16 +114,16 @@ class Plot1DView(QWidget):
         ):
             widget.setEnabled(False)
 
-        self.y_axis_edit = QLineEdit("detector")
-        self.x_axis_edit = QLineEdit("s2")
+        self.y_axis_combo = self._typed_combo("detector")
+        self.x_axis_combo = self._typed_combo("s2")
         self.preset_type_combo = QComboBox()
         self.preset_type_combo.addItems([mode.value for mode in PresetType])
-        self.preset_channel_combo = QComboBox()
+        self.preset_channel_combo = self._typed_combo()
         self.preset_value_edit = QLineEdit("1")
 
         controls = QFormLayout()
-        controls.addRow("Y-Axis:", self.y_axis_edit)
-        controls.addRow("X-Axis:", self.x_axis_edit)
+        controls.addRow("Y-Axis:", self.y_axis_combo)
+        controls.addRow("X-Axis:", self.x_axis_combo)
         controls.addRow("Rebining:", rebin_grid)
         controls.addRow("Preset Type:", self.preset_type_combo)
         controls.addRow("Preset Channel:", self.preset_channel_combo)
@@ -131,16 +131,19 @@ class Plot1DView(QWidget):
 
         # on enter (Return) or focus-out, re-pull fields and request a replot
         for edit in (
-            self.y_axis_edit,
-            self.x_axis_edit,
             self.rebin_start_edit,
             self.rebin_stop_edit,
             self.rebin_step_edit,
             self.preset_value_edit,
         ):
             edit.editingFinished.connect(self.fields_focus_changed.emit)
-        for combo in (self.preset_type_combo, self.preset_channel_combo):
+        typed_combos = (self.x_axis_combo, self.y_axis_combo, self.preset_channel_combo)
+        for combo in (self.preset_type_combo, *typed_combos):
             combo.currentIndexChanged.connect(lambda _: self.fields_focus_changed.emit())
+        for combo in typed_combos:
+            # A typed name changes no index, so it needs the same Return/focus-out trigger the
+            # plain text fields use.
+            combo.lineEdit().editingFinished.connect(self.fields_focus_changed.emit)
         for rb in (self.rb1, self.rb2, self.rb3):
             # toggled(bool) fires for both the button losing and gaining check;
             # only react to the one gaining it to avoid a double-dispatch race.
@@ -210,7 +213,7 @@ class Plot1DView(QWidget):
                 label=series.display_label,
                 fmt="o",
                 capsize=3,
-                color=colors[series.source_scan_uuid.value],
+                color=colors[self._color_key(series)],
             )
         for fit in self._fit_curves.values():
             ax.plot(fit.x, fit.best_fit, "-", color=colors[fit.source_scan_uuid.value], label=f"{fit.scan_name} fit")
@@ -229,6 +232,13 @@ class Plot1DView(QWidget):
         self._refresh_legend()
         self.canvas.draw()
 
+    @staticmethod
+    def _color_key(series: Any) -> str:
+        """What shares a color: one scan, or one expanded channel of it when a wildcard draws several."""
+        if series.channel_label is None:
+            return series.source_scan_uuid.value
+        return f"{series.source_scan_uuid.value} {series.channel_label}"
+
     def _series_colors(self) -> dict[str, str]:
         """
         Pin one color per source scan from its place in the scene, shared by its data and its fit.
@@ -237,8 +247,8 @@ class Plot1DView(QWidget):
         moves forward and would recolor a series every time it is redrawn.
         """
         colors: dict[str, str] = {}
-        for source_uuid in [series.source_scan_uuid.value for *_, series in self._plotted] + list(self._fit_curves):
-            colors.setdefault(source_uuid, f"C{len(colors)}")
+        for key in [self._color_key(series) for *_, series in self._plotted] + list(self._fit_curves):
+            colors.setdefault(key, f"C{len(colors)}")
         return colors
 
     def _append_fit_curve(self, fit: FitCurve) -> None:
@@ -322,10 +332,42 @@ class Plot1DView(QWidget):
         self.sync_axis_fields(series.x_name, series.y_name)
         self.sync_preset_fields(series.normalized_by, series.normalized_by_value)
 
+    @staticmethod
+    def _typed_combo(default: str = "") -> QComboBox:
+        """
+        A column-name field: free text, with the focused scan's own columns offered as a dropdown.
+
+        Typed rather than picked-only because a name can be set before the scan that has it is
+        focused, and a scan need not advertise every column that can be asked for. NoInsert keeps
+        what was typed out of the list, which describes the scan rather than what the user tried.
+        """
+        combo = QComboBox()
+        combo.setEditable(True)
+        combo.setInsertPolicy(QComboBox.NoInsert)
+        combo.setEditText(default)
+        return combo
+
+    @staticmethod
+    def _set_combo_text(combo: QComboBox, text: str) -> None:
+        """
+        Show ``text`` in an editable combo, keeping its index in step, and emitting nothing.
+
+        ``setCurrentText`` only writes the line edit on an editable combo and leaves the index
+        where it was, so the two drift apart - and picking the item that happens to sit at the
+        stale index then changes no index, firing no replot.
+        """
+        combo.blockSignals(True)
+        try:
+            # -1 when the name is not one of the focused scan's columns, which is allowed here.
+            combo.setCurrentIndex(combo.findText(text))
+            combo.setEditText(text)
+        finally:
+            combo.blockSignals(False)
+
     def sync_axis_fields(self, x_name: str, y_name: str) -> None:
         """Reflect the actually-plotted x/y column names in the axis fields."""
-        self.x_axis_edit.setText(x_name)
-        self.y_axis_edit.setText(y_name)
+        self._set_combo_text(self.x_axis_combo, x_name)
+        self._set_combo_text(self.y_axis_combo, y_name)
 
     def sync_preset_fields(self, normalized_by: Optional[str], normalized_by_value: Optional[float]) -> None:
         """Reflect the plotted series' normalization settings in the preset controls."""
@@ -336,7 +378,7 @@ class Plot1DView(QWidget):
             preset_type = PresetType.NORMALIZE if normalized_by else PresetType.NONE
             self.preset_type_combo.setCurrentText(preset_type.value)
             if normalized_by:
-                self.preset_channel_combo.setCurrentText(normalized_by)
+                self._set_combo_text(self.preset_channel_combo, normalized_by)
             if normalized_by_value is not None:
                 self.preset_value_edit.setText(str(normalized_by_value))
         finally:
@@ -378,16 +420,34 @@ class Plot1DView(QWidget):
         """Toggle "current plot" browsing - fields stay editable either way (see ``handle_fields_changed``)."""
         self.current_plot_combo.setEnabled(not checked)
 
+    def set_axis_options(self, columns: list[str]) -> None:
+        """
+        Offer a focused scan's column names in the axis dropdowns, keeping whatever they hold.
+
+        Unlike the preset channel, the axis names say what is currently plotted, so a newly
+        focused scan only widens the choice - picking one is ``sync_axis_fields``' job, driven by
+        the staged series. Replacing the list must not quietly replot against another column.
+        """
+        for combo in (self.x_axis_combo, self.y_axis_combo):
+            combo.blockSignals(True)
+            try:
+                current = combo.currentText()
+                combo.clear()
+                combo.addItems(columns)
+            finally:
+                combo.blockSignals(False)
+            self._set_combo_text(combo, current)
+
     def set_preset_channel_options(self, columns: list[str], default: Optional[str] = None) -> None:
         """Repopulate the preset-channel dropdown with a newly-focused scan's column names."""
         self.preset_channel_combo.blockSignals(True)
         try:
             self.preset_channel_combo.clear()
             self.preset_channel_combo.addItems(columns)
-            if default is not None and default in columns:
-                self.preset_channel_combo.setCurrentText(default)
         finally:
             self.preset_channel_combo.blockSignals(False)
+        if default is not None and default in columns:
+            self._set_combo_text(self.preset_channel_combo, default)
 
     def reset_controls_to_defaults(self) -> None:
         """Reset rebin and preset controls back to their initial defaults for a newly-focused scan."""
@@ -399,6 +459,7 @@ class Plot1DView(QWidget):
             self.rebin_stop_edit,
             self.rebin_step_edit,
             self.preset_type_combo,
+            self.preset_channel_combo,
             self.preset_value_edit,
         )
         for widget in widgets:
@@ -409,6 +470,9 @@ class Plot1DView(QWidget):
             self.rebin_stop_edit.setText("2")
             self.rebin_step_edit.setText("0.02")
             self.preset_type_combo.setCurrentText(PresetType.NONE.value)
+            # Only the typed text, not the column list: the list belongs to whichever scan is
+            # focused, and set_preset_channel_options replaces it when the next one arrives.
+            self._set_combo_text(self.preset_channel_combo, "")
             self.preset_value_edit.setText("1")
         finally:
             for widget in widgets:
@@ -426,8 +490,8 @@ class Plot1DView(QWidget):
         """Return current values of all plot control fields."""
         rebin_mode = self._rebin_mode_by_radio.get(self._rebin_radio_group.checkedButton(), RebinMode.NONE)
         return PlotFields(
-            y_axis=self.y_axis_edit.text(),
-            x_axis=self.x_axis_edit.text(),
+            y_axis=self.y_axis_combo.currentText(),
+            x_axis=self.x_axis_combo.currentText(),
             rebin_mode=rebin_mode,
             rebin_start=self.rebin_start_edit.text(),
             rebin_stop=self.rebin_stop_edit.text(),

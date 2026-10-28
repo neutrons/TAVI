@@ -279,8 +279,8 @@ def test_toggling_rb1_prints_no_rebin(view, capsys):
 
 
 def test_default_axis_field_values(view):
-    assert view.y_axis_edit.text() == "detector"
-    assert view.x_axis_edit.text() == "s2"
+    assert view.y_axis_combo.currentText() == "detector"
+    assert view.x_axis_combo.currentText() == "s2"
 
 
 def test_default_preset_field_values(view):
@@ -308,8 +308,172 @@ def test_default_rebin_field_values(view):
 
 def test_sync_axis_fields_updates_edits(view):
     view.sync_axis_fields("qh", "en")
-    assert view.x_axis_edit.text() == "qh"
-    assert view.y_axis_edit.text() == "en"
+    assert view.x_axis_combo.currentText() == "qh"
+    assert view.y_axis_combo.currentText() == "en"
+
+
+# ---------------------------------------------------------------------------
+# set_axis_options
+# ---------------------------------------------------------------------------
+
+
+def test_axis_fields_accept_typing(view):
+    assert view.x_axis_combo.isEditable()
+    assert view.y_axis_combo.isEditable()
+
+
+def test_set_axis_options_populates_both_axis_dropdowns(view):
+    view.set_axis_options(["qh", "en", "detector"])
+
+    for combo in (view.x_axis_combo, view.y_axis_combo):
+        assert [combo.itemText(i) for i in range(combo.count())] == ["qh", "en", "detector"]
+
+
+def test_set_axis_options_keeps_the_current_axis_names(view):
+    """Offering a scan's columns must not silently replot against a different one."""
+    view.sync_axis_fields("s2", "detector")
+
+    view.set_axis_options(["qh", "en"])
+
+    assert view.x_axis_combo.currentText() == "s2"
+    assert view.y_axis_combo.currentText() == "detector"
+
+
+def test_set_axis_options_does_not_emit_fields_focus_changed(view):
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.set_axis_options(["qh", "en"])
+
+    assert received == []
+
+
+def test_typed_axis_name_outside_the_column_list_is_read_back(view):
+    view.set_axis_options(["qh", "en"])
+
+    view.y_axis_combo.setEditText("mcu")
+
+    assert view.get_plot_fields().y_axis == "mcu"
+
+
+def test_typed_axis_name_does_not_join_the_column_list(view):
+    view.set_axis_options(["qh", "en"])
+
+    view.x_axis_combo.setEditText("mcu")
+
+    items = [view.x_axis_combo.itemText(i) for i in range(view.x_axis_combo.count())]
+    assert items == ["qh", "en"]
+
+
+def test_finishing_a_typed_axis_name_requests_a_replot(view):
+    view.set_axis_options(["qh", "en"])
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.x_axis_combo.setEditText("mcu")
+    view.x_axis_combo.lineEdit().editingFinished.emit()
+
+    assert len(received) == 1
+
+
+def test_picking_the_axis_shown_after_a_sync_requests_a_replot(view):
+    """Regression: an editable combo's index does not follow its text, so a pick could go unnoticed."""
+    view.set_axis_options(["qh", "en", "s2"])
+    view.sync_axis_fields("s2", "detector")
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.x_axis_combo.setCurrentIndex(0)
+
+    assert view.get_plot_fields().x_axis == "qh"
+    assert len(received) == 1
+
+
+def test_sync_axis_fields_keeps_the_index_on_the_shown_column(view):
+    view.set_axis_options(["qh", "en", "s2"])
+
+    view.sync_axis_fields("s2", "en")
+
+    assert view.x_axis_combo.currentIndex() == 2
+    assert view.y_axis_combo.currentIndex() == 1
+
+
+def test_sync_axis_fields_does_not_emit_fields_focus_changed(view):
+    view.set_axis_options(["qh", "en", "s2"])
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.sync_axis_fields("qh", "en")
+
+    assert received == []
+
+
+def test_picking_an_axis_from_the_dropdown_requests_a_replot(view):
+    view.set_axis_options(["qh", "en"])
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.x_axis_combo.setCurrentIndex(1)
+
+    assert view.get_plot_fields().x_axis == "en"
+    assert len(received) == 1
+
+
+# ---------------------------------------------------------------------------
+# Typed preset channel
+# ---------------------------------------------------------------------------
+
+
+def test_preset_channel_accepts_typing(view):
+    assert view.preset_channel_combo.isEditable()
+
+
+def test_typed_preset_channel_is_read_back(view):
+    """A channel the focused scan doesn't list can still be typed in."""
+    view.set_preset_channel_options(["qh", "en"])
+
+    view.preset_channel_combo.setEditText("mcu")
+
+    assert view.get_plot_fields().preset_channel == "mcu"
+
+
+def test_typed_preset_channel_does_not_join_the_column_list(view):
+    """The dropdown describes the scan's columns, not what the user has tried."""
+    view.set_preset_channel_options(["qh", "en"])
+
+    view.preset_channel_combo.setEditText("mcu")
+
+    items = [view.preset_channel_combo.itemText(i) for i in range(view.preset_channel_combo.count())]
+    assert items == ["qh", "en"]
+
+
+def test_finishing_a_typed_preset_channel_requests_a_replot(view):
+    """Typing changes no index, so the Return/focus-out trigger is what asks for the replot."""
+    view.set_preset_channel_options(["qh", "en"])
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.preset_channel_combo.setEditText("mcu")
+    view.preset_channel_combo.lineEdit().editingFinished.emit()
+
+    assert len(received) == 1
+
+
+def test_picking_a_preset_channel_from_the_dropdown_still_works(view):
+    view.set_preset_channel_options(["qh", "en", "monitor"])
+
+    view.preset_channel_combo.setCurrentText("monitor")
+
+    assert view.get_plot_fields().preset_channel == "monitor"
+
+
+def test_sync_preset_fields_shows_a_channel_outside_the_column_list(view):
+    """A series normalized by a channel this scan doesn't list must still show what it was."""
+    view.set_preset_channel_options(["qh", "en"])
+
+    view.sync_preset_fields("mcu", 10.0)
+
+    assert view.preset_channel_combo.currentText() == "mcu"
 
 
 # ---------------------------------------------------------------------------
@@ -371,13 +535,6 @@ def test_sync_preset_fields_none_leaves_value_edit_untouched(view):
     view.preset_value_edit.setText("42")
     view.sync_preset_fields(None, None)
     assert view.preset_value_edit.text() == "42"
-
-
-def test_sync_preset_fields_channel_not_in_options_is_a_silent_noop_on_channel_combo(view):
-    """Matches QComboBox semantics: a non-editable combo ignores setCurrentText for unknown text."""
-    view.set_preset_channel_options(["qh", "en"])
-    view.sync_preset_fields("monitor", 1.0)
-    assert view.preset_channel_combo.currentText() != "monitor"
 
 
 def test_sync_preset_fields_does_not_emit_fields_focus_changed(view, qtbot):
@@ -519,20 +676,20 @@ def test_render_plots_does_not_sync_axis_or_preset_fields(view):
     Field sync is driven separately, by ``sync_fields_signal`` from the active plot (see below) -
     ``_render_plots`` no longer picks a series (e.g. "the last one") to sync fields from itself.
     """
-    view.x_axis_edit.setText("untouched")
+    view.x_axis_combo.setCurrentText("untouched")
     resolved = [
         (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qh", y_name="en")),
         (np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([0.0, 0.0]), _series(x_name="qk", y_name="ei")),
     ]
     view._render_plots(resolved)
-    assert view.x_axis_edit.text() == "untouched"
+    assert view.x_axis_combo.currentText() == "untouched"
 
 
 def test_sync_fields_from_series_updates_axis_fields(view):
     view._sync_fields_from_series(_series(x_name="qk", y_name="ei"))
 
-    assert view.x_axis_edit.text() == "qk"
-    assert view.y_axis_edit.text() == "ei"
+    assert view.x_axis_combo.currentText() == "qk"
+    assert view.y_axis_combo.currentText() == "ei"
 
 
 def test_sync_fields_from_series_updates_preset_fields(view):
@@ -546,19 +703,19 @@ def test_sync_fields_from_series_updates_preset_fields(view):
 
 
 def test_sync_fields_from_series_none_is_noop(view):
-    view.x_axis_edit.setText("untouched")
+    view.x_axis_combo.setCurrentText("untouched")
 
     view._sync_fields_from_series(None)
 
-    assert view.x_axis_edit.text() == "untouched"
+    assert view.x_axis_combo.currentText() == "untouched"
 
 
 def test_sync_fields_signal_reaches_sync_fields_from_series(view, qtbot):
     with qtbot.waitSignal(view.sync_fields_signal, timeout=1000):
         view.sync_fields_signal.emit(_series(x_name="qz", y_name="ez"))
 
-    assert view.x_axis_edit.text() == "qz"
-    assert view.y_axis_edit.text() == "ez"
+    assert view.x_axis_combo.currentText() == "qz"
+    assert view.y_axis_combo.currentText() == "ez"
 
 
 def test_render_plots_signal_emits_to_render_plots(view, qtbot):
@@ -628,8 +785,8 @@ def test_get_plot_fields_contains_all_expected_keys(view):
 
 
 def test_get_plot_fields_reflects_edited_values(view):
-    view.y_axis_edit.setText("en")
-    view.x_axis_edit.setText("qh")
+    view.y_axis_combo.setCurrentText("en")
+    view.x_axis_combo.setCurrentText("qh")
     view.preset_value_edit.setText("42")
     fields = view.get_plot_fields()
     assert fields.y_axis == "en"
@@ -656,8 +813,8 @@ def test_reset_controls_to_defaults_restores_values(view):
     assert view.rebin_start_edit.text() == "0"
     assert view.rebin_step_edit.text() == "0.02"
     assert view.preset_type_combo.currentText() == "none"
-    # preset_channel has no items in this test (no scan focused), so
-    # setCurrentText("other") above was a no-op; text stays empty.
+    # The channel field takes free text, so a reset has to clear it rather than rely on an
+    # unknown name being refused; the column list itself is the focused scan's, left alone.
     assert view.preset_channel_combo.currentText() == ""
     assert view.preset_value_edit.text() == "1"
 
@@ -682,9 +839,9 @@ def test_hookup_fields_changed_signal_invokes_callback(view, qtbot):
     assert calls == [True]
 
 
-def test_editing_finished_on_axis_edit_emits_fields_focus_changed(view, qtbot):
+def test_editing_finished_on_axis_field_emits_fields_focus_changed(view, qtbot):
     with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
-        view.y_axis_edit.editingFinished.emit()
+        view.y_axis_combo.lineEdit().editingFinished.emit()
 
 
 def test_preset_combo_index_change_emits_fields_focus_changed(view, qtbot):
@@ -801,8 +958,8 @@ def test_is_apply_all_checked_reflects_unchecked_state(view):
 
 def test_axis_and_preset_fields_enabled_by_default(view):
     """Apply All is checked by default, so editing (applied to every focused plot) is available."""
-    assert view.x_axis_edit.isEnabled() is True
-    assert view.y_axis_edit.isEnabled() is True
+    assert view.x_axis_combo.isEnabled() is True
+    assert view.y_axis_combo.isEnabled() is True
     assert view.preset_type_combo.isEnabled() is True
     assert view.preset_channel_combo.isEnabled() is True
     assert view.preset_value_edit.isEnabled() is True
@@ -812,8 +969,8 @@ def test_unchecking_apply_all_leaves_axis_and_preset_fields_enabled(view):
     """Apply All off still targets one plot (the active one) - fields stay editable, just narrower in scope."""
     view.apply_all_checkbox.setChecked(False)
 
-    assert view.x_axis_edit.isEnabled() is True
-    assert view.y_axis_edit.isEnabled() is True
+    assert view.x_axis_combo.isEnabled() is True
+    assert view.y_axis_combo.isEnabled() is True
     assert view.preset_type_combo.isEnabled() is True
     assert view.preset_channel_combo.isEnabled() is True
     assert view.preset_value_edit.isEnabled() is True
@@ -1266,3 +1423,54 @@ def test_a_fit_is_drawn_in_its_own_series_color(view):
     (container,) = view.canvas.axes.containers
     (fit_line,) = [line for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]
     assert container.lines[0].get_color() == fit_line.get_color()
+
+
+# ---------------------------------------------------------------------------
+# expanded wildcard channels on the canvas
+# ---------------------------------------------------------------------------
+
+
+def add_expanded_channels(view, channels, scan_name="scan1", y_name="detector*", normalized_by="monitor*"):
+    """Draw the curves one wildcard series expands into, as the presenter hands them over."""
+    resolved = []
+    for index, (y_channel, norm_channel) in enumerate(channels):
+        series = _series(scan_name=scan_name, y_name=y_name, normalized_by=normalized_by).model_copy(
+            update={"y_channel": y_channel, "normalized_by_channel": norm_channel}
+        )
+        resolved.append(
+            (
+                np.array([1.0, 2.0, 3.0]),
+                np.array([1.0, 2.0, 3.0]) + index,
+                np.array([0.1, 0.1, 0.1]),
+                series,
+            )
+        )
+    add_plots(view, resolved)
+
+
+def test_expanded_channels_of_one_scan_each_get_their_own_color(view):
+    """Curves off one wildcard share a scan, so the per-scan color would make them one blur."""
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    colors = [container[0].get_color() for container in view.canvas.axes.containers]
+    assert len(set(colors)) == 2
+
+
+def test_expanded_channels_are_labelled_by_y_axis_over_preset_channel(view):
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    labels = [line.get_label() for line in view.canvas.axes.get_legend_handles_labels()[0]]
+    assert labels == ["scan1 detector_1/monitor_1", "scan1 detector_2/monitor_2"]
+
+
+def test_expanded_channels_keep_the_axis_label_the_user_typed(view):
+    add_expanded_channels(view, [("detector_1", "monitor_1"), ("detector_2", "monitor_2")])
+
+    assert view.canvas.axes.get_ylabel() == "detector* / monitor*"
+
+
+def test_a_fit_on_a_scan_drawn_as_expanded_channels_still_renders(view):
+    add_expanded_channels(view, [("detector_1", None), ("detector_2", None)], normalized_by=None)
+    view._append_fit_curve(make_fit_curve(uuid_val="scan1"))
+
+    assert [line.get_label() for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]

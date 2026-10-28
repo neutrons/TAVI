@@ -25,6 +25,11 @@ class PlotSeries(BaseModel):
     x_name: str
     y_name: str
     error_name: str
+    y_channel: Optional[str] = None
+    """Which single column of a wildcard ``y_name`` this copy draws. Set only on the copies
+    ``expand_series`` makes for the canvas; the series the models own keeps the name as typed."""
+    normalized_by_channel: Optional[str] = None
+    """Which single column of a wildcard ``normalized_by`` this copy divides by - see ``y_channel``."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True, str_strip_whitespace=True)
 
@@ -32,6 +37,30 @@ class PlotSeries(BaseModel):
     def run_name(self) -> str:
         """Name that tells this series' scan apart from every other one, unlike a shared scan title."""
         return self.friendly_name or self.scan_name
+
+    @property
+    def plotted_y_name(self) -> str:
+        """The one column this series' y values come from - the expanded channel, or ``y_name`` itself."""
+        return self.y_channel or self.y_name
+
+    @property
+    def plotted_normalized_by(self) -> Optional[str]:
+        """The one column this series is divided by, if any - the expanded channel, or ``normalized_by`` itself."""
+        return self.normalized_by_channel or self.normalized_by
+
+    @property
+    def channel_label(self) -> Optional[str]:
+        """
+        What tells one expanded curve from its siblings - ``"y-axis/preset channel"`` - or None when nothing does.
+
+        Several curves off one wildcard share a scan, so the run name alone names all of them;
+        only the channel pair they were expanded to is theirs.
+        """
+        if self.y_channel is None and self.normalized_by_channel is None:
+            return None
+        if self.plotted_normalized_by:
+            return f"{self.plotted_y_name}/{self.plotted_normalized_by}"
+        return self.plotted_y_name
 
     @property
     def display_label(self) -> str:
@@ -42,8 +71,12 @@ class PlotSeries(BaseModel):
         which many scans share (e.g. every "sample alignment" run).
         """
         if self.scan_name and self.scan_name != self.run_name:
-            return f"{self.run_name} - {self.scan_name}"
-        return self.run_name
+            label = f"{self.run_name} - {self.scan_name}"
+        else:
+            label = self.run_name
+        if self.channel_label is not None:
+            return f"{label} {self.channel_label}"
+        return label
 
 
 class Plot(BaseModel):

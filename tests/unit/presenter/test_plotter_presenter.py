@@ -178,7 +178,6 @@ def test_handle_plot_focus_passes_correct_x_and_y(presenter):
 
 
 def test_handle_plot_focus_passes_scan_name(presenter):
-
     presenter.handle_plot_focus(make_event(plots=[make_plot(series=[make_series(scan_name="my_special_scan")])]))
 
     assert [c.get_label() for c in presenter._view.canvas.axes.containers] == ["my_special_scan"]
@@ -321,7 +320,9 @@ def test_sync_plot_restages_when_every_staged_series_was_removed(presenter):
     presenter.handle_plot_focus(event)  # stages scan-a
     received = stage_events()
 
-    presenter.handle_sync_plot(make_sync_event(plots=[plot_b], scans={plot_b.series[0].source_scan_uuid: make_scan("scan-b")}))
+    presenter.handle_sync_plot(
+        make_sync_event(plots=[plot_b], scans={plot_b.series[0].source_scan_uuid: make_scan("scan-b")})
+    )
 
     assert received == [("clear",), ("stage", [_uuid("scan-b")])]
 
@@ -348,6 +349,27 @@ def test_handle_raw_scan_focus_populates_preset_channel_options_from_scan_column
 
     args = presenter._view.set_preset_channel_options.call_args.args
     assert set(args[0]) == {"qh", "en"}
+
+
+def test_handle_raw_scan_focus_offers_scan_columns_as_axis_options(presenter):
+    scan = make_scan(x_col="qh", y_col="en")
+    presenter._view.set_axis_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
+
+    args = presenter._view.set_axis_options.call_args.args
+    assert set(args[0]) == {"qh", "en"}
+
+
+def test_handle_raw_scan_focus_does_not_change_the_plotted_axes(presenter):
+    """The columns on offer widen; which one is plotted is the staged series' business."""
+    presenter._view.x_axis_combo.setCurrentText("s2")
+    presenter._view.y_axis_combo.setCurrentText("detector")
+
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
+
+    assert presenter._view.x_axis_combo.currentText() == "s2"
+    assert presenter._view.y_axis_combo.currentText() == "detector"
 
 
 def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_has_normalization(presenter):
@@ -382,8 +404,8 @@ def test_sync_stage_syncs_fields_from_the_lead_series(presenter):
 
     EventBroker().publish(SyncStageEvent(series=[series, make_series("scan-002")]))
 
-    assert presenter._view.x_axis_edit.text() == "fresh_x"
-    assert presenter._view.y_axis_edit.text() == "fresh_y"
+    assert presenter._view.x_axis_combo.currentText() == "fresh_x"
+    assert presenter._view.y_axis_combo.currentText() == "fresh_y"
 
 
 def test_sync_stage_points_the_dropdown_at_the_lead_series(presenter):
@@ -397,11 +419,11 @@ def test_sync_stage_points_the_dropdown_at_the_lead_series(presenter):
 
 
 def test_sync_stage_with_nothing_staged_leaves_fields_untouched(presenter):
-    presenter._view.x_axis_edit.setText("kept")
+    presenter._view.x_axis_combo.setCurrentText("kept")
 
     EventBroker().publish(SyncStageEvent(series=[]))
 
-    assert presenter._view.x_axis_edit.text() == "kept"
+    assert presenter._view.x_axis_combo.currentText() == "kept"
 
 
 # ---------------------------------------------------------------------------
@@ -733,3 +755,82 @@ def test_show_title_toggle_calls_the_plot_model(presenter):
     presenter.handle_show_title_toggled(False)
 
     presenter._model.set_show_title.assert_called_once_with(False)
+
+
+# ---------------------------------------------------------------------------
+# Wildcard channel names — one focused series, several drawn curves
+# ---------------------------------------------------------------------------
+
+
+def make_multichannel_scan(uuid_val="scan-001") -> RawScan:
+    scan = make_scan(uuid_val)
+    scan.data.data.update(
+        {
+            "detector_1": [1.0, 2.0, 3.0],
+            "detector_2": [4.0, 5.0, 6.0],
+            "monitor_1": [1.0, 1.0, 1.0],
+            "monitor_2": [2.0, 2.0, 2.0],
+        }
+    )
+    return scan
+
+
+def _wildcard_event(y_name="detector*", normalized_by=None, event_type=FocusPlotEvent):
+    scan = make_multichannel_scan()
+    series = make_series(y_name=y_name)
+    series = series.model_copy(update={"normalized_by": normalized_by, "normalized_by_value": 1.0})
+    return make_event(plots=[make_plot(series=[series])], scans={scan.uuid: scan}, event_type=event_type)
+
+
+def test_handle_plot_focus_draws_one_curve_per_matched_channel(presenter):
+    presenter.handle_plot_focus(_wildcard_event())
+
+    assert len(presenter._view.canvas.axes.containers) == 2
+
+
+def test_handle_plot_focus_draws_each_matched_channel_s_own_data(presenter):
+    presenter.handle_plot_focus(_wildcard_event())
+
+    drawn = [container[0].get_ydata() for container in presenter._view.canvas.axes.containers]
+    npt.assert_array_equal(drawn, [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+
+
+def test_handle_plot_focus_normalizes_each_channel_by_the_preset_channel_beside_it(presenter):
+    presenter.handle_plot_focus(_wildcard_event(normalized_by="monitor*"))
+
+    drawn = [container[0].get_ydata() for container in presenter._view.canvas.axes.containers]
+    npt.assert_array_equal(drawn, [[1.0, 2.0, 3.0], [2.0, 2.5, 3.0]])
+
+
+def test_handle_plot_focus_labels_each_curve_by_its_y_axis_over_preset_channel(presenter):
+    presenter.handle_plot_focus(_wildcard_event(normalized_by="monitor*"))
+
+    labels = [line.get_label() for line in presenter._view.canvas.axes.get_legend_handles_labels()[0]]
+    assert labels == ["test_plot detector_1/monitor_1", "test_plot detector_2/monitor_2"]
+
+
+def test_handle_plot_focus_gives_each_expanded_curve_its_own_color(presenter):
+    presenter.handle_plot_focus(_wildcard_event())
+
+    colors = [container[0].get_color() for container in presenter._view.canvas.axes.containers]
+    assert len(set(colors)) == 2
+
+
+def test_handle_plot_focus_of_a_wildcard_stages_the_one_focused_series(presenter):
+    """Expansion is a drawing concern: the stage, the dropdown and Save Plot still see one series."""
+    presenter.handle_plot_focus(_wildcard_event())
+
+    assert len(presenter._focused_series_uuids) == 1
+    assert presenter._view.current_plot_combo.count() == 1
+
+
+def test_handle_sync_plot_redraws_every_matched_channel(presenter):
+    presenter.handle_sync_plot(_wildcard_event(event_type=SyncPlotEvent))
+
+    assert len(presenter._view.canvas.axes.containers) == 2
+
+
+def test_handle_plot_focus_labels_the_y_axis_with_the_wildcard_as_typed(presenter):
+    presenter.handle_plot_focus(_wildcard_event(normalized_by="monitor*"))
+
+    assert presenter._view.canvas.axes.get_ylabel() == "detector* / monitor*"

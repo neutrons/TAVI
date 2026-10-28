@@ -93,6 +93,64 @@ def test_populate_variables_replaces_previous_contents(view):
 
 
 # ---------------------------------------------------------------------------
+# variable names are shown whole, and the pane scrolls to them
+# ---------------------------------------------------------------------------
+
+LONG_NAME = "detector_high_resolution_bank_channel_17"
+
+
+def test_variable_names_are_never_elided(view):
+    """A column name is an identifier - "detector_high_re..." names nothing."""
+    assert view.variable_table.textElideMode() == Qt.TextElideMode.ElideNone
+
+
+def test_variable_column_widens_to_fit_the_longest_name(view):
+    view.populate_variables(["qh", LONG_NAME])
+
+    text_width = view.variable_table.fontMetrics().horizontalAdvance(LONG_NAME)
+    assert view.variable_table.columnWidth(0) >= text_width
+
+
+def test_variable_column_shrinks_back_for_a_scan_of_short_names(view):
+    view.populate_variables([LONG_NAME])
+    wide = view.variable_table.columnWidth(0)
+
+    view.populate_variables(["qh"])
+
+    assert view.variable_table.columnWidth(0) < wide
+
+
+def test_variable_table_scrolls_horizontally_to_a_name_wider_than_its_pane(view, qtbot):
+    table = view.variable_table
+    table.setFixedWidth(80)
+    view.show()
+    qtbot.waitExposed(view)
+
+    view.populate_variables([LONG_NAME])
+    qtbot.wait(50)  # the scroll range is recomputed on the next layout pass, not on insert
+
+    scroll_bar = table.horizontalScrollBar()
+    assert scroll_bar.isVisible()
+    # Scrolled all the way over, the far end of the longest name is on screen.
+    assert scroll_bar.maximum() + table.viewport().width() >= table.columnWidth(0)
+
+
+def test_variable_table_hides_the_scroll_bar_when_every_name_fits(view, qtbot):
+    view.show()
+    qtbot.waitExposed(view)
+
+    view.populate_variables(["qh", "en"])
+    qtbot.wait(50)
+
+    assert not view.variable_table.horizontalScrollBar().isVisible()
+
+
+def test_variable_table_columns_stay_user_resizable(view):
+    """ResizeToContents would size it for us but take away the drag; the scroll bar covers the rest."""
+    assert view.variable_table.horizontalHeader().sectionResizeMode(0) == QHeaderView.ResizeMode.Interactive
+
+
+# ---------------------------------------------------------------------------
 # dragging a variable row reorders the matching data column
 # ---------------------------------------------------------------------------
 

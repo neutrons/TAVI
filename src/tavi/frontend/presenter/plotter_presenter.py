@@ -3,7 +3,7 @@
 from typing import Optional
 
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
-from tavi.backend.model.plot_resolver import resolve_series
+from tavi.backend.model.plot_resolver import expand_series, resolve_series
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.fit_entry import FitCurve
@@ -82,9 +82,11 @@ class PlotterPresenter(AbstractPresenter):
         self._focused_fit_uuids = set()
 
     def handle_raw_scan_focus(self, e: FocusRawScanEvent) -> None:
-        """Offer the first focused scan's columns as preset channels."""
+        """Offer the first focused scan's columns as axis and preset-channel choices."""
         if e.scans:
-            self._view.set_preset_channel_options(list(e.scans[0].data.data.keys()))
+            columns = list(e.scans[0].data.data.keys())
+            self._view.set_axis_options(columns)
+            self._view.set_preset_channel_options(columns)
 
     def handle_plot_focus(self, e: FocusPlotEvent) -> None:
         """
@@ -218,7 +220,8 @@ class PlotterPresenter(AbstractPresenter):
         return [s for plot in plots for s in plot.series if s.source_scan_uuid not in focused]
 
     def _resolve(self, series: list[PlotSeries], scans: dict[UUID, Scan]) -> list:
-        return [(*resolve_series(s, scans), s) for s in series]
+        """Turn each focused series into the curves it draws - several when its names carry a ``*``."""
+        return [(*resolve_series(c, scans), c) for s in series for c in expand_series(s, scans)]
 
     def _refresh_plot_options(self) -> None:
         """Repopulate the "Current Plot" dropdown, pointing at the lead staged series."""
