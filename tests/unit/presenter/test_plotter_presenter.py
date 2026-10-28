@@ -178,7 +178,6 @@ def test_handle_plot_focus_passes_correct_x_and_y(presenter):
 
 
 def test_handle_plot_focus_passes_scan_name(presenter):
-
     presenter.handle_plot_focus(make_event(plots=[make_plot(series=[make_series(scan_name="my_special_scan")])]))
 
     assert [c.get_label() for c in presenter._view.canvas.axes.containers] == ["my_special_scan"]
@@ -321,7 +320,9 @@ def test_sync_plot_restages_when_every_staged_series_was_removed(presenter):
     presenter.handle_plot_focus(event)  # stages scan-a
     received = stage_events()
 
-    presenter.handle_sync_plot(make_sync_event(plots=[plot_b], scans={plot_b.series[0].source_scan_uuid: make_scan("scan-b")}))
+    presenter.handle_sync_plot(
+        make_sync_event(plots=[plot_b], scans={plot_b.series[0].source_scan_uuid: make_scan("scan-b")})
+    )
 
     assert received == [("clear",), ("stage", [_uuid("scan-b")])]
 
@@ -348,6 +349,27 @@ def test_handle_raw_scan_focus_populates_preset_channel_options_from_scan_column
 
     args = presenter._view.set_preset_channel_options.call_args.args
     assert set(args[0]) == {"qh", "en"}
+
+
+def test_handle_raw_scan_focus_offers_scan_columns_as_axis_options(presenter):
+    scan = make_scan(x_col="qh", y_col="en")
+    presenter._view.set_axis_options = MagicMock()
+
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
+
+    args = presenter._view.set_axis_options.call_args.args
+    assert set(args[0]) == {"qh", "en"}
+
+
+def test_handle_raw_scan_focus_does_not_change_the_plotted_axes(presenter):
+    """The columns on offer widen; which one is plotted is the staged series' business."""
+    presenter._view.x_axis_combo.setCurrentText("s2")
+    presenter._view.y_axis_combo.setCurrentText("detector")
+
+    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
+
+    assert presenter._view.x_axis_combo.currentText() == "s2"
+    assert presenter._view.y_axis_combo.currentText() == "detector"
 
 
 def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_has_normalization(presenter):
@@ -382,8 +404,8 @@ def test_sync_stage_syncs_fields_from_the_lead_series(presenter):
 
     EventBroker().publish(SyncStageEvent(series=[series, make_series("scan-002")]))
 
-    assert presenter._view.x_axis_edit.text() == "fresh_x"
-    assert presenter._view.y_axis_edit.text() == "fresh_y"
+    assert presenter._view.x_axis_combo.currentText() == "fresh_x"
+    assert presenter._view.y_axis_combo.currentText() == "fresh_y"
 
 
 def test_sync_stage_points_the_dropdown_at_the_lead_series(presenter):
@@ -397,11 +419,11 @@ def test_sync_stage_points_the_dropdown_at_the_lead_series(presenter):
 
 
 def test_sync_stage_with_nothing_staged_leaves_fields_untouched(presenter):
-    presenter._view.x_axis_edit.setText("kept")
+    presenter._view.x_axis_combo.setCurrentText("kept")
 
     EventBroker().publish(SyncStageEvent(series=[]))
 
-    assert presenter._view.x_axis_edit.text() == "kept"
+    assert presenter._view.x_axis_combo.currentText() == "kept"
 
 
 # ---------------------------------------------------------------------------
