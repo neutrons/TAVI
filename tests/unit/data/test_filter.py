@@ -18,10 +18,12 @@ def make_raw_scan(metadata=None, uuid_val="scan-001") -> RawScan:
 
 
 def make_criterion(key="scan", operator=FilterOperator.GREATER_EQUAL, value="0") -> FilterCriterion:
+    #TODO 18225: Add meta/data toggle
     return FilterCriterion(key=key, operator=operator, value=value)
 
 
 def make_filter(*criteria, name="Filter") -> ScanFilter:
+    #TODO 18225: Add whole filter modifier
     return ScanFilter(name=name, criteria=list(criteria))
 
 
@@ -44,6 +46,8 @@ def make_filter(*criteria, name="Filter") -> ScanFilter:
     ],
 )
 def test_numeric_operators_compare_as_numbers(operator, value, expected):
+    #TODO 18225: Add meta/data toggle
+    #TODO 18225: Scan as matches input
     assert make_criterion("scan", operator, value).matches({"scan": "42"}) is expected
 
 
@@ -60,15 +64,19 @@ def test_numeric_operators_compare_as_numbers(operator, value, expected):
     ],
 )
 def test_text_operators_ignore_case(operator, value, expected):
+    #TODO 18225: Scan as matches input
     assert make_criterion("samplename", operator, value).matches({"samplename": "MnF3"}) is expected
 
+#TODO 18225: Add parameterized tests with meta/data toggle
 
 @pytest.mark.parametrize("operator", list(FilterOperator))
 def test_missing_key_never_matches(operator):
+    #TODO 18225: Scan as matches input
     assert make_criterion("temp", operator, "1").matches({"scan": "1"}) is False
 
 
 def test_numeric_operator_on_non_numeric_metadata_does_not_match():
+    #TODO 18225: Scan as matches input
     assert make_criterion("scan", FilterOperator.GREATER, "0").matches({"scan": "n/a"}) is False
 
 
@@ -105,6 +113,7 @@ def test_non_numeric_value_for_text_operator_is_valid():
 # ---------------------------------------------------------------------------
 
 
+#TODO 18225: Make this test for AND and make similar for OR
 def test_filter_matches_only_when_every_criterion_does():
     scan = make_raw_scan({"scan": "5", "samplename": "MnF3"})
     passing = make_criterion("scan", FilterOperator.GREATER, "1")
