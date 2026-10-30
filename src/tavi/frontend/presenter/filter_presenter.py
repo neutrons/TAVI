@@ -46,8 +46,10 @@ class FilterPresenter(AbstractPresenter):
     def handle_new_filter(self) -> None:
         """List a new filter with one blank criterion; it enters the project when first applied."""
         blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
+        # TODO 18225: Add meta/data
         new_filter = ScanFilter(name=f"Filter{self._view.filter_count()}", criteria=[blank])
         self._view.add_unsaved_filter(new_filter.uuid, new_filter.name, new_filter.criteria)
+        # TODO 18225: Add whole filter operators
 
     def handle_delete_filter(self) -> None:
         """Remove the filter picked in the dropdown, once the user confirms; the model only knows saved ones."""
@@ -78,6 +80,10 @@ class FilterPresenter(AbstractPresenter):
     def handle_filter_synced(self, e: SyncFilterEvent) -> None:
         """Tell the panel what a filter was saved as, so it can mark whether edits are still unsaved."""
         self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, e.filter.criteria)
+        criteria = [(c.key, c.operator.value, c.value) for c in e.filter.criteria]
+        # TODO 18225: Add meta/data
+        # Conisder moving criteria dump to ScanFilter methods rather than presenter comprehension
+        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, criteria)
 
     def handle_filter_removed(self, e: RemoveFilterEvent) -> None:
         """Stop listing a filter removed from the project."""
