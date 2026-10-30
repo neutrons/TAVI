@@ -26,6 +26,7 @@ def make_filter_uuid(value="filter-001") -> UUID:
 
 def add_filter(view, uuid_val="filter-001", name="Filter1", criteria=None):
     """List a filter the way FilterPresenter does, after the model announces it."""
+    #TODO 18225: Extend to include Meta/Data differentiator
     if criteria is None:
         criteria = [make_criterion()]
     view.add_filter_signal.emit(make_filter_uuid(uuid_val), name, criteria)
@@ -110,6 +111,8 @@ def test_initial_criteria_item(view):
     for criteria in criteria_store.values():
         criteria: CriteriaItemWidget
 
+        #TODO 18225: Meta/Data check
+
         assert criteria.uuid is not None
         assert isinstance(criteria.uuid, UUID)
 
@@ -160,11 +163,6 @@ def test_criteria_set_delete_criteria(view):
     assert len(criteria_store) == 0
 
 # ---------------------------------------------------------------------------
-# validate_criteria
-# ---------------------------------------------------------------------------
-# This may get moved down to the model - leaving for later
-
-# ---------------------------------------------------------------------------
 # New / Del buttons only report the request
 # ---------------------------------------------------------------------------
 
@@ -209,6 +207,7 @@ def test_add_filter_lists_and_picks_it(view):
 
 
 def test_add_filter_shows_its_criteria(view):
+    #TODO 18225: Add meta/data toggle
     criteria = [make_criterion("scan", ">", "10"), make_criterion("samplename", "has", "MnF")]
 
     add_filter(view, criteria=criteria)
@@ -217,12 +216,14 @@ def test_add_filter_shows_its_criteria(view):
 
 
 def test_current_criteria_reflects_edits(view):
+    #TODO 18225: Add meta/data toggle
     add_filter(view, criteria=[make_criterion("scan", ">", "10")])
     item = next(iter(view.filter_criteria_set_list.currentWidget().criteria_store.values()))
 
     item.criteria_value.setText("20")
     item.criteria_operator.setCurrentText("<=")
 
+    #TODO 18225: Add meta/data toggle
     assert view.current_criteria() == [make_criterion("scan", "<=", "20")]
 
 
@@ -249,12 +250,14 @@ def test_remove_filter_unlists_it_and_picks_sample(view):
 
 
 def test_remove_filter_keeps_criteria_sets_lined_up_with_dropdown(view):
+    #TODO 18225: Add meta/data toggle
     add_filter(view, "filter-001", criteria=[make_criterion("a", "is", "1")])
     add_filter(view, "filter-002", criteria=[make_criterion("b", "is", "2")])
 
     view.remove_filter_signal.emit(make_filter_uuid("filter-001"))
     view.filter_dropdown.setCurrentIndex(1)
 
+    #TODO 18225: Add meta/data toggle
     assert view.current_criteria() == [make_criterion("b", "is", "2")]
 
 

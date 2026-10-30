@@ -41,6 +41,7 @@ class CriteriaItemWidget(QWidget):
         criteria_layout = QHBoxLayout(self)
 
         self.uuid = new_uuid()
+        # TODO 18225: Add uneditable combobox for Meta vs Data
         self.criteria_key = QLineEdit()
         self.criteria_key.setPlaceholderText("key")
         self.criteria_operator = QComboBox(editable=False)
@@ -53,6 +54,7 @@ class CriteriaItemWidget(QWidget):
         trash_icon = style.standardIcon(style.StandardPixmap.SP_TrashIcon)
         self.criteria_delete_button.setIcon(trash_icon)
 
+        # TODO 18225: Add Meta/Data combobox
         criteria_layout.addWidget(self.criteria_key)
         criteria_layout.addWidget(self.criteria_operator)
         criteria_layout.addWidget(self.criteria_value)
@@ -64,12 +66,14 @@ class CriteriaItemWidget(QWidget):
 
     def set_criterion(self, criterion: FilterCriterion) -> None:
         """Show ``criterion`` in the key, operator and value fields."""
+        # TODO 18225: Add support for Meta/Data differentiator
         self.criteria_key.setText(criterion.key)
         self.criteria_operator.setCurrentText(criterion.operator.value)
         self.criteria_value.setText(criterion.value)
 
     def criterion(self) -> FilterCriterion:
         """Return the key, operator and value as currently entered."""
+        # TODO 18225: Add export of Meta/Data parameter
         return FilterCriterion(
             key=self.criteria_key.text(),
             operator=FilterOperator(self.criteria_operator.currentText()),
@@ -78,6 +82,7 @@ class CriteriaItemWidget(QWidget):
 
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
+        # TODO 18225: Set Meta/Data to Meta and setEnabled False
         self.criteria_key.setText(Config["filter.sample.criterion.key"])
         self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
@@ -111,6 +116,7 @@ class CriteriaSetScrollArea(QScrollArea):
 
         ``saved`` says whether the filter is in the project as shown; if not, it stays unsaved until ``mark_saved``.
         """
+        # TODO 18225: Add whole filter operator initialization
         super().__init__(parent)
         self.name = Config["filter.sample.name"] if set_sample else name
         self._saved: tuple[str, list[FilterCriterion]] | None = None
@@ -118,6 +124,9 @@ class CriteriaSetScrollArea(QScrollArea):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         dummy_widget = QWidget()
         self.setWidget(dummy_widget)
+        # TODO 18225: Add whole filter operators
+        # One for AND/OR between criterion
+        # One for Partial/Full match for columnar data - may not be implemented immediately
         self.criteria_list_layout = QVBoxLayout(dummy_widget)
         self.criteria_list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -365,6 +374,7 @@ class FilterView(QWidget):
         # Listed before the connection, so an unsaved filter gets its marker here.
         self._show_unsaved_marker(criteria_set)
         criteria_set.changed.connect(lambda: self._show_unsaved_marker(criteria_set))
+        # TODO 18225: Add support for whole filter operators
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
     def _sync_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
