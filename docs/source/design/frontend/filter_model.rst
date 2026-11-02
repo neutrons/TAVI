@@ -96,7 +96,7 @@ Saving and removing
             FM-->>FP: SyncFilterEvent(filter)
         end
 
-        Note over FP: Del asks the user to confirm first; declining stops here
+        Note over FP: Del asks the user to confirm first, declining stops here
         FP->>FM: remove_filter(filter_uuid)
         opt it was applied
             FM->>TPM: ClearFilterEvent
