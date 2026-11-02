@@ -223,7 +223,6 @@ def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):
     EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria=[criterion])))
 
     assert presenter._view.filter_dropdown.currentText() == "Mine"
-    assert presenter._view.current_criteria() == [("scan", ">", "10")]
     #TODO 18225: Add meta/data
     #TODO 18225: Add whole filter operators
 

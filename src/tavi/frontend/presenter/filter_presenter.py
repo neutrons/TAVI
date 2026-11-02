@@ -80,10 +80,7 @@ class FilterPresenter(AbstractPresenter):
     def handle_filter_synced(self, e: SyncFilterEvent) -> None:
         """Tell the panel what a filter was saved as, so it can mark whether edits are still unsaved."""
         self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, e.filter.criteria)
-        criteria = [(c.key, c.operator.value, c.value) for c in e.filter.criteria]
         # TODO 18225: Add meta/data
-        # Conisder moving criteria dump to ScanFilter methods rather than presenter comprehension
-        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, criteria)
 
     def handle_filter_removed(self, e: RemoveFilterEvent) -> None:
         """Stop listing a filter removed from the project."""
