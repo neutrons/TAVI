@@ -1,5 +1,7 @@
 """Tests for tavi.frontend.view.filter_view."""
 import pytest
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QMessageBox
 
 from tavi.frontend.view.filter_view import (
     FilterView,
@@ -175,6 +177,15 @@ def test_del_filter_button_does_not_unlist_a_filter_itself(view):
 
     assert view.filter_dropdown.count() == 2
 
+@pytest.mark.parametrize(("reply", "confirmed"), [(QMessageBox.StandardButton.Yes, True), (QMessageBox.StandardButton.No, False)])
+def test_confirm_delete_filter_returns_whether_user_clicked_yes(view, monkeypatch, reply, confirmed):
+    add_filter(view, name="MyFilter")
+    asked = []
+    monkeypatch.setattr(QMessageBox, "question", lambda _parent, _title, text, *args: asked.append(text) or reply)
+
+    assert view.confirm_delete_filter() is confirmed
+    assert "MyFilter" in asked[0]
+
 # ---------------------------------------------------------------------------
 # add_filter_signal
 # ---------------------------------------------------------------------------
@@ -346,6 +357,131 @@ def test_dropdown_toggles_criteria_set(view):
 # Operator dropdown
 # ---------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------
+# Unsaved-changes marker
+# ---------------------------------------------------------------------------
+
+def first_criteria_item(view):
+    return next(iter(view.filter_criteria_set_list.currentWidget().criteria_store.values()))
+
+
+def test_unsaved_filter_is_marked_until_added_to_the_project(view):
+    view.add_unsaved_filter(make_filter_uuid(), "Mine", [("", "is", "")])
+    assert view.filter_dropdown.currentText() == "Mine*"
+    assert not view.current_filter_in_project()
+
+    add_filter(view, name="Mine")
+
+    assert view.filter_dropdown.count() == 2
+    assert view.filter_dropdown.currentText() == "Mine"
+    assert view.current_filter_in_project()
+
+
+def test_unsaved_filter_keeps_marker_when_edits_are_reverted(view):
+    view.add_unsaved_filter(make_filter_uuid(), "Mine", [("", "is", "")])
+
+    first_criteria_item(view).criteria_key.setText("scan")
+    first_criteria_item(view).criteria_key.setText("")
+
+    assert view.filter_dropdown.currentText() == "Mine*"
+
+
+def test_added_filter_is_not_marked_unsaved(view):
+    add_filter(view, name="Mine")
+
+    assert view.filter_dropdown.currentText() == "Mine"
+
+
+def test_editing_a_criterion_marks_filter_unsaved_until_reverted(view):
+    add_filter(view, name="Mine", criteria=[("scan", ">", "10")])
+
+    first_criteria_item(view).criteria_value.setText("20")
+    assert view.filter_dropdown.currentText() == "Mine*"
+
+    first_criteria_item(view).criteria_value.setText("10")
+    assert view.filter_dropdown.currentText() == "Mine"
+
+
+def test_adding_and_deleting_criteria_marks_filter_unsaved(view):
+    add_filter(view, name="Mine")
+    criteria_set = view.filter_criteria_set_list.currentWidget()
+
+    added = criteria_set.add_criteria()
+    assert view.filter_dropdown.currentText() == "Mine*"
+
+    added.criteria_delete_button.click()
+    assert view.filter_dropdown.currentText() == "Mine"
+
+
+def test_typing_a_name_renames_filter_and_marks_it_unsaved(view, qtbot):
+    add_filter(view, name="Mine")
+    line_edit = view.filter_dropdown.lineEdit()
+    line_edit.setCursorPosition(len("Mine"))
+
+    qtbot.keyClicks(line_edit, "2")
+
+    assert view.filter_dropdown.currentText() == "Mine2*"
+    assert view.current_filter_name() == "Mine2"
+    assert line_edit.cursorPosition() == len("Mine2")
+
+
+def test_typing_keeps_editing_the_name_not_the_marker(view, qtbot):
+    add_filter(view, name="Mine")
+    line_edit = view.filter_dropdown.lineEdit()
+    line_edit.setCursorPosition(len("Mine"))
+
+    qtbot.keyClicks(line_edit, "ab")
+
+    assert view.current_filter_name() == "Mineab"
+    assert view.filter_dropdown.currentText() == "Mineab*"
+
+
+def test_typing_the_saved_name_back_drops_marker(view, qtbot):
+    add_filter(view, name="Mine")
+    line_edit = view.filter_dropdown.lineEdit()
+    line_edit.setCursorPosition(len("Mine"))
+
+    qtbot.keyClicks(line_edit, "2")
+    qtbot.keyClick(line_edit, Qt.Key.Key_Backspace)
+
+    assert view.filter_dropdown.currentText() == "Mine"
+
+
+def test_typing_over_sample_is_reverted(view, qtbot):
+    qtbot.keyClicks(view.filter_dropdown.lineEdit(), "x")
+
+    assert view.filter_dropdown.currentText() == DEFAULT_FILTER_NAME
+    assert view.current_filter_name() == DEFAULT_FILTER_NAME
+
+
+def test_unsaved_marker_stays_on_filter_after_picking_another(view):
+    add_filter(view, uuid_val="filter-001", name="First")
+    first_criteria_item(view).criteria_value.setText("edited")
+    add_filter(view, uuid_val="filter-002", name="Second")
+
+    assert view.filter_dropdown.itemText(1) == "First*"
+    assert view.filter_dropdown.itemText(2) == "Second"
+    view.filter_dropdown.setCurrentIndex(1)
+    assert view.current_filter_name() == "First"
+
+
+def test_sync_filter_drops_marker_when_saved_as_shown(view):
+    add_filter(view, name="Mine", criteria=[("scan", ">", "10")])
+    first_criteria_item(view).criteria_value.setText("20")
+
+    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", [("scan", ">", "20")])
+
+    assert view.filter_dropdown.currentText() == "Mine"
+
+
+def test_sync_filter_keeps_marker_for_edits_made_since(view):
+    add_filter(view, name="Mine", criteria=[("scan", ">", "10")])
+    first_criteria_item(view).criteria_value.setText("30")
+
+    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", [("scan", ">", "20")])
+
+    assert view.filter_dropdown.currentText() == "Mine*"
 
 # ---------------------------------------------------------------------------
 # Applied filter label

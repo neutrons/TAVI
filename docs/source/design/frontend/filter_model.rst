@@ -90,10 +90,13 @@ Saving and removing
 
         FP->>FM: save_filter(scan_filter)
         FM->>TD: filters[uuid] = scan_filter
-        opt filter is new
+        alt filter is new
             FM-->>FP: AddFilterEvent(filter)
+        else filter was already saved
+            FM-->>FP: SyncFilterEvent(filter)
         end
 
+        Note over FP: Del asks the user to confirm first; declining stops here
         FP->>FM: remove_filter(filter_uuid)
         opt it was applied
             FM->>TPM: ClearFilterEvent
@@ -187,7 +190,9 @@ The filter panel
 ``FilterView`` holds no filters of its own. Its New, Del, Apply and Clear buttons
 and its dropdown only report what the user asked for; ``FilterPresenter`` turns
 each into a ``FilterModel`` call, and the panel changes only when the model's
-events come back:
+events come back. The exception is a filter made with New that has not been
+applied yet: it is not in the project, so the model has nothing to say about it
+and the presenter updates the panel itself:
 
 .. list-table::
    :header-rows: 1
@@ -197,26 +202,41 @@ events come back:
      - ``FilterPresenter`` calls
      - Panel updates on
    * - New
-     - ``save_filter`` with a blank criterion
-     - ``AddFilterEvent``: listed and picked
+     - nothing; the filter is not in the project until it is applied
+     - ``add_unsaved_filter``: listed as ``Name*`` and picked
    * - Pick in dropdown
-     - ``select_filter``
+     - ``select_filter``, unless the picked filter is not in the project yet
      - (nothing to show)
    * - Apply
      - ``apply_filter`` with the filter as the panel shows it
-     - ``ApplyFilterEvent``: named as applied; or ``SyncFilterValidationEvent``: errors shown
+     - ``AddFilterEvent`` (first save of a New filter) or ``SyncFilterEvent``: unsaved marker
+       dropped; then ``ApplyFilterEvent``: named as applied, or ``SyncFilterValidationEvent``:
+       errors shown
    * - Clear
      - ``clear_filter``
      - ``ClearFilterEvent``: "Default Applied", greyed out
    * - Del
-     - ``remove_filter``
-     - ``RemoveFilterEvent``: unlisted, Sample picked
+     - ``remove_filter``, once the user confirms; nothing for a filter not in the project yet
+     - ``RemoveFilterEvent``: unlisted, Sample picked (the presenter unlists an unsaved filter itself)
 
 These events are published from the model's worker thread, so the presenter
 emits the view's ``*_signal`` signals rather than calling it, and Qt runs the
 update on the GUI thread. The same goes for the project tree: relisting runs on
 ``FilterModel``'s worker thread, so every ``ProjectView`` change (add, remove,
 clear) is a signal, and the queued calls run in the order they were emitted.
+
+**Unsaved edits are marked in the dropdown.** A filter whose name or criteria
+differ from what it was last saved as is listed as ``Name*``. Each criteria set
+remembers what its filter was saved as, from ``AddFilterEvent`` and then
+``SyncFilterEvent``, and compares the panel against it after every edit, so
+undoing an edit by hand drops the marker too. A filter made with New has
+nothing saved to compare against, so it keeps its marker until it is first
+applied; its ``AddFilterEvent`` then finds it already listed and marks it saved
+rather than listing it twice. Typing in the dropdown renames the
+picked filter as you type, rather than on Enter, so the marker can follow the
+name. The marker shares the dropdown's line edit with the name, which is why
+filter names can't contain ``*``. This is display only: the model never hears
+about edits until Apply.
 
 **Apply carries the panel's edits.** Every Proxy call runs on its own worker
 thread, so a ``save_filter`` followed by ``apply_filter`` could apply before the

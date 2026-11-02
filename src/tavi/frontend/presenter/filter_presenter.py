@@ -11,6 +11,7 @@ from tavi.meta.event.type.model_event import (
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    SyncFilterEvent,
     SyncFilterValidationEvent,
 )
 
@@ -25,6 +26,7 @@ class FilterPresenter(AbstractPresenter):
 
         self._event_broker = EventBroker()
         self._event_broker.register(AddFilterEvent, self.handle_filter_added)
+        self._event_broker.register(SyncFilterEvent, self.handle_filter_synced)
         self._event_broker.register(RemoveFilterEvent, self.handle_filter_removed)
         self._event_broker.register(ApplyFilterEvent, self.handle_filter_applied)
         self._event_broker.register(ClearFilterEvent, self.handle_filter_cleared)
@@ -42,17 +44,24 @@ class FilterPresenter(AbstractPresenter):
         self._view = FilterView()
 
     def handle_new_filter(self) -> None:
-        """Save a new filter with one blank criterion; the panel lists it once the model announces it."""
+        """List a new filter with one blank criterion; it enters the project when first applied."""
         blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
-        self._model.save_filter(ScanFilter(name=f"Filter{self._view.filter_count()}", criteria=[blank]))
+        new_filter = ScanFilter(name=f"Filter{self._view.filter_count()}", criteria=[blank])
+        self._view.add_unsaved_filter(new_filter.uuid, new_filter.name, self._shown_criteria(new_filter))
 
     def handle_delete_filter(self) -> None:
-        """Ask the model to remove the filter picked in the dropdown."""
+        """Remove the filter picked in the dropdown, once the user confirms; the model only knows saved ones."""
+        if not self._view.confirm_delete_filter():
+            return
+        if not self._view.current_filter_in_project():
+            self._view.remove_filter_signal.emit(self._view.current_filter_uuid())
+            return
         self._model.remove_filter(self._view.current_filter_uuid())
 
     def handle_filter_selected(self) -> None:
-        """Tell the model which filter the dropdown now picks."""
-        self._model.select_filter(self._view.current_filter_uuid())
+        """Tell the model which filter the dropdown now picks, unless it isn't in the project yet."""
+        if self._view.current_filter_in_project():
+            self._model.select_filter(self._view.current_filter_uuid())
 
     def handle_apply_filter(self) -> None:
         """Apply the picked filter as the panel currently shows it, edits included."""
@@ -64,8 +73,11 @@ class FilterPresenter(AbstractPresenter):
 
     def handle_filter_added(self, e: AddFilterEvent) -> None:
         """List a newly saved filter in the panel."""
-        criteria = [(c.key, c.operator.value, c.value) for c in e.filter.criteria]
-        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, criteria)
+        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, self._shown_criteria(e.filter))
+
+    def handle_filter_synced(self, e: SyncFilterEvent) -> None:
+        """Tell the panel what a filter was saved as, so it can mark whether edits are still unsaved."""
+        self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, self._shown_criteria(e.filter))
 
     def handle_filter_removed(self, e: RemoveFilterEvent) -> None:
         """Stop listing a filter removed from the project."""
@@ -83,6 +95,10 @@ class FilterPresenter(AbstractPresenter):
     def handle_filter_validation(self, e: SyncFilterValidationEvent) -> None:
         """Show why the filter cannot be applied, or that it can."""
         self._view.show_validation_errors_signal.emit(e.errors)
+
+    def _shown_criteria(self, scan_filter: ScanFilter) -> list[tuple[str, str, str]]:
+        """Return ``scan_filter``'s criteria the way the panel shows them."""
+        return [(c.key, c.operator.value, c.value) for c in scan_filter.criteria]
 
     def _current_filter(self) -> ScanFilter:
         """Build the picked filter from what the panel currently shows."""

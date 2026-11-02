@@ -12,6 +12,7 @@ from qtpy.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QScrollArea,
     QStackedWidget,
@@ -32,6 +33,7 @@ class CriteriaItemWidget(QWidget):
     Holds atomic filtering statements.
     """
 
+    changed = Signal()
     operators = ["is", "is not", "has", "has not", "=", "!=", ">", "<", ">=", "<="]
 
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -56,6 +58,10 @@ class CriteriaItemWidget(QWidget):
         criteria_layout.addWidget(self.criteria_operator)
         criteria_layout.addWidget(self.criteria_value)
         criteria_layout.addWidget(self.criteria_delete_button)
+
+        self.criteria_key.textChanged.connect(self.changed)
+        self.criteria_operator.currentTextChanged.connect(self.changed)
+        self.criteria_value.textChanged.connect(self.changed)
 
     def set_criterion(self, criterion: Criterion) -> None:
         """Show ``criterion`` in the key, operator and value fields."""
@@ -84,15 +90,28 @@ class CriteriaSetScrollArea(QScrollArea):
     """
     Criteria Set Widget.
 
-    Holds a set of filter statements to create a filter.
-    Handles adding and removing criteria from the set.
+    Holds a set of filter statements to create a filter, and the filter's name as currently entered.
+    Handles adding and removing criteria from the set, and remembers what the filter was last saved as.
     """
 
+    changed = Signal()
+
     def __init__(
-        self, parent: QWidget | None = None, set_sample: bool = False, criteria: list[Criterion] | None = None
+        self,
+        parent: QWidget | None = None,
+        set_sample: bool = False,
+        name: str = "",
+        criteria: list[Criterion] | None = None,
+        saved: bool = True,
     ) -> None:
-        """Construct a criteria set showing ``criteria``, or one blank criterion if none are given."""
+        """
+        Construct a criteria set showing ``criteria``, or one blank criterion if none are given.
+
+        ``saved`` says whether the filter is in the project as shown; if not, it stays unsaved until ``mark_saved``.
+        """
         super().__init__(parent)
+        self.name = Config["filter.sample.name"] if set_sample else name
+        self._saved: tuple[str, list[Criterion]] | None = None
         self.setWidgetResizable(True)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         dummy_widget = QWidget()
@@ -110,11 +129,14 @@ class CriteriaSetScrollArea(QScrollArea):
             self.criteria_store[sample_criteria.uuid] = sample_criteria
             self.criteria_list_layout.insertWidget(0, sample_criteria)
             self.add_criteria_button.setEnabled(False)
+            self.mark_saved(self.name, self.criteria())
             return
 
         self.add_criteria_button.clicked.connect(self.add_criteria)
         for criterion in criteria if criteria is not None else [("", "is", "")]:
             self.add_criteria().set_criterion(criterion)
+        if saved:
+            self.mark_saved(self.name, self.criteria())
 
     def add_criteria(self) -> CriteriaItemWidget:
         """Add an empty criteria to the set and return it."""
@@ -122,13 +144,28 @@ class CriteriaSetScrollArea(QScrollArea):
         self.criteria_store[new_criteria.uuid] = new_criteria
         self.criteria_list_layout.addWidget(new_criteria)
         new_criteria.criteria_delete_button.clicked.connect(self.delete_criteria(new_criteria))
+        new_criteria.changed.connect(self.changed)
         self.criteria_list_layout.addWidget(self.add_criteria_button)
         # Re-adding an existing widget just moves it to the end
+        self.changed.emit()
         return new_criteria
 
     def criteria(self) -> list[Criterion]:
         """Return every criterion in the set, in the order shown."""
         return [item.criterion() for item in self.criteria_store.values()]
+
+    def mark_saved(self, name: str, criteria: list[Criterion]) -> None:
+        """Remember that the filter was saved with ``name`` and ``criteria``."""
+        self._saved = (name, [tuple(criterion) for criterion in criteria])
+        self.changed.emit()
+
+    def is_in_project(self) -> bool:
+        """Return whether the filter has been saved into the project at all."""
+        return self._saved is not None
+
+    def is_unsaved(self) -> bool:
+        """Return whether the filter was never saved, or its name or criteria differ from what it was saved as."""
+        return self._saved != (self.name, self.criteria())
 
     def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
         """Create a callable to delete a provided criteria."""
@@ -139,6 +176,7 @@ class CriteriaSetScrollArea(QScrollArea):
             self.criteria_store.pop(criteria.uuid)
             self.criteria_list_layout.removeWidget(criteria)
             criteria.deleteLater()
+            self.changed.emit()
 
         return _delete_criteria
 
@@ -153,8 +191,10 @@ class FilterView(QWidget):
     """
 
     DEFAULT_APPLIED_TEXT = "Default Applied"
+    UNSAVED_MARKER = "*"
 
     add_filter_signal = Signal(object, str, list)
+    sync_filter_signal = Signal(object, str, list)
     remove_filter_signal = Signal(object)
     show_applied_filter_signal = Signal(str)
     show_default_applied_signal = Signal()
@@ -167,6 +207,7 @@ class FilterView(QWidget):
         # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
         # a worker thread (FilterModel/TaviProjectModel running behind their Proxy).
         self.add_filter_signal.connect(self._add_filter)
+        self.sync_filter_signal.connect(self._sync_filter)
         self.remove_filter_signal.connect(self._remove_filter)
         self.show_applied_filter_signal.connect(self._show_applied_filter)
         self.show_default_applied_signal.connect(self._show_default_applied)
@@ -207,9 +248,14 @@ class FilterView(QWidget):
         filter_controls_layout = QHBoxLayout()
         filter_controls_layout.setDirection(filter_controls_layout.Direction.RightToLeft)
 
-        self.filter_dropdown = QComboBox(editable=True, insertPolicy=QComboBox.InsertPolicy.InsertAtCurrent)
+        # The line edit renames the picked filter as the user types (see _rename_current_filter), so Enter
+        # needn't insert anything, and must not jump to another filter that happens to share the name.
+        self.filter_dropdown = QComboBox(editable=True, insertPolicy=QComboBox.InsertPolicy.NoInsert)
+        self.filter_dropdown.setDuplicatesEnabled(True)
+        self.filter_dropdown.setCompleter(None)
         self.filter_dropdown.addItem(Config["filter.sample.name"], UUID(value=Config["filter.sample.uuid"]))
         self.filter_dropdown.editTextChanged.connect(self.immutable_sample_name)
+        self.filter_dropdown.lineEdit().textEdited.connect(self._rename_current_filter)
         filter_controls_layout.addWidget(self.filter_dropdown)
 
         self.filter_del_button = QPushButton("Del")
@@ -266,31 +312,98 @@ class FilterView(QWidget):
         return self.filter_dropdown.currentData()
 
     def current_filter_name(self) -> str:
-        """Return the picked filter's name as currently entered."""
-        return self.filter_dropdown.currentText()
+        """Return the picked filter's name as currently entered, without the unsaved-changes marker."""
+        return self.filter_criteria_set_list.currentWidget().name
 
     def current_criteria(self) -> list[Criterion]:
         """Return the picked filter's criteria as currently entered."""
         return self.filter_criteria_set_list.currentWidget().criteria()
 
+    def confirm_delete_filter(self) -> bool:
+        """Ask the user to confirm deleting the picked filter; return whether they did."""
+        reply = QMessageBox.question(
+            self,
+            "Delete Filter",
+            f"Delete filter '{self.current_filter_name()}'? This cannot be undone.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        return reply == QMessageBox.StandardButton.Yes
+
     def filter_count(self) -> int:
         """Return how many filters the dropdown lists, Sample included."""
         return self.filter_dropdown.count()
 
+    def current_filter_in_project(self) -> bool:
+        """Return whether the filter picked in the dropdown has been saved into the project."""
+        return self.filter_criteria_set_list.widget(self.filter_dropdown.currentIndex()).is_in_project()
+
+    def add_unsaved_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+        """List a filter that is not in the project yet, marked unsaved, and pick it."""
+        self._list_filter(uuid, name, criteria, saved=False)
+
     def _add_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
-        """List a filter and pick it. Use ``add_filter_signal``."""
+        """List a filter newly saved to the project and pick it. Use ``add_filter_signal``."""
+        index = self._index_of(uuid)
+        if index > 0:
+            # Listed already, as an unsaved filter that has now been saved for the first time.
+            self.filter_criteria_set_list.widget(index).mark_saved(name, criteria)
+            return
+        self._list_filter(uuid, name, criteria, saved=True)
+
+    def _list_filter(self, uuid: UUID, name: str, criteria: list[Criterion], saved: bool) -> None:
+        """Add a filter to the dropdown and the criteria sets, and pick it."""
         self.filter_dropdown.addItem(name, uuid)
-        self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea(criteria=criteria))
+        criteria_set = CriteriaSetScrollArea(name=name, criteria=criteria, saved=saved)
+        self.filter_criteria_set_list.addWidget(criteria_set)
+        # Listed before the connection, so an unsaved filter gets its marker here.
+        self._show_unsaved_marker(criteria_set)
+        criteria_set.changed.connect(lambda: self._show_unsaved_marker(criteria_set))
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
+
+    def _sync_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+        """Remember what a filter was saved as, to compare the panel against. Use ``sync_filter_signal``."""
+        index = self._index_of(uuid)
+        if index <= 0:
+            return
+        self.filter_criteria_set_list.widget(index).mark_saved(name, criteria)
+
+    def _index_of(self, uuid: UUID) -> int:
+        """Return the dropdown index listing the filter ``uuid``, or -1 if none does."""
+        # Not findData: Qt compares wrapped Python objects by identity, and this uuid is an event's copy.
+        for index in range(self.filter_dropdown.count()):
+            if self.filter_dropdown.itemData(index) == uuid:
+                return index
+        return -1
+
+    def _rename_current_filter(self, text: str) -> None:
+        """Take what the user typed as the picked filter's new, unsaved name."""
+        criteria_set = self.filter_criteria_set_list.currentWidget()
+        if self.filter_dropdown.currentIndex() == 0:
+            self.filter_dropdown.lineEdit().setText(criteria_set.name)
+            return
+        # The marker shares the line edit with the name, so names can't contain it.
+        criteria_set.name = text.replace(self.UNSAVED_MARKER, "")
+        self._show_unsaved_marker(criteria_set)
+
+    def _show_unsaved_marker(self, criteria_set: CriteriaSetScrollArea) -> None:
+        """List a filter by its name, with the unsaved-changes marker if it differs from what was saved."""
+        index = self.filter_criteria_set_list.indexOf(criteria_set)
+        if index < 0:
+            return
+        text = criteria_set.name + (self.UNSAVED_MARKER if criteria_set.is_unsaved() else "")
+        if self.filter_dropdown.itemText(index) == text:
+            return
+        line_edit = self.filter_dropdown.lineEdit()
+        cursor = line_edit.cursorPosition()
+        # Resets the line edit's text, and its cursor, when this is the picked filter.
+        self.filter_dropdown.setItemText(index, text)
+        if index == self.filter_dropdown.currentIndex():
+            line_edit.setCursorPosition(min(cursor, len(criteria_set.name)))
 
     def _remove_filter(self, uuid: UUID) -> None:
         """Stop listing a filter, falling back to Sample. Use ``remove_filter_signal``."""
-        # Not findData: Qt compares wrapped Python objects by identity, and this uuid is an event's copy.
-        index = -1
-        for cursor in range(self.filter_dropdown.count()):
-            if self.filter_dropdown.itemData(cursor) == uuid:
-                index = cursor
-                break
+        index = self._index_of(uuid)
         if index <= 0:
             return
         # Pick Sample first, so removing the item doesn't briefly pick whichever filter sits next to it.
@@ -317,8 +430,6 @@ class FilterView(QWidget):
 
     def _show_applied_filter(self, name: str) -> None:
         """Name the applied filter. Use ``show_applied_filter_signal``."""
-        if self.filter_dropdown.currentText() == name:
-            self.filter_dropdown.setItemText(self.filter_dropdown.currentIndex(), name)
         if len(name) > 30:
             name = name[:30] + "..."
         self.filter_applied_friendly_name.setText(name)
