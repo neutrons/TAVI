@@ -206,7 +206,8 @@ Event lexicon
      - ``SyncPlotEvent``, ``SyncStageEvent``, ``SyncFitEvent``,
        ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
        ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
-       ``SyncRecentProjectsEvent``, ``SyncFilterValidationEvent``
+       ``SyncRecentProjectsEvent``, ``SyncFilterEvent``,
+       ``SyncFilterValidationEvent``
    * - Recompute
      - Ask the model that computes X to compute it again for display. Never
        writes to the project.
@@ -408,6 +409,10 @@ Event catalog
      - ``TaviProjectModel``
      - ``ProjectPresenter``
      - Unlist every raw scan before relisting those that pass the filters
+   * - ``SyncFilterEvent``
+     - ``FilterModel``
+     - ``FilterPresenter``
+     - A saved filter after an edit to it was saved
    * - ``SyncFilterValidationEvent``
      - ``FilterModel``
      - ``FilterPresenter``

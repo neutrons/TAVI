@@ -15,8 +15,13 @@ from tavi.meta.event.type.model_event import (
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    SyncFilterEvent,
     SyncFilterValidationEvent,
 )
+
+
+def make_criterion(key="", operator="is", value="") -> FilterCriterion:
+    return FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
 
 
 def make_filter(uuid_val="filter-001", name="Filter1", criteria=None) -> ScanFilter:
@@ -55,6 +60,7 @@ def test_init_view_is_filter_view(presenter):
     ("event_type", "handler"),
     [
         (AddFilterEvent, "handle_filter_added"),
+        (SyncFilterEvent, "handle_filter_synced"),
         (RemoveFilterEvent, "handle_filter_removed"),
         (ApplyFilterEvent, "handle_filter_applied"),
         (ClearFilterEvent, "handle_filter_cleared"),
@@ -70,29 +76,90 @@ def test_init_registers_filter_events(presenter, event_type, handler):
 # ---------------------------------------------------------------------------
 
 
-def test_new_button_saves_a_blank_filter_named_after_its_position(presenter, model):
+def test_new_button_lists_an_unsaved_blank_filter_named_after_its_position(presenter, model):
     presenter._view.filter_new_button.click()
 
-    saved = model.save_filter.call_args.args[0]
-    assert saved.name == "Filter1"
-    assert saved.criteria == [FilterCriterion(key="", operator=FilterOperator.IS, value="")]
-    assert saved.uuid != sample_filter_uuid()
+    assert presenter._view.current_filter_name() == "Filter1"
+    assert presenter._view.current_criteria() == [make_criterion()]
+    assert presenter._view.current_filter_uuid() != sample_filter_uuid()
+    assert presenter._view.filter_dropdown.currentText() == "Filter1*"
+
+
+def test_new_button_does_not_save_or_select_the_filter(presenter, model):
+    presenter._view.filter_new_button.click()
+
+    model.save_filter.assert_not_called()
+    model.select_filter.assert_not_called()
 
 
 def test_new_button_mints_a_new_uuid_each_time(presenter, model):
     presenter._view.filter_new_button.click()
+    first = presenter._view.current_filter_uuid()
     presenter._view.filter_new_button.click()
 
-    first, second = (c.args[0].uuid for c in model.save_filter.call_args_list)
-    assert first != second
+    assert presenter._view.current_filter_uuid() != first
 
 
-def test_del_button_removes_the_picked_filter(presenter, model):
+def test_new_filter_is_applied_with_its_edits(presenter, model):
+    presenter._view.filter_new_button.click()
+    item = next(iter(presenter._view.filter_criteria_set_list.currentWidget().criteria_store.values()))
+    item.criteria_key.setText("scan")
+
+    presenter._view.apply_filter_button.click()
+
+    applied = model.apply_filter.call_args.args[0]
+    assert applied.uuid == presenter._view.current_filter_uuid()
+    assert applied.name == "Filter1"
+    assert applied.criteria == [FilterCriterion(key="scan", operator=FilterOperator.IS, value="")]
+
+
+def test_new_filter_is_marked_saved_once_the_model_adds_it(presenter, model):
+    presenter._view.filter_new_button.click()
+    blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
+    uuid = presenter._view.current_filter_uuid()
+
+    announce(ScanFilter(uuid=uuid, name="Filter1", criteria=[blank]))
+
+    assert presenter._view.filter_count() == 2
+    assert presenter._view.filter_dropdown.currentText() == "Filter1"
+
+
+def test_del_button_unlists_an_unsaved_filter_without_the_model(presenter, model, monkeypatch):
+    presenter._view.filter_new_button.click()
+    monkeypatch.setattr(presenter._view, "confirm_delete_filter", lambda: True)
+
+    presenter._view.filter_del_button.click()
+
+    model.remove_filter.assert_not_called()
+    assert presenter._view.filter_count() == 1
+
+
+def test_picking_an_unsaved_filter_does_not_select_it_in_the_model(presenter, model):
+    presenter._view.filter_new_button.click()
+    presenter._view.filter_dropdown.setCurrentIndex(0)
+    model.select_filter.reset_mock()
+
+    presenter._view.filter_dropdown.setCurrentIndex(1)
+
+    model.select_filter.assert_not_called()
+
+
+def test_del_button_removes_the_picked_filter_once_confirmed(presenter, model, monkeypatch):
     announce(make_filter())
+    monkeypatch.setattr(presenter._view, "confirm_delete_filter", lambda: True)
 
     presenter._view.filter_del_button.click()
 
     model.remove_filter.assert_called_once_with(UUID(value="filter-001"))
+
+
+def test_del_button_keeps_the_filter_when_not_confirmed(presenter, model, monkeypatch):
+    announce(make_filter())
+    monkeypatch.setattr(presenter._view, "confirm_delete_filter", lambda: False)
+
+    presenter._view.filter_del_button.click()
+
+    model.remove_filter.assert_not_called()
 
 
 def test_picking_a_filter_selects_it_in_the_model(presenter, model):
@@ -139,7 +206,19 @@ def test_added_filter_is_listed_with_its_criteria(presenter):
 
     assert presenter._view.current_filter_uuid() == UUID(value="filter-001")
     assert presenter._view.current_filter_name() == "Mine"
-    assert presenter._view.current_criteria() == [("scan", ">", "10")]
+    assert presenter._view.current_criteria() == [make_criterion("scan", ">", "10")]
+
+
+def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):
+    announce(make_filter(name="Mine"))
+    item = next(iter(presenter._view.filter_criteria_set_list.currentWidget().criteria_store.values()))
+    item.criteria_value.setText("20")
+    assert presenter._view.filter_dropdown.currentText() == "Mine*"
+
+    criterion = FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="20")
+    EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria=[criterion])))
+
+    assert presenter._view.filter_dropdown.currentText() == "Mine"
 
 
 def test_removed_filter_is_unlisted(presenter):

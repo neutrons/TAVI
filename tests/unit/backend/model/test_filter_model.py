@@ -11,6 +11,7 @@ from tavi.meta.event.type.model_event import (
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    SyncFilterEvent,
     SyncFilterValidationEvent,
 )
 
@@ -69,13 +70,32 @@ def test_save_filter_writes_new_filter_into_store_and_announces_it():
     assert received == [AddFilterEvent(filter=make_filter())]
 
 
-def test_resaving_filter_replaces_it_without_announcing_again():
+def test_resaving_filter_replaces_it_without_adding_it_again():
     model = make_model_with(make_filter(value="1"))
     received = record_filter_events()
 
     model.save_filter(make_filter(value="2"))
 
     assert model._filters[UUID(value="filter-001")].criteria[0].value == "2"
+    assert received == []
+
+
+def test_resaving_filter_announces_how_it_now_stands():
+    model = make_model_with(make_filter(value="1"))
+    received = []
+    EventBroker().register(SyncFilterEvent, received.append)
+
+    model.save_filter(make_filter(value="2"))
+
+    assert received == [SyncFilterEvent(filter=make_filter(value="2"))]
+
+
+def test_saving_new_filter_does_not_sync_it():
+    received = []
+    EventBroker().register(SyncFilterEvent, received.append)
+
+    make_model_with().save_filter(make_filter())
+
     assert received == []
 
 

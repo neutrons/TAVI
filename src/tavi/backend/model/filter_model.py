@@ -12,6 +12,7 @@ from tavi.meta.event.type.model_event import (
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    SyncFilterEvent,
     SyncFilterValidationEvent,
 )
 
@@ -41,6 +42,8 @@ class FilterModel(FilterModelInterface):
         self._filters[scan_filter.uuid] = scan_filter
         if is_new:
             self._event_broker.publish(AddFilterEvent(filter=scan_filter))
+        else:
+            self._event_broker.publish(SyncFilterEvent(filter=scan_filter))
         return ModelResponse(code=ResponseCode.OK)
 
     def remove_filter(self, filter_uuid: UUID) -> ModelResponse:

@@ -39,6 +39,17 @@ class AddFilterEvent(Event):
     filter: ScanFilter
 
 
+class SyncFilterEvent(Event):
+    """
+    Announce how a saved filter stands after an edit to it was saved into the Project.
+
+    Published by ``FilterModel`` when ``save_filter`` replaces a filter already saved; a new filter is
+    announced with ``AddFilterEvent`` instead. The filter panel uses it to drop its unsaved-changes marker.
+    """
+
+    filter: ScanFilter
+
+
 class ClearRawScansEvent(Event):
     """
     Announce that no raw scan is listed any more - the first half of relisting them, paired with ``AddRawScanEvent``.
