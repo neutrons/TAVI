@@ -2,7 +2,7 @@
 
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
-from tavi.frontend.view.filter_view import Criterion, FilterView
+from tavi.frontend.view.filter_view import FilterView
 from tavi.library.data.enum.filter_operator import FilterOperator
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.meta.event.event_broker import EventBroker
@@ -47,7 +47,7 @@ class FilterPresenter(AbstractPresenter):
         """List a new filter with one blank criterion; it enters the project when first applied."""
         blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
         new_filter = ScanFilter(name=f"Filter{self._view.filter_count()}", criteria=[blank])
-        self._view.add_unsaved_filter(new_filter.uuid, new_filter.name, self._shown_criteria(new_filter))
+        self._view.add_unsaved_filter(new_filter.uuid, new_filter.name, new_filter.criteria)
 
     def handle_delete_filter(self) -> None:
         """Remove the filter picked in the dropdown, once the user confirms; the model only knows saved ones."""
@@ -73,11 +73,11 @@ class FilterPresenter(AbstractPresenter):
 
     def handle_filter_added(self, e: AddFilterEvent) -> None:
         """List a newly saved filter in the panel."""
-        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, self._shown_criteria(e.filter))
+        self._view.add_filter_signal.emit(e.filter.uuid, e.filter.name, e.filter.criteria)
 
     def handle_filter_synced(self, e: SyncFilterEvent) -> None:
         """Tell the panel what a filter was saved as, so it can mark whether edits are still unsaved."""
-        self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, self._shown_criteria(e.filter))
+        self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, e.filter.criteria)
 
     def handle_filter_removed(self, e: RemoveFilterEvent) -> None:
         """Stop listing a filter removed from the project."""
@@ -96,16 +96,10 @@ class FilterPresenter(AbstractPresenter):
         """Show why the filter cannot be applied, or that it can."""
         self._view.show_validation_errors_signal.emit(e.errors)
 
-    def _shown_criteria(self, scan_filter: ScanFilter) -> list[Criterion]:
-        """Return ``scan_filter``'s criteria the way the panel shows them."""
-        return [Criterion(key=c.key, operator=c.operator.value, value=c.value) for c in scan_filter.criteria]
-
     def _current_filter(self) -> ScanFilter:
         """Build the picked filter from what the panel currently shows."""
-        criteria = [
-            FilterCriterion(key=c.key, operator=FilterOperator(c.operator), value=c.value)
-            for c in self._view.current_criteria()
-        ]
         return ScanFilter(
-            uuid=self._view.current_filter_uuid(), name=self._view.current_filter_name(), criteria=criteria
+            uuid=self._view.current_filter_uuid(),
+            name=self._view.current_filter_name(),
+            criteria=self._view.current_criteria(),
         )

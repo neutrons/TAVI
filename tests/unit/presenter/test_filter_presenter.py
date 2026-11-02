@@ -20,6 +20,10 @@ from tavi.meta.event.type.model_event import (
 )
 
 
+def make_criterion(key="", operator="is", value="") -> FilterCriterion:
+    return FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
+
+
 def make_filter(uuid_val="filter-001", name="Filter1", criteria=None) -> ScanFilter:
     if criteria is None:
         criteria = [FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="10")]
@@ -76,7 +80,7 @@ def test_new_button_lists_an_unsaved_blank_filter_named_after_its_position(prese
     presenter._view.filter_new_button.click()
 
     assert presenter._view.current_filter_name() == "Filter1"
-    assert presenter._view.current_criteria() == [("", "is", "")]
+    assert presenter._view.current_criteria() == [make_criterion()]
     assert presenter._view.current_filter_uuid() != sample_filter_uuid()
     assert presenter._view.filter_dropdown.currentText() == "Filter1*"
 
@@ -202,7 +206,7 @@ def test_added_filter_is_listed_with_its_criteria(presenter):
 
     assert presenter._view.current_filter_uuid() == UUID(value="filter-001")
     assert presenter._view.current_filter_name() == "Mine"
-    assert presenter._view.current_criteria() == [("scan", ">", "10")]
+    assert presenter._view.current_criteria() == [make_criterion("scan", ">", "10")]
 
 
 def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):

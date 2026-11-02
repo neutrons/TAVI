@@ -74,8 +74,13 @@ Data model
   into project files.
 * Sample's uuid, name and criterion are set once in ``application.yml`` under
   ``filter.sample``. ``sample_filter()`` builds the library's copy from it, and
-  ``FilterView`` reads the same keys to list and lock its Sample entry. The view
-  never imports the library's filter module, and the two can't drift apart.
+  ``FilterView`` reads the same keys to list and lock its Sample entry, so the two
+  can't drift apart.
+* The filter panel shows and edits criteria as ``FilterCriterion`` too, rather
+  than a view-only copy of it; its operator dropdown lists ``FilterOperator``.
+  ``FilterCriterion`` checks nothing beyond the operator when built, so a
+  half-typed criterion is still one, and ``validate_filter`` reports what is
+  missing when it is applied.
 
 Saving and removing
 -------------------

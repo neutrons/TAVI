@@ -1,7 +1,7 @@
 """Filter view widget."""
 
 from collections.abc import Callable
-from typing import Any, NamedTuple
+from typing import Any
 
 from neutrons_standard.config import Config
 from qtpy.QtCore import Qt, Signal
@@ -20,15 +20,9 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.filter import FilterCriterion
 from tavi.library.data.scan import UUID, new_uuid
-
-
-class Criterion(NamedTuple):
-    """One criterion as the panel shows it."""
-
-    key: str
-    operator: str
-    value: str
 
 
 class CriteriaItemWidget(QWidget):
@@ -39,7 +33,7 @@ class CriteriaItemWidget(QWidget):
     """
 
     changed = Signal()
-    operators = ["is", "is not", "has", "has not", "=", "!=", ">", "<", ">=", "<="]
+    operators = [operator.value for operator in FilterOperator]
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Construct individual criteria."""
@@ -68,18 +62,17 @@ class CriteriaItemWidget(QWidget):
         self.criteria_operator.currentTextChanged.connect(self.changed)
         self.criteria_value.textChanged.connect(self.changed)
 
-    def set_criterion(self, criterion: Criterion) -> None:
+    def set_criterion(self, criterion: FilterCriterion) -> None:
         """Show ``criterion`` in the key, operator and value fields."""
-        key, operator, value = criterion
-        self.criteria_key.setText(key)
-        self.criteria_operator.setCurrentText(operator)
-        self.criteria_value.setText(value)
+        self.criteria_key.setText(criterion.key)
+        self.criteria_operator.setCurrentText(criterion.operator.value)
+        self.criteria_value.setText(criterion.value)
 
-    def criterion(self) -> Criterion:
+    def criterion(self) -> FilterCriterion:
         """Return the key, operator and value as currently entered."""
-        return Criterion(
+        return FilterCriterion(
             key=self.criteria_key.text(),
-            operator=self.criteria_operator.currentText(),
+            operator=FilterOperator(self.criteria_operator.currentText()),
             value=self.criteria_value.text(),
         )
 
@@ -110,7 +103,7 @@ class CriteriaSetScrollArea(QScrollArea):
         parent: QWidget | None = None,
         set_sample: bool = False,
         name: str = "",
-        criteria: list[Criterion] | None = None,
+        criteria: list[FilterCriterion] | None = None,
         saved: bool = True,
     ) -> None:
         """
@@ -120,7 +113,7 @@ class CriteriaSetScrollArea(QScrollArea):
         """
         super().__init__(parent)
         self.name = Config["filter.sample.name"] if set_sample else name
-        self._saved: tuple[str, list[Criterion]] | None = None
+        self._saved: tuple[str, list[FilterCriterion]] | None = None
         self.setWidgetResizable(True)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         dummy_widget = QWidget()
@@ -142,7 +135,9 @@ class CriteriaSetScrollArea(QScrollArea):
             return
 
         self.add_criteria_button.clicked.connect(self.add_criteria)
-        for criterion in criteria if criteria is not None else [("", "is", "")]:
+        for criterion in (
+            criteria if criteria is not None else [FilterCriterion(key="", operator=FilterOperator.IS, value="")]
+        ):
             self.add_criteria().set_criterion(criterion)
         if saved:
             self.mark_saved(self.name, self.criteria())
@@ -159,13 +154,13 @@ class CriteriaSetScrollArea(QScrollArea):
         self.changed.emit()
         return new_criteria
 
-    def criteria(self) -> list[Criterion]:
+    def criteria(self) -> list[FilterCriterion]:
         """Return every criterion in the set, in the order shown."""
         return [item.criterion() for item in self.criteria_store.values()]
 
-    def mark_saved(self, name: str, criteria: list[Criterion]) -> None:
+    def mark_saved(self, name: str, criteria: list[FilterCriterion]) -> None:
         """Remember that the filter was saved with ``name`` and ``criteria``."""
-        self._saved = (name, [Criterion(*criterion) for criterion in criteria])
+        self._saved = (name, list(criteria))
         self.changed.emit()
 
     def is_in_project(self) -> bool:
@@ -324,7 +319,7 @@ class FilterView(QWidget):
         """Return the picked filter's name as currently entered, without the unsaved-changes marker."""
         return self.filter_criteria_set_list.currentWidget().name
 
-    def current_criteria(self) -> list[Criterion]:
+    def current_criteria(self) -> list[FilterCriterion]:
         """Return the picked filter's criteria as currently entered."""
         return self.filter_criteria_set_list.currentWidget().criteria()
 
@@ -347,11 +342,11 @@ class FilterView(QWidget):
         """Return whether the filter picked in the dropdown has been saved into the project."""
         return self.filter_criteria_set_list.widget(self.filter_dropdown.currentIndex()).is_in_project()
 
-    def add_unsaved_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+    def add_unsaved_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
         """List a filter that is not in the project yet, marked unsaved, and pick it."""
         self._list_filter(uuid, name, criteria, saved=False)
 
-    def _add_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+    def _add_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
         """List a filter newly saved to the project and pick it. Use ``add_filter_signal``."""
         index = self._index_of(uuid)
         if index > 0:
@@ -360,7 +355,7 @@ class FilterView(QWidget):
             return
         self._list_filter(uuid, name, criteria, saved=True)
 
-    def _list_filter(self, uuid: UUID, name: str, criteria: list[Criterion], saved: bool) -> None:
+    def _list_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion], saved: bool) -> None:
         """Add a filter to the dropdown and the criteria sets, and pick it."""
         self.filter_dropdown.addItem(name, uuid)
         criteria_set = CriteriaSetScrollArea(name=name, criteria=criteria, saved=saved)
@@ -370,7 +365,7 @@ class FilterView(QWidget):
         criteria_set.changed.connect(lambda: self._show_unsaved_marker(criteria_set))
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
-    def _sync_filter(self, uuid: UUID, name: str, criteria: list[Criterion]) -> None:
+    def _sync_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
         """Remember what a filter was saved as, to compare the panel against. Use ``sync_filter_signal``."""
         index = self._index_of(uuid)
         if index <= 0:
