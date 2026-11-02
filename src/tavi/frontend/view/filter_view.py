@@ -1,7 +1,7 @@
 """Filter view widget."""
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, NamedTuple
 
 from neutrons_standard.config import Config
 from qtpy.QtCore import Qt, Signal
@@ -22,8 +22,13 @@ from qtpy.QtWidgets import (
 
 from tavi.library.data.scan import UUID, new_uuid
 
-Criterion = tuple[str, str, str]
-"""One criterion as the panel shows it: (key, operator, value)."""
+
+class Criterion(NamedTuple):
+    """One criterion as the panel shows it."""
+
+    key: str
+    operator: str
+    value: str
 
 
 class CriteriaItemWidget(QWidget):
@@ -72,7 +77,11 @@ class CriteriaItemWidget(QWidget):
 
     def criterion(self) -> Criterion:
         """Return the key, operator and value as currently entered."""
-        return self.criteria_key.text(), self.criteria_operator.currentText(), self.criteria_value.text()
+        return Criterion(
+            key=self.criteria_key.text(),
+            operator=self.criteria_operator.currentText(),
+            value=self.criteria_value.text(),
+        )
 
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
@@ -156,7 +165,7 @@ class CriteriaSetScrollArea(QScrollArea):
 
     def mark_saved(self, name: str, criteria: list[Criterion]) -> None:
         """Remember that the filter was saved with ``name`` and ``criteria``."""
-        self._saved = (name, [tuple(criterion) for criterion in criteria])
+        self._saved = (name, [Criterion(*criterion) for criterion in criteria])
         self.changed.emit()
 
     def is_in_project(self) -> bool:

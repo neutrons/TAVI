@@ -2,7 +2,7 @@
 
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
-from tavi.frontend.view.filter_view import FilterView
+from tavi.frontend.view.filter_view import Criterion, FilterView
 from tavi.library.data.enum.filter_operator import FilterOperator
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.meta.event.event_broker import EventBroker
@@ -96,15 +96,15 @@ class FilterPresenter(AbstractPresenter):
         """Show why the filter cannot be applied, or that it can."""
         self._view.show_validation_errors_signal.emit(e.errors)
 
-    def _shown_criteria(self, scan_filter: ScanFilter) -> list[tuple[str, str, str]]:
+    def _shown_criteria(self, scan_filter: ScanFilter) -> list[Criterion]:
         """Return ``scan_filter``'s criteria the way the panel shows them."""
-        return [(c.key, c.operator.value, c.value) for c in scan_filter.criteria]
+        return [Criterion(key=c.key, operator=c.operator.value, value=c.value) for c in scan_filter.criteria]
 
     def _current_filter(self) -> ScanFilter:
         """Build the picked filter from what the panel currently shows."""
         criteria = [
-            FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
-            for key, operator, value in self._view.current_criteria()
+            FilterCriterion(key=c.key, operator=FilterOperator(c.operator), value=c.value)
+            for c in self._view.current_criteria()
         ]
         return ScanFilter(
             uuid=self._view.current_filter_uuid(), name=self._view.current_filter_name(), criteria=criteria
