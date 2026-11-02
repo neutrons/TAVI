@@ -22,9 +22,9 @@ def make_criterion(key="scan", operator=FilterOperator.GREATER_EQUAL, value="0")
     return FilterCriterion(key=key, operator=operator, value=value)
 
 
-def make_filter(*criteria, name="Filter") -> ScanFilter:
+def make_filter(*criteria, name="Filter", union=True) -> ScanFilter:
     #TODO 18225: Add whole filter modifier
-    return ScanFilter(name=name, criteria=list(criteria))
+    return ScanFilter(name=name, criteria=list(criteria), criteria_union=union)
 
 
 # ---------------------------------------------------------------------------
@@ -113,14 +113,17 @@ def test_non_numeric_value_for_text_operator_is_valid():
 # ---------------------------------------------------------------------------
 
 
-#TODO 18225: Make this test for AND and make similar for OR
-def test_filter_matches_only_when_every_criterion_does():
+def test_filter_union_on_mixed_criterion():
     scan = make_raw_scan({"scan": "5", "samplename": "MnF3"})
     passing = make_criterion("scan", FilterOperator.GREATER, "1")
     failing = make_criterion("samplename", FilterOperator.IS, "NiO")
 
-    assert make_filter(passing).matches(scan) is True
-    assert make_filter(passing, failing).matches(scan) is False
+    assert make_filter(passing, union=True).matches(scan) is True
+    assert make_filter(passing, failing, union=True).matches(scan) is False
+
+    assert make_filter(passing, union=False).matches(scan) is True
+    assert make_filter(failing, union=False).matches(scan) is False
+    assert make_filter(passing, failing, union=False).matches(scan) is True
 
 
 def test_filter_without_criteria_matches_everything():

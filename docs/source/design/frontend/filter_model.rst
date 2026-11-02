@@ -7,8 +7,9 @@ Overview
 A filter narrows which raw scans the Project Browser lists. It is a named set of
 criteria, each comparing one metadata entry of a scan (``key``) against a value
 with an operator (``is``, ``is not``, ``has``, ``has not``, ``=``, ``!=``,
-``>``, ``<``, ``>=``, ``<=``). A scan passes a filter when it satisfies every
-criterion. Plots and fits are never filtered.
+``>``, ``<``, ``>=``, ``<=``). A scan passes a filter with union enabled when it satisfies every
+criterion. A scan passes a filter without union enabled when it satisfies any criterion.
+Plots and fits are never filtered.
 
 Saved filters live in ``TaviData.filters`` beside the scans, plots and fits, so
 they are saved with the project like everything else, even though the project
@@ -39,6 +40,7 @@ Data model
             +uuid UUID
             +name str
             +criteria list~FilterCriterion~
+            +criteria_union bool
             +validate_filter() list~str~
             +matches(scan) bool
         }

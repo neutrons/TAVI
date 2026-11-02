@@ -84,6 +84,7 @@ class ScanFilter(BaseModel):
     uuid: UUID = UUIDFactory()
     name: str
     criteria: list[FilterCriterion] = Field(default_factory=list)
+    criteria_union: bool = True
     # TODO 18225: Add whole filter modifying properties
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -97,9 +98,10 @@ class ScanFilter(BaseModel):
 
     def matches(self, scan: Scan) -> bool:
         """Return whether ``scan``'s metadata satisfies every criterion; a filter without criteria passes all."""
-        # TODO 18225: Toggle between all and any for AND/OR whole filter criteria
         # TODO 18225: Feed scan to matches
-        return all(criterion.matches(scan.metadata.data) for criterion in self.criteria)
+        if self.criteria_union:
+            return all(criterion.matches(scan.metadata.data) for criterion in self.criteria)
+        return any(criterion.matches(scan.metadata.data) for criterion in self.criteria)
 
 
 def sample_filter_uuid() -> UUID:
