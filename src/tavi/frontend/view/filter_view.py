@@ -1,7 +1,7 @@
 """Filter view widget."""
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 from neutrons_standard.config import Config
 from qtpy.QtCore import Qt, Signal
@@ -14,6 +14,7 @@ from qtpy.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QRadioButton,
     QScrollArea,
     QStackedWidget,
     QVBoxLayout,
@@ -93,6 +94,9 @@ class CriteriaItemWidget(QWidget):
         self.criteria_delete_button.setEnabled(False)
 
 
+FilterSaveState = tuple[str, bool, list[FilterCriterion]]
+
+
 class CriteriaSetScrollArea(QScrollArea):
     """
     Criteria Set Widget.
@@ -108,28 +112,42 @@ class CriteriaSetScrollArea(QScrollArea):
         parent: QWidget | None = None,
         set_sample: bool = False,
         name: str = "",
+        criteria_union: bool = True,
         criteria: list[FilterCriterion] | None = None,
         saved: bool = True,
     ) -> None:
         """
-        Construct a criteria set showing ``criteria``, or one blank criterion if none are given.
+        Construct a criteria set showing join controls, ``criteria``, or one blank criterion if none are given.
 
         ``saved`` says whether the filter is in the project as shown; if not, it stays unsaved until ``mark_saved``.
         """
-        # TODO 18225: Add whole filter operator initialization
         super().__init__(parent)
         self.name = Config["filter.sample.name"] if set_sample else name
-        self._saved: tuple[str, list[FilterCriterion]] | None = None
+        self._saved: FilterSaveState | None = None
         self.setWidgetResizable(True)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         dummy_widget = QWidget()
         self.setWidget(dummy_widget)
-        # TODO 18225: Add whole filter operators
-        # One for AND/OR between criterion
-        # One for Partial/Full match for columnar data - may not be implemented immediately
         self.criteria_list_layout = QVBoxLayout(dummy_widget)
         self.criteria_list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+        # Criteria Union Controls
+        filter_union_controls_layout = QHBoxLayout()
+
+        filter_union_label = QLabel("Criteria Operator:")
+        filter_union_controls_layout.addWidget(filter_union_label)
+
+        self.filter_union_all = QRadioButton("ALL")
+        self.filter_union_all.setChecked(criteria_union)
+        filter_union_controls_layout.addWidget(self.filter_union_all)
+
+        self.filter_union_any = QRadioButton("ANY")
+        self.filter_union_any.setChecked(not criteria_union)
+        filter_union_controls_layout.addWidget(self.filter_union_any)
+
+        self.criteria_list_layout.insertLayout(0, filter_union_controls_layout)
+
+        # Criteria Controls
         self.criteria_store = dict()
         self.add_criteria_button = QPushButton("+")
         self.criteria_list_layout.addWidget(self.add_criteria_button)
@@ -138,18 +156,24 @@ class CriteriaSetScrollArea(QScrollArea):
             sample_criteria = CriteriaItemWidget()
             sample_criteria.set_sample()
             self.criteria_store[sample_criteria.uuid] = sample_criteria
-            self.criteria_list_layout.insertWidget(0, sample_criteria)
+            self.criteria_list_layout.insertWidget(1, sample_criteria)
+            self.filter_union_all.setChecked(True)
+            self.filter_union_any.setChecked(False)
+            self.filter_union_all.setEnabled(False)
+            self.filter_union_any.setEnabled(False)
             self.add_criteria_button.setEnabled(False)
-            self.mark_saved(self.name, self.criteria())
+            self.mark_saved(self.name, True, self.criteria())
             return
 
         self.add_criteria_button.clicked.connect(self.add_criteria)
+        self.filter_union_all.toggled.connect(self.changed)
+        self.filter_union_any.toggled.connect(self.changed)
         for criterion in (
             criteria if criteria is not None else [FilterCriterion(key="", operator=FilterOperator.IS, value="")]
         ):
             self.add_criteria().set_criterion(criterion)
         if saved:
-            self.mark_saved(self.name, self.criteria())
+            self.mark_saved(self.name, criteria_union, self.criteria())
 
     def add_criteria(self) -> CriteriaItemWidget:
         """Add an empty criteria to the set and return it."""
@@ -167,9 +191,13 @@ class CriteriaSetScrollArea(QScrollArea):
         """Return every criterion in the set, in the order shown."""
         return [item.criterion() for item in self.criteria_store.values()]
 
-    def mark_saved(self, name: str, criteria: list[FilterCriterion]) -> None:
+    def criteria_union(self) -> bool:
+        """Return criteria union setting from radio button state."""
+        return self.filter_union_all.isChecked()
+
+    def mark_saved(self, name: str, criteria_union: bool, criteria: list[FilterCriterion]) -> None:
         """Remember that the filter was saved with ``name`` and ``criteria``."""
-        self._saved = (name, list(criteria))
+        self._saved = (name, criteria_union, list(criteria))
         self.changed.emit()
 
     def is_in_project(self) -> bool:
@@ -178,7 +206,8 @@ class CriteriaSetScrollArea(QScrollArea):
 
     def is_unsaved(self) -> bool:
         """Return whether the filter was never saved, or its name or criteria differ from what it was saved as."""
-        return self._saved != (self.name, self.criteria())
+        filter_state: FilterSaveState = (self.name, self.criteria_union(), self.criteria())
+        return self._saved != filter_state
 
     def delete_criteria(self, criteria: CriteriaItemWidget) -> Callable:
         """Create a callable to delete a provided criteria."""
@@ -194,6 +223,22 @@ class CriteriaSetScrollArea(QScrollArea):
         return _delete_criteria
 
 
+class CriteriaStack(QStackedWidget):
+    """Convenience implementation to better track typing."""
+
+    def addWidget(self, w: CriteriaSetScrollArea) -> int:
+        """Passthrough call with convenience typing."""
+        return super().addWidget(w)
+
+    def currentWidget(self) -> CriteriaSetScrollArea:
+        """Passthrough call with convenience typing."""
+        return cast(CriteriaSetScrollArea, super().currentWidget())
+
+    def widget(self, arg__1: int) -> CriteriaSetScrollArea:
+        """Passthrough call with convenience typing."""
+        return cast(CriteriaSetScrollArea, super().widget(arg__1))
+
+
 class FilterView(QWidget):
     """
     Filter panel widget.
@@ -206,8 +251,8 @@ class FilterView(QWidget):
     DEFAULT_APPLIED_TEXT = "Default Applied"
     UNSAVED_MARKER = "*"
 
-    add_filter_signal = Signal(object, str, list)
-    sync_filter_signal = Signal(object, str, list)
+    add_filter_signal = Signal(object, str, bool, list)
+    sync_filter_signal = Signal(object, str, bool, list)
     remove_filter_signal = Signal(object)
     show_applied_filter_signal = Signal(str)
     show_default_applied_signal = Signal()
@@ -288,7 +333,7 @@ class FilterView(QWidget):
         # ---
         # Criteria Controls
         # ---
-        self.filter_criteria_set_list = QStackedWidget()
+        self.filter_criteria_set_list = CriteriaStack()
         self.filter_criteria_set_list.addWidget(CriteriaSetScrollArea(set_sample=True))
         self.filter_dropdown.currentIndexChanged.connect(self.propagate_index_change)
 
@@ -330,6 +375,10 @@ class FilterView(QWidget):
         """Return the picked filter's name as currently entered, without the unsaved-changes marker."""
         return self.filter_criteria_set_list.currentWidget().name
 
+    def current_criteria_union(self) -> bool:
+        """Return the picked filter's criteria union choice."""
+        return self.filter_criteria_set_list.currentWidget().criteria_union()
+
     def current_criteria(self) -> list[FilterCriterion]:
         """Return the picked filter's criteria as currently entered."""
         return self.filter_criteria_set_list.currentWidget().criteria()
@@ -353,36 +402,37 @@ class FilterView(QWidget):
         """Return whether the filter picked in the dropdown has been saved into the project."""
         return self.filter_criteria_set_list.widget(self.filter_dropdown.currentIndex()).is_in_project()
 
-    def add_unsaved_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
+    def add_unsaved_filter(self, uuid: UUID, name: str, criteria_union: bool, criteria: list[FilterCriterion]) -> None:
         """List a filter that is not in the project yet, marked unsaved, and pick it."""
-        self._list_filter(uuid, name, criteria, saved=False)
+        self._list_filter(uuid, name, criteria_union, criteria, saved=False)
 
-    def _add_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
+    def _add_filter(self, uuid: UUID, name: str, criteria_union: bool, criteria: list[FilterCriterion]) -> None:
         """List a filter newly saved to the project and pick it. Use ``add_filter_signal``."""
         index = self._index_of(uuid)
         if index > 0:
             # Listed already, as an unsaved filter that has now been saved for the first time.
-            self.filter_criteria_set_list.widget(index).mark_saved(name, criteria)
+            self.filter_criteria_set_list.widget(index).mark_saved(name, criteria_union, criteria)
             return
-        self._list_filter(uuid, name, criteria, saved=True)
+        self._list_filter(uuid, name, criteria_union, criteria, saved=True)
 
-    def _list_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion], saved: bool) -> None:
+    def _list_filter(
+        self, uuid: UUID, name: str, criteria_union: bool, criteria: list[FilterCriterion], saved: bool
+    ) -> None:
         """Add a filter to the dropdown and the criteria sets, and pick it."""
         self.filter_dropdown.addItem(name, uuid)
-        criteria_set = CriteriaSetScrollArea(name=name, criteria=criteria, saved=saved)
+        criteria_set = CriteriaSetScrollArea(name=name, criteria_union=criteria_union, criteria=criteria, saved=saved)
         self.filter_criteria_set_list.addWidget(criteria_set)
         # Listed before the connection, so an unsaved filter gets its marker here.
         self._show_unsaved_marker(criteria_set)
         criteria_set.changed.connect(lambda: self._show_unsaved_marker(criteria_set))
-        # TODO 18225: Add support for whole filter operators
         self.filter_dropdown.setCurrentIndex(self.filter_dropdown.count() - 1)
 
-    def _sync_filter(self, uuid: UUID, name: str, criteria: list[FilterCriterion]) -> None:
+    def _sync_filter(self, uuid: UUID, name: str, criteria_union: bool, criteria: list[FilterCriterion]) -> None:
         """Remember what a filter was saved as, to compare the panel against. Use ``sync_filter_signal``."""
         index = self._index_of(uuid)
         if index <= 0:
             return
-        self.filter_criteria_set_list.widget(index).mark_saved(name, criteria)
+        self.filter_criteria_set_list.widget(index).mark_saved(name, criteria_union, criteria)
 
     def _index_of(self, uuid: UUID) -> int:
         """Return the dropdown index listing the filter ``uuid``, or -1 if none does."""
