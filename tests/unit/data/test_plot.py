@@ -180,3 +180,61 @@ def test_series_plotted_names_fall_back_to_the_fields_as_typed():
 
     assert series.plotted_y_name == "en"
     assert series.plotted_normalized_by == "monitor"
+
+
+# ---------------------------------------------------------------------------
+# display_name
+# ---------------------------------------------------------------------------
+
+
+def test_plot_display_name_is_derived_from_its_series_when_unnamed():
+    plot = make_plot(series=[make_series(friendly_name="run1")])
+
+    assert plot.name is None
+    assert plot.display_name == "run1_Plot"
+
+
+def test_plot_display_name_joins_every_run_it_covers():
+    plot = make_plot(series=[make_series(friendly_name="run1"), make_series(friendly_name="run2")])
+
+    assert plot.display_name == "run1_run2_Plot"
+
+
+def test_plot_display_name_falls_back_to_the_scan_name_like_run_name_does():
+    plot = make_plot(series=[make_series(scan_name="scan0001", friendly_name=None)])
+
+    assert plot.display_name == "scan0001_Plot"
+
+
+def test_plot_display_name_is_the_users_name_once_it_has_one():
+    plot = make_plot(series=[make_series(friendly_name="run1")]).model_copy(update={"name": "Bragg peak"})
+
+    assert plot.display_name == "Bragg peak"
+
+
+def test_renamed_plot_keeps_its_name_when_a_scan_is_dropped():
+    """Renaming is one-way: losing a series must not revert a plot to a derived name."""
+    plot = Plot(
+        series=[
+            make_series(friendly_name="run1", source_scan_uuid=UUID(value="scan-001")),
+            make_series(friendly_name="run2", source_scan_uuid=UUID(value="scan-002")),
+        ],
+        name="Bragg peak",
+    )
+
+    surviving = plot.without_scans({UUID(value="scan-002")})
+
+    assert surviving.display_name == "Bragg peak"
+
+
+def test_unnamed_plot_is_renamed_after_the_runs_it_still_covers():
+    plot = Plot(
+        series=[
+            make_series(friendly_name="run1", source_scan_uuid=UUID(value="scan-001")),
+            make_series(friendly_name="run2", source_scan_uuid=UUID(value="scan-002")),
+        ]
+    )
+
+    surviving = plot.without_scans({UUID(value="scan-002")})
+
+    assert surviving.display_name == "run1_Plot"

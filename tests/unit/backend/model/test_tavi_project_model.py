@@ -35,6 +35,7 @@ from tavi.meta.event.type.model_event import (
     RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
+    SyncItemNameEvent,
     SyncRecentProjectsEvent,
 )
 from tavi.meta.event.type.presenter_event import (
@@ -631,6 +632,159 @@ def test_handle_save_plot_event_friendly_name_concatenates_multiple_run_names(mo
     EventBroker().publish(SavePlotEvent(plot=plot))
 
     assert received[0].friendly_name == "run1_run2_Plot"
+
+
+# ---------------------------------------------------------------------------
+# rename_item
+# ---------------------------------------------------------------------------
+
+
+def test_rename_item_stores_a_plots_new_name(model):
+    plot = make_plot()
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    model.rename_item(plot.uuid, "Bragg peak")
+
+    assert model.tavi_data.plots[plot.uuid].name == "Bragg peak"
+    assert model.tavi_data.plots[plot.uuid].display_name == "Bragg peak"
+
+
+def test_rename_item_stores_a_fits_new_name(model):
+    fit = make_fit_entry()
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=fit.members))
+
+    model.rename_item(fit.uuid, "Gaussian over run1")
+
+    assert model.tavi_data.fits[fit.uuid].name == "Gaussian over run1"
+
+
+def test_rename_item_publishes_sync_item_name_event_for_a_plot(model):
+    plot = make_plot()
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    model.rename_item(plot.uuid, "Bragg peak")
+
+    assert len(received) == 1
+    assert received[0].uuid == plot.uuid
+    assert received[0].friendly_name == "Bragg peak"
+
+
+def test_rename_item_publishes_the_same_event_for_a_fit(model):
+    """Plots and fits share one carrier - a renamed row is relabelled the same way either way."""
+    fit = make_fit_entry()
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=fit.members))
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    model.rename_item(fit.uuid, "Gaussian over run1")
+
+    assert len(received) == 1
+    assert received[0].uuid == fit.uuid
+    assert received[0].friendly_name == "Gaussian over run1"
+
+
+def test_rename_item_leaves_a_plots_series_untouched(model):
+    plot = make_plot(series=[make_series("run1"), make_series("run2")])
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    model.rename_item(plot.uuid, "Bragg peak")
+
+    assert model.tavi_data.plots[plot.uuid].series == plot.series
+
+
+def test_rename_item_leaves_a_fits_members_untouched(model):
+    fit = make_fit_entry()
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=fit.members))
+    before = model.tavi_data.fits[fit.uuid].members
+
+    model.rename_item(fit.uuid, "Gaussian over run1")
+
+    assert model.tavi_data.fits[fit.uuid].members == before
+
+
+def test_rename_item_trims_surrounding_whitespace(model):
+    plot = make_plot()
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    model.rename_item(plot.uuid, "  Bragg peak  ")
+
+    assert model.tavi_data.plots[plot.uuid].name == "Bragg peak"
+    assert received[0].friendly_name == "Bragg peak"
+
+
+def test_rename_item_returns_ok(model):
+    plot = make_plot()
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    assert model.rename_item(plot.uuid, "Bragg peak").code == ResponseCode.OK
+
+
+@pytest.mark.parametrize("blank", ["", "   "])
+def test_rename_item_rejects_a_blank_name(model, blank):
+    """A blank name would mean reverting to the derived one, which renaming does not offer."""
+    plot = make_plot(series=[make_series("run1")])
+    EventBroker().publish(SavePlotEvent(plot=plot))
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    response = model.rename_item(plot.uuid, blank)
+
+    assert response.code == ResponseCode.ERROR
+    assert model.tavi_data.plots[plot.uuid].name is None
+    assert model.tavi_data.plots[plot.uuid].display_name == "run1_Plot"
+    assert received == []
+
+
+def test_rename_item_rejects_an_unknown_uuid(model):
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    response = model.rename_item(UUID(value="no-such-item"), "Bragg peak")
+
+    assert response.code == ResponseCode.ERROR
+    assert received == []
+
+
+def test_rename_item_refuses_a_raw_scan(model):
+    """A raw scan is named by the file it came from; renaming it would only disagree with its data."""
+    scan = make_raw_scan()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    response = model.rename_item(scan.uuid, "Bragg peak")
+
+    assert response.code == ResponseCode.ERROR
+    assert model.tavi_data.raw_scans[scan.uuid].tavimeta.friendly_name == "test_scan"
+    assert received == []
+
+
+def test_renamed_plot_keeps_its_name_when_saved_again(model):
+    """Restaging and resaving a renamed plot must not relabel it after its runs."""
+    plot = make_plot(series=[make_series("run1")])
+    EventBroker().publish(SavePlotEvent(plot=plot))
+    model.rename_item(plot.uuid, "Bragg peak")
+    renamed = model.tavi_data.plots[plot.uuid]
+
+    received = []
+    EventBroker().register(AddPlotEvent, received.append)
+    EventBroker().publish(SavePlotEvent(plot=renamed))
+
+    assert received[0].friendly_name == "Bragg peak"
+
+
+def test_renamed_fit_keeps_its_name_when_refit(model):
+    """Refitting a member must not relabel the fit after its runs again."""
+    fit = make_fit_entry()
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=fit.members))
+    model.rename_item(fit.uuid, "Gaussian over run1")
+
+    EventBroker().publish(SaveFitEvent(fit_uuid=fit.uuid, members=fit.members))
+
+    assert model.tavi_data.fits[fit.uuid].name == "Gaussian over run1"
 
 
 # ---------------------------------------------------------------------------

@@ -227,7 +227,9 @@ class FilterView(QWidget):
         # ---
         # Upper Filter Controls
         # ---
-        filter_header_layout = QHBoxLayout()
+        # Stacked, not side by side: on one row the two groups' minimum widths add up and pin the
+        # whole left column open at ~600px, well past the width the splitter is asked to give it.
+        filter_header_layout = QVBoxLayout()
 
         filter_applied_layout = QHBoxLayout()
         filter_applied_layout.setDirection(filter_applied_layout.Direction.LeftToRight)

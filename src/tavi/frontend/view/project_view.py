@@ -6,6 +6,7 @@ from qtpy.QtCore import QItemSelection, QModelIndex, QObject, QPersistentModelIn
 from qtpy.QtGui import QColor, QFont, QStandardItem, QStandardItemModel
 from qtpy.QtWidgets import (
     QAbstractItemView,
+    QInputDialog,
     QMenu,
     QStyle,
     QTreeView,
@@ -29,6 +30,7 @@ class ProjectView(QWidget):
     add_plot_signal = Signal(object, str, str)
     add_fit_signal = Signal(object, str, str)
     remove_item_signal = Signal(object)
+    rename_item_signal = Signal(object, str)
     clear_raw_scans_signal = Signal()
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
@@ -60,6 +62,7 @@ class ProjectView(QWidget):
         self.add_plot_signal.connect(self.tree_widget.add_plot)
         self.add_fit_signal.connect(self.tree_widget.add_fit)
         self.remove_item_signal.connect(self.tree_widget.remove_item)
+        self.rename_item_signal.connect(self.tree_widget.rename_item)
         self.clear_raw_scans_signal.connect(self.tree_widget.clear_raw_scans)
 
     def hookup_select_signal(self, callback: Callable) -> None:
@@ -70,9 +73,17 @@ class ProjectView(QWidget):
         """Connect the tree's removal request signal to callback."""
         self.tree_widget.remove_requested.connect(callback)
 
+    def hookup_rename_signal(self, callback: Callable) -> None:
+        """Connect the tree's rename request signal to callback."""
+        self.tree_widget.rename_requested.connect(callback)
+
     def remove_item(self, uuid: UUID) -> None:
         """Remove an item from the view, from any thread."""
         self.remove_item_signal.emit(uuid)
+
+    def rename_item(self, uuid: UUID, name: str) -> None:
+        """Relabel an item already in the view, from any thread."""
+        self.rename_item_signal.emit(uuid, name)
 
     def get_selected_items(self) -> list[UUID]:
         """Get list of selected item UUIDs."""
@@ -156,6 +167,9 @@ class TreeViewWidget(QWidget):
         Emitted with the ``list[UUID]`` the user asked to remove. The tree does not delete
         the rows itself — it waits for the model to confirm via ``remove_item()``, so the
         tree can never show a different set of scans than the backend actually holds.
+    rename_requested : Signal(object, str)
+        Emitted with the ``UUID`` and the new name the user typed. As with removal, the row
+        keeps its old label until the model confirms via ``rename_item()``.
 
     Parameters
     ----------
@@ -167,9 +181,13 @@ class TreeViewWidget(QWidget):
     selected_signal = Signal()
     highlighted_scan_changed = Signal(str)
     remove_requested = Signal(list)
+    rename_requested = Signal(object, str)
 
     # The fixed top-level folders, created at startup and never removed even when emptied.
     ROOT_PATHS = ("/Raw", "/Combined", "/Fits", "/Plots")
+
+    # The roots whose rows hold a name of the project's own making, and so one a user may replace.
+    RENAMEABLE_ROOTS = ("/Plots", "/Fits")
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -232,11 +250,20 @@ class TreeViewWidget(QWidget):
         to_delete = selected if selected else ([index] if index.isValid() and index.parent().isValid() else [])
 
         menu = QMenu()
+        rename_action = None
         delete_action = None
+        # Only plots can be renamed; a scan is named by its file and a fit by the runs it covers.
+        rename_target = self._rename_target(to_delete)
+        if rename_target is not None:
+            rename_action = menu.addAction("Rename...")
         if to_delete:
             delete_action = menu.addAction("Remove Item")
 
         action = menu.exec(self.treeView.viewport().mapToGlobal(position))
+
+        if action and action is rename_action:
+            self._prompt_rename(rename_target)
+            return
 
         if action and action is delete_action:
             # Convert to persistent indexes so earlier removals don't invalidate later ones
@@ -254,6 +281,44 @@ class TreeViewWidget(QWidget):
             # remove_item() — the tree never deletes state the backend still holds.
             if uuids:
                 self.remove_requested.emit(uuids)
+
+    def _rename_target(self, indexes: list[QModelIndex]) -> Optional[QModelIndex]:
+        """Return the single plot or fit row the menu may offer to rename, else None."""
+        if len(indexes) != 1:
+            return None
+        index = indexes[0]
+        # A folder carries no uuid, and a raw scan is named by the file it was loaded from, so
+        # renaming one would only disagree with its own data. Which root a row sits under is
+        # what tells the three apart.
+        if not self.treeModel.data(index, Qt.UserRole + 1):
+            return None
+        if self._root_of(index) not in [self.path_map[root] for root in self.RENAMEABLE_ROOTS]:
+            return None
+        return index
+
+    def _root_of(self, index: QModelIndex) -> Optional[StandardItem]:
+        """Return the fixed top-level folder an index sits under."""
+        item = self.treeModel.itemFromIndex(index)
+        while item is not None and item.parent() is not None:
+            item = item.parent()
+        return item
+
+    def _prompt_rename(self, index: QModelIndex) -> None:
+        """Ask for an item's new name and pass it on - the row keeps its label until the model confirms."""
+        current = self.treeModel.itemFromIndex(index).text().removeprefix("*")
+        name, accepted = QInputDialog.getText(self, "Rename", "Name:", text=current)
+        if not accepted:
+            return
+        name = name.strip()
+        # An emptied field is how a user backs out of a dialog they already opened.
+        if name and name != current:
+            self.rename_requested.emit(self.treeModel.data(index, Qt.UserRole + 1)["id"], name)
+
+    def rename_item(self, uuid: UUID, name: str) -> None:
+        """Relabel the entry for uuid once the model confirms its new name."""
+        item = self.uuid_map.get(uuid)
+        if item is not None:
+            item.setText(f"*{name}")
 
     def _collect_uuids(self, index: QModelIndex) -> list[UUID]:
         """Collect the uuids carried by index and every item beneath it, depth-first."""
@@ -373,6 +438,8 @@ class TreeViewWidget(QWidget):
         return StandardItem(value, 16, set_bold=False)
 
     def _new_file(self, value: str, uuid: UUID) -> StandardItem:
+        # Every file row is labelled with exactly one leading "*", here and in rename_item, so the
+        # name can always be read back off the label.
         item = self._new_item(f"*{value}")
         item.setIcon(self.file_icon)
         item.setData({"id": uuid}, Qt.UserRole + 1)

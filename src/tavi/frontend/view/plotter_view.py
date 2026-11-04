@@ -122,6 +122,9 @@ class Plot1DView(QWidget):
         self.preset_value_edit = QLineEdit("1")
 
         controls = QFormLayout()
+        # Lets a field drop below its label instead of holding the whole panel open at the width
+        # of label + field; the "Current Plot:" strip alone is ~600px wide.
+        controls.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapLongRows)
         controls.addRow("Y-Axis:", self.y_axis_combo)
         controls.addRow("X-Axis:", self.x_axis_combo)
         controls.addRow("Rebining:", rebin_grid)
@@ -179,8 +182,9 @@ class Plot1DView(QWidget):
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 
+        # plot_controls is already owned by the "Current Plot:" form row above; adding it here too
+        # was rejected by Qt with a warning and did nothing.
         layout.addLayout(controls)
-        layout.addLayout(plot_controls)
 
         # canvas
         fig = Figure(figsize=(5, 4), dpi=100)

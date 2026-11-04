@@ -32,6 +32,7 @@ from tavi.meta.event.type.model_event import (
     RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
+    SyncItemNameEvent,
     SyncRecentProjectsEvent,
 )
 from tavi.meta.event.type.presenter_event import (
@@ -180,9 +181,25 @@ class TaviProjectModel(TaviProjectInterface):
     def _handle_save_plot_event(self, e: SavePlotEvent) -> None:
         """Record a presenter-submitted plot in ``tavi_data`` and announce it."""
         self.tavi_data.plots[e.plot.uuid] = e.plot
-        run_names = "_".join(series.run_name for series in e.plot.series)
-        friendly_name = f"{run_names}_Plot"
-        self._event_broker.publish(AddPlotEvent(uuid=e.plot.uuid, friendly_name=friendly_name, friendly_path=""))
+        self._event_broker.publish(AddPlotEvent(uuid=e.plot.uuid, friendly_name=e.plot.display_name, friendly_path=""))
+
+    def rename_item(self, uuid: UUID, name: str) -> ModelResponse:
+        """Give a plot or fit a name of the user's choosing, and announce what it is now called."""
+        name = name.strip()
+        # A blank name would read as "go back to the derived name", which renaming does not offer.
+        if not name:
+            return ModelResponse(code=ResponseCode.ERROR, message="A name cannot be blank.")
+
+        # Only TaviData knows what type a tree uuid is, which is why the tree asks to rename an
+        # item and this model narrows it - the same split as FocusEvent.
+        for store in (self.tavi_data.plots, self.tavi_data.fits):
+            item = store.get(uuid)
+            if item is not None:
+                store[uuid] = item.model_copy(update={"name": name})
+                self._event_broker.publish(SyncItemNameEvent(uuid=uuid, friendly_name=name))
+                return ModelResponse(code=ResponseCode.OK)
+
+        return ModelResponse(code=ResponseCode.ERROR, message=f"No plot or fit {uuid.value} to rename.")
 
     def _handle_save_fit_event(self, e: SaveFitEvent) -> None:
         """

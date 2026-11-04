@@ -20,6 +20,10 @@ class TaviProjectInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def rename_item(self, uuid: UUID, name: str) -> None:
+        """Give a plot or fit a name of the user's choosing."""
+
+    @abc.abstractmethod
     def undo_fit_member(self, fit_uuid: UUID, source_scan_uuid: UUID) -> None:
         """Roll one member of a fit back to the state before its last save."""
 

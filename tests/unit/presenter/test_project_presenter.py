@@ -13,6 +13,7 @@ from tavi.meta.event.type.model_event import (
     RemovePlotEvent,
     ClearRawScansEvent,
     RemoveRawScanEvent,
+    SyncItemNameEvent,
 )
 from tavi.meta.event.type.presenter_event import FocusEvent
 
@@ -21,7 +22,7 @@ def _make_presenter():
     """Build a ProjectPresenter with mock view and model."""
     view = MagicMock()
     model = MagicMock()
-    with patch.object(ProjectPresenter, 'init_view', lambda self: setattr(self, '_view', view)):
+    with patch.object(ProjectPresenter, "init_view", lambda self: setattr(self, "_view", view)):
         presenter = ProjectPresenter(model)
     return presenter, view, model
 
@@ -277,3 +278,56 @@ def test_clear_raw_scans_event_clears_only_raw_scans_in_view():
 
     view.clear_raw_scans.assert_called_once_with()
     view.remove_item.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# renaming
+# ---------------------------------------------------------------------------
+
+
+def test_init_registers_sync_item_name_event():
+    presenter, view, model = _make_presenter()
+
+    assert presenter.rename_treeview_data in EventBroker().registry[SyncItemNameEvent]
+
+
+def test_init_hooks_up_rename_signal():
+    presenter, view, model = _make_presenter()
+
+    view.hookup_rename_signal.assert_called_once_with(presenter.handle_rename_request)
+
+
+def test_handle_rename_request_forwards_to_model():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="p1")
+
+    presenter.handle_rename_request(uuid, "Bragg peak")
+
+    model.rename_item.assert_called_once_with(uuid, "Bragg peak")
+
+
+def test_handle_rename_request_does_not_touch_view():
+    """The tree must wait for the model's sync event, not relabel the row on request."""
+    presenter, view, model = _make_presenter()
+
+    presenter.handle_rename_request(UUID(value="p1"), "Bragg peak")
+
+    view.rename_item.assert_not_called()
+
+
+def test_rename_treeview_data_relabels_in_view():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="p1")
+
+    presenter.rename_treeview_data(SyncItemNameEvent(uuid=uuid, friendly_name="Bragg peak"))
+
+    view.rename_item.assert_called_once_with(uuid, "Bragg peak")
+
+
+def test_rename_treeview_data_via_event_broker():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="f1")
+
+    EventBroker().publish(SyncItemNameEvent(uuid=uuid, friendly_name="Gaussian over run1"))
+
+    view.rename_item.assert_called_once_with(uuid, "Gaussian over run1")

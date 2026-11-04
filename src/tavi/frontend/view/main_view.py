@@ -11,6 +11,7 @@ from qtpy.QtWidgets import (
     QMenuBar,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSplitter,
     QTabWidget,
     QVBoxLayout,
@@ -124,13 +125,27 @@ class TaviView(QMainWindow):
     ) -> None:
         """Compose the main layout from externally-owned sub-views."""
         main_splitter = QSplitter(Qt.Orientation.Horizontal)
+        # A panel dragged to nothing can't be dragged back, and a 1px handle is hard to hit.
+        main_splitter.setChildrenCollapsible(False)
+        main_splitter.setHandleWidth(6)
 
         main_splitter.addWidget(self._build_left_panel(project_view, filter_view))
         main_splitter.addWidget(self._build_center_panel(plot_view))
         main_splitter.addWidget(self._build_right_panel(data_file_view, fitting_view))
 
-        main_splitter.setSizes([350, 700, 400])
+        main_splitter.setSizes([250, 600, 300])
         self.setCentralWidget(main_splitter)
+
+    @staticmethod
+    def _scrollable(widget: QWidget) -> QScrollArea:
+        """Wrap a panel so the splitter can size it below its natural width, scrolling instead of jamming."""
+        # A QTabWidget's minimum is the largest of its pages, so without this the densest tab sets
+        # a floor for the whole column and the splitter handle stops moving.
+        area = QScrollArea()
+        area.setWidget(widget)
+        area.setWidgetResizable(True)
+        area.setFrameShape(QScrollArea.Shape.NoFrame)
+        return area
 
     # ---------------- LEFT PANEL ----------------
     def _build_left_panel(self, project_view: QWidget, filter_view: QWidget) -> QWidget:
@@ -159,10 +174,10 @@ class TaviView(QMainWindow):
         tabs = QTabWidget()
 
         self.data_file_view = data_file_view
-        tabs.addTab(self.data_file_view, "Data File")
+        tabs.addTab(self._scrollable(self.data_file_view), "Data File")
         self.data_file_view.title_changed.connect(lambda title: tabs.setTabText(0, title))
 
         self.fitting_view = fitting_view
-        tabs.addTab(self.fitting_view, "1D Fitting")
+        tabs.addTab(self._scrollable(self.fitting_view), "1D Fitting")
 
         return tabs
