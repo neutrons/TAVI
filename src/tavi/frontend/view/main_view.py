@@ -129,7 +129,7 @@ class TaviView(QMainWindow):
         main_splitter.addWidget(self._build_center_panel(plot_view))
         main_splitter.addWidget(self._build_right_panel(data_file_view, fitting_view))
 
-        main_splitter.setSizes([350, 700, 400])
+        main_splitter.setSizes([250, 600, 300])
         self.setCentralWidget(main_splitter)
 
     # ---------------- LEFT PANEL ----------------
