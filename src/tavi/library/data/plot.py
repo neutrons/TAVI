@@ -87,8 +87,23 @@ class Plot(BaseModel):
     fits: list[UUID] = []
     """uuids of FitEntry objects that were overlaid on this plot when it was saved - re-focused
     (and recomputed fresh, never replayed) whenever this plot is focused again."""
+    name: Optional[str] = None
+    """The name the user gave this plot, if any. None means it is still named after its series -
+    see ``display_name``. Renaming is one-way: there is no going back to the derived name."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    @property
+    def display_name(self) -> str:
+        """
+        What the project tree calls this plot: the user's name, or one derived from its series.
+
+        A plot that was never renamed is named afresh every time it is asked for, so dropping a
+        series (see ``without_scans``) leaves it named after the runs it actually still covers.
+        """
+        if self.name:
+            return self.name
+        return "_".join(series.run_name for series in self.series) + "_Plot"
 
     def without_scans(self, scan_uuids: Container[UUID]) -> Optional["Plot"]:
         """

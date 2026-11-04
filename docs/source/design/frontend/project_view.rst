@@ -280,9 +280,15 @@ Event Definition
         friendly_path: str
 
 ``friendly_path`` is always ``""`` today — plots have no folder/grouping
-requirement yet. ``friendly_name`` is derived by ``TaviProjectModel`` from
-the plot's own series (each line's run name, joined with ``_``, plus a
-``_Plot`` suffix), not supplied by the caller.
+requirement yet. ``friendly_name`` is ``Plot.display_name``, not something the
+caller supplies: the name the user gave the plot, or — while ``Plot.name`` is
+still ``None`` — one derived from the plot's own series (each line's run name,
+joined with ``_``, plus a ``_Plot`` suffix).
+
+Deriving the name in the ``Plot`` rather than in the model means an unnamed
+plot is named afresh every time it is asked for, so a plot that loses a series
+(``Plot.without_scans``) is named after the runs it actually still covers. A
+plot the user has renamed keeps that name regardless — see "Renaming" below.
 
 Presenter Responsibilities
 ---------------------------
@@ -414,3 +420,92 @@ Visibility of the menu action
 The "Remove Item" action appears only when there is at least one deletable
 item (a leaf node that has a parent row). Right-clicking an empty area or a
 root folder shows an empty menu.
+
+----
+
+Context Menu — Renaming a Plot or Fit
+======================================
+
+Overview
+--------
+
+The same context menu offers a **Rename...** action above "Remove Item". It
+opens a ``QInputDialog`` seeded with the row's current name and, on accept,
+asks the model to store it. Plots and fits can be renamed; raw scans cannot.
+
+Data Flow
+---------
+
+.. code-block:: text
+
+    User right-clicks a plot or fit row, picks "Rename..."
+        ↓
+    TreeViewWidget._prompt_rename  (QInputDialog, seeded with the current name)
+        ↓ (rename_requested signal)
+    ProjectPresenter.handle_rename_request
+        ↓
+    TaviProjectModel.rename_item          ← a Proxy call, not an event
+        - stores the name on the Plot or FitEntry in TaviData
+        - emits SyncItemNameEvent
+        ↓
+    EventBroker
+        ↓
+    ProjectPresenter.rename_treeview_data
+        ↓
+    ProjectView.rename_item → TreeViewWidget.rename_item  (relabels the row)
+
+Event Definition
+----------------
+
+.. code-block:: python
+
+    class SyncItemNameEvent(Event):
+        uuid: UUID
+        friendly_name: str
+
+Key Design Decisions
+--------------------
+
+One request, one carrier, for both types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is a single ``rename_item`` call and a single ``SyncItemNameEvent``, not
+a plot and a fit variant of each. The tree knows a uuid, not a type; only
+``TaviData`` knows which store holds it, so the view asks to rename *an item*
+and ``TaviProjectModel`` narrows it — the same split that makes the tree
+publish one generic ``FocusEvent``. Downstream, a renamed row is relabelled
+identically whichever it was, so a second event would carry nothing new.
+
+The view waits for the model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``_prompt_rename`` emits the typed name and stops; the row keeps its old label
+until ``SyncItemNameEvent`` comes back. This mirrors removal, and for the same
+reason: the tree must never show a name the project does not hold.
+
+Which rows can be renamed
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``_rename_target`` offers the action only for a single row carrying a uuid and
+sitting under one of ``RENAMEABLE_ROOTS`` (``/Plots``, ``/Fits``). A raw scan
+is named by the file it was loaded from, so renaming one would only make its
+label disagree with its own metadata. Multi-row selections are excluded
+because one dialog cannot name two rows.
+
+Which root a row sits under *is* its type, so the tree reads that rather than
+stamping a type onto each item's data — one less thing to keep in step.
+
+Renaming is one-way
+~~~~~~~~~~~~~~~~~~~~
+
+There is no "reset to derived name" affordance, so a blank name is rejected
+(by the dialog handler and again by the model) rather than treated as a reset.
+Once ``Plot.name`` is set, ``display_name`` returns it for good.
+
+Reading the name back off the label
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Every file row is labelled ``*<name>`` — the unsaved marker that ``_new_file``
+and ``rename_item`` both apply. The dialog therefore seeds from
+``item.text().removeprefix("*")``, relying on those two being the only places
+a file row's label is set.

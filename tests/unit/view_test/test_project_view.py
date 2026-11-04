@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from qtpy.QtCore import QItemSelectionModel, QPoint, Qt
 from qtpy.QtGui import QColor
-from qtpy.QtWidgets import QMenu
+from qtpy.QtWidgets import QInputDialog, QMenu
 
 from tavi.frontend.view.project_view import ProjectView, StandardItem, TreeViewWidget
 from tavi.library.data.scan import UUID
@@ -297,6 +297,7 @@ def test_show_context_menu_deletes_all_selected(qtbot):
 
     # Call remove_entry directly on the selected indexes to simulate menu action
     from qtpy.QtCore import QPersistentModelIndex, QModelIndex
+
     selected = [i for i in w.treeView.selectedIndexes() if i.column() == 0 and i.parent().isValid()]
     persistent = [QPersistentModelIndex(i) for i in selected]
     for pi in persistent:
@@ -770,3 +771,213 @@ def test_project_view_tree_updates_from_a_worker_thread_land_on_gui_thread_in_or
     qtbot.waitUntil(lambda: len(seen_threads) == 2)
     assert seen_threads == [gui_thread, gui_thread]
     assert UUID(value="a1") in view.tree_widget.uuid_map
+
+
+# ---------------------------------------------------------------------------
+# TreeViewWidget — renaming
+# ---------------------------------------------------------------------------
+
+
+def _right_click(w, monkeypatch, index, action_text, typed=None, accepted=True):
+    """Open the context menu on index and pick the action labelled action_text, if it is offered."""
+    monkeypatch.setattr(w.treeView, "indexAt", lambda _pos: index)
+
+    # The menu is local to show_context_menu, so its actions die with it - record the labels now.
+    offered = []
+
+    def pick(self, *a, **k):
+        offered.extend(action.text() for action in self.actions())
+        return next((action for action in self.actions() if action.text() == action_text), None)
+
+    monkeypatch.setattr(QMenu, "exec", pick)
+    if typed is not None:
+        monkeypatch.setattr(QInputDialog, "getText", staticmethod(lambda *a, **k: (typed, accepted)))
+    w.show_context_menu(QPoint(0, 0))
+    return offered
+
+
+def test_context_menu_offers_rename_for_a_plot(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")]), "Rename...", "x")
+
+    assert "Rename..." in offered
+
+
+def test_context_menu_offers_rename_for_a_fit(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_fit(UUID(value="f1"), "run1_Fit", "")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="f1")]), "Rename...", "x")
+
+    assert "Rename..." in offered
+
+
+def test_context_menu_does_not_offer_rename_for_a_raw_scan(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_raw_scan(UUID(value="s1"), "scan1", "/exp")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="s1")]), "Rename...")
+
+    assert offered == ["Remove Item"]
+
+
+def test_context_menu_does_not_offer_rename_for_a_folder(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "/group")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.path_map["/Plots/group"]), "Rename...")
+
+    assert offered == ["Remove Item"]
+
+
+def test_context_menu_does_not_offer_rename_for_a_multi_row_selection(qtbot, monkeypatch):
+    """One dialog cannot name two rows, so rename is a single-row action."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    w.add_plot(UUID(value="p2"), "run2_Plot", "")
+    for uuid in (UUID(value="p1"), UUID(value="p2")):
+        index = w.treeModel.indexFromItem(w.uuid_map[uuid])
+        w.treeView.selectionModel().select(index, QItemSelectionModel.SelectionFlag.Select)
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")]), "Rename...")
+
+    assert offered == ["Remove Item"]
+
+
+def test_rename_emits_the_typed_name_without_touching_the_tree(qtbot, monkeypatch):
+    """The tree asks the model to rename; it must not relabel the row on its own."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    emitted = []
+    w.rename_requested.connect(lambda uuid, name: emitted.append((uuid, name)))
+
+    index = w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")])
+    _right_click(w, monkeypatch, index, "Rename...", typed="Bragg peak")
+
+    assert emitted == [(UUID(value="p1"), "Bragg peak")]
+    # Not relabelled yet — the model has not confirmed.
+    assert w.uuid_map[UUID(value="p1")].text() == "*run1_Plot"
+
+
+def test_rename_dialog_is_seeded_with_the_name_not_the_unsaved_marker(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    seeded = []
+
+    def capture(*a, **k):
+        seeded.append(k.get("text"))
+        return ("Bragg peak", True)
+
+    monkeypatch.setattr(QInputDialog, "getText", staticmethod(capture))
+    monkeypatch.setattr(w.treeView, "indexAt", lambda _pos: w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")]))
+    monkeypatch.setattr(QMenu, "exec", lambda self, *a, **k: self.actions()[0])
+    w.show_context_menu(QPoint(0, 0))
+
+    assert seeded == ["run1_Plot"]
+
+
+def test_rename_emits_nothing_when_the_dialog_is_cancelled(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    emitted = []
+    w.rename_requested.connect(lambda uuid, name: emitted.append((uuid, name)))
+
+    index = w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")])
+    _right_click(w, monkeypatch, index, "Rename...", typed="Bragg peak", accepted=False)
+
+    assert emitted == []
+
+
+@pytest.mark.parametrize("typed", ["", "   ", "run1_Plot"])
+def test_rename_emits_nothing_for_a_blank_or_unchanged_name(qtbot, monkeypatch, typed):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    emitted = []
+    w.rename_requested.connect(lambda uuid, name: emitted.append((uuid, name)))
+
+    index = w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")])
+    _right_click(w, monkeypatch, index, "Rename...", typed=typed)
+
+    assert emitted == []
+
+
+def test_rename_item_relabels_the_row(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+
+    w.rename_item(UUID(value="p1"), "Bragg peak")
+
+    assert w.uuid_map[UUID(value="p1")].text() == "*Bragg peak"
+
+
+def test_rename_item_keeps_the_rows_uuid(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    item = w.uuid_map[UUID(value="p1")]
+
+    w.rename_item(UUID(value="p1"), "Bragg peak")
+
+    assert w.treeModel.data(w.treeModel.indexFromItem(item), Qt.UserRole + 1) == {"id": UUID(value="p1")}
+
+
+def test_rename_item_ignores_an_unknown_uuid(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    w.rename_item(UUID(value="nope"), "Bragg peak")
+
+    assert w.uuid_map == {}
+
+
+def test_a_renamed_row_can_be_renamed_again_from_its_new_name(qtbot, monkeypatch):
+    """The second dialog must offer the new name, not the one the row was created with."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_plot(UUID(value="p1"), "run1_Plot", "")
+    w.rename_item(UUID(value="p1"), "Bragg peak")
+    emitted = []
+    w.rename_requested.connect(lambda uuid, name: emitted.append((uuid, name)))
+
+    index = w.treeModel.indexFromItem(w.uuid_map[UUID(value="p1")])
+    _right_click(w, monkeypatch, index, "Rename...", typed="Bragg peak")
+
+    assert emitted == []
+
+
+# ---------------------------------------------------------------------------
+# ProjectView — rename plumbing
+# ---------------------------------------------------------------------------
+
+
+def test_project_view_rename_item_reaches_the_tree(qtbot):
+    v = ProjectView()
+    qtbot.addWidget(v)
+    v.add_plot(UUID(value="p1"), "run1_Plot", "")
+
+    v.rename_item(UUID(value="p1"), "Bragg peak")
+
+    assert v.tree_widget.uuid_map[UUID(value="p1")].text() == "*Bragg peak"
+
+
+def test_project_view_hookup_rename_signal_connects_the_callback(qtbot):
+    v = ProjectView()
+    qtbot.addWidget(v)
+    callback = MagicMock()
+    v.hookup_rename_signal(callback)
+
+    v.tree_widget.rename_requested.emit(UUID(value="p1"), "Bragg peak")
+
+    callback.assert_called_once_with(UUID(value="p1"), "Bragg peak")
