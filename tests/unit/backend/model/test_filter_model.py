@@ -2,6 +2,7 @@
 
 from tavi.backend.model.filter_model import FilterModel
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter, sample_filter, sample_filter_uuid
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.scan import UUID
@@ -17,7 +18,7 @@ from tavi.meta.event.type.model_event import (
 
 
 def make_filter(uuid_val="filter-001", value="10", name="Filter") -> ScanFilter:
-    criterion = FilterCriterion(key="scan", operator=FilterOperator.GREATER, value=value)
+    criterion = FilterCriterion(scope=FilterScope.META, key="scan", operator=FilterOperator.GREATER, value=value)
     return ScanFilter(uuid=UUID(value=uuid_val), name=name, criteria=[criterion])
 
 

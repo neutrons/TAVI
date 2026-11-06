@@ -9,6 +9,7 @@ from tavi.frontend.view.filter_view import (
     CriteriaItemWidget
 )
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, sample_filter_uuid
 from tavi.library.data.scan import UUID
 
@@ -16,8 +17,8 @@ from tavi.library.data.scan import UUID
 DEFAULT_FILTER_NAME = "Sample"
 
 
-def make_criterion(key="", operator="is", value="") -> FilterCriterion:
-    return FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
+def make_criterion(scope="metadata", key="", operator="is", value="") -> FilterCriterion:
+    return FilterCriterion(scope=FilterScope(scope), key=key, operator=FilterOperator(operator), value=value)
 
 
 def make_filter_uuid(value="filter-001") -> UUID:
@@ -26,7 +27,6 @@ def make_filter_uuid(value="filter-001") -> UUID:
 
 def add_filter(view: FilterView, uuid_val="filter-001", name="Filter1", criteria_union=True, criteria=None):
     """List a filter the way FilterPresenter does, after the model announces it."""
-    #TODO 18225: Extend to include Meta/Data differentiator
     if criteria is None:
         criteria = [make_criterion()]
     view.add_filter_signal.emit(make_filter_uuid(uuid_val), name, criteria_union, criteria)
@@ -113,7 +113,9 @@ def test_initial_criteria_item(view: FilterView):
     for criteria in criteria_store.values():
         criteria: CriteriaItemWidget
 
-        #TODO 18225: Meta/Data check
+        assert criteria.criteria_scope is not None
+        assert criteria.criteria_scope.currentText() == "metadata"
+        assert not criteria.criteria_scope.isEnabled()
 
         assert criteria.uuid is not None
         assert isinstance(criteria.uuid, UUID)
@@ -209,8 +211,12 @@ def test_add_filter_lists_and_picks_it(view: FilterView):
 
 
 def test_add_filter_shows_its_criteria(view: FilterView):
-    #TODO 18225: Add meta/data toggle
-    criteria = [make_criterion("scan", ">", "10"), make_criterion("samplename", "has", "MnF")]
+    criteria = [
+        make_criterion("metadata", "scan", ">", "10"),
+        make_criterion("metadata", "samplename", "has", "MnF"),
+        make_criterion("col full", "time", ">=", "0"),
+        make_criterion("col part", "temperature", ">", "300")
+    ]
 
     add_filter(view, criteria=criteria)
 
@@ -218,15 +224,13 @@ def test_add_filter_shows_its_criteria(view: FilterView):
 
 
 def test_current_criteria_reflects_edits(view: FilterView):
-    #TODO 18225: Add meta/data toggle
-    add_filter(view, criteria=[make_criterion("scan", ">", "10")])
+    add_filter(view, criteria=[make_criterion("metadata", "scan", ">", "10")])
     item = next(iter(view.filter_criteria_set_list.currentWidget().criteria_store.values()))
 
     item.criteria_value.setText("20")
     item.criteria_operator.setCurrentText("<=")
 
-    #TODO 18225: Add meta/data toggle
-    assert view.current_criteria() == [make_criterion("scan", "<=", "20")]
+    assert view.current_criteria() == [make_criterion("metadata", "scan", "<=", "20")]
 
 
 def test_filter_count_includes_sample(view: FilterView):
@@ -252,15 +256,13 @@ def test_remove_filter_unlists_it_and_picks_sample(view: FilterView):
 
 
 def test_remove_filter_keeps_criteria_sets_lined_up_with_dropdown(view: FilterView):
-    #TODO 18225: Add meta/data toggle
-    add_filter(view, "filter-001", criteria=[make_criterion("a", "is", "1")])
-    add_filter(view, "filter-002", criteria=[make_criterion("b", "is", "2")])
+    add_filter(view, "filter-001", criteria=[make_criterion("metadata", "a", "is", "1")])
+    add_filter(view, "filter-002", criteria=[make_criterion("metadata", "b", "is", "2")])
 
     view.remove_filter_signal.emit(make_filter_uuid("filter-001"))
     view.filter_dropdown.setCurrentIndex(1)
 
-    #TODO 18225: Add meta/data toggle
-    assert view.current_criteria() == [make_criterion("b", "is", "2")]
+    assert view.current_criteria() == [make_criterion("metadata", "b", "is", "2")]
 
 
 def test_remove_filter_ignores_sample_and_unknown(view: FilterView):
@@ -433,7 +435,7 @@ def test_added_filter_is_not_marked_unsaved(view: FilterView):
 
 
 def test_editing_a_criterion_marks_filter_unsaved_until_reverted(view: FilterView):
-    add_filter(view, name="Mine", criteria=[make_criterion("scan", ">", "10")])
+    add_filter(view, name="Mine", criteria=[make_criterion("metadata", "scan", ">", "10")])
 
     first_criteria_item(view).criteria_value.setText("20")
     assert view.filter_dropdown.currentText() == "Mine*"
@@ -506,19 +508,19 @@ def test_unsaved_marker_stays_on_filter_after_picking_another(view: FilterView):
 
 
 def test_sync_filter_drops_marker_when_saved_as_shown(view: FilterView):
-    add_filter(view, name="Mine", criteria=[make_criterion("scan", ">", "10")])
+    add_filter(view, name="Mine", criteria=[make_criterion("metadata", "scan", ">", "10")])
     first_criteria_item(view).criteria_value.setText("20")
 
-    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", True, [make_criterion("scan", ">", "20")])
+    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", True, [make_criterion("metadata", "scan", ">", "20")])
 
     assert view.filter_dropdown.currentText() == "Mine"
 
 
 def test_sync_filter_keeps_marker_for_edits_made_since(view: FilterView):
-    add_filter(view, name="Mine", criteria=[make_criterion("scan", ">", "10")])
+    add_filter(view, name="Mine", criteria=[make_criterion("metadata", "scan", ">", "10")])
     first_criteria_item(view).criteria_value.setText("30")
 
-    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", True, [make_criterion("scan", ">", "20")])
+    view.sync_filter_signal.emit(make_filter_uuid(), "Mine", True, [make_criterion("metadata", "scan", ">", "20")])
 
     assert view.filter_dropdown.currentText() == "Mine*"
 

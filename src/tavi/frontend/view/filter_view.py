@@ -22,6 +22,7 @@ from qtpy.QtWidgets import (
 )
 
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion
 from tavi.library.data.scan import UUID, new_uuid
 
@@ -34,6 +35,7 @@ class CriteriaItemWidget(QWidget):
     """
 
     changed = Signal()
+    scopes = [scope.value for scope in FilterScope]
     operators = [operator.value for operator in FilterOperator]
 
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -42,7 +44,8 @@ class CriteriaItemWidget(QWidget):
         criteria_layout = QHBoxLayout(self)
 
         self.uuid = new_uuid()
-        # TODO 18225: Add uneditable combobox for Meta vs Data
+        self.criteria_scope = QComboBox(editable=False)
+        self.criteria_scope.addItems(self.scopes)
         self.criteria_key = QLineEdit()
         self.criteria_key.setPlaceholderText("key")
         self.criteria_operator = QComboBox(editable=False)
@@ -55,27 +58,28 @@ class CriteriaItemWidget(QWidget):
         trash_icon = style.standardIcon(style.StandardPixmap.SP_TrashIcon)
         self.criteria_delete_button.setIcon(trash_icon)
 
-        # TODO 18225: Add Meta/Data combobox
+        criteria_layout.addWidget(self.criteria_scope)
         criteria_layout.addWidget(self.criteria_key)
         criteria_layout.addWidget(self.criteria_operator)
         criteria_layout.addWidget(self.criteria_value)
         criteria_layout.addWidget(self.criteria_delete_button)
 
+        self.criteria_scope.currentTextChanged.connect(self.changed)
         self.criteria_key.textChanged.connect(self.changed)
         self.criteria_operator.currentTextChanged.connect(self.changed)
         self.criteria_value.textChanged.connect(self.changed)
 
     def set_criterion(self, criterion: FilterCriterion) -> None:
         """Show ``criterion`` in the key, operator and value fields."""
-        # TODO 18225: Add support for Meta/Data differentiator
+        self.criteria_scope.setCurrentText(criterion.scope.value)
         self.criteria_key.setText(criterion.key)
         self.criteria_operator.setCurrentText(criterion.operator.value)
         self.criteria_value.setText(criterion.value)
 
     def criterion(self) -> FilterCriterion:
         """Return the key, operator and value as currently entered."""
-        # TODO 18225: Add export of Meta/Data parameter
         return FilterCriterion(
+            scope=FilterScope(self.criteria_scope.currentText()),
             key=self.criteria_key.text(),
             operator=FilterOperator(self.criteria_operator.currentText()),
             value=self.criteria_value.text(),
@@ -83,7 +87,9 @@ class CriteriaItemWidget(QWidget):
 
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
-        # TODO 18225: Set Meta/Data to Meta and setEnabled False
+        self.criteria_scope.clear()
+        self.criteria_scope.addItem(Config["filter.sample.criterion.scope"])
+        self.criteria_scope.setEnabled(False)
         self.criteria_key.setText(Config["filter.sample.criterion.key"])
         self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
@@ -169,7 +175,9 @@ class CriteriaSetScrollArea(QScrollArea):
         self.filter_union_all.toggled.connect(self.changed)
         self.filter_union_any.toggled.connect(self.changed)
         for criterion in (
-            criteria if criteria is not None else [FilterCriterion(key="", operator=FilterOperator.IS, value="")]
+            criteria
+            if criteria is not None
+            else [FilterCriterion(scope=FilterScope.META, key="", operator=FilterOperator.IS, value="")]
         ):
             self.add_criteria().set_criterion(criterion)
         if saved:

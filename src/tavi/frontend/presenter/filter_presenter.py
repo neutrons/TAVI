@@ -4,6 +4,7 @@ from tavi.backend.model.interface.filter_model_interface import FilterModelInter
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.filter_view import FilterView
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
@@ -45,8 +46,7 @@ class FilterPresenter(AbstractPresenter):
 
     def handle_new_filter(self) -> None:
         """List a new filter with one blank criterion; it enters the project when first applied."""
-        blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
-        # TODO 18225: Add meta/data
+        blank = FilterCriterion(scope=FilterScope.META, key="", operator=FilterOperator.IS, value="")
         new_filter = ScanFilter(name=f"Filter{self._view.filter_count()}", criteria=[blank], criteria_union=True)
         self._view.add_unsaved_filter(new_filter.uuid, new_filter.name, new_filter.criteria_union, new_filter.criteria)
 
@@ -79,7 +79,6 @@ class FilterPresenter(AbstractPresenter):
     def handle_filter_synced(self, e: SyncFilterEvent) -> None:
         """Tell the panel what a filter was saved as, so it can mark whether edits are still unsaved."""
         self._view.sync_filter_signal.emit(e.filter.uuid, e.filter.name, e.filter.criteria_union, e.filter.criteria)
-        # TODO 18225: Add meta/data
 
     def handle_filter_removed(self, e: RemoveFilterEvent) -> None:
         """Stop listing a filter removed from the project."""
