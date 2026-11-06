@@ -225,7 +225,10 @@ class VERITAS:
         Order the (code, k vector) pairs into the k1, k2, ... list the file header declares.
 
         A line indexes its k vector by the absolute value of its code, a negative code meaning
-        H - k, so branches sharing a vector number must resolve to the same k.
+        H - k, so branches sharing a vector number must resolve to the same k. The codes need
+        not start at 1 or be consecutive - the block is declared up to the highest one used, so
+        that an index keeps its meaning, and a number no branch claims is declared as a zero
+        vector to hold its place.
         """
         vectors: dict[int, np.ndarray] = {}
         for code, vector in coded_vectors:
@@ -238,70 +241,69 @@ class VERITAS:
                     f"propagation vector {abs(code)} is given two different values, {existing} and {resolved}. "
                     f"Use distinct satellite codes when the branches do not share a wavevector."
                 )
-        if sorted(vectors) != list(range(1, len(vectors) + 1)):
-            raise ValueError(f"satellite codes must index propagation vectors 1..n, got {sorted(vectors)}.")
-        return [vectors[index] for index in sorted(vectors)]
+        if not vectors:
+            return []
+        unclaimed = np.zeros_like(next(iter(vectors.values())))
+        return [vectors.get(index, unclaimed) for index in range(1, max(vectors) + 1)]
 
     @staticmethod
-    def export_intensity_incom(
+    def export_intensity_satellite(
         title: str,
-        plus: list,
-        minus: list,
+        satellites: list,
         ax: str,
         save_to_file: Optional[str],
         wavelength: float = 2.37815,
         overwrite: bool = True,
-        satellite_codes: tuple[int, int] = (1, 2),
     ) -> list:
         """
         Export the satellite intensities of an incommensurate structure to a .int file for refinement.
 
-        Each satellite is written at its parent nuclear reflection, the +q branch shifted by
-        ``hkl - wavevector`` and the -q branch by ``hkl + wavevector``, so the returned list
-        alternates the two. The branches need not be the same length - where one runs out, the
-        remainder of the longer is appended on its own. Both branches land on the same hkl, so
-        only the satellite code between each line's hkl and intensity tells them apart; the k
-        vectors those codes index are declared in the header.
+        Each satellite is written at its parent nuclear reflection, shifted by ``hkl - wavevector``,
+        so a branch declares the signed k its own satellites sit at: (0, 0, 0.13) for the +q branch
+        of that q and (0, 0, -0.13) for the -q branch. The returned list takes one entry from each
+        branch in turn, keeping a parent reflection's branches together; branches need not be the
+        same length, and where one runs out the others keep going. Branches land on the same hkl, so
+        only the satellite code between each line's hkl and intensity tells them apart; the k vectors
+        those codes index are declared in the header.
 
         Args:
             title: Title line written as the first line of the file header.
-            plus: The +q branch, as ``[hkls, fit_results, res_4ds, wavevector]`` - one (h, k, l),
-                fit result and (resolution matrix, r0) per peak, plus the branch's wavevector.
-            minus: The -q branch, laid out as plus. It need not hold the same number of peaks.
+            satellites: The branches, each ``[hkls, fit_results, res_4ds, wavevector, code]`` - one
+                (h, k, l), fit result and (resolution matrix, r0) per peak, plus the branch's signed
+                wavevector and the non-zero i4 code its lines carry. A code indexes the declared k
+                vectors from 1, a negative one meaning H - k, so branches sharing a number must
+                resolve to the same k; the numbers need not start at 1 or be consecutive, an index
+                no branch claims being declared as a zero vector to hold its place.
             ax: Scan axis; "s1" for transverse scans.
             save_to_file: Output file path. No file is written if None.
             wavelength: Neutron wavelength written to the file header.
             overwrite: True (default) replaces save_to_file; False writes "_<n>" before the
                 suffix, n being the next unused version on disk.
-            satellite_codes: The (plus, minus) i4 values telling the branches apart. (1, 2)
-                gives each its own propagation vector; (1, -1) makes the second a signed index
-                into one vector, requiring both branches to share a wavevector.
 
         """
-        hkls_plus, fit_results_plus, res_4ds_plus, wavevector_plus = plus
-        hkls_minus, fit_results_minus, res_4ds_minus, wavevector_minus = minus
-
-        if not (len(hkls_plus) == len(fit_results_plus) == len(res_4ds_plus)):
-            raise ValueError("plus must hold one fit result and one resolution per hkl.")
-        if not (len(hkls_minus) == len(fit_results_minus) == len(res_4ds_minus)):
-            raise ValueError("minus must hold one fit result and one resolution per hkl.")
-
-        code_plus, code_minus = satellite_codes
-        # A branch's satellites sit at H + k, so shifting them back onto H shifts by -k.
-        k_plus = np.asarray(wavevector_plus, dtype=float)
-        k_minus = -np.asarray(wavevector_minus, dtype=float)
-        branches = (
-            (hkls_plus, fit_results_plus, res_4ds_plus, -k_plus, code_plus),
-            (hkls_minus, fit_results_minus, res_4ds_minus, -k_minus, code_minus),
-        )
-        propagation_vectors = VERITAS._propagation_vectors(((code_plus, k_plus), (code_minus, k_minus)))
+        branches = []
+        coded_vectors = []
+        for position, satellite in enumerate(satellites):
+            if len(satellite) != 5:
+                raise ValueError(
+                    f"satellite {position} must be [hkls, fit_results, res_4ds, wavevector, code], "
+                    f"got {len(satellite)} entries."
+                )
+            hkls, fit_results, res_4ds, wavevector, code = satellite
+            if not (len(hkls) == len(fit_results) == len(res_4ds)):
+                raise ValueError(f"satellite {position} must hold one fit result and one resolution per hkl.")
+            # A branch's satellites sit at H + k, so shifting them back onto H shifts by -k.
+            k = np.asarray(wavevector, dtype=float)
+            branches.append((hkls, fit_results, res_4ds, -k, code))
+            coded_vectors.append((code, k))
+        propagation_vectors = VERITAS._propagation_vectors(tuple(coded_vectors))
 
         export: list = []
         codes: list = []
-        for index in range(max(len(hkls_plus), len(hkls_minus))):
+        for index in range(max((len(branch[0]) for branch in branches), default=0)):
             for hkls, fit_results, res_4ds, shift, code in branches:
-                # A branch that has run out simply contributes nothing further; the other
-                # one keeps going rather than its remaining satellites being dropped.
+                # A branch that has run out simply contributes nothing further; the others
+                # keep going rather than their remaining satellites being dropped.
                 if index >= len(hkls):
                     continue
                 export.append(VERITAS._satellite_entry(hkls[index], fit_results[index], res_4ds[index], shift, ax))
