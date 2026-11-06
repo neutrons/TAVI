@@ -24,12 +24,11 @@ def make_criterion(key="", operator="is", value="") -> FilterCriterion:
     return FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
 
 
-def make_filter(uuid_val="filter-001", name="Filter1", criteria=None) -> ScanFilter:
+def make_filter(uuid_val="filter-001", name="Filter1", criteria_union=True, criteria=None) -> ScanFilter:
     #TODO 18225: Add meta/data
-    #TODO 18225: Add whole filter operators
     if criteria is None:
         criteria = [FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="10")]
-    return ScanFilter(uuid=UUID(value=uuid_val), name=name, criteria=criteria)
+    return ScanFilter(uuid=UUID(value=uuid_val), name=name, criteria_union=criteria_union, criteria=criteria)
 
 
 @pytest.fixture
@@ -184,7 +183,6 @@ def test_apply_button_applies_the_filter_as_shown(presenter, model):
         make_filter(criteria=[FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="20")])
     )
     #TODO 18225: Add meta/data
-    #TODO 18225: Add whole filter operators
 
 
 def test_apply_button_on_sample_applies_sample(presenter, model):
@@ -223,8 +221,13 @@ def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):
     EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria=[criterion])))
 
     assert presenter._view.filter_dropdown.currentText() == "Mine"
+
+    presenter._view.filter_criteria_set_list.currentWidget().filter_union_any.click()
+    assert presenter._view.filter_dropdown.currentText() == "Mine*"
+    EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria_union=False, criteria=[criterion])))
+    assert presenter._view.filter_dropdown.currentText() == "Mine"
+    
     #TODO 18225: Add meta/data
-    #TODO 18225: Add whole filter operators
 
 
 def test_removed_filter_is_unlisted(presenter):
