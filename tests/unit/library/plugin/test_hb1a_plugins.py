@@ -37,23 +37,23 @@ def make_branch(hkls: list, amplitudes: list, wavevector: tuple, code: int = 1) 
     return [hkls, fit_results, res_4ds, wavevector, code]
 
 
-def test_export_intensity_incom_shifts_each_branch_onto_parent_reflection():
+def test_export_intensity_satellite_shifts_each_branch_onto_parent_reflection():
     """A branch's satellites sit at H + k, so each is shifted back by its own signed wavevector."""
     plus = make_branch([(1.0, 0.0, 0.13), (2.0, 0.0, 0.13)], [10.0, 20.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13), (2.0, 0.0, -0.13)], [11.0, 21.0], (0.0, 0.0, -0.13), 2)
 
-    export = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    export = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
     hkls = [tuple(np.round(hkl, 6)) for hkl, _, _ in export]
     assert hkls == [(1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (2.0, 0.0, 0.0), (2.0, 0.0, 0.0)]
 
 
-def test_export_intensity_incom_interleaves_the_branches():
+def test_export_intensity_satellite_interleaves_the_branches():
     """Each parent reflection contributes one entry per branch, in the order the branches are given."""
     plus = make_branch([(1.0, 0.0, 0.13), (2.0, 0.0, 0.13)], [10.0, 20.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13), (2.0, 0.0, -0.13)], [11.0, 21.0], (0.0, 0.0, -0.13), 2)
 
-    export = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    export = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
     # lorentz_factor is 1 * sqrt(4) / sqrt(1) / sqrt(2 pi) for this resolution matrix
     lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
@@ -61,12 +61,12 @@ def test_export_intensity_incom_interleaves_the_branches():
     assert intensities == pytest.approx([10.0, 11.0, 20.0, 21.0] / lorentz_factor)
 
 
-def test_export_intensity_incom_matches_export_intensity_per_peak():
+def test_export_intensity_satellite_matches_export_intensity_per_peak():
     """A satellite's intensity and error are reduced exactly as a commensurate peak's are."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [10.0], (0.0, 0.0, -0.13), 2)
 
-    incom = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    incom = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
     commensurate = VERITAS.export_intensity("title", plus[0], plus[1], plus[2], "s1", None)
 
     for _, intensity, err in incom:
@@ -74,12 +74,12 @@ def test_export_intensity_incom_matches_export_intensity_per_peak():
         assert err == pytest.approx(commensurate[0][2])
 
 
-def test_export_intensity_incom_appends_the_longer_branchs_remainder():
+def test_export_intensity_satellite_appends_the_longer_branchs_remainder():
     """A parent reflection measured in only one branch still gets exported, after the pairs."""
     plus = make_branch([(1.0, 0.0, 0.13), (2.0, 0.0, 0.13), (3.0, 0.0, 0.13)], [10.0, 20.0, 30.0], (0, 0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
 
-    export = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    export = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
     lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
     hkls = [tuple(np.round(hkl, 6)) for hkl, _, _ in export]
@@ -88,13 +88,13 @@ def test_export_intensity_incom_appends_the_longer_branchs_remainder():
     assert intensities == pytest.approx([10.0, 11.0, 20.0, 30.0] / lorentz_factor)
 
 
-def test_export_intensity_incom_codes_an_unpaired_satellite_by_its_own_branch(tmp_path):
+def test_export_intensity_satellite_codes_an_unpaired_satellite_by_its_own_branch(tmp_path):
     """An entry with no counterpart still carries the code of the branch it came from."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13), (2.0, 0.0, -0.13)], [11.0, 21.0], (0.0, 0.0, -0.13), 2)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()[6:]
     assert [(line[:15], line[15:19]) for line in lines] == [
@@ -104,42 +104,42 @@ def test_export_intensity_incom_codes_an_unpaired_satellite_by_its_own_branch(tm
     ]
 
 
-def test_export_intensity_incom_exports_an_empty_branch():
+def test_export_intensity_satellite_exports_an_empty_branch():
     """One branch being absent entirely leaves the other exported as measured."""
     plus = make_branch([(1.0, 0.0, 0.13), (2.0, 0.0, 0.13)], [10.0, 20.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([], [], (0.0, 0.0, -0.13), 2)
 
-    export = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    export = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
     hkls = [tuple(np.round(hkl, 6)) for hkl, _, _ in export]
     assert hkls == [(1.0, 0.0, 0.0), (2.0, 0.0, 0.0)]
 
 
-def test_export_intensity_incom_rejects_a_branch_missing_a_fit_result():
+def test_export_intensity_satellite_rejects_a_branch_missing_a_fit_result():
     """A branch's own lists must stay aligned, unlike the branches with each other."""
     plus = make_branch([(1.0, 0.0, 0.13), (2.0, 0.0, 0.13)], [10.0, 20.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     plus[1] = plus[1][:1]
 
     with pytest.raises(ValueError, match="satellite 0 must hold one fit result and one resolution per hkl"):
-        VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+        VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
 
-def test_export_intensity_incom_rejects_a_branch_that_is_not_five_entries():
+def test_export_intensity_satellite_rejects_a_branch_that_is_not_five_entries():
     """A branch carries its own wavevector and code, so a shorter one cannot be placed."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
 
     with pytest.raises(ValueError, match="got 4 entries"):
-        VERITAS.export_intensity_incom("title", [plus[:4]], "s1", None)
+        VERITAS.export_intensity_satellite("title", [plus[:4]], "s1", None)
 
 
-def test_export_intensity_incom_writes_parent_reflections_to_file(tmp_path):
+def test_export_intensity_satellite_writes_parent_reflections_to_file(tmp_path):
     """The written .int file carries the shifted, integer parent hkls."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[0] == "title"
@@ -148,26 +148,26 @@ def test_export_intensity_incom_writes_parent_reflections_to_file(tmp_path):
     assert lines[7].startswith("    1    0    0")
 
 
-def test_export_intensity_incom_codes_the_two_branches_apart(tmp_path):
+def test_export_intensity_satellite_codes_the_two_branches_apart(tmp_path):
     """Both branches share an hkl, so the i4 field carries the satellite code."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[6][15:19] == "   1"
     assert lines[7][15:19] == "   2"
 
 
-def test_export_intensity_incom_writes_the_columns_its_header_declares(tmp_path):
+def test_export_intensity_satellite_writes_the_columns_its_header_declares(tmp_path):
     """The code sits between the hkl and the intensity, as the (3i5,i4,2f8.2,i4) line says."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     lorentz_factor = 2.0 / np.sqrt(2 * np.pi)
@@ -176,13 +176,13 @@ def test_export_intensity_incom_writes_the_columns_its_header_declares(tmp_path)
     assert lines[7] == f"    1    0    0   2{11.0 / lorentz_factor:8.2f}{1.0 / lorentz_factor:8.2f}   1"
 
 
-def test_export_intensity_incom_declares_both_propagation_vectors(tmp_path):
+def test_export_intensity_satellite_declares_both_propagation_vectors(tmp_path):
     """Codes 1 and 2 give each branch its own k vector, declared as the branch gave it."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[3] == "2"
@@ -190,13 +190,13 @@ def test_export_intensity_incom_declares_both_propagation_vectors(tmp_path):
     assert lines[5] == "0 0 -0.13"
 
 
-def test_export_intensity_incom_declares_one_vector_for_signed_codes(tmp_path):
+def test_export_intensity_satellite_declares_one_vector_for_signed_codes(tmp_path):
     """Codes 1 and -1 make the -q branch a signed index into the single declared k vector."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), -1)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[3] == "1"
@@ -205,13 +205,13 @@ def test_export_intensity_incom_declares_one_vector_for_signed_codes(tmp_path):
     assert lines[6][15:19] == "  -1"
 
 
-def test_export_intensity_incom_declares_a_zero_vector_for_an_unclaimed_code(tmp_path):
+def test_export_intensity_satellite_declares_a_zero_vector_for_an_unclaimed_code(tmp_path):
     """Codes 2 and 3 keep their numbers, the k1 no branch claims holding its place as a zero vector."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 2)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 3)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[3] == "3"
@@ -220,14 +220,14 @@ def test_export_intensity_incom_declares_a_zero_vector_for_an_unclaimed_code(tmp
     assert lines[8][15:19] == "   3"
 
 
-def test_export_intensity_incom_exports_more_than_two_branches(tmp_path):
+def test_export_intensity_satellite_exports_more_than_two_branches(tmp_path):
     """A second q is just two more branches, each line carrying the code of the branch it came from."""
     first = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     second = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
     third = make_branch([(1.0, 0.0, 0.25)], [12.0], (0.0, 0.0, 0.25), 3)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [first, second, third], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [first, second, third], "s1", str(target))
 
     lines = target.read_text().splitlines()
     assert lines[3] == "3"
@@ -235,32 +235,32 @@ def test_export_intensity_incom_exports_more_than_two_branches(tmp_path):
     assert [line[15:19] for line in lines[7:]] == ["   1", "   2", "   3"]
 
 
-def test_export_intensity_incom_writes_an_integer_vector_without_a_decimal_point(tmp_path):
+def test_export_intensity_satellite_writes_an_integer_vector_without_a_decimal_point(tmp_path):
     """A whole-number k component is written as "1", matching the .int files written by hand."""
     plus = make_branch([(1.0, 0.0, 1.0)], [10.0], (0.0, 0.0, 1.0), 1)
     minus = make_branch([(1.0, 0.0, -1.0)], [11.0], (0.0, 0.0, -1.0), -1)
     target = tmp_path / "incom.int"
 
-    VERITAS.export_intensity_incom("title", [plus, minus], "s1", str(target))
+    VERITAS.export_intensity_satellite("title", [plus, minus], "s1", str(target))
 
     assert target.read_text().splitlines()[4] == "0 0 1"
 
 
-def test_export_intensity_incom_rejects_signed_codes_for_mismatched_wavevectors(tmp_path):
+def test_export_intensity_satellite_rejects_signed_codes_for_mismatched_wavevectors(tmp_path):
     """Sharing a propagation vector number requires the branches to share a wavevector."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.17)], [11.0], (0.0, 0.0, -0.17), -1)
 
     with pytest.raises(ValueError, match="two different values"):
-        VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+        VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
 
-def test_export_intensity_incom_rejects_a_zero_satellite_code():
+def test_export_intensity_satellite_rejects_a_zero_satellite_code():
     """Propagation vectors are numbered from 1, so 0 indexes nothing."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 0)
 
     with pytest.raises(ValueError, match="0 is not a valid code"):
-        VERITAS.export_intensity_incom("title", [plus], "s1", None)
+        VERITAS.export_intensity_satellite("title", [plus], "s1", None)
 
 
 def test_export_intensity_keeps_its_own_format_line_and_column_order(tmp_path):
@@ -322,13 +322,13 @@ def test_export_intensity_requires_a_wavevector_to_write_a_background_subtracted
         )
 
 
-def test_export_intensity_incom_rejects_unknown_axis():
+def test_export_intensity_satellite_rejects_unknown_axis():
     """Only s1 and th2th scans have a defined Lorentz factor."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
 
     with pytest.raises(ValueError, match="axis not defined"):
-        VERITAS.export_intensity_incom("title", [plus, minus], "a3", None)
+        VERITAS.export_intensity_satellite("title", [plus, minus], "a3", None)
 
 
 def make_background_only_fit_result() -> FitResult:
@@ -380,13 +380,13 @@ def test_export_intensity_zeroes_an_unmeasurable_background():
     assert with_background == without_background
 
 
-def test_export_intensity_incom_exports_an_unmeasurable_satellite_as_zero():
+def test_export_intensity_satellite_exports_an_unmeasurable_satellite_as_zero():
     """A satellite the fit could not measure is exported as zero rather than raising."""
     plus = make_branch([(1.0, 0.0, 0.13)], [10.0], (0.0, 0.0, 0.13), 1)
     plus[1] = [make_fit_result(10.0, None)]
     minus = make_branch([(1.0, 0.0, -0.13)], [11.0], (0.0, 0.0, -0.13), 2)
 
-    export = VERITAS.export_intensity_incom("title", [plus, minus], "s1", None)
+    export = VERITAS.export_intensity_satellite("title", [plus, minus], "s1", None)
 
     assert export[0][1] == 0.0
     assert export[0][2] == 0.0

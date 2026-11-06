@@ -247,7 +247,7 @@ class VERITAS:
         return [vectors.get(index, unclaimed) for index in range(1, max(vectors) + 1)]
 
     @staticmethod
-    def export_intensity_incom(
+    def export_intensity_satellite(
         title: str,
         satellites: list,
         ax: str,
