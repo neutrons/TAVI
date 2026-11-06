@@ -26,6 +26,7 @@ filter:
     uuid: sample-filter
     name: Sample
     criterion:
+      scope: metadata
       key: scan
       operator: ">="
       value: "0"

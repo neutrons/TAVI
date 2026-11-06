@@ -3,6 +3,7 @@
 import pytest
 
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter, sample_filter, sample_filter_uuid
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 
@@ -10,19 +11,19 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 def make_raw_scan(metadata=None, uuid_val="scan-001") -> RawScan:
     return RawScan(
         uuid=UUID(value=uuid_val),
-        data=ScanData(data={"qh": [1.0], "en": [2.0]}),
+        data=ScanData(data={"qh": [0.0, 1.0], "en": [2.0, 3.0]}),
         metadata=ScanMetadata(data=metadata or {}),
         tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name="test_scan", friendly_path="/exp1"),
         prov=Provenance(raw_file="scan.dat", contributing_scans={UUID(value=uuid_val): 1}),
     )
 
 
-def make_criterion(key="scan", operator=FilterOperator.GREATER_EQUAL, value="0") -> FilterCriterion:
-    return FilterCriterion(key=key, operator=operator, value=value)
+def make_criterion(scope=FilterScope.META, key="scan", operator=FilterOperator.GREATER_EQUAL, value="0") -> FilterCriterion:
+    return FilterCriterion(scope=scope, key=key, operator=operator, value=value)
 
 
-def make_filter(*criteria, name="Filter") -> ScanFilter:
-    return ScanFilter(name=name, criteria=list(criteria))
+def make_filter(*criteria, name="Filter", union=True) -> ScanFilter:
+    return ScanFilter(name=name, criteria=list(criteria), criteria_union=union)
 
 
 # ---------------------------------------------------------------------------
@@ -31,20 +32,28 @@ def make_filter(*criteria, name="Filter") -> ScanFilter:
 
 
 @pytest.mark.parametrize(
-    ("operator", "value", "expected"),
+    ("scope", "key", "operator", "value", "expected"),
     [
-        (FilterOperator.EQUAL, "42", True),
-        (FilterOperator.EQUAL, "42.0", True),
-        (FilterOperator.NOT_EQUAL, "42", False),
-        (FilterOperator.GREATER, "41", True),
-        (FilterOperator.GREATER, "42", False),
-        (FilterOperator.LESS, "43", True),
-        (FilterOperator.GREATER_EQUAL, "42", True),
-        (FilterOperator.LESS_EQUAL, "41", False),
+        (FilterScope.META, "scan", FilterOperator.EQUAL, "42", True),
+        (FilterScope.META, "scan", FilterOperator.EQUAL, "42.0", True),
+        (FilterScope.META, "scan", FilterOperator.NOT_EQUAL, "42", False),
+        (FilterScope.META, "scan", FilterOperator.GREATER, "41", True),
+        (FilterScope.META, "scan", FilterOperator.GREATER, "42", False),
+        (FilterScope.META, "scan", FilterOperator.LESS, "43", True),
+        (FilterScope.META, "scan", FilterOperator.GREATER_EQUAL, "42", True),
+        (FilterScope.META, "scan", FilterOperator.LESS_EQUAL, "41", False),
+        (FilterScope.COLUMN_FULL, "en", FilterOperator.GREATER, "0", True),
+        (FilterScope.COLUMN_FULL, "en", FilterOperator.GREATER, "0.0", True),
+        (FilterScope.COLUMN_FULL, "en", FilterOperator.LESS, "4.0", True),
+        (FilterScope.COLUMN_FULL, "en", FilterOperator.LESS, "3.0", False),
+        (FilterScope.COLUMN_FULL, "en", FilterOperator.EQUAL, "3.0", False),
+        (FilterScope.COLUMN_PARTIAL, "en", FilterOperator.EQUAL, "3.0", True),
+        (FilterScope.COLUMN_PARTIAL, "en", FilterOperator.LESS, "3.0", True),
+        (FilterScope.COLUMN_PARTIAL, "en", FilterOperator.GREATER, "2.0", True),
     ],
 )
-def test_numeric_operators_compare_as_numbers(operator, value, expected):
-    assert make_criterion("scan", operator, value).matches({"scan": "42"}) is expected
+def test_numeric_operators_compare_as_numbers(scope, key, operator, value, expected):
+    assert make_criterion(scope, key, operator, value).matches(make_raw_scan({"scan": "42"})) is expected
 
 
 @pytest.mark.parametrize(
@@ -60,16 +69,16 @@ def test_numeric_operators_compare_as_numbers(operator, value, expected):
     ],
 )
 def test_text_operators_ignore_case(operator, value, expected):
-    assert make_criterion("samplename", operator, value).matches({"samplename": "MnF3"}) is expected
+    assert make_criterion(FilterScope.META, "samplename", operator, value).matches(make_raw_scan({"samplename": "MnF3"})) is expected
 
 
 @pytest.mark.parametrize("operator", list(FilterOperator))
 def test_missing_key_never_matches(operator):
-    assert make_criterion("temp", operator, "1").matches({"scan": "1"}) is False
+    assert make_criterion(FilterScope.META, "temp", operator, "1").matches(make_raw_scan({"scan": "1"})) is False
 
 
 def test_numeric_operator_on_non_numeric_metadata_does_not_match():
-    assert make_criterion("scan", FilterOperator.GREATER, "0").matches({"scan": "n/a"}) is False
+    assert make_criterion(FilterScope.META, "scan", FilterOperator.GREATER, "0").matches(make_raw_scan({"scan": "n/a"})) is False
 
 
 # ---------------------------------------------------------------------------
@@ -105,13 +114,17 @@ def test_non_numeric_value_for_text_operator_is_valid():
 # ---------------------------------------------------------------------------
 
 
-def test_filter_matches_only_when_every_criterion_does():
+def test_filter_union_on_mixed_criterion():
     scan = make_raw_scan({"scan": "5", "samplename": "MnF3"})
-    passing = make_criterion("scan", FilterOperator.GREATER, "1")
-    failing = make_criterion("samplename", FilterOperator.IS, "NiO")
+    passing = make_criterion(FilterScope.META, "scan", FilterOperator.GREATER, "1")
+    failing = make_criterion(FilterScope.META, "samplename", FilterOperator.IS, "NiO")
 
-    assert make_filter(passing).matches(scan) is True
-    assert make_filter(passing, failing).matches(scan) is False
+    assert make_filter(passing, union=True).matches(scan) is True
+    assert make_filter(passing, failing, union=True).matches(scan) is False
+
+    assert make_filter(passing, union=False).matches(scan) is True
+    assert make_filter(failing, union=False).matches(scan) is False
+    assert make_filter(passing, failing, union=False).matches(scan) is True
 
 
 def test_filter_without_criteria_matches_everything():

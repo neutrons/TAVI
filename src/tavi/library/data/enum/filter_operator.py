@@ -4,7 +4,7 @@ from enum import StrEnum
 
 
 class FilterOperator(StrEnum):
-    """Comparison a ``FilterCriterion`` makes between a scan's metadata value and its own value."""
+    """Comparison a ``FilterCriterion`` makes between a scan's data value and its own value."""
 
     IS = "is"
     IS_NOT = "is not"

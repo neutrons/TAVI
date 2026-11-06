@@ -7,6 +7,7 @@ from neutrons_standard.config import Config
 from pydantic import BaseModel, ConfigDict, Field
 
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.scan import UUID, Scan, UUIDFactory
 
 _NUMERIC_COMPARISONS: dict[FilterOperator, Callable[[float, float], bool]] = {
@@ -26,9 +27,14 @@ def _as_float(value: Any) -> float | None:
         return None
 
 
+def _as_str(value: Any) -> str:
+    return str(value).strip().casefold()
+
+
 class FilterCriterion(BaseModel):
     """One atomic statement of a filter, comparing a scan's metadata entry ``key`` against ``value``."""
 
+    scope: FilterScope
     key: str
     operator: FilterOperator
     value: str
@@ -44,27 +50,40 @@ class FilterCriterion(BaseModel):
             errors.append(
                 f"Criterion on {self.key!r} compares with {self.operator!s} but {self.value!r} is not a number."
             )
+        if not self.operator.is_numeric and self.scope in (FilterScope.COLUMN_FULL, FilterScope.COLUMN_PARTIAL):
+            errors.append(f"Columnar criterion compares with {self.operator!s} but only supports numeric comparison.")
         return errors
 
-    def matches(self, metadata: dict[str, Any]) -> bool:
+    def matches(self, scan: Scan) -> bool:
         """
-        Return whether ``metadata`` satisfies this criterion.
+        Return whether ``scan`` satisfies this criterion.
 
         A scan without ``key`` never matches, whatever the operator - "is not" should not sweep in
         every scan from an instrument that doesn't record the field at all. Text comparisons ignore
         case; a numeric comparison against a value that isn't a number does not match.
         """
+        match self.scope:
+            case FilterScope.META:
+                return self._match_metadata(scan.metadata.data)
+            case FilterScope.COLUMN_FULL:
+                return self._match_columnar(scan.data.data, partial=False)
+            case FilterScope.COLUMN_PARTIAL:
+                return self._match_columnar(scan.data.data, partial=True)
+        return False
+
+    def _match_metadata(self, metadata: dict[str, Any]) -> bool:
+        """Return whether ``metadata`` satisfies this criterion."""
         if self.key not in metadata:
             return False
-        actual = metadata[self.key]
+        meta_value = metadata.get(self.key, None)
 
         if self.operator.is_numeric:
-            actual_number, expected_number = _as_float(actual), _as_float(self.value)
+            actual_number, expected_number = _as_float(meta_value), _as_float(self.value)
             if actual_number is None or expected_number is None:
                 return False
             return _NUMERIC_COMPARISONS[self.operator](actual_number, expected_number)
 
-        actual_text, expected_text = str(actual).strip().casefold(), self.value.strip().casefold()
+        actual_text, expected_text = _as_str(meta_value), _as_str(self.value)
         match self.operator:
             case FilterOperator.IS:
                 return actual_text == expected_text
@@ -74,6 +93,36 @@ class FilterCriterion(BaseModel):
                 return expected_text in actual_text
             case FilterOperator.HAS_NOT:
                 return expected_text not in actual_text
+        return False
+
+    def _match_columnar(self, columnar_data: dict[str, list[Any]], partial: bool = False) -> bool:
+        """Return whether ``column data`` satisfies this criterion."""
+        if self.key not in columnar_data:
+            return False
+        col_data = columnar_data.get(self.key, [None])
+        _logical_join: Callable = any if partial else all
+
+        if self.operator.is_numeric:
+            col_numbers, expected_number = list(map(_as_float, col_data)), _as_float(self.value)
+            if expected_number is None or _logical_join(num is None for num in col_numbers):
+                return False
+            return _logical_join(
+                _NUMERIC_COMPARISONS[self.operator](num, expected_number) for num in col_numbers if num is not None
+            )
+
+        # Made assuming columnar data can also support strings
+        # Left in case columnar data supports strings in the future
+        # col_text, expected_text = list(map(_as_str, col_data)), _as_str(self.value)
+        # match self.operator:
+        #     case FilterOperator.IS:
+        #         return _logical_join(text == expected_text for text in col_text)
+        #     case FilterOperator.IS_NOT:
+        #         return _logical_join(text != expected_text for text in col_text)
+        #     case FilterOperator.HAS:
+        #         return _logical_join(expected_text in text for text in col_text)
+        #     case FilterOperator.HAS_NOT:
+        #         return _logical_join(expected_text not in text for text in col_text)
+        return False
 
 
 class ScanFilter(BaseModel):
@@ -82,6 +131,7 @@ class ScanFilter(BaseModel):
     uuid: UUID = UUIDFactory()
     name: str
     criteria: list[FilterCriterion] = Field(default_factory=list)
+    criteria_union: bool = True
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -94,7 +144,9 @@ class ScanFilter(BaseModel):
 
     def matches(self, scan: Scan) -> bool:
         """Return whether ``scan``'s metadata satisfies every criterion; a filter without criteria passes all."""
-        return all(criterion.matches(scan.metadata.data) for criterion in self.criteria)
+        if self.criteria_union:
+            return all(criterion.matches(scan) for criterion in self.criteria)
+        return any(criterion.matches(scan) for criterion in self.criteria)
 
 
 def sample_filter_uuid() -> UUID:
@@ -105,6 +157,7 @@ def sample_filter_uuid() -> UUID:
 def sample_filter() -> ScanFilter:
     """Return the built-in, read-only Sample filter every project starts with, as set under ``filter.sample``."""
     criterion = FilterCriterion(
+        scope=FilterScope(Config["filter.sample.criterion.scope"]),
         key=Config["filter.sample.criterion.key"],
         operator=FilterOperator(Config["filter.sample.criterion.operator"]),
         value=str(Config["filter.sample.criterion.value"]),

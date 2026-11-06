@@ -8,6 +8,7 @@ from tavi.backend.model.plot_model import PlotModel
 from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.library.data.fit_entry import (
     FitCurve,
@@ -1362,7 +1363,7 @@ def make_numbered_scan(uuid_val: str, scan_number: str) -> RawScan:
 
 
 def make_scan_filter(operator=FilterOperator.GREATER, value="1") -> ScanFilter:
-    return ScanFilter(name="Filter", criteria=[FilterCriterion(key="scan", operator=operator, value=value)])
+    return ScanFilter(name="Filter", criteria=[FilterCriterion(scope=FilterScope.META, key="scan", operator=operator, value=value)])
 
 
 def store_numbered_scans(model, count=3):

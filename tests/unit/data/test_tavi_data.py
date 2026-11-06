@@ -3,6 +3,7 @@
 import pytest
 
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
 from tavi.library.data.plot import Plot, PlotSeries
@@ -259,7 +260,7 @@ def make_numbered_scan(uuid_val: str, scan_number: str) -> RawScan:
 
 
 def make_scan_filter(operator: FilterOperator, value: str) -> ScanFilter:
-    return ScanFilter(name="Filter", criteria=[FilterCriterion(key="scan", operator=operator, value=value)])
+    return ScanFilter(name="Filter", criteria=[FilterCriterion(scope=FilterScope.META, key="scan", operator=operator, value=value)])
 
 
 def test_filter_raw_scans_without_filters_returns_every_scan_in_load_order():

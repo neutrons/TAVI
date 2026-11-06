@@ -7,6 +7,7 @@ import pytest
 from tavi.frontend.presenter.filter_presenter import FilterPresenter
 from tavi.frontend.view.filter_view import FilterView
 from tavi.library.data.enum.filter_operator import FilterOperator
+from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter, sample_filter_uuid
 from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
@@ -20,14 +21,14 @@ from tavi.meta.event.type.model_event import (
 )
 
 
-def make_criterion(key="", operator="is", value="") -> FilterCriterion:
-    return FilterCriterion(key=key, operator=FilterOperator(operator), value=value)
+def make_criterion(scope="metadata", key="", operator="is", value="") -> FilterCriterion:
+    return FilterCriterion(scope=FilterScope(scope), key=key, operator=FilterOperator(operator), value=value)
 
 
-def make_filter(uuid_val="filter-001", name="Filter1", criteria=None) -> ScanFilter:
+def make_filter(uuid_val="filter-001", name="Filter1", criteria_union=True, criteria=None) -> ScanFilter:
     if criteria is None:
-        criteria = [FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="10")]
-    return ScanFilter(uuid=UUID(value=uuid_val), name=name, criteria=criteria)
+        criteria = [FilterCriterion(scope=FilterScope.META, key="scan", operator=FilterOperator.GREATER, value="10")]
+    return ScanFilter(uuid=UUID(value=uuid_val), name=name, criteria_union=criteria_union, criteria=criteria)
 
 
 @pytest.fixture
@@ -110,12 +111,12 @@ def test_new_filter_is_applied_with_its_edits(presenter, model):
     applied = model.apply_filter.call_args.args[0]
     assert applied.uuid == presenter._view.current_filter_uuid()
     assert applied.name == "Filter1"
-    assert applied.criteria == [FilterCriterion(key="scan", operator=FilterOperator.IS, value="")]
+    assert applied.criteria == [FilterCriterion(scope=FilterScope.META, key="scan", operator=FilterOperator.IS, value="")]
 
 
 def test_new_filter_is_marked_saved_once_the_model_adds_it(presenter, model):
     presenter._view.filter_new_button.click()
-    blank = FilterCriterion(key="", operator=FilterOperator.IS, value="")
+    blank = FilterCriterion(scope=FilterScope.META, key="", operator=FilterOperator.IS, value="")
     uuid = presenter._view.current_filter_uuid()
 
     announce(ScanFilter(uuid=uuid, name="Filter1", criteria=[blank]))
@@ -179,7 +180,7 @@ def test_apply_button_applies_the_filter_as_shown(presenter, model):
     presenter._view.apply_filter_button.click()
 
     model.apply_filter.assert_called_once_with(
-        make_filter(criteria=[FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="20")])
+        make_filter(criteria=[FilterCriterion(scope=FilterScope.META, key="scan", operator=FilterOperator.GREATER, value="20")])
     )
 
 
@@ -206,7 +207,7 @@ def test_added_filter_is_listed_with_its_criteria(presenter):
 
     assert presenter._view.current_filter_uuid() == UUID(value="filter-001")
     assert presenter._view.current_filter_name() == "Mine"
-    assert presenter._view.current_criteria() == [make_criterion("scan", ">", "10")]
+    assert presenter._view.current_criteria() == [make_criterion("metadata", "scan", ">", "10")]
 
 
 def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):
@@ -215,9 +216,14 @@ def test_synced_filter_drops_unsaved_marker_once_saved_as_shown(presenter):
     item.criteria_value.setText("20")
     assert presenter._view.filter_dropdown.currentText() == "Mine*"
 
-    criterion = FilterCriterion(key="scan", operator=FilterOperator.GREATER, value="20")
+    criterion = FilterCriterion(scope=FilterScope.META, key="scan", operator=FilterOperator.GREATER, value="20")
     EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria=[criterion])))
 
+    assert presenter._view.filter_dropdown.currentText() == "Mine"
+
+    presenter._view.filter_criteria_set_list.currentWidget().filter_union_any.click()
+    assert presenter._view.filter_dropdown.currentText() == "Mine*"
+    EventBroker().publish(SyncFilterEvent(filter=make_filter(name="Mine", criteria_union=False, criteria=[criterion])))
     assert presenter._view.filter_dropdown.currentText() == "Mine"
 
 
