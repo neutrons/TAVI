@@ -85,7 +85,6 @@ class ScanFilter(BaseModel):
     name: str
     criteria: list[FilterCriterion] = Field(default_factory=list)
     criteria_union: bool = True
-    # TODO 18225: Add whole filter modifying properties
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
