@@ -30,6 +30,7 @@ Data model
             +is_numeric bool
         }
         class FilterCriterion {
+            +scope FilterScope
             +key str
             +operator FilterOperator
             +value str
@@ -70,6 +71,9 @@ Data model
 * A scan without the criterion's ``key`` never matches, whatever the operator,
   so ``is not`` does not sweep in every scan from an instrument that doesn't
   record the field.
+* Criterion scope differentiates metadata and columnar data alongside
+  supporting full and partial matches on columnar data. Columnar matching
+  only supports numerical comparison as columnar data can only be numerical.
 * Every project starts with the read-only **Sample** filter (``scan >= 0``),
   selected and not applied. It is built into ``FilterModel`` and never stored in
   ``TaviData.filters``, so it cannot be saved over or removed, and is not written
