@@ -131,15 +131,17 @@ class CombineOps(ProcessOps):
         """
         Build the op the mode calls for, reading the parameters as they stand.
 
+        ``mode`` alone decides which one, so there is a single place the parameters are
+        read as a choice of operation, and asking it here is what refuses a tolerance
+        and a step together however this is reached.
+
         Built afresh on every call rather than cached, so that reassigning a parameter
         between ``validate`` and ``exec`` takes effect as it does on the ops this
         delegates to - a cache keyed on nothing would leave ``mode`` reporting one
         combination while ``exec`` ran another. Construction only stores values.
         """
-        # dispatched on the attributes rather than on mode, which narrows the optional
-        # tol and step the delegates take as plain floats. Both being set never reaches
-        # here, validate reading mode having already refused it.
-        if self.tol is not None:
+        mode = self.mode
+        if mode is RebinMode.TOLERANCE:
             return ToleranceRebinOps(
                 self.tavi_data,
                 self.uuids,
@@ -148,7 +150,7 @@ class CombineOps(ProcessOps):
                 tol=self.tol,
                 multiplication=self.multiplication,
             )
-        if self.step is not None:
+        if mode is RebinMode.EQUAL_STEP:
             return EqualStepRebinOps(
                 self.tavi_data,
                 self.uuids,
