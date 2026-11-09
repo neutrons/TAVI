@@ -58,7 +58,6 @@ class CombineOps(ProcessOps):
         self.start = start
         self.finish = finish
         self.multiplication = multiplication
-        self._delegate: Optional[ProcessOps] = None
 
     @property
     def mode(self) -> RebinMode:
@@ -129,31 +128,35 @@ class CombineOps(ProcessOps):
         return processed_scan
 
     def _resolve_delegate(self) -> ProcessOps:
-        """Build the op the mode calls for, once, so validate and exec run the same one."""
-        if self._delegate is None:
-            # dispatched on the attributes rather than on mode, which narrows the
-            # optional tol and step the delegates take as plain floats. Both being set
-            # never reaches here, validate reading mode having already refused it.
-            if self.tol is not None:
-                self._delegate = ToleranceRebinOps(
-                    self.tavi_data,
-                    self.uuids,
-                    self.columns,
-                    norm=self.norm,
-                    tol=self.tol,
-                    multiplication=self.multiplication,
-                )
-            elif self.step is not None:
-                self._delegate = EqualStepRebinOps(
-                    self.tavi_data,
-                    self.uuids,
-                    self.columns,
-                    norm=self.norm,
-                    step=self.step,
-                    start=self.start,
-                    finish=self.finish,
-                    multiplication=self.multiplication,
-                )
-            else:
-                self._delegate = AppendOp(self.tavi_data, self.uuids, self.columns)
-        return self._delegate
+        """
+        Build the op the mode calls for, reading the parameters as they stand.
+
+        Built afresh on every call rather than cached, so that reassigning a parameter
+        between ``validate`` and ``exec`` takes effect as it does on the ops this
+        delegates to - a cache keyed on nothing would leave ``mode`` reporting one
+        combination while ``exec`` ran another. Construction only stores values.
+        """
+        # dispatched on the attributes rather than on mode, which narrows the optional
+        # tol and step the delegates take as plain floats. Both being set never reaches
+        # here, validate reading mode having already refused it.
+        if self.tol is not None:
+            return ToleranceRebinOps(
+                self.tavi_data,
+                self.uuids,
+                self.columns,
+                norm=self.norm,
+                tol=self.tol,
+                multiplication=self.multiplication,
+            )
+        if self.step is not None:
+            return EqualStepRebinOps(
+                self.tavi_data,
+                self.uuids,
+                self.columns,
+                norm=self.norm,
+                step=self.step,
+                start=self.start,
+                finish=self.finish,
+                multiplication=self.multiplication,
+            )
+        return AppendOp(self.tavi_data, self.uuids, self.columns)

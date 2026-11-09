@@ -192,6 +192,30 @@ def test_mode_reports_what_the_parameters_resolve_to(kwargs, expected):
     assert CombineOps(make_tavi_data(scan), [scan.uuid], COLUMNS, **kwargs).mode is expected
 
 
+def test_mode_and_exec_still_agree_after_a_parameter_is_reassigned():
+    """The delegate is built afresh at exec, so mode never reports one combination while another runs."""
+    scan = make_countable_scan()
+    tavi_data = make_tavi_data(scan)
+    op = CombineOps(tavi_data, [scan.uuid], COLUMNS, norm="monitor", step=1.0)
+    op.validate()
+
+    op.step, op.tol = None, 0.5
+
+    assert op.mode is RebinMode.TOLERANCE
+    assert "_tol0.5" in op.exec().tavimeta.friendly_name
+
+
+def test_exec_picks_up_a_reassigned_value_as_the_delegates_do():
+    """A combine reads its parameters when it runs, matching the ops it delegates to."""
+    scan = make_countable_scan()
+    op = CombineOps(make_tavi_data(scan), [scan.uuid], COLUMNS, norm="monitor", step=1.0)
+    op.validate()
+
+    op.step = 0.5
+
+    assert "_rebin0.5" in op.exec().tavimeta.friendly_name
+
+
 def test_columns_and_size_report_what_the_op_was_built_with():
     scan = make_countable_scan()
 
