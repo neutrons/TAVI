@@ -122,6 +122,7 @@ class TaviView(QMainWindow):
         data_file_view: QWidget,
         fitting_view: QWidget,
         filter_view: QWidget,
+        combine_view: QWidget,
     ) -> None:
         """Compose the main layout from externally-owned sub-views."""
         main_splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -131,7 +132,7 @@ class TaviView(QMainWindow):
 
         main_splitter.addWidget(self._build_left_panel(project_view, filter_view))
         main_splitter.addWidget(self._build_center_panel(plot_view))
-        main_splitter.addWidget(self._build_right_panel(data_file_view, fitting_view))
+        main_splitter.addWidget(self._build_right_panel(data_file_view, fitting_view, combine_view))
 
         main_splitter.setSizes([250, 600, 300])
         self.setCentralWidget(main_splitter)
@@ -170,7 +171,7 @@ class TaviView(QMainWindow):
         return tabs
 
     # ---------------- RIGHT PANEL ----------------
-    def _build_right_panel(self, data_file_view: QWidget, fitting_view: QWidget) -> QTabWidget:
+    def _build_right_panel(self, data_file_view: QWidget, fitting_view: QWidget, combine_view: QWidget) -> QTabWidget:
         tabs = QTabWidget()
 
         self.data_file_view = data_file_view
@@ -179,5 +180,8 @@ class TaviView(QMainWindow):
 
         self.fitting_view = fitting_view
         tabs.addTab(self._scrollable(self.fitting_view), "1D Fitting")
+
+        self.combine_view = combine_view
+        tabs.addTab(self._scrollable(self.combine_view), "Combine")
 
         return tabs

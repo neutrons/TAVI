@@ -6,6 +6,7 @@ import pytest
 from qtpy.QtWidgets import QMenuBar, QMessageBox, QSplitter, QTabWidget
 
 from tavi import __version__
+from tavi.frontend.view.combine_view import CombineView
 from tavi.frontend.view.data_file_view import DataFileView
 from tavi.frontend.view.filter_view import FilterView
 from tavi.frontend.view.fitting_view import FittingView
@@ -25,6 +26,7 @@ def built_view(qtbot):
         data_file_view=DataFileView(),
         fitting_view=FittingView(),
         filter_view=FilterView(),
+        combine_view=CombineView(),
     )
     return view
 
@@ -217,3 +219,26 @@ def test_exit_message_box_returns_true_when_user_clicks_yes(qtbot, monkeypatch):
 
     monkeypatch.setattr(QMessageBox, "question", lambda *args, **kwargs: QMessageBox.Yes)
     assert view.exit_message_box() is True
+
+
+# ---------------------------------------------------------------------------
+# TaviView — Combine tab
+# ---------------------------------------------------------------------------
+
+
+def _right_tabs(built_view):
+    tabs = built_view.combine_view.parent()
+    while tabs is not None and not isinstance(tabs, QTabWidget):
+        tabs = tabs.parent()
+    return tabs
+
+
+def test_tavi_view_has_combine_view(built_view):
+    assert isinstance(built_view.combine_view, CombineView)
+
+
+def test_combine_tab_sits_next_to_the_fitting_tab(built_view):
+    tabs = _right_tabs(built_view)
+    labels = [tabs.tabText(i) for i in range(tabs.count())]
+
+    assert labels == ["Data File", "1D Fitting", "Combine"]

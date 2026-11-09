@@ -74,6 +74,10 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.register(ApplyFilterEvent, self._handle_apply_filter_event)
         self._event_broker.register(ClearFilterEvent, self._handle_clear_filter_event)
 
+    def get_tavi_data_handle(self) -> TaviData:
+        """Return the whole project store, for the models whose ops resolve uuids across every one of them."""
+        return self.tavi_data
+
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
         return self.tavi_data.plots

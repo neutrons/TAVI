@@ -242,6 +242,113 @@ CombineOps
          ``prov.contributing_scans`` and its friendly name.
       :rtype: ProcessedScan
 
+CombineModel
+------------
+
+.. class:: CombineModel(tavi_data: TaviData)
+
+   The backend model a GUI combination goes through. Lives in
+   ``tavi.backend.model.combine_model``, behind ``CombineModelInterface`` and
+   its ``CombineModelProxy``, and is constructed in ``tavi.__main__`` with
+   ``TaviProjectModel.get_tavi_data_handle()`` — the whole project store rather
+   than one handle into it, because a combination resolves its origins across
+   every store and writes its result back into one.
+
+   ``CombineModel`` holds no combining logic. Its single call,
+   ``combine(request)``, translates either side of ``CombineOps``:
+
+   .. list-table::
+      :header-rows: 1
+      :widths: 30 70
+
+      * - Step
+        - What happens
+      * - Columns
+        - ``[x_axis, y_axis]``, then the normalization column if it names a
+          third one. The first two become the result's ``default_axis``, and
+          the append drops every column not listed — so a ``norm`` left out
+          would be gone before a rebin could weigh by it.
+      * - Numbers
+        - The request carries them as the text the user typed.
+          ``rebin_mode`` decides which are read: a ``tolerance``, or a
+          ``step`` with optional ``start``/``finish``. A value left in the
+          other mode's fields is never parsed, so it cannot reach
+          ``CombineOps`` as a second mode.
+      * - Failure
+        - Every ``ValueError``/``KeyError`` the ops raise describes what the
+          user asked for, so each is published as a ``ReportErrorEvent`` and
+          returned as ``ModelResponse(ERROR, message)`` rather than raised
+          into a worker thread nothing is watching.
+      * - Success
+        - ``CombineOps.exec`` has already registered the result in
+          ``tavi_data.processed_scans``; the model publishes
+          ``AddProcessedScanEvent(uuid, friendly_name, friendly_path)``.
+
+   .. code-block:: python
+
+       CombineModel(tavi_data).combine(
+           CombineRequest(
+               source_scan_uuids=[scan_a.uuid, scan_b.uuid],
+               x_axis="qh",
+               y_axis="detector",
+               normalization="monitor",
+               rebin_mode=RebinMode.EQUAL_STEP,
+               step="0.02",
+               start="0",
+               finish="2",
+           )
+       )
+
+   ``CombineRequest`` (``tavi.library.data.combine``) is the request itself —
+   what the user asked for, as they expressed it. It subscribes to nothing:
+   running a combination is a request exactly one model answers, so it is a
+   direct call through the proxy, and the result is broadcast as an event. See
+   :doc:`/guides/event_broker`.
+
+From the Combine tab
+~~~~~~~~~~~~~~~~~~~~
+
+``CombinePresenter`` (``tavi.frontend.presenter.combine_presenter``) owns the
+``CombineView`` and is the only thing holding the two vocabularies together:
+the view works in scan **names**, the model in **uuids**.
+
+.. mermaid::
+
+    sequenceDiagram
+        actor User
+        participant Tree as ProjectPresenter
+        participant Broker as EventBroker
+        participant Panel as CombinePresenter
+        participant Model as CombineModel
+        participant Ops as CombineOps
+
+        User->>Tree: select raw scans
+        Tree->>Broker: publish FocusEvent(ids)
+        Broker-->>Panel: FocusRawScanEvent(scans)
+        Note over Panel: remembers uuid → name,<br/>offers the scans' columns,<br/>seeds the axis fields
+        User->>Panel: Add Scans
+        Note over Panel: stages the focused scans;<br/>the view lists their names
+        User->>Panel: Combine
+        Panel->>Model: combine(CombineRequest)
+        Model->>Ops: exec()
+        Ops-->>Model: ProcessedScan, registered in TaviData
+        Model->>Broker: publish AddProcessedScanEvent
+        Broker-->>Tree: AddProcessedScanEvent
+        Tree->>Tree: add_combined() — a row under /Combined
+
+The staged list is the user's own basket, so it outlives a selection: a
+``ClearFocusEvent`` forgets only which scans *Add Scans* would stage next. A
+``RemoveRawScanEvent`` does unstage its scan, the list never naming data
+nothing can resolve. The axis fields are re-seeded from each focused scan's
+``tavimeta.default_axis``, as the plotter's are, so the panel cannot be left
+naming the previous experiment's columns.
+
+**Append** sends ``RebinMode.NONE`` with no normalization and no scale. The
+panel's Normalization and Multiplication fields describe a rebin's weighting,
+and ``CombineOps`` refuses a weighting an append cannot honour rather than
+dropping it — so the presenter does not offer it one. The default
+normalization is ``mcu``.
+
 Key Design Decisions
 --------------------
 

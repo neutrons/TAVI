@@ -29,6 +29,19 @@ class AddFitEvent(Event):
     friendly_path: str
 
 
+class AddProcessedScanEvent(Event):
+    """
+    Indicates a new ProcessedScan - a combination of raw scans - has been added to the Project.
+
+    Published by ``CombineModel`` once the combination is registered in ``TaviData.processed_scans``.
+    Mirrors ``AddPlotEvent``: the uuid and the name to list it under, never the scan itself.
+    """
+
+    uuid: UUID
+    friendly_name: str
+    friendly_path: str
+
+
 class AddFilterEvent(Event):
     """
     Indicates ``FilterModel`` has saved a new filter to the Project. Filters are not listed in the project tree.

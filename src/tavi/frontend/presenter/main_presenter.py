@@ -1,9 +1,11 @@
 """Main presenter for tavi."""
 
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
+from tavi.backend.model.interface.combine_model_interface import CombineModelInterface
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
+from tavi.frontend.presenter.combine_presenter import CombinePresenter
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
@@ -49,6 +51,8 @@ class MainPresenter:
         )
         self.fit_window_presenter = FitWindowPresenter()
 
+        self.combine_presenter = CombinePresenter(model_dict[CombineModelInterface.__name__])
+
         self.error_presenter = ErrorPresenter(application_model=model_dict[ApplicationModelInterface.__name__])
         self.error_view = self.error_presenter.view()
         self.error_view.setParent(self._view)
@@ -59,6 +63,7 @@ class MainPresenter:
             data_file_view=self.data_file_presenter.view(),
             fitting_view=self.fitting_presenter.view(),
             filter_view=self.filter_presenter.view(),
+            combine_view=self.combine_presenter.view(),
         )
 
         self._event_broker = EventBroker()

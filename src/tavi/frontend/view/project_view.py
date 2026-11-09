@@ -28,6 +28,7 @@ class ProjectView(QWidget):
     update_tree_signal = Signal(list)
     add_raw_scan_signal = Signal(object, str, str)
     add_plot_signal = Signal(object, str, str)
+    add_combined_signal = Signal(object, str, str)
     add_fit_signal = Signal(object, str, str)
     remove_item_signal = Signal(object)
     rename_item_signal = Signal(object, str)
@@ -60,6 +61,7 @@ class ProjectView(QWidget):
         # lands before its adds.
         self.add_raw_scan_signal.connect(self.tree_widget.add_raw_scan)
         self.add_plot_signal.connect(self.tree_widget.add_plot)
+        self.add_combined_signal.connect(self.tree_widget.add_combined)
         self.add_fit_signal.connect(self.tree_widget.add_fit)
         self.remove_item_signal.connect(self.tree_widget.remove_item)
         self.rename_item_signal.connect(self.tree_widget.rename_item)
@@ -100,6 +102,10 @@ class ProjectView(QWidget):
     def add_plot(self, uuid: UUID, name: str, path: str) -> None:
         """Add a plot to the view, from any thread."""
         self.add_plot_signal.emit(uuid, name, path)
+
+    def add_combined(self, uuid: UUID, name: str, path: str) -> None:
+        """Add a combined scan to the view, from any thread."""
+        self.add_combined_signal.emit(uuid, name, path)
 
     def add_fit(self, uuid: UUID, name: str, path: str) -> None:
         """Add a fit to the view, from any thread."""
@@ -459,6 +465,11 @@ class TreeViewWidget(QWidget):
         """Add an entry under the Plots root path."""
         path = path.removeprefix("/")
         self.add_item_at_path(uuid, name, f"Plots/{path}")
+
+    def add_combined(self, uuid: UUID, name: str, path: str) -> None:
+        """Add an entry under the Combined root path."""
+        path = path.removeprefix("/")
+        self.add_item_at_path(uuid, name, f"Combined/{path}")
 
     def add_fit(self, uuid: UUID, name: str, path: str) -> None:
         """Add an entry under the Fits root path."""

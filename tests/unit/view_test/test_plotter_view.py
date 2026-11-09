@@ -49,31 +49,6 @@ def test_canvas_axes_exists(view):
     assert hasattr(view.canvas, "axes")
 
 
-def test_rb1_is_checked_by_default(view):
-    assert view.rb1.isChecked()
-
-
-def test_rb2_not_checked_by_default(view):
-    assert not view.rb2.isChecked()
-
-
-def test_rb3_not_checked_by_default(view):
-    assert not view.rb3.isChecked()
-
-
-def test_rebin_radio_buttons_disabled(view):
-    """Rebin feature is paused; controls stay visible but non-interactive."""
-    assert not view.rb1.isEnabled()
-    assert not view.rb2.isEnabled()
-    assert not view.rb3.isEnabled()
-
-
-def test_rebin_edits_disabled(view):
-    assert not view.rebin_start_edit.isEnabled()
-    assert not view.rebin_stop_edit.isEnabled()
-    assert not view.rebin_step_edit.isEnabled()
-
-
 # ---------------------------------------------------------------------------
 # append_plot
 # ---------------------------------------------------------------------------
@@ -249,31 +224,6 @@ def test_render_plots_home_view_follows_the_new_plot(view):
 
 
 # ---------------------------------------------------------------------------
-# on_radio_toggled
-# ---------------------------------------------------------------------------
-
-
-def test_toggling_rb2_prints_label(view, capsys):
-    view.rb2.setChecked(True)
-    captured = capsys.readouterr()
-    assert "Rebin X-Axis with Tolerance" in captured.out
-
-
-def test_toggling_rb3_prints_label(view, capsys):
-    view.rb3.setChecked(True)
-    captured = capsys.readouterr()
-    assert "Rebin X-Axis with Equal Step Size" in captured.out
-
-
-def test_toggling_rb1_prints_no_rebin(view, capsys):
-    view.rb2.setChecked(True)
-    capsys.readouterr()
-    view.rb1.setChecked(True)
-    captured = capsys.readouterr()
-    assert "No Rebin" in captured.out
-
-
-# ---------------------------------------------------------------------------
 # default field values
 # ---------------------------------------------------------------------------
 
@@ -293,12 +243,6 @@ def test_default_preset_field_values(view):
 def test_preset_type_combo_has_none_and_normalize_options(view):
     items = [view.preset_type_combo.itemText(i) for i in range(view.preset_type_combo.count())]
     assert items == ["none", "normalize"]
-
-
-def test_default_rebin_field_values(view):
-    assert view.rebin_start_edit.text() == "0"
-    assert view.rebin_stop_edit.text() == "2"
-    assert view.rebin_step_edit.text() == "0.02"
 
 
 # ---------------------------------------------------------------------------
@@ -753,21 +697,10 @@ def test_get_plot_fields_returns_plot_fields_instance(view):
     assert isinstance(view.get_plot_fields(), PlotFields)
 
 
-def test_get_plot_fields_default_rebin_mode_is_none(view):
+def test_get_plot_fields_reports_no_rebin(view):
+    """Rebinning lives in the Combine tab now; a plot always reports the no-rebin defaults."""
     fields = view.get_plot_fields()
     assert fields.rebin_mode == "none"
-
-
-def test_get_plot_fields_rebin_mode_tolerance(view):
-    view.rb2.setChecked(True)
-    fields = view.get_plot_fields()
-    assert fields.rebin_mode == "tolerance"
-
-
-def test_get_plot_fields_rebin_mode_equal_step(view):
-    view.rb3.setChecked(True)
-    fields = view.get_plot_fields()
-    assert fields.rebin_mode == "equal_step"
 
 
 def test_get_plot_fields_contains_all_expected_keys(view):
@@ -800,18 +733,12 @@ def test_get_plot_fields_reflects_edited_values(view):
 
 
 def test_reset_controls_to_defaults_restores_values(view):
-    view.rb2.setChecked(True)
-    view.rebin_start_edit.setText("9")
-    view.rebin_step_edit.setText("9")
     view.preset_type_combo.setCurrentText("special")
     view.preset_channel_combo.setCurrentText("other")
     view.preset_value_edit.setText("7")
 
     view.reset_controls_to_defaults()
 
-    assert view.rb1.isChecked()
-    assert view.rebin_start_edit.text() == "0"
-    assert view.rebin_step_edit.text() == "0.02"
     assert view.preset_type_combo.currentText() == "none"
     # The channel field takes free text, so a reset has to clear it rather than rely on an
     # unknown name being refused; the column list itself is the focused scan's, left alone.
@@ -820,7 +747,7 @@ def test_reset_controls_to_defaults_restores_values(view):
 
 
 def test_reset_controls_to_defaults_does_not_emit_fields_focus_changed(view, qtbot):
-    view.rb2.setChecked(True)
+    view.preset_value_edit.setText("7")
     received = []
     view.fields_focus_changed.connect(lambda: received.append(True))
     view.reset_controls_to_defaults()
@@ -850,17 +777,9 @@ def test_preset_combo_index_change_emits_fields_focus_changed(view, qtbot):
         view.preset_type_combo.setCurrentIndex(1)
 
 
-def test_checking_radio_button_emits_fields_focus_changed(view, qtbot):
+def test_editing_finished_on_preset_value_emits_fields_focus_changed(view, qtbot):
     with qtbot.waitSignal(view.fields_focus_changed, timeout=1000):
-        view.rb2.setChecked(True)
-
-
-def test_unchecking_radio_button_does_not_emit_fields_focus_changed(view, qtbot):
-    view.rb2.setChecked(True)
-    received = []
-    view.fields_focus_changed.connect(lambda: received.append(True))
-    view.rb2.setChecked(False)
-    assert received == []
+        view.preset_value_edit.editingFinished.emit()
 
 
 # ---------------------------------------------------------------------------
