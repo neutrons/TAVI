@@ -67,7 +67,7 @@ def _is_guide_off(value: str) -> bool:
 
 def ptax_countfile_loader(countfile: list[str]) -> list[Optional[str]]:
     """
-    Label each ``count`` of a PTAX countfile as ``<Px|Py|Pz>_<NSF|SF>``; index i belongs to ``detector_{i+1}``.
+    Label each ``count`` of a PTAX countfile as ``<P_x|P_y|P_z>_<NSF|SF>``; index i belongs to ``detector_{i+1}``.
 
     Guide direction and flipper state carry forward between counts; a count before either is known is ``None``.
     """
@@ -279,7 +279,7 @@ class ORNLSpiceLoader(AbstractLoader):
 
     @staticmethod
     def _add_ptax_channels(data: dict[str, Any], countfile: list[str], file_path: str) -> None:
-        """Copy each ``detector_i`` column under its PTAX countfile label, e.g. ``Px_NSF``."""
+        """Copy each ``detector_i`` column under its PTAX countfile label, e.g. ``P_x_NSF``."""
         labels = ptax_countfile_loader(countfile)
         n_detectors = sum(1 for key in data if re.fullmatch(r"detector_\d+", key))
         if len(labels) != n_detectors:

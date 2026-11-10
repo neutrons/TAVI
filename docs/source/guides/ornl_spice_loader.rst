@@ -86,24 +86,24 @@ one ``# countfile = ...`` line per command. Each ``count`` in that script is one
 measurement, and SPICE writes them out as ``detector_1 ... detector_n`` in
 script order. ``parse_scan_values`` labels each one with
 ``ptax_countfile_loader`` and **copies** ``detector_i`` into a new column named
-``<Px|Py|Pz>_<NSF|SF>``. The original ``detector_i`` columns are kept.
+``<P_x|P_y|P_z>_<NSF|SF>``. The original ``detector_i`` columns are kept.
 
 .. code-block:: text
 
-   guide 16 parq                  -> direction Px
+   guide 16 parq                  -> direction P_x
    drive hguide 0 vguide 0        -> flipper off
-   count                          -> Px_NSF  = copy of detector_1
+   count                          -> P_x_NSF  = copy of detector_1
    drive hguide 1.75 vguide -1.7  -> flipper on
-   count                          -> Px_SF   = copy of detector_2
+   count                          -> P_x_SF   = copy of detector_2
    guide 18 perpqh
    drive hguide 1.75 vguide -1.7
-   count                          -> Py_SF   = copy of detector_3
+   count                          -> P_y_SF   = copy of detector_3
    guide 18 perpq
    drive hguide 1.75 vguide -1.7
-   count                          -> Pz_SF   = copy of detector_4
+   count                          -> P_z_SF   = copy of detector_4
 
-* ``guide`` sets the direction from its last word: ``parq`` is ``Px``,
-  ``perpqh`` is ``Py`` and ``perpq`` is ``Pz``.
+* ``guide`` sets the direction from its last word: ``parq`` is ``P_x``,
+  ``perpqh`` is ``P_y`` and ``perpq`` is ``P_z``.
 * The latest ``drive`` line that names ``hguide`` or ``vguide`` sets the flipper
   state. The count is NSF only when every guide that line names is ``0`` or
   ``off``. Any other value means SF, including ``on``, a non-zero number or an
