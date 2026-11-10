@@ -8,6 +8,9 @@ ProcessOps
    ``tavi.library.data.process_op``; each concrete operation is a module of its
    own under ``tavi.library.data.algorithms`` — ``append_ops.AppendOp``,
    ``equal_step_bin.EqualStepRebinOps`` and ``bin_by_tol.ToleranceRebinOps``.
+   ``tavi.library.data.combine.CombineOps`` sits over the three as the single
+   entry point a caller reaches for, resolving which of them the given
+   parameters describe and storing what comes back.
 
    :param tavi_data: The project data holding the raw and processed scans that
       uuids are resolved against, via ``TaviData.fetch_by_uuid``.
@@ -66,9 +69,18 @@ scan mutated and nothing added to ``Plot``/``PlotSeries``.
             +TaviMetadata tavimeta
             +Provenance prov
         }
+        class CombineOps {
+            +Sequence~str~ columns
+            +RebinMode mode
+            +validate()
+            +exec() ProcessedScan
+        }
         ProcessOps <|-- AppendOp
+        ProcessOps <|-- CombineOps
         ProcessOps ..> TaviData : reads fetch_by_uuid()
         AppendOp ..> ProcessedScan : produces
+        CombineOps ..> AppendOp : delegates to
+        CombineOps ..> TaviData : writes processed_scans
         ProcessedScan "1" --> "1..*" Scan : derived from (prov.contributing_scans)
 
 ProcessOps Members
@@ -126,6 +138,119 @@ AppendOp
       :raises KeyError: If a uuid is not present in the data pool, or an origin
          does not carry one of the requested columns.
 
+CombineOps
+----------
+
+.. class:: CombineOps(tavi_data: TaviData, uuids: Sequence[UUID], columns: Sequence[str], norm: str = "", tol: Optional[float] = None, step: Optional[float] = None, start: Optional[float] = None, finish: Optional[float] = None, multiplication: float = 1.0)
+
+   Combine one or more raw scans into a single ``ProcessedScan``, registered in
+   ``tavi_data.processed_scans``. Lives in ``tavi.library.data.combine``.
+
+   Which combination is run is read off the parameters rather than named, so a
+   caller describes the result it wants instead of picking a class:
+
+   .. list-table::
+      :header-rows: 1
+      :widths: 20 25 55
+
+      * - Given
+        - ``mode``
+        - Delegate
+      * - ``tol``
+        - ``RebinMode.TOLERANCE``
+        - ``ToleranceRebinOps(tavi_data, uuids, columns, norm, tol, multiplication)``
+      * - ``step``
+        - ``RebinMode.EQUAL_STEP``
+        - ``EqualStepRebinOps(tavi_data, uuids, columns, norm, step, start, finish, multiplication)``
+      * - neither
+        - ``RebinMode.NONE``
+        - ``AppendOp(tavi_data, uuids, columns)``
+
+   ``CombineOps`` holds no binning maths of its own. It resolves the mode,
+   refuses parameters that mode has no use for, delegates, and stores.
+
+   .. code-block:: python
+
+       result = CombineOps(
+           tavi_data,
+           [scan_a.uuid, scan_b.uuid],
+           ["qh", "detector", "monitor"],
+           norm="monitor",
+           step=0.1,
+           multiplication=10000,
+       ).exec()
+
+       assert tavi_data.fetch_by_uuid(result.uuid) is result
+       assert result.tavimeta.normalization == ("monitor", 10000)
+
+   :param tavi_data: The pool the origin uuids are looked up in, **and** the pool
+      the result is written into.
+   :type tavi_data: TaviData
+   :param uuids: Origin scan uuids, at least one, each of which must be a ``RawScan``.
+   :type uuids: Sequence[UUID]
+   :param columns: Names of the columns to carry over, at least two.
+   :type columns: Sequence[str]
+   :param norm: Column each bin is weighted by. Required by both rebins, and
+      refused in append mode, which has no bin to weigh.
+   :type norm: str
+   :param tol: Selects the tolerance rebin; how close two ``columns[0]`` values
+      must be to count as the same point. Mutually exclusive with ``step``.
+   :type tol: Optional[float]
+   :param step: Selects the equal-step rebin; the bin width.
+   :type step: Optional[float]
+   :param start: Outer edge of the first equal-step bin; read off the data if left out.
+   :type start: Optional[float]
+   :param finish: Outer edge of the last equal-step bin; read off the data if left out.
+   :type finish: Optional[float]
+   :param multiplication: Scale applied to the per-``norm`` y column and its
+      ``error``. Refused in append mode, which has nothing to scale.
+   :type multiplication: float
+
+   .. attribute:: mode
+
+      The ``RebinMode`` the parameters resolve to, so a GUI can ask a built
+      operation what it will do before running it. Raises ``ValueError`` if both
+      ``tol`` and ``step`` were given.
+
+   .. attribute:: columns
+
+      The columns the result carries, the first being the axis binned on.
+
+   .. method:: validate() -> None
+
+      Check that each parameter belongs to the mode it resolves to, then defer to
+      the delegate for everything else — positive, finite ``tol``/``step``/
+      ``multiplication``, ``finish > start``, ``norm`` among ``columns`` and not
+      the y column, no carried ``error`` column, and every origin carrying every
+      requested column. None of those checks is duplicated here.
+
+      :raises ValueError: If ``tol`` and ``step`` are both given; if no uuids were
+         given; if an origin is not a ``RawScan``; if ``start`` or ``finish`` was
+         given without a ``step``; or if ``norm`` or a ``multiplication`` other
+         than 1 was given with no rebin to apply it.
+      :raises KeyError: If a uuid is not present in the data pool, or an origin
+         does not carry one of the requested columns.
+
+   .. method:: exec() -> ProcessedScan
+
+      Calls ``validate()``, runs the delegate, hands the result to
+      ``register()`` and returns it. A refused combination stores nothing.
+
+      :returns: The delegate's ``ProcessedScan`` unaltered — its columns, its
+         ``error`` column where a rebin computed one, its
+         ``prov.contributing_scans`` and its friendly name.
+      :rtype: ProcessedScan
+
+   .. method:: register(processed_scan: ProcessedScan) -> None
+
+      Write a combined scan into ``tavi_data.processed_scans`` under its own
+      uuid. The one place the store is written, split out of ``exec`` so a
+      caller holding a scan this op produced earlier — one rebuilt from a
+      project file, say — can register it without re-running the combination.
+
+      :param processed_scan: The scan to store.
+      :type processed_scan: ProcessedScan
+
 Key Design Decisions
 --------------------
 
@@ -152,19 +277,50 @@ protecting callers, who are free to call ``validate()`` on its own beforehand.
 Producing is not storing
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-``exec`` returns a ``ProcessedScan`` and registers it nowhere. Putting it in
-``TaviData.processed_scans`` and announcing it is the model layer's job, because
-the model layer owns ``TaviData`` — an operation only ever reads the pool it was
-handed. A ``ProcessedScan`` may itself be an origin for the next combination,
-which is why uuids resolve through ``fetch_by_uuid`` rather than against
-``raw_scans`` alone.
+``exec`` returns a ``ProcessedScan`` and registers it nowhere. An operation only
+ever reads the pool it was handed, because the model layer owns ``TaviData``. A
+``ProcessedScan`` may itself be an origin for the next combination, which is why
+uuids resolve through ``fetch_by_uuid`` rather than against ``raw_scans`` alone.
 
-The rebinning operations are the exception: ``EqualStepRebinOps`` and
-``ToleranceRebinOps`` reduce each bin by summing raw counts against the monitor
-they were counted with, which is only meaningful on data nothing has already
-reduced, so they refuse any origin that is not a ``RawScan``. Chaining is still
-available in the other direction — a rebinned scan is an ordinary
-``ProcessedScan`` and may be appended, plotted or fitted like any other.
+``CombineOps`` is the one exception, and deliberately so. It is not another
+primitive but the entry point a caller reaches for when it wants a combined scan
+to *exist* in the project, and the rule above is what had left
+``TaviData.processed_scans`` written by nobody: every op returned a scan and
+every caller dropped it. Pushing the write into the one operation whose whole
+purpose is to produce a stored result keeps that store from depending on each
+caller remembering, while the primitives it delegates to stay pure and
+separately testable. The write itself lives in ``register()`` rather than inline
+in ``exec``, so that producing and storing stay separable even here: ``exec`` is
+``validate`` + delegate + ``register``, and a caller that already holds a
+combined scan can store it without recomputing it. Announcing the new scan
+remains the model layer's job — ``CombineOps`` writes the dict, it publishes no
+event.
+
+A separate exception, on a different axis: the rebinning operations
+``EqualStepRebinOps`` and ``ToleranceRebinOps`` reduce each bin by summing raw
+counts against the monitor they were counted with, which is only meaningful on
+data nothing has already reduced, so they refuse any origin that is not a
+``RawScan``. ``CombineOps`` applies that check in every mode, including the
+append one, so that one façade means raw scans whichever operation it resolves
+to. Chaining is still available in the other direction — a rebinned scan is an
+ordinary ``ProcessedScan`` and may be appended directly through ``AppendOp``,
+plotted or fitted like any other.
+
+The mode is inferred, and inapplicable parameters are refused
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``CombineOps`` takes no mode argument: ``tol`` means a tolerance rebin, ``step``
+an equal-step one, and neither a plain append. The parameters already say which
+combination is meant, and a separate mode argument would only create a second
+place for them to disagree — a ``RebinMode.TOLERANCE`` carrying a ``step`` has no
+reading. ``mode`` is still reported as a ``RebinMode`` so a caller can inspect a
+built operation.
+
+Having inferred it, ``CombineOps`` raises on any parameter that mode cannot use
+rather than ignoring it: ``start`` or ``finish`` without a ``step``, or ``norm``
+or a ``multiplication`` other than 1 with no rebin to apply them. Silently
+dropping a ``norm`` would hand back an unnormalized scan to a caller who asked
+for a normalized one, with nothing in the result saying so.
 
 Every origin must carry every requested column
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
