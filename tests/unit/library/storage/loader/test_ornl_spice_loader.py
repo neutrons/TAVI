@@ -7,8 +7,8 @@ import numpy as np
 import pytest
 
 from tavi.library.data.scan import ScanData
+from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader, ptax_countfile_loader
 from tavi.library.storage.local_file_store import LocalFileStore
-from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 
 
 def _repo_root() -> Path:
@@ -21,6 +21,18 @@ def _exp815_datafile(name: str) -> str:
 
 def _exp978_datafile(name: str) -> str:
     return str(_repo_root() / "test_data" / "IPTS-33597" / "exp978" / "Datafiles" / name)
+
+
+def _exp1018_datafile(name: str) -> str:
+    return str(_repo_root() / "test_data" / "IPTS-38051" / "exp1018" / "Datafiles" / name)
+
+
+def _exp970_datafile(name: str) -> str:
+    return str(_repo_root() / "test_data" / "exp970" / "Datafiles" / name)
+
+
+def _exp917_datafile(name: str) -> str:
+    return str(_repo_root() / "test_data" / "IPTS31591_HB1_exp0917" / "exp917" / "Datafiles" / name)
 
 
 def test_parse_metadata_extracts_core_fields_from_exp815() -> None:
@@ -246,3 +258,144 @@ def test_s1_background_given_the_scans_origin_shares_its_axis() -> None:
         np.radians(np.asarray(angles) - 29.5) * 2.0,
         atol=1e-12,
     )
+
+
+# ----------------------------------------------------------------------------------------------
+#                                PTAX countfile channels
+# ----------------------------------------------------------------------------------------------
+PXPYPZ_100MCU = [
+    "preset mcu 100",
+    "guide 16 parq",
+    "drive hguide 0 vguide 0",
+    "count",
+    "drive hguide 1.75 vguide -1.7",
+    "count",
+    "guide 18 perpqh",
+    "drive hguide 1.75 vguide -1.7",
+    "count",
+    "guide 18 perpq",
+    "drive hguide 1.75 vguide -1.7",
+    "count",
+]
+
+
+def test_ptax_countfile_loader_carries_the_guide_direction_into_later_counts() -> None:
+    assert ptax_countfile_loader(PXPYPZ_100MCU) == ["Px_NSF", "Px_SF", "Py_SF", "Pz_SF"]
+
+
+def test_ptax_countfile_loader_labels_nsf_after_sf() -> None:
+    countfile = ["preset time 10", ""]
+    for guide in ("guide 16 parq", "guide 18 perpqh", "guide 18 perpq"):
+        countfile += [guide, "drive hguide 1.75 vguide -1.7", "count", "drive hguide 0 vguide 0", "count", ""]
+
+    assert ptax_countfile_loader(countfile) == ["Px_SF", "Px_NSF", "Py_SF", "Py_NSF", "Pz_SF", "Pz_NSF"]
+
+
+def test_ptax_countfile_loader_treats_on_and_expressions_as_sf_and_off_as_nsf() -> None:
+    countfile = [
+        "guide 16 parq",
+        "drive hguide on vguide on",
+        "drive hguide 0.476*sqrt(@(ei))",
+        "count preset mcu 600",
+        "drive hguide off vguide off",
+        "count preset mcu 600",
+    ]
+
+    assert ptax_countfile_loader(countfile) == ["Px_SF", "Px_NSF"]
+
+
+def test_ptax_countfile_loader_reads_drive_with_a_missing_guide_name() -> None:
+    countfile = [
+        "guide 16 parq",
+        "drive hguide 0.476*sqrt(@(ei)) vguide 1.9",
+        "count preset mcu 60",
+        "drive 0 vguide 0",
+        "count preset mcu 60",
+    ]
+
+    assert ptax_countfile_loader(countfile) == ["Px_SF", "Px_NSF"]
+
+
+def test_ptax_countfile_loader_gives_none_for_a_count_before_the_guide_is_known() -> None:
+    countfile = ["drive hguide 0 vguide 0", "count", "guide 16 parq", "count"]
+
+    assert ptax_countfile_loader(countfile) == [None, "Px_NSF"]
+
+
+def test_parse_scan_values_copies_detectors_under_their_countfile_labels() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(_exp1018_datafile("HB1_exp1018_scan0021.dat"))
+
+    for idx, label in enumerate(["Px_NSF", "Px_SF", "Py_SF", "Pz_SF"], start=1):
+        np.testing.assert_array_equal(values.data[label], values.data[f"detector_{idx}"])
+    assert values.data["Px_NSF"][0] == 147.0
+
+
+def test_parse_scan_values_countfile_label_is_an_independent_copy() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(_exp1018_datafile("HB1_exp1018_scan0021.dat"))
+    values.data["Px_NSF"][0] = -1.0
+
+    assert values.data["detector_1"][0] == 147.0
+
+
+@pytest.mark.parametrize(
+    "datafile",
+    [_exp970_datafile("HB1_exp0970_scan0012.dat"), _exp917_datafile("HB1_exp0917_scan0059.dat")],
+)
+def test_parse_scan_values_labels_older_countfile_variants(datafile: str) -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(datafile)
+
+    np.testing.assert_array_equal(values.data["Px_SF"], values.data["detector_1"])
+    np.testing.assert_array_equal(values.data["Px_NSF"], values.data["detector_2"])
+
+
+def test_parse_scan_values_adds_no_countfile_labels_without_a_countfile() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(_exp815_datafile("HB1_exp0815_scan0003.dat"))
+
+    assert not [key for key in values.data if key.endswith(("_NSF", "_SF"))]
+
+
+def test_parse_scan_values_labels_what_it_can_when_counts_and_detectors_disagree(tmp_path: Path) -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+    scan_file = tmp_path / "HB1_exp9999_scan0001.dat"
+    scan_file.write_text(
+        "# preset_type = countfile\n"
+        "# countfile = guide 16 parq\n"
+        "# countfile = drive hguide 0 vguide 0\n"
+        "# countfile = count\n"
+        "# col_headers =\n"
+        "#   Pt. detector_1 detector_2\n"
+        "      1     10.0     20.0\n",
+    )
+
+    values = loader.parse_scan_values(str(scan_file))
+
+    np.testing.assert_array_equal(values.data["Px_NSF"], [10.0])
+    assert not [key for key in values.data if key.endswith("_SF")]
+
+
+def test_parse_scan_values_keeps_both_copies_of_a_repeated_channel(tmp_path: Path) -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+    scan_file = tmp_path / "HB1_exp9999_scan0002.dat"
+    scan_file.write_text(
+        "# preset_type = countfile\n"
+        "# countfile = guide 16 parq\n"
+        "# countfile = drive hguide 0 vguide 0\n"
+        "# countfile = count\n"
+        "# countfile = count\n"
+        "# col_headers =\n"
+        "#   Pt. detector_1 detector_2\n"
+        "      1     10.0     20.0\n",
+    )
+
+    values = loader.parse_scan_values(str(scan_file))
+
+    np.testing.assert_array_equal(values.data["Px_NSF"], [10.0])
+    np.testing.assert_array_equal(values.data["Px_NSF_2"], [20.0])

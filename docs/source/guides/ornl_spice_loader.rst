@@ -77,6 +77,48 @@ Method Notes
 * Converts SPICE column names into valid attribute-like keys.
 * Handles empty/invalid measurement sections by returning empty arrays.
 
+PTAX countfile channels
+^^^^^^^^^^^^^^^^^^^^^^^
+
+HB1 (PTAX) in polarization mode measures every scan point through a SPICE
+countfile, recorded in the header as ``# preset_type = countfile`` followed by
+one ``# countfile = ...`` line per command. Each ``count`` in that script is one
+measurement, and SPICE writes them out as ``detector_1 ... detector_n`` in
+script order. ``parse_scan_values`` labels each one with
+``ptax_countfile_loader`` and **copies** ``detector_i`` into a new column named
+``<Px|Py|Pz>_<NSF|SF>``. The original ``detector_i`` columns are kept.
+
+.. code-block:: text
+
+   guide 16 parq                  -> direction Px
+   drive hguide 0 vguide 0        -> flipper off
+   count                          -> Px_NSF  = copy of detector_1
+   drive hguide 1.75 vguide -1.7  -> flipper on
+   count                          -> Px_SF   = copy of detector_2
+   guide 18 perpqh
+   drive hguide 1.75 vguide -1.7
+   count                          -> Py_SF   = copy of detector_3
+   guide 18 perpq
+   drive hguide 1.75 vguide -1.7
+   count                          -> Pz_SF   = copy of detector_4
+
+* ``guide`` sets the direction from its last word: ``parq`` is ``Px``,
+  ``perpqh`` is ``Py`` and ``perpq`` is ``Pz``.
+* The latest ``drive`` line that names ``hguide`` or ``vguide`` sets the flipper
+  state. The count is NSF only when every guide that line names is ``0`` or
+  ``off``. Any other value means SF, including ``on``, a non-zero number or an
+  expression such as ``0.476*sqrt(@(ei))``. Only values that follow a guide name
+  are read, so the recorded typo ``drive 0 vguide 0`` still reads as NSF.
+* ``count`` with arguments (``count preset mcu 600``) is still a count.
+* Direction and flipper state carry forward to later counts. A count before
+  both are known gets no label, and the counts after it still line up with
+  their own detectors.
+* If a label repeats, the later copies get ``_2``, ``_3``, ... appended. A
+  mismatch between the number of counts and detectors is logged, and every pair
+  that lines up is still labelled.
+
+.. autofunction:: tavi.library.storage.loader.ornl_spice_loader.ptax_countfile_loader
+
 ``parse_metadata``
 ------------------
 
