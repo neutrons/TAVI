@@ -172,9 +172,8 @@ def test_register_stores_a_scan_without_recombining():
     combined = op.exec()
     tavi_data.processed_scans.clear()
 
-    returned = op.register(combined)
+    op.register(combined)
 
-    assert returned is combined
     assert tavi_data.processed_scans == {combined.uuid: combined}
 
 

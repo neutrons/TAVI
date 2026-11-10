@@ -121,19 +121,19 @@ class CombineOps(ProcessOps):
         name - and is returned as well as stored, so a caller need not look it back up.
         """
         self.validate()
+        processed_scan = self._resolve_delegate().exec()
+        self.register(processed_scan)
+        return processed_scan
 
-        return self.register(self._resolve_delegate().exec())
-
-    def register(self, processed_scan: ProcessedScan) -> ProcessedScan:
+    def register(self, processed_scan: ProcessedScan) -> None:
         """
-        Write a combined scan into ``tavi_data.processed_scans`` under its own uuid and hand it back.
+        Write a combined scan into ``tavi_data.processed_scans`` under its own uuid.
 
         Kept apart from ``exec`` so that the store write has one named place: a caller
         holding a scan this op produced earlier - one rebuilt from a project file, say -
         can register it without re-running the combination.
         """
         self.tavi_data.processed_scans[processed_scan.uuid] = processed_scan
-        return processed_scan
 
     def _resolve_delegate(self) -> ProcessOps:
         """

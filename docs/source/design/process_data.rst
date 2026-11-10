@@ -233,26 +233,23 @@ CombineOps
 
    .. method:: exec() -> ProcessedScan
 
-      Calls ``validate()``, runs the delegate, and passes the result through
-      ``register()`` before returning it. A refused combination stores nothing.
+      Calls ``validate()``, runs the delegate, hands the result to
+      ``register()`` and returns it. A refused combination stores nothing.
 
       :returns: The delegate's ``ProcessedScan`` unaltered — its columns, its
          ``error`` column where a rebin computed one, its
          ``prov.contributing_scans`` and its friendly name.
       :rtype: ProcessedScan
 
-   .. method:: register(processed_scan: ProcessedScan) -> ProcessedScan
+   .. method:: register(processed_scan: ProcessedScan) -> None
 
       Write a combined scan into ``tavi_data.processed_scans`` under its own
-      uuid and return it. The one place the store is written, split out of
-      ``exec`` so a caller holding a scan this op produced earlier — one
-      rebuilt from a project file, say — can register it without re-running the
-      combination.
+      uuid. The one place the store is written, split out of ``exec`` so a
+      caller holding a scan this op produced earlier — one rebuilt from a
+      project file, say — can register it without re-running the combination.
 
       :param processed_scan: The scan to store.
       :type processed_scan: ProcessedScan
-      :returns: The same scan, unaltered.
-      :rtype: ProcessedScan
 
 Key Design Decisions
 --------------------
