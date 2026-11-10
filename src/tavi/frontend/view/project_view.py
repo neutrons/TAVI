@@ -193,7 +193,7 @@ class TreeViewWidget(QWidget):
     ROOT_PATHS = ("/Raw", "/Combined", "/Fits", "/Plots")
 
     # The roots whose rows hold a name of the project's own making, and so one a user may replace.
-    RENAMEABLE_ROOTS = ("/Plots", "/Fits")
+    RENAMEABLE_ROOTS = ("/Combined", "/Plots", "/Fits")
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -258,7 +258,7 @@ class TreeViewWidget(QWidget):
         menu = QMenu()
         rename_action = None
         delete_action = None
-        # Only plots can be renamed; a scan is named by its file and a fit by the runs it covers.
+        # A raw scan is named by its file, so only rows the project named itself can be renamed.
         rename_target = self._rename_target(to_delete)
         if rename_target is not None:
             rename_action = menu.addAction("Rename...")
@@ -289,13 +289,13 @@ class TreeViewWidget(QWidget):
                 self.remove_requested.emit(uuids)
 
     def _rename_target(self, indexes: list[QModelIndex]) -> Optional[QModelIndex]:
-        """Return the single plot or fit row the menu may offer to rename, else None."""
+        """Return the single combined scan, plot or fit row the menu may offer to rename, else None."""
         if len(indexes) != 1:
             return None
         index = indexes[0]
         # A folder carries no uuid, and a raw scan is named by the file it was loaded from, so
         # renaming one would only disagree with its own data. Which root a row sits under is
-        # what tells the three apart.
+        # what tells them apart.
         if not self.treeModel.data(index, Qt.UserRole + 1):
             return None
         if self._root_of(index) not in [self.path_map[root] for root in self.RENAMEABLE_ROOTS]:

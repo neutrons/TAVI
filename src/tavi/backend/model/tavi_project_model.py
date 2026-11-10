@@ -1,5 +1,6 @@
 """Tavi Project."""
 
+import dataclasses
 import logging
 from collections.abc import Callable
 from typing import Optional
@@ -193,7 +194,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.publish(AddPlotEvent(uuid=e.plot.uuid, friendly_name=e.plot.display_name, friendly_path=""))
 
     def rename_item(self, uuid: UUID, name: str) -> ModelResponse:
-        """Give a plot or fit a name of the user's choosing, and announce what it is now called."""
+        """Give a plot, fit or combined scan a name of the user's choosing, and announce what it is now called."""
         name = name.strip()
         # A blank name would read as "go back to the derived name", which renaming does not offer.
         if not name:
@@ -201,14 +202,16 @@ class TaviProjectModel(TaviProjectInterface):
 
         # Only TaviData knows what type a tree uuid is, which is why the tree asks to rename an
         # item and this model narrows it - the same split as FocusEvent.
-        for store in (self.tavi_data.plots, self.tavi_data.fits):
+        # A combined scan is named by the scans it joined, which only the user can improve on, so
+        # unlike a raw scan it has no file whose name it would disagree with.
+        for store in (self.tavi_data.processed_scans, self.tavi_data.plots, self.tavi_data.fits):
             item = store.get(uuid)
             if item is not None:
-                store[uuid] = item.model_copy(update={"name": name})
+                store[uuid] = _with_name(item, name)
                 self._event_broker.publish(SyncItemNameEvent(uuid=uuid, friendly_name=name))
                 return ModelResponse(code=ResponseCode.OK)
 
-        return ModelResponse(code=ResponseCode.ERROR, message=f"No plot or fit {uuid.value} to rename.")
+        return ModelResponse(code=ResponseCode.ERROR, message=f"No plot, fit or combined scan {uuid.value} to rename.")
 
     def _handle_save_fit_event(self, e: SaveFitEvent) -> None:
         """
@@ -345,3 +348,11 @@ class TaviProjectModel(TaviProjectInterface):
             }
             self._event_broker.publish(FocusFitEvent(fits=fits, scans=fit_scans))
             self._event_broker.publish(RecomputeFitEvent(fits=fits))
+
+
+def _with_name(item: ProcessedScan | Plot | FitEntry, name: str) -> ProcessedScan | Plot | FitEntry:
+    """Return a copy of a renameable item carrying ``name``, leaving the stored one untouched."""
+    # A scan keeps its name in tavimeta, like every scan, rather than in a name field.
+    if isinstance(item, ProcessedScan):
+        return item.model_copy(update={"tavimeta": dataclasses.replace(item.tavimeta, friendly_name=name)})
+    return item.model_copy(update={"name": name})

@@ -816,6 +816,30 @@ def test_context_menu_offers_rename_for_a_fit(qtbot, monkeypatch):
     assert "Rename..." in offered
 
 
+
+def test_context_menu_offers_rename_for_a_combined_scan(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_combined(UUID(value="c1"), "scan1+scan2", "")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="c1")]), "Rename...", "x")
+
+    assert "Rename..." in offered
+
+
+def test_renaming_a_combined_scan_emits_the_typed_name(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    uuid = UUID(value="c1")
+    w.add_combined(uuid, "scan1+scan2", "")
+    requested = []
+    w.rename_requested.connect(lambda *args: requested.append(args))
+
+    _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[uuid]), "Rename...", "Al powder")
+
+    assert requested == [(uuid, "Al powder")]
+    assert w.uuid_map[uuid].text() == "*scan1+scan2"
+
 def test_context_menu_does_not_offer_rename_for_a_raw_scan(qtbot, monkeypatch):
     w = TreeViewWidget()
     qtbot.addWidget(w)

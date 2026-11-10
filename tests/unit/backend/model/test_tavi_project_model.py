@@ -847,6 +847,76 @@ def test_rename_item_refuses_a_raw_scan(model):
     assert received == []
 
 
+
+def test_rename_item_stores_a_combined_scans_new_name(model):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    response = model.rename_item(scan.uuid, "  Al powder, both passes  ")
+
+    assert response.code == ResponseCode.OK
+    assert model.tavi_data.processed_scans[scan.uuid].tavimeta.friendly_name == "Al powder, both passes"
+
+
+def test_rename_item_publishes_the_same_event_for_a_combined_scan(model):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    received = []
+    EventBroker().register(SyncItemNameEvent, received.append)
+    model.rename_item(scan.uuid, "Al powder")
+
+    assert [(e.uuid, e.friendly_name) for e in received] == [(scan.uuid, "Al powder")]
+
+
+def test_rename_item_leaves_a_combined_scans_data_and_provenance_untouched(model):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    model.rename_item(scan.uuid, "Al powder")
+
+    renamed = model.tavi_data.processed_scans[scan.uuid]
+    assert renamed.data == scan.data
+    assert renamed.prov == scan.prov
+    assert renamed.tavimeta.default_axis == scan.tavimeta.default_axis
+
+
+def test_rename_item_does_not_mutate_the_combined_scan_it_replaces(model):
+    """The stored scan is replaced, not edited, so a copy an event already carried keeps its name."""
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    model.rename_item(scan.uuid, "Al powder")
+
+    assert scan.tavimeta.friendly_name == "scan1+scan2"
+
+
+@pytest.mark.parametrize("blank", ["", "   "])
+def test_rename_item_rejects_a_blank_name_for_a_combined_scan(model, blank):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    response = model.rename_item(scan.uuid, blank)
+
+    assert response.code == ResponseCode.ERROR
+    assert model.tavi_data.processed_scans[scan.uuid].tavimeta.friendly_name == "scan1+scan2"
+
+
+def test_a_renamed_combined_scan_is_focused_under_its_new_name(model):
+    plot_model = PlotModel(
+        model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle()
+    )
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+    model.rename_item(scan.uuid, "Al powder")
+
+    received = []
+    EventBroker().register(FocusPlotEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[scan.uuid]))
+
+    assert received[0].plots[0].series[0].run_name == "Al powder"
+    assert plot_model._focused_uuids() == [scan.uuid]
+
 def test_renamed_plot_keeps_its_name_when_saved_again(model):
     """Restaging and resaving a renamed plot must not relabel it after its runs."""
     plot = make_plot(series=[make_series("run1")])

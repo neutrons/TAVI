@@ -104,7 +104,7 @@ class SyncItemNameEvent(Event):
     Announce that an item already listed in the Project is now known by a different name.
 
     Published by ``TaviProjectModel.rename_item`` once the new name is stored. One event covers
-    plots and fits alike: a renamed row is a renamed row, and the tree relabels it the same way
+    plots, fits and combined scans alike: a renamed row is a renamed row, and the tree relabels it the same way
     whichever it is. The tree waits for this rather than relabelling the row itself, so it can
     never show a name the project does not hold.
     """
