@@ -130,8 +130,9 @@ describe the series an edit would change:
     fills in the channel and value.
 
 ``set_preset_channel_options(columns)``
-    Called by ``PlotterPresenter.handle_raw_scan_focus`` (``FocusRawScanEvent``).
-    Repopulates the channel dropdown from the first focused scan's columns.
+    Called by ``PlotterPresenter.handle_scan_focus`` (``FocusRawScanEvent`` or
+    ``FocusProcessedScanEvent``). Repopulates the channel dropdown from the first
+    focused scan's columns.
 
 ``reset_controls_to_defaults()``
     Called by ``PlotterPresenter.handle_clear_focus`` (``ClearFocusEvent``), before

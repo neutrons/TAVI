@@ -89,7 +89,8 @@ This protects against patterns like:
 
 Note that legitimate chains count against this budget. The deepest chains in
 TAVI are a fresh tree selection, which runs ``FocusEvent`` (1) →
-``FocusRawScanEvent`` or ``FocusFitEvent`` (2) → ``FocusPlotEvent`` (3) →
+``FocusRawScanEvent``, ``FocusProcessedScanEvent`` or ``FocusFitEvent`` (2) →
+``FocusPlotEvent`` (3) →
 ``StageSeriesEvent`` (4) → ``SyncStageEvent`` (5); see
 :doc:`../design/frontend/visualization_flow`. ``SyncStageEvent`` handlers
 therefore run at the limit and must not publish anything themselves. Staging
@@ -183,8 +184,8 @@ Event lexicon
    * - Focus
      - Add items to what the user is looking at. Focus events only ever add;
        they never replace what is already focused.
-     - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusPlotEvent``,
-       ``FocusFitEvent``
+     - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusProcessedScanEvent``,
+       ``FocusPlotEvent``, ``FocusFitEvent``
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``
@@ -320,8 +321,13 @@ Event catalog
      - Drop the old selection, stage included
    * - ``FocusRawScanEvent``
      - ``TaviProjectModel``
-     - ``PlotModel``, ``PlotterPresenter``
+     - ``PlotModel``, ``PlotterPresenter``, ``CombinePresenter``
      - Add raw scans; ``PlotModel`` builds preview plots
+   * - ``FocusProcessedScanEvent``
+     - ``TaviProjectModel``
+     - ``PlotModel``, ``PlotterPresenter``
+     - Add processed scans; ``PlotModel`` builds preview plots. Not
+       ``CombinePresenter``: a combination takes raw scans only
    * - ``FocusPlotEvent``
      - ``TaviProjectModel``, ``PlotModel``
      - ``PlotModel``, ``PlotterPresenter``

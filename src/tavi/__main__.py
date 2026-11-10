@@ -42,7 +42,11 @@ def execute() -> None:
 
     filestore = LocalFileStore()
     tavi_project_model = TaviProjectModel(filestore)
-    plot_model = PlotModel(tavi_project_model.get_plots_handle(), tavi_project_model.get_raw_scans_handle())
+    plot_model = PlotModel(
+        tavi_project_model.get_plots_handle(),
+        tavi_project_model.get_raw_scans_handle(),
+        tavi_project_model.get_processed_scans_handle(),
+    )
     fit_model = FitModel(tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_fits_handle())
 
     filter_model = FilterModel(tavi_project_model.get_filters_handle())

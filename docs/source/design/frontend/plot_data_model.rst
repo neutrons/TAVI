@@ -346,7 +346,7 @@ Plot is a view, scans are the data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``Plot``/``PlotSeries`` belong to the presentation/composition layer;
-``RawScan`` (and, eventually, ``ProcessedScan``) belong to the data layer.
+``RawScan`` and ``ProcessedScan`` belong to the data layer.
 Turning one into the other is a pure function (``resolve_series``), never a
 stateful lookup a presenter or view performs on its own.
 

@@ -15,7 +15,7 @@ from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, RawScan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
@@ -40,6 +40,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
     SaveFitEvent,
@@ -85,6 +86,10 @@ class TaviProjectModel(TaviProjectInterface):
     def get_raw_scans_handle(self) -> dict:
         """Return reference to the raw_scans dict."""
         return self.tavi_data.raw_scans
+
+    def get_processed_scans_handle(self) -> dict:
+        """Return reference to the processed_scans dict."""
+        return self.tavi_data.processed_scans
 
     def get_fits_handle(self) -> dict:
         """Return reference to the fits dict."""
@@ -290,6 +295,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.publish(ClearFocusEvent())
         ids = e.ids
         raw_scans: list[RawScan] = []
+        processed_scans: list[ProcessedScan] = []
         plots: list[Plot] = []
         fits: list[FitEntry] = []
         for uuid in ids:
@@ -299,6 +305,8 @@ class TaviProjectModel(TaviProjectInterface):
             inst = self.tavi_data.fetch_by_uuid(uuid)
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)
+            if isinstance(inst, ProcessedScan):
+                processed_scans.append(inst)
             if isinstance(inst, Plot):
                 plots.append(inst)
             if isinstance(inst, FitEntry):
@@ -316,8 +324,11 @@ class TaviProjectModel(TaviProjectInterface):
 
         if raw_scans:
             self._event_broker.publish(FocusRawScanEvent(scans=raw_scans))
+        if processed_scans:
+            self._event_broker.publish(FocusProcessedScanEvent(scans=processed_scans))
         if plots:
-            scans = scans_for_plots(plots, self.tavi_data.raw_scans)
+            # A saved plot may hold a series focused from a processed scan, so resolve against both stores.
+            scans = scans_for_plots(plots, self.tavi_data.all_scans())
             self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans))
         if fits:
             # FocusFitEvent (UI state) is published fully - every subscriber done - before

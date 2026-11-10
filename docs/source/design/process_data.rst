@@ -335,6 +335,19 @@ the view works in scan **names**, the model in **uuids**.
         Model->>Broker: publish AddProcessedScanEvent
         Broker-->>Tree: AddProcessedScanEvent
         Tree->>Tree: add_combined() — a row under /Combined
+        User->>Tree: select the Combined row
+        Tree->>Broker: publish FocusEvent(ids)
+        Broker-->>Broker: TaviProjectModel routes it as FocusProcessedScanEvent
+        Note over Panel: not subscribed — a processed scan<br/>cannot be staged to combine again
+
+Selecting a row under ``/Combined`` focuses the processed scan the same way a
+raw one is focused: ``TaviProjectModel`` publishes ``FocusProcessedScanEvent``,
+``PlotModel`` answers with a preview plot of its ``default_axis`` — the
+combination's x and y columns — and from there it is staged, edited, saved and
+shown in the data tab like any raw scan (see
+:doc:`frontend/visualization_flow`). It travels on its own event rather than
+``FocusRawScanEvent`` because ``CombinePresenter`` subscribes to that one, and
+``CombineOps`` refuses processed origins.
 
 The staged list is the user's own basket, so it outlives a selection: a
 ``ClearFocusEvent`` forgets only which scans *Add Scans* would stage next. A

@@ -50,7 +50,11 @@ class TestLoadRawScans(IntegrationTest):
 
         filestore = LocalFileStore()
         tavi_project_model = TaviProjectModel(filestore)
-        plot_model = PlotModel(tavi_project_model.get_plots_handle(), tavi_project_model.get_raw_scans_handle())
+        plot_model = PlotModel(
+            tavi_project_model.get_plots_handle(),
+            tavi_project_model.get_raw_scans_handle(),
+            tavi_project_model.get_processed_scans_handle(),
+        )
         fit_model = FitModel(tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_fits_handle())
         application_model = ApplicationModel(filestore)
 

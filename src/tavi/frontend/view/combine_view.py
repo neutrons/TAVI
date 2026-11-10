@@ -28,6 +28,15 @@ class CombineView(QWidget):
     # Tab order, so the visible tab names the mode without the two having to be kept in step by hand.
     _REBIN_MODE_BY_TAB = (RebinMode.EQUAL_STEP, RebinMode.TOLERANCE)
 
+    # How each rebin lays out its bins, shown beneath the tabs for whichever one is visible.
+    REBIN_NOTES = {
+        RebinMode.EQUAL_STEP: (
+            "*When Start/Stop are set to None, bin edges are [min - step/2, max + step/2].\n"
+            "*When Start/Stop are specified, they define bin edge."
+        ),
+        RebinMode.TOLERANCE: "*Bin edges are [min - step/2, max + step/2].",
+    }
+
     add_scans_clicked = Signal()
     remove_scans_clicked = Signal(list)
     append_clicked = Signal()
@@ -125,8 +134,10 @@ class CombineView(QWidget):
         # outright - so the tab the user is on is the whole of what they're asking for.
         self.rebin_tabs = QTabWidget()
 
-        self.rebin_start_edit = self._number_edit("0")
-        self.rebin_stop_edit = self._number_edit("2")
+        # Blank by default: an edge left out is read off the data, so the grid covers every point
+        # of whatever is combined instead of a range that only suited some earlier experiment.
+        self.rebin_start_edit = self._number_edit("", placeholder="None")
+        self.rebin_stop_edit = self._number_edit("", placeholder="None")
         self.rebin_step_edit = self._number_edit("0.02")
         self.rebin_tabs.addTab(
             self._field_page(
@@ -141,12 +152,28 @@ class CombineView(QWidget):
         self.rebin_tabs.addTab(self._field_page(("Tolerance", self.rebin_tolerance_edit)), "Tolerance")
 
         box_layout.addWidget(self.rebin_tabs)
+
+        # One label beneath the tabs rather than one on each page: a tab widget keeps every page at
+        # one height and never grows for wrapped text, so a note on a page was cut off. Wrapped so
+        # it follows the panel's width instead of holding the panel open, and grey so it reads as
+        # guidance rather than as one of the inputs.
+        self.rebin_note = QLabel()
+        self.rebin_note.setWordWrap(True)
+        self.rebin_note.setStyleSheet("color: gray")
+        box_layout.addWidget(self.rebin_note)
+        self.rebin_tabs.currentChanged.connect(self._sync_rebin_note)
+        self._sync_rebin_note(self.rebin_tabs.currentIndex())
         return box
 
+    def _sync_rebin_note(self, index: int) -> None:
+        """Show the note for the rebin whose tab is visible."""
+        self.rebin_note.setText(self.REBIN_NOTES[self._REBIN_MODE_BY_TAB[index]])
+
     @staticmethod
-    def _number_edit(default: str) -> QLineEdit:
+    def _number_edit(default: str, placeholder: str = "") -> QLineEdit:
         """A field holding one number - sized for one rather than stretching across the panel."""
         edit = QLineEdit(default)
+        edit.setPlaceholderText(placeholder)
         edit.setFixedWidth(70)
         return edit
 

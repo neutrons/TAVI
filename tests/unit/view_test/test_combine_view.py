@@ -209,9 +209,51 @@ def test_rebin_mode_follows_the_visible_tab(view):
 
 
 def test_equal_step_default_field_values(view):
-    assert view.rebin_start() == "0"
-    assert view.rebin_stop() == "2"
+    """Start and Stop default to none, so the grid's edges are read off the data."""
+    assert view.rebin_start() == ""
+    assert view.rebin_stop() == ""
     assert view.rebin_step() == "0.02"
+
+
+def test_rebin_note_explains_the_equal_step_bin_edges(view):
+    view.rebin_tabs.setCurrentIndex(0)
+
+    assert view.rebin_note.text() == (
+        "*When Start/Stop are set to None, bin edges are [min - step/2, max + step/2].\n"
+        "*When Start/Stop are specified, they define bin edge."
+    )
+
+
+def test_rebin_note_explains_the_tolerance_bin_edges(view):
+    view.rebin_tabs.setCurrentIndex(1)
+
+    assert view.rebin_note.text() == "*Bin edges are [min - step/2, max + step/2]."
+
+
+def test_rebin_note_follows_the_visible_tab_back_and_forth(view):
+    view.rebin_tabs.setCurrentIndex(1)
+    view.rebin_tabs.setCurrentIndex(0)
+
+    assert view.rebin_note.text() == view.REBIN_NOTES[RebinMode.EQUAL_STEP]
+
+
+def test_every_rebin_tab_has_a_note(view):
+    assert set(view.REBIN_NOTES) == set(view._REBIN_MODE_BY_TAB)
+
+
+def test_rebin_note_sits_directly_under_the_rebin_tabs(view):
+    box_layout = view.rebin_tabs.parentWidget().layout()
+
+    assert box_layout.indexOf(view.rebin_note) == box_layout.indexOf(view.rebin_tabs) + 1
+
+
+def test_rebin_note_is_grey(view):
+    assert "color: gray" in view.rebin_note.styleSheet()
+
+
+def test_equal_step_blank_edges_show_none_as_a_placeholder(view):
+    assert view.rebin_start_edit.placeholderText() == "None"
+    assert view.rebin_stop_edit.placeholderText() == "None"
 
 
 def test_tolerance_default_field_value(view):

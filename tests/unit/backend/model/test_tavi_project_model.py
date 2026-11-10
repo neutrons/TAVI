@@ -22,7 +22,7 @@ from tavi.library.data.fit_entry import (
 )
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFitEvent,
@@ -44,6 +44,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
     SaveFitEvent,
@@ -75,6 +76,16 @@ def make_raw_scan(uuid_val="scan-001"):
         prov=Provenance(raw_file="scan.dat", contributing_scans={UUID(value=uuid_val): 1}),
     )
 
+
+
+def make_processed_scan(uuid_val="combined-001"):
+    return ProcessedScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0, 3.0, 4.0], "en": [3.0, 4.0, 5.0, 6.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name="scan1+scan2", friendly_path=""),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1, UUID(value="scan-002"): 1}),
+    )
 
 def make_plot(uuid_val="plot-001", series=None, fits=None):
     if series is None:
@@ -388,6 +399,79 @@ def test_handle_focus_event_raw_scan_does_not_publish_plot_event(model):
     EventBroker().publish(FocusEvent(ids=[scan.uuid]))
 
     assert len(plot_received) == 0
+
+
+# ---------------------------------------------------------------------------
+# _handle_focus_event — processed scan routing
+# ---------------------------------------------------------------------------
+
+
+def test_handle_focus_event_processed_scan_publishes_processed_scan_focus_event(model):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    received = []
+    EventBroker().register(FocusProcessedScanEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[scan.uuid]))
+
+    assert len(received) == 1
+    assert received[0].scans[0].uuid == scan.uuid
+
+
+def test_handle_focus_event_processed_scan_is_not_focused_as_a_raw_scan(model):
+    """The combine panel stages what FocusRawScanEvent carries, and a combination refuses processed origins."""
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    raw_received = []
+    EventBroker().register(FocusRawScanEvent, raw_received.append)
+    EventBroker().publish(FocusEvent(ids=[scan.uuid]))
+
+    assert raw_received == []
+
+
+def test_handle_focus_event_raw_and_processed_scans_are_focused_raw_first(model):
+    raw = make_raw_scan()
+    processed = make_processed_scan()
+    model.tavi_data.raw_scans[raw.uuid] = raw
+    model.tavi_data.processed_scans[processed.uuid] = processed
+
+    received = []
+    EventBroker().register(FocusRawScanEvent, received.append)
+    EventBroker().register(FocusProcessedScanEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[processed.uuid, raw.uuid]))
+
+    assert [type(e) for e in received] == [FocusRawScanEvent, FocusProcessedScanEvent]
+
+
+def test_handle_focus_event_plot_resolves_a_processed_series_against_processed_scans(model):
+    """A plot saved while a processed scan was focused refocuses without a KeyError."""
+    processed = make_processed_scan()
+    model.tavi_data.processed_scans[processed.uuid] = processed
+    plot = make_plot(series=[make_series("scan1+scan2", uuid_val=processed.uuid.value)])
+    model.tavi_data.plots[plot.uuid] = plot
+
+    received = []
+    EventBroker().register(FocusPlotEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[plot.uuid]))
+
+    assert received[0].scans[processed.uuid].uuid == processed.uuid
+
+
+def test_focusing_a_processed_scan_draws_it_through_plot_model(model):
+    """The whole chain: a tree click on a Combined row ends in a preview plot of that scan."""
+    plot_model = PlotModel(
+        model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle()
+    )
+    processed = make_processed_scan()
+    model.tavi_data.processed_scans[processed.uuid] = processed
+
+    received = []
+    EventBroker().register(FocusPlotEvent, received.append)
+    EventBroker().publish(FocusEvent(ids=[processed.uuid]))
+
+    assert [s.source_scan_uuid for s in received[0].plots[0].series] == [processed.uuid]
+    assert plot_model._focused_uuids() == [processed.uuid]
 
 
 # ---------------------------------------------------------------------------
