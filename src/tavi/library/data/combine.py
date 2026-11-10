@@ -2,8 +2,6 @@
 
 from typing import Optional, Sequence
 
-from pydantic import BaseModel, ConfigDict
-
 from tavi.library.data.algorithms.append_ops import AppendOp
 from tavi.library.data.algorithms.bin_by_tol import ToleranceRebinOps
 from tavi.library.data.algorithms.equal_step_bin import EqualStepRebinOps
@@ -15,33 +13,6 @@ from tavi.library.data.scan import (
     RawScan,
 )
 from tavi.library.data.tavi_data import TaviData
-
-
-class CombineRequest(BaseModel):
-    """
-    What the user asked a combination to be, as they expressed it.
-
-    The numbers are the text they were typed as, and the model that runs this parses them, so a
-    half-typed field is reported as the error it is rather than refused at the request's door.
-    ``rebin_mode`` names which of them the combination actually reads: a tolerance, or a step and
-    the grid edges, or - for a plain append - none of them.
-    """
-
-    source_scan_uuids: list[UUID]
-    x_axis: str
-    y_axis: str
-    # The column the rebins weigh by - the monitor or time the points were counted against.
-    # Blank is no normalization, which only an append may ask for.
-    normalization: str = ""
-    multiplication: str = "1"
-    rebin_mode: RebinMode = RebinMode.NONE
-    tolerance: str = ""
-    step: str = ""
-    # Blank edges leave the grid to the data, which is what ``CombineOps`` reads ``None`` as.
-    start: str = ""
-    finish: str = ""
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class CombineOps(ProcessOps):
@@ -126,9 +97,8 @@ class CombineOps(ProcessOps):
 
         if mode is not RebinMode.EQUAL_STEP:
             # edges are positions on a grid, and only a step lays one down.
-            given = [name for name, value in (("start", self.start), ("finish", self.finish)) if value is not None]
-            if given:
-                raise ValueError(f"Combine {' and '.join(given)} only applies to an equal-step rebin; pass a step.")
+            if self.start is not None or self.finish is not None:
+                raise ValueError("Combine start and finish only applies to an equal-step rebin; pass a step.")
 
         # the rebins refuse an already-reduced origin themselves, but the append does not;
         # checked here so that one façade means raw scans whichever mode it resolves to.
@@ -151,10 +121,19 @@ class CombineOps(ProcessOps):
         name - and is returned as well as stored, so a caller need not look it back up.
         """
         self.validate()
-
         processed_scan = self._resolve_delegate().exec()
-        self.tavi_data.processed_scans[processed_scan.uuid] = processed_scan
+        self.register(processed_scan)
         return processed_scan
+
+    def register(self, processed_scan: ProcessedScan) -> None:
+        """
+        Write a combined scan into ``tavi_data.processed_scans`` under its own uuid.
+
+        Kept apart from ``exec`` so that the store write has one named place: a caller
+        holding a scan this op produced earlier - one rebuilt from a project file, say -
+        can register it without re-running the combination.
+        """
+        self.tavi_data.processed_scans[processed_scan.uuid] = processed_scan
 
     def _resolve_delegate(self) -> ProcessOps:
         """

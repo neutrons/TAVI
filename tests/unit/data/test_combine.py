@@ -164,6 +164,19 @@ def test_two_combines_of_the_same_scans_are_stored_side_by_side():
     assert set(tavi_data.processed_scans) == {once.uuid, twice.uuid}
 
 
+def test_register_stores_a_scan_without_recombining():
+    """The store write is its own method, so a caller already holding a result can file it directly."""
+    scan = make_countable_scan()
+    tavi_data = make_tavi_data(scan)
+    op = CombineOps(tavi_data, [scan.uuid], COLUMNS, norm="monitor", tol=0.5)
+    combined = op.exec()
+    tavi_data.processed_scans.clear()
+
+    op.register(combined)
+
+    assert tavi_data.processed_scans == {combined.uuid: combined}
+
+
 def test_validate_on_its_own_stores_nothing():
     """A GUI may offer the operation before the user commits to it, which must leave no trace."""
     scan = make_countable_scan()

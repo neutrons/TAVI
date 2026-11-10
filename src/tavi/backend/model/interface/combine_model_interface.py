@@ -3,7 +3,7 @@
 import abc
 
 from tavi.backend.model.interface.model_interface import Model
-from tavi.library.data.combine import CombineRequest
+from tavi.library.data.combine_request import CombineRequest
 from tavi.library.data.model_response import ModelResponse
 from tavi.meta.multithreading.proxy import Proxy
 

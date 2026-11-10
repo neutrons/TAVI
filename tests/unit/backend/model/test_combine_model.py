@@ -3,7 +3,7 @@
 import pytest
 
 from tavi.backend.model.combine_model import CombineModel
-from tavi.library.data.combine import CombineRequest
+from tavi.library.data.combine_request import CombineRequest
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.scan import (

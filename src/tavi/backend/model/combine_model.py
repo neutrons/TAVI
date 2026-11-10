@@ -3,7 +3,8 @@
 from typing import Optional
 
 from tavi.backend.model.interface.combine_model_interface import CombineModelInterface
-from tavi.library.data.combine import CombineOps, CombineRequest
+from tavi.library.data.combine import CombineOps
+from tavi.library.data.combine_request import CombineRequest
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.scan import ProcessedScan
