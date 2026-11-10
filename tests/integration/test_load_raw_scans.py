@@ -111,11 +111,16 @@ class TestLoadRawScans(IntegrationTest):
 
         project_view = main_presenter.project_view
         tree_widget = project_view.tree_widget
-        
-        qtbot.wait(50)
-        
-        # confirm it actually loaded a file.
-        assert UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c") in tree_widget.uuid_map, tree_widget.uuid_map
+
+        # The dialog's choice is persisted before the load starts, so a wrong pick fails here, by
+        # name, instead of surfacing later as an empty tree.
+        expected_folder = Resource.getPath("/inputs/integration/load/datafiles")
+        assert filestore.read_user_data_file("last_experiment_folder.txt") == expected_folder
+
+        # The load runs on a model worker thread and reaches the tree through a queued signal, so
+        # wait for the row rather than for a fixed time a slower machine can outrun.
+        scan_uuid = UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c")
+        qtbot.waitUntil(lambda: scan_uuid in tree_widget.uuid_map, timeout=100)
         self.test_summary.SUCCESS()
         
 
