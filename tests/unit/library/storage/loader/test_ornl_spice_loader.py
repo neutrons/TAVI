@@ -7,8 +7,8 @@ import numpy as np
 import pytest
 
 from tavi.library.data.scan import ScanData
+from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader, ptax_countfile_loader
 from tavi.library.storage.local_file_store import LocalFileStore
-from tavi.library.storage.loader.ornl_spice_loader import ORNLSpiceLoader
 
 
 def _repo_root() -> Path:
@@ -21,6 +21,10 @@ def _exp815_datafile(name: str) -> str:
 
 def _exp978_datafile(name: str) -> str:
     return str(_repo_root() / "test_data" / "IPTS-33597" / "exp978" / "Datafiles" / name)
+
+
+def _exp1018_datafile(name: str) -> str:
+    return str(_repo_root() / "test_data" / "IPTS-38051" / "exp1018" / "Datafiles" / name)
 
 
 def test_parse_metadata_extracts_core_fields_from_exp815() -> None:
@@ -246,3 +250,36 @@ def test_s1_background_given_the_scans_origin_shares_its_axis() -> None:
         np.radians(np.asarray(angles) - 29.5) * 2.0,
         atol=1e-12,
     )
+
+
+# ----------------------------------------------------------------------------------------------
+#                                PTAX countfile channels
+# ----------------------------------------------------------------------------------------------
+SCAN0021 = "HB1_exp1018_scan0021.dat"
+SCAN0021_LABELS = ["P_x_NSF", "P_x_SF", "P_y_SF", "P_z_SF"]
+
+
+def test_ptax_countfile_loader_labels_each_count_of_scan0021() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+    countfile = loader.parse_metadata(_exp1018_datafile(SCAN0021)).countfile.split(", ")
+
+    assert ptax_countfile_loader(countfile) == SCAN0021_LABELS
+
+
+def test_parse_scan_values_copies_detectors_under_their_countfile_labels() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(_exp1018_datafile(SCAN0021))
+
+    for idx, label in enumerate(SCAN0021_LABELS, start=1):
+        np.testing.assert_array_equal(values.data[label], values.data[f"detector_{idx}"])
+    assert values.data["P_x_NSF"][0] == 147.0
+
+
+def test_parse_scan_values_countfile_label_is_an_independent_copy() -> None:
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    values = loader.parse_scan_values(_exp1018_datafile(SCAN0021))
+    values.data["P_x_NSF"][0] = -1.0
+
+    assert values.data["detector_1"][0] == 147.0
