@@ -233,13 +233,25 @@ CombineOps
 
    .. method:: exec() -> ProcessedScan
 
-      Calls ``validate()``, runs the delegate, and writes the result into
-      ``tavi_data.processed_scans`` under its fresh uuid before returning it. A
-      refused combination stores nothing.
+      Calls ``validate()``, runs the delegate, and passes the result through
+      ``register()`` before returning it. A refused combination stores nothing.
 
       :returns: The delegate's ``ProcessedScan`` unaltered — its columns, its
          ``error`` column where a rebin computed one, its
          ``prov.contributing_scans`` and its friendly name.
+      :rtype: ProcessedScan
+
+   .. method:: register(processed_scan: ProcessedScan) -> ProcessedScan
+
+      Write a combined scan into ``tavi_data.processed_scans`` under its own
+      uuid and return it. The one place the store is written, split out of
+      ``exec`` so a caller holding a scan this op produced earlier — one
+      rebuilt from a project file, say — can register it without re-running the
+      combination.
+
+      :param processed_scan: The scan to store.
+      :type processed_scan: ProcessedScan
+      :returns: The same scan, unaltered.
       :rtype: ProcessedScan
 
 Key Design Decisions
@@ -280,8 +292,12 @@ to *exist* in the project, and the rule above is what had left
 every caller dropped it. Pushing the write into the one operation whose whole
 purpose is to produce a stored result keeps that store from depending on each
 caller remembering, while the primitives it delegates to stay pure and
-separately testable. Announcing the new scan remains the model layer's job —
-``CombineOps`` writes the dict, it publishes no event.
+separately testable. The write itself lives in ``register()`` rather than inline
+in ``exec``, so that producing and storing stay separable even here: ``exec`` is
+``validate`` + delegate + ``register``, and a caller that already holds a
+combined scan can store it without recomputing it. Announcing the new scan
+remains the model layer's job — ``CombineOps`` writes the dict, it publishes no
+event.
 
 A separate exception, on a different axis: the rebinning operations
 ``EqualStepRebinOps`` and ``ToleranceRebinOps`` reduce each bin by summing raw
