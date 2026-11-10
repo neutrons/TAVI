@@ -98,7 +98,7 @@ class CombineOps(ProcessOps):
         if mode is not RebinMode.EQUAL_STEP:
             # edges are positions on a grid, and only a step lays one down.
             if self.start is not None or self.finish is not None:
-                raise ValueError(f"Combine start and finish only applies to an equal-step rebin; pass a step.")
+                raise ValueError("Combine start and finish only applies to an equal-step rebin; pass a step.")
 
         # the rebins refuse an already-reduced origin themselves, but the append does not;
         # checked here so that one façade means raw scans whichever mode it resolves to.
