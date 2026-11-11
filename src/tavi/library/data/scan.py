@@ -93,14 +93,15 @@ class TaviMetadata:
 
     Args:
         default_axis:Tuple[str, str]
-        normalization: Tuple[str, int] as (column_name, weight)
+        normalization: (column_name, weight) for a scan normalized by one factor, or
+            (column_name, grid) for a ``HistogramData``, the grid holding each bin's summed norm.
 
     """
 
     default_axis: Tuple[str, str]
     friendly_name: str
     friendly_path: str
-    normalization: Optional[Tuple[str, float]] = None
+    normalization: Optional[Tuple[str, float] | Tuple[str, List[List[float]]]] = None
 
 
 @dataclass
@@ -166,3 +167,26 @@ class ProcessedScan(BaseModel, Scan):
     """
 
     pass
+
+
+class HistogramData(BaseModel, Scan):
+    """
+    A scan binned onto a regular 2D intensity map, every grid shaped ``(n_x, n_y)``. All fields read/write-able.
+
+    Carries the ``Scan`` fields like any derived scan, plus the map: bin edges and centres per
+    axis and the per-bin ``intensity``, ``error`` and point ``counts``, with ``NaN`` intensity
+    and error where no point fell. Each bin's summed norm is ``tavimeta.normalization``, as
+    ``(norm column, grid)``. Grids are nested lists of plain floats, as
+    ``ScanData`` stores its columns, so the scan deep-copies and serializes like any other.
+    The x and y column names live in ``tavimeta.default_axis``, where every scan keeps its
+    axes; ``intensity_name`` names the column the intensity was binned from.
+    """
+
+    intensity_name: str
+    x_edges: list[float]
+    y_edges: list[float]
+    x_centers: list[float]
+    y_centers: list[float]
+    intensity: list[list[float]]
+    error: list[list[float]]
+    counts: list[list[int]]
