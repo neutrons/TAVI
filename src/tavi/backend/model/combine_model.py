@@ -1,13 +1,17 @@
 """Model for combining raw scans into one derived scan."""
 
+import math
 from typing import Optional
 
+import numpy as np
+
 from tavi.backend.model.interface.combine_model_interface import CombineModelInterface
+from tavi.library.data.algorithms.histogram import Histogram
 from tavi.library.data.combine import CombineOps
 from tavi.library.data.combine_request import CombineRequest
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.scan import ProcessedScan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
@@ -50,12 +54,10 @@ class CombineModel(CombineModelInterface):
         self._publish_add_processed_scan(processed_scan)
         return ModelResponse(code=ResponseCode.OK)
 
-    def _build_ops(self, request: CombineRequest) -> CombineOps:
+    def _build_ops(self, request: CombineRequest) -> CombineOps | Histogram:
         """Translate a request into the op it describes, raising ValueError on anything unusable."""
-        # The panel offers the 2D map ahead of anything that can store or plot one, so it is
-        # refused by name rather than falling through to an append the user did not ask for.
         if request.rebin_mode is RebinMode.HISTOGRAM:
-            raise ValueError("Histogram combine is not available yet.")
+            return self._build_histogram(request)
 
         tolerance = step = start = finish = None
         # The mode decides which numbers are read at all, so a stale value left in a field the
@@ -79,6 +81,78 @@ class CombineModel(CombineModelInterface):
             multiplication=_optional_number("Multiplication", request.multiplication) or 1.0,
         )
 
+    def _build_histogram(self, request: CombineRequest) -> Histogram:
+        """Translate a request into a ``Histogram`` over ``[x_axis, z_axis, y_axis, normalization]``."""
+        x_axis = request.x_axis.strip()
+        z_axis = request.z_axis.strip()
+        y_axis = request.y_axis.strip()
+        normalization = request.normalization.strip()
+        if not x_axis or not z_axis or not y_axis:
+            raise ValueError("Histogram needs an x-axis, a z-axis and a y-axis column.")
+        # every bin is counts over summed norm, so there is no histogram without one.
+        if not normalization:
+            raise ValueError("Histogram needs a normalization column.")
+
+        # Histogram lays grids by bin count, so the panel's Start/Stop/Step become explicit
+        # edges here - which also keeps a typed edge exactly where the user put it.
+        x_edges = self._histogram_edges(
+            request.source_scan_uuids, x_axis, "X", request.x_start, request.x_stop, request.x_step
+        )
+        y_edges = self._histogram_edges(
+            request.source_scan_uuids, z_axis, "Y", request.y_start, request.y_stop, request.y_step
+        )
+
+        return Histogram(
+            self._tavi_data,
+            request.source_scan_uuids,
+            [x_axis, z_axis, y_axis, normalization],
+            bins=[x_edges, y_edges],
+            multiplication=_optional_number("Multiplication", request.multiplication) or 1.0,
+        )
+
+    def _histogram_edges(
+        self, uuids: list[UUID], column: str, label: str, start_text: str, stop_text: str, step_text: str
+    ) -> np.ndarray:
+        """
+        Lay one map axis's bin edges from Start/Stop/Step, as the 1D equal-step rebin lays its grid.
+
+        An edge left blank is read off the data half a step past its extreme value, so the outer
+        bins are centred on the extreme points; the last edge is the first one at or past Stop.
+        """
+        step = _number(f"{label} Step", step_text)
+        if not math.isfinite(step) or step <= 0:
+            raise ValueError(f"{label} Step must be a positive, finite number, got {step_text.strip()!r}.")
+        start = _optional_number(f"{label} Start", start_text)
+        stop = _optional_number(f"{label} Stop", stop_text)
+
+        if start is None or stop is None:
+            values = self._column_values(uuids, column)
+            if start is None:
+                start = float(values.min()) - step / 2
+            if stop is None:
+                stop = float(values.max()) + step / 2
+        if stop <= start:
+            raise ValueError(f"{label} Stop must be greater than {label} Start, got start={start!r}, stop={stop!r}.")
+
+        count = max(math.ceil((stop - start) / step), 1)
+        return start + step * np.arange(count + 1)
+
+    def _column_values(self, uuids: list[UUID], column: str) -> np.ndarray:
+        """Every finite value of ``column`` across the origins, for reading a blank grid edge off the data."""
+        if not uuids:
+            raise ValueError("Histogram needs at least one scan to bin.")
+        arrays = []
+        for uuid in uuids:
+            scan = self._tavi_data.fetch_by_uuid(uuid)
+            if column not in scan.data.data:
+                raise KeyError(f"Column {column!r} is not in {scan.tavimeta.friendly_name!r}.")
+            arrays.append(np.asarray(scan.data.data[column], dtype=float))
+        values = np.concatenate(arrays)
+        values = values[np.isfinite(values)]
+        if values.size == 0:
+            raise ValueError(f"Histogram column {column!r} has no finite values to lay a grid on.")
+        return values
+
     @staticmethod
     def _columns(request: CombineRequest) -> list[str]:
         """The columns to carry into the result: x first, y second, then the normalization column."""
@@ -95,7 +169,7 @@ class CombineModel(CombineModelInterface):
             columns.append(normalization)
         return columns
 
-    def _publish_add_processed_scan(self, scan: ProcessedScan) -> None:
+    def _publish_add_processed_scan(self, scan: ProcessedScan | HistogramData) -> None:
         self._event_broker.publish(
             AddProcessedScanEvent(
                 uuid=scan.uuid,

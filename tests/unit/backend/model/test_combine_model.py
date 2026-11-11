@@ -282,20 +282,6 @@ def test_missing_axis_is_reported():
     assert "x-axis and a y-axis" in response.message
 
 
-def test_histogram_is_reported_as_not_yet_available(added):
-    scan = make_raw_scan()
-    tavi_data = make_tavi_data(scan)
-
-    response = CombineModel(tavi_data).combine(
-        make_request(scan, normalization="monitor", rebin_mode=RebinMode.HISTOGRAM)
-    )
-
-    assert response.code is ResponseCode.ERROR
-    assert response.message == "Histogram combine is not available yet."
-    assert tavi_data.processed_scans == {}
-    assert added == []
-
-
 def test_unparsable_tolerance_names_the_field():
     scan = make_raw_scan()
 

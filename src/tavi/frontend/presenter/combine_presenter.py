@@ -100,5 +100,12 @@ class CombinePresenter(AbstractPresenter):
                 step=self._view.rebin_step(),
                 start=self._view.rebin_start(),
                 finish=self._view.rebin_stop(),
+                z_axis=self._view.histogram_z_axis(),
+                x_start=self._view.histogram_x_start(),
+                x_stop=self._view.histogram_x_stop(),
+                x_step=self._view.histogram_x_step(),
+                y_start=self._view.histogram_y_start(),
+                y_stop=self._view.histogram_y_stop(),
+                y_step=self._view.histogram_y_step(),
             )
         )

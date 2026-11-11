@@ -36,8 +36,9 @@ class CombineView(QWidget):
         ),
         RebinMode.TOLERANCE: "*Bin edges are [min - step/2, max + step/2].",
         RebinMode.HISTOGRAM: (
-            "*Bins Y-Axis counts over X-Axis (X Step) and Z-Axis (Y Step) into a 2D map.\n"
-            "*Bin edges on each axis are [min - step/2, max + step/2]."
+            "*Bins Y-Axis counts over X-Axis (X row) and Z-Axis (Y row) into a 2D map.\n"
+            "*When Start/Stop are set to None, bin edges are [min - step/2, max + step/2].\n"
+            "*When Start/Stop are specified, they define bin edge."
         ),
     }
 
@@ -159,16 +160,14 @@ class CombineView(QWidget):
         # second axis is the one column a 1D combination never asks for - Z here, since Y is taken.
         self.histogram_z_axis_combo = typed_column_combo("e")
         self.histogram_z_axis_combo.setFixedWidth(90)
+        # Blank edges by default, as on the Equal Step tab, so the grid covers every point.
+        self.histogram_x_start_edit = self._number_edit("", placeholder="None")
+        self.histogram_x_stop_edit = self._number_edit("", placeholder="None")
         self.histogram_x_step_edit = self._number_edit("0.02")
+        self.histogram_y_start_edit = self._number_edit("", placeholder="None")
+        self.histogram_y_stop_edit = self._number_edit("", placeholder="None")
         self.histogram_y_step_edit = self._number_edit("0.02")
-        self.rebin_tabs.addTab(
-            self._field_page(
-                ("Z-Axis", self.histogram_z_axis_combo),
-                ("X Step", self.histogram_x_step_edit),
-                ("Y Step", self.histogram_y_step_edit),
-            ),
-            "Histogram",
-        )
+        self.rebin_tabs.addTab(self._build_histogram_page(), "Histogram")
 
         box_layout.addWidget(self.rebin_tabs)
 
@@ -184,6 +183,21 @@ class CombineView(QWidget):
         self._sync_rebin_note(self.rebin_tabs.currentIndex())
         return box
 
+    def _build_histogram_page(self) -> QWidget:
+        """Stack the Z-Axis row over one Start/Stop/Step row per map axis - two grids are too wide for one line."""
+        page = QWidget()
+        rows = QVBoxLayout(page)
+        rows.setContentsMargins(6, 6, 6, 6)
+        rows.addLayout(self._field_row(("Z-Axis", self.histogram_z_axis_combo)))
+        for axis, start, stop, step in (
+            ("X:", self.histogram_x_start_edit, self.histogram_x_stop_edit, self.histogram_x_step_edit),
+            ("Y:", self.histogram_y_start_edit, self.histogram_y_stop_edit, self.histogram_y_step_edit),
+        ):
+            row = self._field_row(("Start", start), ("Stop", stop), ("Step", step))
+            row.insertWidget(0, QLabel(axis))
+            rows.addLayout(row)
+        return page
+
     def _sync_rebin_note(self, index: int) -> None:
         """Show the note for the rebin whose tab is visible."""
         self.rebin_note.setText(self.REBIN_NOTES[self._REBIN_MODE_BY_TAB[index]])
@@ -196,17 +210,24 @@ class CombineView(QWidget):
         edit.setFixedWidth(70)
         return edit
 
-    @staticmethod
-    def _field_page(*fields: tuple[str, QWidget]) -> QWidget:
+    @classmethod
+    def _field_page(cls, *fields: tuple[str, QWidget]) -> QWidget:
         """Lay labelled fields out along a single row, so a tab is one line tall whatever it holds."""
         page = QWidget()
-        row = QHBoxLayout(page)
+        row = cls._field_row(*fields)
         row.setContentsMargins(6, 6, 6, 6)
+        page.setLayout(row)
+        return page
+
+    @staticmethod
+    def _field_row(*fields: tuple[str, QWidget]) -> QHBoxLayout:
+        """Lay labelled fields out left to right, leaving the slack at the end of the row."""
+        row = QHBoxLayout()
         for label, field in fields:
             row.addWidget(QLabel(label))
             row.addWidget(field)
         row.addStretch()
-        return page
+        return row
 
     def add_scans(self, names: list[str]) -> None:
         """Add raw scan names to the list, from any thread."""
@@ -277,9 +298,25 @@ class CombineView(QWidget):
         """Return the column the histogram bins along its second axis, as typed."""
         return self.histogram_z_axis_combo.currentText()
 
+    def histogram_x_start(self) -> str:
+        """Return the histogram grid's lower edge along X-Axis, as typed."""
+        return self.histogram_x_start_edit.text()
+
+    def histogram_x_stop(self) -> str:
+        """Return the histogram grid's upper edge along X-Axis, as typed."""
+        return self.histogram_x_stop_edit.text()
+
     def histogram_x_step(self) -> str:
         """Return the histogram's bin width along X-Axis, as typed."""
         return self.histogram_x_step_edit.text()
+
+    def histogram_y_start(self) -> str:
+        """Return the histogram grid's lower edge along Z-Axis, the map's vertical axis, as typed."""
+        return self.histogram_y_start_edit.text()
+
+    def histogram_y_stop(self) -> str:
+        """Return the histogram grid's upper edge along Z-Axis, the map's vertical axis, as typed."""
+        return self.histogram_y_stop_edit.text()
 
     def histogram_y_step(self) -> str:
         """Return the histogram's bin width along Z-Axis, the map's vertical axis, as typed."""
