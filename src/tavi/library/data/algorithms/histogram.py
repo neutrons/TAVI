@@ -160,9 +160,8 @@ class Histogram:
         _, _, intensity_name, norm_name = self.columns
         tavimeta = appended.tavimeta
         tavimeta.friendly_name = f"{tavimeta.friendly_name}_hist{_norm_suffix(norm_name, self.multiplication)}"
-        tavimeta.normalization = (norm_name, sum_norm.tolist())
-        # grids stored as plain floats, as ScanData stores its columns, so the scan
-        # deep-copies and serializes like any other.
+        # every grid kept as the array histogramdd produced, so its (n_x, n_y) shape travels with it.
+        tavimeta.normalization = (norm_name, sum_norm)
         return HistogramData(
             uuid=appended.uuid,
             data=appended.data,
@@ -170,13 +169,13 @@ class Histogram:
             tavimeta=tavimeta,
             prov=appended.prov,
             intensity_name=intensity_name,
-            x_edges=x_edges.tolist(),
-            y_edges=y_edges.tolist(),
-            x_centers=((x_edges[:-1] + x_edges[1:]) / 2).tolist(),
-            y_centers=((y_edges[:-1] + y_edges[1:]) / 2).tolist(),
-            intensity=intensity.tolist(),
-            error=error.tolist(),
-            counts=counts.astype(int).tolist(),
+            x_edges=x_edges,
+            y_edges=y_edges,
+            x_centers=(x_edges[:-1] + x_edges[1:]) / 2,
+            y_centers=(y_edges[:-1] + y_edges[1:]) / 2,
+            intensity=intensity,
+            error=error,
+            counts=counts.astype(int),
         )
 
 

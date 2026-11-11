@@ -167,38 +167,39 @@ HistogramData
         - ``(str, str)``
         - The x and y column names.
       * - ``tavimeta.normalization``
-        - ``(str, list[list[float]])``
-        - The norm column and each bin's summed norm.
+        - ``(str, np.ndarray)``
+        - The norm column and each bin's summed norm, an ``(n_x, n_y)`` array.
       * - ``intensity_name``
         - ``str``
         - The z column the intensity was binned from.
       * - ``x_edges``, ``y_edges``
-        - ``list[float]``
+        - ``np.ndarray``
         - ``n + 1`` bin edges per axis.
       * - ``x_centers``, ``y_centers``
-        - ``list[float]``
+        - ``np.ndarray``
         - Bin midpoints, ``(edges[:-1] + edges[1:]) / 2``.
       * - ``intensity``, ``error``
-        - ``list[list[float]]``
+        - ``np.ndarray``
         - Normalized intensity and its error; ``NaN`` where no point fell.
       * - ``counts``
-        - ``list[list[int]]``
+        - ``np.ndarray`` (int)
         - Number of points in each bin.
 
    ``TaviMetadata.normalization`` is typed
-   ``Optional[Tuple[str, float] | Tuple[str, List[List[float]]]]`` to admit the
-   grid; 1D scans keep storing ``(column, factor)``.
+   ``Optional[Tuple[str, float] | Tuple[str, np.ndarray]]`` to admit the grid
+   (``TaviMetadata`` allows arbitrary types for it); 1D scans keep storing
+   ``(column, factor)``.
 
 Plotting
 ~~~~~~~~
 
-The grids are lists, so convert before using array methods, and transpose for
-``pcolormesh``, which wants rows along y:
+The grids are numpy arrays; transpose for ``pcolormesh``, which wants rows
+along y:
 
 .. code-block:: python
 
     fig, ax = plt.subplots()
-    mesh = ax.pcolormesh(hist.x_edges, hist.y_edges, np.asarray(hist.intensity).T, shading="flat")
+    mesh = ax.pcolormesh(hist.x_edges, hist.y_edges, hist.intensity.T, shading="flat")
     fig.colorbar(mesh, ax=ax, label=f"{hist.intensity_name} / {hist.tavimeta.normalization[0]}")
     ax.set_xlabel(hist.tavimeta.default_axis[0])
     ax.set_ylabel(hist.tavimeta.default_axis[1])
@@ -267,13 +268,18 @@ that count to the ordinary equal-step path. The map stays a regular grid that
 ``pcolormesh`` can draw; the cost is that unevenly spaced positions do not each
 land on a bin centre — pass edges for that.
 
-Grids are plain lists, like ``ScanData``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Grids are numpy arrays
+~~~~~~~~~~~~~~~~~~~~~~
 
-``HistogramData`` stores its grids as nested lists of floats rather than numpy
-arrays, as ``ScanData`` stores its columns. The scan then deep-copies — which
-every ``EventBroker`` publish does — and serializes like any other, at the cost
-of an ``np.asarray`` at the point of plotting.
+``HistogramData`` keeps every grid — and the summed-norm grid in
+``tavimeta.normalization`` — as the numpy array ``numpy.histogramdd`` produced,
+rather than converting to nested lists as ``ScanData`` stores its columns. Each
+grid's ``(n_x, n_y)`` shape travels with it and plotting needs no conversion.
+``HistogramData`` and ``TaviMetadata`` allow arbitrary types to admit them.
+
+The scan still deep-copies, which every ``EventBroker`` publish does, but it no
+longer serializes to JSON: once a map is stored in a project, saving it will
+need the arrays converted on the way out and back on load.
 
 Not yet stored or wired in
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

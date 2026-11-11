@@ -26,7 +26,7 @@ class CombineView(QWidget):
     """Combine panel widget: the raw scans staged for combining, and the rebinning the combination applies."""
 
     # Tab order, so the visible tab names the mode without the two having to be kept in step by hand.
-    _REBIN_MODE_BY_TAB = (RebinMode.EQUAL_STEP, RebinMode.TOLERANCE)
+    _REBIN_MODE_BY_TAB = (RebinMode.EQUAL_STEP, RebinMode.TOLERANCE, RebinMode.HISTOGRAM)
 
     # How each rebin lays out its bins, shown beneath the tabs for whichever one is visible.
     REBIN_NOTES = {
@@ -35,6 +35,10 @@ class CombineView(QWidget):
             "*When Start/Stop are specified, they define bin edge."
         ),
         RebinMode.TOLERANCE: "*Bin edges are [min - step/2, max + step/2].",
+        RebinMode.HISTOGRAM: (
+            "*Bins Y-Axis counts over X-Axis (X Step) and Z-Axis (Y Step) into a 2D map.\n"
+            "*Bin edges on each axis are [min - step/2, max + step/2]."
+        ),
     }
 
     add_scans_clicked = Signal()
@@ -151,6 +155,21 @@ class CombineView(QWidget):
         self.rebin_tolerance_edit = self._number_edit("0.02")
         self.rebin_tabs.addTab(self._field_page(("Tolerance", self.rebin_tolerance_edit)), "Tolerance")
 
+        # The panel's X-Axis is the map's first axis and its Y-Axis the counts binned, so the map's
+        # second axis is the one column a 1D combination never asks for - Z here, since Y is taken.
+        self.histogram_z_axis_combo = typed_column_combo("e")
+        self.histogram_z_axis_combo.setFixedWidth(90)
+        self.histogram_x_step_edit = self._number_edit("0.02")
+        self.histogram_y_step_edit = self._number_edit("0.02")
+        self.rebin_tabs.addTab(
+            self._field_page(
+                ("Z-Axis", self.histogram_z_axis_combo),
+                ("X Step", self.histogram_x_step_edit),
+                ("Y Step", self.histogram_y_step_edit),
+            ),
+            "Histogram",
+        )
+
         box_layout.addWidget(self.rebin_tabs)
 
         # One label beneath the tabs rather than one on each page: a tab widget keeps every page at
@@ -178,14 +197,14 @@ class CombineView(QWidget):
         return edit
 
     @staticmethod
-    def _field_page(*fields: tuple[str, QLineEdit]) -> QWidget:
+    def _field_page(*fields: tuple[str, QWidget]) -> QWidget:
         """Lay labelled fields out along a single row, so a tab is one line tall whatever it holds."""
         page = QWidget()
         row = QHBoxLayout(page)
         row.setContentsMargins(6, 6, 6, 6)
-        for label, edit in fields:
+        for label, field in fields:
             row.addWidget(QLabel(label))
-            row.addWidget(edit)
+            row.addWidget(field)
         row.addStretch()
         return page
 
@@ -232,7 +251,7 @@ class CombineView(QWidget):
         return self.multiplication_edit.text()
 
     def _column_combos(self) -> tuple[QComboBox, ...]:
-        return (self.y_axis_combo, self.x_axis_combo, self.normalization_combo)
+        return (self.y_axis_combo, self.x_axis_combo, self.normalization_combo, self.histogram_z_axis_combo)
 
     def rebin_mode(self) -> RebinMode:
         """Return the rebin the visible tab asks for."""
@@ -253,6 +272,18 @@ class CombineView(QWidget):
     def rebin_tolerance(self) -> str:
         """Return the tolerance points are grouped within, as typed."""
         return self.rebin_tolerance_edit.text()
+
+    def histogram_z_axis(self) -> str:
+        """Return the column the histogram bins along its second axis, as typed."""
+        return self.histogram_z_axis_combo.currentText()
+
+    def histogram_x_step(self) -> str:
+        """Return the histogram's bin width along X-Axis, as typed."""
+        return self.histogram_x_step_edit.text()
+
+    def histogram_y_step(self) -> str:
+        """Return the histogram's bin width along Z-Axis, the map's vertical axis, as typed."""
+        return self.histogram_y_step_edit.text()
 
     def clear_scans(self) -> None:
         """Remove every raw scan name from the list."""

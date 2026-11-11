@@ -74,9 +74,12 @@ def test_bins_none_gives_one_centred_bin_per_position():
     result = Histogram(tavi_data, uuids, COLUMNS).exec()
 
     assert np.asarray(result.intensity).shape == (2, 2)
+    for grid in (result.x_edges, result.y_edges, result.x_centers, result.y_centers, result.intensity, result.error):
+        assert isinstance(grid, np.ndarray)
+    assert result.counts.dtype.kind == "i"
     assert result.x_centers == pytest.approx([1.0, 2.0], abs=1e-3)
     assert result.y_centers == pytest.approx([0.0, 1.0])
-    assert result.counts == [[1, 1], [1, 1]]
+    np.testing.assert_array_equal(result.counts, [[1, 1], [1, 1]])
 
 
 def test_intensity_and_error_are_counts_over_summed_norm():
@@ -87,7 +90,11 @@ def test_intensity_and_error_are_counts_over_summed_norm():
 
     assert np.asarray(result.intensity) == pytest.approx(np.array([[40.0, 90.0], [80.0, 125.0]]))
     assert np.asarray(result.error) == pytest.approx(np.array([[20.0, 30.0], [20.0, 25.0]]))
-    assert result.tavimeta.normalization == ("monitor", [[1.0, 1.0], [2.0, 2.0]])
+    norm_name, sum_norm = result.tavimeta.normalization
+    assert norm_name == "monitor"
+    assert isinstance(sum_norm, np.ndarray)
+    assert sum_norm.shape == (2, 2)
+    assert sum_norm == pytest.approx(np.array([[1.0, 1.0], [2.0, 2.0]]))
 
 
 def test_points_sharing_a_bin_merge_as_one_longer_measurement():
@@ -97,7 +104,7 @@ def test_points_sharing_a_bin_merge_as_one_longer_measurement():
 
     result = Histogram(make_tavi_data(first, second), [first.uuid, second.uuid], COLUMNS).exec()
 
-    assert result.counts == [[2]]
+    np.testing.assert_array_equal(result.counts, [[2]])
     assert np.asarray(result.intensity) == pytest.approx(np.array([[5.0]]))
     assert np.asarray(result.error) == pytest.approx(np.array([[math.sqrt(10) / 2]]))
 
@@ -130,8 +137,8 @@ def test_explicit_edges_are_used_as_given():
 
     result = Histogram(tavi_data, uuids, COLUMNS, bins=[np.array([0.5, 1.5]), np.array([-0.5, 0.5, 1.5])]).exec()
 
-    assert result.x_edges == [0.5, 1.5]
-    assert result.counts == [[1, 1]]
+    np.testing.assert_array_equal(result.x_edges, [0.5, 1.5])
+    np.testing.assert_array_equal(result.counts, [[1, 1]])
 
 
 def test_rows_with_nan_are_left_out():
@@ -140,7 +147,7 @@ def test_rows_with_nan_are_left_out():
 
     result = Histogram(make_tavi_data(scan), [scan.uuid], COLUMNS).exec()
 
-    assert result.counts == [[1]]
+    np.testing.assert_array_equal(result.counts, [[1]])
     assert np.asarray(result.intensity) == pytest.approx(np.array([[4.0]]))
 
 

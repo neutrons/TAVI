@@ -52,6 +52,11 @@ class CombineModel(CombineModelInterface):
 
     def _build_ops(self, request: CombineRequest) -> CombineOps:
         """Translate a request into the op it describes, raising ValueError on anything unusable."""
+        # The panel offers the 2D map ahead of anything that can store or plot one, so it is
+        # refused by name rather than falling through to an append the user did not ask for.
+        if request.rebin_mode is RebinMode.HISTOGRAM:
+            raise ValueError("Histogram combine is not available yet.")
+
         tolerance = step = start = finish = None
         # The mode decides which numbers are read at all, so a stale value left in a field the
         # user is not using can neither fail the parse nor reach CombineOps as a second mode.

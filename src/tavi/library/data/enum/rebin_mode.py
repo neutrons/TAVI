@@ -9,3 +9,5 @@ class RebinMode(StrEnum):
     NONE = "none"
     TOLERANCE = "tolerance"
     EQUAL_STEP = "equal_step"
+    # 2D: bins the combination over two axes into an intensity map rather than along one.
+    HISTOGRAM = "histogram"

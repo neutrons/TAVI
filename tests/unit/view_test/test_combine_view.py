@@ -1,7 +1,7 @@
 """Tests for tavi.frontend.view.combine_view."""
 
 import pytest
-from qtpy.QtWidgets import QGroupBox, QHBoxLayout, QListWidget
+from qtpy.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QListWidget
 
 from tavi.frontend.view.combine_view import CombineView
 from tavi.library.data.enum.rebin_mode import RebinMode
@@ -192,10 +192,10 @@ def test_scan_list_is_capped_at_half_its_natural_height(view):
 # ---------------------------------------------------------------------------
 
 
-def test_rebin_tabs_are_equal_step_and_tolerance(view):
+def test_rebin_tabs_are_equal_step_tolerance_and_histogram(view):
     labels = [view.rebin_tabs.tabText(i) for i in range(view.rebin_tabs.count())]
 
-    assert labels == ["Equal Step", "Tolerance"]
+    assert labels == ["Equal Step", "Tolerance", "Histogram"]
 
 
 def test_rebin_mode_defaults_to_equal_step(view):
@@ -206,6 +206,51 @@ def test_rebin_mode_follows_the_visible_tab(view):
     view.rebin_tabs.setCurrentIndex(1)
 
     assert view.rebin_mode() is RebinMode.TOLERANCE
+
+
+def test_rebin_mode_is_histogram_on_the_histogram_tab(view):
+    view.rebin_tabs.setCurrentIndex(2)
+
+    assert view.rebin_mode() is RebinMode.HISTOGRAM
+
+
+def test_histogram_default_field_values(view):
+    assert view.histogram_z_axis() == "e"
+    assert view.histogram_x_step() == "0.02"
+    assert view.histogram_y_step() == "0.02"
+
+
+def test_histogram_fields_report_what_was_typed(view):
+    view.histogram_z_axis_combo.setEditText("qh")
+    view.histogram_x_step_edit.setText("0.005")
+    view.histogram_y_step_edit.setText("0.1")
+
+    assert (view.histogram_z_axis(), view.histogram_x_step(), view.histogram_y_step()) == (
+        "qh",
+        "0.005",
+        "0.1",
+    )
+
+
+def test_histogram_tab_holds_only_its_own_fields(view):
+    histogram_page = view.rebin_tabs.widget(2)
+
+    for field in (view.histogram_z_axis_combo, view.histogram_x_step_edit, view.histogram_y_step_edit):
+        assert field.parent() is histogram_page
+    for field in (view.rebin_tolerance_edit, view.rebin_start_edit, view.rebin_stop_edit, view.rebin_step_edit):
+        assert field.parent() is not histogram_page
+
+
+def test_histogram_tab_labels(view):
+    labels = [label.text() for label in view.rebin_tabs.widget(2).findChildren(QLabel)]
+
+    assert labels == ["Z-Axis", "X Step", "Y Step"]
+
+
+def test_rebin_note_explains_the_histogram(view):
+    view.rebin_tabs.setCurrentIndex(2)
+
+    assert view.rebin_note.text() == view.REBIN_NOTES[RebinMode.HISTOGRAM]
 
 
 def test_equal_step_default_field_values(view):
@@ -335,12 +380,13 @@ def test_set_axes_leaves_the_normalization_alone(view):
     view.set_axes("qh", "detector")
 
     assert view.normalization() == "mcu"
+    assert view.histogram_z_axis() == "e"
 
 
 def test_set_column_options_fills_every_column_dropdown(view):
     view.set_column_options(["s2", "detector", "monitor"])
 
-    for combo in (view.y_axis_combo, view.x_axis_combo, view.normalization_combo):
+    for combo in (view.y_axis_combo, view.x_axis_combo, view.normalization_combo, view.histogram_z_axis_combo):
         items = [combo.itemText(i) for i in range(combo.count())]
         assert items == ["s2", "detector", "monitor"]
 
