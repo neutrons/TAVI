@@ -43,6 +43,63 @@ def _normalize_col_name(col_name: str) -> str:
     return col_name.replace("-", "_").replace(" ", "_").replace(".", "")  # replace "-", " ", with "_", remove "."
 
 
+# PTAX (HB1 in polarization mode) guide field directions relative to Q, as named in SPICE countfiles.
+_PTAX_GUIDE_DIRECTIONS = {"parq": "P_x", "perpqh": "P_y", "perpq": "P_z"}
+# The flipper guide fields: any of them energized means the spin-flip (SF) channel.
+_PTAX_FLIPPER_GUIDES = ("hguide", "vguide")
+
+
+def _countfile_lines(headers: list[str]) -> list[str]:
+    """Return the values of the ``# countfile = ...`` header lines, in order."""
+    # split on the first "=" only, so a countfile command that itself contains "=" stays whole
+    return [line.split("=", 1)[1].strip() for line in headers if line.startswith("# countfile")]
+
+
+def _is_guide_off(value: str) -> bool:
+    """Tell whether a guide drive value de-energizes it: ``off`` or a number equal to zero."""
+    if value == "off":
+        return True
+    try:
+        return float(value) == 0.0
+    except ValueError:  # "on" or an expression such as 0.476*sqrt(@(ei))
+        return False
+
+
+def ptax_countfile_loader(countfile: list[str]) -> list[Optional[str]]:
+    """
+    Label each ``count`` of a PTAX countfile as ``<P_x|P_y|P_z>_<NSF|SF>``; index i belongs to ``detector_{i+1}``.
+
+    Guide direction and flipper state carry forward between counts; a count before either is known is ``None``.
+    """
+    labels: list[Optional[str]] = []
+    direction: Optional[str] = None
+    guides: dict[str, str] = {}
+    for line in countfile:
+        tokens = line.strip().lower().split()
+        if not tokens:
+            continue
+        command = tokens[0]
+        if command == "guide":
+            direction = _PTAX_GUIDE_DIRECTIONS.get(tokens[-1])
+        elif command == "drive":
+            # SPICE has recorded typos like "drive 0 vguide 0" (meaning both off), so only read values that
+            # follow a guide name, and let the latest drive line decide the flipper state on its own
+            driven = {
+                token: tokens[idx + 1]
+                for idx, token in enumerate(tokens[1:-1], start=1)
+                if token in _PTAX_FLIPPER_GUIDES
+            }
+            if driven:
+                guides = driven
+        elif command.startswith("count"):
+            if direction is None or not guides:
+                labels.append(None)
+            else:
+                flip = "NSF" if all(_is_guide_off(v) for v in guides.values()) else "SF"
+                labels.append(f"{direction}_{flip}")
+    return labels
+
+
 class ORNLSpiceLoader(AbstractLoader):
     """Loader for ORNL Spice format scan files."""
 
@@ -115,12 +172,7 @@ class ORNLSpiceLoader(AbstractLoader):
                 others.append(line)
 
         if metadata.get("preset_type") == "countfile":  # HB1 in polarization mode
-            countfile = []
-            for metadata_entry in metadata_list:
-                if metadata_entry.startswith("# countfile"):
-                    _, val = metadata_entry.split("=")
-                    countfile.append(val.strip())
-            metadata.update({"countfile": ", ".join(countfile)})
+            metadata.update({"countfile": ", ".join(_countfile_lines(metadata_list))})
 
         data = metadata | {"errors": error_messages} | {"others": others}
 
@@ -220,7 +272,31 @@ class ORNLSpiceLoader(AbstractLoader):
                 data[attr_name] = np.array([col_values[col_index]])
             else:
                 data[attr_name] = []
+
+        if "# preset_type = countfile" in headers[:index_col_name]:  # HB1 in polarization mode
+            self._add_ptax_channels(data, _countfile_lines(headers[:index_col_name]), file_path)
         return ScanData(data=data)
+
+    @staticmethod
+    def _add_ptax_channels(data: dict[str, Any], countfile: list[str], file_path: str) -> None:
+        """Copy each ``detector_i`` column under its PTAX countfile label, e.g. ``P_x_NSF``."""
+        labels = ptax_countfile_loader(countfile)
+        n_detectors = sum(1 for key in data if re.fullmatch(r"detector_\d+", key))
+        if len(labels) != n_detectors:
+            logger.warning("%s: countfile has %d counts for %d detectors", file_path, len(labels), n_detectors)
+
+        for idx, label in enumerate(labels):
+            detector = f"detector_{idx + 1}"
+            if label is None or detector not in data:
+                logger.warning("%s: cannot label %s from the countfile", file_path, detector)
+                continue
+            # the same channel measured twice must not overwrite the first copy
+            name, suffix = label, 2
+            while name in data:
+                name, suffix = f"{label}_{suffix}", suffix + 1
+            if name != label:
+                logger.warning("%s: %s repeats in the countfile, storing %s as %s", file_path, label, detector, name)
+            data[name] = np.copy(data[detector])
 
     def parse_external_metadata(self, file_path: str, ub_name: str) -> dict[str, Any]:
         """Parse corresponding file in ubconf as external metadata."""
