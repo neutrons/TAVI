@@ -339,7 +339,7 @@ the view works in scan **names**, the model in **uuids**.
         Broker-->>Panel: FocusRawScanEvent(scans)
         Note over Panel: remembers uuid → name,<br/>offers the scans' columns,<br/>seeds the axis fields
         User->>Panel: Add Scans
-        Note over Panel: stages the focused scans;<br/>the view lists their names
+        Note over Panel: stages the focused scans,<br/>the view lists their names
         User->>Panel: Combine
         Panel->>Model: combine(CombineRequest)
         Model->>Ops: exec()
