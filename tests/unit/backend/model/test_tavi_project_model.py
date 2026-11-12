@@ -43,6 +43,7 @@ from tavi.meta.event.type.model_event import (
     ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
+    RemoveProcessedScanEvent,
     RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
@@ -1017,6 +1018,30 @@ def test_remove_items_publishes_raw_scan_remove_event(model):
     EventBroker().register(RemoveRawScanEvent, received.append)
     model.remove_items([scan.uuid])
 
+    assert [e.uuid for e in received] == [scan.uuid]
+
+
+def test_remove_items_drops_a_combined_histogram_and_announces_it(model):
+    hist = make_histogram()
+    model.tavi_data.processed_scans[hist.uuid] = hist
+
+    received = []
+    EventBroker().register(RemoveProcessedScanEvent, received.append)
+    model.remove_items([hist.uuid])
+
+    assert hist.uuid not in model.tavi_data.processed_scans
+    assert [e.uuid for e in received] == [hist.uuid]
+
+
+def test_remove_items_drops_a_1d_combined_scan(model):
+    scan = make_processed_scan()
+    model.tavi_data.processed_scans[scan.uuid] = scan
+
+    received = []
+    EventBroker().register(RemoveProcessedScanEvent, received.append)
+    model.remove_items([scan.uuid])
+
+    assert model.tavi_data.processed_scans == {}
     assert [e.uuid for e in received] == [scan.uuid]
 
 

@@ -81,6 +81,12 @@ class RemoveRawScanEvent(Event):
     uuid: UUID
 
 
+class RemoveProcessedScanEvent(Event):
+    """Indicates a combined scan - 1D or a 2D histogram - has been removed from the Project and is no longer in TaviData."""
+
+    uuid: UUID
+
+
 class RemovePlotEvent(Event):
     """Indicates a Plot has been removed from the Project and is no longer in TaviData."""
 

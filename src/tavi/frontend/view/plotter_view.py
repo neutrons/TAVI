@@ -32,6 +32,7 @@ class Plot1DView(QWidget):
     render_plots_signal = Signal(list)
     add_plots_signal = Signal(list)
     render_histogram_signal = Signal(object)
+    clear_histogram_signal = Signal()
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
@@ -63,6 +64,7 @@ class Plot1DView(QWidget):
         self.render_plots_signal.connect(self._render_plots)
         self.add_plots_signal.connect(self._add_plots)
         self.render_histogram_signal.connect(self._render_histogram)
+        self.clear_histogram_signal.connect(self._clear_histogram)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
         self.append_fit_curve_signal.connect(self._append_fit_curve)
@@ -289,6 +291,14 @@ class Plot1DView(QWidget):
         self.clear_plot()
         self._histogram = histogram
         self._add_plots(resolved)
+
+    def _clear_histogram(self) -> None:
+        """Drop the map, leaving any 1D series it was hiding to be drawn. Runs on the GUI thread."""
+        self._histogram = None
+        self._remove_colorbar()
+        self.canvas.axes.cla()
+        self.toolbar.update()
+        self._redraw()
 
     def _render_histogram(self, histogram: Any) -> None:
         """Show a 2D map in place of the 1D scene. Always runs on the GUI thread (see ``render_histogram_signal``)."""

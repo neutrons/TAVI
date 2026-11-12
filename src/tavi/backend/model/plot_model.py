@@ -10,7 +10,7 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
-from tavi.meta.event.type.model_event import RemoveRawScanEvent
+from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
@@ -58,10 +58,11 @@ class PlotModel(PlotModelInterface):
         self._event_broker.register(ClearStageEvent, self._handle_clear_stage_event)
         self._event_broker.register(StageSeriesEvent, self._handle_stage_series_event)
         self._event_broker.register(RemoveRawScanEvent, self._handle_raw_scan_remove_event)
+        self._event_broker.register(RemoveProcessedScanEvent, self._handle_raw_scan_remove_event)
 
-    def _handle_raw_scan_remove_event(self, e: RemoveRawScanEvent) -> None:
+    def _handle_raw_scan_remove_event(self, e: RemoveRawScanEvent | RemoveProcessedScanEvent) -> None:
         """
-        Drop focused series whose source scan has left the project, and sync what's left.
+        Drop focused series whose source scan - raw or combined - has left the project, and sync what's left.
 
         ``_last_plots`` holds copies that outlive the scans they point at, so stale lookups would
         raise. Every series is reconciled against the stores rather than just ``e.uuid`` because

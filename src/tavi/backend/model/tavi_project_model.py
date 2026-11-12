@@ -30,6 +30,7 @@ from tavi.meta.event.type.model_event import (
     ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
+    RemoveProcessedScanEvent,
     RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
@@ -130,10 +131,14 @@ class TaviProjectModel(TaviProjectInterface):
     def remove_items(self, uuids: list[UUID]) -> ModelResponse:
         """Drop the named items, and whatever they orphan, from the project and announce each removal."""
         purged = self.tavi_data.purge(uuids)
-        self._fit_history.forget(fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans))
+        self._fit_history.forget(
+            fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans) | set(purged.processed_scans)
+        )
 
         for uuid in purged.raw_scans:
             self._event_broker.publish(RemoveRawScanEvent(uuid=uuid))
+        for uuid in purged.processed_scans:
+            self._event_broker.publish(RemoveProcessedScanEvent(uuid=uuid))
         for uuid in purged.plots:
             self._event_broker.publish(RemovePlotEvent(uuid=uuid))
         for uuid in purged.fits:

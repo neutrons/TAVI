@@ -5,7 +5,7 @@ from tavi.library.data.plot import Plot, PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
-from tavi.meta.event.type.model_event import RemoveRawScanEvent
+from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
@@ -963,6 +963,14 @@ class TestPlotModelProcessedScans(unittest.TestCase):
         assert series.source_scan_uuid == self.scan.uuid
         assert (series.x_name, series.y_name) == ("qh", "en")
         assert received[0].scans[self.scan.uuid].data.qh == [1.0, 2.0, 3.0, 4.0]
+
+    def test_removing_the_combined_scan_drops_its_focused_series(self):
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+
+        del self.processed_scans[self.scan.uuid]
+        self.broker.publish(RemoveProcessedScanEvent(uuid=self.scan.uuid))
+
+        assert self.model._last_plots == []
 
     def test_focus_labels_the_series_with_the_friendly_name_even_with_show_title_on(self):
         """A processed scan carries no instrument title, so "Show Title" falls back to the combined name."""

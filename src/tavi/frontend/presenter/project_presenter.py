@@ -15,6 +15,7 @@ from tavi.meta.event.type.model_event import (
     ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
+    RemoveProcessedScanEvent,
     RemoveRawScanEvent,
     SyncItemNameEvent,
 )
@@ -50,6 +51,7 @@ class ProjectPresenter(AbstractPresenter):
         self.event_broker.register(AddFitEvent, self.update_fit_treeview_data)
         self.event_broker.register(AddProcessedScanEvent, self.update_combined_treeview_data)
         self.event_broker.register(RemoveRawScanEvent, self.remove_treeview_data)
+        self.event_broker.register(RemoveProcessedScanEvent, self.remove_treeview_data)
         self.event_broker.register(RemovePlotEvent, self.remove_treeview_data)
         self.event_broker.register(RemoveFitEvent, self.remove_treeview_data)
         self.event_broker.register(ClearRawScansEvent, self.clear_raw_scan_treeview_data)
@@ -91,7 +93,9 @@ class ProjectPresenter(AbstractPresenter):
         """Relabel an item in the treeview once the model reports its new name."""
         self._view.rename_item(event.uuid, event.friendly_name)
 
-    def remove_treeview_data(self, event: RemoveRawScanEvent | RemovePlotEvent | RemoveFitEvent) -> None:
+    def remove_treeview_data(
+        self, event: RemoveRawScanEvent | RemoveProcessedScanEvent | RemovePlotEvent | RemoveFitEvent
+    ) -> None:
         """Drop an item from the treeview once the model reports it gone from the project."""
         self._view.remove_item(event.uuid)
 

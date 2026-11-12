@@ -12,6 +12,7 @@ class PurgeResult(BaseModel):
     """What a ``TaviData.purge`` actually deleted, per store, for callers that announce removals."""
 
     raw_scans: list[UUID] = Field(default_factory=list)
+    processed_scans: list[UUID] = Field(default_factory=list)
     plots: list[UUID] = Field(default_factory=list)
     fits: list[UUID] = Field(default_factory=list)
 
@@ -60,10 +61,14 @@ class TaviData(BaseModel):
         """
         requested = list(dict.fromkeys(uuids))
         scans = [uuid for uuid in requested if uuid in self.raw_scans]
+        processed = [uuid for uuid in requested if uuid in self.processed_scans]
         plots = [uuid for uuid in requested if uuid in self.plots]
         fits = [uuid for uuid in requested if uuid in self.fits]
 
-        orphaned = set(scans)
+        # A series can be focused from a combined scan as well as a raw one, so either kind
+        # leaving orphans the plots and fits that point at it. A combined scan holds its own copy
+        # of its origins' data, so removing a raw scan never takes a combination with it.
+        orphaned = set(scans) | set(processed)
         pruned: dict[UUID, Plot] = {}
         for plot_uuid, plot in self.plots.items():
             if plot_uuid in plots:
@@ -88,9 +93,11 @@ class TaviData(BaseModel):
         self.fits.update(pruned_fits)
         for uuid in scans:
             del self.raw_scans[uuid]
+        for uuid in processed:
+            del self.processed_scans[uuid]
         for uuid in plots:
             del self.plots[uuid]
         for uuid in fits:
             del self.fits[uuid]
 
-        return PurgeResult(raw_scans=scans, plots=plots, fits=fits)
+        return PurgeResult(raw_scans=scans, processed_scans=processed, plots=plots, fits=fits)

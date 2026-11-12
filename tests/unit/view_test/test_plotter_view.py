@@ -1477,3 +1477,14 @@ def test_a_map_takes_the_canvas_over_1d_series(view):
     assert len(_meshes(view)) == 1
     assert len(view.canvas.axes.lines) == 0
     assert view.canvas.axes.containers == []
+
+
+def test_clear_histogram_drops_the_map_and_redraws_the_1d_series(view):
+    append_plot(view, [1, 2], [3, 4], [0.1, 0.1], "scan1", None, "qh", "detector", "err")
+    view._render_histogram(make_histogram())
+
+    view._clear_histogram()
+
+    assert _meshes(view) == []
+    assert view.canvas.figure.axes == [view.canvas.axes]
+    assert len(view.canvas.axes.containers) == 1

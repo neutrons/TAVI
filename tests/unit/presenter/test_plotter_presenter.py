@@ -30,6 +30,7 @@ from tavi.library.data.scan import (
     TaviMetadata,
 )
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import RemoveProcessedScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
@@ -923,3 +924,17 @@ def test_histogram_focus_draws_the_first_map_and_stages_nothing(presenter, qtbot
     assert blocker.args[0].uuid == UUID(value="hist-001")
     assert staged == []
     assert presenter._focused_series_uuids == []
+
+
+def test_removing_the_drawn_map_clears_it_from_the_canvas(presenter, qtbot):
+    EventBroker().publish(FocusHistogramEvent(histograms=[make_histogram()]))
+
+    with qtbot.waitSignal(presenter._view.clear_histogram_signal, timeout=1000):
+        EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="hist-001")))
+
+
+def test_removing_another_combined_scan_leaves_the_map(presenter, qtbot):
+    EventBroker().publish(FocusHistogramEvent(histograms=[make_histogram()]))
+
+    with qtbot.assertNotEmitted(presenter._view.clear_histogram_signal):
+        EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="combined-001")))
