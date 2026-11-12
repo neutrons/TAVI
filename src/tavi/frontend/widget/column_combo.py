@@ -37,8 +37,8 @@ def set_combo_text(combo: QComboBox, text: str) -> None:
 
 def set_combo_options(combo: QComboBox, columns: list[str]) -> None:
     """Replace a column field's dropdown with ``columns``, keeping whatever name it already shows."""
-    current = combo.currentText()
     combo.blockSignals(True)
+    current = combo.currentText()
     try:
         combo.clear()
         combo.addItems(columns)
