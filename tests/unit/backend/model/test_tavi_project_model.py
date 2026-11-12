@@ -2,6 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
+import numpy as np
 import pytest
 
 from tavi.backend.model.plot_model import PlotModel
@@ -22,7 +23,16 @@ from tavi.library.data.fit_entry import (
 )
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import (
+    UUID,
+    HistogramData,
+    ProcessedScan,
+    Provenance,
+    RawScan,
+    ScanData,
+    ScanMetadata,
+    TaviMetadata,
+)
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFitEvent,
@@ -44,6 +54,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusHistogramEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
@@ -77,7 +88,6 @@ def make_raw_scan(uuid_val="scan-001"):
     )
 
 
-
 def make_processed_scan(uuid_val="combined-001"):
     return ProcessedScan(
         uuid=UUID(value=uuid_val),
@@ -86,6 +96,27 @@ def make_processed_scan(uuid_val="combined-001"):
         tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name="scan1+scan2", friendly_path=""),
         prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1, UUID(value="scan-002"): 1}),
     )
+
+
+def make_histogram(uuid_val="hist-001", name="scan1+scan2_hist_normmonitor") -> HistogramData:
+    return HistogramData(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0], "en": [0.0, 1.0], "detector": [4.0, 9.0], "monitor": [1.0, 1.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(
+            default_axis=("qh", "en"), friendly_name=name, friendly_path="", normalization=("monitor", np.ones((2, 2)))
+        ),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
+        intensity_name="detector",
+        x_edges=np.array([0.5, 1.5, 2.5]),
+        y_edges=np.array([-0.5, 0.5, 1.5]),
+        x_centers=np.array([1.0, 2.0]),
+        y_centers=np.array([0.0, 1.0]),
+        intensity=np.array([[4.0, np.nan], [np.nan, 9.0]]),
+        error=np.array([[2.0, np.nan], [np.nan, 3.0]]),
+        counts=np.array([[1, 0], [0, 1]]),
+    )
+
 
 def make_plot(uuid_val="plot-001", series=None, fits=None):
     if series is None:
@@ -444,6 +475,31 @@ def test_handle_focus_event_raw_and_processed_scans_are_focused_raw_first(model)
     assert [type(e) for e in received] == [FocusRawScanEvent, FocusProcessedScanEvent]
 
 
+def test_handle_focus_event_histogram_publishes_histogram_focus_event(model):
+    hist = make_histogram()
+    model.tavi_data.processed_scans[hist.uuid] = hist
+
+    received = []
+    EventBroker().register(FocusHistogramEvent, received.append)
+    processed = []
+    EventBroker().register(FocusProcessedScanEvent, processed.append)
+    EventBroker().publish(FocusEvent(ids=[hist.uuid]))
+
+    assert [h.uuid for e in received for h in e.histograms] == [hist.uuid]
+    assert processed == []
+
+
+def test_rename_item_renames_a_histogram(model):
+    hist = make_histogram()
+    model.tavi_data.processed_scans[hist.uuid] = hist
+
+    model.rename_item(hist.uuid, "L-E map")
+
+    renamed = model.tavi_data.processed_scans[hist.uuid]
+    assert isinstance(renamed, HistogramData)
+    assert renamed.tavimeta.friendly_name == "L-E map"
+
+
 def test_handle_focus_event_plot_resolves_a_processed_series_against_processed_scans(model):
     """A plot saved while a processed scan was focused refocuses without a KeyError."""
     processed = make_processed_scan()
@@ -460,9 +516,7 @@ def test_handle_focus_event_plot_resolves_a_processed_series_against_processed_s
 
 def test_focusing_a_processed_scan_draws_it_through_plot_model(model):
     """The whole chain: a tree click on a Combined row ends in a preview plot of that scan."""
-    plot_model = PlotModel(
-        model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle()
-    )
+    plot_model = PlotModel(model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle())
     processed = make_processed_scan()
     model.tavi_data.processed_scans[processed.uuid] = processed
 
@@ -847,7 +901,6 @@ def test_rename_item_refuses_a_raw_scan(model):
     assert received == []
 
 
-
 def test_rename_item_stores_a_combined_scans_new_name(model):
     scan = make_processed_scan()
     model.tavi_data.processed_scans[scan.uuid] = scan
@@ -903,9 +956,7 @@ def test_rename_item_rejects_a_blank_name_for_a_combined_scan(model, blank):
 
 
 def test_a_renamed_combined_scan_is_focused_under_its_new_name(model):
-    plot_model = PlotModel(
-        model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle()
-    )
+    plot_model = PlotModel(model.get_plots_handle(), model.get_raw_scans_handle(), model.get_processed_scans_handle())
     scan = make_processed_scan()
     model.tavi_data.processed_scans[scan.uuid] = scan
     model.rename_item(scan.uuid, "Al powder")
@@ -916,6 +967,7 @@ def test_a_renamed_combined_scan_is_focused_under_its_new_name(model):
 
     assert received[0].plots[0].series[0].run_name == "Al powder"
     assert plot_model._focused_uuids() == [scan.uuid]
+
 
 def test_renamed_plot_keeps_its_name_when_saved_again(model):
     """Restaging and resaving a renamed plot must not relabel it after its runs."""
@@ -1517,7 +1569,9 @@ def make_numbered_scan(uuid_val: str, scan_number: str) -> RawScan:
 
 
 def make_scan_filter(operator=FilterOperator.GREATER, value="1") -> ScanFilter:
-    return ScanFilter(name="Filter", criteria=[FilterCriterion(scope=FilterScope.META, key="scan", operator=operator, value=value)])
+    return ScanFilter(
+        name="Filter", criteria=[FilterCriterion(scope=FilterScope.META, key="scan", operator=operator, value=value)]
+    )
 
 
 def store_numbered_scans(model, count=3):

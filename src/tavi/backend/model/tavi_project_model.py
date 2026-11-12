@@ -16,7 +16,7 @@ from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
@@ -40,6 +40,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusEvent,
     FocusFitEvent,
+    FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
@@ -299,6 +300,7 @@ class TaviProjectModel(TaviProjectInterface):
         ids = e.ids
         raw_scans: list[RawScan] = []
         processed_scans: list[ProcessedScan] = []
+        histograms: list[HistogramData] = []
         plots: list[Plot] = []
         fits: list[FitEntry] = []
         for uuid in ids:
@@ -310,6 +312,8 @@ class TaviProjectModel(TaviProjectInterface):
                 raw_scans.append(inst)
             if isinstance(inst, ProcessedScan):
                 processed_scans.append(inst)
+            if isinstance(inst, HistogramData):
+                histograms.append(inst)
             if isinstance(inst, Plot):
                 plots.append(inst)
             if isinstance(inst, FitEntry):
@@ -329,6 +333,8 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(FocusRawScanEvent(scans=raw_scans))
         if processed_scans:
             self._event_broker.publish(FocusProcessedScanEvent(scans=processed_scans))
+        if histograms:
+            self._event_broker.publish(FocusHistogramEvent(histograms=histograms))
         if plots:
             # A saved plot may hold a series focused from a processed scan, so resolve against both stores.
             scans = scans_for_plots(plots, self.tavi_data.all_scans())
@@ -350,9 +356,11 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(RecomputeFitEvent(fits=fits))
 
 
-def _with_name(item: ProcessedScan | Plot | FitEntry, name: str) -> ProcessedScan | Plot | FitEntry:
+def _with_name(
+    item: ProcessedScan | HistogramData | Plot | FitEntry, name: str
+) -> ProcessedScan | HistogramData | Plot | FitEntry:
     """Return a copy of a renameable item carrying ``name``, leaving the stored one untouched."""
     # A scan keeps its name in tavimeta, like every scan, rather than in a name field.
-    if isinstance(item, ProcessedScan):
+    if isinstance(item, (ProcessedScan, HistogramData)):
         return item.model_copy(update={"tavimeta": dataclasses.replace(item.tavimeta, friendly_name=name)})
     return item.model_copy(update={"name": name})

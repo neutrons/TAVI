@@ -2,7 +2,7 @@
 
 from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
 from tavi.meta.event.event_interface import Event
 
 
@@ -41,6 +41,18 @@ class FocusProcessedScanEvent(Event):
     """
 
     scans: list[ProcessedScan]
+
+
+class FocusHistogramEvent(Event):
+    """
+    Add 2D histogram maps to the focus. Like every ``Focus*`` event this only adds.
+
+    Kept apart from ``FocusProcessedScanEvent`` because a map is not a series: ``PlotModel`` has
+    no preview to build, nothing is staged, and ``PlotterPresenter`` draws it as a colour map.
+    The canvas holds one map, so the first one focused is drawn.
+    """
+
+    histograms: list[HistogramData]
 
 
 class ClearFocusEvent(Event):

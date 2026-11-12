@@ -8,6 +8,7 @@ from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.scan import (
     UUID,
+    HistogramData,
     ProcessedScan,
     Provenance,
     RawScan,
@@ -82,6 +83,109 @@ def test_append_registers_the_result_in_processed_scans():
     CombineModel(tavi_data).combine(make_request(scan))
 
     assert len(tavi_data.processed_scans) == 1
+
+
+def make_map_scan(uuid_val, qh, en) -> RawScan:
+    return RawScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": qh, "en": en, "detector": [4.0] * len(qh), "monitor": [1.0] * len(qh)}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("en", "detector"), friendly_name=uuid_val, friendly_path="/exp"),
+        prov=Provenance(raw_file=f"{uuid_val}.dat", contributing_scans={UUID(value=uuid_val): 1}),
+    )
+
+
+def edges_of(*scans, column="qh", start="", stop="", step=""):
+    return CombineModel(make_tavi_data(*scans))._histogram_edges(
+        [scan.uuid for scan in scans], column, "X", start, stop, step
+    )
+
+
+def test_blank_step_gives_one_bin_per_measured_position():
+    """Readback jitter stays one position, and each outer bin is centred on its position."""
+    first = make_map_scan("scan-001", [1.6499, 1.65], [0.0, 1.0])
+    second = make_map_scan("scan-002", [1.7999, 1.8001], [0.0, 1.0])
+
+    edges = edges_of(first, second)
+
+    assert edges == pytest.approx([1.57495, 1.72495, 1.87505])
+
+
+def test_blank_step_gives_unevenly_spaced_positions_a_bin_each():
+    scan = make_map_scan("scan-001", [1.0, 2.0, 4.0], [0.0, 0.0, 0.0])
+
+    edges = edges_of(scan)
+
+    assert edges == pytest.approx([0.5, 1.5, 3.0, 5.0])
+
+
+def test_blank_step_with_one_position_gives_a_unit_wide_bin():
+    scan = make_map_scan("scan-001", [2.0, 2.001], [0.0, 1.0])
+
+    assert edges_of(scan) == pytest.approx([1.5005, 2.5005])
+
+
+def test_blank_step_takes_typed_start_and_stop_as_outer_edges():
+    scan = make_map_scan("scan-001", [1.0, 2.0, 3.0], [0.0, 0.0, 0.0])
+
+    assert edges_of(scan, start="0.8", stop="2.2") == pytest.approx([0.8, 1.5, 2.2])
+
+
+def test_blank_step_reports_a_range_holding_no_values():
+    scan = make_map_scan("scan-001", [1.0, 2.0], [0.0, 0.0])
+
+    with pytest.raises(ValueError, match="hold none"):
+        edges_of(scan, start="1.2", stop="1.8")
+
+
+def test_blank_step_on_one_axis_keeps_the_typed_step_on_the_other():
+    first = make_map_scan("scan-001", [1.6499, 1.65], [0.0, 1.0])
+    second = make_map_scan("scan-002", [1.7999, 1.8001], [0.0, 1.0])
+    tavi_data = make_tavi_data(first, second)
+
+    CombineModel(tavi_data).combine(
+        make_request(
+            first,
+            second,
+            x_axis="qh",
+            y_axis="en",
+            z_axis="detector",
+            normalization="monitor",
+            rebin_mode=RebinMode.HISTOGRAM,
+            x_step="",
+            y_step="1",
+        )
+    )
+
+    (stored,) = tavi_data.processed_scans.values()
+    assert stored.x_centers == pytest.approx([1.6499, 1.8], abs=1e-4)
+    assert stored.y_edges == pytest.approx([-0.5, 0.5, 1.5])
+
+
+def test_histogram_registers_the_map_in_processed_scans(added):
+    first = make_map_scan("scan-001", [1.0, 1.0], [0.0, 1.0])
+    second = make_map_scan("scan-002", [2.0, 2.0], [0.0, 1.0])
+    tavi_data = make_tavi_data(first, second)
+
+    response = CombineModel(tavi_data).combine(
+        make_request(
+            first,
+            second,
+            x_axis="qh",
+            y_axis="en",
+            z_axis="detector",
+            normalization="monitor",
+            rebin_mode=RebinMode.HISTOGRAM,
+            x_step="1",
+            y_step="1",
+        )
+    )
+
+    assert response.code is ResponseCode.OK
+    (stored,) = tavi_data.processed_scans.values()
+    assert isinstance(stored, HistogramData)
+    assert stored.intensity.shape == (2, 2)
+    assert [e.uuid for e in added] == [stored.uuid]
 
 
 def test_append_returns_ok():

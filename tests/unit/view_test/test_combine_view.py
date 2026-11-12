@@ -237,9 +237,9 @@ def _histogram_values(view):
 
 
 def test_histogram_default_field_values(view):
-    """Start and Stop default to none on both axes, so the grid's edges are read off the data."""
+    """Start, Stop and Step default to none on both axes, so each measured position gets its own bin."""
     assert view.histogram_z_axis() == "e"
-    assert _histogram_values(view) == ("", "", "0.02", "", "", "0.02")
+    assert _histogram_values(view) == ("", "", "", "", "", "")
 
 
 def test_histogram_blank_edges_show_none_as_a_placeholder(view):
@@ -248,6 +248,8 @@ def test_histogram_blank_edges_show_none_as_a_placeholder(view):
         view.histogram_x_stop_edit,
         view.histogram_y_start_edit,
         view.histogram_y_stop_edit,
+        view.histogram_x_step_edit,
+        view.histogram_y_step_edit,
     ):
         assert edit.placeholderText() == "None"
 

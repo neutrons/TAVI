@@ -10,6 +10,10 @@ from tavi.library.data.process_op import _norm_suffix
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 
+# How close two values along an axis must be to count as one measured position - readback
+# jitter around a setpoint is well inside it.
+POSITION_TOL = 0.01
+
 
 class Histogram:
     """
@@ -45,7 +49,7 @@ class Histogram:
         bins: Any = None,
         range: Optional[Sequence[tuple[float, float]]] = None,  # noqa: A002 - mirrors numpy.histogramdd
         multiplication: float = 1.0,
-        tol: Sequence[float] = (0.01, 0.01),
+        tol: Sequence[float] = (POSITION_TOL, POSITION_TOL),
     ) -> None:
         """Store the origins, the ``[x, y, z, norm]`` columns, the binning, the scale and the ``bins=None`` tolerance."""
         self.tavi_data = tavi_data
@@ -179,21 +183,28 @@ class Histogram:
         )
 
 
-def _count_positions(values: np.ndarray, tol: float) -> int:
+def measured_positions(values: np.ndarray, tol: float) -> list[tuple[float, float]]:
     """
-    Count the positions along one axis, values agreeing to within ``tol`` counting as one.
+    Group the values along one axis into measured positions, returning each one's (lowest, highest) value.
 
     A position opens at its smallest value and takes every value no more than ``tol`` above
     it, so no two of its members differ by more than ``tol`` - readback jitter around one
-    setpoint stays one position rather than splitting it.
+    setpoint stays one position rather than splitting it. Positions come in ascending order.
     """
-    positions = 0
+    positions: list[list[float]] = []
     opened_at = -math.inf
     for value in np.unique(values):
         if value - opened_at > tol:
-            positions += 1
+            positions.append([float(value), float(value)])
             opened_at = value
-    return positions
+        else:
+            positions[-1][1] = float(value)
+    return [(low, high) for low, high in positions]
+
+
+def _count_positions(values: np.ndarray, tol: float) -> int:
+    """Count the positions along one axis, values agreeing to within ``tol`` counting as one."""
+    return len(measured_positions(values, tol))
 
 
 def _centred_range(values: np.ndarray, count: Any) -> Optional[tuple[float, float]]:

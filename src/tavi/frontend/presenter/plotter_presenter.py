@@ -14,6 +14,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
+    FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
@@ -60,6 +61,7 @@ class PlotterPresenter(AbstractPresenter):
         self._event_broker.register(FocusRawScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusProcessedScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusPlotEvent, self.handle_plot_focus)
+        self._event_broker.register(FocusHistogramEvent, self.handle_histogram_focus)
         self._event_broker.register(SyncPlotEvent, self.handle_sync_plot)
         self._event_broker.register(FocusFitEvent, self.handle_fit_focus)
         self._event_broker.register(SyncStageEvent, self.handle_sync_stage)
@@ -95,6 +97,11 @@ class PlotterPresenter(AbstractPresenter):
             columns = list(e.scans[0].data.data.keys())
             self._view.set_axis_options(columns)
             self._view.set_preset_channel_options(columns)
+
+    def handle_histogram_focus(self, e: FocusHistogramEvent) -> None:
+        """Draw the first focused 2D map - the canvas holds one, and a map is never staged or edited."""
+        if e.histograms:
+            self._view.render_histogram_signal.emit(e.histograms[0])
 
     def handle_plot_focus(self, e: FocusPlotEvent) -> None:
         """

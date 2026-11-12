@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
 
 
 class PurgeResult(BaseModel):
@@ -23,7 +23,8 @@ class TaviData(BaseModel):
 
     raw_scans: dict[UUID, RawScan] = Field(default_factory=dict)
     plots: dict[UUID, Plot] = Field(default_factory=dict)
-    processed_scans: dict[UUID, ProcessedScan] = Field(default_factory=dict)
+    # A histogram is a combination too, so it is stored, named and focused alongside the 1D ones.
+    processed_scans: dict[UUID, ProcessedScan | HistogramData] = Field(default_factory=dict)
     fits: dict[UUID, FitEntry] = Field(default_factory=dict)
     # Saved filters only; the built-in Sample filter is never stored, so it can't be removed or saved over.
     filters: dict[UUID, ScanFilter] = Field(default_factory=dict)
@@ -32,7 +33,7 @@ class TaviData(BaseModel):
         """Return every scan, raw and derived, in one lookup - what ``ProcessOps`` resolves uuids against."""
         return {**self.raw_scans, **self.processed_scans}
 
-    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | Plot | FitEntry:
+    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | HistogramData | Plot | FitEntry:
         """Return the scan, plot, or fit matching uuid, or raise KeyError."""
         for store in (self.raw_scans, self.processed_scans, self.plots, self.fits):
             if uuid in store:

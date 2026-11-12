@@ -185,7 +185,7 @@ Event lexicon
      - Add items to what the user is looking at. Focus events only ever add;
        they never replace what is already focused.
      - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusProcessedScanEvent``,
-       ``FocusPlotEvent``, ``FocusFitEvent``
+       ``FocusHistogramEvent``, ``FocusPlotEvent``, ``FocusFitEvent``
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``

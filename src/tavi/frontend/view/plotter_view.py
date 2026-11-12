@@ -2,6 +2,7 @@
 
 from typing import Any, Callable, Optional
 
+import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -30,6 +31,7 @@ class Plot1DView(QWidget):
     fields_focus_changed = Signal()
     render_plots_signal = Signal(list)
     add_plots_signal = Signal(list)
+    render_histogram_signal = Signal(object)
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
@@ -49,12 +51,18 @@ class Plot1DView(QWidget):
         self._plotted: list[tuple] = []
         # Keyed by source scan uuid, so a refit or undo of a series replaces its own curve.
         self._fit_curves: dict[str, FitCurve] = {}
+        # A 2D map focused for display. It takes the canvas alone: its axes are two scan columns and
+        # its colour is intensity, so no 1D series or fit curve shares a scale with it.
+        self._histogram: Optional[Any] = None
+        # The map's colorbar steals room from the axes; kept so a redraw can hand that room back.
+        self._colorbar: Optional[Any] = None
         self._show_components = False
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
         # emitted from a worker thread (PlotModel running behind PlotModelProxy).
         self.render_plots_signal.connect(self._render_plots)
         self.add_plots_signal.connect(self._add_plots)
+        self.render_histogram_signal.connect(self._render_histogram)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
         self.append_fit_curve_signal.connect(self._append_fit_curve)
@@ -146,7 +154,15 @@ class Plot1DView(QWidget):
         user_view = None
         if not (ax.get_autoscalex_on() and ax.get_autoscaley_on()):
             user_view = (ax.get_xlim(), ax.get_ylim())
+        self._remove_colorbar()
         ax.cla()
+        if self._histogram is not None:
+            self._draw_histogram(ax)
+            if user_view is not None:
+                ax.set_xlim(*user_view[0])
+                ax.set_ylim(*user_view[1])
+            self.canvas.draw()
+            return
         colors = self._series_colors()
         for x, y, err, series in self._plotted:
             ax.errorbar(
@@ -174,6 +190,31 @@ class Plot1DView(QWidget):
         self._sync_axis_labels([series for *_, series in self._plotted])
         self._refresh_legend()
         self.canvas.draw()
+
+    def _remove_colorbar(self) -> None:
+        """
+        Drop the map's colorbar, handing its room back to the axes.
+
+        cla() alone leaves the colorbar's own axes behind, and once cla() has detached the mesh the
+        colorbar can no longer remove itself - so this must run before every cla().
+        """
+        if self._colorbar is not None:
+            self._colorbar.remove()
+            self._colorbar = None
+
+    def _draw_histogram(self, ax: Any) -> None:
+        """Draw the focused map as a colour mesh over its bin edges, with a colorbar naming the intensity."""
+        hist = self._histogram
+        # Grids are (n_x, n_y); pcolormesh wants rows along y. NaN (empty) bins are left blank.
+        mesh = ax.pcolormesh(hist.x_edges, hist.y_edges, np.asarray(hist.intensity).T, shading="flat")
+        norm_name = hist.tavimeta.normalization[0] if hist.tavimeta.normalization else None
+        label = f"{hist.intensity_name} / {norm_name}" if norm_name else hist.intensity_name
+        self._colorbar = self.canvas.figure.colorbar(mesh, ax=ax, label=label)
+        x_name, y_name = hist.tavimeta.default_axis
+        ax.set_xlabel(x_name)
+        ax.set_ylabel(y_name)
+        if not self.hide_label_check.isChecked():
+            ax.set_title(hist.tavimeta.friendly_name)
 
     @staticmethod
     def _color_key(series: Any) -> str:
@@ -205,7 +246,10 @@ class Plot1DView(QWidget):
         self._redraw()
 
     def _on_hide_label_toggled(self, _hidden: bool) -> None:
-        """Drop or restore the legend when "Hide Label" is toggled - the plotted data is untouched."""
+        """Drop or restore the legend - or a map's title - when "Hide Label" is toggled; the data is untouched."""
+        if self._histogram is not None:
+            self._redraw()
+            return
         self._refresh_legend()
         self.canvas.draw()
 
@@ -227,6 +271,8 @@ class Plot1DView(QWidget):
         """Clear all data from the plot, and the view history that went with it."""
         self._plotted = []
         self._fit_curves = {}
+        self._histogram = None
+        self._remove_colorbar()
         # cla() turns autoscaling back on, so the next plot isn't held to this one's zoom.
         self.canvas.axes.cla()
         # Drop the toolbar's view history along with the data. Matplotlib captures the
@@ -237,8 +283,21 @@ class Plot1DView(QWidget):
 
     def _render_plots(self, resolved: list) -> None:
         """Clear and repopulate the canvas. Always runs on the GUI thread (see ``render_plots_signal``)."""
+        # A sync re-renders the focused series, not the focus itself, so a map focused alongside
+        # them stays; a new selection drops it through clear_plot via ClearFocusEvent's empty render.
+        histogram = self._histogram if resolved else None
         self.clear_plot()
+        self._histogram = histogram
         self._add_plots(resolved)
+
+    def _render_histogram(self, histogram: Any) -> None:
+        """Show a 2D map in place of the 1D scene. Always runs on the GUI thread (see ``render_histogram_signal``)."""
+        self._histogram = histogram
+        # A fresh map starts from its own full extent, not the last scene's zoom or Home view.
+        self._remove_colorbar()
+        self.canvas.axes.cla()
+        self.toolbar.update()
+        self._redraw()
 
     def _add_plots(self, resolved: list) -> None:
         """Draw more series on top of what's already on the canvas (see ``add_plots_signal``)."""

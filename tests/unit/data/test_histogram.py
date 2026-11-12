@@ -5,7 +5,7 @@ import math
 import numpy as np
 import pytest
 
-from tavi.library.data.algorithms.histogram import Histogram
+from tavi.library.data.algorithms.histogram import Histogram, measured_positions
 from tavi.library.data.scan import UUID, HistogramData, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
 
@@ -193,3 +193,9 @@ def test_missing_column_is_refused():
     scan = make_raw_scan()
     with pytest.raises(KeyError, match="temp"):
         Histogram(make_tavi_data(scan), [scan.uuid], ["qh", "en", "detector", "temp"]).validate()
+
+
+def test_measured_positions_groups_jitter_and_reports_each_span():
+    values = np.array([1.8001, 1.6499, 1.65, 1.7999, 1.8])
+
+    assert measured_positions(values, 0.01) == [(1.6499, 1.65), (1.7999, 1.8001)]

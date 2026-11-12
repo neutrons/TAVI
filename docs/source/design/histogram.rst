@@ -281,11 +281,16 @@ The scan still deep-copies, which every ``EventBroker`` publish does, but it no
 longer serializes to JSON: once a map is stored in a project, saving it will
 need the arrays converted on the way out and back on load.
 
-Not yet stored or wired in
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Stored beside the 1D combinations, run outside ``CombineOps``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``Histogram`` is not a ``ProcessOps`` subclass, whose ``exec`` contract returns
-a ``ProcessedScan``, and ``CombineOps`` has no 2D mode. ``TaviData`` has no
-store typed for ``HistogramData`` either — ``processed_scans`` holds
-``ProcessedScan`` only — so a map can be built and plotted but not yet
-registered in a project.
+a ``ProcessedScan``, and ``CombineOps`` has no 2D mode. The Combine panel's
+Histogram tab reaches it through ``CombineModel`` instead, which turns each
+axis's Start/Stop/Step into explicit bin edges (a blank Step gives one bin per
+measured position, values within ``POSITION_TOL`` counting as one, with edges
+midway between neighbours), runs it, and stores the result
+in ``TaviData.processed_scans`` — typed ``ProcessedScan | HistogramData`` — so
+a map is listed, renamed and focused like any other combination. Clicking it
+publishes ``FocusHistogramEvent`` and the plotter draws it with
+``pcolormesh`` (see :doc:`frontend/visualization_flow`).

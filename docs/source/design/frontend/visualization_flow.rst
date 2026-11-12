@@ -73,6 +73,8 @@ Event                          Published by               Meaning
 ``ClearFocusEvent``            ``TaviProjectModel``       Nothing is focused any more (stage included).
 ``FocusRawScanEvent``          ``TaviProjectModel``       Add these raw scans to the focus.
 ``FocusProcessedScanEvent``    ``TaviProjectModel``       Add these processed (combined) scans to the focus.
+``FocusHistogramEvent``        ``TaviProjectModel``       Add these 2D histogram maps to the focus; the first is
+                                                          drawn as a colour map.
 ``FocusPlotEvent``             ``TaviProjectModel``,      Add these plots to the focus.
                                ``PlotModel``
 ``FocusFitEvent``              ``TaviProjectModel``       Add these fits (and the series they were fit against).
@@ -130,6 +132,13 @@ All" checked. A selection of only one type simply skips the other branch.
 
         TaviProjectModel ->> EventBroker: FocusPlotEvent(saved plots, scans)
         Note over EventBroker,DataFilePresenter: same handling as the preview FocusPlotEvent above
+
+Selecting a 2D histogram map (a ``HistogramData`` from the Combine panel's
+Histogram tab) is a shorter branch. ``TaviProjectModel`` publishes
+``FocusHistogramEvent`` carrying the maps, after ``FocusProcessedScanEvent``.
+``PlotModel`` does not subscribe — a map is not a series, so there is no
+preview to build and nothing to stage — and ``PlotterPresenter`` forwards the
+first map to ``Plot1DView`` through ``render_histogram_signal``.
 
 With "Apply All" unchecked, ``PlotterPresenter`` stages only the first series
 of the selection — so there is always something for edits and fits to act
@@ -402,6 +411,20 @@ Both sync methods and the reset block widget signals while writing, so
 programmatically updating a control never re-emits ``fields_focus_changed``
 and loops back into the model.
 
+A 2D map shares the 1D canvas, and takes it alone
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A map is drawn on ``Plot1DView``'s existing canvas rather than in a separate
+2D panel: ``pcolormesh`` and a colorbar need only the same ``Figure``, and the
+user sees the map where clicking any other tree item shows its data. While a
+map is focused it is the whole scene. Its axes are two scan columns and its
+colour is intensity, so no 1D series or fit curve shares a scale with it; any
+series focused in the same selection is still listed in "Current Plot" but
+not drawn. The colorbar steals room from the axes, so the view removes it
+before every ``cla()`` — once ``cla()`` has detached the mesh, the colorbar
+can no longer hand that room back. A ``SyncPlotEvent`` keeps the map; the next
+``ClearFocusEvent`` drops it.
+
 Selection order is preserved across multi-select
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -413,7 +436,8 @@ longer selected (e.g. a removed tree entry) before returning. Deselecting an
 item and reselecting it moves it to the end. Within each item type this
 determines the order series appear in the "Current Plot" dropdown and, with
 "Apply All" off, which one is staged by default (the first). Across types,
-raw scans are focused before processed scans, then saved plots, and fits last.
+raw scans are focused before processed scans, then histogram maps, then saved
+plots, and fits last.
 
 A wildcard expands into curves, not into series
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
