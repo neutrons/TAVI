@@ -363,7 +363,7 @@ shown in the data tab like any raw scan (see
 
 The staged list is the user's own basket, so it outlives a selection: a
 ``ClearFocusEvent`` forgets only which scans *Add Scans* would stage next. A
-``RemoveRawScanEvent`` unstages its related scan and prevents the list from 
+``RemoveRawScanEvent`` unstages its related scan and prevents the list from
 naming unresolvable data. The axis fields are re-seeded from each focused scan's
 ``tavimeta.default_axis``, as the plotter's are, so the panel cannot be left
 naming the previous experiment's columns.
