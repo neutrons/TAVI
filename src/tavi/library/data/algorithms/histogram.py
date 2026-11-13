@@ -10,6 +10,10 @@ from tavi.library.data.process_op import _norm_suffix
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 
+# How close two values along an axis must be to count as one measured position - readback
+# jitter around a setpoint is well inside it.
+POSITION_TOL = 0.01
+
 
 class Histogram:
     """
@@ -45,7 +49,7 @@ class Histogram:
         bins: Any = None,
         range: Optional[Sequence[tuple[float, float]]] = None,  # noqa: A002 - mirrors numpy.histogramdd
         multiplication: float = 1.0,
-        tol: Sequence[float] = (0.01, 0.01),
+        tol: Sequence[float] = (POSITION_TOL, POSITION_TOL),
     ) -> None:
         """Store the origins, the ``[x, y, z, norm]`` columns, the binning, the scale and the ``bins=None`` tolerance."""
         self.tavi_data = tavi_data
@@ -97,19 +101,31 @@ class Histogram:
 
     def exec(self) -> HistogramData:
         """
-        Append the origins, bin them, and return the normalized intensity map with its propagated error.
+        Append the origins, bin them, and register the normalized intensity map in ``tavi_data.processed_scans``.
 
         The result keeps what the append built - a fresh uuid, the appended points as ``data``,
         every origin in ``prov.contributing_scans`` and ``(x, y)`` as ``tavimeta.default_axis`` -
-        and records the norm column with each bin's summed norm in ``tavimeta.normalization``. Storing it is
-        the caller's job.
+        and records the norm column with each bin's summed norm in ``tavimeta.normalization``. It is
+        returned as well as stored, so a caller need not look it back up.
         """
         self.validate()
 
         appended = self._append_op.exec()
         columns = appended.data.data
         x, y, z, norm = (np.asarray(columns[name], dtype=float) for name in self.columns)
-        return self._bin(appended, x, y, z, np.sqrt(z), norm)
+        histogram = self._bin(appended, x, y, z, np.sqrt(z), norm)
+        self.register(histogram)
+        return histogram
+
+    def register(self, histogram: HistogramData) -> None:
+        """
+        Write an intensity map into ``tavi_data.processed_scans`` under its own uuid.
+
+        Kept apart from ``exec`` so that the store write has one named place: a caller
+        holding a map this op produced earlier - one rebuilt from a project file, say -
+        can register it without re-running the binning.
+        """
+        self.tavi_data.processed_scans[histogram.uuid] = histogram
 
     def _bin(
         self,
@@ -160,9 +176,8 @@ class Histogram:
         _, _, intensity_name, norm_name = self.columns
         tavimeta = appended.tavimeta
         tavimeta.friendly_name = f"{tavimeta.friendly_name}_hist{_norm_suffix(norm_name, self.multiplication)}"
-        tavimeta.normalization = (norm_name, sum_norm.tolist())
-        # grids stored as plain floats, as ScanData stores its columns, so the scan
-        # deep-copies and serializes like any other.
+        # every grid kept as the array histogramdd produced, so its (n_x, n_y) shape travels with it.
+        tavimeta.normalization = (norm_name, sum_norm)
         return HistogramData(
             uuid=appended.uuid,
             data=appended.data,
@@ -170,31 +185,38 @@ class Histogram:
             tavimeta=tavimeta,
             prov=appended.prov,
             intensity_name=intensity_name,
-            x_edges=x_edges.tolist(),
-            y_edges=y_edges.tolist(),
-            x_centers=((x_edges[:-1] + x_edges[1:]) / 2).tolist(),
-            y_centers=((y_edges[:-1] + y_edges[1:]) / 2).tolist(),
-            intensity=intensity.tolist(),
-            error=error.tolist(),
-            counts=counts.astype(int).tolist(),
+            x_edges=x_edges,
+            y_edges=y_edges,
+            x_centers=(x_edges[:-1] + x_edges[1:]) / 2,
+            y_centers=(y_edges[:-1] + y_edges[1:]) / 2,
+            intensity=intensity,
+            error=error,
+            counts=counts.astype(int),
         )
 
 
-def _count_positions(values: np.ndarray, tol: float) -> int:
+def measured_positions(values: np.ndarray, tol: float) -> list[tuple[float, float]]:
     """
-    Count the positions along one axis, values agreeing to within ``tol`` counting as one.
+    Group the values along one axis into measured positions, returning each one's (lowest, highest) value.
 
     A position opens at its smallest value and takes every value no more than ``tol`` above
     it, so no two of its members differ by more than ``tol`` - readback jitter around one
-    setpoint stays one position rather than splitting it.
+    setpoint stays one position rather than splitting it. Positions come in ascending order.
     """
-    positions = 0
+    positions: list[list[float]] = []
     opened_at = -math.inf
     for value in np.unique(values):
         if value - opened_at > tol:
-            positions += 1
+            positions.append([float(value), float(value)])
             opened_at = value
-    return positions
+        else:
+            positions[-1][1] = float(value)
+    return [(low, high) for low, high in positions]
+
+
+def _count_positions(values: np.ndarray, tol: float) -> int:
+    """Count the positions along one axis, values agreeing to within ``tol`` counting as one."""
+    return len(measured_positions(values, tol))
 
 
 def _centred_range(values: np.ndarray, count: Any) -> Optional[tuple[float, float]]:

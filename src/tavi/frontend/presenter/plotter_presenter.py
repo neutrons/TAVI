@@ -10,10 +10,12 @@ from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Scan
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import RemoveProcessedScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
+    FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
@@ -54,12 +56,16 @@ class PlotterPresenter(AbstractPresenter):
         # arrives as two scan-focus events, and the columns offered should be the first scan's -
         # the one staged by default - not whichever event happened to come last.
         self._columns_offered = False
+        # The 2D map on the canvas, if any - kept so removing it from the project can take it off.
+        self._histogram_uuid: Optional[UUID] = None
 
         self._event_broker = EventBroker()
         self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
         self._event_broker.register(FocusRawScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusProcessedScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusPlotEvent, self.handle_plot_focus)
+        self._event_broker.register(FocusHistogramEvent, self.handle_histogram_focus)
+        self._event_broker.register(RemoveProcessedScanEvent, self.handle_processed_scan_removed)
         self._event_broker.register(SyncPlotEvent, self.handle_sync_plot)
         self._event_broker.register(FocusFitEvent, self.handle_fit_focus)
         self._event_broker.register(SyncStageEvent, self.handle_sync_stage)
@@ -87,6 +93,7 @@ class PlotterPresenter(AbstractPresenter):
         self._fit_uuid_by_source_uuid = {}
         self._focused_fit_uuids = set()
         self._columns_offered = False
+        self._histogram_uuid = None
 
     def handle_scan_focus(self, e: FocusRawScanEvent | FocusProcessedScanEvent) -> None:
         """Offer the selection's first focused scan's columns, raw or processed, as axis and preset-channel choices."""
@@ -95,6 +102,18 @@ class PlotterPresenter(AbstractPresenter):
             columns = list(e.scans[0].data.data.keys())
             self._view.set_axis_options(columns)
             self._view.set_preset_channel_options(columns)
+
+    def handle_histogram_focus(self, e: FocusHistogramEvent) -> None:
+        """Draw the first focused 2D map - the canvas holds one, and a map is never staged or edited."""
+        if e.histograms:
+            self._histogram_uuid = e.histograms[0].uuid
+            self._view.render_histogram_signal.emit(e.histograms[0])
+
+    def handle_processed_scan_removed(self, e: RemoveProcessedScanEvent) -> None:
+        """Take the drawn map off the canvas once it has left the project; 1D series are PlotModel's to sync."""
+        if e.uuid == self._histogram_uuid:
+            self._histogram_uuid = None
+            self._view.clear_histogram_signal.emit()
 
     def handle_plot_focus(self, e: FocusPlotEvent) -> None:
         """

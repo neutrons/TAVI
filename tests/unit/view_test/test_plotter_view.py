@@ -2,12 +2,13 @@
 
 import numpy as np
 import pytest
+from matplotlib.collections import QuadMesh
 from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
 from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import PlotFields, PlotSeries
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, HistogramData, Provenance, ScanData, ScanMetadata, TaviMetadata
 
 
 @pytest.fixture
@@ -15,6 +16,26 @@ def view(qtbot):
     v = Plot1DView()
     qtbot.addWidget(v)
     return v
+
+
+def make_histogram(uuid_val="hist-001", name="scan1+scan2_hist_normmonitor") -> HistogramData:
+    return HistogramData(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0], "en": [0.0, 1.0], "detector": [4.0, 9.0], "monitor": [1.0, 1.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(
+            default_axis=("qh", "en"), friendly_name=name, friendly_path="", normalization=("monitor", np.ones((2, 2)))
+        ),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
+        intensity_name="detector",
+        x_edges=np.array([0.5, 1.5, 2.5]),
+        y_edges=np.array([-0.5, 0.5, 1.5]),
+        x_centers=np.array([1.0, 2.0]),
+        y_centers=np.array([0.0, 1.0]),
+        intensity=np.array([[4.0, np.nan], [np.nan, 9.0]]),
+        error=np.array([[2.0, np.nan], [np.nan, 3.0]]),
+        counts=np.array([[1, 0], [0, 1]]),
+    )
 
 
 def append_plot(view, x, y, err, scan_name, normalized_by, x_name, y_name, error_name):
@@ -1393,3 +1414,77 @@ def test_a_fit_on_a_scan_drawn_as_expanded_channels_still_renders(view):
     view._append_fit_curve(make_fit_curve(uuid_val="scan1"))
 
     assert [line.get_label() for line in view.canvas.axes.lines if line.get_label() == "my_scan fit"]
+
+
+# ---------------------------------------------------------------------------
+# 2D histogram map
+# ---------------------------------------------------------------------------
+
+
+def _meshes(view):
+    return [c for c in view.canvas.axes.collections if isinstance(c, QuadMesh)]
+
+
+def test_render_histogram_draws_a_colour_mesh_with_a_colorbar(view):
+    view._render_histogram(make_histogram())
+
+    (mesh,) = _meshes(view)
+    # pcolormesh takes the grid transposed, rows along y.
+    np.testing.assert_array_equal(mesh.get_array().reshape(2, 2), np.array([[4.0, np.nan], [np.nan, 9.0]]).T)
+    assert len(view.canvas.figure.axes) == 2
+    assert view.canvas.figure.axes[1].get_ylabel() == "detector / monitor"
+
+
+def test_render_histogram_labels_the_map_axes_and_title(view):
+    view._render_histogram(make_histogram())
+
+    ax = view.canvas.axes
+    assert (ax.get_xlabel(), ax.get_ylabel()) == ("qh", "en")
+    assert ax.get_title() == "scan1+scan2_hist_normmonitor"
+
+
+def test_hide_label_drops_the_map_title(view):
+    view._render_histogram(make_histogram())
+
+    view.hide_label_check.setChecked(True)
+
+    assert view.canvas.axes.get_title() == ""
+    assert len(_meshes(view)) == 1
+
+
+def test_a_new_selection_clears_the_map_and_its_colorbar(view):
+    view._render_histogram(make_histogram())
+
+    view._render_plots([])
+
+    assert _meshes(view) == []
+    assert view.canvas.figure.axes == [view.canvas.axes]
+
+
+def test_rendering_a_second_map_keeps_one_colorbar(view):
+    view._render_histogram(make_histogram())
+    view._render_histogram(make_histogram("hist-002"))
+
+    assert len(_meshes(view)) == 1
+    assert len(view.canvas.figure.axes) == 2
+
+
+def test_a_map_takes_the_canvas_over_1d_series(view):
+    view._render_histogram(make_histogram())
+
+    append_plot(view, [1, 2], [3, 4], [0.1, 0.1], "scan1", None, "qh", "detector", "err")
+
+    assert len(_meshes(view)) == 1
+    assert len(view.canvas.axes.lines) == 0
+    assert view.canvas.axes.containers == []
+
+
+def test_clear_histogram_drops_the_map_and_redraws_the_1d_series(view):
+    append_plot(view, [1, 2], [3, 4], [0.1, 0.1], "scan1", None, "qh", "detector", "err")
+    view._render_histogram(make_histogram())
+
+    view._clear_histogram()
+
+    assert _meshes(view) == []
+    assert view.canvas.figure.axes == [view.canvas.axes]
+    assert len(view.canvas.axes.containers) == 1

@@ -12,6 +12,7 @@ from tavi.meta.event.type.model_event import (
     AddRawScanEvent,
     RemoveFitEvent,
     RemovePlotEvent,
+    RemoveProcessedScanEvent,
     ClearRawScansEvent,
     RemoveRawScanEvent,
     SyncItemNameEvent,
@@ -194,6 +195,22 @@ def test_init_registers_raw_scan_remove_event():
     broker = EventBroker()
 
     assert presenter.remove_treeview_data in broker.registry[RemoveRawScanEvent]
+
+
+def test_init_registers_processed_scan_remove_event():
+    presenter, view, model = _make_presenter()
+    broker = EventBroker()
+
+    assert presenter.remove_treeview_data in broker.registry[RemoveProcessedScanEvent]
+
+
+def test_processed_scan_remove_event_drops_the_tree_row():
+    presenter, view, model = _make_presenter()
+    uuid = UUID(value="hist-001")
+
+    EventBroker().publish(RemoveProcessedScanEvent(uuid=uuid))
+
+    view.remove_item.assert_called_once_with(uuid)
 
 
 def test_init_registers_plot_remove_event():

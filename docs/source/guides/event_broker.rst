@@ -185,7 +185,7 @@ Event lexicon
      - Add items to what the user is looking at. Focus events only ever add;
        they never replace what is already focused.
      - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusProcessedScanEvent``,
-       ``FocusPlotEvent``, ``FocusFitEvent``
+       ``FocusHistogramEvent``, ``FocusPlotEvent``, ``FocusFitEvent``
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``
@@ -223,7 +223,8 @@ Event lexicon
        the scan left ``TaviData``.
      - ``AddRawScanEvent``, ``AddPlotEvent``, ``AddFitEvent``,
        ``AddProcessedScanEvent``, ``AddFilterEvent``, ``RemoveRawScanEvent``,
-       ``RemovePlotEvent``, ``RemoveFitEvent``, ``RemoveFilterEvent``
+       ``RemoveProcessedScanEvent``, ``RemovePlotEvent``, ``RemoveFitEvent``,
+       ``RemoveFilterEvent``
    * - Restore
      - Announce that X was put back to an earlier saved state.
      - ``RestoreFitMemberEvent``
@@ -390,10 +391,12 @@ Event catalog
      - ``TaviProjectModel``
      - ``ProjectPresenter``
      - Item entered the project
-   * - ``RemoveRawScanEvent``, ``RemovePlotEvent``, ``RemoveFitEvent``
+   * - ``RemoveRawScanEvent``, ``RemoveProcessedScanEvent``,
+       ``RemovePlotEvent``, ``RemoveFitEvent``
      - ``TaviProjectModel``
-     - ``ProjectPresenter``, and ``PlotModel``, ``FittingPresenter``,
-       ``FitWindowPresenter`` where they hold that kind of item
+     - ``ProjectPresenter``, and ``PlotModel``, ``PlotterPresenter`` (a drawn
+       histogram map), ``FittingPresenter``, ``FitWindowPresenter`` where they
+       hold that kind of item
      - Item left the project
    * - ``AddFilterEvent``, ``RemoveFilterEvent``
      - ``FilterModel``

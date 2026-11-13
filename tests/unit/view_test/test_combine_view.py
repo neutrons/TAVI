@@ -1,7 +1,7 @@
 """Tests for tavi.frontend.view.combine_view."""
 
 import pytest
-from qtpy.QtWidgets import QGroupBox, QHBoxLayout, QListWidget
+from qtpy.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QListWidget, QVBoxLayout
 
 from tavi.frontend.view.combine_view import CombineView
 from tavi.library.data.enum.rebin_mode import RebinMode
@@ -192,10 +192,10 @@ def test_scan_list_is_capped_at_half_its_natural_height(view):
 # ---------------------------------------------------------------------------
 
 
-def test_rebin_tabs_are_equal_step_and_tolerance(view):
+def test_rebin_tabs_are_equal_step_tolerance_and_histogram(view):
     labels = [view.rebin_tabs.tabText(i) for i in range(view.rebin_tabs.count())]
 
-    assert labels == ["Equal Step", "Tolerance"]
+    assert labels == ["Equal Step", "Tolerance", "Histogram"]
 
 
 def test_rebin_mode_defaults_to_equal_step(view):
@@ -206,6 +206,116 @@ def test_rebin_mode_follows_the_visible_tab(view):
     view.rebin_tabs.setCurrentIndex(1)
 
     assert view.rebin_mode() is RebinMode.TOLERANCE
+
+
+def test_rebin_mode_is_histogram_on_the_histogram_tab(view):
+    view.rebin_tabs.setCurrentIndex(2)
+
+    assert view.rebin_mode() is RebinMode.HISTOGRAM
+
+
+def _histogram_edits(view):
+    return (
+        view.histogram_x_start_edit,
+        view.histogram_x_stop_edit,
+        view.histogram_x_step_edit,
+        view.histogram_y_start_edit,
+        view.histogram_y_stop_edit,
+        view.histogram_y_step_edit,
+    )
+
+
+def _histogram_values(view):
+    return (
+        view.histogram_x_start(),
+        view.histogram_x_stop(),
+        view.histogram_x_step(),
+        view.histogram_y_start(),
+        view.histogram_y_stop(),
+        view.histogram_y_step(),
+    )
+
+
+def test_histogram_default_field_values(view):
+    """Start, Stop and Step default to none on both axes, so each measured position gets its own bin."""
+    assert view.histogram_z_axis() == "e"
+    assert _histogram_values(view) == ("", "", "", "", "", "")
+
+
+def test_histogram_blank_edges_show_none_as_a_placeholder(view):
+    for edit in (
+        view.histogram_x_start_edit,
+        view.histogram_x_stop_edit,
+        view.histogram_y_start_edit,
+        view.histogram_y_stop_edit,
+        view.histogram_x_step_edit,
+        view.histogram_y_step_edit,
+    ):
+        assert edit.placeholderText() == "None"
+
+
+def test_histogram_fields_report_what_was_typed(view):
+    view.histogram_z_axis_combo.setEditText("qh")
+    typed = ("1.5", "2.5", "0.05", "-1", "8", "0.5")
+    for edit, text in zip(_histogram_edits(view), typed):
+        edit.setText(text)
+
+    assert view.histogram_z_axis() == "qh"
+    assert _histogram_values(view) == typed
+
+
+def test_histogram_tab_holds_only_its_own_fields(view):
+    histogram_page = view.rebin_tabs.widget(2)
+
+    for field in (view.histogram_z_axis_combo, *_histogram_edits(view)):
+        assert field.parent() is histogram_page
+    for field in (view.rebin_tolerance_edit, view.rebin_start_edit, view.rebin_stop_edit, view.rebin_step_edit):
+        assert field.parent() is not histogram_page
+
+
+def _row_texts(row):
+    texts = []
+    for i in range(row.count()):
+        widget = row.itemAt(i).widget()
+        if isinstance(widget, QLabel):
+            texts.append(widget.text())
+        elif widget is not None:
+            texts.append(widget)
+    return texts
+
+
+def test_histogram_tab_stacks_z_axis_then_x_then_y(view):
+    page_layout = view.rebin_tabs.widget(2).layout()
+    rows = [_row_texts(page_layout.itemAt(i).layout()) for i in range(page_layout.count())]
+
+    assert rows == [
+        ["Z-Axis", view.histogram_z_axis_combo],
+        [
+            "X:",
+            "Start",
+            view.histogram_x_start_edit,
+            "Stop",
+            view.histogram_x_stop_edit,
+            "Step",
+            view.histogram_x_step_edit,
+        ],
+        [
+            "Y:",
+            "Start",
+            view.histogram_y_start_edit,
+            "Stop",
+            view.histogram_y_stop_edit,
+            "Step",
+            view.histogram_y_step_edit,
+        ],
+    ]
+    assert isinstance(page_layout, QVBoxLayout)
+
+
+def test_rebin_note_explains_the_histogram(view):
+    view.rebin_tabs.setCurrentIndex(2)
+
+    assert view.rebin_note.text() == view.REBIN_NOTES[RebinMode.HISTOGRAM]
 
 
 def test_equal_step_default_field_values(view):
@@ -335,12 +445,13 @@ def test_set_axes_leaves_the_normalization_alone(view):
     view.set_axes("qh", "detector")
 
     assert view.normalization() == "mcu"
+    assert view.histogram_z_axis() == "e"
 
 
 def test_set_column_options_fills_every_column_dropdown(view):
     view.set_column_options(["s2", "detector", "monitor"])
 
-    for combo in (view.y_axis_combo, view.x_axis_combo, view.normalization_combo):
+    for combo in (view.y_axis_combo, view.x_axis_combo, view.normalization_combo, view.histogram_z_axis_combo):
         items = [combo.itemText(i) for i in range(combo.count())]
         assert items == ["s2", "detector", "monitor"]
 
@@ -448,6 +559,8 @@ def test_append_and_combine_share_one_row(view):
 
 
 def test_rebin_tab_fields_share_one_row(view):
-    """A tab one line tall, rather than a form row per field."""
+    """A tab one line tall, rather than a form row per field - except Histogram, which stacks its axes."""
     for index in range(view.rebin_tabs.count()):
+        if view.rebin_tabs.tabText(index) == "Histogram":
+            continue
         assert isinstance(view.rebin_tabs.widget(index).layout(), QHBoxLayout)

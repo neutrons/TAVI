@@ -13,7 +13,8 @@ class CombineRequest(BaseModel):
     The numbers are the text they were typed as, and the model that runs this parses them, so a
     half-typed field is reported as the error it is rather than refused at the request's door.
     ``rebin_mode`` names which of them the combination actually reads: a tolerance, or a step and
-    the grid edges, or - for a plain append - none of them.
+    the grid edges, or a 2D grid over ``x_axis`` and ``z_axis`` for a histogram, or - for a plain
+    append - none of them.
     """
 
     source_scan_uuids: list[UUID]
@@ -29,5 +30,14 @@ class CombineRequest(BaseModel):
     # Blank edges leave the grid to the data, which is what ``CombineOps`` reads ``None`` as.
     start: str = ""
     finish: str = ""
+    # The histogram's second map axis and its grid, one Start/Stop/Step per map axis; blank
+    # edges are read off the data, as for the 1D equal-step grid.
+    z_axis: str = ""
+    x_start: str = ""
+    x_stop: str = ""
+    x_step: str = ""
+    y_start: str = ""
+    y_stop: str = ""
+    y_step: str = ""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

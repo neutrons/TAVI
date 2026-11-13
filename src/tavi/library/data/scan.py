@@ -3,7 +3,8 @@
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+import numpy as np
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.dataclasses import dataclass
 from pydantic.fields import FieldInfo
 
@@ -86,7 +87,8 @@ class ScanMetadata(BaseModel):
         }
 
 
-@dataclass
+# arbitrary types for the numpy grid a HistogramData keeps as its normalization.
+@dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class TaviMetadata:
     """
     Tavi specific meta data.
@@ -94,14 +96,14 @@ class TaviMetadata:
     Args:
         default_axis:Tuple[str, str]
         normalization: (column_name, weight) for a scan normalized by one factor, or
-            (column_name, grid) for a ``HistogramData``, the grid holding each bin's summed norm.
+            (column_name, grid) for a ``HistogramData``, the grid an ``(n_x, n_y)`` array of each bin's summed norm.
 
     """
 
     default_axis: Tuple[str, str]
     friendly_name: str
     friendly_path: str
-    normalization: Optional[Tuple[str, float] | Tuple[str, List[List[float]]]] = None
+    normalization: Optional[Tuple[str, float] | Tuple[str, np.ndarray]] = None
 
 
 @dataclass
@@ -176,17 +178,19 @@ class HistogramData(BaseModel, Scan):
     Carries the ``Scan`` fields like any derived scan, plus the map: bin edges and centres per
     axis and the per-bin ``intensity``, ``error`` and point ``counts``, with ``NaN`` intensity
     and error where no point fell. Each bin's summed norm is ``tavimeta.normalization``, as
-    ``(norm column, grid)``. Grids are nested lists of plain floats, as
-    ``ScanData`` stores its columns, so the scan deep-copies and serializes like any other.
+    ``(norm column, (n_x, n_y) array)``. Every grid is the numpy array ``numpy.histogramdd``
+    produced, so its shape travels with it; the scan deep-copies but does not serialize to JSON.
     The x and y column names live in ``tavimeta.default_axis``, where every scan keeps its
     axes; ``intensity_name`` names the column the intensity was binned from.
     """
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     intensity_name: str
-    x_edges: list[float]
-    y_edges: list[float]
-    x_centers: list[float]
-    y_centers: list[float]
-    intensity: list[list[float]]
-    error: list[list[float]]
-    counts: list[list[int]]
+    x_edges: np.ndarray
+    y_edges: np.ndarray
+    x_centers: np.ndarray
+    y_centers: np.ndarray
+    intensity: np.ndarray
+    error: np.ndarray
+    counts: np.ndarray

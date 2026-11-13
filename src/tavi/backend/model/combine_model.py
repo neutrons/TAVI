@@ -1,13 +1,17 @@
 """Model for combining raw scans into one derived scan."""
 
+import math
 from typing import Optional
 
+import numpy as np
+
 from tavi.backend.model.interface.combine_model_interface import CombineModelInterface
+from tavi.library.data.algorithms.histogram import POSITION_TOL, Histogram, measured_positions
 from tavi.library.data.combine import CombineOps
 from tavi.library.data.combine_request import CombineRequest
 from tavi.library.data.enum.rebin_mode import RebinMode
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.scan import ProcessedScan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
@@ -50,8 +54,11 @@ class CombineModel(CombineModelInterface):
         self._publish_add_processed_scan(processed_scan)
         return ModelResponse(code=ResponseCode.OK)
 
-    def _build_ops(self, request: CombineRequest) -> CombineOps:
+    def _build_ops(self, request: CombineRequest) -> CombineOps | Histogram:
         """Translate a request into the op it describes, raising ValueError on anything unusable."""
+        if request.rebin_mode is RebinMode.HISTOGRAM:
+            return self._build_histogram(request)
+
         tolerance = step = start = finish = None
         # The mode decides which numbers are read at all, so a stale value left in a field the
         # user is not using can neither fail the parse nor reach CombineOps as a second mode.
@@ -74,6 +81,128 @@ class CombineModel(CombineModelInterface):
             multiplication=_optional_number("Multiplication", request.multiplication) or 1.0,
         )
 
+    def _build_histogram(self, request: CombineRequest) -> Histogram:
+        """Translate a request into a ``Histogram`` over ``[x_axis, y_axis, z_axis, normalization]``, the columns as named."""
+        x_axis = request.x_axis.strip()
+        z_axis = request.z_axis.strip()
+        y_axis = request.y_axis.strip()
+        normalization = request.normalization.strip()
+        if not x_axis or not z_axis or not y_axis:
+            raise ValueError("Histogram needs an x-axis, a y-axis and a z-axis column.")
+        # every bin is counts over summed norm, so there is no histogram without one.
+        if not normalization:
+            raise ValueError("Histogram needs a normalization column.")
+
+        # Histogram lays grids by bin count, so the panel's Start/Stop/Step become explicit
+        # edges here - which also keeps a typed edge exactly where the user put it.
+        x_edges = self._histogram_edges(
+            request.source_scan_uuids, x_axis, "X", request.x_start, request.x_stop, request.x_step
+        )
+        y_edges = self._histogram_edges(
+            request.source_scan_uuids, y_axis, "Y", request.y_start, request.y_stop, request.y_step
+        )
+
+        return Histogram(
+            self._tavi_data,
+            request.source_scan_uuids,
+            [x_axis, y_axis, z_axis, normalization],
+            bins=[x_edges, y_edges],
+            multiplication=_optional_number("Multiplication", request.multiplication) or 1.0,
+        )
+
+    def _histogram_edges(
+        self, uuids: list[UUID], column: str, label: str, start_text: str, stop_text: str, step_text: str
+    ) -> np.ndarray:
+        """
+        Lay one map axis's bin edges from Start/Stop/Step, as the 1D equal-step rebin lays its grid.
+
+        A blank Start is read off the data half a step below its smallest value, centring the first
+        bin on it. A typed Stop is an edge to cover: the last edge is the first one at or past it.
+        A blank Stop instead ends the grid at the bin holding the largest value.
+        """
+        start = _optional_number(f"{label} Start", start_text)
+        stop = _optional_number(f"{label} Stop", stop_text)
+        step = _optional_number(f"{label} Step", step_text)
+        if step is None:
+            return self._position_edges(uuids, column, label, start, stop)
+        if not math.isfinite(step) or step <= 0:
+            raise ValueError(f"{label} Step must be a positive, finite number, got {step_text.strip()!r}.")
+
+        largest = None
+        if start is None or stop is None:
+            values = self._column_values(uuids, column)
+            if start is None:
+                start = float(values.min()) - step / 2
+            if stop is None:
+                largest = float(values.max())
+                stop = largest + step / 2
+        if stop <= start:
+            raise ValueError(f"{label} Stop must be greater than {label} Start, got start={start!r}, stop={stop!r}.")
+
+        if largest is not None:
+            # Covering the padded max + step/2 as if it were an edge adds a bin whenever the data's
+            # span is not a whole number of steps - readback jitter (l at 1.6499 and 1.8001, step
+            # 0.15) makes that nearly always - and that bin is empty. Stop at the one holding max.
+            count = math.floor((largest - start) / step + 1e-9) + 1
+        else:
+            # float noise can put a whole number of steps just past an integer (0.15 / 0.05 is
+            # 3.0000000000000004), which a bare ceil would turn into an extra, empty bin.
+            count = math.ceil((stop - start) / step - 1e-9)
+        return start + step * np.arange(max(count, 1) + 1)
+
+    def _position_edges(
+        self, uuids: list[UUID], column: str, label: str, start: Optional[float], stop: Optional[float]
+    ) -> np.ndarray:
+        """
+        Lay one bin per measured position along one map axis, for a Step left blank.
+
+        Values within ``POSITION_TOL`` are one position, so readback jitter does not split a
+        setpoint. Each inner edge sits midway between neighbouring positions - so unevenly spaced
+        setpoints still get a bin each - and each outer edge mirrors its neighbour, centring the
+        outer bins. A typed Start or Stop limits which values count and replaces that outer edge.
+        """
+        if start is not None and stop is not None and stop <= start:
+            raise ValueError(f"{label} Stop must be greater than {label} Start, got start={start!r}, stop={stop!r}.")
+        values = self._column_values(uuids, column)
+        if start is not None:
+            values = values[values >= start]
+        if stop is not None:
+            values = values[values <= stop]
+        if values.size == 0:
+            raise ValueError(f"{label} Start/Stop hold none of the {column!r} values.")
+
+        positions = measured_positions(values, POSITION_TOL)
+        inner = [(high + next_low) / 2 for (_, high), (next_low, _) in zip(positions, positions[1:])]
+        (first_low, first_high), (last_low, last_high) = positions[0], positions[-1]
+        if inner:
+            low_edge = first_low - (inner[0] - first_high)
+            high_edge = last_high + (last_low - inner[-1])
+        else:
+            # one position leaves no spacing to size its bin by; numpy's own choice for a single value.
+            centre = (first_low + first_high) / 2
+            low_edge, high_edge = centre - 0.5, centre + 0.5
+        if start is not None:
+            low_edge = start
+        if stop is not None:
+            high_edge = stop
+        return np.array([low_edge, *inner, high_edge])
+
+    def _column_values(self, uuids: list[UUID], column: str) -> np.ndarray:
+        """Every finite value of ``column`` across the origins, for reading a blank grid edge off the data."""
+        if not uuids:
+            raise ValueError("Histogram needs at least one scan to bin.")
+        arrays = []
+        for uuid in uuids:
+            scan = self._tavi_data.fetch_by_uuid(uuid)
+            if column not in scan.data.data:
+                raise KeyError(f"Column {column!r} is not in {scan.tavimeta.friendly_name!r}.")
+            arrays.append(np.asarray(scan.data.data[column], dtype=float))
+        values = np.concatenate(arrays)
+        values = values[np.isfinite(values)]
+        if values.size == 0:
+            raise ValueError(f"Histogram column {column!r} has no finite values to lay a grid on.")
+        return values
+
     @staticmethod
     def _columns(request: CombineRequest) -> list[str]:
         """The columns to carry into the result: x first, y second, then the normalization column."""
@@ -90,7 +219,7 @@ class CombineModel(CombineModelInterface):
             columns.append(normalization)
         return columns
 
-    def _publish_add_processed_scan(self, scan: ProcessedScan) -> None:
+    def _publish_add_processed_scan(self, scan: ProcessedScan | HistogramData) -> None:
         self._event_broker.publish(
             AddProcessedScanEvent(
                 uuid=scan.uuid,

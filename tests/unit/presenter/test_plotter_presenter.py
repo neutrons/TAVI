@@ -2,6 +2,7 @@
 
 from unittest.mock import MagicMock
 
+import numpy as np
 import numpy.testing as npt
 import pytest
 
@@ -18,12 +19,23 @@ from tavi.library.data.fit_entry import (
     PeakResult,
 )
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import (
+    UUID,
+    HistogramData,
+    ProcessedScan,
+    Provenance,
+    RawScan,
+    ScanData,
+    ScanMetadata,
+    TaviMetadata,
+)
 from tavi.meta.event.event_broker import EventBroker
+from tavi.meta.event.type.model_event import RemoveProcessedScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
+    FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
@@ -49,7 +61,6 @@ def make_scan(uuid_val="scan-001", x_col="qh", x_vals=None, y_col="en", y_vals=N
     )
 
 
-
 def make_processed_scan(uuid_val="combined-001", x_col="qh", y_col="en") -> ProcessedScan:
     return ProcessedScan(
         uuid=UUID(value=uuid_val),
@@ -58,6 +69,7 @@ def make_processed_scan(uuid_val="combined-001", x_col="qh", y_col="en") -> Proc
         tavimeta=TaviMetadata(default_axis=(x_col, y_col), friendly_name="scan1+scan2", friendly_path=""),
         prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
     )
+
 
 def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name="en", friendly_name=None) -> PlotSeries:
     return PlotSeries(
@@ -68,6 +80,26 @@ def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name=
         x_name=x_name,
         y_name=y_name,
         error_name="err",
+    )
+
+
+def make_histogram(uuid_val="hist-001", name="scan1+scan2_hist_normmonitor") -> HistogramData:
+    return HistogramData(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0], "en": [0.0, 1.0], "detector": [4.0, 9.0], "monitor": [1.0, 1.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(
+            default_axis=("qh", "en"), friendly_name=name, friendly_path="", normalization=("monitor", np.ones((2, 2)))
+        ),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
+        intensity_name="detector",
+        x_edges=np.array([0.5, 1.5, 2.5]),
+        y_edges=np.array([-0.5, 0.5, 1.5]),
+        x_centers=np.array([1.0, 2.0]),
+        y_centers=np.array([0.0, 1.0]),
+        intensity=np.array([[4.0, np.nan], [np.nan, 9.0]]),
+        error=np.array([[2.0, np.nan], [np.nan, 3.0]]),
+        counts=np.array([[1, 0], [0, 1]]),
     )
 
 
@@ -876,3 +908,33 @@ def test_handle_plot_focus_labels_the_y_axis_with_the_wildcard_as_typed(presente
     presenter.handle_plot_focus(_wildcard_event(normalized_by="monitor*"))
 
     assert presenter._view.canvas.axes.get_ylabel() == "detector* / monitor*"
+
+
+# ---------------------------------------------------------------------------
+# handle_histogram_focus
+# ---------------------------------------------------------------------------
+
+
+def test_histogram_focus_draws_the_first_map_and_stages_nothing(presenter, qtbot):
+    staged = stage_events()
+
+    with qtbot.waitSignal(presenter._view.render_histogram_signal, timeout=1000) as blocker:
+        EventBroker().publish(FocusHistogramEvent(histograms=[make_histogram(), make_histogram("hist-002")]))
+
+    assert blocker.args[0].uuid == UUID(value="hist-001")
+    assert staged == []
+    assert presenter._focused_series_uuids == []
+
+
+def test_removing_the_drawn_map_clears_it_from_the_canvas(presenter, qtbot):
+    EventBroker().publish(FocusHistogramEvent(histograms=[make_histogram()]))
+
+    with qtbot.waitSignal(presenter._view.clear_histogram_signal, timeout=1000):
+        EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="hist-001")))
+
+
+def test_removing_another_combined_scan_leaves_the_map(presenter, qtbot):
+    EventBroker().publish(FocusHistogramEvent(histograms=[make_histogram()]))
+
+    with qtbot.assertNotEmitted(presenter._view.clear_histogram_signal):
+        EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="combined-001")))

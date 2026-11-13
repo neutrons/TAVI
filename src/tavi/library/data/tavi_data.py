@@ -5,13 +5,14 @@ from pydantic import BaseModel, ConfigDict, Field
 from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
 
 
 class PurgeResult(BaseModel):
     """What a ``TaviData.purge`` actually deleted, per store, for callers that announce removals."""
 
     raw_scans: list[UUID] = Field(default_factory=list)
+    processed_scans: list[UUID] = Field(default_factory=list)
     plots: list[UUID] = Field(default_factory=list)
     fits: list[UUID] = Field(default_factory=list)
 
@@ -23,7 +24,8 @@ class TaviData(BaseModel):
 
     raw_scans: dict[UUID, RawScan] = Field(default_factory=dict)
     plots: dict[UUID, Plot] = Field(default_factory=dict)
-    processed_scans: dict[UUID, ProcessedScan] = Field(default_factory=dict)
+    # A histogram is a combination too, so it is stored, named and focused alongside the 1D ones.
+    processed_scans: dict[UUID, ProcessedScan | HistogramData] = Field(default_factory=dict)
     fits: dict[UUID, FitEntry] = Field(default_factory=dict)
     # Saved filters only; the built-in Sample filter is never stored, so it can't be removed or saved over.
     filters: dict[UUID, ScanFilter] = Field(default_factory=dict)
@@ -32,7 +34,7 @@ class TaviData(BaseModel):
         """Return every scan, raw and derived, in one lookup - what ``ProcessOps`` resolves uuids against."""
         return {**self.raw_scans, **self.processed_scans}
 
-    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | Plot | FitEntry:
+    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | HistogramData | Plot | FitEntry:
         """Return the scan, plot, or fit matching uuid, or raise KeyError."""
         for store in (self.raw_scans, self.processed_scans, self.plots, self.fits):
             if uuid in store:
@@ -59,10 +61,14 @@ class TaviData(BaseModel):
         """
         requested = list(dict.fromkeys(uuids))
         scans = [uuid for uuid in requested if uuid in self.raw_scans]
+        processed = [uuid for uuid in requested if uuid in self.processed_scans]
         plots = [uuid for uuid in requested if uuid in self.plots]
         fits = [uuid for uuid in requested if uuid in self.fits]
 
-        orphaned = set(scans)
+        # A series can be focused from a combined scan as well as a raw one, so either kind
+        # leaving orphans the plots and fits that point at it. A combined scan holds its own copy
+        # of its origins' data, so removing a raw scan never takes a combination with it.
+        orphaned = set(scans) | set(processed)
         pruned: dict[UUID, Plot] = {}
         for plot_uuid, plot in self.plots.items():
             if plot_uuid in plots:
@@ -87,9 +93,11 @@ class TaviData(BaseModel):
         self.fits.update(pruned_fits)
         for uuid in scans:
             del self.raw_scans[uuid]
+        for uuid in processed:
+            del self.processed_scans[uuid]
         for uuid in plots:
             del self.plots[uuid]
         for uuid in fits:
             del self.fits[uuid]
 
-        return PurgeResult(raw_scans=scans, plots=plots, fits=fits)
+        return PurgeResult(raw_scans=scans, processed_scans=processed, plots=plots, fits=fits)

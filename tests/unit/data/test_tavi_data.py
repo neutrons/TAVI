@@ -7,7 +7,7 @@ from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
 
 
@@ -278,3 +278,45 @@ def test_filter_raw_scans_keeps_only_scans_passing_every_filter():
 
     assert data.filter_raw_scans([at_least_two, below_four]) == [UUID(value="s2"), UUID(value="s3")]
 
+
+def make_processed_scan(uuid_val="combined-001") -> ProcessedScan:
+    return ProcessedScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0], "en": [2.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name="scan1+scan2", friendly_path=""),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
+    )
+
+
+def test_purge_removes_a_combined_scan():
+    combined = make_processed_scan()
+    data = TaviData(processed_scans={combined.uuid: combined})
+
+    result = data.purge([combined.uuid])
+
+    assert data.processed_scans == {}
+    assert result.processed_scans == [combined.uuid]
+
+
+def test_purge_cascades_a_combined_scan_to_the_plots_and_fits_drawn_from_it():
+    combined = make_processed_scan()
+    plot = Plot(uuid=UUID(value="plot-001"), series=[make_series(uuid_val="combined-001")])
+    fit = make_fit_entry(source_uuids=("combined-001",))
+    data = TaviData(processed_scans={combined.uuid: combined}, plots={plot.uuid: plot}, fits={fit.uuid: fit})
+
+    result = data.purge([combined.uuid])
+
+    assert (result.plots, result.fits) == ([plot.uuid], [fit.uuid])
+
+
+def test_purge_of_a_raw_scan_keeps_the_combination_made_from_it():
+    """A combined scan holds its own copy of its origins' data."""
+    scan = make_raw_scan()
+    combined = make_processed_scan()
+    data = TaviData(raw_scans={scan.uuid: scan}, processed_scans={combined.uuid: combined})
+
+    result = data.purge([scan.uuid])
+
+    assert combined.uuid in data.processed_scans
+    assert result.processed_scans == []

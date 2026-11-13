@@ -16,7 +16,7 @@ from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan
+from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
@@ -30,6 +30,7 @@ from tavi.meta.event.type.model_event import (
     ClearRawScansEvent,
     RemoveFitEvent,
     RemovePlotEvent,
+    RemoveProcessedScanEvent,
     RemoveRawScanEvent,
     RestoreFitMemberEvent,
     SyncFitHistoryEvent,
@@ -40,6 +41,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusEvent,
     FocusFitEvent,
+    FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
@@ -129,10 +131,14 @@ class TaviProjectModel(TaviProjectInterface):
     def remove_items(self, uuids: list[UUID]) -> ModelResponse:
         """Drop the named items, and whatever they orphan, from the project and announce each removal."""
         purged = self.tavi_data.purge(uuids)
-        self._fit_history.forget(fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans))
+        self._fit_history.forget(
+            fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans) | set(purged.processed_scans)
+        )
 
         for uuid in purged.raw_scans:
             self._event_broker.publish(RemoveRawScanEvent(uuid=uuid))
+        for uuid in purged.processed_scans:
+            self._event_broker.publish(RemoveProcessedScanEvent(uuid=uuid))
         for uuid in purged.plots:
             self._event_broker.publish(RemovePlotEvent(uuid=uuid))
         for uuid in purged.fits:
@@ -299,6 +305,7 @@ class TaviProjectModel(TaviProjectInterface):
         ids = e.ids
         raw_scans: list[RawScan] = []
         processed_scans: list[ProcessedScan] = []
+        histograms: list[HistogramData] = []
         plots: list[Plot] = []
         fits: list[FitEntry] = []
         for uuid in ids:
@@ -310,6 +317,8 @@ class TaviProjectModel(TaviProjectInterface):
                 raw_scans.append(inst)
             if isinstance(inst, ProcessedScan):
                 processed_scans.append(inst)
+            if isinstance(inst, HistogramData):
+                histograms.append(inst)
             if isinstance(inst, Plot):
                 plots.append(inst)
             if isinstance(inst, FitEntry):
@@ -329,6 +338,8 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(FocusRawScanEvent(scans=raw_scans))
         if processed_scans:
             self._event_broker.publish(FocusProcessedScanEvent(scans=processed_scans))
+        if histograms:
+            self._event_broker.publish(FocusHistogramEvent(histograms=histograms))
         if plots:
             # A saved plot may hold a series focused from a processed scan, so resolve against both stores.
             scans = scans_for_plots(plots, self.tavi_data.all_scans())
@@ -350,9 +361,11 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(RecomputeFitEvent(fits=fits))
 
 
-def _with_name(item: ProcessedScan | Plot | FitEntry, name: str) -> ProcessedScan | Plot | FitEntry:
+def _with_name(
+    item: ProcessedScan | HistogramData | Plot | FitEntry, name: str
+) -> ProcessedScan | HistogramData | Plot | FitEntry:
     """Return a copy of a renameable item carrying ``name``, leaving the stored one untouched."""
     # A scan keeps its name in tavimeta, like every scan, rather than in a name field.
-    if isinstance(item, ProcessedScan):
+    if isinstance(item, (ProcessedScan, HistogramData)):
         return item.model_copy(update={"tavimeta": dataclasses.replace(item.tavimeta, friendly_name=name)})
     return item.model_copy(update={"name": name})
