@@ -67,6 +67,28 @@ def test_exec_returns_histogram_data_carrying_the_append():
     assert len(result.data.data["qh"]) == 4
 
 
+def test_exec_registers_the_map_in_processed_scans():
+    """The map exec returns is the one stored under its own uuid, beside the untouched raw scans."""
+    tavi_data, uuids = make_two_constant_q_scans()
+
+    result = Histogram(tavi_data, uuids, COLUMNS).exec()
+
+    assert tavi_data.processed_scans == {result.uuid: result}
+    assert set(tavi_data.raw_scans) == set(uuids)
+
+
+def test_register_stores_a_map_without_rebinning():
+    """A map produced earlier can be registered on its own, as a reload would."""
+    tavi_data, uuids = make_two_constant_q_scans()
+    histogram = Histogram(tavi_data, uuids, COLUMNS)
+    result = histogram.exec()
+    tavi_data.processed_scans.clear()
+
+    histogram.register(result)
+
+    assert tavi_data.processed_scans == {result.uuid: result}
+
+
 def test_bins_none_gives_one_centred_bin_per_position():
     """Jitter within tol stays one position, and the outermost positions sit at bin centres."""
     tavi_data, uuids = make_two_constant_q_scans()

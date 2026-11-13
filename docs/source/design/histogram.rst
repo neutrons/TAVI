@@ -56,8 +56,9 @@ arrays, computes each point's error as ``sqrt(z)``, and bins them. The result is
 a fresh scan in its own right: it keeps the append's new uuid, its
 ``prov.contributing_scans`` and its ``+``-joined friendly name (suffixed
 ``_hist_norm<column>``, plus ``x<multiplication>`` when that is not 1). Like
-every ``ProcessOps``-style operation it is **produced, not stored** — the caller
-decides where it goes.
+``CombineOps``, ``exec()`` then **registers** it in ``TaviData.processed_scans``
+through ``register()`` — kept separate so a map rebuilt elsewhere can be stored
+without re-binning — and returns it as well.
 
 .. mermaid::
 
@@ -289,7 +290,7 @@ a ``ProcessedScan``, and ``CombineOps`` has no 2D mode. The Combine panel's
 Histogram tab reaches it through ``CombineModel`` instead, which turns each
 axis's Start/Stop/Step into explicit bin edges (a blank Step gives one bin per
 measured position, values within ``POSITION_TOL`` counting as one, with edges
-midway between neighbours), runs it, and stores the result
+midway between neighbours) and runs it; ``Histogram.exec()`` stores the result
 in ``TaviData.processed_scans`` — typed ``ProcessedScan | HistogramData`` — so
 a map is listed, renamed and focused like any other combination. Clicking it
 publishes ``FocusHistogramEvent`` and the plotter draws it with

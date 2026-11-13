@@ -45,9 +45,6 @@ class CombineModel(CombineModelInterface):
         try:
             ops = self._build_ops(request)
             processed_scan = ops.exec()
-            # CombineOps registers its own result; a Histogram only produces one.
-            if isinstance(processed_scan, HistogramData):
-                self._tavi_data.processed_scans[processed_scan.uuid] = processed_scan
         except (ValueError, KeyError) as error:
             # Every refusal the ops raise is about what the user asked for - an unusable number, a
             # column no origin carries, a rebin parameter the chosen mode has no use for - so each

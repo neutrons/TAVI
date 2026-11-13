@@ -101,19 +101,31 @@ class Histogram:
 
     def exec(self) -> HistogramData:
         """
-        Append the origins, bin them, and return the normalized intensity map with its propagated error.
+        Append the origins, bin them, and register the normalized intensity map in ``tavi_data.processed_scans``.
 
         The result keeps what the append built - a fresh uuid, the appended points as ``data``,
         every origin in ``prov.contributing_scans`` and ``(x, y)`` as ``tavimeta.default_axis`` -
-        and records the norm column with each bin's summed norm in ``tavimeta.normalization``. Storing it is
-        the caller's job.
+        and records the norm column with each bin's summed norm in ``tavimeta.normalization``. It is
+        returned as well as stored, so a caller need not look it back up.
         """
         self.validate()
 
         appended = self._append_op.exec()
         columns = appended.data.data
         x, y, z, norm = (np.asarray(columns[name], dtype=float) for name in self.columns)
-        return self._bin(appended, x, y, z, np.sqrt(z), norm)
+        histogram = self._bin(appended, x, y, z, np.sqrt(z), norm)
+        self.register(histogram)
+        return histogram
+
+    def register(self, histogram: HistogramData) -> None:
+        """
+        Write an intensity map into ``tavi_data.processed_scans`` under its own uuid.
+
+        Kept apart from ``exec`` so that the store write has one named place: a caller
+        holding a map this op produced earlier - one rebuilt from a project file, say -
+        can register it without re-running the binning.
+        """
+        self.tavi_data.processed_scans[histogram.uuid] = histogram
 
     def _bin(
         self,
