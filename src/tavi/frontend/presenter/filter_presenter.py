@@ -16,6 +16,9 @@ from tavi.meta.event.type.model_event import (
     SyncFilterValidationEvent,
 )
 
+# TODO 18226: Add import of AddRawScanEvent from tavi.meta.event.type.model_event
+# TODO 18226: Add import of RemoveRawScanEvent from tavi.meta.event.type.model_event
+
 
 class FilterPresenter(AbstractPresenter):
     """Mediates between the filter panel and FilterModel, and reflects the saved and applied filters in the view."""
@@ -32,6 +35,8 @@ class FilterPresenter(AbstractPresenter):
         self._event_broker.register(ApplyFilterEvent, self.handle_filter_applied)
         self._event_broker.register(ClearFilterEvent, self.handle_filter_cleared)
         self._event_broker.register(SyncFilterValidationEvent, self.handle_filter_validation)
+        # TODO 18226: Register AddRawScanEvent to updating suggestion keys in filter model and view
+        # TODO 18226: Register RemoveRawScanEvent to regenerating suggestion keys in filter model and view
 
         self._view: FilterView
         self._view.filter_new_button.clicked.connect(self.handle_new_filter)
@@ -43,6 +48,13 @@ class FilterPresenter(AbstractPresenter):
     def init_view(self) -> None:
         """Create the filter view."""
         self._view = FilterView()
+
+    # TODO 18226: Add method to update suggestion keys in filter model and view
+    # This more cheaply accumulates keys for display and updates the completers
+
+    # TODO 18226: Add method to regenerate suggestion keys in filter model and view
+    # This more expensively regenerates keys from all known raw data objects for display and updates the completers
+    # This must regenerate as the signal for a removed scan occurs after the scan has already been purged
 
     def handle_new_filter(self) -> None:
         """List a new filter with one blank criterion; it enters the project when first applied."""

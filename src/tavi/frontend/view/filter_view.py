@@ -37,6 +37,8 @@ class CriteriaItemWidget(QWidget):
     changed = Signal()
     scopes = [scope.value for scope in FilterScope]
     operators = [operator.value for operator in FilterOperator]
+    # TODO 18226: Add QCompleter for metadata
+    # TODO 18226: Add QCompleter for column data
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Construct individual criteria."""
@@ -64,6 +66,9 @@ class CriteriaItemWidget(QWidget):
         criteria_layout.addWidget(self.criteria_value)
         criteria_layout.addWidget(self.criteria_delete_button)
 
+        # TODO 18226: set criteria_key QCompleter (maybe with call to toggle since scope should be set?)
+        # TODO 18226: connect scope change to QCompleter toggle
+
         self.criteria_scope.currentTextChanged.connect(self.changed)
         self.criteria_key.textChanged.connect(self.changed)
         self.criteria_operator.currentTextChanged.connect(self.changed)
@@ -85,12 +90,15 @@ class CriteriaItemWidget(QWidget):
             value=self.criteria_value.text(),
         )
 
+    # TODO 18226: create QCompleter toggle between meta and columnar
+
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
         self.criteria_scope.clear()
         self.criteria_scope.addItem(Config["filter.sample.criterion.scope"])
         self.criteria_scope.setEnabled(False)
         self.criteria_key.setText(Config["filter.sample.criterion.key"])
+        # TODO 18226: set criteria key to empty QCompleter
         self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
         self.criteria_operator.addItem(Config["filter.sample.criterion.operator"])
@@ -390,6 +398,10 @@ class FilterView(QWidget):
     def current_criteria(self) -> list[FilterCriterion]:
         """Return the picked filter's criteria as currently entered."""
         return self.filter_criteria_set_list.currentWidget().criteria()
+
+    # TODO 18226: Add method to update criterion QCompleter for metadata
+    # TODO 18226: Add method to update criterion QCompleter for column data
+    # Since the completers are criterion class objects, updating one should update all (intended)
 
     def confirm_delete_filter(self) -> bool:
         """Ask the user to confirm deleting the picked filter; return whether they did."""
