@@ -44,4 +44,4 @@ class ProcessOps(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def exec(self) -> ProcessedScan:
-        """Run the operation and return the derived scan, registered nowhere."""
+        """Run the operation and return the derived scan."""
