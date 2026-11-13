@@ -18,13 +18,14 @@ from tavi.library.data.fit_entry import (
     PeakResult,
 )
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     SetFitComponentsVisibleEvent,
     StageSeriesEvent,
@@ -47,6 +48,16 @@ def make_scan(uuid_val="scan-001", x_col="qh", x_vals=None, y_col="en", y_vals=N
         prov=Provenance(raw_file="scan.dat", contributing_scans={UUID(value=uuid_val): 1}),
     )
 
+
+
+def make_processed_scan(uuid_val="combined-001", x_col="qh", y_col="en") -> ProcessedScan:
+    return ProcessedScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={x_col: [1.0, 2.0], y_col: [3.0, 4.0], "mcu": [1.0, 1.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=(x_col, y_col), friendly_name="scan1+scan2", friendly_path=""),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1}),
+    )
 
 def make_series(uuid_val="scan-001", scan_name="test_plot", x_name="qh", y_name="en", friendly_name=None) -> PlotSeries:
     return PlotSeries(
@@ -337,7 +348,7 @@ def test_sync_plot_with_nothing_left_empties_the_canvas(presenter):
 
 
 # ---------------------------------------------------------------------------
-# handle_raw_scan_focus
+# handle_scan_focus
 # ---------------------------------------------------------------------------
 
 
@@ -345,7 +356,7 @@ def test_handle_raw_scan_focus_populates_preset_channel_options_from_scan_column
     scan = make_scan(x_col="qh", y_col="en")
     presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
+    presenter.handle_scan_focus(FocusRawScanEvent(scans=[scan]))
 
     args = presenter._view.set_preset_channel_options.call_args.args
     assert set(args[0]) == {"qh", "en"}
@@ -355,7 +366,7 @@ def test_handle_raw_scan_focus_offers_scan_columns_as_axis_options(presenter):
     scan = make_scan(x_col="qh", y_col="en")
     presenter._view.set_axis_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
+    presenter.handle_scan_focus(FocusRawScanEvent(scans=[scan]))
 
     args = presenter._view.set_axis_options.call_args.args
     assert set(args[0]) == {"qh", "en"}
@@ -366,7 +377,7 @@ def test_handle_raw_scan_focus_does_not_change_the_plotted_axes(presenter):
     presenter._view.x_axis_combo.setCurrentText("s2")
     presenter._view.y_axis_combo.setCurrentText("detector")
 
-    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
+    presenter.handle_scan_focus(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
 
     assert presenter._view.x_axis_combo.currentText() == "s2"
     assert presenter._view.y_axis_combo.currentText() == "detector"
@@ -379,7 +390,7 @@ def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_ha
     scan.data.data["monitor"] = [1.0, 1.0, 1.0]
     presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[scan]))
+    presenter.handle_scan_focus(FocusRawScanEvent(scans=[scan]))
 
     args, kwargs = presenter._view.set_preset_channel_options.call_args
     default = args[1] if len(args) > 1 else kwargs.get("default")
@@ -389,9 +400,40 @@ def test_handle_raw_scan_focus_does_not_default_preset_channel_even_when_scan_ha
 def test_handle_raw_scan_focus_no_scan_selected_does_not_populate_channels(presenter):
     presenter._view.set_preset_channel_options = MagicMock()
 
-    presenter.handle_raw_scan_focus(FocusRawScanEvent(scans=[]))
+    presenter.handle_scan_focus(FocusRawScanEvent(scans=[]))
 
     presenter._view.set_preset_channel_options.assert_not_called()
+
+
+def test_processed_scan_focus_offers_its_columns(presenter):
+    presenter._view.set_axis_options = MagicMock()
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    EventBroker().publish(FocusProcessedScanEvent(scans=[make_processed_scan(x_col="s2", y_col="detector")]))
+
+    assert set(presenter._view.set_axis_options.call_args.args[0]) == {"s2", "detector", "mcu"}
+    assert set(presenter._view.set_preset_channel_options.call_args.args[0]) == {"s2", "detector", "mcu"}
+
+
+def test_scan_focus_offers_only_the_first_scans_columns_in_a_mixed_selection(presenter):
+    """Raw scans are focused first and lead the stage, so a processed scan focused after must not replace their columns."""
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    EventBroker().publish(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
+    EventBroker().publish(FocusProcessedScanEvent(scans=[make_processed_scan(x_col="s2", y_col="detector")]))
+
+    presenter._view.set_preset_channel_options.assert_called_once()
+    assert set(presenter._view.set_preset_channel_options.call_args.args[0]) == {"qh", "en"}
+
+
+def test_scan_focus_offers_columns_again_after_the_focus_is_cleared(presenter):
+    presenter._view.set_preset_channel_options = MagicMock()
+
+    EventBroker().publish(FocusRawScanEvent(scans=[make_scan(x_col="qh", y_col="en")]))
+    EventBroker().publish(ClearFocusEvent())
+    EventBroker().publish(FocusProcessedScanEvent(scans=[make_processed_scan(x_col="s2", y_col="detector")]))
+
+    assert set(presenter._view.set_preset_channel_options.call_args.args[0]) == {"s2", "detector", "mcu"}
 
 
 # ---------------------------------------------------------------------------

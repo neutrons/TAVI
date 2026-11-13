@@ -15,6 +15,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearStageEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     SetFitComponentsVisibleEvent,
     StageSeriesEvent,
@@ -49,10 +50,15 @@ class PlotterPresenter(AbstractPresenter):
         # Fits focused directly from the project tree - their curves aren't known yet (FitEntry
         # only caches the spec), so handle_sync_fit must also accept a match by fit uuid.
         self._focused_fit_uuids: set[UUID] = set()
+        # Whether this selection's columns are already offered. A raw + processed multiselect
+        # arrives as two scan-focus events, and the columns offered should be the first scan's -
+        # the one staged by default - not whichever event happened to come last.
+        self._columns_offered = False
 
         self._event_broker = EventBroker()
         self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
-        self._event_broker.register(FocusRawScanEvent, self.handle_raw_scan_focus)
+        self._event_broker.register(FocusRawScanEvent, self.handle_scan_focus)
+        self._event_broker.register(FocusProcessedScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusPlotEvent, self.handle_plot_focus)
         self._event_broker.register(SyncPlotEvent, self.handle_sync_plot)
         self._event_broker.register(FocusFitEvent, self.handle_fit_focus)
@@ -80,10 +86,12 @@ class PlotterPresenter(AbstractPresenter):
         self._fits_by_source_uuid = {}
         self._fit_uuid_by_source_uuid = {}
         self._focused_fit_uuids = set()
+        self._columns_offered = False
 
-    def handle_raw_scan_focus(self, e: FocusRawScanEvent) -> None:
-        """Offer the first focused scan's columns as axis and preset-channel choices."""
-        if e.scans:
+    def handle_scan_focus(self, e: FocusRawScanEvent | FocusProcessedScanEvent) -> None:
+        """Offer the selection's first focused scan's columns, raw or processed, as axis and preset-channel choices."""
+        if e.scans and not self._columns_offered:
+            self._columns_offered = True
             columns = list(e.scans[0].data.data.keys())
             self._view.set_axis_options(columns)
             self._view.set_preset_channel_options(columns)

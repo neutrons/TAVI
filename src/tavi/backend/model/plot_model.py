@@ -7,7 +7,7 @@ from tavi.backend.model.plot_resolver import channel_pairs, fit_series_by_source
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
-from tavi.library.data.scan import UUID, RawScan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.model_event import RemoveRawScanEvent
@@ -16,6 +16,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearStageEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     SavePlotEvent,
     StageSeriesEvent,
@@ -28,12 +29,18 @@ from tavi.meta.exception.nonrecoverable.base import NonRecoverableError
 class PlotModel(PlotModelInterface):
     """Owns what's focused and what's staged, and keeps the UI in sync with both."""
 
-    def __init__(self, plots: list[Plot], raw_scans: dict[UUID, RawScan]) -> None:
-        """Initialize with live handles into TaviData's plot/raw_scan storage and register event handlers."""
+    def __init__(
+        self,
+        plots: list[Plot],
+        raw_scans: dict[UUID, RawScan],
+        processed_scans: Optional[dict[UUID, ProcessedScan]] = None,
+    ) -> None:
+        """Initialize with live handles into TaviData's plot/raw_scan/processed_scan storage and register handlers."""
         super().__init__()
 
         self._plots = plots
         self._raw_scans = raw_scans
+        self._processed_scans = processed_scans if processed_scans is not None else {}
         # Every focused plot, saved or preview, in focus order.
         self._last_plots: list[Plot] = []
         # Source scan uuids of the staged series - what field edits apply to - in stage order.
@@ -44,7 +51,8 @@ class PlotModel(PlotModelInterface):
 
         self._event_broker = EventBroker()
         self._event_broker.register(ClearFocusEvent, self._handle_clear_focus_event)
-        self._event_broker.register(FocusRawScanEvent, self._handle_raw_scan_focus_event)
+        self._event_broker.register(FocusRawScanEvent, self._handle_scan_focus_event)
+        self._event_broker.register(FocusProcessedScanEvent, self._handle_scan_focus_event)
         self._event_broker.register(FocusPlotEvent, self._handle_plot_focus_event)
         self._event_broker.register(FocusFitEvent, self._handle_fit_focus_event)
         self._event_broker.register(ClearStageEvent, self._handle_clear_stage_event)
@@ -53,18 +61,20 @@ class PlotModel(PlotModelInterface):
 
     def _handle_raw_scan_remove_event(self, e: RemoveRawScanEvent) -> None:
         """
-        Drop focused series whose source scan has left ``_raw_scans``, and sync what's left.
+        Drop focused series whose source scan has left the project, and sync what's left.
 
-        ``_last_plots`` holds copies that outlive the scans they point at, so stale
-        ``_raw_scans[source_scan_uuid]`` lookups would raise. Every series is reconciled against
-        ``_raw_scans`` rather than just ``e.uuid`` because folder removal deletes the whole batch
-        before publishing its first event — leaving the batch's other scans already unresolvable.
+        ``_last_plots`` holds copies that outlive the scans they point at, so stale lookups would
+        raise. Every series is reconciled against the stores rather than just ``e.uuid`` because
+        folder removal deletes the whole batch before publishing its first event — leaving the
+        batch's other scans already unresolvable. A processed scan holds its own copy of its
+        origins' data, so it stays focused when they go.
         """
+        scans = self._scans()
         gone = {
             series.source_scan_uuid
             for plot in self._last_plots
             for series in plot.series
-            if series.source_scan_uuid not in self._raw_scans
+            if series.source_scan_uuid not in scans
         }
         if not gone:
             return
@@ -86,12 +96,12 @@ class PlotModel(PlotModelInterface):
         self._last_plots = []
         self._staged_uuids = []
 
-    def _handle_raw_scan_focus_event(self, e: FocusRawScanEvent) -> None:
-        """Focus one single-series preview plot per raw scan, so each run can be staged independently."""
+    def _handle_scan_focus_event(self, e: FocusRawScanEvent | FocusProcessedScanEvent) -> None:
+        """Focus one single-series preview plot per raw or processed scan, so each can be staged independently."""
         if not e.scans:
             return
         plots = [self._preview_plot_for_scan(scan, show_title=self._show_title) for scan in e.scans]
-        self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+        self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._scans())))
 
     def _handle_plot_focus_event(self, e: FocusPlotEvent) -> None:
         """
@@ -126,10 +136,10 @@ class PlotModel(PlotModelInterface):
         series = [s for source, s in fit_series_by_source(e.fits, e.scans).items() if source not in focused]
         if not series:
             return
-        # One single-series plot per source scan, matching the shape _handle_raw_scan_focus_event
+        # One single-series plot per source scan, matching the shape _handle_scan_focus_event
         # builds, so staging, the Current Plot dropdown and Save Plot all behave identically.
         plots = [Plot(series=[s.model_copy(deep=True)]) for s in series]
-        self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._raw_scans)))
+        self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._scans())))
 
     def _handle_clear_stage_event(self, _: ClearStageEvent) -> None:
         """Unstage everything; the ``StageSeriesEvent`` that follows syncs the new stage."""
@@ -145,27 +155,33 @@ class PlotModel(PlotModelInterface):
         self._show_title = show_title
         return ModelResponse(code=ResponseCode.OK)
 
+    def _scans(self) -> dict[UUID, Scan]:
+        """Every scan a focused series may point at - raw or processed - in one lookup."""
+        return {**self._raw_scans, **self._processed_scans}
+
     def _focused_uuids(self) -> list[UUID]:
         return [series.source_scan_uuid for plot in self._last_plots for series in plot.series]
 
     def _publish_sync_plots(self) -> None:
         self._event_broker.publish(
-            SyncPlotEvent(plots=self._last_plots, scans=scans_for_plots(self._last_plots, self._raw_scans))
+            SyncPlotEvent(plots=self._last_plots, scans=scans_for_plots(self._last_plots, self._scans()))
         )
 
     def _publish_sync_stage(self) -> None:
         """Publish the staged series that are focused, in stage order - the first one leads."""
         by_source = {series.source_scan_uuid: series for plot in self._last_plots for series in plot.series}
         series = [by_source[uuid] for uuid in self._staged_uuids if uuid in by_source]
-        scans = {s.source_scan_uuid: self._raw_scans[s.source_scan_uuid] for s in series}
+        all_scans = self._scans()
+        scans = {s.source_scan_uuid: all_scans[s.source_scan_uuid] for s in series}
         self._event_broker.publish(SyncStageEvent(series=series, scans=scans))
 
-    def _preview_plot_for_scan(self, scan: RawScan, show_title: bool = False) -> Plot:
+    def _preview_plot_for_scan(self, scan: Scan, show_title: bool = False) -> Plot:
         """
-        Build an unsaved single-series preview plot from one raw scan's default axis.
+        Build an unsaved single-series preview plot from one scan's default axis.
 
         ``show_title`` labels the series with the instrument's scan title instead of the
-        friendly name; scans whose metadata carries no title fall back to the friendly name.
+        friendly name; scans whose metadata carries no title - every processed scan, whose
+        metadata is its own and empty - fall back to the friendly name.
         """
         x_name, y_name = scan.tavimeta.default_axis
         scan_name = scan.tavimeta.friendly_name
@@ -224,12 +240,13 @@ class PlotModel(PlotModelInterface):
 
     def _apply_fields_to_plot(self, plot: Plot, fields: PlotFields, staged: set[UUID]) -> Optional[Plot]:
         """Return a copy of ``plot`` with its staged series updated, or None if any of them rejects the fields."""
+        scans = self._scans()
         updated_series = []
         for series in plot.series:
             if series.source_scan_uuid not in staged:
                 updated_series.append(series)
                 continue
-            scan = self._raw_scans[series.source_scan_uuid]
+            scan = scans[series.source_scan_uuid]
             series_update = self._resolve_series_update(scan, fields)
             if series_update is None:
                 return None
@@ -237,7 +254,7 @@ class PlotModel(PlotModelInterface):
 
         return plot.model_copy(update={"series": updated_series})
 
-    def _resolve_series_update(self, scan: RawScan, fields: PlotFields) -> Optional[dict]:
+    def _resolve_series_update(self, scan: Scan, fields: PlotFields) -> Optional[dict]:
         """Build the ``model_copy()`` update dict for one series against its source scan, or None if invalid."""
         x_name = fields.x_axis.strip()
         y_name = fields.y_axis.strip()

@@ -1,5 +1,6 @@
 """Tavi Project."""
 
+import dataclasses
 import logging
 from collections.abc import Callable
 from typing import Optional
@@ -15,7 +16,7 @@ from tavi.library.data.filter import ScanFilter
 from tavi.library.data.fit_entry import FitEntry, FitMember
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
-from tavi.library.data.scan import UUID, RawScan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan
 from tavi.library.data.tavi_data import TaviData
 from tavi.library.storage.controller.raw_scan_load_controller import RawScanLoadController
 from tavi.library.storage.interface.filestore_interface import Filestore
@@ -40,6 +41,7 @@ from tavi.meta.event.type.presenter_event import (
     FocusEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
     SaveFitEvent,
@@ -74,6 +76,10 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.register(ApplyFilterEvent, self._handle_apply_filter_event)
         self._event_broker.register(ClearFilterEvent, self._handle_clear_filter_event)
 
+    def get_tavi_data_handle(self) -> TaviData:
+        """Return the whole project store, for the models whose ops resolve uuids across every one of them."""
+        return self.tavi_data
+
     def get_plots_handle(self) -> dict:
         """Return reference to the plots dict."""
         return self.tavi_data.plots
@@ -81,6 +87,10 @@ class TaviProjectModel(TaviProjectInterface):
     def get_raw_scans_handle(self) -> dict:
         """Return reference to the raw_scans dict."""
         return self.tavi_data.raw_scans
+
+    def get_processed_scans_handle(self) -> dict:
+        """Return reference to the processed_scans dict."""
+        return self.tavi_data.processed_scans
 
     def get_fits_handle(self) -> dict:
         """Return reference to the fits dict."""
@@ -184,7 +194,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.publish(AddPlotEvent(uuid=e.plot.uuid, friendly_name=e.plot.display_name, friendly_path=""))
 
     def rename_item(self, uuid: UUID, name: str) -> ModelResponse:
-        """Give a plot or fit a name of the user's choosing, and announce what it is now called."""
+        """Give a plot, fit or combined scan a name of the user's choosing, and announce what it is now called."""
         name = name.strip()
         # A blank name would read as "go back to the derived name", which renaming does not offer.
         if not name:
@@ -192,14 +202,16 @@ class TaviProjectModel(TaviProjectInterface):
 
         # Only TaviData knows what type a tree uuid is, which is why the tree asks to rename an
         # item and this model narrows it - the same split as FocusEvent.
-        for store in (self.tavi_data.plots, self.tavi_data.fits):
+        # A combined scan is named by the scans it joined, which only the user can improve on, so
+        # unlike a raw scan it has no file whose name it would disagree with.
+        for store in (self.tavi_data.processed_scans, self.tavi_data.plots, self.tavi_data.fits):
             item = store.get(uuid)
             if item is not None:
-                store[uuid] = item.model_copy(update={"name": name})
+                store[uuid] = _with_name(item, name)
                 self._event_broker.publish(SyncItemNameEvent(uuid=uuid, friendly_name=name))
                 return ModelResponse(code=ResponseCode.OK)
 
-        return ModelResponse(code=ResponseCode.ERROR, message=f"No plot or fit {uuid.value} to rename.")
+        return ModelResponse(code=ResponseCode.ERROR, message=f"No plot, fit or combined scan {uuid.value} to rename.")
 
     def _handle_save_fit_event(self, e: SaveFitEvent) -> None:
         """
@@ -286,6 +298,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.publish(ClearFocusEvent())
         ids = e.ids
         raw_scans: list[RawScan] = []
+        processed_scans: list[ProcessedScan] = []
         plots: list[Plot] = []
         fits: list[FitEntry] = []
         for uuid in ids:
@@ -295,6 +308,8 @@ class TaviProjectModel(TaviProjectInterface):
             inst = self.tavi_data.fetch_by_uuid(uuid)
             if isinstance(inst, RawScan):
                 raw_scans.append(inst)
+            if isinstance(inst, ProcessedScan):
+                processed_scans.append(inst)
             if isinstance(inst, Plot):
                 plots.append(inst)
             if isinstance(inst, FitEntry):
@@ -312,8 +327,11 @@ class TaviProjectModel(TaviProjectInterface):
 
         if raw_scans:
             self._event_broker.publish(FocusRawScanEvent(scans=raw_scans))
+        if processed_scans:
+            self._event_broker.publish(FocusProcessedScanEvent(scans=processed_scans))
         if plots:
-            scans = scans_for_plots(plots, self.tavi_data.raw_scans)
+            # A saved plot may hold a series focused from a processed scan, so resolve against both stores.
+            scans = scans_for_plots(plots, self.tavi_data.all_scans())
             self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans))
         if fits:
             # FocusFitEvent (UI state) is published fully - every subscriber done - before
@@ -330,3 +348,11 @@ class TaviProjectModel(TaviProjectInterface):
             }
             self._event_broker.publish(FocusFitEvent(fits=fits, scans=fit_scans))
             self._event_broker.publish(RecomputeFitEvent(fits=fits))
+
+
+def _with_name(item: ProcessedScan | Plot | FitEntry, name: str) -> ProcessedScan | Plot | FitEntry:
+    """Return a copy of a renameable item carrying ``name``, leaving the stored one untouched."""
+    # A scan keeps its name in tavimeta, like every scan, rather than in a name field.
+    if isinstance(item, ProcessedScan):
+        return item.model_copy(update={"tavimeta": dataclasses.replace(item.tavimeta, friendly_name=name)})
+    return item.model_copy(update={"name": name})

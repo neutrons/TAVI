@@ -423,29 +423,31 @@ root folder shows an empty menu.
 
 ----
 
-Context Menu — Renaming a Plot or Fit
-======================================
+Context Menu — Renaming a Combined Scan, Plot or Fit
+=====================================================
 
 Overview
 --------
 
 The same context menu offers a **Rename...** action above "Remove Item". It
 opens a ``QInputDialog`` seeded with the row's current name and, on accept,
-asks the model to store it. Plots and fits can be renamed; raw scans cannot.
+asks the model to store it. Combined scans, plots and fits can be renamed; raw
+scans cannot.
 
 Data Flow
 ---------
 
 .. code-block:: text
 
-    User right-clicks a plot or fit row, picks "Rename..."
+    User right-clicks a combined scan, plot or fit row, picks "Rename..."
         ↓
     TreeViewWidget._prompt_rename  (QInputDialog, seeded with the current name)
         ↓ (rename_requested signal)
     ProjectPresenter.handle_rename_request
         ↓
     TaviProjectModel.rename_item          ← a Proxy call, not an event
-        - stores the name on the Plot or FitEntry in TaviData
+        - stores the name on the Plot or FitEntry, or in a ProcessedScan's
+          tavimeta.friendly_name, in TaviData
         - emits SyncItemNameEvent
         ↓
     EventBroker
@@ -466,11 +468,11 @@ Event Definition
 Key Design Decisions
 --------------------
 
-One request, one carrier, for both types
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One request, one carrier, for every type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There is a single ``rename_item`` call and a single ``SyncItemNameEvent``, not
-a plot and a fit variant of each. The tree knows a uuid, not a type; only
+a combined scan, a plot and a fit variant of each. The tree knows a uuid, not a type; only
 ``TaviData`` knows which store holds it, so the view asks to rename *an item*
 and ``TaviProjectModel`` narrows it — the same split that makes the tree
 publish one generic ``FocusEvent``. Downstream, a renamed row is relabelled
@@ -487,9 +489,16 @@ Which rows can be renamed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``_rename_target`` offers the action only for a single row carrying a uuid and
-sitting under one of ``RENAMEABLE_ROOTS`` (``/Plots``, ``/Fits``). A raw scan
-is named by the file it was loaded from, so renaming one would only make its
-label disagree with its own metadata. Multi-row selections are excluded
+sitting under one of ``RENAMEABLE_ROOTS`` (``/Combined``, ``/Plots``,
+``/Fits``). A raw scan is named by the file it was loaded from, so renaming one
+would only make its label disagree with its own metadata. A combined scan has
+no file: its name is the ``+``-joined names of the scans it was made from,
+which grows unreadable past a few, so it is the user's to replace. Being a
+scan, it keeps that name in ``tavimeta.friendly_name`` rather than in a
+``name`` field, and the model swaps in a copy of the scan carrying the new
+one. A combined scan focused after the rename is labelled with the new name;
+a series already on the canvas, or stored in a saved plot, keeps the name it
+was given when it was made. Multi-row selections are excluded
 because one dialog cannot name two rows.
 
 Which root a row sits under *is* its type, so the tree reads that rather than

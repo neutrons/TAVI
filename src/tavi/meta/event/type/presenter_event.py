@@ -2,7 +2,7 @@
 
 from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
-from tavi.library.data.scan import UUID, RawScan, Scan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
 from tavi.meta.event.event_interface import Event
 
 
@@ -29,6 +29,18 @@ class FocusRawScanEvent(Event):
     """
 
     scans: list[RawScan]
+
+
+class FocusProcessedScanEvent(Event):
+    """
+    Add processed scans - combinations of raw ones - to the focus. Like every ``Focus*`` event this only adds.
+
+    ``PlotModel`` answers with a ``FocusPlotEvent`` of one preview plot per scan, as for
+    ``FocusRawScanEvent``. Kept apart from that event because not every subscriber treats the two
+    alike: ``CombinePresenter`` stages only raw scans, since a combination refuses processed origins.
+    """
+
+    scans: list[ProcessedScan]
 
 
 class ClearFocusEvent(Event):

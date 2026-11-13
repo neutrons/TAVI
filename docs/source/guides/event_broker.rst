@@ -89,7 +89,8 @@ This protects against patterns like:
 
 Note that legitimate chains count against this budget. The deepest chains in
 TAVI are a fresh tree selection, which runs ``FocusEvent`` (1) →
-``FocusRawScanEvent`` or ``FocusFitEvent`` (2) → ``FocusPlotEvent`` (3) →
+``FocusRawScanEvent``, ``FocusProcessedScanEvent`` or ``FocusFitEvent`` (2) →
+``FocusPlotEvent`` (3) →
 ``StageSeriesEvent`` (4) → ``SyncStageEvent`` (5); see
 :doc:`../design/frontend/visualization_flow`. ``SyncStageEvent`` handlers
 therefore run at the limit and must not publish anything themselves. Staging
@@ -183,8 +184,8 @@ Event lexicon
    * - Focus
      - Add items to what the user is looking at. Focus events only ever add;
        they never replace what is already focused.
-     - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusPlotEvent``,
-       ``FocusFitEvent``
+     - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusProcessedScanEvent``,
+       ``FocusPlotEvent``, ``FocusFitEvent``
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``
@@ -221,8 +222,8 @@ Event lexicon
        ``ClearRawScansEvent``: Add means "listed", while only Remove means
        the scan left ``TaviData``.
      - ``AddRawScanEvent``, ``AddPlotEvent``, ``AddFitEvent``,
-       ``AddFilterEvent``, ``RemoveRawScanEvent``, ``RemovePlotEvent``,
-       ``RemoveFitEvent``, ``RemoveFilterEvent``
+       ``AddProcessedScanEvent``, ``AddFilterEvent``, ``RemoveRawScanEvent``,
+       ``RemovePlotEvent``, ``RemoveFitEvent``, ``RemoveFilterEvent``
    * - Restore
      - Announce that X was put back to an earlier saved state.
      - ``RestoreFitMemberEvent``
@@ -287,8 +288,8 @@ A request that exactly one model answers, because it changes state only that
 model owns, is many to one. It is a direct call through that model's
 ``Proxy`` instead, such as ``PlotModel.update_fields``,
 ``PlotModel.set_show_title``, ``FitModel.perform_fit``,
-``FitModel.sync_fit_spec``, ``TaviProjectModel.undo_fit_member`` and
-``FilterModel.apply_filter``. The
+``FitModel.sync_fit_spec``, ``CombineModel.combine``,
+``TaviProjectModel.undo_fit_member`` and ``FilterModel.apply_filter``. The
 model then announces the result with a sync event, which every interested
 subscriber receives. Broadcasting such a request would only add a hop, and
 would hide who is responsible for answering it.
@@ -320,8 +321,13 @@ Event catalog
      - Drop the old selection, stage included
    * - ``FocusRawScanEvent``
      - ``TaviProjectModel``
-     - ``PlotModel``, ``PlotterPresenter``
+     - ``PlotModel``, ``PlotterPresenter``, ``CombinePresenter``
      - Add raw scans; ``PlotModel`` builds preview plots
+   * - ``FocusProcessedScanEvent``
+     - ``TaviProjectModel``
+     - ``PlotModel``, ``PlotterPresenter``
+     - Add processed scans; ``PlotModel`` builds preview plots. Not
+       ``CombinePresenter``: a combination takes raw scans only
    * - ``FocusPlotEvent``
      - ``TaviProjectModel``, ``PlotModel``
      - ``PlotModel``, ``PlotterPresenter``

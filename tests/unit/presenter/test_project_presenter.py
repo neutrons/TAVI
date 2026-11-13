@@ -8,6 +8,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFitEvent,
     AddPlotEvent,
+    AddProcessedScanEvent,
     AddRawScanEvent,
     RemoveFitEvent,
     RemovePlotEvent,
@@ -331,3 +332,13 @@ def test_rename_treeview_data_via_event_broker():
     EventBroker().publish(SyncItemNameEvent(uuid=uuid, friendly_name="Gaussian over run1"))
 
     view.rename_item.assert_called_once_with(uuid, "Gaussian over run1")
+
+
+def test_add_processed_scan_event_lists_the_combined_scan():
+    """A combination the model announces is listed in the tree, under its Combined root."""
+    _presenter, view, _model = _make_presenter()
+    uuid = UUID(value="combined-1")
+
+    EventBroker().publish(AddProcessedScanEvent(uuid=uuid, friendly_name="scan0001+scan0002", friendly_path=""))
+
+    view.add_combined.assert_called_once_with(uuid, "scan0001+scan0002", "")

@@ -66,21 +66,22 @@ event that triggers it — see :doc:`plot_data_model` for why.
 Event summary
 -------------
 
-=========================  =========================  ==========================================================
-Event                      Published by               Meaning
-=========================  =========================  ==========================================================
-``FocusEvent``             ``ProjectPresenter``   The tree selection changed; ids of every selected item.
-``ClearFocusEvent``        ``TaviProjectModel``       Nothing is focused any more (stage included).
-``FocusRawScanEvent``      ``TaviProjectModel``       Add these raw scans to the focus.
-``FocusPlotEvent``         ``TaviProjectModel``,      Add these plots to the focus.
-                           ``PlotModel``
-``FocusFitEvent``          ``TaviProjectModel``       Add these fits (and the series they were fit against).
-``SyncPlotEvent``          ``PlotModel``              The focused plots as they now stand, after an edit or
-                                                      removal. Same focus, new content.
-``ClearStageEvent``        ``PlotterPresenter``       Nothing is staged any more.
-``StageSeriesEvent``       ``PlotterPresenter``       Add these focused series to the stage.
-``SyncStageEvent``         ``PlotModel``              The staged series and their scans; the first one leads.
-=========================  =========================  ==========================================================
+=============================  =========================  ==========================================================
+Event                          Published by               Meaning
+=============================  =========================  ==========================================================
+``FocusEvent``                 ``ProjectPresenter``       The tree selection changed; ids of every selected item.
+``ClearFocusEvent``            ``TaviProjectModel``       Nothing is focused any more (stage included).
+``FocusRawScanEvent``          ``TaviProjectModel``       Add these raw scans to the focus.
+``FocusProcessedScanEvent``    ``TaviProjectModel``       Add these processed (combined) scans to the focus.
+``FocusPlotEvent``             ``TaviProjectModel``,      Add these plots to the focus.
+                               ``PlotModel``
+``FocusFitEvent``              ``TaviProjectModel``       Add these fits (and the series they were fit against).
+``SyncPlotEvent``              ``PlotModel``              The focused plots as they now stand, after an edit or
+                                                          removal. Same focus, new content.
+``ClearStageEvent``            ``PlotterPresenter``       Nothing is staged any more.
+``StageSeriesEvent``           ``PlotterPresenter``       Add these focused series to the stage.
+``SyncStageEvent``             ``PlotModel``              The staged series and their scans; the first one leads.
+=============================  =========================  ==========================================================
 
 
 Selection — Full Chain
@@ -123,6 +124,9 @@ All" checked. A selection of only one type simply skips the other branch.
         PlotModel ->> EventBroker: SyncStageEvent(staged series, scans)
         EventBroker ->> PlotterPresenter: sync axis/preset fields to the lead series
         EventBroker ->> DataFilePresenter: show the lead series' scan
+
+        TaviProjectModel ->> EventBroker: FocusProcessedScanEvent(scans)
+        Note over EventBroker,DataFilePresenter: same handling as FocusRawScanEvent above, except that<br/>PlotterPresenter only offers columns if no raw scan already did
 
         TaviProjectModel ->> EventBroker: FocusPlotEvent(saved plots, scans)
         Note over EventBroker,DataFilePresenter: same handling as the preview FocusPlotEvent above
@@ -290,8 +294,8 @@ Prime events: clear, then add
 A new selection is two operations, a clear and a focus, so it is published as
 two kinds of event rather than one "change selection" event. Every ``Focus*``
 event only adds, which is what lets a mixed selection publish
-``FocusRawScanEvent``, ``FocusPlotEvent`` and ``FocusFitEvent`` side by side
-without one wiping the canvas the other just drew. Earlier versions folded
+``FocusRawScanEvent``, ``FocusProcessedScanEvent``, ``FocusPlotEvent`` and
+``FocusFitEvent`` side by side without one wiping the canvas the other just drew. Earlier versions folded
 the clear into the focus events instead — a replacing ``PlotFocusEvent``, an
 ``exclusive`` flag on the fit event, and an ``also_plots`` field so a scan +
 plot selection could be merged into a single publish. Splitting the clear out
@@ -386,8 +390,10 @@ Controls are reset on clear, synced from the lead
   ``0``/``2``/``0.02``, preset type back to ``NONE``, preset value back to
   ``"1"``. It does **not** derive normalization from
   ``scan.tavimeta.normalization``.
-- **FocusRawScanEvent** — the preset channel dropdown is repopulated from
-  the first focused scan's columns.
+- **FocusRawScanEvent** / **FocusProcessedScanEvent** — the axis and preset
+  channel dropdowns are offered the first focused scan's columns. Only the
+  first of the two events in a selection does this, so a raw + processed
+  multiselect offers the columns of the raw scan that leads the stage.
 - **SyncStageEvent** — the axis and preset fields are synced to the lead
   staged series (``sync_axis_fields``/``sync_preset_fields``), so they always
   describe the series an edit would change.
@@ -407,10 +413,10 @@ longer selected (e.g. a removed tree entry) before returning. Deselecting an
 item and reselecting it moves it to the end. Within each item type this
 determines the order series appear in the "Current Plot" dropdown and, with
 "Apply All" off, which one is staged by default (the first). Across types,
-raw scans are focused before saved plots, and fits last.
+raw scans are focused before processed scans, then saved plots, and fits last.
 
 A wildcard expands into curves, not into series
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``detector*`` could have been expanded in ``PlotModel``, turning one staged
 series into one ``PlotSeries`` per channel. It isn't, because a series'
@@ -427,7 +433,7 @@ Depth budget
 ~~~~~~~~~~~~
 
 The broker allows a nesting depth of 5 (see :doc:`../../guides/event_broker`).
-The deepest chain here is a raw scan selection: ``FocusEvent`` (1),
-``FocusRawScanEvent`` (2), ``FocusPlotEvent`` (3), ``StageSeriesEvent`` (4),
+The deepest chain here is a raw or processed scan selection: ``FocusEvent`` (1),
+``FocusRawScanEvent`` or ``FocusProcessedScanEvent`` (2), ``FocusPlotEvent`` (3), ``StageSeriesEvent`` (4),
 ``SyncStageEvent`` (5). Handlers of ``SyncStageEvent`` reached this way must
 not publish anything further.

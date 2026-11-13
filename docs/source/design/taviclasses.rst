@@ -52,12 +52,13 @@ handles application-level concerns such as writing error logs.
     class PlotModel{
         -dict~UUID,Plot~ _plots
         -dict~UUID,RawScan~ _raw_scans
+        -dict~UUID,ProcessedScan~ _processed_scans
         -list~Plot~ _last_plots
         -list~UUID~ _staged_uuids
         +update_fields(PlotFields) ModelResponse
         +set_show_title(bool) ModelResponse
         +save_focused_plots(fit_uuids) ModelResponse
-        -_handle_raw_scan_focus_event(FocusRawScanEvent)
+        -_handle_scan_focus_event(FocusRawScanEvent|FocusProcessedScanEvent)
         -_handle_plot_focus_event(FocusPlotEvent)
         -_handle_stage_series_event(StageSeriesEvent)
     }
@@ -214,7 +215,7 @@ exposes the result through ``view()``.
         +handle_clear_focus(ClearFocusEvent)
         +handle_plot_focus(FocusPlotEvent)
         +handle_sync_plot(SyncPlotEvent)
-        +handle_raw_scan_focus(FocusRawScanEvent)
+        +handle_scan_focus(FocusRawScanEvent|FocusProcessedScanEvent)
         +handle_sync_stage(SyncStageEvent)
         +handle_fields_changed()
         +handle_plot_clicked()

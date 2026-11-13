@@ -2,7 +2,7 @@ import unittest
 
 from tavi.backend.model.plot_model import PlotModel
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
-from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
+from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.model_event import RemoveRawScanEvent
@@ -11,6 +11,7 @@ from tavi.meta.event.type.presenter_event import (
     ClearStageEvent,
     FocusFitEvent,
     FocusPlotEvent,
+    FocusProcessedScanEvent,
     FocusRawScanEvent,
     SavePlotEvent,
     StageSeriesEvent,
@@ -180,7 +181,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -199,7 +200,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(x_col="qk", y_col="ei", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -216,7 +217,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -235,7 +236,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -277,7 +278,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(x_col="qk", y_col="ei", uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -320,7 +321,7 @@ class TestPlotModel(unittest.TestCase):
         """A plot focused after a ClearFocusEvent replaces the old selection, so a later edit can't rewrite it."""
         raw_scan = make_raw_scan(uuid_val="scan-001")
         self.raw_scans[raw_scan.uuid] = raw_scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[raw_scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[raw_scan]))
 
         saved_scan1 = make_raw_scan(x_col="qh", y_col="en", uuid_val="saved-001")
         saved_scan2 = make_raw_scan(x_col="qh", y_col="en", uuid_val="saved-002")
@@ -397,7 +398,7 @@ class TestPlotModel(unittest.TestCase):
     def test_update_fields_unknown_column_is_noop(self):
         scan = make_raw_scan(x_col="qh", y_col="en")
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -434,7 +435,7 @@ class TestPlotModel(unittest.TestCase):
     def test_update_fields_normalize_sets_channel_and_value(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=None)
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -453,7 +454,7 @@ class TestPlotModel(unittest.TestCase):
     def test_update_fields_normalize_unknown_channel_is_noop(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=None)
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -470,7 +471,7 @@ class TestPlotModel(unittest.TestCase):
     def test_update_fields_normalize_invalid_value_is_noop(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=None)
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -600,7 +601,7 @@ class TestPlotModel(unittest.TestCase):
     def test_save_focused_plots_publishes_save_plot_event(self):
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SavePlotEvent] = []
         self.broker.register(SavePlotEvent, received.append)
@@ -613,7 +614,7 @@ class TestPlotModel(unittest.TestCase):
     def test_save_focused_plots_gets_a_fresh_uuid(self):
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
         original_uuid = self.model._last_plots[0].uuid
 
         received: list[SavePlotEvent] = []
@@ -633,7 +634,7 @@ class TestPlotModel(unittest.TestCase):
         scan2 = make_raw_scan(uuid_val="scan-002")
         self.raw_scans[scan1.uuid] = scan1
         self.raw_scans[scan2.uuid] = scan2
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan1, scan2]))
 
         received: list[SavePlotEvent] = []
         self.broker.register(SavePlotEvent, received.append)
@@ -647,7 +648,7 @@ class TestPlotModel(unittest.TestCase):
     def test_save_focused_plots_two_calls_produce_different_uuids(self):
         scan = make_raw_scan()
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SavePlotEvent] = []
         self.broker.register(SavePlotEvent, received.append)
@@ -660,7 +661,7 @@ class TestPlotModel(unittest.TestCase):
     def test_update_fields_none_preset_type_clears_normalization(self):
         scan = make_raw_scan(x_col="qh", y_col="en", norm=("monitor", 1.0))
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -677,7 +678,7 @@ class TestPlotModel(unittest.TestCase):
     def test_raw_scan_remove_event_drops_preview_of_removed_scan(self):
         scan = make_raw_scan(uuid_val="scan-gone")
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         del self.raw_scans[scan.uuid]
         self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
@@ -689,7 +690,7 @@ class TestPlotModel(unittest.TestCase):
         kept = make_raw_scan(uuid_val="scan-kept")
         self.raw_scans[gone.uuid] = gone
         self.raw_scans[kept.uuid] = kept
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
 
         del self.raw_scans[gone.uuid]
         self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid))
@@ -700,7 +701,7 @@ class TestPlotModel(unittest.TestCase):
     def test_raw_scan_remove_event_syncs_the_remaining_plots(self):
         scan = make_raw_scan(uuid_val="scan-gone")
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -714,7 +715,7 @@ class TestPlotModel(unittest.TestCase):
     def test_raw_scan_remove_event_ignores_scan_not_on_screen(self):
         scan = make_raw_scan(uuid_val="scan-shown")
         self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -730,7 +731,7 @@ class TestPlotModel(unittest.TestCase):
         kept = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-kept")
         self.raw_scans[gone.uuid] = gone
         self.raw_scans[kept.uuid] = kept
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
 
         del self.raw_scans[gone.uuid]
         self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid))
@@ -748,7 +749,7 @@ class TestPlotModel(unittest.TestCase):
         c = make_raw_scan(uuid_val="scan-c")
         for scan in (a, b, c):
             self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[a, b, c]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[a, b, c]))
 
         for scan in (a, b, c):
             del self.raw_scans[scan.uuid]
@@ -763,7 +764,7 @@ class TestPlotModel(unittest.TestCase):
         b = make_raw_scan(uuid_val="scan-b")
         for scan in (a, b):
             self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[a, b]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[a, b]))
 
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
@@ -782,7 +783,7 @@ class TestPlotModel(unittest.TestCase):
         kept = make_raw_scan(uuid_val="scan-kept")
         for scan in (gone_a, gone_b, kept):
             self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[gone_a, gone_b, kept]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[gone_a, gone_b, kept]))
 
         for scan in (gone_a, gone_b):
             del self.raw_scans[scan.uuid]
@@ -815,7 +816,7 @@ class TestPlotModel(unittest.TestCase):
         kept = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-kept")
         for scan in (a, b, kept):
             self.raw_scans[scan.uuid] = scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[a, b, kept]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[a, b, kept]))
 
         for scan in (a, b):
             del self.raw_scans[scan.uuid]
@@ -859,7 +860,7 @@ class TestPlotModelWildcards(unittest.TestCase):
         self.model = PlotModel(plots=[], raw_scans=self.raw_scans)
         self.scan = make_multichannel_scan()
         self.raw_scans[self.scan.uuid] = self.scan
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[self.scan]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[self.scan]))
         self.received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, self.received.append)
         self.broker.publish(StageSeriesEvent(source_scan_uuids=self.model._focused_uuids()))
@@ -911,7 +912,7 @@ class TestPlotModelWildcards(unittest.TestCase):
         """Runs with different detector banks: a pattern that matches only one must not half-apply."""
         other = make_raw_scan(x_col="qh", y_col="en", uuid_val="scan-002")
         self.raw_scans[other.uuid] = other
-        self.model._handle_raw_scan_focus_event(FocusRawScanEvent(scans=[other]))
+        self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[other]))
         self.broker.publish(StageSeriesEvent(source_scan_uuids=self.model._focused_uuids()))
         self.received.clear()
 
@@ -928,3 +929,108 @@ class TestPlotModelWildcards(unittest.TestCase):
 
         assert len(errors) == 1
         assert "nonexistent*" in str(errors[0].error)
+
+
+def make_processed_scan(uuid_val="combined-001", origins=("scan-001", "scan-002")) -> ProcessedScan:
+    return ProcessedScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0, 3.0, 4.0], "en": [5.0, 6.0, 7.0, 8.0], "mcu": [1.0, 1.0, 2.0, 2.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name="scan1+scan2", friendly_path=""),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value=origin): 1 for origin in origins}),
+    )
+
+
+class TestPlotModelProcessedScans(unittest.TestCase):
+    """A processed scan is focused, staged, edited and saved exactly like a raw one."""
+
+    def setUp(self):
+        self.broker = EventBroker()
+        self.raw_scans = {}
+        self.processed_scans = {}
+        self.model = PlotModel(plots=[], raw_scans=self.raw_scans, processed_scans=self.processed_scans)
+        self.scan = make_processed_scan()
+        self.processed_scans[self.scan.uuid] = self.scan
+
+    def test_focus_publishes_a_preview_plot_of_the_scans_default_axis(self):
+        received: list[FocusPlotEvent] = []
+        self.broker.register(FocusPlotEvent, received.append)
+
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+
+        assert len(received) == 1
+        series = received[0].plots[0].series[0]
+        assert series.source_scan_uuid == self.scan.uuid
+        assert (series.x_name, series.y_name) == ("qh", "en")
+        assert received[0].scans[self.scan.uuid].data.qh == [1.0, 2.0, 3.0, 4.0]
+
+    def test_focus_labels_the_series_with_the_friendly_name_even_with_show_title_on(self):
+        """A processed scan carries no instrument title, so "Show Title" falls back to the combined name."""
+        received: list[FocusPlotEvent] = []
+        self.broker.register(FocusPlotEvent, received.append)
+
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+
+        assert received[0].plots[0].series[0].scan_name == "scan1+scan2"
+
+    def test_empty_focus_is_noop(self):
+        received: list[FocusPlotEvent] = []
+        self.broker.register(FocusPlotEvent, received.append)
+
+        self.broker.publish(FocusProcessedScanEvent(scans=[]))
+
+        assert received == []
+        assert self.model._last_plots == []
+
+    def test_staging_syncs_the_processed_scan_for_the_data_panel(self):
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+        received: list[SyncStageEvent] = []
+        self.broker.register(SyncStageEvent, received.append)
+
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[self.scan.uuid]))
+
+        assert received[-1].series[0].source_scan_uuid == self.scan.uuid
+        assert received[-1].scans[self.scan.uuid].tavimeta.friendly_name == "scan1+scan2"
+
+    def test_update_fields_applies_to_a_staged_processed_series(self):
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[self.scan.uuid]))
+        received: list[SyncPlotEvent] = []
+        self.broker.register(SyncPlotEvent, received.append)
+
+        response = self.model.update_fields(make_plot_fields(x_axis="en", y_axis="mcu"))
+
+        assert response.code.name == "OK"
+        series = received[0].plots[0].series[0]
+        assert (series.x_name, series.y_name) == ("en", "mcu")
+        assert self.scan.uuid in received[0].scans
+
+    def test_raw_and_processed_focused_together_are_both_kept(self):
+        raw = make_raw_scan(uuid_val="scan-001")
+        self.raw_scans[raw.uuid] = raw
+
+        self.broker.publish(FocusRawScanEvent(scans=[raw]))
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+
+        assert self.model._focused_uuids() == [raw.uuid, self.scan.uuid]
+
+    def test_removing_an_origin_raw_scan_keeps_the_processed_scan_focused(self):
+        """A processed scan holds its own data, so its origins leaving does not unresolve it."""
+        raw = make_raw_scan(uuid_val="scan-001")
+        self.raw_scans[raw.uuid] = raw
+        self.broker.publish(FocusRawScanEvent(scans=[raw]))
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+
+        del self.raw_scans[raw.uuid]
+        self.broker.publish(RemoveRawScanEvent(uuid=raw.uuid))
+
+        assert self.model._focused_uuids() == [self.scan.uuid]
+
+    def test_save_focused_plots_keeps_the_processed_series(self):
+        self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
+        received: list[SavePlotEvent] = []
+        self.broker.register(SavePlotEvent, received.append)
+
+        self.model.save_focused_plots()
+
+        assert [s.source_scan_uuid for s in received[0].plot.series] == [self.scan.uuid]

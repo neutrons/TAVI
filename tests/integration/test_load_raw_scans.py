@@ -1,5 +1,3 @@
-
-
 from qtpy import QtCore
 from qtpy.QtCore import QPoint, Qt, QTimer
 from qtpy.QtWidgets import QFileDialog, QApplication, QMessageBox
@@ -13,8 +11,10 @@ import pytest
 from tavi.backend.model.application_model import ApplicationModel
 from tavi.backend.model.filter_model import FilterModel
 from tavi.backend.model.fit_model import FitModel
+from tavi.backend.model.combine_model import CombineModel
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface, FilterModelProxy
+from tavi.backend.model.interface.combine_model_interface import CombineModelInterface, CombineModelProxy
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface, FitModelProxy
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface, PlotModelProxy
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
@@ -24,7 +24,8 @@ from tavi.frontend.presenter.main_presenter import MainPresenter
 from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.widget.tavi_message_box import TaviMessageBox
 from tavi.library.data.scan import UUID
-from tavi.library.storage.local_file_store import LocalFileStore 
+from tavi.library.storage.local_file_store import LocalFileStore
+
 
 class TestLoadRawScans(IntegrationTest):
     
@@ -61,7 +62,8 @@ class TestLoadRawScans(IntegrationTest):
             PlotModelInterface.__name__: PlotModelProxy(plot_model),
             FitModelInterface.__name__: FitModelProxy(fit_model),
             FilterModelInterface.__name__: FilterModelProxy(FilterModel(tavi_project_model.get_filters_handle())),
-        }
+            CombineModelInterface.__name__: CombineModelProxy(CombineModel(tavi_project_model.get_tavi_data_handle())),
+            }
 
         main_presenter = MainPresenter(dict_of_model)
         main_presenter.safe_exit = False
@@ -106,9 +108,6 @@ class TestLoadRawScans(IntegrationTest):
         # confirm it actually loaded a file.
         assert UUID(value="3d682ef8c6633c0dd9bdad1f35439a7c") in tree_widget.uuid_map, tree_widget.uuid_map
         self.test_summary.SUCCESS()
-        
-
-
         # Clean up (important)
         file_menu_view.close()
         

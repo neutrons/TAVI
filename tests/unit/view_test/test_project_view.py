@@ -816,6 +816,30 @@ def test_context_menu_offers_rename_for_a_fit(qtbot, monkeypatch):
     assert "Rename..." in offered
 
 
+
+def test_context_menu_offers_rename_for_a_combined_scan(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_combined(UUID(value="c1"), "scan1+scan2", "")
+
+    offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="c1")]), "Rename...", "x")
+
+    assert "Rename..." in offered
+
+
+def test_renaming_a_combined_scan_emits_the_typed_name(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    uuid = UUID(value="c1")
+    w.add_combined(uuid, "scan1+scan2", "")
+    requested = []
+    w.rename_requested.connect(lambda *args: requested.append(args))
+
+    _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[uuid]), "Rename...", "Al powder")
+
+    assert requested == [(uuid, "Al powder")]
+    assert w.uuid_map[uuid].text() == "*scan1+scan2"
+
 def test_context_menu_does_not_offer_rename_for_a_raw_scan(qtbot, monkeypatch):
     w = TreeViewWidget()
     qtbot.addWidget(w)
@@ -981,3 +1005,38 @@ def test_project_view_hookup_rename_signal_connects_the_callback(qtbot):
     v.tree_widget.rename_requested.emit(UUID(value="p1"), "Bragg peak")
 
     callback.assert_called_once_with(UUID(value="p1"), "Bragg peak")
+
+
+# ---------------------------------------------------------------------------
+# TreeViewWidget / ProjectView — add_combined
+# ---------------------------------------------------------------------------
+
+
+def test_add_combined_fills_the_preexisting_combined_root(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="combined-1")
+    w.add_combined(uuid, "scan1+scan2", "")
+
+    assert w.uuid_map[uuid].parent() is w.path_map["/Combined"]
+
+
+def test_add_combined_labels_the_row_with_the_combined_name(qtbot):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+
+    uuid = UUID(value="combined-2")
+    w.add_combined(uuid, "scan1+scan2", "")
+
+    assert w.uuid_map[uuid].text() == "*scan1+scan2"
+
+
+def test_project_view_add_combined_reaches_the_tree(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+
+    uuid = UUID(value="combined-3")
+    view.add_combined(uuid, "scan1+scan2", "")
+
+    assert uuid in view.tree_widget.uuid_map

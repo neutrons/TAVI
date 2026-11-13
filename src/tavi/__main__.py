@@ -6,9 +6,11 @@ import sys
 from qtpy.QtWidgets import QApplication
 
 from tavi.backend.model.application_model import ApplicationModel
+from tavi.backend.model.combine_model import CombineModel
 from tavi.backend.model.filter_model import FilterModel
 from tavi.backend.model.fit_model import FitModel
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
+from tavi.backend.model.interface.combine_model_interface import CombineModelInterface, CombineModelProxy
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface, FilterModelProxy
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface, FitModelProxy
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface, PlotModelProxy
@@ -40,10 +42,15 @@ def execute() -> None:
 
     filestore = LocalFileStore()
     tavi_project_model = TaviProjectModel(filestore)
-    plot_model = PlotModel(tavi_project_model.get_plots_handle(), tavi_project_model.get_raw_scans_handle())
+    plot_model = PlotModel(
+        tavi_project_model.get_plots_handle(),
+        tavi_project_model.get_raw_scans_handle(),
+        tavi_project_model.get_processed_scans_handle(),
+    )
     fit_model = FitModel(tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_fits_handle())
 
     filter_model = FilterModel(tavi_project_model.get_filters_handle())
+    combine_model = CombineModel(tavi_project_model.get_tavi_data_handle())
 
     application_model = ApplicationModel(filestore)
 
@@ -54,6 +61,7 @@ def execute() -> None:
         PlotModelInterface.__name__: PlotModelProxy(plot_model),
         FitModelInterface.__name__: FitModelProxy(fit_model),
         FilterModelInterface.__name__: FilterModelProxy(filter_model),
+        CombineModelInterface.__name__: CombineModelProxy(combine_model),
     }
 
     presenter = MainPresenter(dict_of_model)
