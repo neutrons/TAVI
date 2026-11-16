@@ -8,6 +8,7 @@ from tavi.library.fit.fit import (
     FitResult,
     ModelName,
 )
+from tavi.library.fit.group_fit import GroupFit, GroupFitResult, GroupFitSummary
 
 __all__ = [
     "ComponentResult",
@@ -15,6 +16,9 @@ __all__ = [
     "Fit",
     "FitPackage",
     "FitResult",
+    "GroupFit",
+    "GroupFitResult",
+    "GroupFitSummary",
     "ModelName",
     "cosine",
 ]

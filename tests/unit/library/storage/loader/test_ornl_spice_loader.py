@@ -121,6 +121,37 @@ def test_parse_tavi_metadata_normalization_channel_is_stripped_of_whitespace() -
     assert tavi_meta.normalization == ("time", 10.0)
 
 
+@pytest.mark.parametrize(
+    ("relative_path", "expected_name"),
+    [
+        ("CeCl3_CeBr3/IPTS-30730/exp998/Datafiles/HB1A_exp0998_scan0001.dat", "HB1A_exp0998_scan0001"),
+        ("IPTS-33597/exp978/Datafiles/HB1_exp0978_scan0652.dat", "HB1_exp0978_scan0652"),
+        ("FeGa_data/exp171/Datafiles/HB3_exp0171_scan0001.dat", "HB3_exp0171_scan0001"),
+        ("CTAX_rez/IPTS-34324/exp442/Datafiles/CG4C_exp0442_scan0001.dat", "CG4C_exp0442_scan0001"),
+    ],
+)
+def test_parse_tavi_metadata_friendly_name_keeps_the_instrument_prefix(relative_path: str, expected_name: str) -> None:
+    """The instrument comes from the file name exactly, so HB1A is not shortened to its substring HB1."""
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    tavi_meta = loader.parse_tavi_metadata(str(_repo_root() / "test_data" / relative_path))
+
+    assert tavi_meta.friendly_name == expected_name
+
+
+def test_parse_tavi_metadata_instrument_ignores_directory_names(tmp_path: Path) -> None:
+    """A directory named after another instrument must not decide the instrument."""
+    source = Path(_exp815_datafile("HB1_exp0815_scan0003.dat"))
+    copied = tmp_path / "IPTS9999_HB3_exp0001" / source.name
+    copied.parent.mkdir()
+    copied.write_text(source.read_text())
+    loader = ORNLSpiceLoader(LocalFileStore())
+
+    tavi_meta = loader.parse_tavi_metadata(str(copied))
+
+    assert tavi_meta.friendly_name.startswith("HB1_exp")
+
+
 def test_parse_external_metadata_reads_matching_ubconf_file() -> None:
     loader = ORNLSpiceLoader(LocalFileStore())
     scan_file = _exp815_datafile("HB1_exp0815_scan0003.dat")
