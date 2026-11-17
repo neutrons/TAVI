@@ -1,6 +1,7 @@
 """Tests for FittingView."""
 
 import pytest
+from qtpy.QtWidgets import QPushButton
 
 from tavi.frontend.view.fitting_view import (
     COSINE_LABELS,
@@ -992,3 +993,56 @@ def test_set_fit_member_restores_the_background_constraint_checkbox(view):
 
     _slope_row, intercept_row = view.background_table.rows
     assert intercept_row.constraint_check.isChecked()
+
+
+def test_set_fit_spec_clears_a_stale_chi_squared(view):
+    """A bare spec has no fit behind it, so the χ2 of whatever was shown before must not linger."""
+    view.chi2_edit.setText("0.9")
+
+    view.set_fit_spec(FitSpec(**make_member().model_dump(exclude={"series", "result"})))
+
+    assert view.chi2_edit.text() == ""
+
+
+# ---------------------------------------------------------------------------
+# Group Fit
+# ---------------------------------------------------------------------------
+
+
+def test_fitting_tab_has_no_group_fit_or_math_constraints_button(view):
+    """The group fit window opens from the project tree's "Add to Group Fit", not from this tab."""
+    labels = [button.text() for button in view.findChildren(QPushButton)]
+
+    assert "Group Fit" not in labels
+    assert "Use Math Constraints" not in labels
+
+
+def test_group_fit_window_is_not_built_until_needed(view):
+    assert view.group_fit_window is None
+
+
+def test_open_group_fit_window_shows_the_window(view):
+    window = view.open_group_fit_window()
+
+    assert view.group_fit_window is window
+    assert window.isVisible()
+
+
+def test_open_group_fit_window_reuses_its_window(view):
+    first = view.open_group_fit_window()
+    first.close()
+
+    second = view.open_group_fit_window()
+
+    assert second is first
+    assert first.isVisible()
+
+
+def test_add_group_fit_scans_signal_opens_the_window_with_the_scans(view, qtbot):
+    scans = [(UUID(value="s1"), "scan1")]
+
+    with qtbot.waitSignal(view.add_group_fit_scans_signal, timeout=1000):
+        view.add_group_fit_scans_signal.emit(scans)
+
+    assert view.group_fit_window.isVisible()
+    assert view.group_fit_window.scan_list.item(0).text() == "scan1"

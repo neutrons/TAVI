@@ -79,6 +79,10 @@ class ProjectView(QWidget):
         """Connect the tree's rename request signal to callback."""
         self.tree_widget.rename_requested.connect(callback)
 
+    def hookup_group_fit_signal(self, callback: Callable) -> None:
+        """Connect the tree's "Add to Group Fit" request signal to callback."""
+        self.tree_widget.group_fit_requested.connect(callback)
+
     def remove_item(self, uuid: UUID) -> None:
         """Remove an item from the view, from any thread."""
         self.remove_item_signal.emit(uuid)
@@ -188,12 +192,16 @@ class TreeViewWidget(QWidget):
     highlighted_scan_changed = Signal(str)
     remove_requested = Signal(list)
     rename_requested = Signal(object, str)
+    group_fit_requested = Signal(list)
 
     # The fixed top-level folders, created at startup and never removed even when emptied.
     ROOT_PATHS = ("/Raw", "/Combined", "/Fits", "/Plots")
 
     # The roots whose rows hold a name of the project's own making, and so one a user may replace.
     RENAMEABLE_ROOTS = ("/Combined", "/Plots", "/Fits")
+
+    # The roots whose rows are scans, and so what a group fit can run over.
+    SCAN_ROOTS = ("/Raw", "/Combined")
 
     def __init__(self, parent: Optional["QObject"] = None) -> None:
         """
@@ -264,11 +272,20 @@ class TreeViewWidget(QWidget):
             rename_action = menu.addAction("Rename...")
         if to_delete:
             delete_action = menu.addAction("Remove Item")
+        group_fit_action = None
+        group_fit_scans = self._scans_under(to_delete)
+        if group_fit_scans:
+            menu.addSeparator()
+            group_fit_action = menu.addAction("Add to Group Fit")
 
         action = menu.exec(self.treeView.viewport().mapToGlobal(position))
 
         if action and action is rename_action:
             self._prompt_rename(rename_target)
+            return
+
+        if action and action is group_fit_action:
+            self.group_fit_requested.emit(group_fit_scans)
             return
 
         if action and action is delete_action:
@@ -301,6 +318,27 @@ class TreeViewWidget(QWidget):
         if self._root_of(index) not in [self.path_map[root] for root in self.RENAMEABLE_ROOTS]:
             return None
         return index
+
+    def _scans_under(self, indexes: list[QModelIndex]) -> list[tuple[UUID, str]]:
+        """
+        Return (uuid, name) for each raw or combined scan at, or in a folder at, any of ``indexes``.
+
+        In tree order, each scan once - selecting a folder and a scan inside it lists that scan a
+        single time, and a sweep loaded in scan order is grouped in scan order.
+        """
+        scans: list[tuple[UUID, str]] = []
+
+        def walk(item: QStandardItem, chosen: bool) -> None:
+            chosen = chosen or any(item.index() == index for index in indexes)
+            item_data = item.data(Qt.UserRole + 1)
+            if chosen and item_data:
+                scans.append((item_data["id"], item.text().removeprefix("*")))
+            for row in range(item.rowCount()):
+                walk(item.child(row), chosen)
+
+        for root in self.SCAN_ROOTS:
+            walk(self.path_map[root], False)
+        return scans
 
     def _root_of(self, index: QModelIndex) -> Optional[StandardItem]:
         """Return the fixed top-level folder an index sits under."""

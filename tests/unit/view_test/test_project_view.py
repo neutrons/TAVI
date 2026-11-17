@@ -3,7 +3,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from qtpy.QtCore import QItemSelectionModel, QPoint, Qt
+from qtpy.QtCore import QItemSelectionModel, QModelIndex, QPoint, Qt
 from qtpy.QtGui import QColor
 from qtpy.QtWidgets import QInputDialog, QMenu
 
@@ -816,7 +816,6 @@ def test_context_menu_offers_rename_for_a_fit(qtbot, monkeypatch):
     assert "Rename..." in offered
 
 
-
 def test_context_menu_offers_rename_for_a_combined_scan(qtbot, monkeypatch):
     w = TreeViewWidget()
     qtbot.addWidget(w)
@@ -840,6 +839,7 @@ def test_renaming_a_combined_scan_emits_the_typed_name(qtbot, monkeypatch):
     assert requested == [(uuid, "Al powder")]
     assert w.uuid_map[uuid].text() == "*scan1+scan2"
 
+
 def test_context_menu_does_not_offer_rename_for_a_raw_scan(qtbot, monkeypatch):
     w = TreeViewWidget()
     qtbot.addWidget(w)
@@ -847,7 +847,8 @@ def test_context_menu_does_not_offer_rename_for_a_raw_scan(qtbot, monkeypatch):
 
     offered = _right_click(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="s1")]), "Rename...")
 
-    assert offered == ["Remove Item"]
+    # "" is the separator ahead of the group fit action.
+    assert offered == ["Remove Item", "", "Add to Group Fit"]
 
 
 def test_context_menu_does_not_offer_rename_for_a_folder(qtbot, monkeypatch):
@@ -1040,3 +1041,112 @@ def test_project_view_add_combined_reaches_the_tree(qtbot):
     view.add_combined(uuid, "scan1+scan2", "")
 
     assert uuid in view.tree_widget.uuid_map
+
+
+# ---------------------------------------------------------------------------
+# TreeViewWidget — Add to Group Fit
+# ---------------------------------------------------------------------------
+
+
+def _select(w, *uuid_vals):
+    for v in uuid_vals:
+        index = w.treeModel.indexFromItem(w.uuid_map[UUID(value=v)])
+        w.treeView.selectionModel().select(index, QItemSelectionModel.Select)
+
+
+def _group_fit_emitted(w, monkeypatch, index):
+    emitted = []
+    w.group_fit_requested.connect(emitted.append)
+    offered = _right_click(w, monkeypatch, index, "Add to Group Fit")
+    return offered, emitted
+
+
+def test_context_menu_adds_a_raw_scan_to_the_group_fit(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+    index = w.treeModel.indexFromItem(w.uuid_map[UUID(value="a1")])
+
+    offered, emitted = _group_fit_emitted(w, monkeypatch, index)
+
+    assert "Add to Group Fit" in offered
+    # The name, not the "*" unsaved marker the tree labels rows with.
+    assert emitted == [[(UUID(value="a1"), "a1")]]
+
+
+def test_context_menu_adds_a_combined_scan_to_the_group_fit(qtbot, monkeypatch):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    w.add_combined(UUID(value="c1"), "scan1+scan2", "")
+
+    _offered, emitted = _group_fit_emitted(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="c1")]))
+
+    assert emitted == [[(UUID(value="c1"), "scan1+scan2")]]
+
+
+@pytest.mark.parametrize("add", ["add_plot", "add_fit"])
+def test_context_menu_does_not_offer_group_fit_for_a_plot_or_fit(qtbot, monkeypatch, add):
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    getattr(w, add)(UUID(value="x1"), "x1", "")
+
+    offered, emitted = _group_fit_emitted(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="x1")]))
+
+    assert "Add to Group Fit" not in offered
+    assert emitted == []
+
+
+def test_context_menu_adds_every_scan_in_a_folder(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+
+    _offered, emitted = _group_fit_emitted(w, monkeypatch, w.treeModel.indexFromItem(w.path_map["/Raw/exp1"]))
+
+    assert emitted == [[(UUID(value="a1"), "a1"), (UUID(value="a2"), "a2")]]
+
+
+def test_context_menu_adds_the_selected_scans_in_tree_order(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+    _select(w, "b1", "a1")
+
+    _offered, emitted = _group_fit_emitted(w, monkeypatch, QModelIndex())
+
+    assert emitted == [[(UUID(value="a1"), "a1"), (UUID(value="b1"), "b1")]]
+
+
+def test_context_menu_lists_a_scan_once_when_it_and_its_folder_are_selected(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+    _select(w, "a1")
+    w.treeView.selectionModel().select(w.treeModel.indexFromItem(w.path_map["/Raw/exp1"]), QItemSelectionModel.Select)
+
+    _offered, emitted = _group_fit_emitted(w, monkeypatch, QModelIndex())
+
+    assert emitted == [[(UUID(value="a1"), "a1"), (UUID(value="a2"), "a2")]]
+
+
+def test_context_menu_adds_only_the_scans_of_a_mixed_selection(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+    _select(w, "p1", "a2")
+
+    _offered, emitted = _group_fit_emitted(w, monkeypatch, QModelIndex())
+
+    assert emitted == [[(UUID(value="a2"), "a2")]]
+
+
+def test_adding_to_the_group_fit_neither_removes_nor_renames(qtbot, monkeypatch):
+    w = make_tree_with_two_folders(qtbot)
+    removed, renamed = [], []
+    w.remove_requested.connect(removed.append)
+    w.rename_requested.connect(lambda *a: renamed.append(a))
+
+    _group_fit_emitted(w, monkeypatch, w.treeModel.indexFromItem(w.uuid_map[UUID(value="a1")]))
+
+    assert removed == [] and renamed == []
+
+
+def test_project_view_hooks_up_the_group_fit_signal(qtbot):
+    view = ProjectView()
+    qtbot.addWidget(view)
+    received = []
+    view.hookup_group_fit_signal(received.append)
+
+    view.tree_widget.group_fit_requested.emit([(UUID(value="a1"), "a1")])
+
+    assert received == [[(UUID(value="a1"), "a1")]]

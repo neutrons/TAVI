@@ -12,6 +12,19 @@ class FocusEvent(Event):
     ids: list[UUID]
 
 
+class GroupScansEvent(Event):
+    """
+    Add scans to the group a group fit runs over. Like ``Focus*`` events this only adds.
+
+    Published by ``ProjectPresenter`` when the user picks "Add to Group Fit" in the project tree;
+    ``FittingPresenter`` lists them in the group fit window. Carries each scan's name beside its
+    uuid, since the window lists scans by name and no model owns the group yet to look it up.
+    """
+
+    scans: list[tuple[UUID, str]]
+    """(uuid, name) pairs, in the order the tree lists them."""
+
+
 class StartApplicationEvent(Event):
     """Announce that the application's views are built, so models can push their initial state to them."""
 

@@ -189,6 +189,11 @@ Event lexicon
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``
+   * - Group
+     - Add scans to the group a group fit runs over. Like focus, grouping only
+       adds. The group lives in the group fit window for now, where the user
+       removes scans from it, so it has no paired clear yet.
+     - ``GroupScansEvent``
    * - Clear
      - Empty a set so it can be rebuilt. Always paired with the additive verb
        for the same set. Clearing the focus also clears the stage, since the

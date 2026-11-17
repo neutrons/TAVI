@@ -19,7 +19,7 @@ from tavi.meta.event.type.model_event import (
     RemoveRawScanEvent,
     SyncItemNameEvent,
 )
-from tavi.meta.event.type.presenter_event import FocusEvent
+from tavi.meta.event.type.presenter_event import FocusEvent, GroupScansEvent
 
 
 class ProjectPresenter(AbstractPresenter):
@@ -27,8 +27,8 @@ class ProjectPresenter(AbstractPresenter):
     Presenter for the project tree.
 
     Mirrors what ``TaviProjectModel`` lists - raw scans, plots and fits - into the ``ProjectView``,
-    and turns tree selections, removal requests and renames into a ``FocusEvent``, a ``remove_items``
-    call and a ``rename_item`` call.
+    and turns tree selections, removal requests, renames and "Add to Group Fit" into a ``FocusEvent``,
+    a ``remove_items`` call, a ``rename_item`` call and a ``GroupScansEvent``.
 
     Attributes
     ----------
@@ -60,6 +60,7 @@ class ProjectPresenter(AbstractPresenter):
         self._view.hookup_select_signal(self.handle_selection_event)
         self._view.hookup_remove_signal(self.handle_remove_request)
         self._view.hookup_rename_signal(self.handle_rename_request)
+        self._view.hookup_group_fit_signal(self.handle_group_fit_request)
 
     def init_view(self) -> None:
         """Create the project tree view."""
@@ -88,6 +89,10 @@ class ProjectPresenter(AbstractPresenter):
     def handle_rename_request(self, uuid: UUID, name: str) -> None:
         """Ask the model to rename the item the user renamed in the tree."""
         self._model.rename_item(uuid, name)
+
+    def handle_group_fit_request(self, scans: list[tuple[UUID, str]]) -> None:
+        """Announce the scans the user added to the group fit from the tree."""
+        self.event_broker.publish(GroupScansEvent(scans=scans))
 
     def rename_treeview_data(self, event: SyncItemNameEvent) -> None:
         """Relabel an item in the treeview once the model reports its new name."""

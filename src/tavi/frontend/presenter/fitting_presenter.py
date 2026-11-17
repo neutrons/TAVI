@@ -15,6 +15,7 @@ from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusFitEvent,
+    GroupScansEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
@@ -62,6 +63,7 @@ class FittingPresenter(AbstractPresenter):
         self._event_broker.register(RemoveFitEvent, self.handle_fit_removed)
         self._event_broker.register(SyncFitHistoryEvent, self.handle_sync_fit_history)
         self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
+        self._event_broker.register(GroupScansEvent, self.handle_group_scans)
         self._view.hookup_perform_fit_signal(self.handle_perform_fit_clicked)
         self._view.hookup_undo_fit_signal(self.handle_undo_fit_clicked)
         self._view.hookup_redo_fit_signal(self.handle_redo_fit_clicked)
@@ -107,6 +109,10 @@ class FittingPresenter(AbstractPresenter):
         if self._lead_series is None or e.member.source_scan_uuid != self._lead_series.source_scan_uuid:
             return
         self._view.set_fit_member_signal.emit(e.member)
+
+    def handle_group_scans(self, e: GroupScansEvent) -> None:
+        """List scans added to the group fit in its window, opening the window to show them."""
+        self._view.add_group_fit_scans_signal.emit(e.scans)
 
     def handle_fit_removed(self, e: RemoveFitEvent) -> None:
         """Forget a removed fit, so the next Perform Fit on its series mints a new one instead of reviving it."""
