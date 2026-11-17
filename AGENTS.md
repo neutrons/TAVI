@@ -80,7 +80,7 @@ announces its result with a `Sync*Event`:
 Events follow a fixed vocabulary — read "Designing TAVI events" in
 `docs/source/guides/event_broker.rst` before adding one:
 - Name every event `VerbNounEvent`, with a verb from the lexicon (Focus,
-  Stage, Clear, Sync, Recompute, Save, Add/Remove, Restore, Set, Report,
+  Stage, Group, Clear, Sync, Recompute, Save, Add/Remove, Restore, Set, Report,
   Start). Names describe the domain, never a widget (`ClearFocusEvent`, not
   `ResetFitPanelEvent`).
 - Each event is one prime operation. Publish a clear and then a focus rather
