@@ -4,6 +4,7 @@ import logging
 import re
 import warnings
 import xml.etree.ElementTree as ET
+from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
@@ -20,6 +21,8 @@ from tavi.library.storage.interface.file_store_interface import FileStoreInterfa
 from tavi.library.storage.loader.interface.base import AbstractLoader
 
 logger = logging.getLogger(__name__)
+
+_SPICE_INSTRUMENTS = frozenset({"HB1", "HB1A", "HB3", "CG4C"})
 
 
 # SPICE writes some column names with a space in them (HB1 in polarization mode has "psc ramp"),
@@ -182,15 +185,10 @@ class ORNLSpiceLoader(AbstractLoader):
 
     def parse_tavi_metadata(self, file_path: str) -> TaviMetadata:
         """Parse metadata."""
-        instrument_name = ""
-        if "HB1A" in file_path:
-            instrument_name = "HB1A"
-        if "CG4C" in file_path:
-            instrument_name = "CG4C"
-        if "HB1" in file_path:
-            instrument_name = "HB1"
-        if "HB3" in file_path:
-            instrument_name = "HB3"
+        # SPICE names every datafile <instrument>_exp<n>_scan<n>.dat. Match that leading token exactly:
+        # a substring test on the whole path lets "HB1" claim HB1A files and lets a directory name win.
+        file_prefix = Path(file_path).name.split("_", 1)[0]
+        instrument_name = file_prefix if file_prefix in _SPICE_INSTRUMENTS else ""
 
         f = self.filestore.read_text_file(file_path=file_path)
         all_content = f.splitlines()
