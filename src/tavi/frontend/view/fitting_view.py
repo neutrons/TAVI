@@ -20,7 +20,6 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from tavi.frontend.view.group_fit_view import GroupFitWindow
 from tavi.library.data.fit_entry import (
     CosineField,
     FitMember,
@@ -268,7 +267,6 @@ class FittingView(QWidget):
     set_fit_member_signal = Signal(object)
     set_fit_history_enabled_signal = Signal(bool, bool)
     reset_fields_signal = Signal()
-    add_group_fit_scans_signal = Signal(list)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct fitting view."""
@@ -277,9 +275,6 @@ class FittingView(QWidget):
         # Which panel's Suggest Params. button was pressed last, so the model's reply lands in
         # the peak that asked for it rather than always in the first one.
         self._suggest_panel: Optional[PeakPanel] = None
-        # Built when scans are first added to the group and kept after it closes, so reopening it
-        # keeps every scan's draft spec.
-        self.group_fit_window: Optional[GroupFitWindow] = None
         self._build_ui()
         self.perform_fit_btn.clicked.connect(self.perform_fit_clicked.emit)
         self.undo_fit_btn.clicked.connect(self.undo_fit_clicked.emit)
@@ -295,7 +290,6 @@ class FittingView(QWidget):
         self.set_fit_member_signal.connect(self._set_fit_member)
         self.set_fit_history_enabled_signal.connect(self._set_fit_history_enabled)
         self.reset_fields_signal.connect(self._reset_fields)
-        self.add_group_fit_scans_signal.connect(self._add_group_fit_scans)
 
     def _build_ui(self) -> None:
         """Build the 1D fitting UI."""
@@ -430,19 +424,6 @@ class FittingView(QWidget):
     def hookup_redo_fit_signal(self, callback: Any) -> None:
         """Connect the Redo Fit button's click signal to callback."""
         self.redo_fit_clicked.connect(callback)
-
-    def open_group_fit_window(self) -> GroupFitWindow:
-        """Show the group fit window, building it on first use, and bring it to the front."""
-        if self.group_fit_window is None:
-            self.group_fit_window = GroupFitWindow(FittingView(), parent=self)
-        self.group_fit_window.show()
-        self.group_fit_window.raise_()
-        self.group_fit_window.activateWindow()
-        return self.group_fit_window
-
-    def _add_group_fit_scans(self, scans: list[tuple[UUID, str]]) -> None:
-        """Append ``scans`` (uuid, name) to the group fit window, opening it so the user sees them land."""
-        self.open_group_fit_window().add_scans(scans)
 
     def hookup_suggest_params_signal(self, callback: Any) -> None:
         """Connect the Suggest Params. button's click signal to callback."""

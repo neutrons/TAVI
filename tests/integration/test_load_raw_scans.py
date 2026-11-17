@@ -11,11 +11,13 @@ import pytest
 from tavi.backend.model.application_model import ApplicationModel
 from tavi.backend.model.filter_model import FilterModel
 from tavi.backend.model.fit_model import FitModel
+from tavi.backend.model.group_fit_model import GroupFitModel
 from tavi.backend.model.combine_model import CombineModel
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface, ApplicationModelProxy
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface, FilterModelProxy
 from tavi.backend.model.interface.combine_model_interface import CombineModelInterface, CombineModelProxy
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface, FitModelProxy
+from tavi.backend.model.interface.group_fit_model_interface import GroupFitModelInterface, GroupFitModelProxy
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface, PlotModelProxy
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectProxy
 from tavi.backend.model.plot_model import PlotModel
@@ -61,6 +63,9 @@ class TestLoadRawScans(IntegrationTest):
             ApplicationModelInterface.__name__: ApplicationModelProxy(application_model),
             PlotModelInterface.__name__: PlotModelProxy(plot_model),
             FitModelInterface.__name__: FitModelProxy(fit_model),
+            GroupFitModelInterface.__name__: GroupFitModelProxy(
+                GroupFitModel(tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_processed_scans_handle())
+            ),
             FilterModelInterface.__name__: FilterModelProxy(FilterModel(tavi_project_model.get_filters_handle())),
             CombineModelInterface.__name__: CombineModelProxy(CombineModel(tavi_project_model.get_tavi_data_handle())),
             }

@@ -210,8 +210,10 @@ Event lexicon
        data the UI needs, so presenters never reach into a model. Sent after
        the state changes, whatever changed it.
      - ``SyncPlotEvent``, ``SyncStageEvent``, ``SyncFitEvent``,
-       ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
+       ``SyncGroupFitEvent``, ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
        ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
+       ``SyncGroupPeakParamsEvent``, ``SyncGroupCosineParamsEvent``,
+       ``SyncGroupBackgroundParamsEvent``,
        ``SyncRecentProjectsEvent``, ``SyncFilterEvent``,
        ``SyncFilterValidationEvent``, ``SyncItemNameEvent``
    * - Recompute

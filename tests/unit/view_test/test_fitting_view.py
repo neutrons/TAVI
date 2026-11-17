@@ -1015,34 +1015,3 @@ def test_fitting_tab_has_no_group_fit_or_math_constraints_button(view):
 
     assert "Group Fit" not in labels
     assert "Use Math Constraints" not in labels
-
-
-def test_group_fit_window_is_not_built_until_needed(view):
-    assert view.group_fit_window is None
-
-
-def test_open_group_fit_window_shows_the_window(view):
-    window = view.open_group_fit_window()
-
-    assert view.group_fit_window is window
-    assert window.isVisible()
-
-
-def test_open_group_fit_window_reuses_its_window(view):
-    first = view.open_group_fit_window()
-    first.close()
-
-    second = view.open_group_fit_window()
-
-    assert second is first
-    assert first.isVisible()
-
-
-def test_add_group_fit_scans_signal_opens_the_window_with_the_scans(view, qtbot):
-    scans = [(UUID(value="s1"), "scan1")]
-
-    with qtbot.waitSignal(view.add_group_fit_scans_signal, timeout=1000):
-        view.add_group_fit_scans_signal.emit(scans)
-
-    assert view.group_fit_window.isVisible()
-    assert view.group_fit_window.scan_list.item(0).text() == "scan1"

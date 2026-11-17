@@ -155,6 +155,28 @@ def test_model_for_shows_chained_seed() -> None:
     assert background["slope"] == results[0].fits["detector"]["bg_"]["slope"]
 
 
+def test_negligible_seed_is_snapped_to_zero() -> None:
+    """A fit landing on (numerically) zero seeds exactly 0, so lmfit's relative step doesn't freeze the parameter."""
+    scans = make_sweep()
+    group = GroupFit(scans, GroupFitParams(fits={"detector": PEAK_AND_BACKGROUND}))
+    group.fit()
+    group.results[0].fits["detector"]["p_"].values["center"] = 2e-13
+    group.results[0].fits["detector"]["bg_"].values["slope"] = -6e-13
+    (_, peak), (_, background) = group.model_for(scans[1].uuid, "detector")
+    assert peak["center"] == 0.0
+    assert background["slope"] == 0.0
+
+
+def test_small_but_real_seed_is_kept() -> None:
+    """Only values negligible next to the data's own scale are snapped; a small real offset survives."""
+    scans = make_sweep()
+    group = GroupFit(scans, GroupFitParams(fits={"detector": PEAK_AND_BACKGROUND}))
+    group.fit()
+    group.results[0].fits["detector"]["p_"].values["center"] = 1e-3
+    (_, peak), _ = group.model_for(scans[1].uuid, "detector")
+    assert peak["center"] == 1e-3
+
+
 def test_non_finite_seed_falls_back_to_group_model() -> None:
     """A NaN in the neighbour's fit is not seeded; the component keeps its own start."""
     scans = make_sweep()

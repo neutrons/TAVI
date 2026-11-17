@@ -118,6 +118,9 @@ started from the same guess would lose it.
   guessed component.
 - If the previous fit lacks that component, or any seed value is non-finite, the component keeps
   its group starting values.
+- A seed negligible next to its parameter's scale in the scan's data (under 1e-6 of it, e.g. a
+  center of 2e-13 on an axis spanning 5) is seeded as exactly 0. lmfit's finite-difference step is
+  proportional to the starting value, so a near-zero seed would leave that parameter frozen.
 - ``set`` options (fixed, bounded or tied parameters) still apply on top of the seed.
 - The first scan always uses the group model.
 
@@ -167,6 +170,34 @@ copy of the ``GroupFitParams`` it was given; ``override()`` never changes the ca
 
 Because a refit of one scan does not update the scans chained after it, there is no single-scan
 refit: call ``fit()`` again after changing overrides.
+
+
+GroupFitModel
+=============
+
+``tavi.backend.model.group_fit_model.GroupFitModel`` runs a group fit from the Group Fit window's
+own state: each scan's fitting-panel ``FitSpec`` plus one shared y-vs-x column pair, packed in a
+``GroupFitRequest``. It parses each spec exactly as a single fit does (range, blank fields guessed
+from the data, FWHM to sigma, fixed and bounded parameters) by reusing ``FitModel``'s translation,
+then hands the group to ``GroupFit``:
+
+- The first scan's spec is the group model.
+- With ``chain=True``, a later scan gets an override only for the parameters the user changed
+  relative to the first scan, so the chained seed supplies the rest. A changed parameter whose
+  value was left blank overrides only its fixed/bounds options.
+- With ``chain=False``, every later scan overrides every component, so it is fit from its own spec.
+- Each scan's x and y are trimmed to that scan's own fitting range before ``GroupFit`` sees them.
+  A blank bound leaves that side open, so a blank range is the whole scan. ``averages`` still
+  cover the whole scan.
+- A scan that can't be fit (not loaded, bad range or column, or a background and peaks unlike the
+  first scan's) is reported and left out, and listed without a result. Every problem in one run
+  is gathered into a single error report.
+
+The result is published as one ``SyncGroupFitEvent`` with a ``GroupFitOutcome`` per scan: the
+spec, the ``FitResultSummary``, the curve, the fitted points and the column averages. This is
+display only: nothing is saved into the project yet.
+
+``GroupFitPresenter`` connects it to the Group Fit window; see :doc:`../design/frontend/group_fit_flow`.
 
 
 API Reference

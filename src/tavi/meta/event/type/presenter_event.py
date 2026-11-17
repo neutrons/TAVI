@@ -1,6 +1,9 @@
 """Events that Presenters emit."""
 
+from typing import Optional
+
 from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
+from tavi.library.data.group_fit_entry import GroupFitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
 from tavi.meta.event.event_interface import Event
@@ -17,7 +20,7 @@ class GroupScansEvent(Event):
     Add scans to the group a group fit runs over. Like ``Focus*`` events this only adds.
 
     Published by ``ProjectPresenter`` when the user picks "Add to Group Fit" in the project tree;
-    ``FittingPresenter`` lists them in the group fit window. Carries each scan's name beside its
+    ``GroupFitPresenter`` lists them in the group fit window. Carries each scan's name beside its
     uuid, since the window lists scans by name and no model owns the group yet to look it up.
     """
 
@@ -200,6 +203,24 @@ class SyncBackgroundParamsEvent(Event):
     intercept: float
 
 
+class SyncGroupPeakParamsEvent(SyncPeakParamsEvent):
+    """
+    A guessed peak start for one scan of the group fit - ``SyncPeakParamsEvent``, but for the Group Fit window.
+
+    Published by ``GroupFitModel``. Its own type, because the broker dispatches on exact type: a
+    guess asked for in the Group Fit window must not land in the 1D Fitting tab when both show the
+    same scan, nor the other way round.
+    """
+
+
+class SyncGroupCosineParamsEvent(SyncCosineParamsEvent):
+    """A guessed cosine start for one scan of the group fit - see ``SyncGroupPeakParamsEvent``."""
+
+
+class SyncGroupBackgroundParamsEvent(SyncBackgroundParamsEvent):
+    """A guessed background start for one scan of the group fit - see ``SyncGroupPeakParamsEvent``."""
+
+
 class SetFitComponentsVisibleEvent(Event):
     """
     Announce that the fitting panel's "Plot Separately" checkbox was toggled.
@@ -231,6 +252,21 @@ class SyncFitEvent(Event):
     fit_uuid: UUID
     outcomes: list[FitOutcome]
     """In fit order. Every outcome is a different series."""
+
+
+class SyncGroupFitEvent(Event):
+    """
+    Sync the UI to a freshly computed group fit - one outcome per scan, in fit order.
+
+    Published by ``GroupFitModel`` after ``perform_group_fit``. Display only: nothing is saved into
+    the project, so unlike ``SyncFitEvent`` no ``SaveFitEvent`` precedes it and no fit uuid names it.
+    A scan left out of the fit is still listed, with no result, so the user can see which one to fix.
+    """
+
+    x_col: Optional[str]
+    """``None`` means each scan was fit against its own default x axis."""
+    y_col: str
+    outcomes: list[GroupFitOutcome]
 
 
 class ClearStageEvent(Event):

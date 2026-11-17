@@ -22,7 +22,6 @@ from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMeta
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
-    GroupScansEvent,
     ClearFocusEvent,
     FocusFitEvent,
     SetFitComponentsVisibleEvent,
@@ -826,25 +825,3 @@ def test_clear_focus_forgets_the_stage(presenter):
 
     presenter.handle_perform_fit_clicked()
     presenter._model.perform_fit.assert_not_called()
-
-
-# ---------------------------------------------------------------------------
-# Group fit
-# ---------------------------------------------------------------------------
-
-
-def test_group_scans_event_lists_the_scans_in_the_group_fit_window(presenter):
-    scans = [(UUID(value="s1"), "scan1"), (UUID(value="s2"), "scan2")]
-
-    EventBroker().publish(GroupScansEvent(scans=scans))
-
-    window = presenter._view.group_fit_window
-    assert window is not None and window.isVisible()
-    assert list(window.fit_specs()) == [UUID(value="s1"), UUID(value="s2")]
-
-
-def test_group_scans_events_accumulate(presenter):
-    EventBroker().publish(GroupScansEvent(scans=[(UUID(value="s1"), "scan1")]))
-    EventBroker().publish(GroupScansEvent(scans=[(UUID(value="s2"), "scan2")]))
-
-    assert list(presenter._view.group_fit_window.fit_specs()) == [UUID(value="s1"), UUID(value="s2")]
