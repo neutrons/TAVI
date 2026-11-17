@@ -1,147 +1,135 @@
-"""Sequential fits over a group of scans, summarized against raw scan columns."""
+"""Fit several columns of every scan in a group against one shared x column, and average others."""
 
-from dataclasses import dataclass
+import copy
+from dataclasses import dataclass, field, replace
 from typing import Any, Optional, Sequence
 
 import numpy as np
 
 from tavi.library.data.scan import UUID, Scan
-from tavi.library.fit.fit import ComponentResult, Fit, FitPackage, FitResult, ModelName
+from tavi.library.fit.fit import Fit, FitPackage, FitResult, ModelName
 
-# Initial-value keys Fit.fit understands, across every supported model shape. Chaining copies only
-# these from a previous fit, since derived values (fwhm, height) are not initial parameters.
+ModelDict = list[tuple[ModelName, dict[str, Any]]]
+
+# Starting values Fit.fit accepts, across every supported model shape. Chaining copies only these from the
+# previous scan's fit, since derived values (fwhm, height) and Voigt's gamma are not Fit.fit inputs.
 _SEED_KEYS = ("center", "sigma", "amplitude", "slope", "intercept", "frequency", "phase", "offset")
 
-_CHI_SQUARED = "reduced_chi_squared"
+
+@dataclass
+class GroupFitParams:
+    """
+    Which columns of every scan to fit against a shared x column, and which to average.
+
+    Attributes:
+        x_col: Independent-variable column; None uses each scan's ``tavimeta.default_axis[0]``.
+        fits: y column -> composite model in the form :meth:`Fit.fit` takes. A peak and a sinusoid
+            differ only in their model (e.g. ``ModelName.Gaussian`` vs ``ModelName.Cosine``).
+        averages: Columns reduced to their per-scan mean and standard deviation instead of fit.
+        overrides: scan uuid -> y column -> component prefix -> patch merged into that component of
+            ``fits[y column]`` for that scan only, e.g. to fix a weak peak's sigma in one scan.
+            ``set`` options merge per parameter; every other key replaces the group value.
+        chain: Start each scan after the first from the previous scan's fitted values instead of the
+            group model's start/guess, so a peak that drifts or fades is tracked from its neighbour's
+            solution. ``set`` options and overrides still apply on top of the seed.
+
+    """
+
+    x_col: Optional[str] = None
+    fits: dict[str, ModelDict] = field(default_factory=dict)
+    averages: list[str] = field(default_factory=list)
+    overrides: dict[UUID, dict[str, dict[str, dict[str, Any]]]] = field(default_factory=dict)
+    chain: bool = True
+
+
+@dataclass
+class ColumnAverage:
+    """Per-scan mean of a column and its standard deviation (its spread during the scan)."""
+
+    mean: float
+    std: float
 
 
 @dataclass
 class GroupFitResult:
-    """One scan's fit within a group: the scan's uuid and its FitResult."""
+    """One scan's results: its uuid, a FitResult per fitted column and a ColumnAverage per averaged column."""
 
     uuid: UUID
-    fit_result: FitResult
-
-
-@dataclass
-class GroupFitSummary:
-    """
-    One fitted parameter against one raw scan column, one point per scan.
-
-    Attributes:
-        column: Raw scan column the x axis is drawn from (e.g. ``temp``).
-        parameter: Fitted parameter on the y axis (e.g. ``center``), or ``reduced_chi_squared``.
-        uuids: The scan each point came from, in fit order.
-        x: Per-scan mean of ``column``.
-        x_err: Per-scan standard deviation of ``column`` (its spread during the scan).
-        y: Fitted value of ``parameter``.
-        y_err: 1-sigma uncertainty of ``parameter``; NaN where lmfit could not estimate one.
-
-    """
-
-    column: str
-    parameter: str
-    uuids: list[UUID]
-    x: np.ndarray
-    x_err: np.ndarray
-    y: np.ndarray
-    y_err: np.ndarray
+    fits: dict[str, FitResult]
+    averages: dict[str, ColumnAverage]
 
 
 class GroupFit:
-    """Fit one model to each scan of a group and summarize fitted parameters against raw scan columns."""
+    """Apply one set of per-column fits and averages to every scan of a group, with per-scan fit overrides."""
 
-    def __init__(self, scans: Sequence[Scan], package: FitPackage = FitPackage.lmfit) -> None:
-        """Initialize with the scans to fit, in the order they should be fit, and the fitting backend."""
+    def __init__(
+        self,
+        scans: Sequence[Scan],
+        group_fit_params: GroupFitParams,
+        package: FitPackage = FitPackage.lmfit,
+    ) -> None:
+        """Initialize with the scans to process, in order, what to do with their columns, and the fit backend."""
         self.scans = list(scans)
         self.results: list[GroupFitResult] = []
         self._fit = Fit(package=package)
+        # Keep a private copy so override() never reaches back into the caller's params, and route
+        # up-front overrides through override() so they are validated the same way as later ones.
+        self.group_fit_params = replace(copy.deepcopy(group_fit_params), overrides={})
+        for uuid, by_column in group_fit_params.overrides.items():
+            for y_col, by_prefix in by_column.items():
+                for prefix, patch in by_prefix.items():
+                    self.override(uuid, y_col, prefix, patch)
 
-    def fit(
-        self,
-        model_dict: list[tuple[ModelName, dict[str, Any]]],
-        x_col: Optional[str] = None,
-        y_col: Optional[str] = None,
-        norm_col: Optional[str] = None,
-        x_range: Optional[tuple[float, float]] = None,
-        chain: bool = False,
-    ) -> list[GroupFitResult]:
-        """
-        Fit ``model_dict`` to every scan in order and return one :class:`GroupFitResult` per scan.
+    def fit(self) -> list[GroupFitResult]:
+        """Fit and average every scan's requested columns, returning one :class:`GroupFitResult` per scan."""
+        params = self.group_fit_params
+        if not params.fits and not params.averages:
+            raise ValueError("group_fit_params has no columns to fit or average.")
 
-        Args:
-            model_dict: Composite model, in the form :meth:`Fit.fit` takes.
-            x_col: Independent-variable column; defaults to each scan's ``tavimeta.default_axis[0]``.
-            y_col: Measured column; defaults to each scan's ``tavimeta.default_axis[1]``.
-            norm_col: Optional column (e.g. ``mcu``, ``time``) that y and its error are divided by.
-            x_range: Optional ``(min, max)``; only points with x inside it (inclusive) are fit.
-            chain: If True, seed each scan after the first with the previous scan's fitted values
-                instead of the initial values/guess in ``model_dict``. Helps a sweep where a peak
-                drifts or fades, so a weak scan starts from its neighbour's solution. ``set``
-                options (fixed, bounded or tied parameters) still apply on top of the seed.
-
-        """
-        results: list[GroupFitResult] = []
-        previous: Optional[FitResult] = None
+        self.results = []
         for scan in self.scans:
-            x, y, err = self._scan_xy(scan, x_col, y_col, norm_col, x_range)
-            models = self._seeded(model_dict, previous) if chain and previous is not None else model_dict
-            fit_result = self._fit.fit(x, y, models, err=err)
-            results.append(GroupFitResult(uuid=scan.uuid, fit_result=fit_result))
-            previous = fit_result
-        self.results = results
-        return results
+            averages = {}
+            for name in params.averages:
+                values = self._column(scan, name)
+                averages[name] = ColumnAverage(mean=float(np.mean(values)), std=float(np.std(values)))
+            x = self._column(scan, params.x_col or scan.tavimeta.default_axis[0])
+            fits = {}
+            for y_col in params.fits:
+                y = self._column(scan, y_col)
+                # Counting statistics on the raw column, matching how single-scan fits weight points.
+                fits[y_col] = self._fit.fit(x, y, self.model_for(scan.uuid, y_col), err=np.sqrt(np.abs(y)))
+            self.results.append(GroupFitResult(uuid=scan.uuid, fits=fits, averages=averages))
+        return self.results
 
-    def summarize(self, column: str, parameter: str, prefix: Optional[str] = None) -> GroupFitSummary:
-        """
-        Return ``parameter`` of every fit against the per-scan mean of raw ``column``.
+    def model_for(self, uuid: UUID, y_col: str) -> ModelDict:
+        """Return the model ``y_col`` is fit with in scan ``uuid``: group model, chained seed, then that scan's patches."""
+        params = self.group_fit_params
+        index = [scan.uuid for scan in self.scans].index(uuid)
+        # fit() appends results as it goes, so the previous scan's result exists by the time this scan is fit.
+        previous = self.results[index - 1].fits.get(y_col) if params.chain and 0 < index <= len(self.results) else None
+        patches = params.overrides.get(uuid, {}).get(y_col, {})
+        model_dict = []
+        for model_name, initial_params in params.fits[y_col]:
+            prefix = initial_params.get("prefix", "")
+            if previous is not None and prefix in previous.components:
+                seed = {key: value for key, value in previous[prefix].values.items() if key in _SEED_KEYS}
+                # A non-finite seed would poison this fit; keep the component's own start instead.
+                if seed and all(np.isfinite(value) for value in seed.values()):
+                    initial_params = {**{k: v for k, v in initial_params.items() if k != "guess"}, **seed}
+            if prefix in patches:
+                initial_params = _merge(initial_params, patches[prefix])
+            model_dict.append((model_name, initial_params))
+        return model_dict
 
-        ``prefix`` picks the component to read; when None, the fit's single peak component is
-        used (see :attr:`FitResult.peak`). ``parameter="reduced_chi_squared"`` reads fit quality.
-        """
-        if not self.results:
-            raise ValueError("No fit results to summarize; call fit() first.")
-
-        scans_by_uuid = {scan.uuid: scan for scan in self.scans}
-        x, x_err, y, y_err = [], [], [], []
-        for result in self.results:
-            values = self._column(scans_by_uuid[result.uuid], column)
-            x.append(np.mean(values))
-            x_err.append(np.std(values))
-            value, error = self._parameter(result.fit_result, parameter, prefix)
-            y.append(value)
-            y_err.append(error)
-
-        return GroupFitSummary(
-            column=column,
-            parameter=parameter,
-            uuids=[result.uuid for result in self.results],
-            x=np.asarray(x, dtype=float),
-            x_err=np.asarray(x_err, dtype=float),
-            y=np.asarray(y, dtype=float),
-            y_err=np.asarray(y_err, dtype=float),
-        )
-
-    def table(
-        self, columns: Sequence[str], parameters: Sequence[str], prefix: Optional[str] = None
-    ) -> dict[str, np.ndarray]:
-        """Return a flat ``{name: array}`` table (uuid, columns, parameters and their ``*_err``), one row per scan."""
-        if not columns and not parameters:
-            raise ValueError("Ask for at least one column or parameter.")
-        if not self.results:
-            raise ValueError("No fit results to tabulate; call fit() first.")
-
-        scans_by_uuid = {scan.uuid: scan for scan in self.scans}
-        table: dict[str, np.ndarray] = {"uuid": np.asarray([result.uuid.value for result in self.results])}
-        for column in columns:
-            values = [self._column(scans_by_uuid[result.uuid], column) for result in self.results]
-            table[column] = np.asarray([np.mean(v) for v in values], dtype=float)
-            table[f"{column}_err"] = np.asarray([np.std(v) for v in values], dtype=float)
-        for parameter in parameters:
-            pairs = [self._parameter(result.fit_result, parameter, prefix) for result in self.results]
-            table[parameter] = np.asarray([value for value, _ in pairs], dtype=float)
-            table[f"{parameter}_err"] = np.asarray([error for _, error in pairs], dtype=float)
-        return table
+    def override(self, uuid: UUID, y_col: str, prefix: str, patch: dict[str, Any]) -> None:
+        """Merge ``patch`` into component ``prefix`` of ``y_col``'s model for scan ``uuid`` only; applies on the next fit()."""
+        if uuid not in [scan.uuid for scan in self.scans]:
+            raise KeyError(f"Scan {uuid.value!r} is not in this group.")
+        prefixes = [initial_params.get("prefix", "") for _, initial_params in self.group_fit_params.fits[y_col]]
+        if prefix not in prefixes:
+            raise KeyError(f"No component {prefix!r} in the {y_col!r} model; available: {prefixes}.")
+        by_prefix = self.group_fit_params.overrides.setdefault(uuid, {}).setdefault(y_col, {})
+        by_prefix[prefix] = _merge(by_prefix.get(prefix, {}), patch)
 
     @staticmethod
     def _column(scan: Scan, name: str) -> np.ndarray:
@@ -153,60 +141,13 @@ class GroupFit:
             raise KeyError(f"Column {name!r} not found in scan {scan.uuid.value}; available: {list(data)}.")
         return np.asarray(data[name], dtype=float)
 
-    def _scan_xy(
-        self,
-        scan: Scan,
-        x_col: Optional[str],
-        y_col: Optional[str],
-        norm_col: Optional[str],
-        x_range: Optional[tuple[float, float]],
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Pull one scan's x, y and counting error, normalized and range-masked as requested."""
-        default_x, default_y = scan.tavimeta.default_axis
-        x = self._column(scan, x_col or default_x)
-        y = self._column(scan, y_col or default_y)
-        # Counting statistics on the raw counts, before normalization, so the error scales with y.
-        err = np.sqrt(np.abs(y))
-        if norm_col:
-            norm = self._column(scan, norm_col)
-            y = y / norm
-            err = err / norm
-        if x_range is not None:
-            mask = (x >= min(x_range)) & (x <= max(x_range))
-            x, y, err = x[mask], y[mask], err[mask]
-        return x, y, err
 
-    @staticmethod
-    def _seeded(
-        model_dict: list[tuple[ModelName, dict[str, Any]]], previous: FitResult
-    ) -> list[tuple[ModelName, dict[str, Any]]]:
-        """Return ``model_dict`` with each component's initial values replaced by ``previous``'s fitted values."""
-        seeded = []
-        for model_name, initial_params in model_dict:
-            component = previous.components.get(initial_params.get("prefix", ""))
-            seed = (
-                {key: value for key, value in component.values.items() if key in _SEED_KEYS}
-                if component is not None
-                else {}
-            )
-            # A non-finite seed would poison the next fit; fall back to this component's own start.
-            if not seed or not all(np.isfinite(value) for value in seed.values()):
-                seeded.append((model_name, initial_params))
-                continue
-            params = {key: value for key, value in initial_params.items() if key != "guess"}
-            params.update(seed)
-            seeded.append((model_name, params))
-        return seeded
-
-    @staticmethod
-    def _parameter(fit_result: FitResult, parameter: str, prefix: Optional[str]) -> tuple[float, float]:
-        """Return ``(value, 1-sigma)`` of ``parameter`` from one fit, NaN error when none was estimated."""
-        if parameter == _CHI_SQUARED:
-            return fit_result.reduced_chi_squared, np.nan
-        component: ComponentResult = fit_result.peak if prefix is None else fit_result[prefix]
-        if parameter not in component.values:
-            raise KeyError(
-                f"Parameter {parameter!r} not in component {component.prefix!r}; available: {list(component.values)}."
-            )
-        error = component.errors.get(parameter)
-        return component.values[parameter], np.nan if error is None else error
+def _merge(params: dict[str, Any], patch: dict[str, Any]) -> dict[str, Any]:
+    """Return ``params`` with ``patch`` applied: ``set`` options merge per parameter, other keys replace."""
+    base_set = params.get("set", {})
+    merged = {**params, **copy.deepcopy(patch)}
+    merged["set"] = {
+        **base_set,
+        **{name: {**base_set.get(name, {}), **opts} for name, opts in patch.get("set", {}).items()},
+    }
+    return merged

@@ -18,6 +18,7 @@ Various guides for using, extending, and maintaining TAVI systems.
    ornl_spice_loader
    experiment
    fit
+   group_fit
    ub_algorithm
    triple_axis
    resolution
