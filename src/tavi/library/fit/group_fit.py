@@ -15,6 +15,9 @@ ModelDict = list[tuple[ModelName, dict[str, Any]]]
 # previous scan's fit, since derived values (fwhm, height) and Voigt's gamma are not Fit.fit inputs.
 _SEED_KEYS = ("center", "sigma", "amplitude", "slope", "intercept", "frequency", "phase", "offset")
 
+# A seed smaller than this fraction of its parameter's data scale is snapped to 0 - see _snap_zero.
+_SEED_ZERO_FRACTION = 1e-6
+
 
 @dataclass
 class GroupFitParams:
@@ -115,6 +118,8 @@ class GroupFit:
                 seed = {key: value for key, value in previous[prefix].values.items() if key in _SEED_KEYS}
                 # A non-finite seed would poison this fit; keep the component's own start instead.
                 if seed and all(np.isfinite(value) for value in seed.values()):
+                    scales = self._seed_scales(self.scans[index], y_col, model_name)
+                    seed = {key: _snap_zero(value, scales[key]) for key, value in seed.items()}
                     initial_params = {**{k: v for k, v in initial_params.items() if k != "guess"}, **seed}
             if prefix in patches:
                 initial_params = _merge(initial_params, patches[prefix])
@@ -131,6 +136,26 @@ class GroupFit:
         by_prefix = self.group_fit_params.overrides.setdefault(uuid, {}).setdefault(y_col, {})
         by_prefix[prefix] = _merge(by_prefix.get(prefix, {}), patch)
 
+    def _seed_scales(self, scan: Scan, y_col: str, model_name: ModelName) -> dict[str, float]:
+        """Return each seedable parameter's natural size in ``scan``'s data, for a component of ``model_name``."""
+        x = self._column(scan, self.group_fit_params.x_col or scan.tavimeta.default_axis[0])
+        y = self._column(scan, y_col)
+        x_scale = float(np.max(np.abs(x))) if x.size else 0.0
+        x_span = float(np.ptp(x)) if x.size else 0.0
+        y_scale = float(np.max(np.abs(y))) if y.size else 0.0
+        return {
+            "center": x_scale,
+            "sigma": x_span,
+            # A peak's amplitude is its integrated area; a cosine's is a height.
+            "amplitude": y_scale if model_name is ModelName.Cosine else y_scale * x_span,
+            "slope": y_scale / x_span if x_span else y_scale,
+            "intercept": y_scale,
+            # One cycle across the scan, the scale CosineModel.guess falls back to.
+            "frequency": 2 * np.pi / x_span if x_span else 1.0,
+            "phase": x_span,
+            "offset": y_scale,
+        }
+
     @staticmethod
     def _column(scan: Scan, name: str) -> np.ndarray:
         """Return a scan column as floats, accepting the leading-underscore spelling of digit-leading names."""
@@ -140,6 +165,18 @@ class GroupFit:
         if name not in data:
             raise KeyError(f"Column {name!r} not found in scan {scan.uuid.value}; available: {list(data)}.")
         return np.asarray(data[name], dtype=float)
+
+
+def _snap_zero(value: float, scale: float) -> float:
+    """
+    Return ``value``, or exactly 0 when it is negligible next to ``scale``.
+
+    A fit that lands on (numerically) zero, e.g. a center of 2e-13, would otherwise seed the next
+    scan with it - and lmfit's finite-difference step is proportional to the starting value, so
+    that parameter stays frozen for the rest of the chain. Starting from exactly 0 makes lmfit
+    fall back to an absolute step, as ``FitModel._seeded_value`` does for a sequential fit.
+    """
+    return 0.0 if abs(value) < _SEED_ZERO_FRACTION * scale else value
 
 
 def _merge(params: dict[str, Any], patch: dict[str, Any]) -> dict[str, Any]:

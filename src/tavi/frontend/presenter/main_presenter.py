@@ -1,9 +1,12 @@
 """Main presenter for tavi."""
 
+from qtpy.QtCore import Qt
+
 from tavi.backend.model.interface.application_model_interface import ApplicationModelInterface
 from tavi.backend.model.interface.combine_model_interface import CombineModelInterface
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.backend.model.interface.fit_model_interface import FitModelInterface
+from tavi.backend.model.interface.group_fit_model_interface import GroupFitModelInterface
 from tavi.backend.model.interface.plot_model_interface import PlotModelInterface
 from tavi.frontend.presenter.combine_presenter import CombinePresenter
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
@@ -12,6 +15,7 @@ from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.filter_presenter import FilterPresenter
 from tavi.frontend.presenter.fit_window_presenter import FitWindowPresenter
 from tavi.frontend.presenter.fitting_presenter import FittingPresenter
+from tavi.frontend.presenter.group_fit_presenter import GroupFitPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
 from tavi.frontend.presenter.project_presenter import ProjectPresenter
 from tavi.frontend.view.main_view import TaviView
@@ -50,6 +54,11 @@ class MainPresenter:
             model_dict[FitModelInterface.__name__], model_dict["TaviProjectProxy"]
         )
         self.fit_window_presenter = FitWindowPresenter()
+
+        self.group_fit_presenter = GroupFitPresenter(model_dict[GroupFitModelInterface.__name__])
+        # Parented so it closes with the application rather than keeping it running; Qt.Window keeps
+        # it a window of its own, which a bare setParent would reset.
+        self.group_fit_presenter.view().setParent(self._view, Qt.Window)
 
         self.combine_presenter = CombinePresenter(model_dict[CombineModelInterface.__name__])
 

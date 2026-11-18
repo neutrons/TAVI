@@ -6,6 +6,8 @@ from qtpy.QtGui import QGuiApplication, QKeySequence
 from qtpy.QtWidgets import QHeaderView, QTableWidgetSelectionRange
 
 from tavi.frontend.view.data_file_view import DataFileView
+from tavi.library.data.fit_entry import FitSummary, FitSummaryPoint
+from tavi.library.data.scan import UUID
 
 
 @pytest.fixture
@@ -563,3 +565,62 @@ def test_set_title_emits_title_changed(view, qtbot):
     with qtbot.waitSignal(view.title_changed, timeout=1000) as blocker:
         view.set_title("Data File (my_scan)")
     assert blocker.args == ["Data File (my_scan)"]
+
+
+# ---------------------------------------------------------------------------
+# Group fit summaries
+# ---------------------------------------------------------------------------
+
+
+def make_fit_summary() -> FitSummary:
+    points = [
+        FitSummaryPoint(source_scan_uuid=UUID(value="s0"), scan_name="s0", x=10.0, x_err=0.5, y=1.0, y_err=0.1),
+        FitSummaryPoint(source_scan_uuid=UUID(value="s1"), scan_name="s1", x=20.0, x_err=0.4, y=1.5, y_err=None),
+    ]
+    return FitSummary(name="peak1 center vs temp", x_label="temp", y_label="peak1 center", points=points)
+
+
+def headers(table):
+    return [table.horizontalHeaderItem(col).text() for col in range(table.columnCount())]
+
+
+def test_fit_summary_lists_each_scans_point_as_a_row(view):
+    view._apply_fit_summary_focus(make_fit_summary())
+
+    table = view.data_table
+    assert headers(table) == ["scan", "temp", "temp err", "peak1 center", "peak1 center err"]
+    assert [table.item(0, col).text() for col in range(5)] == ["s0", "10.0", "0.5", "1.0", "0.1"]
+
+
+def test_fit_summary_leaves_a_missing_uncertainty_blank(view):
+    view._apply_fit_summary_focus(make_fit_summary())
+
+    assert view.data_table.item(1, 4).text() == ""
+
+
+def test_fit_summary_offers_its_columns_as_variables(view):
+    view._apply_fit_summary_focus(make_fit_summary())
+
+    names = [view.variable_table.item(row, 0).text() for row in range(view.variable_table.rowCount())]
+    assert names == ["scan", "temp", "temp err", "peak1 center", "peak1 center err"]
+
+
+def test_fit_summary_describes_itself_in_the_metadata(view):
+    view._apply_fit_summary_focus(make_fit_summary())
+
+    assert view.meta_tabs.tabText(0) == "Fit Summary"
+    table = view.meta_tabs.widget(0)
+    rows = {table.item(row, 0).text(): table.item(row, 1).text() for row in range(table.rowCount())}
+    assert rows == {
+        "name": "peak1 center vs temp",
+        "fitted parameter": "peak1 center",
+        "averaged column": "temp",
+        "points": "2",
+    }
+
+
+def test_fit_summary_titles_the_tab_with_its_name(view, qtbot):
+    with qtbot.waitSignal(view.title_changed, timeout=1000) as blocker:
+        view._apply_fit_summary_focus(make_fit_summary())
+
+    assert blocker.args == ["Data File (peak1 center vs temp)"]

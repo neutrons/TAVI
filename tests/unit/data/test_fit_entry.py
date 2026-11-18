@@ -1,6 +1,15 @@
-"""Tests for FitEntry and FitMember."""
+"""Tests for FitEntry, FitMember and FitResultSummary."""
 
-from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
+from tavi.library.data.fit_entry import (
+    FitEntry,
+    FitMember,
+    FitResultSummary,
+    FitSummary,
+    FitSummaryPoint,
+    ParamField,
+    PeakField,
+    PeakResult,
+)
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID
 
@@ -101,3 +110,88 @@ def test_without_scans_returns_none_once_no_member_is_left():
     fit = make_fit_entry("scan-001", "scan-002")
 
     assert fit.without_scans({UUID(value="scan-001"), UUID(value="scan-002")}) is None
+
+
+def make_peak_result(amplitude=10.0, center=1.0, fwhm=0.5) -> PeakResult:
+    return PeakResult(amplitude=amplitude, amplitude_err=0.1, center=center, center_err=0.01, fwhm=fwhm, fwhm_err=0.02)
+
+
+def make_cosine_result() -> PeakResult:
+    return PeakResult(
+        amplitude=2.0,
+        amplitude_err=0.2,
+        frequency=3.0,
+        frequency_err=0.3,
+        phase=0.4,
+        phase_err=0.04,
+        offset=5.0,
+        offset_err=0.5,
+    )
+
+
+def test_parameters_names_a_peaks_amplitude_its_integrated_intensity():
+    summary = FitResultSummary(reduced_chi_squared=1.2, peaks=[make_peak_result()])
+
+    assert summary.parameters() == {
+        "peak1 Int. Inten.": (10.0, 0.1),
+        "peak1 center": (1.0, 0.01),
+        "peak1 FWHM": (0.5, 0.02),
+        "reduced χ²": (1.2, None),
+    }
+
+
+def test_parameters_number_every_peak_and_add_the_background():
+    summary = FitResultSummary(
+        reduced_chi_squared=1.0,
+        peaks=[make_peak_result(), make_peak_result(center=2.0)],
+        background_constant=3.0,
+        background_constant_err=0.3,
+        background_slope=0.5,
+        background_slope_err=0.05,
+    )
+
+    assert list(summary.parameters()) == [
+        "peak1 Int. Inten.",
+        "peak1 center",
+        "peak1 FWHM",
+        "peak2 Int. Inten.",
+        "peak2 center",
+        "peak2 FWHM",
+        "bg slope",
+        "bg constant",
+        "reduced χ²",
+    ]
+    assert summary.parameters()["peak2 center"] == (2.0, 0.01)
+    assert summary.parameters()["bg constant"] == (3.0, 0.3)
+
+
+def test_parameters_keep_a_cosines_own_names():
+    summary = FitResultSummary(reduced_chi_squared=1.0, peaks=[make_cosine_result()])
+
+    assert list(summary.parameters()) == [
+        "peak1 amplitude",
+        "peak1 frequency",
+        "peak1 phase",
+        "peak1 offset",
+        "reduced χ²",
+    ]
+
+
+def make_fit_summary(uuid_val="summary-001") -> FitSummary:
+    points = [
+        FitSummaryPoint(source_scan_uuid=UUID(value="s0"), scan_name="s0", x=10.0, x_err=0.5, y=1.0, y_err=0.1),
+        FitSummaryPoint(source_scan_uuid=UUID(value="s1"), scan_name="s1", x=20.0, x_err=0.4, y=1.5, y_err=None),
+    ]
+    return FitSummary(
+        uuid=UUID(value=uuid_val), name="peak1 center vs temp", x_label="temp", y_label="peak1 center", points=points
+    )
+
+
+def test_fit_summary_columns_list_each_scans_point_with_its_uncertainties():
+    assert make_fit_summary().columns() == {
+        "scan": ["s0", "s1"],
+        "temp": [10.0, 20.0],
+        "temp err": [0.5, 0.4],
+        "peak1 center": [1.0, 1.5],
+        "peak1 center err": [0.1, None],
+    }

@@ -6,10 +6,12 @@ import pytest
 
 from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.view.data_file_view import DataFileView
+from tavi.library.data.fit_entry import FitSummary, FitSummaryPoint
 from tavi.library.data.plot import PlotSeries
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.presenter_event import ClearFocusEvent, SyncStageEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent
+from tavi.meta.event.type.presenter_event import ClearFocusEvent, FocusFitSummaryEvent, SyncStageEvent
 
 
 def make_scan(uuid_val="scan-001", data=None, metadata=None) -> RawScan:
@@ -150,3 +152,51 @@ def test_clear_focus_clears_view_and_resets_title(presenter):
 
     presenter._view.clear_data.assert_called_once()
     assert received == ["Data File"]
+
+
+# ---------------------------------------------------------------------------
+# Group fit summaries
+# ---------------------------------------------------------------------------
+
+
+def make_fit_summary(uuid_val="summary-001") -> FitSummary:
+    points = [
+        FitSummaryPoint(source_scan_uuid=UUID(value="s0"), scan_name="s0", x=10.0, x_err=0.5, y=1.0, y_err=0.1),
+        FitSummaryPoint(source_scan_uuid=UUID(value="s1"), scan_name="s1", x=20.0, x_err=0.4, y=1.5, y_err=None),
+    ]
+    return FitSummary(
+        uuid=UUID(value=uuid_val), name="peak1 center vs temp", x_label="temp", y_label="peak1 center", points=points
+    )
+
+
+def test_fit_summary_focus_shows_the_first_summary(presenter, qtbot):
+    with qtbot.waitSignal(presenter._view.fit_summary_focus_changed, timeout=1000) as blocker:
+        EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary(), make_fit_summary("summary-002")]))
+
+    assert blocker.args[0].uuid == UUID(value="summary-001")
+    assert presenter._view.data_table.horizontalHeaderItem(1).text() == "temp"
+
+
+def test_removing_the_shown_summary_empties_the_tab(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+
+    with qtbot.waitSignal(presenter._view.scan_focus_changed, timeout=1000) as blocker:
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="summary-001")))
+
+    assert blocker.args[0] is None
+    assert presenter._view.data_table.columnCount() == 0
+
+
+def test_removing_another_fit_keeps_the_summary(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+
+    with qtbot.assertNotEmitted(presenter._view.scan_focus_changed):
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-001")))
+
+
+def test_clear_focus_forgets_the_shown_summary(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+    EventBroker().publish(ClearFocusEvent())
+
+    with qtbot.assertNotEmitted(presenter._view.scan_focus_changed):
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="summary-001")))

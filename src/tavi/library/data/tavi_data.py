@@ -3,7 +3,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 from tavi.library.data.filter import ScanFilter
-from tavi.library.data.fit_entry import FitEntry
+from tavi.library.data.fit_entry import FitEntry, FitSummary
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
 
@@ -26,7 +26,8 @@ class TaviData(BaseModel):
     plots: dict[UUID, Plot] = Field(default_factory=dict)
     # A histogram is a combination too, so it is stored, named and focused alongside the 1D ones.
     processed_scans: dict[UUID, ProcessedScan | HistogramData] = Field(default_factory=dict)
-    fits: dict[UUID, FitEntry] = Field(default_factory=dict)
+    # A FitSummary is listed under Fits too, though it holds its own values rather than pointing at scans.
+    fits: dict[UUID, FitEntry | FitSummary] = Field(default_factory=dict)
     # Saved filters only; the built-in Sample filter is never stored, so it can't be removed or saved over.
     filters: dict[UUID, ScanFilter] = Field(default_factory=dict)
 
@@ -34,7 +35,7 @@ class TaviData(BaseModel):
         """Return every scan, raw and derived, in one lookup - what ``ProcessOps`` resolves uuids against."""
         return {**self.raw_scans, **self.processed_scans}
 
-    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | HistogramData | Plot | FitEntry:
+    def fetch_by_uuid(self, uuid: UUID) -> RawScan | ProcessedScan | HistogramData | Plot | FitEntry | FitSummary:
         """Return the scan, plot, or fit matching uuid, or raise KeyError."""
         for store in (self.raw_scans, self.processed_scans, self.plots, self.fits):
             if uuid in store:
@@ -81,7 +82,8 @@ class TaviData(BaseModel):
 
         pruned_fits: dict[UUID, FitEntry] = {}
         for fit_uuid, fit in self.fits.items():
-            if fit_uuid in fits:
+            # A summary keeps its own copy of the values, so like a combined scan it outlives its scans.
+            if fit_uuid in fits or not isinstance(fit, FitEntry):
                 continue
             surviving_fit = fit.without_scans(orphaned)
             if surviving_fit is None:

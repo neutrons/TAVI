@@ -185,10 +185,16 @@ Event lexicon
      - Add items to what the user is looking at. Focus events only ever add;
        they never replace what is already focused.
      - ``FocusEvent``, ``FocusRawScanEvent``, ``FocusProcessedScanEvent``,
-       ``FocusHistogramEvent``, ``FocusPlotEvent``, ``FocusFitEvent``
+       ``FocusHistogramEvent``, ``FocusPlotEvent``, ``FocusFitEvent``,
+       ``FocusFitSummaryEvent``
    * - Stage
      - Add focused series to the stage. Like focus, staging only adds.
      - ``StageSeriesEvent``
+   * - Group
+     - Add scans to the group a group fit runs over. Like focus, grouping only
+       adds. The group lives in the group fit window for now, where the user
+       removes scans from it, so it has no paired clear yet.
+     - ``GroupScansEvent``
    * - Clear
      - Empty a set so it can be rebuilt. Always paired with the additive verb
        for the same set. Clearing the focus also clears the stage, since the
@@ -205,8 +211,10 @@ Event lexicon
        data the UI needs, so presenters never reach into a model. Sent after
        the state changes, whatever changed it.
      - ``SyncPlotEvent``, ``SyncStageEvent``, ``SyncFitEvent``,
-       ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
+       ``SyncGroupFitEvent``, ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
        ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
+       ``SyncGroupPeakParamsEvent``, ``SyncGroupCosineParamsEvent``,
+       ``SyncGroupBackgroundParamsEvent``,
        ``SyncRecentProjectsEvent``, ``SyncFilterEvent``,
        ``SyncFilterValidationEvent``, ``SyncItemNameEvent``
    * - Recompute
@@ -215,7 +223,7 @@ Event lexicon
      - ``RecomputeFitEvent``
    * - Save
      - Write X into the project (``TaviData``).
-     - ``SavePlotEvent``, ``SaveFitEvent``
+     - ``SavePlotEvent``, ``SaveFitEvent``, ``SaveFitSummaryEvent``
    * - Add / Remove
      - Announce that X has entered or left the project. A raw scan is also
        added when it starts passing the applied filters again, after a
@@ -337,6 +345,11 @@ Event catalog
      - ``TaviProjectModel``
      - ``PlotModel``, ``PlotterPresenter``, ``FittingPresenter``
      - Add fits; their series are focused too
+   * - ``FocusFitSummaryEvent``
+     - ``TaviProjectModel``
+     - ``PlotterPresenter``, ``DataFilePresenter``
+     - Add group fit summaries; drawn alone, y vs x with error bars, and the
+       first listed as a table in the Data File tab
    * - ``SyncPlotEvent``
      - ``PlotModel``
      - ``PlotterPresenter``
@@ -387,6 +400,10 @@ Event catalog
      - ``PlotModel``, ``FitModel``
      - ``TaviProjectModel`` (and ``FitWindowPresenter`` for fits)
      - Write into ``TaviData``
+   * - ``SaveFitSummaryEvent``
+     - ``GroupFitModel``
+     - ``TaviProjectModel``
+     - Write a group fit's summary (a fitted parameter vs a column's average) into ``TaviData.fits``
    * - ``AddRawScanEvent``, ``AddPlotEvent``, ``AddFitEvent``
      - ``TaviProjectModel``
      - ``ProjectPresenter``

@@ -1,6 +1,7 @@
 """Tests for FittingView."""
 
 import pytest
+from qtpy.QtWidgets import QPushButton
 
 from tavi.frontend.view.fitting_view import (
     COSINE_LABELS,
@@ -992,3 +993,25 @@ def test_set_fit_member_restores_the_background_constraint_checkbox(view):
 
     _slope_row, intercept_row = view.background_table.rows
     assert intercept_row.constraint_check.isChecked()
+
+
+def test_set_fit_spec_clears_a_stale_chi_squared(view):
+    """A bare spec has no fit behind it, so the χ2 of whatever was shown before must not linger."""
+    view.chi2_edit.setText("0.9")
+
+    view.set_fit_spec(FitSpec(**make_member().model_dump(exclude={"series", "result"})))
+
+    assert view.chi2_edit.text() == ""
+
+
+# ---------------------------------------------------------------------------
+# Group Fit
+# ---------------------------------------------------------------------------
+
+
+def test_fitting_tab_has_no_group_fit_or_math_constraints_button(view):
+    """The group fit window opens from the project tree's "Add to Group Fit", not from this tab."""
+    labels = [button.text() for button in view.findChildren(QPushButton)]
+
+    assert "Group Fit" not in labels
+    assert "Use Math Constraints" not in labels

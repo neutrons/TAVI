@@ -17,7 +17,7 @@ from tavi.meta.event.type.model_event import (
     RemoveRawScanEvent,
     SyncItemNameEvent,
 )
-from tavi.meta.event.type.presenter_event import FocusEvent
+from tavi.meta.event.type.presenter_event import FocusEvent, GroupScansEvent
 
 
 def _make_presenter():
@@ -359,3 +359,25 @@ def test_add_processed_scan_event_lists_the_combined_scan():
     EventBroker().publish(AddProcessedScanEvent(uuid=uuid, friendly_name="scan0001+scan0002", friendly_path=""))
 
     view.add_combined.assert_called_once_with(uuid, "scan0001+scan0002", "")
+
+
+# ---------------------------------------------------------------------------
+# Add to Group Fit
+# ---------------------------------------------------------------------------
+
+
+def test_init_hooks_up_group_fit_signal():
+    presenter, view, model = _make_presenter()
+
+    view.hookup_group_fit_signal.assert_called_once_with(presenter.handle_group_fit_request)
+
+
+def test_handle_group_fit_request_publishes_the_scans_in_order():
+    presenter, view, model = _make_presenter()
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    scans = [(UUID(value="s2"), "scan2"), (UUID(value="s1"), "scan1")]
+
+    presenter.handle_group_fit_request(scans)
+
+    assert [event.scans for event in received] == [scans]

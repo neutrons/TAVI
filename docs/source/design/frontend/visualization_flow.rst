@@ -78,6 +78,8 @@ Event                          Published by               Meaning
 ``FocusPlotEvent``             ``TaviProjectModel``,      Add these plots to the focus.
                                ``PlotModel``
 ``FocusFitEvent``              ``TaviProjectModel``       Add these fits (and the series they were fit against).
+``FocusFitSummaryEvent``       ``TaviProjectModel``       Add these group fit summaries; drawn as y vs x with error
+                                                          bars, alone on the canvas.
 ``SyncPlotEvent``              ``PlotModel``              The focused plots as they now stand, after an edit or
                                                           removal. Same focus, new content.
 ``ClearStageEvent``            ``PlotterPresenter``       Nothing is staged any more.
@@ -139,6 +141,13 @@ Histogram tab) is a shorter branch. ``TaviProjectModel`` publishes
 ``PlotModel`` does not subscribe — a map is not a series, so there is no
 preview to build and nothing to stage — and ``PlotterPresenter`` forwards the
 first map to ``Plot1DView`` through ``render_histogram_signal``.
+
+A group fit summary (a ``FitSummary`` under Fits, see :doc:`group_fit_flow`)
+follows the same shape: ``TaviProjectModel`` publishes ``FocusFitSummaryEvent``
+last, nothing is staged, and ``PlotterPresenter`` forwards every summary to
+``Plot1DView`` through ``add_fit_summaries_signal``. Like a map, summaries take
+the canvas in place of any 1D series. ``DataFilePresenter`` subscribes too and
+lists the first summary's points (``FitSummary.columns()``) in the Data File tab.
 
 With "Apply All" unchecked, ``PlotterPresenter`` stages only the first series
 of the selection — so there is always something for edits and fits to act

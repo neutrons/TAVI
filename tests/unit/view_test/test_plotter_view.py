@@ -6,7 +6,7 @@ from matplotlib.collections import QuadMesh
 from qtpy.QtCore import Qt
 
 from tavi.frontend.view.plotter_view import Plot1DView
-from tavi.library.data.fit_entry import FitCurve
+from tavi.library.data.fit_entry import FitCurve, FitSummary, FitSummaryPoint
 from tavi.library.data.plot import PlotFields, PlotSeries
 from tavi.library.data.scan import UUID, HistogramData, Provenance, ScanData, ScanMetadata, TaviMetadata
 
@@ -1488,3 +1488,76 @@ def test_clear_histogram_drops_the_map_and_redraws_the_1d_series(view):
     assert _meshes(view) == []
     assert view.canvas.figure.axes == [view.canvas.axes]
     assert len(view.canvas.axes.containers) == 1
+
+
+# ---------------------------------------------------------------------------
+# Group fit summaries
+# ---------------------------------------------------------------------------
+
+
+def make_fit_summary(uuid_val="summary-001", name="peak1 center vs temp", y_err=0.1) -> FitSummary:
+    points = [
+        FitSummaryPoint(source_scan_uuid=UUID(value=f"s{i}"), scan_name=f"s{i}", x=t, x_err=0.5, y=c, y_err=y_err)
+        for i, (t, c) in enumerate(((10.0, 1.0), (20.0, 1.5), (30.0, 2.0)))
+    ]
+    return FitSummary(uuid=UUID(value=uuid_val), name=name, x_label="temp", y_label="peak1 center", points=points)
+
+
+def test_fit_summary_draws_its_points_with_both_error_bars(view):
+    view._add_fit_summaries([make_fit_summary()])
+
+    ax = view.canvas.axes
+    container = ax.containers[0]
+    np.testing.assert_allclose(container.lines[0].get_xdata(), [10.0, 20.0, 30.0])
+    np.testing.assert_allclose(container.lines[0].get_ydata(), [1.0, 1.5, 2.0])
+    assert container.has_xerr and container.has_yerr
+    assert (ax.get_xlabel(), ax.get_ylabel()) == ("temp", "peak1 center")
+    assert [text.get_text() for text in ax.get_legend().get_texts()] == ["peak1 center vs temp"]
+
+
+def test_fit_summary_without_uncertainty_still_draws(view):
+    view._add_fit_summaries([make_fit_summary(y_err=None)])
+
+    np.testing.assert_allclose(view.canvas.axes.containers[0].lines[0].get_ydata(), [1.0, 1.5, 2.0])
+
+
+def test_fit_summaries_overlay_in_their_own_colors(view):
+    view._add_fit_summaries([make_fit_summary(), make_fit_summary("summary-002", name="other")])
+
+    lines = [container.lines[0] for container in view.canvas.axes.containers]
+    assert len(lines) == 2
+    assert lines[0].get_color() != lines[1].get_color()
+
+
+def test_fit_summary_takes_the_canvas_from_1d_series(view):
+    append_plot(view, [1.0, 2.0], [3.0, 4.0], [0.1, 0.1], "scan-a", None, "qh", "detector", "error")
+
+    view._add_fit_summaries([make_fit_summary()])
+
+    assert len(view.canvas.axes.containers) == 1
+    assert view.canvas.axes.get_xlabel() == "temp"
+
+
+def test_removing_the_last_summary_redraws_the_1d_series(view):
+    append_plot(view, [1.0, 2.0], [3.0, 4.0], [0.1, 0.1], "scan-a", None, "qh", "detector", "error")
+    view._add_fit_summaries([make_fit_summary()])
+
+    view._remove_fit_summary(UUID(value="summary-001"))
+
+    assert view._summaries == []
+    assert view.canvas.axes.get_xlabel() == "qh"
+
+
+def test_clearing_the_focus_drops_the_summaries(view):
+    view._add_fit_summaries([make_fit_summary()])
+
+    view._render_plots([])
+
+    assert view._summaries == []
+    assert view.canvas.axes.containers == []
+
+
+def test_fit_summary_points_are_not_connected(view):
+    view._add_fit_summaries([make_fit_summary()])
+
+    assert view.canvas.axes.containers[0].lines[0].get_linestyle() == "None"

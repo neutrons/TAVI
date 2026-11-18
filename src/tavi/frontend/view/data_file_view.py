@@ -26,6 +26,7 @@ class DataFileView(QWidget):
 
     title_changed = Signal(str)
     scan_focus_changed = Signal(object)
+    fit_summary_focus_changed = Signal(object)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct data file view."""
@@ -34,6 +35,7 @@ class DataFileView(QWidget):
         # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
         # a worker thread (PlotModel/TaviProjectModel running behind their Proxy).
         self.scan_focus_changed.connect(self._apply_scan_focus)
+        self.fit_summary_focus_changed.connect(self._apply_fit_summary_focus)
 
     def _build_ui(self) -> None:
         """Build the data file UI."""
@@ -156,6 +158,23 @@ class DataFileView(QWidget):
         self.populate_metadata(scan.metadata.by_category())
         self.set_title(f"Data File ({scan.tavimeta.friendly_name})")
 
+    def _apply_fit_summary_focus(self, summary: Any) -> None:
+        """Show a group fit summary as a table of its points, with what it summarizes as metadata."""
+        columns = summary.columns()
+        self.populate_columns(columns)
+        self.populate_variables(list(columns))
+        self.populate_metadata(
+            {
+                "Fit Summary": {
+                    "name": summary.name,
+                    "fitted parameter": summary.y_label,
+                    "averaged column": summary.x_label,
+                    "points": len(summary.points),
+                }
+            }
+        )
+        self.set_title(f"Data File ({summary.name})")
+
     def populate_columns(self, data: dict[str, list[float]]) -> None:
         """Repopulate the data table with a newly-focused scan's column values."""
         columns = list(data.keys())
@@ -166,7 +185,8 @@ class DataFileView(QWidget):
         self.data_table.setRowCount(row_count)
         for col_idx, name in enumerate(columns):
             for row_idx, value in enumerate(data[name]):
-                item = QTableWidgetItem(str(value))
+                # A summary's parameter may have no uncertainty (e.g. chi^2); an empty cell says so.
+                item = QTableWidgetItem("" if value is None else str(value))
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.data_table.setItem(row_idx, col_idx, item)
 
