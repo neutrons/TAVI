@@ -2,8 +2,14 @@
 
 from unittest.mock import MagicMock, patch
 
+from qtpy.QtCore import QItemSelectionModel, QPoint
+from qtpy.QtWidgets import QMenu
+
+from tavi.backend.model.tavi_project_model import TaviProjectModel
 from tavi.frontend.presenter.project_presenter import ProjectPresenter
-from tavi.library.data.scan import UUID
+from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
+from tavi.library.data.plot import Plot, PlotSeries
+from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFitEvent,
@@ -17,7 +23,63 @@ from tavi.meta.event.type.model_event import (
     RemoveRawScanEvent,
     SyncItemNameEvent,
 )
-from tavi.meta.event.type.presenter_event import FocusEvent, GroupScansEvent
+from tavi.meta.event.type.presenter_event import ClearFocusEvent, FocusEvent, GroupScansEvent
+
+
+def make_raw_scan(uuid_val):
+    return RawScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0], "en": [3.0, 4.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name=uuid_val, friendly_path="/exp1"),
+        prov=Provenance(raw_file="scan.dat", contributing_scans={UUID(value=uuid_val): 1}),
+    )
+
+
+def make_processed_scan(uuid_val):
+    return ProcessedScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data={"qh": [1.0, 2.0], "en": [3.0, 4.0]}),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "en"), friendly_name=uuid_val, friendly_path=""),
+        prov=Provenance(raw_file="", contributing_scans={UUID(value="scan-001"): 1, UUID(value="scan-002"): 1}),
+    )
+
+
+def make_series(source_uuid):
+    return PlotSeries(
+        source_scan_uuid=UUID(value=source_uuid),
+        scan_name=source_uuid,
+        normalized_by=None,
+        x_name="qh",
+        y_name="en",
+        error_name="err",
+    )
+
+
+def make_plot(uuid_val, source_uuid):
+    return Plot(uuid=UUID(value=uuid_val), series=[make_series(source_uuid)])
+
+
+def make_fit_entry(uuid_val, source_uuid):
+    param = ParamField(value="0", fixed=False, minimum="", maximum="")
+    member = FitMember(
+        series=make_series(source_uuid),
+        range_min="0",
+        range_max="10",
+        background="None",
+        background_constant=param,
+        peaks=[PeakField(shape="Gaussian", amplitude=param, center=param, fwhm=param)],
+    )
+    return FitEntry(uuid=UUID(value=uuid_val), members=[member])
+
+
+def make_project_model():
+    with (
+        patch("tavi.backend.model.tavi_project_model.Resource"),
+        patch("tavi.backend.model.tavi_project_model.RawScanLoadController"),
+    ):
+        return TaviProjectModel(MagicMock())
 
 
 def _make_presenter():
@@ -381,3 +443,50 @@ def test_handle_group_fit_request_publishes_the_scans_in_order():
     presenter.handle_group_fit_request(scans)
 
     assert [event.scans for event in received] == [scans]
+
+
+# ---------------------------------------------------------------------------
+# Removing a multi-selection, end to end
+# ---------------------------------------------------------------------------
+
+
+def test_removing_a_mixed_multi_selection_does_not_refocus_purged_items(qtbot, monkeypatch):
+    """
+    The model purges a whole batch before the tree drops its first row. Were the rows still
+    selected, each removal would re-focus batch-mates TaviData no longer holds, and crash.
+    """
+    model = make_project_model()
+    presenter = ProjectPresenter(model)
+    tree = presenter._view.tree_widget
+    qtbot.addWidget(presenter._view)
+
+    raw = [make_raw_scan("scan-001"), make_raw_scan("scan-002")]
+    combined = make_processed_scan("combined-001")
+    plot = make_plot("plot-001", "scan-001")
+    fit = make_fit_entry("fit-001", "scan-002")
+    for scan in raw:
+        model.tavi_data.raw_scans[scan.uuid] = scan
+        tree.add_raw_scan(scan.uuid, scan.uuid.value, "/exp1")
+    model.tavi_data.processed_scans[combined.uuid] = combined
+    tree.add_combined(combined.uuid, "combined", "")
+    model.tavi_data.plots[plot.uuid] = plot
+    tree.add_plot(plot.uuid, "plot", "")
+    model.tavi_data.fits[fit.uuid] = fit
+    tree.add_fit(fit.uuid, "fit", "")
+
+    selected = [scan.uuid for scan in raw] + [combined.uuid, plot.uuid, fit.uuid]
+    for uuid in selected:
+        tree.treeView.selectionModel().select(tree.uuid_map[uuid].index(), QItemSelectionModel.Select)
+
+    cleared = []
+    EventBroker().register(ClearFocusEvent, cleared.append)
+    monkeypatch.setattr(QMenu, "exec", lambda self, *a, **k: next(a for a in self.actions() if a.text() == "Remove Item"))
+    monkeypatch.setattr(tree.treeView, "indexAt", lambda _pos: tree.uuid_map[selected[0]].index())
+    tree.show_context_menu(QPoint(0, 0))
+
+    assert tree.uuid_map == {}
+    assert model.tavi_data.raw_scans == {}
+    assert model.tavi_data.processed_scans == {}
+    assert model.tavi_data.plots == {}
+    assert model.tavi_data.fits == {}
+    assert len(cleared) == 1

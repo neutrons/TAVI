@@ -176,7 +176,8 @@ class TreeViewWidget(QWidget):
     remove_requested : Signal(list)
         Emitted with the ``list[UUID]`` the user asked to remove. The tree does not delete
         the rows itself — it waits for the model to confirm via ``remove_item()``, so the
-        tree can never show a different set of scans than the backend actually holds.
+        tree can never show a different set of scans than the backend actually holds. The
+        selection is cleared first, so the focus lets go of the rows before the model purges them.
     rename_requested : Signal(object, str)
         Emitted with the ``UUID`` and the new name the user typed. As with removal, the row
         keeps its old label until the model confirms via ``rename_item()``.
@@ -303,6 +304,9 @@ class TreeViewWidget(QWidget):
             # The rows stay put until the model confirms the removal and the presenter calls
             # remove_item() — the tree never deletes state the backend still holds.
             if uuids:
+                # Unfocus the doomed rows while TaviData still holds them: otherwise each row the model
+                # later removes shifts the selection and re-focuses batch-mates it has already purged.
+                self.treeView.selectionModel().clearSelection()
                 self.remove_requested.emit(uuids)
 
     def _rename_target(self, indexes: list[QModelIndex]) -> Optional[QModelIndex]:
