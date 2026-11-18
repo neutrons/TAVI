@@ -231,6 +231,12 @@ Removing a focused scan from the project takes the same path:
 ``SyncStageEvent`` too if a staged series went with it. If every staged
 series was removed, ``PlotterPresenter`` restages the first remaining one.
 
+Removing items from the tree first clears the tree's selection, which publishes
+``ClearFocusEvent`` while ``TaviData`` still holds them, and only then asks
+``TaviProjectModel.remove_items`` to purge. The model purges the whole batch
+before the tree drops its first row, so a selection left in place would make
+each confirmed row removal re-focus batch-mates that no longer resolve.
+
 The plotter's "Show Title" checkbox is a direct proxy call,
 ``PlotModel.set_show_title(show_title)``, not an event: only ``PlotModel``
 owns series labels, so there is no one else to tell. It applies to the next

@@ -578,6 +578,28 @@ def test_context_menu_emits_remove_requested_without_touching_tree(qtbot, monkey
     assert "/Raw/exp" in w.path_map
 
 
+def test_context_menu_clears_selection_before_requesting_removal(qtbot, monkeypatch):
+    """Rows the model is about to purge must be unfocused first, or each later row removal re-focuses them."""
+    w = TreeViewWidget()
+    qtbot.addWidget(w)
+    uuids = [UUID(value="c1"), UUID(value="c2")]
+    for i, uuid in enumerate(uuids):
+        w.add_raw_scan(uuid, f"scan{i}", "/exp")
+        w.treeView.selectionModel().select(w.uuid_map[uuid].index(), QItemSelectionModel.Select)
+
+    monkeypatch.setattr(QMenu, "exec", lambda self, *a, **k: self.actions()[0])
+    monkeypatch.setattr(w.treeView, "indexAt", lambda _pos: w.uuid_map[uuids[0]].index())
+
+    calls = []
+    w.selected_signal.connect(lambda: calls.append(("selected", w.get_selected_items())))
+    w.remove_requested.connect(lambda ids: calls.append(("remove", ids)))
+    w.show_context_menu(QPoint(0, 0))
+
+    assert calls == [("selected", []), ("remove", uuids)]
+    assert w.treeView.selectedIndexes() == []
+    assert set(w.uuid_map) == set(uuids)
+
+
 def test_context_menu_does_not_offer_removal_for_root(qtbot, monkeypatch):
     w = TreeViewWidget()
     qtbot.addWidget(w)
