@@ -10,6 +10,7 @@ from tavi.backend.model.group_fit_model import GroupFitModel, _group_fit_params,
 from tavi.library.data.fit_entry import CosineField, FitResultSummary, FitSpec, ParamField, PeakField, PeakResult
 from tavi.library.data.group_fit_entry import (
     GroupFitRequest,
+    SetGroupTitleRequest,
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupPeakParamsRequest,
     SummarizeGroupFitRequest,
@@ -28,6 +29,7 @@ from tavi.meta.event.type.presenter_event import (
     SyncGroupCosineParamsEvent,
     SyncGroupFitEvent,
     SyncGroupPeakParamsEvent,
+    SyncGroupTitlesEvent,
     SyncPeakParamsEvent,
 )
 
@@ -678,3 +680,53 @@ def test_summarize_an_unknown_parameter_reports_once_and_saves_nothing(model, sa
 
     assert saved == []
     assert len(reported) == 1
+
+
+# ---------------------------------------------------------------------------
+# Set Title
+# ---------------------------------------------------------------------------
+
+
+def make_titled_scan(uuid_val, **metadata) -> RawScan:
+    return make_scan(uuid_val).model_copy(update={"metadata": ScanMetadata(data=metadata)})
+
+
+def set_title(scans, title, uuids=None) -> list:
+    received = []
+    EventBroker().register(SyncGroupTitlesEvent, received.append)
+    model = GroupFitModel({scan.uuid: scan for scan in scans}, {})
+    model.set_title(SetGroupTitleRequest(title=title, scan_uuids=uuids or [scan.uuid for scan in scans]))
+    return received
+
+
+def test_set_title_publishes_each_scans_own_metadata_value():
+    scans = [make_titled_scan("s0", temp="1.5"), make_titled_scan("s1", temp="300")]
+
+    received = set_title(scans, "temp")
+
+    assert received[0].titles == [(UUID(value="s0"), "1.5"), (UUID(value="s1"), "300")]
+
+
+def test_set_title_uses_the_text_as_typed_when_a_scan_has_no_such_field():
+    received = set_title([make_titled_scan("s0", temp="1.5"), make_titled_scan("s1")], "temp")
+
+    assert received[0].titles == [(UUID(value="s0"), "1.5"), (UUID(value="s1"), "temp")]
+
+
+def test_set_title_leaves_out_a_scan_whose_field_is_blank():
+    """SPICE files often carry an empty scan_title; the scan keeps its name rather than a blank label."""
+    received = set_title([make_titled_scan("s0", scan_title="")], "scan_title")
+
+    assert received[0].titles == []
+
+
+def test_set_title_leaves_out_a_scan_no_longer_loaded():
+    received = set_title([make_titled_scan("s0", temp="1.5")], "temp", uuids=[UUID(value="s0"), UUID(value="gone")])
+
+    assert received[0].titles == [(UUID(value="s0"), "1.5")]
+
+
+def test_a_blank_title_clears_every_title():
+    received = set_title([make_titled_scan("s0", temp="1.5")], "  ")
+
+    assert received[0].titles == []

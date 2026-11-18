@@ -7,7 +7,7 @@ from tavi.backend.model.plot_resolver import channel_pairs, fit_series_by_source
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan, metadata_label
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
@@ -184,10 +184,7 @@ class PlotModel(PlotModelInterface):
 
     def _title_for(self, scan: Scan) -> Optional[str]:
         """The "Set Title" label for ``scan``: its metadata value for the key, the key itself, or None when unset."""
-        if not self._title:
-            return None
-        value = scan.metadata.data.get(self._title)
-        return self._title if value is None else str(value)
+        return metadata_label(scan.metadata, self._title) if self._title else None
 
     def _scans(self) -> dict[UUID, Scan]:
         """Every scan a focused series may point at - raw or processed - in one lookup."""

@@ -421,7 +421,8 @@ def test_columns_row_sits_above_the_canvas(window):
     columns_row = plot_layout.itemAt(0).layout()
 
     assert columns_row.indexOf(window.y_col_edit) < columns_row.indexOf(window.x_col_edit)
-    assert plot_layout.indexOf(window.canvas) == 1
+    assert plot_layout.itemAt(1).layout().indexOf(window.title_edit) >= 0
+    assert plot_layout.indexOf(window.canvas) == 2
 
 
 def test_columns_row_reads_fit_y_vs_x(window):
@@ -1084,3 +1085,66 @@ def test_unchecking_hide_label_restores_the_legend(window):
     window.hide_label_check.setChecked(False)
 
     assert window.axes.get_legend() is not None
+
+
+# ---------------------------------------------------------------------------
+# Set Title
+# ---------------------------------------------------------------------------
+
+
+def test_title_edit_announces_its_stripped_text_once_per_change(window):
+    received = []
+    window.title_changed.connect(received.append)
+
+    for text in ("  temp ", "temp", ""):
+        window.title_edit.setText(text)
+        window.title_edit.editingFinished.emit()
+
+    assert received == ["temp", ""]
+
+
+def test_titles_relabel_the_legend_but_not_the_scan_list(window):
+    (s1, _), (s2, _) = fitted_window(window, "s1", "s2")
+    window.scan_list.selectAll()
+
+    window.set_titles([(s1, "1.5 K")])
+
+    assert sorted(drawn_labels(window)) == ["1.5 K", "1.5 K fit", "s2", "s2 fit"]
+    assert [window.scan_list.item(row).text() for row in range(2)] == ["s1", "s2"]
+
+
+def test_titles_relabel_components_too(window):
+    (s1, _), _ = fitted_window(window, "s1", "s2", components={"p1_": [1.0, 2.0, 1.0]})
+    window.fitting_view.plot_sep_check.setChecked(True)
+    select(window, 0)
+
+    window.set_titles([(s1, "MnO")])
+
+    assert sorted(drawn_labels(window)) == ["MnO", "MnO fit", "MnO p1"]
+
+
+def test_empty_titles_restore_the_scan_names(window):
+    (s1, _), _ = fitted_window(window, "s1", "s2")
+    select(window, 0)
+    window.set_titles([(s1, "MnO")])
+
+    window.set_titles([])
+
+    assert sorted(drawn_labels(window)) == ["s1", "s1 fit"]
+
+
+def test_a_removed_scan_takes_its_title_with_it(window):
+    (s1, _), (s2, _) = fitted_window(window, "s1", "s2")
+    window.set_titles([(s1, "MnO"), (s2, "BiFeO3")])
+
+    window.remove_scans([s1])
+
+    assert window._titles == {s2: "BiFeO3"}
+
+
+def test_titles_for_scans_not_listed_are_ignored(window):
+    (s1, _), _ = fitted_window(window, "s1", "s2")
+
+    window.set_titles([(s1, "MnO"), (UUID(value="gone"), "x")])
+
+    assert window._titles == {s1: "MnO"}

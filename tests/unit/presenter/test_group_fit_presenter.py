@@ -9,7 +9,7 @@ from tavi.backend.model.group_fit_model import GroupFitModel
 from tavi.frontend.presenter.group_fit_presenter import GroupFitPresenter
 from tavi.frontend.view.group_fit_view import GroupFitWindow
 from tavi.library.data.fit_entry import FitCurve, FitData, FitSpec, ParamField, PeakField
-from tavi.library.data.group_fit_entry import GroupFitOutcome, GroupFitRequest
+from tavi.library.data.group_fit_entry import GroupFitOutcome, GroupFitRequest, SetGroupTitleRequest
 from tavi.library.data.scan import UUID, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
@@ -20,6 +20,7 @@ from tavi.meta.event.type.presenter_event import (
     SyncGroupCosineParamsEvent,
     SyncGroupFitEvent,
     SyncGroupPeakParamsEvent,
+    SyncGroupTitlesEvent,
 )
 
 
@@ -96,6 +97,7 @@ def test_view_is_a_group_fit_window(presenter):
         (SyncGroupPeakParamsEvent, "handle_peak_params_suggested"),
         (SyncGroupCosineParamsEvent, "handle_cosine_params_suggested"),
         (SyncGroupBackgroundParamsEvent, "handle_background_params_suggested"),
+        (SyncGroupTitlesEvent, "handle_sync_titles"),
     ],
 )
 def test_registers_for_its_events(presenter, event_type, handler):
@@ -318,3 +320,72 @@ def test_suggest_end_to_end_fills_the_panel_from_that_scans_data(qtbot):
 
     center = float(view.fitting_view.peak_panels[0].peak_table.rows[1].value_edit.text())
     assert center == pytest.approx(1.5, abs=0.1)
+
+
+# ---------------------------------------------------------------------------
+# Set Title
+# ---------------------------------------------------------------------------
+
+
+def type_title(view, text):
+    view.title_edit.setText(text)
+    view.title_edit.editingFinished.emit()
+
+
+def test_title_change_asks_the_model_about_every_listed_scan(presenter):
+    group("s1", "s2")
+
+    type_title(presenter.view(), "temp")
+
+    presenter._model.set_title.assert_called_once_with(
+        SetGroupTitleRequest(title="temp", scan_uuids=[UUID(value="s1"), UUID(value="s2")])
+    )
+
+
+def test_scans_added_under_a_title_are_titled_too(presenter):
+    group("s1")
+    type_title(presenter.view(), "temp")
+
+    group("s2")
+
+    assert presenter._model.set_title.call_args[0][0] == SetGroupTitleRequest(
+        title="temp", scan_uuids=[UUID(value="s1"), UUID(value="s2")]
+    )
+
+
+def test_scans_added_without_a_title_ask_nothing(presenter):
+    group("s1")
+
+    presenter._model.set_title.assert_not_called()
+
+
+def test_sync_titles_relabels_the_legend(presenter):
+    group("s1", "s2")
+    EventBroker().publish(
+        SyncGroupFitEvent(x_col=None, y_col="detector", outcomes=[make_outcome(UUID(value=n)) for n in ("s1", "s2")])
+    )
+
+    EventBroker().publish(SyncGroupTitlesEvent(titles=[(UUID(value="s1"), "1.5 K")]))
+
+    assert presenter.view().axes.get_legend_handles_labels()[1] == ["1.5 K fit", "1.5 K"]
+
+
+def test_set_title_end_to_end_labels_the_legend_by_metadata(qtbot):
+    """Window -> GroupFitModel -> SyncGroupTitlesEvent -> legend, with the real model; s2 has no such field."""
+    raw_scans = {UUID(value=name): make_raw_scan(name, center) for name, center in (("s1", -1.0), ("s2", 0.0))}
+    raw_scans[UUID(value="s1")] = raw_scans[UUID(value="s1")].model_copy(
+        update={"metadata": ScanMetadata(data={"samplename": "MnO"})}
+    )
+    presenter = GroupFitPresenter(GroupFitModel(raw_scans, {}))
+    qtbot.addWidget(presenter.view())
+    view = presenter.view()
+    group("s1", "s2")
+    view.set_columns("", "detector")
+    view.fitting_view.peak_panels[0].peak_table.rows[1].value_edit.setText("-1")
+    view.fitting_view.perform_fit_btn.click()
+    view.scan_list.selectAll()
+
+    type_title(view, "samplename")
+
+    assert sorted(view.axes.get_legend_handles_labels()[1]) == ["MnO", "MnO fit", "samplename", "samplename fit"]
+    assert [view.scan_list.item(row).text() for row in range(2)] == ["s1", "s2"]

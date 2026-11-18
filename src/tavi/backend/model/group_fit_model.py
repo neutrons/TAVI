@@ -22,13 +22,14 @@ from tavi.library.data.group_fit_entry import (
     ColumnAverageSummary,
     GroupFitOutcome,
     GroupFitRequest,
+    SetGroupTitleRequest,
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupParamsRequest,
     SuggestGroupPeakParamsRequest,
     SummarizeGroupFitRequest,
 )
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.scan import UUID, Scan
+from tavi.library.data.scan import UUID, Scan, metadata_label
 from tavi.library.fit.group_fit import GroupFit, GroupFitParams, GroupFitResult, ModelDict
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.event_interface import Event
@@ -40,6 +41,7 @@ from tavi.meta.event.type.presenter_event import (
     SyncGroupCosineParamsEvent,
     SyncGroupFitEvent,
     SyncGroupPeakParamsEvent,
+    SyncGroupTitlesEvent,
     SyncPeakParamsEvent,
 )
 
@@ -303,6 +305,23 @@ class GroupFitModel(GroupFitModelInterface):
                 name=f"{request.parameter} vs {x_col}", x_label=x_col, y_label=request.parameter, points=points
             )
             self._event_broker.publish(SaveFitSummaryEvent(summary=summary))
+        return ModelResponse(code=ResponseCode.OK)
+
+    def set_title(self, request: SetGroupTitleRequest) -> ModelResponse:
+        """
+        Publish each listed scan's "Set Title" label: its metadata value for the key, or the key as typed.
+
+        A scan no longer loaded, or whose field is blank, gets no title and keeps its name; a blank
+        key gives no titles at all, which clears them.
+        """
+        key = request.title.strip()
+        titles = []
+        if key:
+            for uuid in request.scan_uuids:
+                scan = self._find_scan(uuid)
+                if scan is not None and (title := metadata_label(scan.metadata, key)):
+                    titles.append((uuid, title))
+        self._event_broker.publish(SyncGroupTitlesEvent(titles=titles))
         return ModelResponse(code=ResponseCode.OK)
 
     def _find_scan(self, uuid: UUID) -> Optional[Scan]:

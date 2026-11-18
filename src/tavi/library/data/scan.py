@@ -87,6 +87,17 @@ class ScanMetadata(BaseModel):
         }
 
 
+def metadata_label(metadata: ScanMetadata, key: str) -> str:
+    """
+    A "Set Title" label: the value ``metadata`` holds under ``key``, or ``key`` itself when it holds none.
+
+    A key no scan carries is the user's own text. A field the scan has but left blank (SPICE files
+    often carry an empty ``scan_title``) gives ``""``, so the caller can fall back to the scan's name.
+    """
+    value = metadata.data.get(key)
+    return key if value is None else str(value)
+
+
 # arbitrary types for the numpy grid a HistogramData keeps as its normalization.
 @dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class TaviMetadata:
