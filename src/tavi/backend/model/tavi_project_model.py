@@ -227,7 +227,7 @@ class TaviProjectModel(TaviProjectInterface):
         Merge a fit's members into ``tavi_data`` and announce it, mirroring ``_handle_save_plot_event``.
 
         Each member replaces the stored member for the same scan, so refitting one series of a
-        sequential fit leaves its other members as they were. The state each one replaces becomes
+        multi-scan fit leaves its other members as they were. The state each one replaces becomes
         an undo step for that member. Only a new fit is announced to the project tree - refitting an
         existing one would otherwise add its uuid to the tree twice.
         """
@@ -295,7 +295,7 @@ class TaviProjectModel(TaviProjectInterface):
         )
 
     def _fit_name(self, members: list[FitMember]) -> str:
-        """Name a new fit after the run it covers, or the first and last runs of a sequential one."""
+        """Name a new fit after the run it covers, or the first and last runs of a multi-scan one."""
         first, last = members[0].series.run_name, members[-1].series.run_name
         if len(members) == 1:
             return f"{first}_Fit"

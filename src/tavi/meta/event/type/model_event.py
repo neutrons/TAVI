@@ -139,9 +139,9 @@ class RestoreFitMemberEvent(Event):
     Announce that one member of a fit was rolled back or forward to an earlier saved state.
 
     Published by ``TaviProjectModel`` just before the ``RecomputeFitEvent`` that redraws the member,
-    the same way ``FocusFitEvent`` precedes it: ``FitWindowPresenter`` marks that member's open
-    window as pending here, so the resulting ``SyncFitEvent`` refreshes it regardless of subscriber
-    registration order.
+    the same way ``FocusFitEvent`` precedes it. Its one subscriber, the per-member fit windows'
+    ``FitWindowPresenter``, is deprecated along with the sequential fit (replaced by group fit), so
+    nothing currently listens for it.
     """
 
     fit_uuid: UUID

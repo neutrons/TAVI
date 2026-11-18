@@ -75,65 +75,66 @@ def _peak_prefix(index: int) -> str:
     return f"peak{index + 1}_"
 
 
-# A seed this far below the data's own scale is a fit that landed on (numerically) zero. lmfit's
-# finite-difference step is proportional to the starting value, so seeding the next member with,
-# say, 9e-14 leaves that parameter effectively frozen for the rest of the chain; starting from
-# exactly 0 instead makes the fitter fall back to an absolute step.
-_SEED_ZERO_FRACTION = 1e-6
-
-
-def _seeded_value(field: ParamField, value: Optional[float], scale: float) -> ParamField:
-    """Return ``field`` starting from ``value`` instead, keeping its fixed flag and bounds."""
-    if value is None:
-        return field
-    if abs(value) < _SEED_ZERO_FRACTION * scale:
-        value = 0.0
-    return field.model_copy(update={"value": repr(float(value))})
-
-
-def _seeded_peak(peak: PeakField, fitted: PeakResult, y_scale: float, x_scale: float, x_span: float) -> PeakField:
-    """Return ``peak`` starting from ``fitted``'s values, under whichever parameter set its shape fits."""
-    if peak.cosine is not None:
-        # A cosine's amplitude is a height (y_scale), not an integrated intensity; its frequency's
-        # own scale is the one cycle across the data that CosineModel.guess falls back to.
-        one_cycle = 2 * np.pi / x_span if x_span else 1.0
-        return peak.model_copy(
-            update={
-                "cosine": peak.cosine.model_copy(
-                    update={
-                        "amplitude": _seeded_value(peak.cosine.amplitude, fitted.amplitude, y_scale),
-                        "frequency": _seeded_value(peak.cosine.frequency, fitted.frequency, one_cycle),
-                        "phase": _seeded_value(peak.cosine.phase, fitted.phase, x_span),
-                        "offset": _seeded_value(peak.cosine.offset, fitted.offset, y_scale),
-                    }
-                )
-            }
-        )
-    if peak.amplitude is None or peak.center is None or peak.fwhm is None:
-        return peak
-    return peak.model_copy(
-        update={
-            "amplitude": _seeded_value(peak.amplitude, fitted.amplitude, y_scale * x_span),
-            "center": _seeded_value(peak.center, fitted.center, x_scale),
-            "fwhm": _seeded_value(peak.fwhm, fitted.fwhm, x_span),
-        }
-    )
-
-
-def _seeded_spec(spec: FitSpec, result: FitResultSummary, data: FitData) -> FitSpec:
-    """Return ``spec`` with every value replaced by ``result``'s - how one sequential member seeds the next."""
-    x_scale = float(np.max(np.abs(data.x))) if data.x else 0.0
-    x_span = float(np.ptp(data.x)) if data.x else 0.0
-    y_scale = float(np.max(np.abs(data.y))) if data.y else 0.0
-    slope_scale = y_scale / x_span if x_span else y_scale
-    peaks = [_seeded_peak(peak, fitted, y_scale, x_scale, x_span) for peak, fitted in zip(spec.peaks, result.peaks)]
-    return spec.model_copy(
-        update={
-            "peaks": peaks,
-            "background_constant": _seeded_value(spec.background_constant, result.background_constant, y_scale),
-            "background_slope": _seeded_value(spec.background_slope, result.background_slope, slope_scale),
-        }
-    )
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# # A seed this far below the data's own scale is a fit that landed on (numerically) zero. lmfit's
+# # finite-difference step is proportional to the starting value, so seeding the next member with,
+# # say, 9e-14 leaves that parameter effectively frozen for the rest of the chain; starting from
+# # exactly 0 instead makes the fitter fall back to an absolute step.
+# _SEED_ZERO_FRACTION = 1e-6
+#
+#
+# def _seeded_value(field: ParamField, value: Optional[float], scale: float) -> ParamField:
+#     """Return ``field`` starting from ``value`` instead, keeping its fixed flag and bounds."""
+#     if value is None:
+#         return field
+#     if abs(value) < _SEED_ZERO_FRACTION * scale:
+#         value = 0.0
+#     return field.model_copy(update={"value": repr(float(value))})
+#
+#
+# def _seeded_peak(peak: PeakField, fitted: PeakResult, y_scale: float, x_scale: float, x_span: float) -> PeakField:
+#     """Return ``peak`` starting from ``fitted``'s values, under whichever parameter set its shape fits."""
+#     if peak.cosine is not None:
+#         # A cosine's amplitude is a height (y_scale), not an integrated intensity; its frequency's
+#         # own scale is the one cycle across the data that CosineModel.guess falls back to.
+#         one_cycle = 2 * np.pi / x_span if x_span else 1.0
+#         return peak.model_copy(
+#             update={
+#                 "cosine": peak.cosine.model_copy(
+#                     update={
+#                         "amplitude": _seeded_value(peak.cosine.amplitude, fitted.amplitude, y_scale),
+#                         "frequency": _seeded_value(peak.cosine.frequency, fitted.frequency, one_cycle),
+#                         "phase": _seeded_value(peak.cosine.phase, fitted.phase, x_span),
+#                         "offset": _seeded_value(peak.cosine.offset, fitted.offset, y_scale),
+#                     }
+#                 )
+#             }
+#         )
+#     if peak.amplitude is None or peak.center is None or peak.fwhm is None:
+#         return peak
+#     return peak.model_copy(
+#         update={
+#             "amplitude": _seeded_value(peak.amplitude, fitted.amplitude, y_scale * x_span),
+#             "center": _seeded_value(peak.center, fitted.center, x_scale),
+#             "fwhm": _seeded_value(peak.fwhm, fitted.fwhm, x_span),
+#         }
+#     )
+#
+#
+# def _seeded_spec(spec: FitSpec, result: FitResultSummary, data: FitData) -> FitSpec:
+#     """Return ``spec`` with every value replaced by ``result``'s - how one sequential member seeds the next."""
+#     x_scale = float(np.max(np.abs(data.x))) if data.x else 0.0
+#     x_span = float(np.ptp(data.x)) if data.x else 0.0
+#     y_scale = float(np.max(np.abs(data.y))) if data.y else 0.0
+#     slope_scale = y_scale / x_span if x_span else y_scale
+#     peaks = [_seeded_peak(peak, fitted, y_scale, x_scale, x_span) for peak, fitted in zip(spec.peaks, result.peaks)]
+#     return spec.model_copy(
+#         update={
+#             "peaks": peaks,
+#             "background_constant": _seeded_value(spec.background_constant, result.background_constant, y_scale),
+#             "background_slope": _seeded_value(spec.background_slope, result.background_slope, slope_scale),
+#         }
+#     )
 
 
 class FitModel(FitModelInterface):
@@ -154,8 +155,7 @@ class FitModel(FitModelInterface):
         """
         Fit each of ``request.series`` in order, then publish the members as one ``SaveFitEvent`` and ``SyncFitEvent``.
 
-        With ``seed_from_previous`` set, every series after the first starts from the last
-        successful fit's values - the sequential fit. A member whose fit fails is still published
+        Every series starts from ``request.spec`` as-is. A member whose fit fails is still published
         (with no result) so the user can fix and refit it alone, unless every member failed, in
         which case there's nothing to save and nothing is published.
         """
@@ -167,8 +167,9 @@ class FitModel(FitModelInterface):
                 errors.label = series.run_name
                 outcome = self._compute_member(member)
                 outcomes.append(outcome)
-                if request.seed_from_previous and outcome.member.result is not None and outcome.data is not None:
-                    spec = _seeded_spec(spec, outcome.member.result, outcome.data)
+                # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+                # if request.seed_from_previous and outcome.member.result is not None and outcome.data is not None:
+                #     spec = _seeded_spec(spec, outcome.member.result, outcome.data)
 
         if any(outcome.member.result is not None for outcome in outcomes):
             fit_uuid = request.fit_uuid if request.fit_uuid is not None else new_uuid()

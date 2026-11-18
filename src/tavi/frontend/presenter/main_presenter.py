@@ -13,7 +13,6 @@ from tavi.frontend.presenter.data_file_presenter import DataFilePresenter
 from tavi.frontend.presenter.error_presenter import ErrorPresenter
 from tavi.frontend.presenter.file_menu_presenter import FileMenuPresenter
 from tavi.frontend.presenter.filter_presenter import FilterPresenter
-from tavi.frontend.presenter.fit_window_presenter import FitWindowPresenter
 from tavi.frontend.presenter.fitting_presenter import FittingPresenter
 from tavi.frontend.presenter.group_fit_presenter import GroupFitPresenter
 from tavi.frontend.presenter.plotter_presenter import PlotterPresenter
@@ -22,6 +21,9 @@ from tavi.frontend.view.main_view import TaviView
 from tavi.frontend.view.menubar_view import MainMenuBar
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.presenter_event import StartApplicationEvent
+
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# from tavi.frontend.presenter.fit_window_presenter import FitWindowPresenter
 
 
 class MainPresenter:
@@ -53,7 +55,8 @@ class MainPresenter:
         self.fitting_presenter = FittingPresenter(
             model_dict[FitModelInterface.__name__], model_dict["TaviProjectProxy"]
         )
-        self.fit_window_presenter = FitWindowPresenter()
+        # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+        # self.fit_window_presenter = FitWindowPresenter()
 
         self.group_fit_presenter = GroupFitPresenter(model_dict[GroupFitModelInterface.__name__])
         # Parented so it closes with the application rather than keeping it running; Qt.Window keeps

@@ -174,7 +174,7 @@ def _snap_zero(value: float, scale: float) -> float:
     A fit that lands on (numerically) zero, e.g. a center of 2e-13, would otherwise seed the next
     scan with it - and lmfit's finite-difference step is proportional to the starting value, so
     that parameter stays frozen for the rest of the chain. Starting from exactly 0 makes lmfit
-    fall back to an absolute step, as ``FitModel._seeded_value`` does for a sequential fit.
+    fall back to an absolute step, as the deprecated sequential fit's ``FitModel._seeded_value`` did.
     """
     return 0.0 if abs(value) < _SEED_ZERO_FRACTION * scale else value
 

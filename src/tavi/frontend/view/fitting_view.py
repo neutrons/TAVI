@@ -578,7 +578,7 @@ class FittingView(QWidget):
         """
         Show one saved member in the panel: the spec it was fit with, overlaid with what that fit produced.
 
-        Picking a member of a sequential fit in the Current Plot dropdown reloads exactly the shapes,
+        Picking a member of a multi-scan fit in the Current Plot dropdown reloads exactly the shapes,
         bounds, fixed flags and range it was fit with, so a Perform Fit from here refits that member
         as it stands rather than as the panel last was.
         """

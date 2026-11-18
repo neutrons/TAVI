@@ -5,9 +5,9 @@ Overview
 --------
 
 A **group fit** fits a sweep of scans (typically in temperature or field) in one
-go, with :ref:`GroupFit <group_fit>` doing the fitting. It is separate from the
-sequential fit in :doc:`fit_data_model`: it has its own window, its own model
-and presenter, and the fit itself is display only. The one thing it saves into
+go, with :ref:`GroupFit <group_fit>` doing the fitting. It replaces the
+deprecated sequential fit described in :doc:`fit_data_model`: it has its own
+window, its own model and presenter, and the fit itself is display only. The one thing it saves into
 ``TaviData`` is a *summary*: one fitted parameter against a column's per-scan
 average, listed under Fits.
 

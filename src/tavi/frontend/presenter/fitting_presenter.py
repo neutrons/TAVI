@@ -34,10 +34,10 @@ class FittingPresenter(AbstractPresenter):
         self._model = model
         # Undo history is saved state, owned by the project - only it answers undo/redo.
         self._project_model = project_model
-        # The staged series, from SyncStageEvent - what Perform Fit covers, in order, fitting them in
-        # sequence when there's more than one. Pointers only (``PlotSeries`` holds column names,
+        # The staged series, from SyncStageEvent. Pointers only (``PlotSeries`` holds column names,
         # never data); FitModel resolves each against its own scan handle. The first one leads:
-        # it's the series the panel shows, and the one its Suggest Params. buttons guess against.
+        # it's the series the panel shows, the one Perform Fit fits, and the one its Suggest Params.
+        # buttons guess against.
         self._staged_series: list[PlotSeries] = []
         self._lead_scan: Optional[Scan] = None
         # Fits focused directly from the project tree - handle_sync_fit shows their recomputed
@@ -152,8 +152,7 @@ class FittingPresenter(AbstractPresenter):
         """
         The (fit uuid, source scan uuid) Undo/Redo acts on: the one staged series' fit member, or ``None``.
 
-        Undo is for dialing one member in, so it's only offered while exactly one series is staged -
-        a sequential run across several has no single member to step.
+        Undo is for dialing one member in, so it's only offered while exactly one series is staged.
         """
         if len(self._staged_series) != 1:
             return None
@@ -170,11 +169,11 @@ class FittingPresenter(AbstractPresenter):
 
     def handle_perform_fit_clicked(self) -> None:
         """
-        Ask the model to fit every staged series, in stage order.
+        Ask the model to fit the lead staged series with the panel's spec.
 
-        Several staged series run a sequential fit, each seeded from the previous one's result. One
-        staged series is fit alone - which, for a member of an existing sequential fit, refits that
-        member alone. No-ops when nothing is staged.
+        Only the lead is fit, even when several series are staged - fitting several scans at once is
+        Group Fit's job. For a member of an existing multi-scan fit, this refits that member alone.
+        No-ops when nothing is staged.
 
         Refitting the same series again reuses the fit already covering them (``fit_uuid``), so
         repeatedly clicking Perform Fit refines one fit rather than leaving a trail of
@@ -183,11 +182,14 @@ class FittingPresenter(AbstractPresenter):
         """
         if not self._staged_series:
             return
-        series = list(self._staged_series)
+        # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+        # series = list(self._staged_series)
+        series = [self._lead_series]
         request = FitRequest(
             spec=self._view.get_fit_spec(),
             series=series,
-            seed_from_previous=len(series) > 1,
+            # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+            # seed_from_previous=len(series) > 1,
             fit_uuid=self._shared_fit_uuid(series),
         )
         self._model.perform_fit(request)

@@ -54,7 +54,7 @@ class TaviData(BaseModel):
         A plot or fit holds no data of its own, only a ``source_scan_uuid`` per series, so a
         series whose scan is going can no longer be resolved and goes with it. A plot or fit
         survives as long as it has a series left - removing one run should not destroy the rest
-        of a fused, multi-series plot, or of a sequential fit. Unknown uuids are ignored: the tree
+        of a fused, multi-series plot, or of a multi-scan fit. Unknown uuids are ignored: the tree
         may ask twice for the same item (e.g. a folder and a scan inside it both selected).
 
         Every store is mutated in place rather than rebound, because the models hold these same

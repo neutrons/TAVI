@@ -134,7 +134,6 @@ class SaveFitEvent(Event):
     Published by ``FitModel`` after Perform Fit, just before the matching ``SyncFitEvent`` - never for
     a recompute, which changes nothing worth saving. ``TaviProjectModel`` merges ``members`` into
     ``TaviData.fits[fit_uuid]`` by scan, so the members this leaves out stay as they were.
-    ``FitWindowPresenter`` also takes it as the cue that the following sync is a fresh fit.
     """
 
     fit_uuid: UUID
@@ -263,11 +262,10 @@ class SyncFitEvent(Event):
 
     Published by ``FitModel`` both after Perform Fit and after a saved fit is recomputed for display
     (``RecomputeFitEvent``). Display only: ``PlotterPresenter``/``Plot1DView`` render each outcome's
-    ``curve`` alongside the data it was fit against, ``FittingPresenter`` reflects the active series'
-    member in the fitting panel, and ``FitWindowPresenter`` fills the windows of a fit it was just told
-    was saved (``SaveFitEvent``). Persisting the fit is ``SaveFitEvent``'s job, not this one's.
+    ``curve`` alongside the data it was fit against, and ``FittingPresenter`` reflects the active series'
+    member in the fitting panel. Persisting the fit is ``SaveFitEvent``'s job, not this one's.
 
-    ``outcomes`` may cover only some of the fit's members - refitting one series of a sequential fit
+    ``outcomes`` may cover only some of the fit's members - refitting one series of a multi-scan fit
     syncs just that one - which is why this names the fit by uuid rather than carrying a whole
     ``FitEntry``.
     """

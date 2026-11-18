@@ -162,10 +162,10 @@ class FitEntry(BaseModel):
     """
     A saved fit: one member per series it covers, in the order they were fit.
 
-    A fit of one scan is simply a fit with one member; a sequential fit is several, each seeded from
-    the one before. Once fit, nothing distinguishes the two - every member is recomputed from its own
-    stored spec - so they share this one type, the same way a ``Plot`` of one series and a ``Plot``
-    of many do.
+    A fit of one scan is simply a fit with one member; a multi-scan fit (e.g. from a deprecated
+    sequential run in an older project) is several. Once fit, nothing distinguishes the two - every
+    member is recomputed from its own stored spec - so they share this one type, the same way a
+    ``Plot`` of one series and a ``Plot`` of many do.
 
     TAVI must not cache the actual fitted data points: selecting a fit later recomputes its
     curves fresh (see ``RecomputeFitEvent`` / ``FitModel``) against the source series' current data,
@@ -263,10 +263,11 @@ class FitRequest(BaseModel):
 
     spec: FitSpec
     series: list[PlotSeries]
-    """Fit in this order. ``spec`` applies as-is to the first; see ``seed_from_previous`` for the rest."""
-    seed_from_previous: bool = False
-    """Start each series from the previous series' fitted values instead of ``spec``'s - a sequential
-    fit. Only the values are carried over; fixed flags and bounds stay as ``spec`` has them."""
+    """Fit in this order, each from ``spec`` as-is."""
+    # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+    # seed_from_previous: bool = False
+    # """Start each series from the previous series' fitted values instead of ``spec``'s - a sequential
+    # fit. Only the values are carried over; fixed flags and bounds stay as ``spec`` has them."""
     fit_uuid: Optional[UUID] = None
     """The fit this request (re)fits, when the panel already has one for these series.
 

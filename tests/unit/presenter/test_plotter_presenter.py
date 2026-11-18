@@ -764,7 +764,7 @@ def test_handle_sync_fit_draws_only_the_focused_outcomes(presenter):
 
 
 def test_multi_outcome_fit_uuid_is_stamped_onto_a_saved_plot_once(presenter):
-    """A sequential fit draws one curve per scan, but the saved plot references the fit itself once."""
+    """A multi-scan fit draws one curve per scan, but the saved plot references the fit itself once."""
     presenter.handle_plot_focus(_two_series_event())
     EventBroker().publish(make_sync_fit_event(fit_uuid="fit-seq", uuid_vals=("scan-001", "scan-002")))
 
