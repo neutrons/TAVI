@@ -56,7 +56,7 @@ handles application-level concerns such as writing error logs.
         -list~Plot~ _last_plots
         -list~UUID~ _staged_uuids
         +update_fields(PlotFields) ModelResponse
-        +set_show_title(bool) ModelResponse
+        +set_title(str) ModelResponse
         +save_focused_plots(fit_uuids) ModelResponse
         -_handle_scan_focus_event(FocusRawScanEvent|FocusProcessedScanEvent)
         -_handle_plot_focus_event(FocusPlotEvent)

@@ -16,9 +16,13 @@ class PlotSeries(BaseModel):
     source_scan_uuid: UUID
     """uuid of the scan (e.g. RawScan) this series is derived from."""
     scan_name: str
-    """Legend label - the instrument's scan title when "Show Title" is on, so not unique per scan."""
+    """The scan's name. Plots saved while the plotter had a "Show Title" toggle may hold the
+    instrument's scan title here instead, which is not unique per scan."""
+    title: Optional[str] = None
+    """The plotter's "Set Title" label - a metadata value, or the key as typed. When set the legend
+    shows it alone, in place of ``display_label``'s usual run name and ``scan_name``."""
     friendly_name: Optional[str] = None
-    """The source scan's own friendly name, regardless of "Show Title". Optional only so a series
+    """The source scan's own friendly name, whatever ``scan_name`` holds. Optional only so a series
     saved before this field existed still loads - ``run_name`` falls back to ``scan_name`` then."""
     normalized_by: Optional[str]
     normalized_by_value: Optional[float] = None
@@ -67,10 +71,14 @@ class PlotSeries(BaseModel):
         """
         Label for legends and the Current Plot dropdown: the run's own name, then its title if that differs.
 
-        ``scan_name`` alone isn't enough: with "Show Title" on it's the instrument's scan title,
-        which many scans share (e.g. every "sample alignment" run).
+        ``scan_name`` alone isn't enough: in plots saved with the old "Show Title" toggle it's the
+        instrument's scan title, which many scans share (e.g. every "sample alignment" run). A
+        "Set Title" ``title`` is the user's explicit choice of label, so it replaces both - unless
+        the field it named is blank in this scan, which would leave the series with no label.
         """
-        if self.scan_name and self.scan_name != self.run_name:
+        if self.title:
+            label = self.title
+        elif self.scan_name and self.scan_name != self.run_name:
             label = f"{self.run_name} - {self.scan_name}"
         else:
             label = self.run_name

@@ -561,7 +561,7 @@ def test_render_plots_clears_then_plots_each_series(view):
 
 
 def test_render_plots_legend_tells_apart_series_sharing_a_scan_title(view):
-    """With "Show Title" on, scan_name is the shared title - the legend must still name each run."""
+    """A plot saved with the old "Show Title" toggle holds a shared title - the legend must still name each run."""
     resolved = [
         (
             np.array([1.0, 2.0]),
@@ -1561,3 +1561,36 @@ def test_fit_summary_points_are_not_connected(view):
     view._add_fit_summaries([make_fit_summary()])
 
     assert view.canvas.axes.containers[0].lines[0].get_linestyle() == "None"
+
+
+def test_title_edit_emits_its_stripped_text_on_editing_finished(view):
+    received = []
+    view.title_changed.connect(received.append)
+
+    view.title_edit.setText("  samplename ")
+    view.title_edit.editingFinished.emit()
+
+    assert received == ["samplename"]
+
+
+def test_title_edit_does_not_re_emit_unchanged_text(view):
+    received = []
+    view.title_changed.connect(received.append)
+
+    view.title_edit.setText("samplename")
+    view.title_edit.editingFinished.emit()
+    view.title_edit.editingFinished.emit()
+    view.title_edit.setText("")
+    view.title_edit.editingFinished.emit()
+
+    assert received == ["samplename", ""]
+
+
+def test_title_edit_is_not_a_plot_field(view):
+    received = []
+    view.fields_focus_changed.connect(lambda: received.append(True))
+
+    view.title_edit.setText("samplename")
+    view.title_edit.editingFinished.emit()
+
+    assert received == []

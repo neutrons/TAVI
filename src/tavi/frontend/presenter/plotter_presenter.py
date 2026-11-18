@@ -79,7 +79,7 @@ class PlotterPresenter(AbstractPresenter):
         self._view.hookup_fields_changed_signal(self.handle_fields_changed)
         self._view.hookup_plot_clicked_signal(self.handle_plot_clicked)
         self._view.hookup_plot_combo_changed_signal(self.handle_plot_combo_changed)
-        self._view.hookup_show_title_signal(self.handle_show_title_toggled)
+        self._view.hookup_title_signal(self.handle_title_changed)
         self._view.hookup_apply_all_signal(self.handle_apply_all_toggled)
 
     def init_view(self) -> None:
@@ -198,9 +198,9 @@ class PlotterPresenter(AbstractPresenter):
         """Pull current control field values from the view and apply them to the staged series."""
         self._model.update_fields(self._view.get_plot_fields())
 
-    def handle_show_title_toggled(self, show_title: bool) -> None:
-        """Pass the "Show Title" toggle to PlotModel - it owns ``scan_name``, so it decides the label."""
-        self._model.set_show_title(show_title)
+    def handle_title_changed(self, title: str) -> None:
+        """Pass the "Set Title" key to PlotModel - it holds the scans' metadata, so it resolves the label."""
+        self._model.set_title(title)
 
     def handle_apply_all_toggled(self, apply_all: bool) -> None:
         """Restage: every focused series with "Apply All" checked, only the lead one without it."""
@@ -277,4 +277,8 @@ class PlotterPresenter(AbstractPresenter):
 
     def _series_label(self, series: PlotSeries) -> str:
         """Build a dropdown label for one series that tells it apart from every other one."""
+        # A "Set Title" value is often shared (every scan of one sample), so unlike the legend the
+        # dropdown keeps the run name in front of it.
+        if series.title:
+            return f"{series.run_name} - {series.display_label}"
         return series.display_label or series.source_scan_uuid.value

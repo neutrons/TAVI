@@ -41,7 +41,7 @@ class Plot1DView(QWidget):
     sync_fields_signal = Signal(object)
     append_fit_curve_signal = Signal(object)
     set_fit_components_visible_signal = Signal(bool)
-    show_title_toggled = Signal(bool)
+    title_changed = Signal(str)
     apply_all_toggled = Signal(bool)
 
     def __init__(self, parent: Any = None) -> None:
@@ -87,6 +87,10 @@ class Plot1DView(QWidget):
         self.preset_type_combo.addItems([mode.value for mode in PresetType])
         self.preset_channel_combo = typed_column_combo()
         self.preset_value_edit = QLineEdit("1")
+        self.title_edit = QLineEdit()
+        self.title_edit.setPlaceholderText("metadata key (e.g. scan_title) or literal text")
+        # What was last sent, so a focus-out that changed nothing doesn't relabel the stage again.
+        self._last_title = ""
 
         controls = QFormLayout()
         # Lets a field drop below its label instead of holding the whole panel open at the width
@@ -97,9 +101,12 @@ class Plot1DView(QWidget):
         controls.addRow("Preset Type:", self.preset_type_combo)
         controls.addRow("Preset Channel:", self.preset_channel_combo)
         controls.addRow("Preset Value:", self.preset_value_edit)
+        controls.addRow("Set Title:", self.title_edit)
 
         # on enter (Return) or focus-out, re-pull fields and request a replot
         self.preset_value_edit.editingFinished.connect(self.fields_focus_changed.emit)
+        # Not one of the plot fields: the label is resolved per scan from its metadata by the model.
+        self.title_edit.editingFinished.connect(self._on_title_editing_finished)
         typed_combos = (self.x_axis_combo, self.y_axis_combo, self.preset_channel_combo)
         for combo in (self.preset_type_combo, *typed_combos):
             combo.currentIndexChanged.connect(lambda _: self.fields_focus_changed.emit())
@@ -129,12 +136,6 @@ class Plot1DView(QWidget):
         self.hide_label_check = QCheckBox("Hide Label")
         self.hide_label_check.toggled.connect(self._on_hide_label_toggled)
         plot_controls.addWidget(self.hide_label_check)
-        # Unlike "Hide Label", the legend text itself has to be rebuilt by the model that owns
-        # the series, so this only announces the toggle rather than redrawing anything here.
-        self.show_title_check = QCheckBox("Show Title")
-        self.show_title_check.toggled.connect(self.show_title_toggled.emit)
-        self.show_title_check.setChecked(True)
-        plot_controls.addWidget(self.show_title_check)
 
         controls.addRow("Current Plot:", plot_controls)  # let QFormLayout own the label
 
@@ -430,17 +431,21 @@ class Plot1DView(QWidget):
         """Connect the "Current Plot" dropdown's index-changed signal to callback."""
         self.plot_combo_index_changed.connect(callback)
 
-    def hookup_show_title_signal(self, callback: Callable) -> None:
-        """Connect the "Show Title" checkbox's toggled signal to callback."""
-        self.show_title_toggled.connect(callback)
+    def hookup_title_signal(self, callback: Callable) -> None:
+        """Connect the "Set Title" field's changed signal to callback."""
+        self.title_changed.connect(callback)
+
+    def _on_title_editing_finished(self) -> None:
+        """Announce the "Set Title" text once it has actually changed."""
+        title = self.title_edit.text().strip()
+        if title == self._last_title:
+            return
+        self._last_title = title
+        self.title_changed.emit(title)
 
     def hookup_apply_all_signal(self, callback: Callable) -> None:
         """Connect the "Apply All" checkbox's toggled signal to callback."""
         self.apply_all_toggled.connect(callback)
-
-    def is_show_title_checked(self) -> bool:
-        """Return whether series should be labelled with the scan title instead of the friendly name."""
-        return self.show_title_check.isChecked()
 
     def is_apply_all_checked(self) -> bool:
         """Return whether field edits should apply to every focused plot rather than just the active one."""
