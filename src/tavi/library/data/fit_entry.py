@@ -111,6 +111,27 @@ class FitResultSummary(BaseModel):
     background_slope: Optional[float] = None
     background_slope_err: Optional[float] = None
 
+    def parameters(self) -> dict[str, tuple[float, Optional[float]]]:
+        """
+        Every fitted value as ``label -> (value, 1-sigma)``, in panel order: each peak's, the background's, then chi^2.
+
+        A peak shape's amplitude is its area, so it reads "Int. Inten."; a Cosine's is a height and keeps its name.
+        """
+        values: dict[str, tuple[float, Optional[float]]] = {}
+        for index, peak in enumerate(self.peaks, start=1):
+            for name, value, err in peak.named_values():
+                if name == "amplitude" and peak.center is not None:
+                    name = "Int. Inten."
+                elif name == "fwhm":
+                    name = "FWHM"
+                values[f"peak{index} {name}"] = (value, err)
+        if self.background_slope is not None:
+            values["bg slope"] = (self.background_slope, self.background_slope_err)
+        if self.background_constant is not None:
+            values["bg constant"] = (self.background_constant, self.background_constant_err)
+        values["reduced χ²"] = (self.reduced_chi_squared, None)
+        return values
+
 
 class FitMember(FitSpec):
     """
@@ -186,6 +207,49 @@ class FitEntry(BaseModel):
         if not surviving:
             return None
         return self.model_copy(update={"members": surviving})
+
+
+class FitSummaryPoint(BaseModel):
+    """One scan's point in a fit summary: a fitted parameter against a column's average, each with its uncertainty."""
+
+    source_scan_uuid: UUID
+    scan_name: str
+    x: float
+    x_err: float
+    """The averaged column's standard deviation during the scan."""
+    y: float
+    y_err: Optional[float] = None
+    """The fitted parameter's 1-sigma; ``None`` when the fit reported none (e.g. chi^2)."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class FitSummary(BaseModel):
+    """
+    A saved trend of one fitted parameter against a column's per-scan average, e.g. peak center vs temperature.
+
+    Unlike ``FitEntry`` it holds its own values rather than pointers, like a combined scan, so it is
+    never recomputed and outlives the scans it was summarized from.
+    """
+
+    uuid: UUID = UUIDFactory()
+    name: str = ""
+    x_label: str
+    y_label: str
+    points: list[FitSummaryPoint]
+    """One per summarized scan, in the group's list order."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def columns(self) -> dict[str, list]:
+        """The points as named columns, one row per scan: scan, x, x err, y, y err - what the Data File tab lists."""
+        return {
+            "scan": [point.scan_name for point in self.points],
+            self.x_label: [point.x for point in self.points],
+            f"{self.x_label} err": [point.x_err for point in self.points],
+            self.y_label: [point.y for point in self.points],
+            f"{self.y_label} err": [point.y_err for point in self.points],
+        }
 
 
 class FitRequest(BaseModel):

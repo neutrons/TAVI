@@ -17,6 +17,8 @@ from tavi.library.data.fit_entry import (
     FitMember,
     FitOutcome,
     FitResultSummary,
+    FitSummary,
+    FitSummaryPoint,
     ParamField,
     PeakField,
     PeakResult,
@@ -54,12 +56,14 @@ from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusEvent,
     FocusFitEvent,
+    FocusFitSummaryEvent,
     FocusPlotEvent,
     FocusHistogramEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
     SaveFitEvent,
+    SaveFitSummaryEvent,
     SavePlotEvent,
     StartApplicationEvent,
     SyncFitEvent,
@@ -153,6 +157,13 @@ def make_fit_entry(uuid_val="fit-001", scan_name="test_scan", source_uuid="scan-
     if members is None:
         members = [make_fit_member(scan_name, source_uuid=source_uuid)]
     return FitEntry(uuid=UUID(value=uuid_val), members=members)
+
+
+def make_fit_summary(uuid_val="summary-001", source_uuid="scan-001"):
+    point = FitSummaryPoint(source_scan_uuid=UUID(value=source_uuid), scan_name="test_scan", x=10, x_err=0.1, y=1)
+    return FitSummary(
+        uuid=UUID(value=uuid_val), name="peak1 center vs temp", x_label="temp", y_label="peak1 center", points=[point]
+    )
 
 
 def make_series(scan_name, uuid_val="scan-001", friendly_name=None):
@@ -1681,3 +1692,60 @@ def test_load_while_filtered_stores_every_scan_but_lists_only_passing_ones(model
     assert set(model.tavi_data.raw_scans) == {UUID(value="s1"), UUID(value="s2")}
     assert [type(e) for e in received] == [AddRawScanEvent]
     assert listed_uuids(received) == [UUID(value="s2")]
+
+
+# ---------------------------------------------------------------------------
+# Group fit summaries
+# ---------------------------------------------------------------------------
+
+
+def test_save_fit_summary_stores_it_beside_the_fits(model):
+    summary = make_fit_summary()
+
+    EventBroker().publish(SaveFitSummaryEvent(summary=summary))
+
+    assert model.tavi_data.fits[summary.uuid] == summary
+
+
+def test_save_fit_summary_lists_it_under_fits(model):
+    summary = make_fit_summary()
+    received = []
+    EventBroker().register(AddFitEvent, received.append)
+
+    EventBroker().publish(SaveFitSummaryEvent(summary=summary))
+
+    assert [(e.uuid, e.friendly_name) for e in received] == [(summary.uuid, "peak1 center vs temp")]
+
+
+def test_focusing_a_fit_summary_publishes_it_and_nothing_to_recompute(model):
+    summary = make_fit_summary()
+    model.tavi_data.fits[summary.uuid] = summary
+    received = []
+    for event_type in (ClearFocusEvent, FocusFitEvent, RecomputeFitEvent, FocusPlotEvent, FocusFitSummaryEvent):
+        EventBroker().register(event_type, received.append)
+
+    EventBroker().publish(FocusEvent(ids=[summary.uuid]))
+
+    assert [type(e) for e in received] == [ClearFocusEvent, FocusFitSummaryEvent]
+    assert received[1].summaries == [summary]
+
+
+def test_removing_a_summarys_source_scan_keeps_the_summary(model):
+    scan = make_raw_scan()
+    summary = make_fit_summary()
+    model.tavi_data.raw_scans[scan.uuid] = scan
+    model.tavi_data.fits[summary.uuid] = summary
+
+    model.remove_items([scan.uuid])
+
+    assert summary.uuid in model.tavi_data.fits
+
+
+def test_rename_item_renames_a_fit_summary(model):
+    summary = make_fit_summary()
+    model.tavi_data.fits[summary.uuid] = summary
+
+    response = model.rename_item(summary.uuid, "center trend")
+
+    assert response.code == ResponseCode.OK
+    assert model.tavi_data.fits[summary.uuid].name == "center trend"

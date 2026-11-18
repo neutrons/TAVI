@@ -385,6 +385,7 @@ class FittingView(QWidget):
 
     def _build_bottom_row(self) -> QVBoxLayout:
         rows = QVBoxLayout()
+        self._bottom_rows = rows
 
         fit_row = QHBoxLayout()
         fit_row.addStretch()
@@ -412,6 +413,10 @@ class FittingView(QWidget):
         rows.addLayout(result_row)
 
         return rows
+
+    def insert_above_fit_buttons(self, widget: QWidget) -> None:
+        """Put ``widget`` on a line of its own just above the fit buttons' row."""
+        self._bottom_rows.insertWidget(0, widget)
 
     def hookup_perform_fit_signal(self, callback: Any) -> None:
         """Connect the Perform Fit button's click signal to callback."""

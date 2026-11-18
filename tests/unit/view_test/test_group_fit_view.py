@@ -6,7 +6,7 @@ from qtpy.QtWidgets import QAbstractItemView, QLabel, QSplitter
 
 from tavi.frontend.view.fitting_view import FittingView
 from tavi.frontend.view.group_fit_view import NO_SCAN_TEXT, GroupFitWindow
-from tavi.library.data.fit_entry import FitCurve, FitData, FitSpec, ParamField, PeakField
+from tavi.library.data.fit_entry import FitCurve, FitData, FitResultSummary, FitSpec, ParamField, PeakField, PeakResult
 from tavi.library.data.group_fit_entry import GroupFitOutcome
 from tavi.library.data.scan import UUID
 
@@ -850,3 +850,94 @@ def test_a_background_guess_fills_slope_and_intercept(window):
 
     slope_row, intercept_row = window.fitting_view.background_table.rows
     assert (slope_row.value_edit.text(), intercept_row.value_edit.text()) == ("0.25", "4")
+
+
+# ---------------------------------------------------------------------------
+# Summarize fit results
+# ---------------------------------------------------------------------------
+
+
+def make_result(center=0.0) -> FitResultSummary:
+    peak = PeakResult(amplitude=1.0, amplitude_err=0.1, center=center, center_err=0.01, fwhm=1.0, fwhm_err=0.1)
+    return FitResultSummary(reduced_chi_squared=1.0, peaks=[peak], background_constant=0.0, background_slope=0.0)
+
+
+def summarized_window(window, *names, unfitted=()):
+    """List ``names`` and show a group fit result for each, except those in ``unfitted``."""
+    scans = make_scans(*names)
+    window.set_scans(scans, template=make_spec())
+    outcomes = [
+        make_outcome(uuid).model_copy(update={"result": None if name in unfitted else make_result(float(i))})
+        for i, (uuid, name) in enumerate(scans)
+    ]
+    window.show_outcomes(None, "detector", outcomes)
+    return scans
+
+
+def summary_params(window) -> list[str]:
+    combo = window.summary_param_combo
+    return [combo.itemText(i) for i in range(combo.count())]
+
+
+def test_summary_row_sits_just_above_the_group_fit_button(window):
+    rows = window.fitting_view._bottom_rows
+    row = window.summary_param_combo.parentWidget()
+
+    assert rows.indexOf(row) == 0
+    assert rows.itemAt(1).layout().indexOf(window.fitting_view.perform_fit_btn) >= 0
+    labels = [label.text() for label in row.findChildren(QLabel)]
+    assert labels == ["Summarize fit results:", "vs"]
+    assert window.generate_summary_btn.text() == "Generate"
+
+
+def test_summary_offers_nothing_before_a_group_fit(window):
+    window.set_scans(make_scans("s1"), template=make_spec())
+
+    assert summary_params(window) == []
+    assert not window.generate_summary_btn.isEnabled()
+    assert window.get_summarize_request() is None
+
+
+def test_summary_offers_the_fitted_parameters(window):
+    summarized_window(window, "s1", "s2")
+
+    assert summary_params(window) == list(make_result().parameters())
+    assert window.generate_summary_btn.isEnabled()
+
+
+def test_summary_offers_nothing_when_no_scan_was_fit(window):
+    summarized_window(window, "s1", unfitted=("s1",))
+
+    assert summary_params(window) == []
+    assert not window.generate_summary_btn.isEnabled()
+
+
+def test_summary_keeps_its_choice_across_refits(window):
+    summarized_window(window, "s1", "s2")
+    window.summary_param_combo.setCurrentText("peak1 FWHM")
+
+    summarized_window(window, "s1", "s2")
+
+    assert window.summary_param_combo.currentText() == "peak1 FWHM"
+
+
+def test_summary_request_carries_each_fitted_scans_result_in_list_order(window):
+    scans = summarized_window(window, "s1", "s2", "s3", unfitted=("s2",))
+    window.summary_param_combo.setCurrentText("peak1 center")
+    window.summary_x_edit.setText(" temp ")
+
+    request = window.get_summarize_request()
+
+    assert request.parameter == "peak1 center"
+    assert request.x_col == "temp"
+    assert list(request.results) == [scans[0][0], scans[2][0]]
+    assert request.results[scans[2][0]].peaks[0].center == 2.0
+
+
+def test_summary_empties_once_every_scan_is_removed(window):
+    scans = summarized_window(window, "s1")
+
+    window.remove_scans([scans[0][0]])
+
+    assert summary_params(window) == []
+    assert not window.generate_summary_btn.isEnabled()

@@ -14,6 +14,8 @@ from tavi.library.data.fit_entry import (
     FitMember,
     FitOutcome,
     FitResultSummary,
+    FitSummary,
+    FitSummaryPoint,
     ParamField,
     PeakField,
     PeakResult,
@@ -30,11 +32,12 @@ from tavi.library.data.scan import (
     TaviMetadata,
 )
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import RemoveProcessedScanEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent, RemoveProcessedScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
+    FocusFitSummaryEvent,
     FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
@@ -938,3 +941,52 @@ def test_removing_another_combined_scan_leaves_the_map(presenter, qtbot):
 
     with qtbot.assertNotEmitted(presenter._view.clear_histogram_signal):
         EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="combined-001")))
+
+
+# ---------------------------------------------------------------------------
+# handle_fit_summary_focus
+# ---------------------------------------------------------------------------
+
+
+def make_fit_summary(uuid_val="summary-001", name="peak1 center vs temp", y_err=0.1) -> FitSummary:
+    points = [
+        FitSummaryPoint(source_scan_uuid=UUID(value=f"s{i}"), scan_name=f"s{i}", x=t, x_err=0.5, y=c, y_err=y_err)
+        for i, (t, c) in enumerate(((10.0, 1.0), (20.0, 1.5), (30.0, 2.0)))
+    ]
+    return FitSummary(uuid=UUID(value=uuid_val), name=name, x_label="temp", y_label="peak1 center", points=points)
+
+
+def test_fit_summary_focus_draws_every_summary_and_stages_nothing(presenter, qtbot):
+    staged = stage_events()
+
+    with qtbot.waitSignal(presenter._view.add_fit_summaries_signal, timeout=1000) as blocker:
+        EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary(), make_fit_summary("summary-002")]))
+
+    assert [summary.uuid.value for summary in blocker.args[0]] == ["summary-001", "summary-002"]
+    assert staged == []
+    assert presenter._focused_series_uuids == []
+
+
+def test_removing_a_drawn_summary_takes_it_off_the_canvas(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+
+    with qtbot.waitSignal(presenter._view.remove_fit_summary_signal, timeout=1000) as blocker:
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="summary-001")))
+
+    assert blocker.args[0] == UUID(value="summary-001")
+
+
+def test_removing_another_fit_leaves_the_summary(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+
+    with qtbot.assertNotEmitted(presenter._view.remove_fit_summary_signal):
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="fit-001")))
+
+
+def test_clear_focus_forgets_the_drawn_summaries(presenter, qtbot):
+    EventBroker().publish(FocusFitSummaryEvent(summaries=[make_fit_summary()]))
+    EventBroker().publish(ClearFocusEvent())
+
+    assert presenter._view._summaries == []
+    with qtbot.assertNotEmitted(presenter._view.remove_fit_summary_signal):
+        EventBroker().publish(RemoveFitEvent(uuid=UUID(value="summary-001")))

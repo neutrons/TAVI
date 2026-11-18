@@ -30,6 +30,24 @@ class GroupFitRequest(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+class SummarizeGroupFitRequest(BaseModel):
+    """
+    Summarize a group fit as one fitted parameter against a column's per-scan average, to save under Fits.
+
+    ``results`` comes from the Group Fit window's cached outcomes, as ``GroupFitRequest.specs`` comes
+    from its drafts, so ``GroupFitModel`` stays stateless; it averages ``x_col`` from each scan itself.
+    """
+
+    parameter: str
+    """A key of ``FitResultSummary.parameters()``, e.g. ``"peak1 center"``."""
+    x_col: str
+    """The column averaged over each whole scan, e.g. ``"temp"``."""
+    results: dict[UUID, FitResultSummary]
+    """Scan uuid -> its last group fit result, in the group's list order."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
 class SuggestGroupParamsRequest(BaseModel):
     """
     Which scan of a group to guess starting parameters for, and its columns and range.

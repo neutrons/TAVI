@@ -10,11 +10,12 @@ from tavi.library.data.fit_entry import FitCurve
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, Scan
 from tavi.meta.event.event_broker import EventBroker
-from tavi.meta.event.type.model_event import RemoveProcessedScanEvent
+from tavi.meta.event.type.model_event import RemoveFitEvent, RemoveProcessedScanEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     ClearStageEvent,
     FocusFitEvent,
+    FocusFitSummaryEvent,
     FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
@@ -58,6 +59,8 @@ class PlotterPresenter(AbstractPresenter):
         self._columns_offered = False
         # The 2D map on the canvas, if any - kept so removing it from the project can take it off.
         self._histogram_uuid: Optional[UUID] = None
+        # The group fit summaries on the canvas - kept so removing one from the project can take it off.
+        self._summary_uuids: list[UUID] = []
 
         self._event_broker = EventBroker()
         self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
@@ -65,6 +68,8 @@ class PlotterPresenter(AbstractPresenter):
         self._event_broker.register(FocusProcessedScanEvent, self.handle_scan_focus)
         self._event_broker.register(FocusPlotEvent, self.handle_plot_focus)
         self._event_broker.register(FocusHistogramEvent, self.handle_histogram_focus)
+        self._event_broker.register(FocusFitSummaryEvent, self.handle_fit_summary_focus)
+        self._event_broker.register(RemoveFitEvent, self.handle_fit_removed)
         self._event_broker.register(RemoveProcessedScanEvent, self.handle_processed_scan_removed)
         self._event_broker.register(SyncPlotEvent, self.handle_sync_plot)
         self._event_broker.register(FocusFitEvent, self.handle_fit_focus)
@@ -94,6 +99,7 @@ class PlotterPresenter(AbstractPresenter):
         self._focused_fit_uuids = set()
         self._columns_offered = False
         self._histogram_uuid = None
+        self._summary_uuids = []
 
     def handle_scan_focus(self, e: FocusRawScanEvent | FocusProcessedScanEvent) -> None:
         """Offer the selection's first focused scan's columns, raw or processed, as axis and preset-channel choices."""
@@ -114,6 +120,17 @@ class PlotterPresenter(AbstractPresenter):
         if e.uuid == self._histogram_uuid:
             self._histogram_uuid = None
             self._view.clear_histogram_signal.emit()
+
+    def handle_fit_summary_focus(self, e: FocusFitSummaryEvent) -> None:
+        """Draw the focused group fit summaries - like a map, a summary is never staged or edited."""
+        self._summary_uuids += [summary.uuid for summary in e.summaries]
+        self._view.add_fit_summaries_signal.emit(e.summaries)
+
+    def handle_fit_removed(self, e: RemoveFitEvent) -> None:
+        """Take a drawn summary off the canvas once it has left the project; saved fits redraw through PlotModel."""
+        if e.uuid in self._summary_uuids:
+            self._summary_uuids.remove(e.uuid)
+            self._view.remove_fit_summary_signal.emit(e.uuid)
 
     def handle_plot_focus(self, e: FocusPlotEvent) -> None:
         """

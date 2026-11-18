@@ -5,7 +5,7 @@ import pytest
 from tavi.library.data.enum.filter_operator import FilterOperator
 from tavi.library.data.enum.filter_scope import FilterScope
 from tavi.library.data.filter import FilterCriterion, ScanFilter
-from tavi.library.data.fit_entry import FitEntry, FitMember, ParamField, PeakField
+from tavi.library.data.fit_entry import FitEntry, FitMember, FitSummary, FitSummaryPoint, ParamField, PeakField
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
 from tavi.library.data.tavi_data import TaviData
@@ -50,6 +50,11 @@ def make_fit_member(source_uuid="scan-001") -> FitMember:
 
 def make_fit_entry(uuid_val="fit-001", source_uuids=("scan-001",)) -> FitEntry:
     return FitEntry(uuid=UUID(value=uuid_val), members=[make_fit_member(u) for u in source_uuids])
+
+
+def make_fit_summary(uuid_val="summary-001", source_uuid="scan-001") -> FitSummary:
+    point = FitSummaryPoint(source_scan_uuid=UUID(value=source_uuid), scan_name=source_uuid, x=1, x_err=0, y=2)
+    return FitSummary(uuid=UUID(value=uuid_val), x_label="temp", y_label="peak1 center", points=[point])
 
 
 def test_fetch_by_uuid_returns_raw_scan():
@@ -320,3 +325,24 @@ def test_purge_of_a_raw_scan_keeps_the_combination_made_from_it():
 
     assert combined.uuid in data.processed_scans
     assert result.processed_scans == []
+
+
+def test_purge_keeps_a_fit_summary_whose_source_scan_goes():
+    scan = make_raw_scan()
+    summary = make_fit_summary()
+    data = TaviData(raw_scans={scan.uuid: scan}, fits={summary.uuid: summary})
+
+    result = data.purge([scan.uuid])
+
+    assert data.fits == {summary.uuid: summary}
+    assert result.fits == []
+
+
+def test_purge_removes_a_fit_summary_selected_directly():
+    summary = make_fit_summary()
+    data = TaviData(fits={summary.uuid: summary})
+
+    result = data.purge([summary.uuid])
+
+    assert data.fits == {}
+    assert result.fits == [summary.uuid]

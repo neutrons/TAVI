@@ -12,6 +12,8 @@ from tavi.library.data.fit_entry import (
     FitCurve,
     FitData,
     FitSpec,
+    FitSummary,
+    FitSummaryPoint,
     ParamField,
     SuggestBackgroundParamsRequest,
     SuggestPeakParamsRequest,
@@ -23,6 +25,7 @@ from tavi.library.data.group_fit_entry import (
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupParamsRequest,
     SuggestGroupPeakParamsRequest,
+    SummarizeGroupFitRequest,
 )
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.scan import UUID, Scan
@@ -30,6 +33,7 @@ from tavi.library.fit.group_fit import GroupFit, GroupFitParams, GroupFitResult,
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.event_interface import Event
 from tavi.meta.event.type.presenter_event import (
+    SaveFitSummaryEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
     SyncGroupBackgroundParamsEvent,
@@ -244,6 +248,61 @@ class GroupFitModel(GroupFitModelInterface):
             for uuid, spec in request.specs.items()
         ]
         self._event_broker.publish(SyncGroupFitEvent(x_col=request.x_col, y_col=request.y_col, outcomes=outcomes))
+        return ModelResponse(code=ResponseCode.OK)
+
+    def summarize_group_fit(self, request: SummarizeGroupFitRequest) -> ModelResponse:
+        """
+        Pair each scan's fitted ``parameter`` with its ``x_col`` average and publish them as one ``SaveFitSummaryEvent``.
+
+        A scan that can't be summarized - not loaded, no such column, or no such parameter - is
+        reported and left out. Every problem in one run is gathered into a single error report.
+        """
+        translator = self._translator
+        x_col = request.x_col.strip()
+        if not x_col:
+            translator._report_error("Set the column to average.")
+            return ModelResponse(code=ResponseCode.OK)
+        if not request.results:
+            translator._report_error("Run a group fit before summarizing it.")
+            return ModelResponse(code=ResponseCode.OK)
+
+        points: list[FitSummaryPoint] = []
+        with translator._collecting_errors(True) as errors:
+            for uuid, result in request.results.items():
+                errors.label = uuid.value
+                scan = self._find_scan(uuid)
+                if scan is None:
+                    translator._report_error("Scan is no longer loaded.")
+                    continue
+                name = scan.tavimeta.friendly_name
+                errors.label = name
+                key = _column_key(scan, x_col)
+                if key not in scan.data.data:
+                    translator._report_error(f"Column {x_col!r} not found; available: {list(scan.data.data)}.")
+                    continue
+                parameter = result.parameters().get(request.parameter)
+                if parameter is None:
+                    translator._report_error(f"Its fit has no {request.parameter!r}.")
+                    continue
+                values = np.asarray(scan.data.data[key], dtype=float)
+                y, y_err = parameter
+                # The same mean and spread GroupFit gives an averaged column, over the whole scan.
+                points.append(
+                    FitSummaryPoint(
+                        source_scan_uuid=uuid,
+                        scan_name=name,
+                        x=float(np.mean(values)),
+                        x_err=float(np.std(values)),
+                        y=y,
+                        y_err=y_err,
+                    )
+                )
+
+        if points:
+            summary = FitSummary(
+                name=f"{request.parameter} vs {x_col}", x_label=x_col, y_label=request.parameter, points=points
+            )
+            self._event_broker.publish(SaveFitSummaryEvent(summary=summary))
         return ModelResponse(code=ResponseCode.OK)
 
     def _find_scan(self, uuid: UUID) -> Optional[Scan]:

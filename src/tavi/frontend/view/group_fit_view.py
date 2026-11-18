@@ -7,6 +7,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as Navigation
 from matplotlib.figure import Figure
 from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import (
+    QComboBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -14,6 +15,7 @@ from qtpy.QtWidgets import (
     QListWidgetItem,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSplitter,
     QTabWidget,
     QVBoxLayout,
@@ -26,6 +28,7 @@ from tavi.library.data.group_fit_entry import (
     GroupFitOutcome,
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupPeakParamsRequest,
+    SummarizeGroupFitRequest,
 )
 from tavi.library.data.scan import UUID
 
@@ -120,6 +123,8 @@ class GroupFitWindow(QWidget):
         # redrawn whenever the selection changes rather than asked for again.
         self._outcomes: dict[UUID, GroupFitOutcome] = {}
         self._fitted_columns: tuple[Optional[str], str] = (None, "")
+        # Built once the outcomes exist, since it offers parameters from them.
+        self.fitting_view.insert_above_fit_buttons(self._build_summary_row())
 
         list_panel = QWidget()
         list_layout = QVBoxLayout(list_panel)
@@ -161,6 +166,59 @@ class GroupFitWindow(QWidget):
         self.cosine_params_suggested_signal.connect(self._apply_cosine_guess)
         self.background_params_suggested_signal.connect(self._apply_background_guess)
         self.resize(1280, 720)
+
+    def _build_summary_row(self) -> QWidget:
+        """The "Summarize fit results: <parameter> vs <column> [Generate]" row, empty until a group fit has run."""
+        row = QWidget()
+        layout = QHBoxLayout(row)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(QLabel("Summarize fit results:"))
+        # Filled from the last group fit's results, so only parameters that fit actually has are offered.
+        self.summary_param_combo = QComboBox()
+        # Grows to its longest parameter each fit, so "peak1 Int. Inten." is never cut short.
+        self.summary_param_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.summary_param_combo.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        layout.addWidget(self.summary_param_combo)
+        layout.addWidget(QLabel("vs"))
+        self.summary_x_edit = QLineEdit()
+        self.summary_x_edit.setPlaceholderText("e.g. temp")
+        self.summary_x_edit.setMinimumWidth(45)
+        layout.addWidget(self.summary_x_edit)
+        self.generate_summary_btn = QPushButton("Generate")
+        layout.addWidget(self.generate_summary_btn)
+        self._refresh_summary_params()
+        return row
+
+    def hookup_generate_summary_signal(self, callback: Any) -> None:
+        """Connect the Generate button's click signal to callback."""
+        self.generate_summary_btn.clicked.connect(callback)
+
+    def get_summarize_request(self) -> Optional[SummarizeGroupFitRequest]:
+        """
+        A request to summarize the last group fit as the chosen parameter vs the named column.
+
+        ``None`` when there is no parameter to offer - no group fit has produced a result yet.
+        """
+        parameter = self.summary_param_combo.currentText()
+        if not parameter:
+            return None
+        results = {
+            uuid: outcome.result
+            for uuid in (item.data(Qt.UserRole) for item in self._items())
+            if (outcome := self._outcomes.get(uuid)) is not None and outcome.result is not None
+        }
+        return SummarizeGroupFitRequest(parameter=parameter, x_col=self.summary_x_edit.text().strip(), results=results)
+
+    def _refresh_summary_params(self) -> None:
+        """Offer the parameters of the first scan with a fit result, keeping the current choice if it is still there."""
+        result = next((outcome.result for outcome in self._outcomes.values() if outcome.result is not None), None)
+        names = list(result.parameters()) if result is not None else []
+        current = self.summary_param_combo.currentText()
+        self.summary_param_combo.clear()
+        self.summary_param_combo.addItems(names)
+        if current in names:
+            self.summary_param_combo.setCurrentText(current)
+        self.generate_summary_btn.setEnabled(bool(names))
 
     def _build_fitting_panel(self) -> QTabWidget:
         """One tab holding the fitting panel, titled with the scan it is showing."""
@@ -310,6 +368,7 @@ class GroupFitWindow(QWidget):
             uuid: self._specs[uuid] if uuid in self._specs else seed.model_copy(deep=True) for uuid, _name in scans
         }
         self._outcomes = {uuid: outcome for uuid, outcome in self._outcomes.items() if uuid in self._specs}
+        self._refresh_summary_params()
 
         previous_uuid = self._current_uuid
         self.scan_list.blockSignals(True)
@@ -373,6 +432,7 @@ class GroupFitWindow(QWidget):
         for uuid in removed:
             self._specs.pop(uuid, None)
             self._outcomes.pop(uuid, None)
+        self._refresh_summary_params()
 
         current_uuid = self._current_uuid
         self.scan_list.blockSignals(True)
@@ -406,6 +466,7 @@ class GroupFitWindow(QWidget):
             outcome.source_scan_uuid: outcome for outcome in outcomes if outcome.source_scan_uuid in self._specs
         }
         self._fitted_columns = (x_col or None, y_col)
+        self._refresh_summary_params()
         self.redraw()
 
     def redraw(self) -> None:

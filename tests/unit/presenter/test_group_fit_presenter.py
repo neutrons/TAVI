@@ -15,6 +15,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
 from tavi.meta.event.type.presenter_event import (
     GroupScansEvent,
+    SaveFitSummaryEvent,
     SyncGroupBackgroundParamsEvent,
     SyncGroupCosineParamsEvent,
     SyncGroupFitEvent,
@@ -187,6 +188,56 @@ def test_group_fit_end_to_end_overplots_the_fitted_scans(qtbot):
 
     assert sorted(view.axes.get_legend_handles_labels()[1]) == ["s1", "s1 fit", "s2", "s2 fit"]
     assert view.axes.get_xlabel() == "default x axis"
+
+
+# ---------------------------------------------------------------------------
+# Summarize fit results
+# ---------------------------------------------------------------------------
+
+
+def test_generate_before_a_group_fit_asks_nothing(presenter):
+    group("s1")
+
+    presenter.view().generate_summary_btn.click()
+
+    presenter._model.summarize_group_fit.assert_not_called()
+
+
+def test_generate_sends_the_windows_summary_request(presenter):
+    group("s1")
+    view = presenter.view()
+    view.summary_param_combo.addItem("peak1 center")
+    view.summary_x_edit.setText("temp")
+    view.generate_summary_btn.setEnabled(True)
+
+    view.generate_summary_btn.click()
+
+    request = presenter._model.summarize_group_fit.call_args[0][0]
+    assert (request.parameter, request.x_col) == ("peak1 center", "temp")
+
+
+def test_generate_end_to_end_saves_the_fitted_centers(qtbot):
+    """Group Fit -> pick peak1 center vs qh -> Generate -> SaveFitSummaryEvent, with the real model."""
+    raw_scans = {UUID(value=name): make_raw_scan(name, center) for name, center in (("s1", -1.0), ("s2", 0.0))}
+    presenter = GroupFitPresenter(GroupFitModel(raw_scans, {}))
+    qtbot.addWidget(presenter.view())
+    view = presenter.view()
+    saved = []
+    EventBroker().register(SaveFitSummaryEvent, saved.append)
+    group("s1", "s2")
+    view.set_columns("", "detector")
+    view.fitting_view.peak_panels[0].peak_table.rows[1].value_edit.setText("-1")
+    view.fitting_view.perform_fit_btn.click()
+
+    view.summary_param_combo.setCurrentText("peak1 center")
+    view.summary_x_edit.setText("qh")
+    view.generate_summary_btn.click()
+
+    assert len(saved) == 1
+    points = saved[0].summary.points
+    assert [point.scan_name for point in points] == ["s1", "s2"]
+    assert [point.y for point in points] == pytest.approx([-1.0, 0.0], abs=1e-3)
+    assert [point.x for point in points] == pytest.approx([0.0, 0.0], abs=1e-9)
 
 
 # ---------------------------------------------------------------------------

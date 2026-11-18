@@ -7,6 +7,7 @@ from tavi.library.data.group_fit_entry import (
     GroupFitRequest,
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupPeakParamsRequest,
+    SummarizeGroupFitRequest,
 )
 from tavi.library.data.model_response import ModelResponse
 from tavi.meta.multithreading.proxy import Proxy
@@ -26,6 +27,10 @@ class GroupFitModelInterface(Model, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def suggest_background_params(self, request: SuggestGroupBackgroundParamsRequest) -> ModelResponse:
         """Guess the background's start from a group scan's data and publish SyncGroupBackgroundParamsEvent."""
+
+    @abc.abstractmethod
+    def summarize_group_fit(self, request: SummarizeGroupFitRequest) -> ModelResponse:
+        """Pair each scan's fitted parameter with a column's average and publish them as one SaveFitSummaryEvent."""
 
 
 GroupFitModelProxy = Proxy(GroupFitModelInterface)

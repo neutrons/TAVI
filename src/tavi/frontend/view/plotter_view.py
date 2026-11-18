@@ -21,7 +21,7 @@ from qtpy.QtWidgets import (
 from tavi.frontend.widget.column_combo import set_combo_options, set_combo_text, typed_column_combo
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.enum.rebin_mode import RebinMode
-from tavi.library.data.fit_entry import FitCurve
+from tavi.library.data.fit_entry import FitCurve, FitSummary
 from tavi.library.data.plot import PlotFields
 
 
@@ -33,6 +33,8 @@ class Plot1DView(QWidget):
     add_plots_signal = Signal(list)
     render_histogram_signal = Signal(object)
     clear_histogram_signal = Signal()
+    add_fit_summaries_signal = Signal(list)
+    remove_fit_summary_signal = Signal(object)
     plot_clicked = Signal()
     plot_combo_index_changed = Signal(int)
     set_plot_options_signal = Signal(list, int)
@@ -57,6 +59,9 @@ class Plot1DView(QWidget):
         self._histogram: Optional[Any] = None
         # The map's colorbar steals room from the axes; kept so a redraw can hand that room back.
         self._colorbar: Optional[Any] = None
+        # Group fit summaries focused for display. Like a map they take the canvas alone: their axes
+        # are a fitted parameter and a column's average, which share no scale with a scan's series.
+        self._summaries: list[FitSummary] = []
         self._show_components = False
         self._build_ui()
         # AutoConnection: direct call on the GUI thread (tests), queued hop when
@@ -65,6 +70,8 @@ class Plot1DView(QWidget):
         self.add_plots_signal.connect(self._add_plots)
         self.render_histogram_signal.connect(self._render_histogram)
         self.clear_histogram_signal.connect(self._clear_histogram)
+        self.add_fit_summaries_signal.connect(self._add_fit_summaries)
+        self.remove_fit_summary_signal.connect(self._remove_fit_summary)
         self.set_plot_options_signal.connect(self.set_plot_options)
         self.sync_fields_signal.connect(self._sync_fields_from_series)
         self.append_fit_curve_signal.connect(self._append_fit_curve)
@@ -165,6 +172,14 @@ class Plot1DView(QWidget):
                 ax.set_ylim(*user_view[1])
             self.canvas.draw()
             return
+        if self._summaries:
+            self._draw_fit_summaries(ax)
+            if user_view is not None:
+                ax.set_xlim(*user_view[0])
+                ax.set_ylim(*user_view[1])
+            self._refresh_legend()
+            self.canvas.draw()
+            return
         colors = self._series_colors()
         for x, y, err, series in self._plotted:
             ax.errorbar(
@@ -217,6 +232,24 @@ class Plot1DView(QWidget):
         ax.set_ylabel(y_name)
         if not self.hide_label_check.isChecked():
             ax.set_title(hist.tavimeta.friendly_name)
+
+    def _draw_fit_summaries(self, ax: Any) -> None:
+        """Draw each summary's points with error bars on both axes, one color per summary."""
+        for index, summary in enumerate(self._summaries):
+            points = summary.points
+            ax.errorbar(
+                np.array([point.x for point in points], dtype=float),
+                np.array([point.y for point in points], dtype=float),
+                xerr=np.array([point.x_err for point in points], dtype=float),
+                # A parameter the fit gave no uncertainty for (e.g. chi^2) draws without a bar.
+                yerr=np.array([0.0 if point.y_err is None else point.y_err for point in points], dtype=float),
+                fmt="o",
+                capsize=3,
+                color=f"C{index}",
+                label=summary.name,
+            )
+        ax.set_xlabel(self._combined_axis_label(summary.x_label for summary in self._summaries))
+        ax.set_ylabel(self._combined_axis_label(summary.y_label for summary in self._summaries))
 
     @staticmethod
     def _color_key(series: Any) -> str:
@@ -274,6 +307,7 @@ class Plot1DView(QWidget):
         self._plotted = []
         self._fit_curves = {}
         self._histogram = None
+        self._summaries = []
         self._remove_colorbar()
         # cla() turns autoscaling back on, so the next plot isn't held to this one's zoom.
         self.canvas.axes.cla()
@@ -288,8 +322,10 @@ class Plot1DView(QWidget):
         # A sync re-renders the focused series, not the focus itself, so a map focused alongside
         # them stays; a new selection drops it through clear_plot via ClearFocusEvent's empty render.
         histogram = self._histogram if resolved else None
+        summaries = self._summaries if resolved else []
         self.clear_plot()
         self._histogram = histogram
+        self._summaries = summaries
         self._add_plots(resolved)
 
     def _clear_histogram(self) -> None:
@@ -305,6 +341,20 @@ class Plot1DView(QWidget):
         self._histogram = histogram
         # A fresh map starts from its own full extent, not the last scene's zoom or Home view.
         self._remove_colorbar()
+        self.canvas.axes.cla()
+        self.toolbar.update()
+        self._redraw()
+
+    def _add_fit_summaries(self, summaries: list) -> None:
+        """Draw more group fit summaries, starting from their own extent. Runs on the GUI thread."""
+        self._summaries += summaries
+        self.canvas.axes.cla()
+        self.toolbar.update()
+        self._redraw()
+
+    def _remove_fit_summary(self, uuid: Any) -> None:
+        """Drop one summary, leaving whatever it was hiding to be drawn. Runs on the GUI thread."""
+        self._summaries = [summary for summary in self._summaries if summary.uuid != uuid]
         self.canvas.axes.cla()
         self.toolbar.update()
         self._redraw()

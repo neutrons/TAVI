@@ -7,11 +7,12 @@ import pytest
 
 from tavi.backend.model.fit_model import FitModel
 from tavi.backend.model.group_fit_model import GroupFitModel, _group_fit_params, _PreparedScan
-from tavi.library.data.fit_entry import CosineField, FitSpec, ParamField, PeakField
+from tavi.library.data.fit_entry import CosineField, FitResultSummary, FitSpec, ParamField, PeakField, PeakResult
 from tavi.library.data.group_fit_entry import (
     GroupFitRequest,
     SuggestGroupBackgroundParamsRequest,
     SuggestGroupPeakParamsRequest,
+    SummarizeGroupFitRequest,
 )
 from tavi.library.data.model_response import ResponseCode
 from tavi.library.data.scan import UUID, ProcessedScan, Provenance, RawScan, ScanData, ScanMetadata, TaviMetadata
@@ -20,6 +21,7 @@ from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.presenter_event import (
     RecomputeFitEvent,
+    SaveFitSummaryEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
     SyncGroupBackgroundParamsEvent,
@@ -566,3 +568,113 @@ def test_an_unsupported_background_guess_is_reported(model, reported):
     model.suggest_background_params(make_background_guess(background="None"))
 
     assert "Background 'None' is not supported yet." in reported[0].error.message
+
+
+# ---------------------------------------------------------------------------
+# summarize_group_fit
+# ---------------------------------------------------------------------------
+
+
+def make_result(center, center_err=0.01) -> FitResultSummary:
+    peak = PeakResult(amplitude=AMPLITUDE, amplitude_err=1.0, center=center, center_err=center_err, fwhm=FWHM)
+    return FitResultSummary(reduced_chi_squared=1.0, peaks=[peak])
+
+
+def make_summarize_request(results=None, **overrides) -> SummarizeGroupFitRequest:
+    if results is None:
+        results = {UUID(value=f"s{i}"): make_result(center) for i, center in enumerate(CENTERS)}
+    fields = dict(parameter="peak1 center", x_col="temp", results=results)
+    fields.update(overrides)
+    return SummarizeGroupFitRequest(**fields)
+
+
+@pytest.fixture
+def saved():
+    received = []
+    EventBroker().register(SaveFitSummaryEvent, received.append)
+    return received
+
+
+def test_summarize_saves_the_parameter_against_each_scans_average(model, saved, reported):
+    response = model.summarize_group_fit(make_summarize_request())
+
+    assert response.code == ResponseCode.OK
+    assert reported == []
+    assert len(saved) == 1
+    summary = saved[0].summary
+    assert (summary.name, summary.x_label, summary.y_label) == ("peak1 center vs temp", "temp", "peak1 center")
+    assert [point.scan_name for point in summary.points] == ["s0", "s1", "s2"]
+    assert [point.x for point in summary.points] == [10.0, 20.0, 30.0]
+    assert [point.y for point in summary.points] == CENTERS
+    assert [point.y_err for point in summary.points] == [0.01] * 3
+
+
+def test_summarize_takes_the_columns_spread_as_its_uncertainty(saved):
+    columns = make_columns(0.0)
+    columns["temp"] = np.linspace(9.0, 11.0, len(columns["qh"])).tolist()
+    model = GroupFitModel({UUID(value="s0"): make_scan("s0", columns=columns)}, {})
+
+    model.summarize_group_fit(make_summarize_request(results={UUID(value="s0"): make_result(0.0)}))
+
+    point = saved[0].summary.points[0]
+    assert point.x == pytest.approx(10.0)
+    assert point.x_err == pytest.approx(np.std(columns["temp"]))
+
+
+def test_summarize_a_group_fits_own_results(model, synced, saved):
+    model.perform_group_fit(make_request())
+    results = {outcome.source_scan_uuid: outcome.result for outcome in synced[0].outcomes}
+
+    model.summarize_group_fit(make_summarize_request(results=results))
+
+    assert [point.y for point in saved[0].summary.points] == pytest.approx(CENTERS, abs=1e-3)
+
+
+def test_summarize_reads_a_processed_scan_too(saved):
+    model = GroupFitModel({}, {UUID(value="c0"): make_processed_scan("c0")})
+
+    model.summarize_group_fit(make_summarize_request(results={UUID(value="c0"): make_result(0.0)}))
+
+    assert saved[0].summary.points[0].x == 10.0
+
+
+def test_summarize_without_a_column_reports_and_saves_nothing(model, saved, reported):
+    model.summarize_group_fit(make_summarize_request(x_col="  "))
+
+    assert saved == []
+    assert len(reported) == 1
+
+
+def test_summarize_without_results_reports_and_saves_nothing(model, saved, reported):
+    model.summarize_group_fit(make_summarize_request(results={}))
+
+    assert saved == []
+    assert len(reported) == 1
+
+
+def test_summarize_leaves_out_a_scan_missing_the_column(raw_scans, saved, reported):
+    columns = make_columns(0.0)
+    del columns["temp"]
+    raw_scans[UUID(value="s1")] = make_scan("s1", columns=columns)
+
+    GroupFitModel(raw_scans, {}).summarize_group_fit(make_summarize_request())
+
+    assert [point.scan_name for point in saved[0].summary.points] == ["s0", "s2"]
+    assert len(reported) == 1
+    assert "s1" in reported[0].error.args[0]
+
+
+def test_summarize_leaves_out_a_scan_no_longer_loaded(model, saved, reported):
+    results = {UUID(value="s0"): make_result(0.0), UUID(value="gone"): make_result(1.0)}
+
+    model.summarize_group_fit(make_summarize_request(results=results))
+
+    assert [point.scan_name for point in saved[0].summary.points] == ["s0"]
+    assert len(reported) == 1
+
+
+def test_summarize_an_unknown_parameter_reports_once_and_saves_nothing(model, saved, reported):
+    model.summarize_group_fit(make_summarize_request(parameter="peak2 center"))
+
+    assert saved == []
+    assert len(reported) == 1

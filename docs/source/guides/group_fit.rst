@@ -195,7 +195,15 @@ then hands the group to ``GroupFit``:
 
 The result is published as one ``SyncGroupFitEvent`` with a ``GroupFitOutcome`` per scan: the
 spec, the ``FitResultSummary``, the curve, the fitted points and the column averages. This is
-display only: nothing is saved into the project yet.
+display only: the fit itself is not saved into the project.
+
+``summarize_group_fit`` saves one fitted parameter against a column's per-scan average. It takes
+a ``SummarizeGroupFitRequest``: a key of ``FitResultSummary.parameters()`` (e.g.
+``"peak1 center"``), a column name, and each scan's ``FitResultSummary`` from the last group fit.
+For every scan it pairs the parameter and its 1-sigma with the column's mean and standard
+deviation over the whole scan, and publishes one ``SaveFitSummaryEvent`` carrying a
+``FitSummary``. ``TaviProjectModel`` stores it in ``TaviData.fits`` and lists it under Fits. A
+scan that is no longer loaded, lacks the column, or lacks the parameter is reported and left out.
 
 ``GroupFitPresenter`` connects it to the Group Fit window; see :doc:`../design/frontend/group_fit_flow`.
 

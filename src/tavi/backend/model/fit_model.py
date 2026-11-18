@@ -20,6 +20,7 @@ from tavi.library.data.fit_entry import (
     FitRequest,
     FitResultSummary,
     FitSpec,
+    FitSummary,
     ParamField,
     PeakField,
     PeakResult,
@@ -138,7 +139,7 @@ def _seeded_spec(spec: FitSpec, result: FitResultSummary, data: FitData) -> FitS
 class FitModel(FitModelInterface):
     """Fits one or more series against a peak/background spec and announces the result."""
 
-    def __init__(self, raw_scans: dict[UUID, RawScan], fits: dict[UUID, FitEntry]) -> None:
+    def __init__(self, raw_scans: dict[UUID, RawScan], fits: dict[UUID, FitEntry | FitSummary]) -> None:
         """Init with live handles into TaviData's raw_scans (to resolve each series' data) and fits (to sync specs)."""
         self._raw_scans = raw_scans
         self._fits = fits
@@ -181,7 +182,8 @@ class FitModel(FitModelInterface):
     def sync_fit_spec(self, fit_uuid: UUID, source_scan_uuid: UUID) -> ModelResponse:
         """Publish one saved member's spec and result for the fitting panel - a miss means the fit or member is gone."""
         fit = self._fits.get(fit_uuid)
-        member = fit.member_for(source_scan_uuid) if fit is not None else None
+        # The store also holds group fit summaries, which have no members.
+        member = fit.member_for(source_scan_uuid) if isinstance(fit, FitEntry) else None
         if member is not None:
             self._event_broker.publish(SyncFitSpecEvent(fit_uuid=fit_uuid, member=member))
         return ModelResponse(code=ResponseCode.OK)

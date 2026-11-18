@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome
+from tavi.library.data.fit_entry import FitEntry, FitMember, FitOutcome, FitSummary
 from tavi.library.data.group_fit_entry import GroupFitOutcome
 from tavi.library.data.plot import Plot, PlotSeries
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan, Scan
@@ -103,6 +103,18 @@ class FocusFitEvent(Event):
     """The Scan every member of every focused fit points at, same contract as ``FocusPlotEvent.scans``."""
 
 
+class FocusFitSummaryEvent(Event):
+    """
+    Add group fit summaries to the focus. Like every ``Focus*`` event this only adds.
+
+    Kept apart from ``FocusFitEvent`` because a summary is a table of numbers, not a fit to
+    recompute: ``FitModel`` has nothing to do, and ``PlotModel`` has no series to stage.
+    ``PlotterPresenter`` draws each one as y vs x with error bars on both axes.
+    """
+
+    summaries: list[FitSummary]
+
+
 class RecomputeFitEvent(Event):
     """Ask FitModel to recompute every member of each of these fits against its source series' current data."""
 
@@ -128,6 +140,17 @@ class SaveFitEvent(Event):
     fit_uuid: UUID
     members: list[FitMember]
     """In fit order. Every member is a different series."""
+
+
+class SaveFitSummaryEvent(Event):
+    """
+    Request to save a group fit's summary - one fitted parameter against a column's average - into the project.
+
+    Published by ``GroupFitModel.summarize_group_fit``. ``TaviProjectModel`` stores it in
+    ``TaviData.fits`` and announces it with ``AddFitEvent``, so it is listed under Fits.
+    """
+
+    summary: FitSummary
 
 
 class FocusPlotEvent(Event):

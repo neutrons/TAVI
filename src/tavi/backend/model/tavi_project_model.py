@@ -13,7 +13,7 @@ from tavi.backend.model.fit_history import FitHistory
 from tavi.backend.model.interface.tavi_project_interface import TaviProjectInterface
 from tavi.backend.model.plot_resolver import scans_for_plots
 from tavi.library.data.filter import ScanFilter
-from tavi.library.data.fit_entry import FitEntry, FitMember
+from tavi.library.data.fit_entry import FitEntry, FitMember, FitSummary
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot
 from tavi.library.data.scan import UUID, HistogramData, ProcessedScan, RawScan
@@ -41,12 +41,14 @@ from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusEvent,
     FocusFitEvent,
+    FocusFitSummaryEvent,
     FocusHistogramEvent,
     FocusPlotEvent,
     FocusProcessedScanEvent,
     FocusRawScanEvent,
     RecomputeFitEvent,
     SaveFitEvent,
+    SaveFitSummaryEvent,
     SavePlotEvent,
     StartApplicationEvent,
 )
@@ -75,6 +77,7 @@ class TaviProjectModel(TaviProjectInterface):
         self._event_broker.register(FocusEvent, self._handle_focus_event)
         self._event_broker.register(SavePlotEvent, self._handle_save_plot_event)
         self._event_broker.register(SaveFitEvent, self._handle_save_fit_event)
+        self._event_broker.register(SaveFitSummaryEvent, self._handle_save_fit_summary_event)
         self._event_broker.register(ApplyFilterEvent, self._handle_apply_filter_event)
         self._event_broker.register(ClearFilterEvent, self._handle_clear_filter_event)
 
@@ -229,7 +232,7 @@ class TaviProjectModel(TaviProjectInterface):
         existing one would otherwise add its uuid to the tree twice.
         """
         existing = self.tavi_data.fits.get(e.fit_uuid)
-        if existing is not None:
+        if isinstance(existing, FitEntry):
             for member in e.members:
                 previous = existing.member_for(member.source_scan_uuid)
                 # A failed fit has nothing on screen worth going back to.
@@ -242,6 +245,11 @@ class TaviProjectModel(TaviProjectInterface):
             self._event_broker.publish(AddFitEvent(uuid=fit.uuid, friendly_name=fit.name, friendly_path=""))
         for member in e.members:
             self._publish_fit_history(e.fit_uuid, member.source_scan_uuid)
+
+    def _handle_save_fit_summary_event(self, e: SaveFitSummaryEvent) -> None:
+        """Store a group fit's summary beside the fits and list it under Fits; it has no members to merge."""
+        self.tavi_data.fits[e.summary.uuid] = e.summary
+        self._event_broker.publish(AddFitEvent(uuid=e.summary.uuid, friendly_name=e.summary.name, friendly_path=""))
 
     def undo_fit_member(self, fit_uuid: UUID, source_scan_uuid: UUID) -> ModelResponse:
         """Roll one member of a fit back to the state before its last save."""
@@ -263,7 +271,7 @@ class TaviProjectModel(TaviProjectInterface):
         a saved fit in the tree - TAVI never caches fitted curves.
         """
         fit = self.tavi_data.fits.get(fit_uuid)
-        current = fit.member_for(source_scan_uuid) if fit is not None else None
+        current = fit.member_for(source_scan_uuid) if isinstance(fit, FitEntry) else None
         if current is None:
             return
         restored = step(fit_uuid, current)
@@ -308,6 +316,7 @@ class TaviProjectModel(TaviProjectInterface):
         histograms: list[HistogramData] = []
         plots: list[Plot] = []
         fits: list[FitEntry] = []
+        summaries: list[FitSummary] = []
         for uuid in ids:
             # FocusEvent ids come from the project tree, which only ever lists uuids
             # TaviData actually owns — fetch_by_uuid raising here means tree/TaviData are
@@ -323,6 +332,8 @@ class TaviProjectModel(TaviProjectInterface):
                 plots.append(inst)
             if isinstance(inst, FitEntry):
                 fits.append(inst)
+            if isinstance(inst, FitSummary):
+                summaries.append(inst)
 
         # A focused Plot's own attached fits (stamped on it by PlotModel.save_focused_plots when
         # it was saved) are re-focused too, even though the user only selected the Plot itself -
@@ -330,8 +341,9 @@ class TaviProjectModel(TaviProjectInterface):
         attached_fits = {fit.uuid: fit for fit in fits}
         for plot in plots:
             for fit_uuid in plot.fits:
-                if fit_uuid not in attached_fits and fit_uuid in self.tavi_data.fits:
-                    attached_fits[fit_uuid] = self.tavi_data.fits[fit_uuid]
+                attached = self.tavi_data.fits.get(fit_uuid)
+                if fit_uuid not in attached_fits and isinstance(attached, FitEntry):
+                    attached_fits[fit_uuid] = attached
         fits = list(attached_fits.values())
 
         if raw_scans:
@@ -359,11 +371,13 @@ class TaviProjectModel(TaviProjectInterface):
             }
             self._event_broker.publish(FocusFitEvent(fits=fits, scans=fit_scans))
             self._event_broker.publish(RecomputeFitEvent(fits=fits))
+        if summaries:
+            self._event_broker.publish(FocusFitSummaryEvent(summaries=summaries))
 
 
 def _with_name(
-    item: ProcessedScan | HistogramData | Plot | FitEntry, name: str
-) -> ProcessedScan | HistogramData | Plot | FitEntry:
+    item: ProcessedScan | HistogramData | Plot | FitEntry | FitSummary, name: str
+) -> ProcessedScan | HistogramData | Plot | FitEntry | FitSummary:
     """Return a copy of a renameable item carrying ``name``, leaving the stored one untouched."""
     # A scan keeps its name in tavimeta, like every scan, rather than in a name field.
     if isinstance(item, (ProcessedScan, HistogramData)):
