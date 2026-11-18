@@ -7,6 +7,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as Navigation
 from matplotlib.figure import Figure
 from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QHBoxLayout,
     QLabel,
@@ -83,8 +84,8 @@ class GroupFitWindow(QWidget):
     A top-level window listing a group fit's scans, with one plot and one 1D fitting panel shared between them.
 
     Each scan keeps its own fit spec. The current scan - the one last clicked - is the one the
-    panel edits: picking it stores what the panel holds for the scan being left and loads the
-    picked scan's spec. Every selected scan is overplotted, its data and fit in one color, from
+    panel edits: picking it stores the user's edits to the scan being left and loads the picked
+    scan's spec, overlaid with its last group fit result. Every selected scan is overplotted, its data and fit in one color, from
     the last group fit's outcomes.
     """
 
@@ -117,6 +118,10 @@ class GroupFitWindow(QWidget):
         # Draft specs, one per listed scan, kept here until there's a model to own them.
         self._specs: dict[UUID, FitSpec] = {}
         self._current_uuid: Optional[UUID] = None
+        # What the panel was loaded with for the current scan - its spec overlaid with its last fit
+        # result. Storing compares against this, so fitted values on display are never mistaken for
+        # the user's edits.
+        self._shown: Optional[FitSpec] = None
         # What columns_changed last announced, so leaving a field without editing it stays quiet.
         self._columns = ("", "")
         # The last group fit's outcomes, by scan, and the columns it fit - display data only,
@@ -231,7 +236,7 @@ class GroupFitWindow(QWidget):
         return self.fitting_tabs
 
     def _build_plot_panel(self) -> QWidget:
-        """The group's y-vs-x columns above the canvas the selected scans are overplotted on, and its toolbar."""
+        """The group's y-vs-x columns above the canvas the selected scans are overplotted on, its toolbar and Hide Label."""
         panel = QWidget()
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -240,7 +245,14 @@ class GroupFitWindow(QWidget):
         self.canvas = FigureCanvas(self.figure)
         self.axes = self.figure.add_subplot(111)
         layout.addWidget(self.canvas)
-        layout.addWidget(NavigationToolbar(self.canvas, panel))
+        toolbar_row = QHBoxLayout()
+        toolbar_row.addWidget(NavigationToolbar(self.canvas, panel))
+        toolbar_row.addStretch()
+        # The same control the 1D plotter has: a legend naming every overplotted scan can hide the data.
+        self.hide_label_check = QCheckBox("Hide Label")
+        self.hide_label_check.toggled.connect(lambda _checked: self.redraw())
+        toolbar_row.addWidget(self.hide_label_check)
+        layout.addLayout(toolbar_row)
         return panel
 
     def hookup_scan_selected_signal(self, callback: Any) -> None:
@@ -461,11 +473,15 @@ class GroupFitWindow(QWidget):
         return [item.data(Qt.UserRole) for item in self._items() if item.isSelected()]
 
     def show_outcomes(self, x_col: Optional[str], y_col: str, outcomes: list[GroupFitOutcome]) -> None:
-        """Keep a group fit's outcomes for the scans still listed, and redraw the selection from them."""
+        """Keep a group fit's outcomes for the scans still listed, show the current scan's result, and redraw."""
+        # Stored before the panel is reloaded, so an edit made while the fit ran isn't lost.
+        self._store_current()
         self._outcomes = {
             outcome.source_scan_uuid: outcome for outcome in outcomes if outcome.source_scan_uuid in self._specs
         }
         self._fitted_columns = (x_col or None, y_col)
+        if self._current_uuid is not None:
+            self._show_current()
         self._refresh_summary_params()
         self.redraw()
 
@@ -502,7 +518,7 @@ class GroupFitWindow(QWidget):
         if self._outcomes:
             self.axes.set_xlabel(x_col or "default x axis")
             self.axes.set_ylabel(y_col)
-        if self.axes.get_legend_handles_labels()[0]:
+        if self.axes.get_legend_handles_labels()[0] and not self.hide_label_check.isChecked():
             self.axes.legend()
         self.canvas.draw()
 
@@ -526,6 +542,10 @@ class GroupFitWindow(QWidget):
         if self._current_uuid is None:
             return
         new = self.fitting_view.get_fit_spec()
+        if self._shown is not None:
+            # Only fields the user changed since the panel was loaded are taken from it; the rest
+            # keep the stored spec, so a fitted value on display never becomes a starting value.
+            new = _inherit_spec(self._shown, self._specs[self._current_uuid], new)
         first_uuid = next(iter(self._specs), None)
         if self._current_uuid == first_uuid:
             old = self._specs[first_uuid]
@@ -536,14 +556,24 @@ class GroupFitWindow(QWidget):
         self._specs[self._current_uuid] = new
 
     def _on_current_item_changed(self, current: Optional[QListWidgetItem], _previous: Any) -> None:
-        """Store the scan being left, then show the picked scan's spec in the panel."""
+        """Store the scan being left, then show the picked scan's spec and fit result in the panel."""
         self._store_current()
         self._current_uuid = None if current is None else current.data(Qt.UserRole)
+        self._shown = None
         self.fitting_view.setEnabled(self._current_uuid is not None)
         self.remove_scan_btn.setEnabled(self._current_uuid is not None)
         if self._current_uuid is None:
             self.fitting_tabs.setTabText(0, NO_SCAN_TEXT)
             return
         self.fitting_tabs.setTabText(0, current.text())
-        self.fitting_view.set_fit_spec(self._specs[self._current_uuid])
+        self._show_current()
         self.scan_selected.emit(self._current_uuid)
+
+    def _show_current(self) -> None:
+        """Load the current scan's spec into the panel, overlaid with its last group fit result if it has one."""
+        self.fitting_view.set_fit_spec(self._specs[self._current_uuid])
+        outcome = self._outcomes.get(self._current_uuid)
+        if outcome is not None and outcome.result is not None:
+            # Same thread, so this runs directly - the panel shows the result before _shown is read.
+            self.fitting_view.set_fit_result_signal.emit(outcome.result)
+        self._shown = self.fitting_view.get_fit_spec()

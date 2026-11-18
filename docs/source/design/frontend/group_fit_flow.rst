@@ -30,7 +30,11 @@ Use cases covered
   edit; a guess on another scan is that scan's own change.
 * **Fit and compare.** Press Group Fit, then select one scan or several
   (Ctrl/Shift-click) to overplot their data and fits. Clicking scans redraws
-  from the last fit's outcomes and never refits.
+  from the last fit's outcomes and never refits. The panel shows the current
+  scan's own fitted values, uncertainties and reduced chi-squared, as the 1D
+  Fitting tab does after a fit.
+  Hide Label, beside the plot's toolbar, drops the legend, as in the 1D
+  plotter.
 * **Drop scans.** Remove Scan drops every selected scan. A scan removed from the
   project leaves the group too.
 * **Summarize.** The line just above the Group Fit button reads "Summarize fit
@@ -190,3 +194,11 @@ Key decisions
   it is drawn in place of any 1D series focused with it. It has its own
   ``FocusFitSummaryEvent`` rather than riding on ``FocusFitEvent``: there is no
   curve to recompute and no series for ``PlotModel`` to stage.
+* **Fitted values on display are not starting values.** The panel shows the
+  current scan's fit result in the same value fields that hold its starting
+  values. Leaving a scan stores only the fields the user changed since it was
+  shown (``_store_current`` compares against what was loaded). If the fitted
+  values were stored as the spec, they would differ from the first scan's, so
+  they would turn into per-scan overrides and switch chaining off for those
+  parameters. Group Fit therefore always reruns from the starting values the
+  user set.

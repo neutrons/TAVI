@@ -190,6 +190,26 @@ def test_group_fit_end_to_end_overplots_the_fitted_scans(qtbot):
     assert view.axes.get_xlabel() == "default x axis"
 
 
+def test_picking_each_fitted_scan_shows_its_own_fitted_center(qtbot):
+    """Group Fit with the real model, then click each scan: the panel shows that scan's result, not the start."""
+    raw_scans = {UUID(value=name): make_raw_scan(name, center) for name, center in (("s1", -1.0), ("s2", 0.0))}
+    presenter = GroupFitPresenter(GroupFitModel(raw_scans, {}))
+    qtbot.addWidget(presenter.view())
+    view = presenter.view()
+    group("s1", "s2")
+    view.set_columns("", "detector")
+    center_row = view.fitting_view.peak_panels[0].peak_table.rows[1]
+    center_row.value_edit.setText("-1")
+    view.fitting_view.perform_fit_btn.click()
+
+    view.scan_list.setCurrentRow(1)
+    assert float(center_row.value_edit.text()) == pytest.approx(0.0, abs=1e-3)
+    assert view.fitting_view.chi2_edit.text() != ""
+    view.scan_list.setCurrentRow(0)
+    assert float(center_row.value_edit.text()) == pytest.approx(-1.0, abs=1e-3)
+    assert [spec.peaks[0].center.value for spec in view.fit_specs().values()] == ["-1", "-1"]
+
+
 # ---------------------------------------------------------------------------
 # Summarize fit results
 # ---------------------------------------------------------------------------

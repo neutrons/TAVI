@@ -941,3 +941,123 @@ def test_summary_empties_once_every_scan_is_removed(window):
 
     assert summary_params(window) == []
     assert not window.generate_summary_btn.isEnabled()
+
+
+# ---------------------------------------------------------------------------
+# Each scan's fit result in the panel
+# ---------------------------------------------------------------------------
+
+
+def peak_rows(window):
+    return window.fitting_view.peak_panels[0].peak_table.rows
+
+
+def panel_center(window) -> tuple[str, str]:
+    row = peak_rows(window)[1]
+    return row.value_edit.text(), row.std_edit.text()
+
+
+def test_picking_a_fitted_scan_shows_its_own_result(window):
+    summarized_window(window, "s1", "s2")
+
+    select(window, 1)
+    assert panel_center(window) == ("1", "0.01")
+    assert window.fitting_view.chi2_edit.text() == "1"
+
+    select(window, 0)
+    assert panel_center(window) == ("0", "0.01")
+
+
+def test_outcomes_arriving_show_the_current_scans_result(window):
+    window.set_scans(make_scans("s1", "s2"), template=make_spec())
+    select(window, 1)
+
+    summarized_window(window, "s1", "s2")
+
+    assert panel_center(window) == ("1", "0.01")
+
+
+def test_a_scan_left_out_of_the_fit_shows_its_spec_alone(window):
+    summarized_window(window, "s1", "s2", unfitted=("s2",))
+
+    select(window, 1)
+
+    assert panel_center(window) == ("0", "")
+    assert window.fitting_view.chi2_edit.text() == ""
+
+
+def test_fitted_values_on_display_never_become_starting_values(window):
+    scans = summarized_window(window, "s1", "s2")
+    select(window, 1)
+    select(window, 0)
+
+    specs = window.fit_specs()
+
+    assert [specs[uuid].peaks[0].center.value for uuid, _ in scans] == ["0", "0"]
+    assert [specs[uuid].peaks[0].amplitude.value for uuid, _ in scans] == ["1", "1"]
+
+
+def test_an_edit_over_a_shown_result_is_stored_alone(window):
+    scans = summarized_window(window, "s1", "s2")
+    select(window, 1)
+    peak_rows(window)[2].value_edit.setText("0.7")
+
+    select(window, 0)
+    spec = window.fit_specs()[scans[1][0]]
+
+    assert spec.peaks[0].fwhm.value == "0.7"
+    # The center on display was the fit's, not the user's - the stored start stays.
+    assert spec.peaks[0].center.value == "0"
+
+
+def test_an_edit_made_while_the_fit_ran_survives_its_outcomes(window):
+    scans = make_scans("s1", "s2")
+    window.set_scans(scans, template=make_spec())
+    select(window, 1)
+    peak_rows(window)[2].value_edit.setText("0.7")
+
+    summarized_window(window, "s1", "s2")
+
+    assert window.fit_specs()[scans[1][0]].peaks[0].fwhm.value == "0.7"
+
+
+# ---------------------------------------------------------------------------
+# Hide Label
+# ---------------------------------------------------------------------------
+
+
+def test_hide_label_starts_unchecked_with_the_legend_shown(window):
+    fitted_window(window, "s1")
+    select(window, 0)
+
+    assert not window.hide_label_check.isChecked()
+    assert window.axes.get_legend() is not None
+
+
+def test_hide_label_drops_the_legend_and_keeps_the_data(window):
+    fitted_window(window, "s1")
+    select(window, 0)
+
+    window.hide_label_check.setChecked(True)
+
+    assert window.axes.get_legend() is None
+    assert len(window.axes.lines) > 0
+
+
+def test_hide_label_stays_hidden_as_the_selection_changes(window):
+    fitted_window(window, "s1", "s2")
+    window.hide_label_check.setChecked(True)
+
+    window.scan_list.selectAll()
+
+    assert window.axes.get_legend() is None
+
+
+def test_unchecking_hide_label_restores_the_legend(window):
+    fitted_window(window, "s1")
+    select(window, 0)
+    window.hide_label_check.setChecked(True)
+
+    window.hide_label_check.setChecked(False)
+
+    assert window.axes.get_legend() is not None
