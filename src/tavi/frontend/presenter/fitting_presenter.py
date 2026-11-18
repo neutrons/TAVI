@@ -15,6 +15,7 @@ from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusFitEvent,
+    GroupScansEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
@@ -29,7 +30,7 @@ class FittingPresenter(AbstractPresenter):
     """Mediates between the staged series and FitModel, and reflects fit results in the view."""
 
     def __init__(self, model: FitModelInterface, project_model: TaviProjectInterface) -> None:
-        """Create the view, subscribe to plot/fit events, and hook up the Perform Fit button."""
+        """Create the view, subscribe to plot/fit events, and hook up the Single Fit button."""
         super().__init__()
         self._model = model
         # Undo history is saved state, owned by the project - only it answers undo/redo.
@@ -63,6 +64,7 @@ class FittingPresenter(AbstractPresenter):
         self._event_broker.register(SyncFitHistoryEvent, self.handle_sync_fit_history)
         self._event_broker.register(ClearFocusEvent, self.handle_clear_focus)
         self._view.hookup_perform_fit_signal(self.handle_perform_fit_clicked)
+        self._view.hookup_group_fit_signal(self.handle_group_fit_clicked)
         self._view.hookup_undo_fit_signal(self.handle_undo_fit_clicked)
         self._view.hookup_redo_fit_signal(self.handle_redo_fit_clicked)
         self._view.hookup_suggest_params_signal(self.handle_suggest_params_clicked)
@@ -79,7 +81,7 @@ class FittingPresenter(AbstractPresenter):
 
     def handle_sync_stage(self, e: SyncStageEvent) -> None:
         """
-        Track the staged series - this is what Perform Fit covers - and show the lead one in the panel.
+        Track the staged series - this is what Single Fit covers - and show the lead one in the panel.
 
         A new lead with a known fit shows that fit's saved member (``SyncFitSpecEvent``); without one,
         the fitting range resets to the lead's own x-data bounds, so it doesn't inherit a stale range
@@ -109,7 +111,7 @@ class FittingPresenter(AbstractPresenter):
         self._view.set_fit_member_signal.emit(e.member)
 
     def handle_fit_removed(self, e: RemoveFitEvent) -> None:
-        """Forget a removed fit, so the next Perform Fit on its series mints a new one instead of reviving it."""
+        """Forget a removed fit, so the next Single Fit on its series mints a new one instead of reviving it."""
         self._fit_uuid_by_source_uuid = {
             source: fit_uuid for source, fit_uuid in self._fit_uuid_by_source_uuid.items() if fit_uuid != e.uuid
         }
@@ -120,7 +122,7 @@ class FittingPresenter(AbstractPresenter):
         """
         Start over once the old selection is cleared: default fields, and no fit known for any scan.
 
-        Forgetting the scan-to-fit map is what gives each selection its own history - Perform Fit on
+        Forgetting the scan-to-fit map is what gives each selection its own history - Single Fit on
         a raw scan picked again mints a new fit rather than extending an old one. Undo history itself
         stays with the model, so picking that old fit from the tree brings it back.
         """
@@ -176,7 +178,7 @@ class FittingPresenter(AbstractPresenter):
         No-ops when nothing is staged.
 
         Refitting the same series again reuses the fit already covering them (``fit_uuid``), so
-        repeatedly clicking Perform Fit refines one fit rather than leaving a trail of
+        repeatedly clicking Single Fit refines one fit rather than leaving a trail of
         near-identical ones in the project tree. A new tree selection forgets that (``handle_clear_focus``),
         so fitting a raw scan picked again starts a new fit.
         """
@@ -193,6 +195,19 @@ class FittingPresenter(AbstractPresenter):
             fit_uuid=self._shared_fit_uuid(series),
         )
         self._model.perform_fit(request)
+
+    def handle_group_fit_clicked(self) -> None:
+        """
+        Add every staged series' scan to the group fit, the same as the tree's "Add to Group Fit".
+
+        Each scan once, in stage order, named by its run - a scan staged as several series (one per
+        column of a wildcard y) is still one member of the group. No-ops when nothing is staged.
+        """
+        scans: dict[UUID, str] = {}
+        for series in self._staged_series:
+            scans.setdefault(series.source_scan_uuid, series.run_name)
+        if scans:
+            self._event_broker.publish(GroupScansEvent(scans=list(scans.items())))
 
     def _shared_fit_uuid(self, series: list[PlotSeries]) -> Optional[UUID]:
         """The one fit already covering every one of ``series``, or ``None`` if they aren't all in the same fit."""
@@ -239,7 +254,7 @@ class FittingPresenter(AbstractPresenter):
         """
         Resolve the lead series' data and ask the model to guess a starting amplitude/center/FWHM.
 
-        No-ops when nothing is staged, same as Perform Fit - there's no data to guess against.
+        No-ops when nothing is staged, same as Single Fit - there's no data to guess against.
         """
         if self._lead_scan is None or self._lead_series is None:
             return

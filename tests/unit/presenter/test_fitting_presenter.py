@@ -24,6 +24,7 @@ from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusFitEvent,
+    GroupScansEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
@@ -237,6 +238,60 @@ def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(pre
     presenter.handle_perform_fit_clicked()
 
     assert presenter._model.perform_fit.call_args[0][0].fit_uuid == UUID(value="fit-042")
+
+
+# ---------------------------------------------------------------------------
+# handle_group_fit_clicked - hand the staged scans to the Group Fit window
+# ---------------------------------------------------------------------------
+
+
+def test_group_fit_clicked_adds_every_staged_scan_in_stage_order(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    stage("scan-002", "scan-001")
+
+    presenter._view.group_fit_btn.click()
+
+    assert len(received) == 1
+    assert received[0].scans == [(UUID(value="scan-002"), "test_scan"), (UUID(value="scan-001"), "test_scan")]
+
+
+def test_group_fit_clicked_names_each_scan_by_its_run(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    series = make_series("scan-001").model_copy(update={"friendly_name": "HB3_exp1_scan0042"})
+    EventBroker().publish(SyncStageEvent(series=[series], scans={series.source_scan_uuid: make_scan()}))
+
+    presenter.handle_group_fit_clicked()
+
+    assert received[0].scans == [(UUID(value="scan-001"), "HB3_exp1_scan0042")]
+
+
+def test_group_fit_clicked_lists_a_scan_staged_twice_once(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    stage("scan-001", "scan-001", "scan-002")
+
+    presenter.handle_group_fit_clicked()
+
+    assert [uuid for uuid, _name in received[0].scans] == [UUID(value="scan-001"), UUID(value="scan-002")]
+
+
+def test_group_fit_clicked_with_nothing_staged_publishes_nothing(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+
+    presenter.handle_group_fit_clicked()
+
+    assert received == []
+
+
+def test_group_fit_clicked_does_not_fit(presenter):
+    stage("scan-001")
+
+    presenter.handle_group_fit_clicked()
+
+    presenter._model.perform_fit.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

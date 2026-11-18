@@ -111,7 +111,9 @@ class GroupFitWindow(QWidget):
 
         self.fitting_view = fitting_view
         # One fit runs over the whole group here, so the single-fit history has no step to offer,
-        # and the panel's fit button starts the group fit rather than fitting the scan on screen.
+        # and the panel's fit button starts the group fit rather than fitting the scan on screen -
+        # which also leaves nothing for the 1D tab's add-to-group button to do.
+        self.fitting_view.group_fit_btn.hide()
         self.fitting_view.undo_fit_btn.hide()
         self.fitting_view.redo_fit_btn.hide()
         self.fitting_view.perform_fit_btn.setText("Group Fit")

@@ -253,6 +253,7 @@ class FittingView(QWidget):
     """1D fitting panel widget: fitting range, background, per-peak parameters, and fit controls."""
 
     perform_fit_clicked = Signal()
+    group_fit_clicked = Signal()
     undo_fit_clicked = Signal()
     redo_fit_clicked = Signal()
     suggest_params_clicked = Signal()
@@ -277,6 +278,7 @@ class FittingView(QWidget):
         self._suggest_panel: Optional[PeakPanel] = None
         self._build_ui()
         self.perform_fit_btn.clicked.connect(self.perform_fit_clicked.emit)
+        self.group_fit_btn.clicked.connect(self.group_fit_clicked.emit)
         self.undo_fit_btn.clicked.connect(self.undo_fit_clicked.emit)
         self.redo_fit_btn.clicked.connect(self.redo_fit_clicked.emit)
         # AutoConnection: direct call on the GUI thread (tests), queued hop when emitted from
@@ -389,6 +391,9 @@ class FittingView(QWidget):
 
         fit_row = QHBoxLayout()
         fit_row.addStretch()
+        # Hands the staged scans to the Group Fit window, the same as the tree's "Add to Group Fit".
+        self.group_fit_btn = QPushButton("Group Fit")
+        fit_row.addWidget(self.group_fit_btn)
         # Disabled until the presenter says the active member has a step to go to.
         self.undo_fit_btn = QPushButton("Undo Fit")
         self.undo_fit_btn.setEnabled(False)
@@ -396,7 +401,7 @@ class FittingView(QWidget):
         self.redo_fit_btn = QPushButton("Redo Fit")
         self.redo_fit_btn.setEnabled(False)
         fit_row.addWidget(self.redo_fit_btn)
-        self.perform_fit_btn = QPushButton("Perform Fit")
+        self.perform_fit_btn = QPushButton("Single Fit")
         fit_row.addWidget(self.perform_fit_btn)
         rows.addLayout(fit_row)
 
@@ -419,8 +424,12 @@ class FittingView(QWidget):
         self._bottom_rows.insertWidget(0, widget)
 
     def hookup_perform_fit_signal(self, callback: Any) -> None:
-        """Connect the Perform Fit button's click signal to callback."""
+        """Connect the Single Fit button's click signal to callback."""
         self.perform_fit_clicked.connect(callback)
+
+    def hookup_group_fit_signal(self, callback: Any) -> None:
+        """Connect the Group Fit button's click signal to callback."""
+        self.group_fit_clicked.connect(callback)
 
     def hookup_undo_fit_signal(self, callback: Any) -> None:
         """Connect the Undo Fit button's click signal to callback."""
@@ -579,7 +588,7 @@ class FittingView(QWidget):
         Show one saved member in the panel: the spec it was fit with, overlaid with what that fit produced.
 
         Picking a member of a multi-scan fit in the Current Plot dropdown reloads exactly the shapes,
-        bounds, fixed flags and range it was fit with, so a Perform Fit from here refits that member
+        bounds, fixed flags and range it was fit with, so a Single Fit from here refits that member
         as it stands rather than as the panel last was.
         """
         self.set_fit_spec(member)

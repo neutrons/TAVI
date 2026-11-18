@@ -72,6 +72,12 @@ def test_panel_offers_no_undo_or_redo_fit(window):
     assert not window.fitting_view.redo_fit_btn.isVisible()
 
 
+def test_panel_hides_the_1d_tabs_add_to_group_fit_button(window):
+    window.show()
+
+    assert not window.fitting_view.group_fit_btn.isVisible()
+
+
 def test_panel_fit_button_is_group_fit(window):
     window.show()
 

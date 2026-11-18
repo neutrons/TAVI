@@ -20,7 +20,8 @@ Use cases covered
 
 * **Build a group.** Right-click scans or folders in the project tree and pick
   "Add to Group Fit". The window opens and the scans are appended in tree order.
-  A scan already in the group keeps its place and spec.
+  Pressing Group Fit in the 1D Fitting tab does the same for the scans staged
+  there, in stage order. A scan already in the group keeps its place and spec.
 * **Set the group up.** Edit the first scan in the panel. It is the group model,
   so each edit also reaches every other scan's field that still holds the old
   value. A field edited on another scan alone stays that scan's own change.
@@ -79,12 +80,18 @@ Event flow
     sequenceDiagram
         participant Tree as ProjectView
         participant PP as ProjectPresenter
+        participant FP as FittingPresenter
         participant GP as GroupFitPresenter
         participant W as GroupFitWindow
         participant M as GroupFitModel (worker)
 
-        Tree ->> PP: Add to Group Fit (uuid, name)*
-        PP ->> GP: GroupScansEvent
+        alt from the project tree
+            Tree ->> PP: Add to Group Fit (uuid, name)*
+            PP ->> GP: GroupScansEvent
+        else from the 1D Fitting tab
+            Note over FP: Group Fit clicked
+            FP ->> GP: GroupScansEvent(staged scans)
+        end
         GP ->> W: add_scans_signal, then open
         Note over W: user edits the first scan, picks columns
         W ->> GP: Group Fit clicked

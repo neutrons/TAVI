@@ -273,7 +273,7 @@ class FitRequest(BaseModel):
 
     ``None`` mints a fresh ``FitEntry``; supplying one instead refits in place - each fitted series
     replaces that fit's member for the same scan - so ``TaviProjectModel`` updates that entry rather
-    than growing the project tree by one fit per click of Perform Fit."""
+    than growing the project tree by one fit per click of Single Fit."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
