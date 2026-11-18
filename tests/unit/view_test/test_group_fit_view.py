@@ -32,6 +32,17 @@ def make_scans(*names: str) -> list[tuple[UUID, str]]:
     return [(UUID(value=f"uuid-{name}"), name) for name in names]
 
 
+def list_scans(window, scans, spec=None) -> None:
+    """
+    List ``scans``; in an empty window each starts from ``spec``, typed into the panel first as a user would.
+
+    A window that already lists scans is left as it is, so new scans start from its first scan's spec.
+    """
+    if window.scan_list.count() == 0:
+        window.fitting_view.set_fit_spec(spec if spec is not None else make_spec())
+    window.set_scans(scans)
+
+
 @pytest.fixture
 def window(qtbot):
     w = GroupFitWindow(FittingView())
@@ -102,16 +113,7 @@ def test_set_scans_picks_the_first_scan(window):
     assert window.fitting_view.isEnabled()
 
 
-def test_set_scans_seeds_every_scan_from_the_template(window):
-    scans = make_scans("s1", "s2")
-
-    window.set_scans(scans, template=make_spec(range_min="-3"))
-
-    assert [spec.range_min for spec in window.fit_specs().values()] == ["-3", "-3"]
-    assert window.fitting_view.min_edit.text() == "-3"
-
-
-def test_set_scans_without_template_seeds_from_the_panel(window):
+def test_set_scans_into_an_empty_window_seeds_from_the_panel(window):
     window.fitting_view.min_edit.setText("-7")
 
     window.set_scans(make_scans("s1", "s2"))
@@ -121,19 +123,32 @@ def test_set_scans_without_template_seeds_from_the_panel(window):
 
 def test_set_scans_keeps_specs_of_scans_still_listed(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
     window.fitting_view.min_edit.setText("-4")
 
-    window.set_scans([s1, s2, s3], template=make_spec(range_min="9"))
+    window.set_scans([s1, s2, s3])
 
     specs = window.fit_specs()
-    assert [specs[uuid].range_min for uuid, _ in (s1, s2, s3)] == ["0", "-4", "9"]
+    assert [specs[uuid].range_min for uuid, _ in (s1, s2, s3)] == ["0", "-4", "0"]
+
+
+def test_set_scans_seeds_a_new_scan_from_the_first_scans_spec(window):
+    s1, s2, s3 = make_scans("s1", "s2", "s3")
+    list_scans(window, [s1, s2], make_spec(range_min="-6"))
+    select(window, 1)
+    # The panel shows s2, so a seed taken from the panel would carry this edit; the group model doesn't.
+    window.fitting_view.max_edit.setText("4")
+
+    window.set_scans([s1, s2, s3])
+
+    spec = window.fit_specs()[s3[0]]
+    assert (spec.range_min, spec.range_max) == ("-6", "10")
 
 
 def test_set_scans_keeps_the_current_scan_on_screen(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
 
     window.set_scans([s3, s2, s1])
@@ -144,7 +159,7 @@ def test_set_scans_keeps_the_current_scan_on_screen(window):
 
 def test_set_scans_drops_scans_no_longer_listed(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
 
     window.set_scans([s1])
@@ -169,7 +184,7 @@ def test_set_scans_empty_disables_the_panel(window):
 
 
 def test_switching_scans_shows_each_scans_own_spec(window):
-    window.set_scans(make_scans("s1", "s2"), template=make_spec())
+    list_scans(window, make_scans("s1", "s2"))
     window.fitting_view.min_edit.setText("-1")
     select(window, 1)
     window.fitting_view.min_edit.setText("-2")
@@ -181,7 +196,7 @@ def test_switching_scans_shows_each_scans_own_spec(window):
 
 
 def test_switching_scans_restores_peak_count_and_shape(window):
-    window.set_scans(make_scans("s1", "s2"), template=make_spec())
+    list_scans(window, make_scans("s1", "s2"))
     select(window, 1)
     window.fitting_view.num_peaks_spin.setValue(2)
     window.fitting_view.peak_panels[1].peak_shape_combo.setCurrentText("Cosine")
@@ -198,7 +213,7 @@ def test_switching_scans_restores_peak_count_and_shape(window):
 
 def test_fit_specs_include_unstored_edits_on_screen(window):
     scans = make_scans("s1")
-    window.set_scans(scans, template=make_spec())
+    list_scans(window, scans)
 
     window.fitting_view.max_edit.setText("42")
 
@@ -251,7 +266,7 @@ def test_remove_scan_is_disabled_until_a_scan_is_picked(window):
 
 def test_remove_scan_drops_the_picked_scan_and_its_spec(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
     select(window, 1)
 
     window.remove_scan_btn.click()
@@ -262,7 +277,7 @@ def test_remove_scan_drops_the_picked_scan_and_its_spec(window):
 
 def test_remove_scan_moves_on_to_the_next_scan_and_shows_its_spec(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
     select(window, 2)
     window.fitting_view.min_edit.setText("-3")
     select(window, 1)
@@ -276,7 +291,7 @@ def test_remove_scan_moves_on_to_the_next_scan_and_shows_its_spec(window):
 
 def test_removing_the_last_listed_scan_moves_back_to_the_previous_one(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
 
     window.remove_scan_btn.click()
@@ -353,15 +368,17 @@ def test_add_scans_appends_after_the_listed_scans(window):
 
 
 def test_add_scans_skips_scans_already_listed_and_keeps_their_spec(window):
-    s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1], template=make_spec())
+    s1, s2, s3 = make_scans("s1", "s2", "s3")
+    list_scans(window, [s1, s2])
+    select(window, 1)
     window.fitting_view.min_edit.setText("-5")
 
-    window.add_scans([s1, s2], template=make_spec(range_min="8"))
+    window.add_scans([s2, s3])
 
     specs = window.fit_specs()
-    assert window.scan_list.count() == 2
-    assert [specs[uuid].range_min for uuid, _ in (s1, s2)] == ["-5", "8"]
+    assert window.scan_list.count() == 3
+    # s2 keeps its own edit; s3 joins from the group model, s1's spec.
+    assert [specs[uuid].range_min for uuid, _ in (s1, s2, s3)] == ["0", "-5", "0"]
 
 
 def test_add_scans_keeps_the_scan_on_screen(window):
@@ -478,7 +495,7 @@ def make_outcome(uuid, offset=0.0, components=None) -> GroupFitOutcome:
 
 def fitted_window(window, *names, components=None):
     scans = make_scans(*names)
-    window.set_scans(scans, template=make_spec())
+    list_scans(window, scans)
     window.show_outcomes(None, "detector", [make_outcome(uuid, i, components) for i, (uuid, _) in enumerate(scans)])
     return scans
 
@@ -557,7 +574,7 @@ def test_a_scans_data_and_fit_share_a_color(window):
 
 def test_a_scan_without_an_outcome_is_not_drawn(window):
     scans = make_scans("s1", "s2")
-    window.set_scans(scans, template=make_spec())
+    list_scans(window, scans)
     window.show_outcomes(None, "detector", [make_outcome(scans[0][0])])
 
     select(window, 1)
@@ -585,7 +602,7 @@ def test_plot_separately_draws_each_component(window):
 
 def test_outcomes_for_scans_no_longer_listed_are_dropped(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1], template=make_spec())
+    list_scans(window, [s1])
 
     window.show_outcomes(None, "detector", [make_outcome(s1[0]), make_outcome(s2[0])])
     window.add_scans([s2])
@@ -596,7 +613,7 @@ def test_outcomes_for_scans_no_longer_listed_are_dropped(window):
 
 def test_show_outcomes_signal_redraws(window, qtbot):
     (s1,) = make_scans("s1")
-    window.set_scans([s1], template=make_spec())
+    list_scans(window, [s1])
 
     with qtbot.waitSignal(window.show_outcomes_signal, timeout=1000):
         window.show_outcomes_signal.emit(None, "detector", [make_outcome(s1[0])])
@@ -625,7 +642,7 @@ def test_remove_scan_drops_every_selected_scan(window):
 
 def test_remove_scans_keeps_the_current_scan_and_its_edits(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
     select(window, 1)
     window.fitting_view.min_edit.setText("-6")
 
@@ -649,7 +666,7 @@ def test_remove_scans_ignores_scans_not_listed(window):
 
 def test_removing_the_current_scan_loads_the_next_scans_spec(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
     window.fitting_view.min_edit.setText("-8")
     select(window, 0)
@@ -680,7 +697,7 @@ def test_window_starts_with_a_blank_range_meaning_the_whole_scan(window):
 
 def test_editing_the_first_scan_reaches_the_others(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
 
     window.fitting_view.peak_panels[0].peak_table.rows[1].value_edit.setText("-0.6")
     window.fitting_view.min_edit.setText("-2")
@@ -692,7 +709,7 @@ def test_editing_the_first_scan_reaches_the_others(window):
 
 def test_a_field_edited_on_its_own_scan_keeps_its_value(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
     window.fitting_view.peak_panels[0].peak_table.rows[1].value_edit.setText("0.4")
     select(window, 0)
@@ -707,7 +724,7 @@ def test_a_field_edited_on_its_own_scan_keeps_its_value(window):
 
 def test_a_first_scan_edit_reaches_a_fixed_flag_too(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
 
     window.fitting_view.peak_panels[0].peak_table.rows[2].fix_check.setChecked(True)
 
@@ -716,7 +733,7 @@ def test_a_first_scan_edit_reaches_a_fixed_flag_too(window):
 
 def test_editing_another_scan_does_not_reach_the_rest(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
     select(window, 1)
 
     window.fitting_view.min_edit.setText("-9")
@@ -727,7 +744,7 @@ def test_editing_another_scan_does_not_reach_the_rest(window):
 
 def test_a_first_scan_peak_count_change_reaches_scans_sharing_its_peaks(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2, s3], template=make_spec())
+    list_scans(window, [s1, s2, s3])
     select(window, 2)
     window.fitting_view.peak_panels[0].peak_shape_combo.setCurrentText("Lorentzian")
     select(window, 0)
@@ -742,7 +759,7 @@ def test_a_first_scan_peak_count_change_reaches_scans_sharing_its_peaks(window):
 
 def test_a_first_scan_cosine_edit_reaches_the_others(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     window.fitting_view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
     window.fit_specs()
 
@@ -753,7 +770,7 @@ def test_a_first_scan_cosine_edit_reaches_the_others(window):
 
 def test_scans_added_later_start_from_the_first_scan_not_the_one_on_screen(window):
     s1, s2, s3 = make_scans("s1", "s2", "s3")
-    window.set_scans([s1, s2], template=make_spec())
+    list_scans(window, [s1, s2])
     select(window, 1)
     window.fitting_view.min_edit.setText("-9")
 
@@ -774,7 +791,7 @@ def test_no_guess_request_without_a_scan_on_screen(window):
 
 def test_peak_guess_request_names_the_scan_columns_range_and_asking_peak(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec(range_min="-2", range_max=""))
+    list_scans(window, [s1, s2], make_spec(range_min="-2", range_max=""))
     window.set_columns("", "detector")
     select(window, 1)
     window.fitting_view.num_peaks_spin.setValue(2)
@@ -790,7 +807,7 @@ def test_peak_guess_request_names_the_scan_columns_range_and_asking_peak(window)
 
 
 def test_background_guess_request_names_the_background(window):
-    window.set_scans(make_scans("s1"), template=make_spec())
+    list_scans(window, make_scans("s1"))
     window.set_columns("s1", "detector")
 
     request = window.get_suggest_background_request()
@@ -799,7 +816,7 @@ def test_background_guess_request_names_the_background(window):
 
 
 def test_suggest_buttons_reach_their_hookups(window):
-    window.set_scans(make_scans("s1"), template=make_spec())
+    list_scans(window, make_scans("s1"))
     peaks, backgrounds = [], []
     window.hookup_suggest_params_signal(lambda: peaks.append(True))
     window.hookup_suggest_background_signal(lambda: backgrounds.append(True))
@@ -812,7 +829,7 @@ def test_suggest_buttons_reach_their_hookups(window):
 
 def test_a_peak_guess_fills_the_scan_on_screen(window):
     (s1,) = make_scans("s1")
-    window.set_scans([s1], template=make_spec())
+    list_scans(window, [s1])
 
     window.peak_params_suggested_signal.emit(s1[0], 12.0, 0.5, 0.3)
 
@@ -822,7 +839,7 @@ def test_a_peak_guess_fills_the_scan_on_screen(window):
 
 def test_a_guess_for_a_scan_no_longer_on_screen_is_dropped(window):
     s1, s2 = make_scans("s1", "s2")
-    window.set_scans([s1, s2], template=make_spec(center="7"))
+    list_scans(window, [s1, s2], make_spec(center="7"))
     select(window, 1)
 
     window.peak_params_suggested_signal.emit(s1[0], 12.0, 0.5, 0.3)
@@ -834,7 +851,7 @@ def test_a_guess_for_a_scan_no_longer_on_screen_is_dropped(window):
 
 def test_a_cosine_guess_fills_the_cosine(window):
     (s1,) = make_scans("s1")
-    window.set_scans([s1], template=make_spec())
+    list_scans(window, [s1])
     window.fitting_view.peak_panels[0].peak_shape_combo.setCurrentText("Cosine")
 
     window.cosine_params_suggested_signal.emit(s1[0], 1.0, 2.0, 3.0, 4.0)
@@ -844,7 +861,7 @@ def test_a_cosine_guess_fills_the_cosine(window):
 
 def test_a_background_guess_fills_slope_and_intercept(window):
     (s1,) = make_scans("s1")
-    window.set_scans([s1], template=make_spec())
+    list_scans(window, [s1])
 
     window.background_params_suggested_signal.emit(s1[0], 0.25, 4.0)
 
@@ -865,7 +882,7 @@ def make_result(center=0.0) -> FitResultSummary:
 def summarized_window(window, *names, unfitted=()):
     """List ``names`` and show a group fit result for each, except those in ``unfitted``."""
     scans = make_scans(*names)
-    window.set_scans(scans, template=make_spec())
+    list_scans(window, scans)
     outcomes = [
         make_outcome(uuid).model_copy(update={"result": None if name in unfitted else make_result(float(i))})
         for i, (uuid, name) in enumerate(scans)
@@ -891,7 +908,7 @@ def test_summary_row_sits_just_above_the_group_fit_button(window):
 
 
 def test_summary_offers_nothing_before_a_group_fit(window):
-    window.set_scans(make_scans("s1"), template=make_spec())
+    list_scans(window, make_scans("s1"))
 
     assert summary_params(window) == []
     assert not window.generate_summary_btn.isEnabled()
@@ -969,7 +986,7 @@ def test_picking_a_fitted_scan_shows_its_own_result(window):
 
 
 def test_outcomes_arriving_show_the_current_scans_result(window):
-    window.set_scans(make_scans("s1", "s2"), template=make_spec())
+    list_scans(window, make_scans("s1", "s2"))
     select(window, 1)
 
     summarized_window(window, "s1", "s2")
@@ -1012,7 +1029,7 @@ def test_an_edit_over_a_shown_result_is_stored_alone(window):
 
 def test_an_edit_made_while_the_fit_ran_survives_its_outcomes(window):
     scans = make_scans("s1", "s2")
-    window.set_scans(scans, template=make_spec())
+    list_scans(window, scans)
     select(window, 1)
     peak_rows(window)[2].value_edit.setText("0.7")
 

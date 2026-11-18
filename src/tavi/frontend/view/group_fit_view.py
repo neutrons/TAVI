@@ -361,21 +361,16 @@ class GroupFitWindow(QWidget):
         """Connect the signal emitted with a scan's uuid when the user removes it from the group."""
         self.scan_removed.connect(callback)
 
-    def set_scans(self, scans: list[tuple[UUID, str]], template: Optional[FitSpec] = None) -> None:
+    def set_scans(self, scans: list[tuple[UUID, str]]) -> None:
         """
-        List ``scans`` as (uuid, name) pairs, in order; a scan not listed before starts from ``template``.
+        List ``scans`` as (uuid, name) pairs, in order; a scan not listed before starts from the group model.
 
-        A scan already listed keeps its spec. Without a ``template``, new scans start from the first
-        scan's spec - the group model - or from the panel if the group is empty, so they join the group
-        without a per-scan change of their own.
+        A scan already listed keeps its spec. A new scan starts from the first scan's spec - the group
+        model - or from the panel if the group is empty, so it joins the group without a per-scan
+        change of its own.
         """
         self._store_current()
-        if template is not None:
-            seed = template
-        elif self._specs:
-            seed = next(iter(self._specs.values()))
-        else:
-            seed = self.fitting_view.get_fit_spec()
+        seed = next(iter(self._specs.values())) if self._specs else self.fitting_view.get_fit_spec()
         self._specs = {
             uuid: self._specs[uuid] if uuid in self._specs else seed.model_copy(deep=True) for uuid, _name in scans
         }
@@ -401,15 +396,15 @@ class GroupFitWindow(QWidget):
             return
         self.scan_list.setCurrentRow(uuids.index(previous_uuid) if previous_uuid in uuids else 0)
 
-    def add_scans(self, scans: list[tuple[UUID, str]], template: Optional[FitSpec] = None) -> None:
+    def add_scans(self, scans: list[tuple[UUID, str]]) -> None:
         """
-        Append the ``scans`` (uuid, name) not listed yet after those that are, each starting from ``template``.
+        Append the ``scans`` (uuid, name) not listed yet after those that are, each starting from the group model.
 
         A scan already listed keeps its place and its spec, so adding it again changes nothing.
         """
         listed = [(item.data(Qt.UserRole), item.text()) for item in self._items()]
         added = {uuid: name for uuid, name in scans if uuid not in dict(listed)}
-        self.set_scans(listed + list(added.items()), template)
+        self.set_scans(listed + list(added.items()))
 
     def _items(self) -> list[QListWidgetItem]:
         return [self.scan_list.item(row) for row in range(self.scan_list.count())]
