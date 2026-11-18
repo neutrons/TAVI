@@ -492,8 +492,34 @@ def test_set_rows_can_clear_to_empty(qtbot):
 
 
 # ---------------------------------------------------------------------------
-# Perform Fit button
+# Single Fit / Group Fit buttons
 # ---------------------------------------------------------------------------
+
+
+def test_perform_fit_button_reads_single_fit(view):
+    assert view.perform_fit_btn.text() == "Single Fit"
+
+
+def test_group_fit_button_sits_just_before_undo_fit(view):
+    row = view._bottom_rows.itemAt(0).layout()
+    widgets = [row.itemAt(i).widget() for i in range(row.count()) if row.itemAt(i).widget() is not None]
+
+    assert widgets == [view.group_fit_btn, view.undo_fit_btn, view.redo_fit_btn, view.perform_fit_btn]
+    assert view.group_fit_btn.text() == "Group Fit"
+
+
+def test_group_fit_button_click_emits_signal(view, qtbot):
+    with qtbot.waitSignal(view.group_fit_clicked, timeout=1000):
+        view.group_fit_btn.click()
+
+
+def test_hookup_group_fit_signal_connects_callback(view):
+    calls = []
+    view.hookup_group_fit_signal(lambda: calls.append(1))
+
+    view.group_fit_clicked.emit()
+
+    assert calls == [1]
 
 
 def test_perform_fit_button_click_emits_signal(view, qtbot):
@@ -1009,9 +1035,9 @@ def test_set_fit_spec_clears_a_stale_chi_squared(view):
 # ---------------------------------------------------------------------------
 
 
-def test_fitting_tab_has_no_group_fit_or_math_constraints_button(view):
-    """The group fit window opens from the project tree's "Add to Group Fit", not from this tab."""
+def test_fitting_tab_has_one_group_fit_button_and_no_math_constraints_button(view):
+    """Group Fit here hands the staged scans to the group fit window; it never fits them itself."""
     labels = [button.text() for button in view.findChildren(QPushButton)]
 
-    assert "Group Fit" not in labels
+    assert labels.count("Group Fit") == 1
     assert "Use Math Constraints" not in labels

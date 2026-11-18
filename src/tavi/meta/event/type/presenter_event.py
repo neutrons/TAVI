@@ -19,7 +19,8 @@ class GroupScansEvent(Event):
     """
     Add scans to the group a group fit runs over. Like ``Focus*`` events this only adds.
 
-    Published by ``ProjectPresenter`` when the user picks "Add to Group Fit" in the project tree;
+    Published by ``ProjectPresenter`` when the user picks "Add to Group Fit" in the project tree, and
+    by ``FittingPresenter`` for the staged scans when the 1D Fitting tab's Group Fit button is pressed;
     ``GroupFitPresenter`` lists them in the group fit window. Carries each scan's name beside its
     uuid, since the window lists scans by name and no model owns the group yet to look it up.
     """
@@ -131,10 +132,9 @@ class SaveFitEvent(Event):
     """
     Request to save a freshly performed fit's members into the project's data store.
 
-    Published by ``FitModel`` after Perform Fit, just before the matching ``SyncFitEvent`` - never for
+    Published by ``FitModel`` after Single Fit, just before the matching ``SyncFitEvent`` - never for
     a recompute, which changes nothing worth saving. ``TaviProjectModel`` merges ``members`` into
     ``TaviData.fits[fit_uuid]`` by scan, so the members this leaves out stay as they were.
-    ``FitWindowPresenter`` also takes it as the cue that the following sync is a fresh fit.
     """
 
     fit_uuid: UUID
@@ -261,13 +261,12 @@ class SyncFitEvent(Event):
     """
     Sync the UI to freshly computed members of a fit - the "sync" step of focus -> calculate -> sync.
 
-    Published by ``FitModel`` both after Perform Fit and after a saved fit is recomputed for display
+    Published by ``FitModel`` both after Single Fit and after a saved fit is recomputed for display
     (``RecomputeFitEvent``). Display only: ``PlotterPresenter``/``Plot1DView`` render each outcome's
-    ``curve`` alongside the data it was fit against, ``FittingPresenter`` reflects the active series'
-    member in the fitting panel, and ``FitWindowPresenter`` fills the windows of a fit it was just told
-    was saved (``SaveFitEvent``). Persisting the fit is ``SaveFitEvent``'s job, not this one's.
+    ``curve`` alongside the data it was fit against, and ``FittingPresenter`` reflects the active series'
+    member in the fitting panel. Persisting the fit is ``SaveFitEvent``'s job, not this one's.
 
-    ``outcomes`` may cover only some of the fit's members - refitting one series of a sequential fit
+    ``outcomes`` may cover only some of the fit's members - refitting one series of a multi-scan fit
     syncs just that one - which is why this names the fit by uuid rather than carrying a whole
     ``FitEntry``.
     """

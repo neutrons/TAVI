@@ -1298,7 +1298,7 @@ def test_remove_items_removes_every_fit_sharing_a_removed_scan(model):
 
 
 def test_remove_items_prunes_one_member_of_a_two_member_fit_and_keeps_it(model):
-    """Removing one run of a sequential fit must not destroy the fit of the other run."""
+    """Removing one run of a multi-scan fit must not destroy the fit of the other run."""
     gone, kept = make_raw_scan("scan-gone"), make_raw_scan("scan-kept")
     model.tavi_data.raw_scans[gone.uuid] = gone
     model.tavi_data.raw_scans[kept.uuid] = kept
@@ -1433,7 +1433,7 @@ def test_get_fits_handle_is_the_live_fits_dict(model):
 
 
 def test_handle_save_fit_event_merges_a_partial_outcome_keeping_other_members(model):
-    """Refitting one series of a sequential fit must replace only that member, not drop the rest."""
+    """Refitting one series of a multi-scan fit must replace only that member, not drop the rest."""
     first = make_fit_member("run1", source_uuid="scan-001")
     second = make_fit_member("run2", source_uuid="scan-002")
     fit = make_fit_entry(members=[first, second])

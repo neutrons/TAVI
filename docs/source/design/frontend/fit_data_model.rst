@@ -1,18 +1,27 @@
-Fit Data Model and Sequential Fitting
-=====================================
+Fit Data Model
+==============
+
+.. admonition:: Deprecated: sequential fitting
+
+   Sequential fitting (several staged scans fit in order, each seeded from the
+   previous result, with one window per scan) is deprecated and replaced by
+   :doc:`group_fit_flow`. Its code is commented out under ``# Deprecated:``
+   markers: the seeding in ``FitModel``, ``FitRequest.seed_from_previous``, and
+   the per-member fit windows (``FitWindowPresenter`` / ``FitWindowsView``).
+   Single Fit now fits the lead staged series only. Multi-member fits saved by
+   older projects still load, browse, refit one member at a time, and undo.
 
 Overview
 --------
 
 A fit, like a :doc:`Plot <plot_data_model>`, is a *collection*. It covers one or
-more scans, and fitting one scan is just the case with one member. A
-**sequential fit** is not a separate type. It is a fit whose members were fit in
-order, each one starting from the previous member's fitted values. Once the fit
-has run, nothing records that it was sequential: every member is recomputed from
-its own saved spec, the same as any other fit.
+more scans, and fitting one scan is just the case with one member. A fit with
+several members (from a deprecated sequential run in an older project) is not a
+separate type: every member is recomputed from its own saved spec, the same as
+any other fit.
 
-This page covers the data model, how the *stage* decides between a sequential
-fit and refitting one member, and the event flows involved. The stage is the
+This page covers the data model, how the *stage* decides which series Perform
+Fit refits, and the event flows involved. The stage is the
 part of the focus that edits and fits apply to: every focused series while the
 plotter's "Apply All" is checked, only the series picked in the "Current Plot"
 dropdown while it isn't. ``PlotModel`` tracks it and syncs it out as
@@ -22,15 +31,28 @@ panel shows. The `Event map`_ shows every fit event and what it triggers.
 Use cases covered
 -----------------
 
-* **Run a sequential fit.** Select several scans, set up the fitting panel for
-  the first one (or leave values blank to have them guessed), leave "Apply All"
-  checked so every focused series is staged, and press Perform Fit. Every staged
-  series is fit in stage order, which is tree selection order. Each fit starts
-  from the previous fit's result. Every member gets its own window, and the whole fit is
-  saved in ``TaviData.fits`` as one ``FitEntry``.
+* **Fit a scan.** Select a scan, set up the fitting panel (or leave values
+  blank to have them guessed), and press Single Fit. Only the lead staged
+  series is fit, even when "Apply All" stages several; fitting several scans at
+  once is :doc:`group_fit_flow`'s job. The fit is saved in ``TaviData.fits`` as
+  one ``FitEntry``.
+* **Hand scans to a group fit.** Press Group Fit, beside Undo Fit, to add every
+  staged series' scan to the Group Fit window, exactly as "Add to Group Fit" in
+  the project tree does (``FittingPresenter`` publishes the same
+  ``GroupScansEvent``). Each scan is added once, in stage order.
+
+.. Deprecated: sequential fit is replaced by group fit (see group_fit_flow).
+
+   * **Run a sequential fit.** Select several scans, set up the fitting panel for
+     the first one (or leave values blank to have them guessed), leave "Apply All"
+     checked so every focused series is staged, and press Perform Fit. Every staged
+     series is fit in stage order, which is tree selection order. Each fit starts
+     from the previous fit's result. Every member gets its own window, and the whole fit is
+     saved in ``TaviData.fits`` as one ``FitEntry``.
+
 * **Change one member's parameters.** Uncheck "Apply All", then pick a scan in
   the "Current Plot" dropdown, which stages it alone. The fitting panel reloads
-  exactly the spec and result saved for that member. Edit it and press Perform Fit: only that member
+  exactly the spec and result saved for that member. Edit it and press Single Fit: only that member
   is refit, and the rest of the fit is left alone. TAVI does no validity check on
   any fit; judging whether a fit worked is up to the user.
 * **Undo or redo a refit.** While dialing in one member, press Undo Fit to go
@@ -46,10 +68,9 @@ Use cases covered
   fit with its own history. To carry on with an earlier fit and its history,
   select that fit in the tree.
 * **Recover a saved fit.** Select the fit in the project tree. Every member is
-  recomputed from its stored spec (not re-chained) and drawn on the main plotter
-  only, over the data each member was fit against. No windows open, and open
-  ones are not refreshed. Uncheck "Apply All" and use the dropdown to inspect
-  each member.
+  recomputed from its stored spec and drawn on the main plotter, over the data
+  each member was fit against. Uncheck "Apply All" and use the dropdown to
+  inspect each member.
 
 Data model
 ----------
@@ -98,9 +119,9 @@ Key decisions
 **One type, not a SequentialFit beside FitEntry.** A separate type would have
 needed its own events, tree node, purge rule and recompute path. All of those
 would be copies of the single-fit ones, and after the run the two kinds of fit
-behave the same. Seeding is a property of *running* the fit
-(``FitRequest.seed_from_previous``), so it lives on the request, not on the
-saved object.
+behave the same. Seeding was a property of *running* the fit (the now-deprecated
+``FitRequest.seed_from_previous``), so it lived on the request, not on the
+saved object. That is why deprecating it leaves every saved fit loadable.
 
 **Focus, stage, calculate, sync.** Fit events follow the same pattern as the
 rest of the widgets. A *focus* event says what the user is looking at
@@ -121,15 +142,16 @@ the plotter stages those series like any others. ``PlotterPresenter`` and
 result are shown when they arrive.
 
 **The fitting panel works on the stage.** ``FittingPresenter`` keeps the staged
-series from ``SyncStageEvent`` and fits exactly those, in stage order: several
-staged series run a sequential fit, one is fit alone. It no longer tracks the
-focus or the "Apply All" checkbox itself; staging already encodes both.
+series from ``SyncStageEvent`` and fits the lead one. (Several staged series
+used to run a sequential fit; that is deprecated in favour of group fit.) It
+doesn't track the focus or the "Apply All" checkbox itself; staging already
+encodes both.
 
-**Save and sync are separate events.** Perform Fit publishes ``SaveFitEvent``
+**Save and sync are separate events.** Single Fit publishes ``SaveFitEvent``
 and then ``SyncFitEvent``. Recomputing a saved fit for display publishes only
 ``SyncFitEvent``, because nothing about the fit changed. One combined event
 would need a flag saying which of the two it was, and every subscriber that
-cares (the project model, the fit windows) would have to branch on it. With two
+cares (the project model) would have to branch on it. With two
 events, each subscriber registers for the one it needs.
 
 **Save and sync name a fit and carry some of its members.** Refitting one member
@@ -159,9 +181,9 @@ arrives as a ``SaveFitEvent``, so ``TaviProjectModel`` records the member each
 merge displaces in a ``FitHistory`` keyed by ``(fit uuid, source scan uuid)``.
 Field edits that were never fit are not steps: the panel's line edits have
 their own undo for typing, and the use case is going back to a *fit*. A step
-from a sequential run is recorded per member too, so a bad run can be undone
-one scan at a time, but only with that one series staged - undo is for dialing
-one member in. Other choices:
+in a multi-member fit is recorded per member too, so it can be undone one scan
+at a time, but only with that one series staged - undo is for dialing one
+member in. Other choices:
 
 * History is linear. Saving after an undo clears that member's redo stack.
 * Each member keeps at most ``backend.model.fit.history.size-limit`` (10, in ``application.yml``) states, and the oldest
@@ -200,22 +222,23 @@ registration order. ``SyncPlotEvent``, which ``PlotModel`` publishes for every
 field edit or removal, is a refresh of the same focus and never resets the
 panel.
 
-**Windows only for a freshly saved fit.** ``FitWindowPresenter`` only touches
-windows for a fit it has just seen a ``SaveFitEvent`` for. On the save, it notes
-which windows the following ``SyncFitEvent`` should fill: every member of a
-multi-member fit (opening any that are missing), or only the windows already
-open for a one-member refit. The sync then consumes that note. A recompute is
-synced but never saved, so browsing a fit from the project tree shows it on the
-main plotter only and leaves open windows as they were. Without that rule, every
-reselection would spawn a window per scan, and refitting one member would reopen
-a window the user closed. Each window has a "Close All" button that closes every
-fit window. Open windows are tracked by ``(fit uuid, source scan uuid)`` and
-closed when their fit or scan leaves the project.
+.. Deprecated: per-member fit windows are replaced by the Group Fit window.
+
+   **Windows only for a freshly saved fit.** ``FitWindowPresenter`` only touches
+   windows for a fit it has just seen a ``SaveFitEvent`` for. On the save, it notes
+   which windows the following ``SyncFitEvent`` should fill: every member of a
+   multi-member fit (opening any that are missing), or only the windows already
+   open for a one-member refit. The sync then consumes that note. A recompute is
+   synced but never saved, so browsing a fit from the project tree shows it on the
+   main plotter only and leaves open windows as they were. Without that rule, every
+   reselection would spawn a window per scan, and refitting one member would reopen
+   a window the user closed. Each window has a "Close All" button that closes every
+   fit window. Open windows are tracked by ``(fit uuid, source scan uuid)`` and
+   closed when their fit or scan leaves the project.
 
 **Failures stay in the fit.** A member whose fit raised (bad range, unsupported
-shape) is kept with ``result=None``, so the user can fix just that scan, and
-seeding continues from the last member that succeeded. When several series are
-fit together, their validation errors are reported as one message, not one
+shape) is kept with ``result=None``, so the user can fix just that scan. When
+``FitModel.perform_fit`` is given several series, their validation errors are reported as one message, not one
 dialog per scan. If no member succeeds, nothing is saved.
 
 Event map
@@ -237,7 +260,8 @@ under the stated condition, or that end in UI state rather than another event.
         tree([Select items in project tree]):::user
         combo([Pick series in Current Plot]):::user
         applyall([Toggle Apply All]):::user
-        perform([Perform Fit]):::user
+        perform([Single Fit]):::user
+        groupbtn([Group Fit]):::user
         undoredo([Undo / Redo Fit]):::user
         separately([Toggle Plot Separately]):::user
         remove([Remove items from tree]):::user
@@ -260,6 +284,7 @@ under the stated condition, or that end in UI state rather than another event.
         RemoveFitEvent:::event
         SyncFitHistoryEvent:::event
         RestoreFitMemberEvent:::event
+        GroupScansEvent:::event
 
         tree -- ProjectPresenter --> FocusEvent
         FocusEvent -- "TaviProjectModel: always, before routing" --> ClearFocusEvent
@@ -282,7 +307,7 @@ under the stated condition, or that end in UI state rather than another event.
         applyall -- "PlotterPresenter: all focused, or the lead (2nd)" --> StageSeriesEvent
         ClearStageEvent -. "PlotModel: empty the stage" .-> lastplots
         StageSeriesEvent -- "PlotModel: add to stage" --> SyncStageEvent
-        SyncStageEvent -. "FittingPresenter: Perform Fit covers these; new lead with a fit calls FitModel.sync_fit_spec" .-> syncspec[FitModel.sync_fit_spec]
+        SyncStageEvent -. "FittingPresenter: Single Fit covers the lead; new lead with a fit calls FitModel.sync_fit_spec" .-> syncspec[FitModel.sync_fit_spec]
         syncspec -- "member found" --> SyncFitSpecEvent
         SyncFitSpecEvent -. "FittingPresenter: still the lead series" .-> panel
 
@@ -291,7 +316,8 @@ under the stated condition, or that end in UI state rather than another event.
         performfit -- "same members (2nd)" --> SyncFitEvent
 
         SaveFitEvent -. "TaviProjectModel: merge members; new uuid only" .-> AddFitEvent
-        SaveFitEvent -. "FitWindowPresenter: note windows to fill" .-> windows[(fit windows)]
+        %% Deprecated: per-member fit windows are replaced by the Group Fit window.
+        %% SaveFitEvent -. "FitWindowPresenter: note windows to fill" .-> windows[(fit windows)]
         SaveFitEvent -- "TaviProjectModel: record displaced members" --> SyncFitHistoryEvent
         SyncFitHistoryEvent -. "FittingPresenter: enable Undo/Redo for the one staged member" .-> panel
 
@@ -299,19 +325,27 @@ under the stated condition, or that end in UI state rather than another event.
         undocall -- "swap member (1st)" --> SyncFitHistoryEvent
         undocall -- "(2nd)" --> RestoreFitMemberEvent
         undocall -- "restored member only (3rd)" --> RecomputeFitEvent
-        RestoreFitMemberEvent -. "FitWindowPresenter: note window, only if open" .-> windows
+        %% Deprecated: per-member fit windows are replaced by the Group Fit window.
+        %% RestoreFitMemberEvent -. "FitWindowPresenter: note window, only if open" .-> windows
         AddFitEvent -- ProjectPresenter --> treenode[(tree /Fits node)]
         SyncFitEvent -. "PlotterPresenter: append curves" .-> canvas[(main plotter)]
         SyncFitEvent -. "FittingPresenter: map staged scans to fit, load lead's member" .-> panel[(fitting panel)]
-        SyncFitEvent -. "FitWindowPresenter: noted windows only" .-> windows
+        %% Deprecated: per-member fit windows are replaced by the Group Fit window.
+        %% SyncFitEvent -. "FitWindowPresenter: noted windows only" .-> windows
+
+        groupbtn -- "FittingPresenter: staged scans, each once" --> GroupScansEvent
+        GroupScansEvent -. "GroupFitPresenter: list scans, open window" .-> groupwindow[(Group Fit window)]
 
         separately -- FittingPresenter --> SetFitComponentsVisibleEvent
         SetFitComponentsVisibleEvent -. "PlotterPresenter: show/hide components" .-> canvas
 
         remove -- "TaviProjectModel.remove_items, TaviData.purge: scan removed" --> RemoveRawScanEvent
         remove -- "fit removed, or its last scan" --> RemoveFitEvent
-        RemoveRawScanEvent -. "FitWindowPresenter: close that scan's windows" .-> windows
-        RemoveFitEvent -. "FitWindowPresenter: close fit's windows; FittingPresenter: forget uuid; tree: drop node" .-> windows
+        %% Deprecated: per-member fit windows are replaced by the Group Fit window.
+        %% RemoveRawScanEvent -. "FitWindowPresenter: close that scan's windows" .-> windows
+        %% Deprecated: per-member fit windows are replaced by the Group Fit window.
+        %% RemoveFitEvent -. "FitWindowPresenter: close fit's windows; FittingPresenter: forget uuid; tree: drop node" .-> windows
+        RemoveFitEvent -. "FittingPresenter: forget uuid; tree: drop node" .-> panel
 
 Rectangles named ``FitModel.*`` or ``TaviProjectModel.*`` are direct model
 calls made through the model proxy, not events. They run on the proxy's worker
@@ -327,7 +361,7 @@ publish an event of its own: ``FittingPresenter``'s call to
 ``FitModel.sync_fit_spec`` is a proxy call, and inside a focus chain it never
 happens, because the scan-to-fit map has just been cleared. The recompute runs
 ``RecomputeFitEvent`` (2) and ``SyncFitEvent`` (3), and never saves, so no
-``AddFitEvent`` follows. Perform Fit, ``sync_fit_spec`` and undo/redo start from
+``AddFitEvent`` follows. Single Fit, ``sync_fit_spec`` and undo/redo start from
 a model call rather than an event, so ``SaveFitEvent``, ``SyncFitEvent``,
 ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``RestoreFitMemberEvent`` and
 the undo's ``RecomputeFitEvent`` are at depth 1, ``AddFitEvent`` and the undo's
@@ -347,11 +381,11 @@ Orderings relied on rather than enforced by the broker:
   time its ``SyncFitEvent`` arrives, and the fit's series are already focused
   and staged.
 * ``FitModel.perform_fit`` publishes ``SaveFitEvent`` *before*
-  ``SyncFitEvent``. ``FitWindowPresenter`` only fills windows it noted on the
-  save, so this order is what tells it the sync is a fresh fit.
-* ``TaviProjectModel`` publishes ``RestoreFitMemberEvent`` *before* the
-  ``RecomputeFitEvent`` for an undo/redo, for the same reason: it is how
-  ``FitWindowPresenter`` knows that one recompute should refresh an open window.
+  ``SyncFitEvent``, and ``TaviProjectModel`` publishes ``RestoreFitMemberEvent``
+  *before* the ``RecomputeFitEvent`` for an undo/redo. Both orders were what
+  told the deprecated ``FitWindowPresenter`` that a sync was a fresh fit or a
+  restore; they are kept so nothing else changes, but no current subscriber
+  relies on them.
 
 One ordering is deliberately *not* relied on: ``PlotterPresenter`` stages from
 its own ``FocusPlotEvent`` handler, which may run before or after
@@ -359,8 +393,8 @@ its own ``FocusPlotEvent`` handler, which may run before or after
 focused yet and syncs the stage once that series' ``FocusPlotEvent`` reaches it,
 so either order converges on the same ``SyncStageEvent``.
 
-Run a sequential fit
---------------------
+Perform a fit
+-------------
 
 .. mermaid::
 
@@ -372,33 +406,62 @@ Run a sequential fit
         participant EventBroker
         participant TaviProjectModel
         participant PlotterPresenter
-        participant FitWindowPresenter
         participant ProjectPresenter
 
-        Note over FittingPresenter: SyncStageEvent staged s1..sn ("Apply All" checked)
-        User ->> FittingView: Perform Fit
+        Note over FittingPresenter: SyncStageEvent staged s1..sn, s1 leads
+        User ->> FittingView: Single Fit
         FittingView ->> FittingPresenter: perform_fit_clicked
-        FittingPresenter ->> FitModel: perform_fit(FitRequest(spec, series=[s1..sn], seed_from_previous=True))
-        loop each series, in stage order
-            FitModel ->> FitModel: resolve x/y/err, fit, seed next spec from this result
-        end
-        FitModel ->> EventBroker: SaveFitEvent(fit_uuid, members=[m1..mn])
+        FittingPresenter ->> FitModel: perform_fit(FitRequest(spec, series=[s1], fit_uuid))
+        FitModel ->> FitModel: resolve x/y/err, fit
+        FitModel ->> EventBroker: SaveFitEvent(fit_uuid, members=[m1])
         EventBroker ->> TaviProjectModel: store FitEntry
         TaviProjectModel ->> EventBroker: AddFitEvent (new uuid only)
         EventBroker ->> ProjectPresenter: add node under /Fits
-        EventBroker ->> FitWindowPresenter: note a window per member
-        FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[o1..on])
-        EventBroker ->> PlotterPresenter: draw each curve on the main canvas
-        EventBroker ->> FittingPresenter: remember fit_uuid per staged series, show the lead member
-        EventBroker ->> FitWindowPresenter: open the noted windows
+        FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[o1])
+        EventBroker ->> PlotterPresenter: draw the curve on the main canvas
+        EventBroker ->> FittingPresenter: remember fit_uuid for s1, show its member
+
+.. Deprecated: sequential fit is replaced by group fit (see group_fit_flow).
+
+   Run a sequential fit
+   --------------------
+
+   .. mermaid::
+
+       sequenceDiagram
+           participant User
+           participant FittingView
+           participant FittingPresenter
+           participant FitModel
+           participant EventBroker
+           participant TaviProjectModel
+           participant PlotterPresenter
+           participant FitWindowPresenter
+           participant ProjectPresenter
+
+           Note over FittingPresenter: SyncStageEvent staged s1..sn ("Apply All" checked)
+           User ->> FittingView: Perform Fit
+           FittingView ->> FittingPresenter: perform_fit_clicked
+           FittingPresenter ->> FitModel: perform_fit(FitRequest(spec, series=[s1..sn], seed_from_previous=True))
+           loop each series, in stage order
+               FitModel ->> FitModel: resolve x/y/err, fit, seed next spec from this result
+           end
+           FitModel ->> EventBroker: SaveFitEvent(fit_uuid, members=[m1..mn])
+           EventBroker ->> TaviProjectModel: store FitEntry
+           TaviProjectModel ->> EventBroker: AddFitEvent (new uuid only)
+           EventBroker ->> ProjectPresenter: add node under /Fits
+           EventBroker ->> FitWindowPresenter: note a window per member
+           FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[o1..on])
+           EventBroker ->> PlotterPresenter: draw each curve on the main canvas
+           EventBroker ->> FittingPresenter: remember fit_uuid per staged series, show the lead member
+           EventBroker ->> FitWindowPresenter: open the noted windows
 
 Browse a saved fit
 ------------------
 
 Selecting a fit in the project tree shows it, over the data each member was fit
-against, on the main plotter only. The recompute publishes ``SyncFitEvent`` with
-no ``SaveFitEvent`` before it, so ``FitWindowPresenter`` has nothing noted: no
-window opens and any open window is left as it was.
+against, on the main plotter. The recompute publishes ``SyncFitEvent`` with no
+``SaveFitEvent`` before it, so nothing is saved.
 
 .. mermaid::
 
@@ -411,7 +474,7 @@ window opens and any open window is left as it was.
         participant FittingPresenter
         participant PlotModel
         participant FitModel
-        participant FitWindowPresenter
+        %% Deprecated: participant FitWindowPresenter
 
         User ->> ProjectPresenter: select fit in tree
         ProjectPresenter ->> EventBroker: FocusEvent(ids)
@@ -430,13 +493,13 @@ window opens and any open window is left as it was.
         PlotterPresenter ->> EventBroker: StageSeriesEvent(all, or the first)
         EventBroker ->> PlotModel: add to stage
         PlotModel ->> EventBroker: SyncStageEvent(staged series, scans)
-        EventBroker ->> FittingPresenter: Perform Fit now covers these
+        EventBroker ->> FittingPresenter: Single Fit now covers these
         TaviProjectModel ->> EventBroker: RecomputeFitEvent(fits)
         EventBroker ->> FitModel: recompute every member from its own spec
         FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes)
         EventBroker ->> PlotterPresenter: append curves
         EventBroker ->> FittingPresenter: map members to fit, show the lead member
-        EventBroker -->> FitWindowPresenter: ignored (nothing noted, no save)
+        %% Deprecated: EventBroker -->> FitWindowPresenter: ignored (nothing noted, no save)
 
 Selecting a saved plot follows the same path for every fit stamped on it
 (``Plot.fits``). The plot's own ``FocusPlotEvent`` has already focused its
@@ -457,13 +520,13 @@ Refit one member
         participant PlotModel
         participant TaviProjectModel
         participant FitModel
-        participant FitWindowPresenter
+        %% Deprecated: participant FitWindowPresenter
 
         User ->> Plot1DView: unchecks "Apply All"
         PlotterPresenter ->> EventBroker: ClearStageEvent, StageSeriesEvent(lead)
         EventBroker ->> PlotModel: restage
         PlotModel ->> EventBroker: SyncStageEvent([lead])
-        EventBroker ->> FittingPresenter: Perform Fit now covers the lead alone
+        EventBroker ->> FittingPresenter: Single Fit now covers the lead alone
         User ->> Plot1DView: picks scan k in Current Plot
         PlotterPresenter ->> EventBroker: ClearStageEvent, StageSeriesEvent([scan k])
         EventBroker ->> PlotModel: restage
@@ -473,14 +536,14 @@ Refit one member
         FittingPresenter ->> FitModel: sync_fit_spec(fit_uuid, scan k)
         FitModel ->> EventBroker: SyncFitSpecEvent(fit_uuid, member k)
         EventBroker ->> FittingPresenter: load member k's spec + result into the panel
-        User ->> FittingPresenter: edits, Perform Fit
+        User ->> FittingPresenter: edits, Single Fit
         FittingPresenter ->> FitModel: perform_fit(FitRequest(series=[scan k], fit_uuid))
         FitModel ->> EventBroker: SaveFitEvent(fit_uuid, members=[mk])
         EventBroker ->> TaviProjectModel: merge member k, others untouched
-        EventBroker ->> FitWindowPresenter: note scan k's window, only if open
+        %% Deprecated: EventBroker ->> FitWindowPresenter: note scan k's window, only if open
         FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[ok])
         EventBroker ->> PlotterPresenter: replace scan k's curve
-        EventBroker ->> FitWindowPresenter: refresh it if noted (never reopens)
+        %% Deprecated: EventBroker ->> FitWindowPresenter: refresh it if noted (never reopens)
 
 Undo a refit
 ------------
@@ -493,7 +556,7 @@ Undo a refit
         participant FittingPresenter
         participant EventBroker
         participant TaviProjectModel
-        participant FitWindowPresenter
+        %% Deprecated: participant FitWindowPresenter
         participant FitModel
         participant PlotterPresenter
 
@@ -506,13 +569,13 @@ Undo a refit
         TaviProjectModel ->> EventBroker: SyncFitHistoryEvent(can_undo, can_redo)
         EventBroker ->> FittingPresenter: update Undo/Redo buttons
         TaviProjectModel ->> EventBroker: RestoreFitMemberEvent(fit_uuid, scan k)
-        EventBroker ->> FitWindowPresenter: note scan k's window, only if open
+        %% Deprecated: EventBroker ->> FitWindowPresenter: note scan k's window, only if open
         TaviProjectModel ->> EventBroker: RecomputeFitEvent(fit with member k only)
         EventBroker ->> FitModel: recompute member k from its restored spec
         FitModel ->> EventBroker: SyncFitEvent(fit_uuid, outcomes=[ok])
         EventBroker ->> PlotterPresenter: replace scan k's curve
         EventBroker ->> FittingPresenter: load restored member into the panel
-        EventBroker ->> FitWindowPresenter: refresh it if noted
+        %% Deprecated: EventBroker ->> FitWindowPresenter: refresh it if noted
 
 Redo is the same with the stacks swapped.
 
@@ -527,16 +590,16 @@ Remove a fit or scan
         participant TaviProjectModel
         participant EventBroker
         participant FittingPresenter
-        participant FitWindowPresenter
+        %% Deprecated: participant FitWindowPresenter
 
         User ->> ProjectPresenter: remove items
         ProjectPresenter ->> TaviProjectModel: remove_items(uuids)
         TaviProjectModel ->> TaviProjectModel: TaviData.purge - drop members of removed scans, fits left empty
         TaviProjectModel ->> TaviProjectModel: forget undo history of removed fits and scans
         TaviProjectModel ->> EventBroker: RemoveRawScanEvent per scan
-        EventBroker ->> FitWindowPresenter: close every window on that scan
+        %% Deprecated: EventBroker ->> FitWindowPresenter: close every window on that scan
         EventBroker ->> ProjectPresenter: drop tree node
         TaviProjectModel ->> EventBroker: RemoveFitEvent per fit removed or emptied
-        EventBroker ->> FittingPresenter: forget fit uuid (next Perform Fit mints a new one)
-        EventBroker ->> FitWindowPresenter: close the fit's windows
+        EventBroker ->> FittingPresenter: forget fit uuid (next Single Fit mints a new one)
+        %% Deprecated: EventBroker ->> FitWindowPresenter: close the fit's windows
         EventBroker ->> ProjectPresenter: drop tree node

@@ -105,11 +105,14 @@ def make_spec(**overrides) -> FitSpec:
     return FitSpec(**defaults)
 
 
-def make_request(series=None, seed_from_previous=False, fit_uuid=None, **spec_overrides) -> FitRequest:
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def make_request(series=None, seed_from_previous=False, fit_uuid=None, **spec_overrides) -> FitRequest:
+def make_request(series=None, fit_uuid=None, **spec_overrides) -> FitRequest:
     return FitRequest(
         spec=make_spec(**spec_overrides),
         series=[make_series()] if series is None else series,
-        seed_from_previous=seed_from_previous,
+        # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+        # seed_from_previous=seed_from_previous,
         fit_uuid=fit_uuid,
     )
 
@@ -492,65 +495,68 @@ def make_sequential_scans(raw_scans, count=3, centers=SEQUENTIAL_CENTERS):
     return series
 
 
-def test_sequential_fit_publishes_one_event_with_one_outcome_per_series_in_order(model, raw_scans):
+def test_multi_series_fit_publishes_one_event_with_one_outcome_per_series_in_order(model, raw_scans):
     received = []
     EventBroker().register(SyncFitEvent, received.append)
     series = make_sequential_scans(raw_scans)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
+    model.perform_fit(make_request(series=series))
 
     assert len(received) == 1
     assert [outcome.member.source_scan_uuid for outcome in received[0].outcomes] == [s.source_scan_uuid for s in series]
     assert all(outcome.member.result is not None for outcome in received[0].outcomes)
 
 
-def test_sequential_fit_fits_each_series_against_its_own_data(model, raw_scans):
+def test_multi_series_fit_fits_each_series_against_its_own_data(model, raw_scans):
     received = []
     EventBroker().register(SyncFitEvent, received.append)
     series = make_sequential_scans(raw_scans)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
+    model.perform_fit(make_request(series=series))
 
     centers = [outcome.member.result.peaks[0].center for outcome in received[0].outcomes]
     assert centers == pytest.approx(SEQUENTIAL_CENTERS, abs=1e-3)
 
 
-def test_sequential_fit_does_not_freeze_a_parameter_that_fits_to_zero(model, raw_scans):
-    # The first center fits to ~1e-13; seeding the next member with that verbatim gives MINPACK a
-    # vanishing relative step and leaves every later center stuck there.
-    centers = [0.0, 0.5, 1.0]
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-    series = make_sequential_scans(raw_scans, centers=centers)
-
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
-
-    fitted = [outcome.member.result.peaks[0].center for outcome in received[0].outcomes]
-    assert fitted == pytest.approx(centers, abs=1e-3)
-    assert received[0].outcomes[1].member.peaks[0].center.value == "0.0"
-
-
-def test_sequential_fit_seeds_each_member_from_the_previous_result(model, raw_scans):
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-    series = make_sequential_scans(raw_scans, count=2)
-
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
-
-    first, second = received[0].outcomes
-    assert second.member.peaks[0].center.value == repr(first.member.result.peaks[0].center)
-    assert second.member.peaks[0].amplitude.value == repr(first.member.result.peaks[0].amplitude)
-    assert second.member.peaks[0].fwhm.value == repr(first.member.result.peaks[0].fwhm)
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_fit_does_not_freeze_a_parameter_that_fits_to_zero(model, raw_scans):
+#     # The first center fits to ~1e-13; seeding the next member with that verbatim gives MINPACK a
+#     # vanishing relative step and leaves every later center stuck there.
+#     centers = [0.0, 0.5, 1.0]
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#     series = make_sequential_scans(raw_scans, centers=centers)
+#
+#     model.perform_fit(make_request(series=series, seed_from_previous=True))
+#
+#     fitted = [outcome.member.result.peaks[0].center for outcome in received[0].outcomes]
+#     assert fitted == pytest.approx(centers, abs=1e-3)
+#     assert received[0].outcomes[1].member.peaks[0].center.value == "0.0"
 
 
-def test_sequential_fit_first_member_keeps_the_requested_spec(model, raw_scans):
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-    series = make_sequential_scans(raw_scans, count=2)
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_fit_seeds_each_member_from_the_previous_result(model, raw_scans):
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#     series = make_sequential_scans(raw_scans, count=2)
+#
+#     model.perform_fit(make_request(series=series, seed_from_previous=True))
+#
+#     first, second = received[0].outcomes
+#     assert second.member.peaks[0].center.value == repr(first.member.result.peaks[0].center)
+#     assert second.member.peaks[0].amplitude.value == repr(first.member.result.peaks[0].amplitude)
+#     assert second.member.peaks[0].fwhm.value == repr(first.member.result.peaks[0].fwhm)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
 
-    assert received[0].outcomes[0].member.peaks[0].center.value == str(GAUSSIAN_CENTER)
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_fit_first_member_keeps_the_requested_spec(model, raw_scans):
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#     series = make_sequential_scans(raw_scans, count=2)
+#
+#     model.perform_fit(make_request(series=series, seed_from_previous=True))
+#
+#     assert received[0].outcomes[0].member.peaks[0].center.value == str(GAUSSIAN_CENTER)
 
 
 def test_fit_without_seeding_applies_the_spec_as_is_to_every_series(model, raw_scans):
@@ -558,40 +564,41 @@ def test_fit_without_seeding_applies_the_spec_as_is_to_every_series(model, raw_s
     EventBroker().register(SyncFitEvent, received.append)
     series = make_sequential_scans(raw_scans, count=2)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=False))
+    model.perform_fit(make_request(series=series))
 
     assert [outcome.member.peaks[0].center.value for outcome in received[0].outcomes] == [str(GAUSSIAN_CENTER)] * 2
 
 
-def test_sequential_fit_seeding_keeps_fixed_flags_and_bounds(model, raw_scans):
-    """Only the values carry over - fixed flags and bounds stay as the spec has them."""
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-    series = make_sequential_scans(raw_scans, count=2)
-    peak = PeakField(
-        shape="Gaussian",
-        amplitude=make_param(GAUSSIAN_AMPLITUDE, minimum=0),
-        center=make_param(GAUSSIAN_CENTER, minimum=-2, maximum=2),
-        fwhm=make_param(GAUSSIAN_FWHM, fixed=True),
-    )
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_fit_seeding_keeps_fixed_flags_and_bounds(model, raw_scans):
+#     """Only the values carry over - fixed flags and bounds stay as the spec has them."""
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#     series = make_sequential_scans(raw_scans, count=2)
+#     peak = PeakField(
+#         shape="Gaussian",
+#         amplitude=make_param(GAUSSIAN_AMPLITUDE, minimum=0),
+#         center=make_param(GAUSSIAN_CENTER, minimum=-2, maximum=2),
+#         fwhm=make_param(GAUSSIAN_FWHM, fixed=True),
+#     )
+#
+#     model.perform_fit(make_request(series=series, seed_from_previous=True, peaks=[peak]))
+#
+#     seeded = received[0].outcomes[1].member.peaks[0]
+#     assert seeded.fwhm.fixed is True
+#     assert seeded.center.fixed is False
+#     assert (seeded.center.minimum, seeded.center.maximum) == ("-2", "2")
+#     assert (seeded.amplitude.minimum, seeded.amplitude.maximum) == ("0", "")
+#     assert received[0].outcomes[1].member.result.peaks[0].fwhm == pytest.approx(GAUSSIAN_FWHM, rel=1e-6)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True, peaks=[peak]))
 
-    seeded = received[0].outcomes[1].member.peaks[0]
-    assert seeded.fwhm.fixed is True
-    assert seeded.center.fixed is False
-    assert (seeded.center.minimum, seeded.center.maximum) == ("-2", "2")
-    assert (seeded.amplitude.minimum, seeded.amplitude.maximum) == ("0", "")
-    assert received[0].outcomes[1].member.result.peaks[0].fwhm == pytest.approx(GAUSSIAN_FWHM, rel=1e-6)
-
-
-def test_sequential_fit_failed_member_is_published_without_a_result(model, raw_scans):
+def test_multi_series_fit_failed_member_is_published_without_a_result(model, raw_scans):
     received = []
     EventBroker().register(SyncFitEvent, received.append)
     series = make_sequential_scans(raw_scans)
     series[1] = make_series("scan-missing", friendly_name="run-missing")
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
+    model.perform_fit(make_request(series=series))
 
     outcomes = received[0].outcomes
     assert len(outcomes) == 3
@@ -601,25 +608,26 @@ def test_sequential_fit_failed_member_is_published_without_a_result(model, raw_s
     assert outcomes[1].data is None
 
 
-def test_sequential_fit_seeding_continues_from_the_last_good_member(model, raw_scans):
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-    series = make_sequential_scans(raw_scans)
-    series[1] = make_series("scan-missing", friendly_name="run-missing")
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_fit_seeding_continues_from_the_last_good_member(model, raw_scans):
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#     series = make_sequential_scans(raw_scans)
+#     series[1] = make_series("scan-missing", friendly_name="run-missing")
+#
+#     model.perform_fit(make_request(series=series, seed_from_previous=True))
+#
+#     first, _failed, third = received[0].outcomes
+#     assert third.member.result is not None
+#     assert third.member.peaks[0].center.value == repr(first.member.result.peaks[0].center)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
 
-    first, _failed, third = received[0].outcomes
-    assert third.member.result is not None
-    assert third.member.peaks[0].center.value == repr(first.member.result.peaks[0].center)
-
-
-def test_sequential_fit_with_every_member_failing_publishes_nothing(model):
+def test_multi_series_fit_with_every_member_failing_publishes_nothing(model):
     computed = []
     EventBroker().register(SyncFitEvent, computed.append)
     series = [make_series("scan-missing-a", "run-a"), make_series("scan-missing-b", "run-b")]
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True))
+    model.perform_fit(make_request(series=series))
 
     assert computed == []
 
@@ -643,7 +651,7 @@ def test_multi_series_fit_reuses_a_supplied_fit_uuid(model, raw_scans):
     EventBroker().register(SyncFitEvent, received.append)
     series = make_sequential_scans(raw_scans, count=2)
 
-    model.perform_fit(make_request(series=series, seed_from_previous=True, fit_uuid=UUID(value="fit-007")))
+    model.perform_fit(make_request(series=series, fit_uuid=UUID(value="fit-007")))
 
     assert received[0].fit_uuid == UUID(value="fit-007")
 
@@ -1301,23 +1309,24 @@ def test_suggest_params_for_a_peak_still_uses_the_peak_event(model):
     assert received[0].center == pytest.approx(GAUSSIAN_CENTER, abs=0.1)
 
 
-def test_sequential_cosine_fit_seeds_the_next_member(cosine_model, raw_scans):
-    """A sequential fit carries a cosine's fitted values into the next series' starting values."""
-    x, y = make_cosine_xy()
-    put_scans(cosine_model._raw_scans, make_scan(uuid_val="scan-002", x=x, y=y * 1.1))
-    received = []
-    EventBroker().register(SyncFitEvent, received.append)
-
-    cosine_model.perform_fit(
-        make_request(
-            series=[make_series(), make_series(uuid_val="scan-002")],
-            seed_from_previous=True,
-            range_min="0",
-            range_max="10",
-            peaks=[make_cosine_peak()],
-        )
-    )
-
-    second = received[0].outcomes[1].member
-    assert second.peaks[0].cosine.frequency.value != ""
-    assert second.result.peaks[0].frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-2)
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_sequential_cosine_fit_seeds_the_next_member(cosine_model, raw_scans):
+#     """A sequential fit carries a cosine's fitted values into the next series' starting values."""
+#     x, y = make_cosine_xy()
+#     put_scans(cosine_model._raw_scans, make_scan(uuid_val="scan-002", x=x, y=y * 1.1))
+#     received = []
+#     EventBroker().register(SyncFitEvent, received.append)
+#
+#     cosine_model.perform_fit(
+#         make_request(
+#             series=[make_series(), make_series(uuid_val="scan-002")],
+#             seed_from_previous=True,
+#             range_min="0",
+#             range_max="10",
+#             peaks=[make_cosine_peak()],
+#         )
+#     )
+#
+#     second = received[0].outcomes[1].member
+#     assert second.peaks[0].cosine.frequency.value != ""
+#     assert second.result.peaks[0].frequency == pytest.approx(COSINE_FREQUENCY, abs=1e-2)

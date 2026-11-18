@@ -168,11 +168,23 @@ def test_apply_all_off_then_picking_a_series_stages_it_alone(app):
     assert [m.source_scan_uuid.value for m in fit.members] == ["scan-002"]
 
 
-def test_apply_all_fits_every_selected_scan_in_sequence(app):
+def test_apply_all_fits_only_the_lead_scan(app):
+    """Several staged scans fit only the lead - fitting them all at once is Group Fit's job."""
     project, view, _plotter_view = app
     select("scan-001", "scan-002")
 
     view.perform_fit_btn.click()
 
     (fit,) = project.tavi_data.fits.values()
-    assert [m.source_scan_uuid.value for m in fit.members] == ["scan-001", "scan-002"]
+    assert [m.source_scan_uuid.value for m in fit.members] == ["scan-001"]
+
+
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_apply_all_fits_every_selected_scan_in_sequence(app):
+#     project, view, _plotter_view = app
+#     select("scan-001", "scan-002")
+#
+#     view.perform_fit_btn.click()
+#
+#     (fit,) = project.tavi_data.fits.values()
+#     assert [m.source_scan_uuid.value for m in fit.members] == ["scan-001", "scan-002"]

@@ -24,6 +24,7 @@ from tavi.meta.event.type.model_event import RemoveFitEvent, SyncFitHistoryEvent
 from tavi.meta.event.type.presenter_event import (
     ClearFocusEvent,
     FocusFitEvent,
+    GroupScansEvent,
     SetFitComponentsVisibleEvent,
     SyncBackgroundParamsEvent,
     SyncCosineParamsEvent,
@@ -112,7 +113,7 @@ def stage(*uuid_vals):
 
 
 def focus_two_series(presenter):
-    """Stage scan-001 and scan-002 together, scan-001 leading - the shape of a sequential batch."""
+    """Stage scan-001 and scan-002 together, scan-001 leading - the shape of a multi-scan fit."""
     stage("scan-001", "scan-002")
 
 
@@ -191,7 +192,8 @@ def test_perform_fit_clicked_requests_the_lead_series_with_the_panels_spec(prese
     presenter._model.perform_fit.assert_called_once()
     request = last_request(presenter)
     assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001")]
-    assert request.seed_from_previous is False
+    # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+    # assert request.seed_from_previous is False
     assert request.spec == presenter._view.get_fit_spec()
     assert isinstance(request.spec, FitSpec)
 
@@ -239,18 +241,93 @@ def test_perform_fit_after_selecting_a_fit_from_the_tree_overwrites_that_fit(pre
 
 
 # ---------------------------------------------------------------------------
-# handle_perform_fit_clicked - sequential fits
+# handle_group_fit_clicked - hand the staged scans to the Group Fit window
 # ---------------------------------------------------------------------------
 
 
-def test_perform_fit_with_two_staged_requests_a_sequential_fit(presenter):
+def test_group_fit_clicked_adds_every_staged_scan_in_stage_order(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    stage("scan-002", "scan-001")
+
+    presenter._view.group_fit_btn.click()
+
+    assert len(received) == 1
+    assert received[0].scans == [(UUID(value="scan-002"), "test_scan"), (UUID(value="scan-001"), "test_scan")]
+
+
+def test_group_fit_clicked_names_each_scan_by_its_run(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    series = make_series("scan-001").model_copy(update={"friendly_name": "HB3_exp1_scan0042"})
+    EventBroker().publish(SyncStageEvent(series=[series], scans={series.source_scan_uuid: make_scan()}))
+
+    presenter.handle_group_fit_clicked()
+
+    assert received[0].scans == [(UUID(value="scan-001"), "HB3_exp1_scan0042")]
+
+
+def test_group_fit_clicked_lists_a_scan_staged_twice_once(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+    stage("scan-001", "scan-001", "scan-002")
+
+    presenter.handle_group_fit_clicked()
+
+    assert [uuid for uuid, _name in received[0].scans] == [UUID(value="scan-001"), UUID(value="scan-002")]
+
+
+def test_group_fit_clicked_with_nothing_staged_publishes_nothing(presenter):
+    received = []
+    EventBroker().register(GroupScansEvent, received.append)
+
+    presenter.handle_group_fit_clicked()
+
+    assert received == []
+
+
+def test_group_fit_clicked_does_not_fit(presenter):
+    stage("scan-001")
+
+    presenter.handle_group_fit_clicked()
+
+    presenter._model.perform_fit.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# handle_perform_fit_clicked - several staged series (fits only the lead; group fit replaces sequential fit)
+# ---------------------------------------------------------------------------
+
+
+def test_perform_fit_with_two_staged_fits_only_the_lead_series(presenter):
     focus_two_series(presenter)
 
     presenter.handle_perform_fit_clicked()
 
     request = last_request(presenter)
-    assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001"), UUID(value="scan-002")]
-    assert request.seed_from_previous is True
+    assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001")]
+
+
+def test_perform_fit_with_two_staged_reuses_the_lead_series_fit(presenter):
+    """With the lead in one fit and the other series in another, the lead's fit is refit in place."""
+    focus_two_series(presenter)
+    EventBroker().publish(make_sync_fit_event("scan-001", fit_uuid="fit-001"))
+    EventBroker().publish(make_sync_fit_event("scan-002", fit_uuid="fit-002"))
+
+    presenter.handle_perform_fit_clicked()
+
+    assert last_request(presenter).fit_uuid == UUID(value="fit-001")
+
+
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_perform_fit_with_two_staged_requests_a_sequential_fit(presenter):
+#     focus_two_series(presenter)
+#
+#     presenter.handle_perform_fit_clicked()
+#
+#     request = last_request(presenter)
+#     assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001"), UUID(value="scan-002")]
+#     assert request.seed_from_previous is True
 
 
 def test_perform_fit_after_restaging_one_fits_only_that_series(presenter):
@@ -261,19 +338,21 @@ def test_perform_fit_after_restaging_one_fits_only_that_series(presenter):
 
     request = last_request(presenter)
     assert [s.source_scan_uuid for s in request.series] == [UUID(value="scan-001")]
-    assert request.seed_from_previous is False
+    # Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+    # assert request.seed_from_previous is False
 
 
-def test_perform_fit_with_one_staged_is_not_sequential(presenter):
-    stage("scan-001")
-
-    presenter.handle_perform_fit_clicked()
-
-    assert last_request(presenter).seed_from_previous is False
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_perform_fit_with_one_staged_is_not_sequential(presenter):
+#     stage("scan-001")
+#
+#     presenter.handle_perform_fit_clicked()
+#
+#     assert last_request(presenter).seed_from_previous is False
 
 
 def test_perform_fit_reuses_a_fit_shared_by_every_requested_series(presenter):
-    """Refitting a whole sequential batch refines that fit rather than minting another."""
+    """Refitting the lead of a multi-scan fit refines that fit rather than minting another."""
     focus_two_series(presenter)
     EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002"), fit_uuid="fit-seq"))
 
@@ -282,26 +361,28 @@ def test_perform_fit_reuses_a_fit_shared_by_every_requested_series(presenter):
     assert last_request(presenter).fit_uuid == UUID(value="fit-seq")
 
 
-def test_perform_fit_mints_a_new_fit_when_the_series_are_in_different_fits(presenter):
-    focus_two_series(presenter)
-    EventBroker().publish(make_sync_fit_event("scan-001", fit_uuid="fit-001"))
-    EventBroker().publish(make_sync_fit_event("scan-002", fit_uuid="fit-002"))
-
-    presenter.handle_perform_fit_clicked()
-
-    assert last_request(presenter).fit_uuid is None
-
-
-def test_perform_fit_mints_a_new_fit_when_only_some_series_have_one(presenter):
-    focus_two_series(presenter)
-    EventBroker().publish(make_sync_fit_event("scan-001", fit_uuid="fit-001"))
-
-    presenter.handle_perform_fit_clicked()
-
-    assert last_request(presenter).fit_uuid is None
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_perform_fit_mints_a_new_fit_when_the_series_are_in_different_fits(presenter):
+#     focus_two_series(presenter)
+#     EventBroker().publish(make_sync_fit_event("scan-001", fit_uuid="fit-001"))
+#     EventBroker().publish(make_sync_fit_event("scan-002", fit_uuid="fit-002"))
+#
+#     presenter.handle_perform_fit_clicked()
+#
+#     assert last_request(presenter).fit_uuid is None
 
 
-def test_perform_fit_on_one_staged_member_refits_its_sequential_fit(presenter):
+# Deprecated: sequential fit is replaced by group fit (see group_fit_model.py).
+# def test_perform_fit_mints_a_new_fit_when_only_some_series_have_one(presenter):
+#     focus_two_series(presenter)
+#     EventBroker().publish(make_sync_fit_event("scan-001", fit_uuid="fit-001"))
+#
+#     presenter.handle_perform_fit_clicked()
+#
+#     assert last_request(presenter).fit_uuid is None
+
+
+def test_perform_fit_on_one_staged_member_refits_its_multi_scan_fit(presenter):
     """Refitting one member alone edits that member of the existing fit."""
     focus_two_series(presenter)
     EventBroker().publish(make_multi_sync_fit_event(("scan-001", "scan-002"), fit_uuid="fit-seq"))
@@ -501,7 +582,7 @@ def test_handle_sync_fit_shows_result_for_a_fit_selected_from_the_tree(presenter
     assert presenter._view.chi2_edit.text() == "0.75"
 
 
-def test_handle_sync_fit_shows_the_active_member_of_a_sequential_fit(presenter, qtbot):
+def test_handle_sync_fit_shows_the_active_member_of_a_multi_scan_fit(presenter, qtbot):
     focus_two_series(presenter)
     event = SyncFitEvent(
         fit_uuid=UUID(value="fit-seq"),

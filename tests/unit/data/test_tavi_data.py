@@ -186,7 +186,7 @@ def test_purge_removes_a_fit_whose_source_scan_goes():
 
 
 def test_purge_prunes_but_keeps_a_two_member_fit():
-    """Removing one run must not destroy the other member of a sequential fit."""
+    """Removing one run must not destroy the other member of a multi-scan fit."""
     gone = make_raw_scan(uuid_val="scan-gone")
     kept = make_raw_scan(uuid_val="scan-kept")
     fit = make_fit_entry(source_uuids=("scan-gone", "scan-kept"))
