@@ -7,7 +7,7 @@ from tavi.backend.model.plot_resolver import channel_pairs, fit_series_by_source
 from tavi.library.data.enum.preset_type import PresetType
 from tavi.library.data.model_response import ModelResponse, ResponseCode
 from tavi.library.data.plot import Plot, PlotFields, PlotSeries
-from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan
+from tavi.library.data.scan import UUID, ProcessedScan, RawScan, Scan, metadata_label
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.exception_event import ReportErrorEvent
 from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
@@ -45,9 +45,10 @@ class PlotModel(PlotModelInterface):
         self._last_plots: list[Plot] = []
         # Source scan uuids of the staged series - what field edits apply to - in stage order.
         self._staged_uuids: list[UUID] = []
-        # Plotter's "Show Title" preference, kept here rather than read back off the view so a
-        # scan focused after the toggle is labelled the same way as the ones already on canvas.
-        self._show_title = True
+        # Plotter's "Set Title" metadata key, kept here rather than read back off the view so a
+        # scan focused after the edit is labelled the same way as the ones already on canvas.
+        # Empty means no title: series are labelled by their run name.
+        self._title = ""
 
         self._event_broker = EventBroker()
         self._event_broker.register(ClearFocusEvent, self._handle_clear_focus_event)
@@ -101,7 +102,7 @@ class PlotModel(PlotModelInterface):
         """Focus one single-series preview plot per raw or processed scan, so each can be staged independently."""
         if not e.scans:
             return
-        plots = [self._preview_plot_for_scan(scan, show_title=self._show_title) for scan in e.scans]
+        plots = [self._preview_plot_for_scan(scan) for scan in e.scans]
         self._event_broker.publish(FocusPlotEvent(plots=plots, scans=scans_for_plots(plots, self._scans())))
 
     def _handle_plot_focus_event(self, e: FocusPlotEvent) -> None:
@@ -151,10 +152,39 @@ class PlotModel(PlotModelInterface):
         self._staged_uuids = list(dict.fromkeys(self._staged_uuids + list(e.source_scan_uuids)))
         self._publish_sync_stage()
 
-    def set_show_title(self, show_title: bool) -> ModelResponse:
-        """Record the plotter's "Show Title" preference; it applies to the next batch of scans focused."""
-        self._show_title = show_title
+    def set_title(self, title: str) -> ModelResponse:
+        """
+        Label every staged series by ``title``, and every scan focused from now on.
+
+        ``title`` names a metadata field whose value becomes the label; one a scan doesn't carry
+        is shown as typed. An empty title clears it, back to the run name.
+        """
+        self._title = title.strip()
+        staged = set(self._staged_uuids)
+        if not staged:
+            return ModelResponse(code=ResponseCode.OK)
+
+        scans = self._scans()
+        self._last_plots = [
+            plot.model_copy(
+                update={
+                    "series": [
+                        series.model_copy(update={"title": self._title_for(scans[series.source_scan_uuid])})
+                        if series.source_scan_uuid in staged
+                        else series
+                        for series in plot.series
+                    ]
+                }
+            )
+            for plot in self._last_plots
+        ]
+        self._publish_sync_plots()
+        self._publish_sync_stage()
         return ModelResponse(code=ResponseCode.OK)
+
+    def _title_for(self, scan: Scan) -> Optional[str]:
+        """The "Set Title" label for ``scan``: its metadata value for the key, the key itself, or None when unset."""
+        return metadata_label(scan.metadata, self._title) if self._title else None
 
     def _scans(self) -> dict[UUID, Scan]:
         """Every scan a focused series may point at - raw or processed - in one lookup."""
@@ -176,21 +206,13 @@ class PlotModel(PlotModelInterface):
         scans = {s.source_scan_uuid: all_scans[s.source_scan_uuid] for s in series}
         self._event_broker.publish(SyncStageEvent(series=series, scans=scans))
 
-    def _preview_plot_for_scan(self, scan: Scan, show_title: bool = False) -> Plot:
-        """
-        Build an unsaved single-series preview plot from one scan's default axis.
-
-        ``show_title`` labels the series with the instrument's scan title instead of the
-        friendly name; scans whose metadata carries no title - every processed scan, whose
-        metadata is its own and empty - fall back to the friendly name.
-        """
+    def _preview_plot_for_scan(self, scan: Scan) -> Plot:
+        """Build an unsaved single-series preview plot from one scan's default axis, labelled as the plotter asks."""
         x_name, y_name = scan.tavimeta.default_axis
-        scan_name = scan.tavimeta.friendly_name
-        if show_title:
-            scan_name = getattr(scan.metadata, "scan_title", scan_name)
         series = PlotSeries(
             source_scan_uuid=scan.uuid,
-            scan_name=scan_name,
+            scan_name=scan.tavimeta.friendly_name,
+            title=self._title_for(scan),
             friendly_name=scan.tavimeta.friendly_name,
             normalized_by=None,
             normalized_by_value=None,

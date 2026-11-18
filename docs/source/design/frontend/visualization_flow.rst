@@ -237,10 +237,16 @@ Removing items from the tree first clears the tree's selection, which publishes
 before the tree drops its first row, so a selection left in place would make
 each confirmed row removal re-focus batch-mates that no longer resolve.
 
-The plotter's "Show Title" checkbox is a direct proxy call,
-``PlotModel.set_show_title(show_title)``, not an event: only ``PlotModel``
-owns series labels, so there is no one else to tell. It applies to the next
-scans focused.
+The plotter's "Set Title" field is a direct proxy call,
+``PlotModel.set_title(title)``, not an event: only ``PlotModel`` owns series
+labels, so there is no one else to tell. It is sent when the text changes
+(Return or focus-out). ``title`` names a metadata field, e.g. ``scan_title``
+or ``samplename``. ``PlotModel`` sets each staged
+series' ``PlotSeries.title`` to that field's value from its own scan, or to
+``title`` itself when the scan has no such field. It then publishes
+``SyncPlotEvent`` and ``SyncStageEvent``. The key is also kept for scans
+focused later. Clearing the field clears ``title`` on the staged series, so
+they are labelled by their run name again.
 
 
 Wildcard channels — one series, many curves
@@ -365,7 +371,7 @@ Events for broadcast, proxy calls for requests
 
 Focus, stage and sync are broadcast as events because many components react
 to each. A request that only one component answers — a field edit
-(``update_fields``), "Show Title" (``set_show_title``), Add Plot
+(``update_fields``), "Set Title" (``set_title``), Add Plot
 (``save_focused_plots``) — is a direct call through that model's proxy
 instead. The model then publishes a sync event if the data changed.
 

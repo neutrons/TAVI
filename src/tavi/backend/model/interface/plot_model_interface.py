@@ -18,8 +18,8 @@ class PlotModelInterface(Model, metaclass=abc.ABCMeta):
         """Update every staged series using the plotter's current control field values."""
 
     @abc.abstractmethod
-    def set_show_title(self, show_title: bool) -> ModelResponse:
-        """Label scans focused from now on by their instrument scan title rather than their friendly name."""
+    def set_title(self, title: str) -> ModelResponse:
+        """Label staged and later-focused scans by the metadata value ``title`` names, or ``title`` itself."""
 
     @abc.abstractmethod
     def save_focused_plots(self, fit_uuids: Optional[list[UUID]] = None) -> ModelResponse:

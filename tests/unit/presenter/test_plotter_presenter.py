@@ -551,7 +551,7 @@ def test_checking_apply_all_stages_every_focused_series_lead_first(presenter):
 
 
 # ---------------------------------------------------------------------------
-# handle_fields_changed / Save Plot / Show Title
+# handle_fields_changed / Save Plot
 # ---------------------------------------------------------------------------
 
 
@@ -793,7 +793,7 @@ def _dropdown_items(presenter) -> list[str]:
 
 
 def test_dropdown_labels_stay_distinct_when_scans_share_a_title(presenter):
-    """With Show Title on, every "sample alignment" run used to show up as the same entry."""
+    """Plots saved with the old "Show Title" toggle hold a shared title, which used to show up as the same entry."""
     plot = make_plot(
         series=[
             make_series("scan-001", scan_name="sample alignment", friendly_name="scan0001"),
@@ -824,14 +824,25 @@ def test_dropdown_label_falls_back_to_scan_name_without_a_friendly_name(presente
 
 
 # ---------------------------------------------------------------------------
-# Show Title
+# Set Title
 # ---------------------------------------------------------------------------
 
 
-def test_show_title_toggle_calls_the_plot_model(presenter):
-    presenter.handle_show_title_toggled(False)
+def test_title_change_calls_the_plot_model(presenter):
+    presenter.handle_title_changed("samplename")
 
-    presenter._model.set_show_title.assert_called_once_with(False)
+    presenter._model.set_title.assert_called_once_with("samplename")
+
+
+def test_dropdown_keeps_the_run_name_in_front_of_a_set_title(presenter):
+    series = make_series("scan-001", scan_name="alignment").model_copy(
+        update={"friendly_name": "scan0001", "title": "MnO"}
+    )
+    plot = Plot(series=[series])
+
+    presenter.handle_plot_focus(make_event(plots=[plot], scans=make_scans("scan-001")))
+
+    assert _dropdown_items(presenter) == ["scan0001 - MnO"]
 
 
 # ---------------------------------------------------------------------------

@@ -24,7 +24,8 @@ Core Rule: Plot Holds No Data
         """One scan's contribution to a Plot: which scan, and which columns of it to display."""
 
         source_scan_uuid: UUID
-        scan_name: str                       # legend label; the shared scan title when "Show Title" is on
+        scan_name: str                       # the scan's name; a shared scan title in older saved plots
+        title: Optional[str] = None          # "Set Title" label; replaces the whole legend label when set
         friendly_name: Optional[str] = None  # the run's own name - see ``run_name``
         normalized_by: Optional[str]
         normalized_by_value: Optional[float] = None
@@ -44,8 +45,9 @@ pointer (``source_scan_uuid``) plus a column specification (``x_name`` /
 ``y_name`` / ``error_name`` / ``normalized_by``). ``Plot`` is nothing more
 than a named list of these pointers.
 
-``scan_name`` is only a display label. With "Show Title" on it holds the
-instrument's scan title, which many scans share (e.g. every
+``scan_name`` is only a display label. New series hold the scan's friendly
+name in it. Plots saved while the plotter had a "Show Title" toggle hold the
+instrument's scan title instead, which many scans share (e.g. every
 "sample alignment" run). Anything that has to tell series apart uses the
 run's own name instead. ``PlotSeries.run_name`` is the scan's ``friendly_name``,
 falling back to ``scan_name`` for series saved before that field existed. Saved
@@ -53,6 +55,14 @@ plot and fit names use it. ``PlotSeries.display_label`` is ``run_name``,
 followed by the title when the two differ (e.g.
 ``scan0012 - sample alignment``). The legend, the fit curve labels and the
 "Current Plot" dropdown all use it.
+
+``PlotSeries.title`` is the plotter's "Set Title" label: the value of the
+metadata field the user named, or the name itself when the scan has no such
+field. It is the user's explicit choice of label, so when it is set
+``display_label`` is the title alone, without the run name. The "Current Plot"
+dropdown still puts ``run_name`` in front of it, because one value is often
+shared by many scans (every scan of one sample). ``scan_name`` is left alone,
+so clearing the title brings back the series' earlier label.
 
 .. mermaid::
 

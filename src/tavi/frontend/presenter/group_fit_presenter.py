@@ -4,7 +4,7 @@ from tavi.backend.model.interface.group_fit_model_interface import GroupFitModel
 from tavi.frontend.presenter.abstract_presenter import AbstractPresenter
 from tavi.frontend.view.fitting_view import FittingView
 from tavi.frontend.view.group_fit_view import GroupFitWindow
-from tavi.library.data.group_fit_entry import GroupFitRequest
+from tavi.library.data.group_fit_entry import GroupFitRequest, SetGroupTitleRequest
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import RemoveProcessedScanEvent, RemoveRawScanEvent
 from tavi.meta.event.type.presenter_event import (
@@ -13,6 +13,7 @@ from tavi.meta.event.type.presenter_event import (
     SyncGroupCosineParamsEvent,
     SyncGroupFitEvent,
     SyncGroupPeakParamsEvent,
+    SyncGroupTitlesEvent,
 )
 
 
@@ -39,10 +40,12 @@ class GroupFitPresenter(AbstractPresenter):
         self._event_broker.register(SyncGroupPeakParamsEvent, self.handle_peak_params_suggested)
         self._event_broker.register(SyncGroupCosineParamsEvent, self.handle_cosine_params_suggested)
         self._event_broker.register(SyncGroupBackgroundParamsEvent, self.handle_background_params_suggested)
+        self._event_broker.register(SyncGroupTitlesEvent, self.handle_sync_titles)
         self._view.hookup_group_fit_signal(self.handle_group_fit_clicked)
         self._view.hookup_suggest_params_signal(self.handle_suggest_params_clicked)
         self._view.hookup_suggest_background_signal(self.handle_suggest_background_clicked)
         self._view.hookup_generate_summary_signal(self.handle_generate_summary_clicked)
+        self._view.hookup_title_signal(self.handle_title_changed)
 
     def init_view(self) -> None:
         """Create the Group Fit window, with a fitting panel of its own."""
@@ -51,6 +54,20 @@ class GroupFitPresenter(AbstractPresenter):
     def handle_group_scans(self, e: GroupScansEvent) -> None:
         """List the scans added to the group, opening the window so the user sees them land."""
         self._view.add_scans_signal.emit(e.scans)
+        # Newly listed scans are labelled by the same key as the rest. Asked with the event's own
+        # uuids too, so they're covered even if the add is still queued on the GUI thread.
+        if self._view.title():
+            uuids = list(dict.fromkeys(self._view.scan_uuids() + [uuid for uuid, _name in e.scans]))
+            self._model.set_title(SetGroupTitleRequest(title=self._view.title(), scan_uuids=uuids))
+
+    def handle_title_changed(self, title: str) -> None:
+        """Ask the model to resolve every listed scan's label from the "Set Title" key."""
+        self._model.set_title(SetGroupTitleRequest(title=title, scan_uuids=self._view.scan_uuids()))
+
+    def handle_sync_titles(self, e: SyncGroupTitlesEvent) -> None:
+        """Hand the resolved titles to the window, which relabels its legend."""
+        # Emitted rather than called: this runs on GroupFitModel's worker thread.
+        self._view.set_titles_signal.emit(e.titles)
 
     def handle_group_fit_clicked(self) -> None:
         """Ask the model to fit every listed scan from its own spec, against the window's columns."""

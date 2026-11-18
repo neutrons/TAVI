@@ -59,16 +59,17 @@ Ownership
    * - Who
      - Owns
    * - ``GroupFitWindow``
-     - The group's scans, each scan's draft spec, the shared columns, and the
-       last group fit's outcomes. This is display and draft state only; no
-       model owns the group yet.
+     - The group's scans, each scan's draft spec, the shared columns, the
+       last group fit's outcomes, and each scan's "Set Title" legend label.
+       This is display and draft state only; no model owns the group yet.
    * - ``GroupFitPresenter``
      - Nothing. It routes events to the window, and turns the Group Fit button
        into a ``GroupFitRequest`` built from the window's state.
    * - ``GroupFitModel``
      - Nothing persistent. It parses each spec with ``FitModel``'s translation,
        runs ``GroupFit`` and syncs the outcomes back. For a summary it averages
-       the column from each scan and asks for the result to be saved.
+       the column from each scan and asks for the result to be saved. For
+       "Set Title" it reads each scan's metadata.
    * - ``TaviProjectModel``
      - Saved summaries, as ``FitSummary`` entries in ``TaviData.fits``.
 
@@ -136,6 +137,31 @@ Generate turns the window's cached outcomes into a summary saved in the project:
         M ->> TP: SaveFitSummaryEvent(FitSummary)
         TP ->> PP: AddFitEvent
         Note over PP: listed under /Fits
+
+"Set Title" names a metadata field to label the legend by, as in the 1D
+plotter. The window holds no scans, only their uuids and names, so the model
+reads the values:
+
+.. mermaid::
+
+    sequenceDiagram
+        participant W as GroupFitWindow
+        participant GP as GroupFitPresenter
+        participant M as GroupFitModel (worker)
+
+        W ->> GP: title_changed(title)
+        GP ->> M: set_title(SetGroupTitleRequest(title, every listed uuid))
+        Note over M: each scan's metadata value, or the title as typed
+        M -->> GP: SyncGroupTitlesEvent(titles)
+        GP ->> W: set_titles_signal (queued to the GUI thread)
+        Note over W: legend relabelled; the scan list keeps the names
+
+A scan whose field is blank, or that is no longer loaded, gets no title and
+keeps its name. A blank key gives no titles at all, which clears them. While
+a key is set, ``GroupScansEvent`` makes the presenter ask again for every
+listed scan, so scans added later are titled too. The scan list and the
+fitting tab keep the scan names, because one value is often shared by many
+scans (every scan of one sample).
 
 Selecting a summary in the tree draws it in the 1D plotter and lists it in the
 Data File tab:

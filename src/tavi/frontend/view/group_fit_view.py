@@ -92,11 +92,13 @@ class GroupFitWindow(QWidget):
     scan_selected = Signal(object)
     scan_removed = Signal(object)
     columns_changed = Signal(str, str)
+    title_changed = Signal(str)
     # Emitted by GroupFitPresenter from whichever thread published the event; AutoConnection runs
     # them directly on the GUI thread and queues them from a model worker.
     add_scans_signal = Signal(list)
     remove_scans_signal = Signal(list)
     show_outcomes_signal = Signal(object, str, list)
+    set_titles_signal = Signal(list)
     # A guess for (scan uuid, values...); applied only if that scan is still the one on screen.
     peak_params_suggested_signal = Signal(object, float, float, float)
     cosine_params_suggested_signal = Signal(object, float, float, float, float)
@@ -130,6 +132,11 @@ class GroupFitWindow(QWidget):
         # redrawn whenever the selection changes rather than asked for again.
         self._outcomes: dict[UUID, GroupFitOutcome] = {}
         self._fitted_columns: tuple[Optional[str], str] = (None, "")
+        # Each scan's "Set Title" legend label, by uuid, as GroupFitModel resolved it from the scan's
+        # metadata. A scan without one is labelled by its listed name.
+        self._titles: dict[UUID, str] = {}
+        # What title_changed last announced, so leaving the field without editing it stays quiet.
+        self._last_title = ""
         # Built once the outcomes exist, since it offers parameters from them.
         self.fitting_view.insert_above_fit_buttons(self._build_summary_row())
 
@@ -169,6 +176,7 @@ class GroupFitWindow(QWidget):
         self.add_scans_signal.connect(self._add_scans_and_show)
         self.remove_scans_signal.connect(self.remove_scans)
         self.show_outcomes_signal.connect(self.show_outcomes)
+        self.set_titles_signal.connect(self.set_titles)
         self.peak_params_suggested_signal.connect(self._apply_peak_guess)
         self.cosine_params_suggested_signal.connect(self._apply_cosine_guess)
         self.background_params_suggested_signal.connect(self._apply_background_guess)
@@ -243,6 +251,7 @@ class GroupFitWindow(QWidget):
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addLayout(self._build_columns_row())
+        layout.addLayout(self._build_title_row())
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(self.figure)
         self.axes = self.figure.add_subplot(111)
@@ -277,6 +286,42 @@ class GroupFitWindow(QWidget):
         for edit in (self.y_col_edit, self.x_col_edit):
             edit.editingFinished.connect(self._on_columns_edited)
         return row
+
+    def _build_title_row(self) -> QHBoxLayout:
+        """The "Set Title: ..." row naming the metadata field the legend labels each scan by."""
+        row = QHBoxLayout()
+        row.addWidget(QLabel("Set Title:"))
+        self.title_edit = QLineEdit()
+        self.title_edit.setPlaceholderText("metadata key (e.g. scan_title) or literal text")
+        self.title_edit.editingFinished.connect(self._on_title_edited)
+        row.addWidget(self.title_edit)
+        return row
+
+    def hookup_title_signal(self, callback: Any) -> None:
+        """Connect the signal emitted with the "Set Title" text when the user changes it."""
+        self.title_changed.connect(callback)
+
+    def title(self) -> str:
+        """The "Set Title" text - a metadata key, or literal text; blank means each scan's name."""
+        return self.title_edit.text().strip()
+
+    def _on_title_edited(self) -> None:
+        """Announce the "Set Title" text once the user finishes editing it, if that changed it."""
+        title = self.title()
+        if title == self._last_title:
+            return
+        self._last_title = title
+        self.title_changed.emit(title)
+
+    def set_titles(self, titles: list[tuple[UUID, str]]) -> None:
+        """Label the listed scans by these (uuid, title) pairs in the legend, the rest by their names, and redraw."""
+        listed = set(self.scan_uuids())
+        self._titles = {uuid: title for uuid, title in titles if uuid in listed}
+        self.redraw()
+
+    def scan_uuids(self) -> list[UUID]:
+        """The uuid of every listed scan, in list order."""
+        return [item.data(Qt.UserRole) for item in self._items()]
 
     def hookup_group_fit_signal(self, callback: Any) -> None:
         """Connect the panel's Group Fit button's click signal to callback."""
@@ -377,6 +422,7 @@ class GroupFitWindow(QWidget):
             uuid: self._specs[uuid] if uuid in self._specs else seed.model_copy(deep=True) for uuid, _name in scans
         }
         self._outcomes = {uuid: outcome for uuid, outcome in self._outcomes.items() if uuid in self._specs}
+        self._titles = {uuid: title for uuid, title in self._titles.items() if uuid in self._specs}
         self._refresh_summary_params()
 
         previous_uuid = self._current_uuid
@@ -441,6 +487,7 @@ class GroupFitWindow(QWidget):
         for uuid in removed:
             self._specs.pop(uuid, None)
             self._outcomes.pop(uuid, None)
+            self._titles.pop(uuid, None)
         self._refresh_summary_params()
 
         current_uuid = self._current_uuid
@@ -488,9 +535,12 @@ class GroupFitWindow(QWidget):
         show_components = self.fitting_view.plot_sep_check.isChecked()
         component_index = self.scan_list.count()
         for row, item in enumerate(self._items()):
-            outcome = self._outcomes.get(item.data(Qt.UserRole))
+            uuid = item.data(Qt.UserRole)
+            outcome = self._outcomes.get(uuid)
             if not item.isSelected() or outcome is None:
                 continue
+            # The list keeps the scan's name, since one title is often shared by many scans.
+            label = self._titles.get(uuid, item.text())
             # Colored by list position rather than selection order, so a scan keeps its color as
             # others are picked or dropped.
             color = f"C{row}"
@@ -502,14 +552,14 @@ class GroupFitWindow(QWidget):
                     fmt="o",
                     capsize=3,
                     color=color,
-                    label=item.text(),
+                    label=label,
                 )
             if outcome.curve is not None:
-                self.axes.plot(outcome.curve.x, outcome.curve.best_fit, "-", color=color, label=f"{item.text()} fit")
+                self.axes.plot(outcome.curve.x, outcome.curve.best_fit, "-", color=color, label=f"{label} fit")
                 if show_components:
                     for prefix, values in outcome.curve.components.items():
-                        label = f"{item.text()} {prefix.rstrip('_') or 'component'}"
-                        self.axes.plot(outcome.curve.x, values, "--", lw=1, color=f"C{component_index}", label=label)
+                        name = f"{label} {prefix.rstrip('_') or 'component'}"
+                        self.axes.plot(outcome.curve.x, values, "--", lw=1, color=f"C{component_index}", label=name)
                         component_index += 1
         x_col, y_col = self._fitted_columns
         if self._outcomes:

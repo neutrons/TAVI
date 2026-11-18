@@ -276,6 +276,18 @@ class SyncFitEvent(Event):
     """In fit order. Every outcome is a different series."""
 
 
+class SyncGroupTitlesEvent(Event):
+    """
+    Sync the Group Fit window's legend labels to its "Set Title" key - one title per listed scan that has one.
+
+    Published by ``GroupFitModel`` after ``set_title``. Replaces the window's titles wholesale: a
+    listed scan missing here - the key cleared, or its field blank - is labelled by its name.
+    """
+
+    titles: list[tuple[UUID, str]]
+    """(scan uuid, title) pairs, in the order they were asked for."""
+
+
 class SyncGroupFitEvent(Event):
     """
     Sync the UI to a freshly computed group fit - one outcome per scan, in fit order.

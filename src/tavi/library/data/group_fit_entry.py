@@ -8,6 +8,16 @@ from tavi.library.data.fit_entry import FitCurve, FitData, FitResultSummary, Fit
 from tavi.library.data.scan import UUID
 
 
+class SetGroupTitleRequest(BaseModel):
+    """The Group Fit window's "Set Title" text, and every scan it lists - the ones whose labels it sets."""
+
+    title: str
+    """A metadata field name, or literal text when a scan has no such field. Blank clears the titles."""
+    scan_uuids: list[UUID]
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
 class GroupFitRequest(BaseModel):
     """
     Everything ``GroupFitModel`` needs to fit a group: each scan's raw panel spec, and the columns they share.

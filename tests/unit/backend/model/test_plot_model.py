@@ -830,11 +830,119 @@ class TestPlotModel(unittest.TestCase):
         assert response.code.name == "OK"
 
 
-def test_set_show_title_records_the_preference_for_the_next_focused_scans():
-    model = PlotModel([], {})
-    model.set_show_title(False)
+def make_titled_scan(uuid_val="scan-001", friendly_name="scan0001", metadata=None) -> RawScan:
+    return make_raw_scan(uuid_val=uuid_val).model_copy(
+        update={
+            "metadata": ScanMetadata(data=metadata or {}),
+            "tavimeta": TaviMetadata(
+                default_axis=("qh", "en"), friendly_name=friendly_name, friendly_path="/test_path"
+            ),
+        }
+    )
 
-    assert model._show_title is False
+
+class TestSetTitle(unittest.TestCase):
+    """The "Set Title" key: a metadata field's value as the label, or the key itself when no scan has it."""
+
+    def setUp(self):
+        self.broker = EventBroker()
+        self.raw_scans = {}
+        self.model = PlotModel(plots=[], raw_scans=self.raw_scans)
+
+    def _focus(self, *scans):
+        for scan in scans:
+            self.raw_scans[scan.uuid] = scan
+        self.broker.publish(FocusRawScanEvent(scans=list(scans)))
+
+    def _labels(self):
+        return [series.display_label for plot in self.model._last_plots for series in plot.series]
+
+    def test_staged_series_are_relabelled_with_the_metadata_value(self):
+        self._focus(make_titled_scan(metadata={"samplename": "MnO"}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+
+        self.model.set_title("samplename")
+
+        assert self._labels() == ["MnO"]
+
+    def test_a_key_no_scan_carries_is_shown_as_typed(self):
+        self._focus(make_titled_scan(metadata={"samplename": "MnO"}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+
+        self.model.set_title("my run")
+
+        assert self._labels() == ["my run"]
+
+    def test_each_scan_gets_its_own_value_and_unstaged_series_are_left_alone(self):
+        a = make_titled_scan("scan-a", "scan0001", {"temp": "1.5"})
+        b = make_titled_scan("scan-b", "scan0002", {"temp": "300"})
+        c = make_titled_scan("scan-c", "scan0003", {"temp": "10"})
+        self._focus(a, b, c)
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[a.uuid, b.uuid]))
+
+        self.model.set_title("temp")
+
+        assert self._labels() == ["1.5", "300", "scan0003"]  # make_titled_scan carries no scan_title
+
+    def test_relabel_publishes_sync_plot_and_sync_stage(self):
+        self._focus(make_titled_scan(metadata={"samplename": "MnO"}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+        plots: list[SyncPlotEvent] = []
+        stages: list[SyncStageEvent] = []
+        self.broker.register(SyncPlotEvent, plots.append)
+        self.broker.register(SyncStageEvent, stages.append)
+
+        self.model.set_title("samplename")
+
+        assert plots[-1].plots[0].series[0].title == "MnO"
+        assert stages[-1].series[0].title == "MnO"
+
+    def test_nothing_staged_publishes_nothing(self):
+        self._focus(make_titled_scan(metadata={"samplename": "MnO"}))
+        received: list[SyncPlotEvent] = []
+        self.broker.register(SyncPlotEvent, received.append)
+
+        self.model.set_title("samplename")
+
+        assert received == []
+
+    def test_scans_focused_afterwards_are_labelled_by_the_key_too(self):
+        self.model.set_title("samplename")
+
+        self._focus(make_titled_scan(metadata={"samplename": "MnO"}))
+
+        assert self._labels() == ["MnO"]
+
+    def test_scans_are_labelled_by_their_run_name_without_a_title(self):
+        self._focus(make_titled_scan(metadata={"scan_title": "alignment"}))
+
+        assert self._labels() == ["scan0001"]
+
+    def test_scan_title_is_just_another_metadata_key(self):
+        self._focus(make_titled_scan(metadata={"scan_title": "alignment"}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+
+        self.model.set_title("scan_title")
+
+        assert self._labels() == ["alignment"]
+
+    def test_a_blank_metadata_value_falls_back_to_the_run_name(self):
+        """SPICE files often carry an empty scan_title; a blank legend entry would name nothing."""
+        self._focus(make_titled_scan(metadata={"scan_title": ""}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+
+        self.model.set_title("scan_title")
+
+        assert self._labels() == ["scan0001"]
+
+    def test_an_empty_title_falls_back_to_the_run_name(self):
+        self._focus(make_titled_scan(metadata={"samplename": "MnO", "scan_title": "alignment"}))
+        self.broker.publish(StageSeriesEvent(source_scan_uuids=[UUID(value="scan-001")]))
+        self.model.set_title("samplename")
+
+        self.model.set_title("  ")
+
+        assert self._labels() == ["scan0001"]
 
 
 def make_multichannel_scan(uuid_val="scan-001") -> RawScan:
@@ -972,8 +1080,7 @@ class TestPlotModelProcessedScans(unittest.TestCase):
 
         assert self.model._last_plots == []
 
-    def test_focus_labels_the_series_with_the_friendly_name_even_with_show_title_on(self):
-        """A processed scan carries no instrument title, so "Show Title" falls back to the combined name."""
+    def test_focus_labels_the_series_with_the_friendly_name(self):
         received: list[FocusPlotEvent] = []
         self.broker.register(FocusPlotEvent, received.append)
 

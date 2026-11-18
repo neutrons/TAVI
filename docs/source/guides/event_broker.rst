@@ -214,7 +214,7 @@ Event lexicon
        ``SyncGroupFitEvent``, ``SyncFitSpecEvent``, ``SyncFitHistoryEvent``, ``SyncPeakParamsEvent``,
        ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
        ``SyncGroupPeakParamsEvent``, ``SyncGroupCosineParamsEvent``,
-       ``SyncGroupBackgroundParamsEvent``,
+       ``SyncGroupBackgroundParamsEvent``, ``SyncGroupTitlesEvent``,
        ``SyncRecentProjectsEvent``, ``SyncFilterEvent``,
        ``SyncFilterValidationEvent``, ``SyncItemNameEvent``
    * - Recompute
@@ -296,7 +296,7 @@ models may react to.
 A request that exactly one model answers, because it changes state only that
 model owns, is many to one. It is a direct call through that model's
 ``Proxy`` instead, such as ``PlotModel.update_fields``,
-``PlotModel.set_show_title``, ``FitModel.perform_fit``,
+``PlotModel.set_title``, ``GroupFitModel.set_title``, ``FitModel.perform_fit``,
 ``FitModel.sync_fit_spec``, ``CombineModel.combine``,
 ``TaviProjectModel.undo_fit_member`` and ``FilterModel.apply_filter``. The
 model then announces the result with a sync event, which every interested
