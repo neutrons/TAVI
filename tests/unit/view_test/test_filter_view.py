@@ -1,6 +1,6 @@
 """Tests for tavi.frontend.view.filter_view."""
 import pytest
-from qtpy.QtCore import Qt
+from qtpy.QtCore import QStringListModel, Qt
 from qtpy.QtWidgets import QMessageBox
 
 from tavi.frontend.view.filter_view import (
@@ -237,6 +237,52 @@ def test_filter_count_includes_sample(view: FilterView):
     add_filter(view)
 
     assert view.filter_count() == 2
+
+# ---------------------------------------------------------------------------
+# Criteria completers
+# ---------------------------------------------------------------------------
+
+def test_criteria_share_completers(view: FilterView):
+    sample_criteria_store = view.filter_criteria_set_list.currentWidget().criteria_store
+    sample_criteria_item: CriteriaItemWidget = list(sample_criteria_store.values())[0]
+    add_filter(view, name="Set A")
+    set_a_store = view.filter_criteria_set_list.currentWidget().criteria_store
+    set_a_item: CriteriaItemWidget = list(set_a_store.values())[0]
+    add_filter(view, name="Set B")
+    set_b_store = view.filter_criteria_set_list.currentWidget().criteria_store
+    set_b_item: CriteriaItemWidget = list(set_b_store.values())[0]
+
+    assert not (sample_criteria_item.criteria_key.completer() is set_a_item.criteria_key.completer())
+    assert set_a_item.criteria_key.completer() is set_b_item.criteria_key.completer()
+
+
+def test_criteria_toggles_completer(view: FilterView):
+    add_filter(view, name="Set A")
+    set_a_store = view.filter_criteria_set_list.currentWidget().criteria_store
+    set_a_item: CriteriaItemWidget = list(set_a_store.values())[0]
+
+    assert set_a_item.criteria_scope.currentText() == FilterScope.META.value
+    assert set_a_item.criteria_key.completer() is set_a_item.metadata_completer
+    set_a_item.criteria_scope.setCurrentIndex(1)
+    assert set_a_item.criteria_scope.currentText() in (FilterScope.COLUMN_PARTIAL.value, FilterScope.COLUMN_FULL.value)
+    assert set_a_item.criteria_key.completer() is set_a_item.data_completer
+
+
+def test_view_populates_completer(view: FilterView):
+    add_filter(view, name="Set A")
+    set_a_store = view.filter_criteria_set_list.currentWidget().criteria_store
+    set_a_item: CriteriaItemWidget = list(set_a_store.values())[0]
+
+    view.populate_metadata_completer(["scan"])
+    view.populate_data_completer(["q"])
+
+    metadata_completer_model = set_a_item.metadata_completer.model()
+    assert isinstance(metadata_completer_model, QStringListModel)
+    assert "scan" in metadata_completer_model.stringList()
+
+    data_completer_model = set_a_item.data_completer.model()
+    assert isinstance(data_completer_model, QStringListModel)
+    assert "q" in data_completer_model.stringList()
 
 # ---------------------------------------------------------------------------
 # remove_filter_signal

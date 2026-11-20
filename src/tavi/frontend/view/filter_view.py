@@ -4,9 +4,10 @@ from collections.abc import Callable
 from typing import Any, cast
 
 from neutrons_standard.config import Config
-from qtpy.QtCore import Qt, Signal
+from qtpy.QtCore import QStringListModel, Qt, Signal
 from qtpy.QtWidgets import (
     QComboBox,
+    QCompleter,
     QFrame,
     QGroupBox,
     QHBoxLayout,
@@ -37,8 +38,8 @@ class CriteriaItemWidget(QWidget):
     changed = Signal()
     scopes = [scope.value for scope in FilterScope]
     operators = [operator.value for operator in FilterOperator]
-    # TODO 18226: Add QCompleter for metadata
-    # TODO 18226: Add QCompleter for column data
+    metadata_completer = QCompleter()
+    data_completer = QCompleter()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Construct individual criteria."""
@@ -66,8 +67,8 @@ class CriteriaItemWidget(QWidget):
         criteria_layout.addWidget(self.criteria_value)
         criteria_layout.addWidget(self.criteria_delete_button)
 
-        # TODO 18226: set criteria_key QCompleter (maybe with call to toggle since scope should be set?)
-        # TODO 18226: connect scope change to QCompleter toggle
+        self.set_completer()
+        self.criteria_scope.currentTextChanged.connect(self.set_completer)
 
         self.criteria_scope.currentTextChanged.connect(self.changed)
         self.criteria_key.textChanged.connect(self.changed)
@@ -90,7 +91,12 @@ class CriteriaItemWidget(QWidget):
             value=self.criteria_value.text(),
         )
 
-    # TODO 18226: create QCompleter toggle between meta and columnar
+    def set_completer(self) -> None:
+        """Set the criteria key completer based on the criteria scope."""
+        if self.criteria_scope.currentText() in (FilterScope.META.value,):
+            self.criteria_key.setCompleter(self.metadata_completer)
+        if self.criteria_scope.currentText() in (FilterScope.COLUMN_FULL.value, FilterScope.COLUMN_PARTIAL.value):
+            self.criteria_key.setCompleter(self.data_completer)
 
     def set_sample(self) -> None:
         """Set criteria to sample mode: basic values and read-only."""
@@ -98,7 +104,7 @@ class CriteriaItemWidget(QWidget):
         self.criteria_scope.addItem(Config["filter.sample.criterion.scope"])
         self.criteria_scope.setEnabled(False)
         self.criteria_key.setText(Config["filter.sample.criterion.key"])
-        # TODO 18226: set criteria key to empty QCompleter
+        self.criteria_key.setCompleter(QCompleter())
         self.criteria_key.setEnabled(False)
         self.criteria_operator.clear()
         self.criteria_operator.addItem(Config["filter.sample.criterion.operator"])
@@ -399,9 +405,16 @@ class FilterView(QWidget):
         """Return the picked filter's criteria as currently entered."""
         return self.filter_criteria_set_list.currentWidget().criteria()
 
-    # TODO 18226: Add method to update criterion QCompleter for metadata
-    # TODO 18226: Add method to update criterion QCompleter for column data
     # Since the completers are criterion class objects, updating one should update all (intended)
+    @staticmethod
+    def populate_metadata_completer(metadata_keys: list[str]) -> None:
+        """Set the list of strings for use in the metadata key suggestions."""
+        CriteriaItemWidget.metadata_completer.setModel(QStringListModel(metadata_keys))
+
+    @staticmethod
+    def populate_data_completer(data_keys: list[str]) -> None:
+        """Set the list of strings for use in the data key suggestions."""
+        CriteriaItemWidget.data_completer.setModel(QStringListModel(data_keys))
 
     def confirm_delete_filter(self) -> bool:
         """Ask the user to confirm deleting the picked filter; return whether they did."""
