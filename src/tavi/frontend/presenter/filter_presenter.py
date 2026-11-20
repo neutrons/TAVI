@@ -9,15 +9,15 @@ from tavi.library.data.filter import FilterCriterion, ScanFilter
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFilterEvent,
+    AddRawScanEvent,
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    RemoveRawScanEvent,
     SyncFilterEvent,
+    SyncFilterKeySuggestionsEvent,
     SyncFilterValidationEvent,
 )
-
-# TODO 18226: Add import of AddRawScanEvent from tavi.meta.event.type.model_event
-# TODO 18226: Add import of RemoveRawScanEvent from tavi.meta.event.type.model_event
 
 
 class FilterPresenter(AbstractPresenter):
@@ -30,13 +30,14 @@ class FilterPresenter(AbstractPresenter):
 
         self._event_broker = EventBroker()
         self._event_broker.register(AddFilterEvent, self.handle_filter_added)
+        self._event_broker.register(AddRawScanEvent, self.handle_new_scan_keys)
         self._event_broker.register(SyncFilterEvent, self.handle_filter_synced)
         self._event_broker.register(RemoveFilterEvent, self.handle_filter_removed)
+        self._event_broker.register(RemoveRawScanEvent, self.handle_removed_scan_keys)
         self._event_broker.register(ApplyFilterEvent, self.handle_filter_applied)
         self._event_broker.register(ClearFilterEvent, self.handle_filter_cleared)
+        self._event_broker.register(SyncFilterKeySuggestionsEvent, self.handle_key_suggestion_sync)
         self._event_broker.register(SyncFilterValidationEvent, self.handle_filter_validation)
-        # TODO 18226: Register AddRawScanEvent to updating suggestion keys in filter model and view
-        # TODO 18226: Register RemoveRawScanEvent to regenerating suggestion keys in filter model and view
 
         self._view: FilterView
         self._view.filter_new_button.clicked.connect(self.handle_new_filter)
@@ -49,12 +50,13 @@ class FilterPresenter(AbstractPresenter):
         """Create the filter view."""
         self._view = FilterView()
 
-    # TODO 18226: Add method to update suggestion keys in filter model and view
-    # This more cheaply accumulates keys for display and updates the completers
+    def handle_new_scan_keys(self, e: AddRawScanEvent) -> None:
+        """Incrememnt scan key tracking from new raw scan."""
+        self._model.increment_scan_keys(e.uuid)
 
-    # TODO 18226: Add method to regenerate suggestion keys in filter model and view
-    # This more expensively regenerates keys from all known raw data objects for display and updates the completers
-    # This must regenerate as the signal for a removed scan occurs after the scan has already been purged
+    def handle_removed_scan_keys(self, e: RemoveRawScanEvent) -> None:
+        """Decrement scan key tracked from removed raw scan."""
+        self._model.decrement_scan_keys(e.uuid, e.raw_scan)
 
     def handle_new_filter(self) -> None:
         """List a new filter with one blank criterion; it enters the project when first applied."""
@@ -108,6 +110,11 @@ class FilterPresenter(AbstractPresenter):
     def handle_filter_validation(self, e: SyncFilterValidationEvent) -> None:
         """Show why the filter cannot be applied, or that it can."""
         self._view.show_validation_errors_signal.emit(e.errors)
+
+    def handle_key_suggestion_sync(self, e: SyncFilterKeySuggestionsEvent) -> None:
+        """Populate criteria key completers from model."""
+        self._view.populate_metadata_completer(e.metadata_keys)
+        self._view.populate_data_completer(e.data_keys)
 
     def _current_filter(self) -> ScanFilter:
         """Build the picked filter from what the panel currently shows."""

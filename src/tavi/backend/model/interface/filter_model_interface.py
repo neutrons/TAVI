@@ -5,7 +5,7 @@ import abc
 from tavi.backend.model.interface.model_interface import Model
 from tavi.library.data.filter import ScanFilter
 from tavi.library.data.model_response import ModelResponse
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.multithreading.proxy import Proxy
 
 
@@ -35,6 +35,14 @@ class FilterModelInterface(Model, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def clear_filter(self) -> ModelResponse:
         """Stop filtering the project's scans, publishing ClearFilterEvent."""
+
+    @abc.abstractmethod
+    def increment_scan_keys(self, uuid: UUID) -> ModelResponse:
+        """Increment key references on scan addition for use in key suggestion."""
+
+    @abc.abstractmethod
+    def decrement_scan_keys(self, uuid: UUID, scan: RawScan) -> ModelResponse:
+        """Decrement key references on scan removal for use in key suggestion."""
 
 
 FilterModelProxy = Proxy(FilterModelInterface)
