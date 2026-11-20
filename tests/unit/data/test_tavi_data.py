@@ -105,6 +105,7 @@ def test_purge_removes_a_raw_scan():
 
     assert data.raw_scans == {}
     assert result.raw_scans == [scan.uuid]
+    assert result.raw_scans_objects == [scan]
 
 
 def test_purge_ignores_an_unknown_uuid():

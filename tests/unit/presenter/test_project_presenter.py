@@ -91,6 +91,19 @@ def _make_presenter():
     return presenter, view, model
 
 
+def make_scan(uuid_val="scan-001", name="scan0001", columns=None) -> RawScan:
+    if columns is None:
+        columns = {"qh": [1.0, 2.0], "detector": [3.0, 4.0], "mcu": [1.0, 1.0]}
+    return RawScan(
+        uuid=UUID(value=uuid_val),
+        data=ScanData(data=columns),
+        metadata=ScanMetadata(),
+        tavimeta=TaviMetadata(default_axis=("qh", "detector"), friendly_name=name, friendly_path="/exp"),
+        prov=Provenance(raw_file=f"{name}.dat", contributing_scans={UUID(value=uuid_val): 1}),
+    )
+
+
+
 # ---------------------------------------------------------------------------
 # __init__ — wiring
 # ---------------------------------------------------------------------------
@@ -315,11 +328,11 @@ def test_handle_remove_request_does_not_touch_view():
 
 def test_remove_treeview_data_removes_from_view():
     presenter, view, model = _make_presenter()
-    uuid = UUID(value="u1")
+    scan = make_scan(uuid_val="u1")
 
-    presenter.remove_treeview_data(RemoveRawScanEvent(uuid=uuid))
+    presenter.remove_treeview_data(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
-    view.remove_item.assert_called_once_with(uuid)
+    view.remove_item.assert_called_once_with(scan.uuid)
 
 
 def test_remove_treeview_data_handles_plot_remove_event():

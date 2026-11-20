@@ -1,7 +1,7 @@
 """New Raw Scan Event module."""
 
 from tavi.library.data.filter import ScanFilter
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_interface import Event
 
 
@@ -79,6 +79,7 @@ class RemoveRawScanEvent(Event):
     """Indicates a RawScan has been removed from the Project and is no longer in TaviData."""
 
     uuid: UUID
+    raw_scan: RawScan
 
 
 class RemoveProcessedScanEvent(Event):

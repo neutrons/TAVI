@@ -138,8 +138,8 @@ class TaviProjectModel(TaviProjectInterface):
             fit_uuids=set(purged.fits), scan_uuids=set(purged.raw_scans) | set(purged.processed_scans)
         )
 
-        for uuid in purged.raw_scans:
-            self._event_broker.publish(RemoveRawScanEvent(uuid=uuid))
+        for uuid, scan in zip(purged.raw_scans, purged.raw_scans_objects):
+            self._event_broker.publish(RemoveRawScanEvent(uuid=uuid, raw_scan=scan))
         for uuid in purged.processed_scans:
             self._event_broker.publish(RemoveProcessedScanEvent(uuid=uuid))
         for uuid in purged.plots:
