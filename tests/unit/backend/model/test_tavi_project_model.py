@@ -1029,7 +1029,10 @@ def test_remove_items_publishes_raw_scan_remove_event(model):
     EventBroker().register(RemoveRawScanEvent, received.append)
     model.remove_items([scan.uuid])
 
-    assert [e.uuid for e in received] == [scan.uuid]
+    assert len(received) == 1
+    removed_event: RemoveRawScanEvent = received[0]
+    assert removed_event.uuid == scan.uuid
+    assert removed_event.raw_scan == scan
 
 
 def test_remove_items_drops_a_combined_histogram_and_announces_it(model):

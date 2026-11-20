@@ -42,7 +42,7 @@ def make_scans(*names) -> list[tuple[UUID, str]]:
     return [(UUID(value=name), name) for name in names]
 
 
-def make_raw_scan(name, center) -> RawScan:
+def make_raw_scan(name: str, center: float) -> RawScan:
     x = np.linspace(-5, 5, 201)
     detector = 50.0 * np.exp(-((x - center) ** 2) / (2 * 0.5**2)) + 1.0
     return RawScan(
@@ -123,14 +123,21 @@ def test_group_scans_events_accumulate(presenter):
     assert list(presenter.view().fit_specs()) == [UUID(value="s1"), UUID(value="s2")]
 
 
-@pytest.mark.parametrize("event_type", [RemoveRawScanEvent, RemoveProcessedScanEvent])
-def test_a_scan_leaving_the_project_leaves_the_group(presenter, event_type):
+def test_a_raw_scan_leaving_the_project_leaves_the_group(presenter):
     group("s1", "s2")
+    scan_s1 = make_raw_scan(name="s1", center=0.0)
 
-    EventBroker().publish(event_type(uuid=UUID(value="s1")))
+    EventBroker().publish(RemoveRawScanEvent(uuid=scan_s1.uuid, raw_scan=scan_s1))
 
     assert list(presenter.view().fit_specs()) == [UUID(value="s2")]
 
+
+def test_a_processed_scan_leaving_the_project_leaves_the_group(presenter):
+    group("s1", "s2")
+
+    EventBroker().publish(RemoveProcessedScanEvent(uuid=UUID(value="s1")))
+
+    assert list(presenter.view().fit_specs()) == [UUID(value="s2")]
 
 # ---------------------------------------------------------------------------
 # Group Fit button

@@ -66,7 +66,7 @@ class TestLoadRawScans(IntegrationTest):
             GroupFitModelInterface.__name__: GroupFitModelProxy(
                 GroupFitModel(tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_processed_scans_handle())
             ),
-            FilterModelInterface.__name__: FilterModelProxy(FilterModel(tavi_project_model.get_filters_handle())),
+            FilterModelInterface.__name__: FilterModelProxy(FilterModel(tavi_project_model.get_filters_handle(), tavi_project_model.get_raw_scans_handle())),
             CombineModelInterface.__name__: CombineModelProxy(CombineModel(tavi_project_model.get_tavi_data_handle())),
             }
 

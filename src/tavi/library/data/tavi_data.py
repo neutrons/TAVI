@@ -12,6 +12,7 @@ class PurgeResult(BaseModel):
     """What a ``TaviData.purge`` actually deleted, per store, for callers that announce removals."""
 
     raw_scans: list[UUID] = Field(default_factory=list)
+    raw_scans_objects: list[RawScan] = Field(default_factory=list)
     processed_scans: list[UUID] = Field(default_factory=list)
     plots: list[UUID] = Field(default_factory=list)
     fits: list[UUID] = Field(default_factory=list)
@@ -93,8 +94,9 @@ class TaviData(BaseModel):
 
         self.plots.update(pruned)
         self.fits.update(pruned_fits)
+        raw_scans_objects = list()
         for uuid in scans:
-            del self.raw_scans[uuid]
+            raw_scans_objects.append(self.raw_scans.pop(uuid))
         for uuid in processed:
             del self.processed_scans[uuid]
         for uuid in plots:
@@ -102,4 +104,6 @@ class TaviData(BaseModel):
         for uuid in fits:
             del self.fits[uuid]
 
-        return PurgeResult(raw_scans=scans, processed_scans=processed, plots=plots, fits=fits)
+        return PurgeResult(
+            raw_scans=scans, raw_scans_objects=raw_scans_objects, processed_scans=processed, plots=plots, fits=fits
+        )
