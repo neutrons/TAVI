@@ -5,7 +5,7 @@ from typing import Optional
 from tavi.backend.model.interface.filter_model_interface import FilterModelInterface
 from tavi.library.data.filter import ScanFilter, sample_filter
 from tavi.library.data.model_response import ModelResponse, ResponseCode
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFilterEvent,
@@ -13,6 +13,7 @@ from tavi.meta.event.type.model_event import (
     ClearFilterEvent,
     RemoveFilterEvent,
     SyncFilterEvent,
+    SyncFilterKeySuggestionsEvent,
     SyncFilterValidationEvent,
 )
 
@@ -20,29 +21,21 @@ from tavi.meta.event.type.model_event import (
 class FilterModel(FilterModelInterface):
     """Owns the saved filters and which is selected and applied, and announces what is applied."""
 
-    # TODO 18226: Add raw scans handle to init arguments
-    def __init__(self, filters: dict[UUID, ScanFilter]) -> None:
-        """Initialize with a live handle into TaviData's filter storage, the Sample filter selected and nothing applied."""
+    def __init__(self, filters: dict[UUID, ScanFilter], raw_scans: dict[UUID, RawScan]) -> None:
+        """Initialize with a handle into TaviData's filter and raw scans storages, the Sample filter selected, and nothing applied."""
         super().__init__()
         # TaviData's own dict, edited in place: filters are saved with the project, but no other
         # model reads or writes them, so there is nothing to route through TaviProjectModel.
         self._filters = filters
-        # TODO 18226: Store raw scans handle and annotate that it should only be read in this context
+        # TaviData's dict, treated as read-only from this model
+        self._raw_scans = raw_scans
         self._sample = sample_filter()
         self._selected_uuid: UUID = self._sample.uuid
         self._applied_uuid: Optional[UUID] = None
-        # TODO 18226: Store key lookup for scan metadata
-        # TODO 18226: Store key lookup for scan columnar data
+        self._metadata_keys: dict[str, int] = dict()
+        self._data_keys: dict[str, int] = dict()
 
         self._event_broker = EventBroker()
-
-    # TODO 18226: Create method that updates keys for key suggestions
-    # Argument should be a UUID for lookup in the raw scans to add to key lookup
-    # Intended for use in filter_presenter whenever AddRawScanEvent occurs
-
-    # TODO 18226: Create method that regenerates keys for key suggestions
-    # Should take no arguments -> completely recreates key lookups from raw scan data
-    # Intended for use in filter_presenter whenever RemoveRawScanEvent occurs
 
     def save_filter(self, scan_filter: ScanFilter) -> ModelResponse:
         """Save ``scan_filter`` into the project, replacing any saved filter with the same uuid."""
@@ -115,6 +108,52 @@ class FilterModel(FilterModelInterface):
             return ModelResponse(code=ResponseCode.OK)
         self._applied_uuid = None
         self._event_broker.publish(ClearFilterEvent())
+        return ModelResponse(code=ResponseCode.OK)
+
+    def _scan_keys_event(self) -> SyncFilterKeySuggestionsEvent:
+        return SyncFilterKeySuggestionsEvent(
+            metadata_keys=sorted(list(self._metadata_keys.keys())), data_keys=sorted(list(self._data_keys.keys()))
+        )
+
+    def increment_scan_keys(self, uuid: UUID) -> ModelResponse:
+        """Increment key references on scan addition for use in key suggestion."""
+        if uuid not in self._raw_scans:
+            return ModelResponse(code=ResponseCode.ERROR, message="Scan not found on attempted key update.")
+        scan = self._raw_scans[uuid]
+
+        for metadata_key in scan.metadata.data.keys():
+            reference_count = self._metadata_keys.setdefault(metadata_key, 0) + 1
+            self._metadata_keys[metadata_key] = reference_count
+
+        for data_key in scan.data.data.keys():
+            reference_count = self._data_keys.setdefault(data_key, 0) + 1
+            self._data_keys[data_key] = reference_count
+
+        self._event_broker.publish(self._scan_keys_event())
+
+        return ModelResponse(code=ResponseCode.OK)
+
+    def decrement_scan_keys(self, uuid: UUID, scan: RawScan) -> ModelResponse:
+        """Decrement key references on scan removal for use in key suggestion."""
+        if uuid in self._raw_scans:
+            return ModelResponse(code=ResponseCode.ERROR, message="Scan found on attempted key removal.")
+
+        for metadata_key in scan.metadata.data.keys():
+            reference_count = self._metadata_keys.setdefault(metadata_key, 1) - 1
+            if reference_count > 0:
+                self._metadata_keys[metadata_key] = reference_count
+            if reference_count < 1:
+                self._metadata_keys.pop(metadata_key)
+
+        for data_key in scan.data.data.keys():
+            reference_count = self._data_keys.setdefault(data_key, 1) - 1
+            if reference_count > 0:
+                self._data_keys[data_key] = reference_count
+            if reference_count < 1:
+                self._data_keys.pop(data_key)
+
+        self._event_broker.publish(self._scan_keys_event())
+
         return ModelResponse(code=ResponseCode.OK)
 
     def _lookup(self, filter_uuid: UUID) -> Optional[ScanFilter]:

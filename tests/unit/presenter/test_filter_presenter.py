@@ -271,7 +271,7 @@ def test_view_and_model_share_the_configured_sample(qtbot):
     applied = []
     EventBroker().register(ApplyFilterEvent, applied.append)
     with Config_override("filter.sample.uuid", "my-sample"), Config_override("filter.sample.name", "Everything"):
-        model = FilterModel({})
+        model = FilterModel(dict(), dict())
         view = FilterView()
         qtbot.addWidget(view)
         model.apply_filter(ScanFilter(uuid=view.current_filter_uuid(), name="ignored"))

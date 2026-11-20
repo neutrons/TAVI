@@ -215,7 +215,7 @@ Event lexicon
        ``SyncCosineParamsEvent``, ``SyncBackgroundParamsEvent``,
        ``SyncGroupPeakParamsEvent``, ``SyncGroupCosineParamsEvent``,
        ``SyncGroupBackgroundParamsEvent``, ``SyncGroupTitlesEvent``,
-       ``SyncRecentProjectsEvent``, ``SyncFilterEvent``,
+       ``SyncRecentProjectsEvent``, ``SyncFilterEvent``, ``SyncFilterKeySuggestionsEvent``
        ``SyncFilterValidationEvent``, ``SyncItemNameEvent``
    * - Recompute
      - Ask the model that computes X to compute it again for display. Never
@@ -443,6 +443,10 @@ Event catalog
      - ``FilterModel``
      - ``FilterPresenter``
      - A saved filter after an edit to it was saved
+   * - ``SyncFilterKeySuggestionsEvent``
+     - ``FilterModel``
+     - ``FilterPresenter``
+     - Keys available for criterion completer
    * - ``SyncFilterValidationEvent``
      - ``FilterModel``
      - ``FilterPresenter``

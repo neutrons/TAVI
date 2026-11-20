@@ -54,8 +54,7 @@ def execute() -> None:
         tavi_project_model.get_raw_scans_handle(), tavi_project_model.get_processed_scans_handle()
     )
 
-    # TODO 18226: Add raw scans handle as argument to FilterModel
-    filter_model = FilterModel(tavi_project_model.get_filters_handle())
+    filter_model = FilterModel(tavi_project_model.get_filters_handle(), tavi_project_model.get_raw_scans_handle())
     combine_model = CombineModel(tavi_project_model.get_tavi_data_handle())
 
     application_model = ApplicationModel(filestore)

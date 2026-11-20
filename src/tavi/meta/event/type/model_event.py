@@ -63,6 +63,18 @@ class SyncFilterEvent(Event):
     filter: ScanFilter
 
 
+class SyncFilterKeySuggestionsEvent(Event):
+    """
+    Announce the collection of filterable keys after an update to possible keys.
+
+    Published by ``FilterModel`` when scan keys are incremented or decremented. The filter panel updates
+    its criterion completer lists with these values.
+    """
+
+    metadata_keys: list[str]
+    data_keys: list[str]
+
+
 class ClearRawScansEvent(Event):
     """
     Announce that no raw scan is listed any more - the first half of relisting them, paired with ``AddRawScanEvent``.
