@@ -273,8 +273,8 @@ def test_view_populates_completer(view: FilterView):
     set_a_store = view.filter_criteria_set_list.currentWidget().criteria_store
     set_a_item: CriteriaItemWidget = list(set_a_store.values())[0]
 
-    view.populate_metadata_completer(["scan"])
-    view.populate_data_completer(["q"])
+    view._populate_metadata_completer(["scan"])
+    view._populate_data_completer(["q"])
 
     metadata_completer_model = set_a_item.metadata_completer.model()
     assert isinstance(metadata_completer_model, QStringListModel)
