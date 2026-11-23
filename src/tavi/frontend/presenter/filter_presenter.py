@@ -113,8 +113,8 @@ class FilterPresenter(AbstractPresenter):
 
     def handle_key_suggestion_sync(self, e: SyncFilterKeySuggestionsEvent) -> None:
         """Populate criteria key completers from model."""
-        self._view.populate_metadata_completer(e.metadata_keys)
-        self._view.populate_data_completer(e.data_keys)
+        self._view.sync_metadata_key_suggestion_signal.emit(e.metadata_keys)
+        self._view.sync_data_key_suggestion_signal.emit(e.data_keys)
 
     def _current_filter(self) -> ScanFilter:
         """Build the picked filter from what the panel currently shows."""

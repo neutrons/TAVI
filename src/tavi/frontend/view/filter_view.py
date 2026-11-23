@@ -279,6 +279,8 @@ class FilterView(QWidget):
     show_applied_filter_signal = Signal(str)
     show_default_applied_signal = Signal()
     show_validation_errors_signal = Signal(list)
+    sync_metadata_key_suggestion_signal = Signal(list)
+    sync_data_key_suggestion_signal = Signal(list)
 
     def __init__(self, parent: Any = None) -> None:
         """Construct filter view."""
@@ -292,6 +294,8 @@ class FilterView(QWidget):
         self.show_applied_filter_signal.connect(self._show_applied_filter)
         self.show_default_applied_signal.connect(self._show_default_applied)
         self.show_validation_errors_signal.connect(self._show_validation_errors)
+        self.sync_metadata_key_suggestion_signal.connect(self._populate_metadata_completer)
+        self.sync_data_key_suggestion_signal.connect(self._populate_data_completer)
 
     def _build_ui(self) -> None:
         """Build the filter UI."""
@@ -407,12 +411,12 @@ class FilterView(QWidget):
 
     # Since the completers are criterion class objects, updating one should update all (intended)
     @staticmethod
-    def populate_metadata_completer(metadata_keys: list[str]) -> None:
+    def _populate_metadata_completer(metadata_keys: list[str]) -> None:
         """Set the list of strings for use in the metadata key suggestions."""
         CriteriaItemWidget.metadata_completer.setModel(QStringListModel(metadata_keys))
 
     @staticmethod
-    def populate_data_completer(data_keys: list[str]) -> None:
+    def _populate_data_completer(data_keys: list[str]) -> None:
         """Set the list of strings for use in the data key suggestions."""
         CriteriaItemWidget.data_completer.setModel(QStringListModel(data_keys))
 
