@@ -1,7 +1,7 @@
 """New Raw Scan Event module."""
 
 from tavi.library.data.filter import ScanFilter
-from tavi.library.data.scan import UUID
+from tavi.library.data.scan import UUID, RawScan
 from tavi.meta.event.event_interface import Event
 
 
@@ -63,6 +63,18 @@ class SyncFilterEvent(Event):
     filter: ScanFilter
 
 
+class SyncFilterKeySuggestionsEvent(Event):
+    """
+    Announce the collection of filterable keys after an update to possible keys.
+
+    Published by ``FilterModel`` when scan keys are incremented or decremented. The filter panel updates
+    its criterion completer lists with these values.
+    """
+
+    metadata_keys: list[str]
+    data_keys: list[str]
+
+
 class ClearRawScansEvent(Event):
     """
     Announce that no raw scan is listed any more - the first half of relisting them, paired with ``AddRawScanEvent``.
@@ -79,6 +91,7 @@ class RemoveRawScanEvent(Event):
     """Indicates a RawScan has been removed from the Project and is no longer in TaviData."""
 
     uuid: UUID
+    raw_scan: RawScan
 
 
 class RemoveProcessedScanEvent(Event):

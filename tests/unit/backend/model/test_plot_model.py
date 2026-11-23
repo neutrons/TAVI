@@ -557,7 +557,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(SyncStageEvent, received.append)
 
         del self.raw_scans[gone.uuid]
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid))
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid, raw_scan=gone))
 
         assert [s.source_scan_uuid for s in received[0].series] == [kept.uuid]
 
@@ -681,7 +681,7 @@ class TestPlotModel(unittest.TestCase):
         self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[scan]))
 
         del self.raw_scans[scan.uuid]
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         assert self.model._last_plots == []
 
@@ -693,7 +693,7 @@ class TestPlotModel(unittest.TestCase):
         self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
 
         del self.raw_scans[gone.uuid]
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid))
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid, raw_scan=gone))
 
         sources = [s.source_scan_uuid for p in self.model._last_plots for s in p.series]
         assert sources == [kept.uuid]
@@ -707,7 +707,7 @@ class TestPlotModel(unittest.TestCase):
         self.broker.register(SyncPlotEvent, received.append)
 
         del self.raw_scans[scan.uuid]
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         assert len(received) == 1
         assert received[0].plots == []
@@ -720,7 +720,8 @@ class TestPlotModel(unittest.TestCase):
         received: list[SyncPlotEvent] = []
         self.broker.register(SyncPlotEvent, received.append)
 
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=UUID(value="scan-elsewhere")))
+        other_scan = make_raw_scan(uuid_val="scan-elsewhere")
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=other_scan.uuid, raw_scan=other_scan))
 
         assert received == []
         assert len(self.model._last_plots) == 1
@@ -734,7 +735,7 @@ class TestPlotModel(unittest.TestCase):
         self.model._handle_scan_focus_event(FocusRawScanEvent(scans=[gone, kept]))
 
         del self.raw_scans[gone.uuid]
-        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid))
+        self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=gone.uuid, raw_scan=gone))
 
         self._stage_all()
 
@@ -754,7 +755,7 @@ class TestPlotModel(unittest.TestCase):
         for scan in (a, b, c):
             del self.raw_scans[scan.uuid]
         for scan in (a, b, c):
-            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         assert self.model._last_plots == []
 
@@ -772,7 +773,7 @@ class TestPlotModel(unittest.TestCase):
         for scan in (a, b):
             del self.raw_scans[scan.uuid]
         for scan in (a, b):
-            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         assert len(received) == 1
         assert received[0].plots == []
@@ -788,7 +789,7 @@ class TestPlotModel(unittest.TestCase):
         for scan in (gone_a, gone_b):
             del self.raw_scans[scan.uuid]
         for scan in (gone_a, gone_b):
-            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         sources = [s.source_scan_uuid for p in self.model._last_plots for s in p.series]
         assert sources == [kept.uuid]
@@ -805,7 +806,7 @@ class TestPlotModel(unittest.TestCase):
         for scan in (gone_a, gone_b):
             del self.raw_scans[scan.uuid]
         for scan in (gone_a, gone_b):
-            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         assert len(self.model._last_plots) == 1
         assert [s.source_scan_uuid for s in self.model._last_plots[0].series] == [kept.uuid]
@@ -821,7 +822,7 @@ class TestPlotModel(unittest.TestCase):
         for scan in (a, b):
             del self.raw_scans[scan.uuid]
         for scan in (a, b):
-            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid))
+            self.model._handle_raw_scan_remove_event(RemoveRawScanEvent(uuid=scan.uuid, raw_scan=scan))
 
         self._stage_all()
 
@@ -1137,7 +1138,7 @@ class TestPlotModelProcessedScans(unittest.TestCase):
         self.broker.publish(FocusProcessedScanEvent(scans=[self.scan]))
 
         del self.raw_scans[raw.uuid]
-        self.broker.publish(RemoveRawScanEvent(uuid=raw.uuid))
+        self.broker.publish(RemoveRawScanEvent(uuid=raw.uuid, raw_scan=raw))
 
         assert self.model._focused_uuids() == [self.scan.uuid]
 

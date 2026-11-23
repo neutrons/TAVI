@@ -154,18 +154,22 @@ def test_removing_a_scan_drops_it_from_the_next_request(presenter, model):
 
 
 def test_a_removed_raw_scan_leaves_the_list(presenter):
-    focus(make_scan("a", "scan0001"), make_scan("b", "scan0002"))
+    scan_a = make_scan("a", "scan0001")
+    scan_b = make_scan("b", "scan0002")
+    focus(scan_a, scan_b)
     presenter._view.add_scans_btn.click()
 
-    EventBroker().publish(RemoveRawScanEvent(uuid=UUID(value="a")))
+    EventBroker().publish(RemoveRawScanEvent(uuid=scan_a.uuid, raw_scan=scan_a))
 
     assert presenter._view.scan_names() == ["scan0002"]
 
 
 def test_a_removed_raw_scan_drops_out_of_the_next_request(presenter, model):
-    focus(make_scan("a", "scan0001"), make_scan("b", "scan0002"))
+    scan_a = make_scan("a", "scan0001")
+    scan_b = make_scan("b", "scan0002")
+    focus(scan_a, scan_b)
     presenter._view.add_scans_btn.click()
-    EventBroker().publish(RemoveRawScanEvent(uuid=UUID(value="a")))
+    EventBroker().publish(RemoveRawScanEvent(uuid=scan_a.uuid, raw_scan=scan_a))
 
     presenter._view.append_btn.click()
 
@@ -173,8 +177,9 @@ def test_a_removed_raw_scan_drops_out_of_the_next_request(presenter, model):
 
 
 def test_a_removed_raw_scan_cannot_be_staged_again(presenter):
-    focus(make_scan("a", "scan0001"))
-    EventBroker().publish(RemoveRawScanEvent(uuid=UUID(value="a")))
+    scan_a = make_scan("a", "scan0001")
+    focus(scan_a)
+    EventBroker().publish(RemoveRawScanEvent(uuid=scan_a.uuid, raw_scan=scan_a))
 
     presenter._view.add_scans_btn.click()
 

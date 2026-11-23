@@ -13,10 +13,13 @@ from tavi.library.data.scan import UUID
 from tavi.meta.event.event_broker import EventBroker
 from tavi.meta.event.type.model_event import (
     AddFilterEvent,
+    AddRawScanEvent,
     ApplyFilterEvent,
     ClearFilterEvent,
     RemoveFilterEvent,
+    RemoveRawScanEvent,
     SyncFilterEvent,
+    SyncFilterKeySuggestionsEvent,
     SyncFilterValidationEvent,
 )
 
@@ -61,10 +64,13 @@ def test_init_view_is_filter_view(presenter):
     ("event_type", "handler"),
     [
         (AddFilterEvent, "handle_filter_added"),
+        (AddRawScanEvent, "handle_new_scan_keys"),
         (SyncFilterEvent, "handle_filter_synced"),
         (RemoveFilterEvent, "handle_filter_removed"),
+        (RemoveRawScanEvent, "handle_removed_scan_keys"),
         (ApplyFilterEvent, "handle_filter_applied"),
         (ClearFilterEvent, "handle_filter_cleared"),
+        (SyncFilterKeySuggestionsEvent, "handle_key_suggestion_sync"),
         (SyncFilterValidationEvent, "handle_filter_validation"),
     ],
 )
@@ -271,7 +277,7 @@ def test_view_and_model_share_the_configured_sample(qtbot):
     applied = []
     EventBroker().register(ApplyFilterEvent, applied.append)
     with Config_override("filter.sample.uuid", "my-sample"), Config_override("filter.sample.name", "Everything"):
-        model = FilterModel({})
+        model = FilterModel(dict(), dict())
         view = FilterView()
         qtbot.addWidget(view)
         model.apply_filter(ScanFilter(uuid=view.current_filter_uuid(), name="ignored"))
