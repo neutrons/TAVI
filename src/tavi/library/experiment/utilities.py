@@ -115,6 +115,47 @@ def quadric_proj(quadric: np.ndarray, idx: int) -> np.ndarray:
     return np.delete(np.delete(ortho_proj, idx, axis=0), idx, axis=1)
 
 
+def proj_with_constraint(mat: np.ndarray, b: np.ndarray, k: int) -> np.ndarray:
+    """
+    Reduce a quadratic form under the constraint x_k = b·x'' (R. A. Robinson, Analytical Techniques, Eq. 18).
+
+        |a_00, a_01, a_02, a_03|
+    A = |a_10, a_11, a_12, a_13|
+        |a_20, a_21, a_22, a_23|
+        |a_30, a_31, a_32, a_33|
+
+    The indexing of A''' is the same as A but with k removed. Take k = 2 as an example:
+
+           |a'''_00, a'''_01, a'''_03|
+    A''' = |a'''_10, a'''_11, a'''_13| 
+           |a'''_30, a'''_30, a'''_33|.
+
+    Python does not allow leaving a gap in numbering, so wee need to account for that with row_k, col_k and reduced.
+
+    Again, k = 2 as an example:
+
+    row_k = |a_20, a_21, a_23|
+    col_k = |a_02, a_12, a_32|
+    a_kk = |a_kk|.
+
+    mat: n x n resolution matrix.
+    b: 1-D array of the n-1 coefficients of x'' (all components of x except k), per Eq. 16.
+    k: index of the component eliminated by the constraint.
+    """
+    n = len(mat)
+    # Row and column are taken separately so Eq. 18 holds even if mat is not symmetric.
+    row_k = np.delete(mat[k, :], k)  # a_kj for j != k, re-indexed to x''
+    col_k = np.delete(mat[:, k], k)  # a_ik for i != k, re-indexed to x''
+    a_kk = mat[k, k]
+    reduced = np.delete(np.delete(mat, k, axis=0), k, axis=1)  # a_ij for i, j != k
+
+    new_mat = np.zeros((n - 1, n - 1))
+    for i in range(n - 1):
+        for j in range(n - 1):
+            new_mat[i][j] = reduced[i][j] + b[i] * row_k[j] + b[j] * col_k[i] + b[i] * b[j] * a_kk
+    return new_mat
+
+
 def get_angle_vec(v1: np.ndarray, v2: np.ndarray) -> float:
     """Get the angle in degrees between two vectors v1 and v2."""
     return np.degrees(np.arccos(np.dot(v1, v2) / np.linalg.norm(v1) / np.linalg.norm(v2)))
